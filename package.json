@@ -1,5 +1,6 @@
 {
-  "name": "goban",
-  "productName": "Goban",
-  "main": "main.js"
+    "name": "goban",
+    "productName": "Goban",
+    "version": "0.1.0",
+    "main": "main.js"
 }
