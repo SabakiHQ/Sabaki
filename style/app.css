@@ -1,0 +1,15 @@
+/**
+ * app.css
+ *
+ * Provides general styles for websites that behave like apps.
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    cursor: default;
+    -webkit-user-select: none;
+}
