@@ -1,6 +1,6 @@
 var Tuple = require('../lib/tuple')
 
-module.exports.tokenize = function(input) {
+exports.tokenize = function(input) {
     var tokens = []
     var builder = ''
     var propIdentRegex = /^[A-Z]+/
@@ -77,6 +77,50 @@ module.exports.tokenize = function(input) {
     return tokens
 }
 
-module.exports.parse = function(string) {
+exports.parse = function(tokens, start, end) {
+    if (arguments.length <= 2) end = tokens.length - 1
+    if (arguments.length <= 1) start = 0
 
+    var i = start
+
+    var tree = { elements: [], subtrees: [] }
+    var node, property
+
+    while (i <= end) {
+        if (tokens[i].equals(new Tuple('parenthesis', '('))) break
+        if (tokens[i].equals(new Tuple('parenthesis', ')'))) return null
+
+        tokens[i].unpack(function(type, data) {
+            if (type == 'semicolon') {
+                node = { properties: [] }
+                tree['elements'].push(node)
+            } else if (type == 'prop_ident') {
+                property = { id: data, values: [] }
+                node['properties'].push(property)
+            } else if (type == 'c_value_type') {
+                property['values'].push(data)
+            }
+        })
+
+        i++
+    }
+
+    var depth = 0
+    var newstart = 0
+
+    while (i <= end) {
+        tokens[i].unpack(function(type, data) {
+            if (type == 'parenthesis' && data == '(') {
+                depth++
+                if (depth == 1) newstart = i + 1
+            } else if (type == 'parenthesis' && data == ')') {
+                depth--
+                if (depth == 0) tree['subtrees'].push(exports.parse(tokens, newstart, i - 1))
+            }
+        })
+
+        i++
+    }
+
+    return tree
 }
