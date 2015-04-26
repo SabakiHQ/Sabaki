@@ -1,0 +1,29 @@
+{
+	"name": "tuple-w",
+	"version": "1.1.1",
+	"description": "A tiny tuple implementation",
+	"main": "tuple.js",
+	"directories": {
+		"test": "tests"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/Wolfy87/tuple.git"
+	},
+	"keywords": [
+		"tuple",
+		"data",
+		"structure",
+		"storage"
+	],
+	"author": {
+		"name": "Oliver Caldwell",
+		"email": "olliec87@gmail.com",
+		"url": "http://oli.me.uk/"
+	},
+	"license": "MIT",
+	"readmeFilename": "README.md",
+	"bugs": {
+		"url": "https://github.com/Wolfy87/tuple/issues"
+	}
+}
