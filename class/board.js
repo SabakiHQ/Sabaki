@@ -138,21 +138,24 @@ var Board = new Class({
 
         for (var x = 0; x < this.size; x++) {
             var ol = new Element('ol')
-
             for (var y = 0; y < this.size; y++) {
                 var sign = this.arrangement[new Tuple(x, y)]
+
                 var li = new Element('li', {
                     class: 'pos_' + x + '-' + y
                         + ' sign_' + sign,
                 })
 
+                var img = new Element('img', {
+                    alt: sign,
+                    src: 'img/' + (sign > 0 ? 'blackstone' : (sign < 0 ? 'whitestone' : 'blank')) + '.png',
+                    draggable: false
+                })
+
                 if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
                     li.addClass('hoshi')
 
-                ol.adopt(li.adopt(new Element('img', {
-                    alt: sign,
-                    src: 'img/' + (sign > 0 ? 'blackstone' : (sign < 0 ? 'whitestone' : 'blank')) + '.png'
-                })))
+                ol.adopt(li.adopt(img))
             }
 
             rows.push(ol)
