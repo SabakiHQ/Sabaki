@@ -14,3 +14,16 @@ body {
     cursor: default;
     -webkit-user-select: none;
 }
+
+header {
+    height: 40px;
+    background: #26292C;
+    color: #eee;
+    line-height: 40px;
+    position: relative;
+    text-align: center;
+}
+
+img {
+    vertical-align: middle;
+}

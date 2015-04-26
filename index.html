@@ -13,41 +13,60 @@
 </head>
 <body>
 
+<header>
+    <span id="player_1">Black</span>
+    <img src="img/blacktoplay.png" onload="this.draggable = false" />
+    <span id="player_-1">White</span>
+</header>
+
 <section id="goban"></section>
 
 <script>
 
 var Tuple = require('./lib/tuple')
 var Board = require('./class/board.js')
-var board = new Board()
+var form = require('remote').getCurrentWindow()
 
-board.arrangement[new Tuple(0, 0)] = 1
-board.arrangement[new Tuple(0, 1)] = 1
-
-var newboard = board.makeMove(-1, new Tuple(0, 2))
-newboard = newboard.makeMove(-1, new Tuple(1, 0))
-// newboard = newboard.makeMove(-1, new Tuple(1, 1))
-
-$('goban').adopt(newboard.build())
-resizeWindow()
-
-function resizeWindow() {
-    var width = $('goban').getSize().x
-    var height = $('goban').getSize().y
-    require('remote').getCurrentWindow().setContentSize(width, height)
+function getPlayerName(sign) {
+    return $('player_' + sign).get('text')
 }
 
-</script>
+function setPlayerName(sign, name) {
+    $('player_' + sign).set('text', name)
+}
 
-<script>
+function getCurrentPlayer() {
+    return $$('header img').get('src') == 'img/blacktoplay.png' ? 1 : -1
+}
+
+function setCurrentPlayer(sign) {
+    $$('header img').set('src', sign > 0 ? 'img/blacktoplay.png' : 'img/whitetoplay.png')
+}
+
+function getBoard() {
+    return $('goban').retrieve('board')
+}
+
+
+function setBoard(board) {
+    $('goban').empty().adopt(board.build()).store('board', board)
+}
+function resizeWindow() {
+    var width = $('goban').getSize().x
+    var height = $('goban').getSize().y + $$('header')[0].getSize().y
+    form.setContentSize(width, height)
+}
 
 document.addEventListener('keydown', function(e) {
     if (e.which === 123) {
-        bw.toggleDevTools()
+        form.toggleDevTools()
     } else if (e.which === 116) {
         location.reload()
     }
 })
+
+setBoard(new Board())
+resizeWindow()
 
 </script>
 
