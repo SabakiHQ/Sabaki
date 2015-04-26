@@ -5,16 +5,31 @@
 <meta charset="utf-8" />
 <title>Goban</title>
 <meta name="author" content="Yichuan Shen" />
+
 <link rel="stylesheet" type="text/css" href="style/app.css" />
 <link rel="stylesheet" type="text/css" href="style/goban.css" />
 <script src="lib/mootools.js"></script>
+<script src="class/board.js"></script>
 
 </head>
 <body>
 
-<h1>Hello World!</h1>
-<p>We are using io.js <script>document.write(process.version)</script>
-and Electron <script>document.write(process.versions['electron'])</script>.</p>
+<section id="goban"></section>
+
+<script>
+var size = 19
+var board = new Board(size)
+
+$('goban').adopt(board.build())
+board.arrangement[0][0] = 1
+board.arrangement[0][1] = 1
+board.getChain(0, 0)
+board.getLiberties(0, 0)
+
+var newboard = board.makeMove(-1, 0, 2)
+newboard = newboard.makeMove(-1, 1, 0)
+newboard = newboard.makeMove(-1, 1, 1)
+</script>
 
 </body>
 </html>
