@@ -47,26 +47,28 @@ function getBoard() {
     return $('goban').retrieve('board')
 }
 
-
 function setBoard(board) {
     $('goban').empty().adopt(board.build()).store('board', board)
 }
+
 function resizeWindow() {
     var width = $('goban').getSize().x
     var height = $('goban').getSize().y + $$('header')[0].getSize().y
     form.setContentSize(width, height)
 }
 
-document.addEventListener('keydown', function(e) {
-    if (e.which === 123) {
+document.addEvent('keydown', function(e) {
+    if (e.code === 123) {
         form.toggleDevTools()
-    } else if (e.which === 116) {
+    } else if (e.code === 116) {
         location.reload()
     }
 })
 
-setBoard(new Board())
-resizeWindow()
+document.addEvent('domready', function() {
+    setBoard(new Board())
+    resizeWindow()
+})
 
 </script>
 

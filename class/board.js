@@ -148,7 +148,7 @@ var Board = new Class({
 
                 var img = new Element('img', {
                     alt: sign,
-                    src: 'img/' + (sign > 0 ? 'blackstone' : (sign < 0 ? 'whitestone' : 'blank')) + '.png',
+                    src: 'img/stone_' + sign + '.png',
                     draggable: false
                 })
 
