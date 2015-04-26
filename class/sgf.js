@@ -1,4 +1,5 @@
 var Tuple = require('../lib/tuple')
+var fs = require('fs')
 
 exports.tokenize = function(input) {
     var tokens = []
@@ -83,17 +84,17 @@ exports.parse = function(tokens, start, end) {
 
     var i = start
 
-    var tree = { elements: [], subtrees: [] }
+    var tree = { nodes: [], subtrees: [] }
     var node, property
 
     while (i <= end) {
-        if (tokens[i].equals(new Tuple('parenthesis', '('))) break
-        if (tokens[i].equals(new Tuple('parenthesis', ')'))) return null
+        if (new Tuple('parenthesis', '(').equals(tokens[i])) break
+        if (new Tuple('parenthesis', ')').equals(tokens[i])) return null
 
         tokens[i].unpack(function(type, data) {
             if (type == 'semicolon') {
                 node = { properties: [] }
-                tree['elements'].push(node)
+                tree['nodes'].push(node)
             } else if (type == 'prop_ident') {
                 property = { id: data, values: [] }
                 node['properties'].push(property)
@@ -105,22 +106,35 @@ exports.parse = function(tokens, start, end) {
         i++
     }
 
+    tree['nodes'].each(function(node) {
+        node['properties'].each(function(property) {
+            if (property['values'].length != 1) return
+            property['value'] = property['values'][0]
+            delete property['values']
+        })
+    })
+
     var depth = 0
     var newstart = 0
 
     while (i <= end) {
-        tokens[i].unpack(function(type, data) {
-            if (type == 'parenthesis' && data == '(') {
-                depth++
-                if (depth == 1) newstart = i + 1
-            } else if (type == 'parenthesis' && data == ')') {
-                depth--
-                if (depth == 0) tree['subtrees'].push(exports.parse(tokens, newstart, i - 1))
-            }
-        })
+        if (new Tuple('parenthesis', '(').equals(tokens[i])) {
+            depth++
+            if (depth == 1) newstart = i + 1
+        } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
+            depth--
+            if (depth == 0) tree['subtrees'].push(exports.parse(tokens, newstart, i - 1))
+        }
 
         i++
     }
 
     return tree
+}
+
+exports.parseFile = function(filename) {
+    var input = fs.readFileSync(filename, { encoding: 'utf8' })
+    var tokens = exports.tokenize(input)
+    
+    return exports.parse(tokens)
 }
