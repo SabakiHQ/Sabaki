@@ -9,7 +9,6 @@
 <link rel="stylesheet" type="text/css" href="style/app.css" />
 <link rel="stylesheet" type="text/css" href="style/goban.css" />
 <script src="lib/mootools.js"></script>
-<script src="class/board.js"></script>
 
 </head>
 <body>
@@ -17,18 +16,33 @@
 <section id="goban"></section>
 
 <script>
-var size = 19
-var board = new Board(size)
 
-$('goban').adopt(board.build())
-board.arrangement[0][0] = 1
-board.arrangement[0][1] = 1
-board.getChain(0, 0)
-board.getLiberties(0, 0)
+var Tuple = require('./lib/tuple')
+var Board = require('./class/board.js')
+var board = new Board()
 
-var newboard = board.makeMove(-1, 0, 2)
-newboard = newboard.makeMove(-1, 1, 0)
-newboard = newboard.makeMove(-1, 1, 1)
+board.arrangement[new Tuple(0, 0)] = 1
+board.arrangement[new Tuple(0, 1)] = 1
+board.getChain(new Tuple(0, 0))
+board.getLiberties(new Tuple(0, 0))
+
+var newboard = board.makeMove(-1, new Tuple(0, 2))
+newboard = newboard.makeMove(-1, new Tuple(1, 0))
+newboard = newboard.makeMove(-1, new Tuple(1, 1))
+$('goban').adopt(newboard.build())
+
+</script>
+
+<script>
+
+document.addEventListener('keydown', function(e) {
+    if (e.which === 123) {
+        require('remote').getCurrentWindow().toggleDevTools()
+    } else if (e.which === 116) {
+        location.reload()
+    }
+})
+
 </script>
 
 </body>

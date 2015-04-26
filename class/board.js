@@ -1,115 +1,111 @@
+var Tuple = require('../lib/tuple')
+
 var Board = new Class({
     initialize: function(size, arrangement, captures) {
         this.size = arguments.length >= 1 ? size : 19
         this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
-        this.arrangement = []
+        this.arrangement = {}
 
         // Initialize arrangement
-        for (var x = 0; x < size; x++) {
-            this.arrangement[x] = []
-
-            for (var y = 0; y < size; y++) {
-                this.arrangement[x][y] = arguments.length >= 2 ? arrangement[x][y] : 0
-            }
-        }
-    },
-
-    hasVertex: function(x, y) {
-        return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
-    },
-
-    clear: function(x, y) {
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
-                this.arrangement[x][y] = 0
+                this.arrangement[new Tuple(x, y)] = arguments.length >= 2 ? arrangement[new Tuple(x, y)] : 0
             }
         }
     },
 
-    getNeighborhood: function(x, y) {
-        if (!this.hasVertex(x, y)) return []
-
-        return [
-            [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(function(item) {
-            return this.hasVertex(item[0], item[1])
+    hasVertex: function(v) {
+        return v.unpack(function(x, y) {
+            return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
         }.bind(this))
     },
 
-    getChain: function(x, y, result) {
-        if (!this.hasVertex(x, y)) return [];
+    clear: function() {
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                this.arrangement[new Tuple(x, y)] = 0
+            }
+        }
+    },
 
-        if (arguments.length == 2) result = [[x, y]]
+    getNeighborhood: function(v) {
+        if (!this.hasVertex(v)) return []
+        x = v[0]; y = v[1]
+
+        return [
+            new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
+        ].filter(function(item) {
+            return this.hasVertex(item)
+        }.bind(this))
+    },
+
+    getChain: function(vertex, result) {
+        if (!this.hasVertex(vertex)) return [];
+
+        if (arguments.length < 2) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighborhood(x, y).each(function(v) {
-            if (this.arrangement[v[0]][v[1]] != this.arrangement[x][y]) return
-            if (result.some(function(item) {
-                return item[0] == v[0] && item[1] == v[1]
-            })) return
+        this.getNeighborhood(vertex).each(function(v) {
+            if (this.arrangement[v] != this.arrangement[vertex]) return
+            if (result.some(function(w) { return w.equals(v) })) return
 
             result.push(v)
-            this.getChain(v[0], v[1], result)
+            this.getChain(v, result)
         }.bind(this))
 
         return result
     },
 
-    getLiberties: function(x, y) {
-        if (this.arrangement[x][y] == 0) return []
+    getLiberties: function(vertex) {
+        if (this.arrangement[vertex] == 0) return []
 
-        var chain = this.getChain(x, y)
+        var chain = this.getChain(vertex)
         var liberties = []
 
         chain.each(function(c) {
-            liberties.append(this.getNeighborhood(c[0], c[1]).filter(function(n) {
-                return this.arrangement[n[0]][n[1]] == 0 && !liberties.some(function(v) {
-                    return v[0] == n[0] && v[1] == n[1]
-                })
+            liberties.append(this.getNeighborhood(c).filter(function(n) {
+                return this.arrangement[n] == 0 && !liberties.some(function(v) { return v.equals(n) })
             }.bind(this)))
         }.bind(this))
 
         return liberties
     },
 
-    makeMove: function(sign, x, y) {
-        if (x < 0 && y < 0) {
-            // Passing
-            return new Board(this.size, this.arrangement, this.captures)
-        }
-
-        if (sign == 0 || !this.hasVertex(x, y) || this.arrangement[x][y] != 0) return null
-        sign = sign > 0 ? 1 : -1
-
+    makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
+
+        if (!this.hasVertex(vertex)) return move
+        if (sign == 0 || this.arrangement[vertex] != 0) return null
+
+        sign = sign > 0 ? 1 : -1
         var suicide = true
 
         // Remove captured stones
-        this.getNeighborhood(x, y).each(function(n) {
-            if (this.arrangement[n[0]][n[1]] != -sign) return;
+        this.getNeighborhood(vertex).each(function(n) {
+            if (this.arrangement[n] != -sign) return;
 
-            var ll = this.getLiberties(n[0], n[1])
+            var ll = this.getLiberties(n)
             if (ll.length != 1) return;
-            if (ll[0][0] != x || ll[0][1] != y) return;
+            if (!ll[0].equals(vertex)) return;
 
-            this.getChain(n[0], n[1]).each(function(c) {
-                move.arrangement[c[0]][c[1]] = 0
+            this.getChain(n).each(function(c) {
+                move.arrangement[c] = 0
                 move.captures[sign.toString()]++
             })
 
             suicide = false;
         }.bind(this))
         
-        move.arrangement[x][y] = sign
+        move.arrangement[vertex] = sign
 
         // Detect suicide
         if (suicide) {
-            var chain = move.getChain(x, y)
-            suicide = move.getLiberties(x, y).length == 0
+            var chain = move.getChain(vertex)
+            suicide = move.getLiberties(vertex).length == 0
 
             if (suicide) {
                 chain.each(function(c) {
-                    move.arrangement[c[0]][c[1]] = 0
+                    move.arrangement[c] = 0
                 })
             }
         }
@@ -123,14 +119,14 @@ var Board = new Class({
         var near = this.size >= 13 ? 3 : 2
         var far = this.size - near
 
-        var result = [ [near, near], [far, far], [near, far], [far, near] ]
+        var result = [ new Tuple(near, near), new Tuple(far, far), new Tuple(near, far), new Tuple(far, near) ]
 
         if (this.size % 2 != 0) {
             var middle = (this.size - 1) / 2
-            if (count == 5) result.push([middle, middle])
-            result.append([ [near, middle], [far, middle] ])
-            if (count == 7) result.push([middle, middle])
-            result.append([ [middle, near], [middle, far], [middle, middle] ])
+            if (count == 5) result.push(new Tuple(middle, middle))
+            result.append([ new Tuple(near, middle), new Tuple(far, middle) ])
+            if (count == 7) result.push(new Tuple(middle, middle))
+            result.append([ new Tuple(middle, near), new Tuple(middle, far), new Tuple(middle, middle) ])
         }
 
         return result.slice(0, count)
@@ -138,10 +134,18 @@ var Board = new Class({
 
     build: function() {
         var ol = new Element('ol')
+        var hoshi = this.getHandicapPlacement(9)
 
-        for (var x = 0; x < size; x++) {
-            for (var y = 0; y < size; y++) {
-                var li = new Element('li.pos-' + x + '-' + y, { text: x + ',' + y })
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                var li = new Element('li', {
+                    class: 'pos_' + x + '-' + y + ' sign_' + this.arrangement[new Tuple(x, y)],
+                    text: x + ',' + y
+                })
+
+                if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
+                    li.addClass('hoshi')
+                
                 ol.adopt(li)
             }
         }
@@ -149,3 +153,5 @@ var Board = new Class({
         return ol
     }
 })
+
+module.exports = Board
