@@ -63,6 +63,13 @@ function setBoard(board) {
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
+
+    $('goban').store('board', board)
+}
+
+function positionClicked() {
+    setBoard(getBoard().makeMove(getCurrentPlayer(), this.retrieve('tuple')))
+    setCurrentPlayer(-getCurrentPlayer())
 }
 
 function buildBoard(board) {
@@ -74,12 +81,12 @@ function buildBoard(board) {
 
         for (var y = 0; y < board.size; y++) {
             var sign = board.arrangement[new Tuple(x, y)]
-            var li = new Element('li.pos_' + x + '-' + y)
+            var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
 
             var img = new Element('img', {
                 src: 'img/stone_0.png',
                 draggable: false
-            })
+            }).addEvent('click', positionClicked.bind(li))
 
             if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
                 li.addClass('hoshi')
@@ -106,10 +113,7 @@ document.addEvent('keydown', function(e) {
         location.reload()
     }
 }).addEvent('domready', function() {
-    setBoard(new Board(13))
-    setTimeout(function() {
-        setBoard(new Board())
-    }, 1000)
+    setBoard(new Board())
     resizeWindow()
 })
 
