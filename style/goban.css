@@ -8,6 +8,7 @@
     display: inline-block;
     border: 10px solid #B48F5F;
     padding: 10px 8px 8px 10px;
+    min-width: 570px;
     background: #DFB277 url('../img/goban.png') center;
 }
 

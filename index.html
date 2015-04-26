@@ -29,6 +29,13 @@ newboard = newboard.makeMove(-1, new Tuple(1, 0))
 // newboard = newboard.makeMove(-1, new Tuple(1, 1))
 
 $('goban').adopt(newboard.build())
+resizeWindow()
+
+function resizeWindow() {
+    var width = $('goban').getSize().x
+    var height = $('goban').getSize().y
+    require('remote').getCurrentWindow().setContentSize(width, height)
+}
 
 </script>
 
@@ -36,7 +43,7 @@ $('goban').adopt(newboard.build())
 
 document.addEventListener('keydown', function(e) {
     if (e.which === 123) {
-        require('remote').getCurrentWindow().toggleDevTools()
+        bw.toggleDevTools()
     } else if (e.which === 116) {
         location.reload()
     }
