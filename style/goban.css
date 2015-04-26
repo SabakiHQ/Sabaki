@@ -8,19 +8,17 @@
     display: inline-block;
     border: 10px solid #B48F5F;
     padding: 10px 8px 8px 10px;
-    min-width: 570px;
     background: #DFB277 url('../img/goban.png') center;
 }
 
 #goban ol {
-        overflow: hidden;
         list-style: none;
+        white-space: nowrap;
     }
     #goban li {
-        display: block;
+        display: inline-block;
         height: 30px;
         width: 30px;
-        float: left;
         background: url('../img/inner.png') center;
     }
     #goban li.hoshi {
@@ -51,8 +49,8 @@
         background-image: url('../img/corner-se.png');
     }
     #goban li img {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: 100%;
 }
 
 header span {

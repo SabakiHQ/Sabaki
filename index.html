@@ -48,7 +48,49 @@ function getBoard() {
 }
 
 function setBoard(board) {
-    $('goban').empty().adopt(board.build()).store('board', board)
+    if (!getBoard() || getBoard().size != board.size) {
+        buildBoard(board)
+        resizeWindow()
+    }
+
+    for (var x = 0; x < board.size; x++) {
+        for (var y = 0; y < board.size; y++) {
+            var li = $('goban').getElement('.pos_' + x + '-' + y)
+            var sign = board.arrangement[new Tuple(x, y)]
+
+            li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
+                .addClass('sign_' + sign)
+                .getElement('img').set('src', 'img/stone_' + sign + '.png')
+        }
+    }
+}
+
+function buildBoard(board) {
+    var rows = []
+    var hoshi = board.getHandicapPlacement(9)
+
+    for (var x = 0; x < board.size; x++) {
+        var ol = new Element('ol')
+
+        for (var y = 0; y < board.size; y++) {
+            var sign = board.arrangement[new Tuple(x, y)]
+            var li = new Element('li.pos_' + x + '-' + y)
+
+            var img = new Element('img', {
+                src: 'img/stone_0.png',
+                draggable: false
+            })
+
+            if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
+                li.addClass('hoshi')
+
+            ol.adopt(li.adopt(img))
+        }
+
+        rows.push(ol)
+    }
+
+    $('goban').empty().adopt(rows)
 }
 
 function resizeWindow() {
@@ -63,10 +105,11 @@ document.addEvent('keydown', function(e) {
     } else if (e.code === 116) {
         location.reload()
     }
-})
-
-document.addEvent('domready', function() {
-    setBoard(new Board())
+}).addEvent('domready', function() {
+    setBoard(new Board(13))
+    setTimeout(function() {
+        setBoard(new Board())
+    }, 1000)
     resizeWindow()
 })
 
