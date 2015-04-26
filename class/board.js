@@ -117,7 +117,7 @@ var Board = new Class({
         if (this.size < 6 || count < 2) return []
 
         var near = this.size >= 13 ? 3 : 2
-        var far = this.size - near
+        var far = this.size - near - 1
 
         var result = [ new Tuple(near, near), new Tuple(far, far), new Tuple(near, far), new Tuple(far, near) ]
 
@@ -133,24 +133,32 @@ var Board = new Class({
     },
 
     build: function() {
-        var ol = new Element('ol')
+        var rows = []
         var hoshi = this.getHandicapPlacement(9)
 
         for (var x = 0; x < this.size; x++) {
+            var ol = new Element('ol')
+
             for (var y = 0; y < this.size; y++) {
+                var sign = this.arrangement[new Tuple(x, y)]
                 var li = new Element('li', {
-                    class: 'pos_' + x + '-' + y + ' sign_' + this.arrangement[new Tuple(x, y)],
-                    text: x + ',' + y
+                    class: 'pos_' + x + '-' + y
+                        + ' sign_' + sign,
                 })
 
                 if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
                     li.addClass('hoshi')
-                
-                ol.adopt(li)
+
+                ol.adopt(li.adopt(new Element('img', {
+                    alt: sign,
+                    src: 'img/' + (sign > 0 ? 'blackstone' : (sign < 0 ? 'whitestone' : 'blank')) + '.png'
+                })))
             }
+
+            rows.push(ol)
         }
 
-        return ol
+        return rows
     }
 })
 
