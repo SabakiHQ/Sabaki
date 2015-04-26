@@ -1,7 +1,7 @@
 var app = require('app')
 var BrowserWindow = require('browser-window')
 
-var mainWindow = null
+var window = null
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
@@ -10,10 +10,21 @@ app.on('window-all-closed', function() {
 })
 
 app.on('ready', function() {
-    mainWindow = new BrowserWindow({ width: 800, height: 600 })
-    mainWindow.loadUrl('file://' + __dirname + '/index.html')
+    window = new BrowserWindow({
+        'width': 608,
+        'height': 608,
+        'resizable': false,
+        'use-content-size': true,
+        'show': false
+    })
 
-    mainWindow.on('closed', function() {
-        mainWindow = null
+    window.webContents.on('did-finish-load', function() {
+        window.show()
+    })
+
+    window.loadUrl('file://' + __dirname + '/index.html')
+
+    window.on('closed', function() {
+        window = null
     })
 })
