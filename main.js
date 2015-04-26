@@ -13,7 +13,7 @@ app.on('ready', function() {
     window = new BrowserWindow({
         'resizable': false,
         'use-content-size': true,
-        'show': false
+        'show': false,
     })
 
     window.webContents.on('did-finish-load', function() {

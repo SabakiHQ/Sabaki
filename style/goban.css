@@ -65,7 +65,7 @@ header span {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    header #player_-1 {
+    #player_-1 {
         left: 50%;
         right: 0;
         padding-right: 10px;
@@ -78,4 +78,10 @@ header span {
         top: 50%;
         height: 21px;
         transform: translate(-50%, -50%);
-}
+    }
+    #headermenu {
+        left: auto;
+        right: 5px;
+        height: 32px;
+        transform: translateY(-50%);
+    }
