@@ -56,6 +56,9 @@ function setTree(tree) {
 
     if (tree.nodes.length == 0) return
     setCurrentTreePosition(tree, 0)
+
+    if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
+    if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
 }
 
 function setCurrentTreePosition(tree, position) {
@@ -177,7 +180,7 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&Back',
-                    accelerator: 'CmdOrCtrl+Left',
+                    accelerator: 'Left',
                     click: function() {
                         getCurrentTreePosition().unpack(function(tree, position) {
                             if (position - 1 >= 0) {
@@ -190,7 +193,7 @@ function buildMenu() {
                 },
                 {
                     label: '&Forward',
-                    accelerator: 'CmdOrCtrl+Right',
+                    accelerator: 'Right',
                     click: function() {
                         getCurrentTreePosition().unpack(function(tree, position) {
                             if (tree.nodes.length > position + 1) {
@@ -201,6 +204,7 @@ function buildMenu() {
                         })
                     }
                 },
+                { type: 'separator' },
                 {
                     label: 'Go To &Beginning',
                     accelerator: 'CmdOrCtrl+Home',
