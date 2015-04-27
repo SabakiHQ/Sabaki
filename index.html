@@ -13,14 +13,14 @@
 </head>
 <body>
 
+<section id="goban"></section>
+
 <header>
     <span id="player_1">Black</span>
     <img id="currentplayer" src="img/blacktoplay.png" onload="this.draggable = false" />
     <span id="player_-1">White</span>
     <img id="headermenu" src="img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
 </header>
-
-<section id="goban"></section>
 
 <script>
 
@@ -60,6 +60,8 @@ function setBoard(board) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[new Tuple(x, y)]
+
+            if (li.hasClass('sign_' + sign)) continue
 
             li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
                 .addClass('sign_' + sign)
@@ -117,6 +119,9 @@ function openHeaderMenu() {
             label: '&Pass'
         },
         {
+            label: '&Resign'
+        },
+        {
             label: '&Count...'
         },
         { type: 'separator' },
@@ -126,7 +131,7 @@ function openHeaderMenu() {
     ]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getSize().y)
+    menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates()['top'])
 }
 
 function resizeWindow() {
