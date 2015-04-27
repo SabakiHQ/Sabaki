@@ -83,11 +83,11 @@ function buildBoard(board) {
     var rows = []
     var hoshi = board.getHandicapPlacement(9)
 
-    for (var x = 0; x < board.size; x++) {
+    for (var y = 0; y < board.size; y++) {
         var ol = new Element('ol')
 
-        for (var y = 0; y < board.size; y++) {
-            var sign = board.arrangement[new Tuple(x, y)]
+        for (var x = 0; x < board.size; x++) {
+            var sign = board.arrangement[new Tuple(y, x)]
             var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
 
             var img = new Element('img', {
