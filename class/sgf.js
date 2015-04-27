@@ -155,9 +155,15 @@ exports.tuple2point = function(tuple) {
 }
 
 exports.addBoards = function(tree, baseboard) {
+    if (tree.nodes.length == 0 || 'board' in tree.nodes[0]) return tree
+
     if (arguments.length <= 1) {
-        var size = tree.nodes.length != 0 && 'SZ' in tree.nodes[0] ? tree.nodes[0]['SZ'].toInt() : 19
-        baseboard = new Board(size)
+        if (tree.parent == null || tree.parent.nodes.length == 0) {
+            var size = tree.nodes.length != 0 && 'SZ' in tree.nodes[0] ? tree.nodes[0].SZ[0].toInt() : 19
+            baseboard = new Board(size)
+        } else {
+            baseboard = tree.parent.nodes[tree.parent.nodes.length - 1].board
+        }
     }
 
     tree.nodes.each(function(node) {
@@ -192,7 +198,8 @@ exports.addBoards = function(tree, baseboard) {
         node.board = baseboard
     })
     
-    if (tree.subtrees.length == 0) return
-
+    if (tree.subtrees.length == 0) return tree
+ 
     exports.addBoards(tree.subtrees[tree.current], baseboard)
+    return tree
 }
