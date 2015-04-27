@@ -85,7 +85,7 @@ exports.parse = function(tokens, start, end) {
 
     var i = start
 
-    var tree = { nodes: [], subtrees: [] }
+    var tree = { nodes: [], subtrees: [], parent: null, current: null }
     var node, property
 
     while (i <= end) {
@@ -116,7 +116,12 @@ exports.parse = function(tokens, start, end) {
             if (depth == 1) newstart = i + 1
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
             depth--
-            if (depth == 0) tree.subtrees.push(exports.parse(tokens, newstart, i - 1))
+            if (depth == 0) {
+                t = exports.parse(tokens, newstart, i - 1)
+                t.parent = tree
+                tree.subtrees.push(t)
+                tree.current = 0
+            }
         }
 
         i++
@@ -186,8 +191,8 @@ exports.addBoards = function(tree, baseboard) {
 
         node.board = baseboard
     })
+    
+    if (tree.subtrees.length == 0) return
 
-    tree.subtrees.each(function(t) {
-        exports.addBoards(t, baseboard)
-    })
+    exports.addBoards(tree.subtrees[tree.current], baseboard)
 }
