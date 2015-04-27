@@ -131,3 +131,24 @@ exports.parseFile = function(filename) {
     
     return exports.parse(tokens)
 }
+
+exports.sgfpoint2tuple = function(sgfpoint) {
+    if (sgfpoint.length != 2) return new Tuple(-1, -1)
+
+    var alpha = 'abcdefghijklmnopqrstuvwxyz'
+    sgfpoint = sgfpoint.toLowerCase()
+    return new Tuple(alpha.indexOf(sgfpoint[0]), alpha.indexOf(sgfpoint[1]))
+}
+
+exports.tuple2sgfpoint = function(tuple) {
+    var alpha = 'abcdefghijklmnopqrstuvwxyz'
+
+    return tuple.unpack(function(x, y) {
+        if (x < 0 || y < 0) return ''
+        return alpha[x] + alpha[y]
+    })
+}
+
+exports.createHistory = function(tree, baseboard) {
+    if (arguments <= 1) baseboard = new Board(tree['nodes'])
+}
