@@ -95,7 +95,7 @@ exports.parse = function(tokens, start, end) {
         tokens[i].unpack(function(type, data) {
             if (type == 'semicolon') {
                 node = { }
-                tree['nodes'].push(node)
+                tree.nodes.push(node)
             } else if (type == 'prop_ident') {
                 node[data] = []
                 property = node[data]
@@ -116,7 +116,7 @@ exports.parse = function(tokens, start, end) {
             if (depth == 1) newstart = i + 1
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
             depth--
-            if (depth == 0) tree['subtrees'].push(exports.parse(tokens, newstart, i - 1))
+            if (depth == 0) tree.subtrees.push(exports.parse(tokens, newstart, i - 1))
         }
 
         i++
@@ -132,15 +132,15 @@ exports.parseFile = function(filename) {
     return exports.parse(tokens)
 }
 
-exports.sgfpoint2tuple = function(sgfpoint) {
-    if (sgfpoint.length != 2) return new Tuple(-1, -1)
+exports.point2tuple = function(point) {
+    if (point.length != 2) return new Tuple(-1, -1)
 
     var alpha = 'abcdefghijklmnopqrstuvwxyz'
-    sgfpoint = sgfpoint.toLowerCase()
-    return new Tuple(alpha.indexOf(sgfpoint[0]), alpha.indexOf(sgfpoint[1]))
+    point = point.toLowerCase()
+    return new Tuple(alpha.indexOf(point[0]), alpha.indexOf(point[1]))
 }
 
-exports.tuple2sgfpoint = function(tuple) {
+exports.tuple2point = function(tuple) {
     var alpha = 'abcdefghijklmnopqrstuvwxyz'
 
     return tuple.unpack(function(x, y) {
@@ -149,6 +149,45 @@ exports.tuple2sgfpoint = function(tuple) {
     })
 }
 
-exports.createHistory = function(tree, baseboard) {
-    if (arguments <= 1) baseboard = new Board(tree['nodes'])
+exports.addBoards = function(tree, baseboard) {
+    if (arguments.length <= 1) {
+        var size = tree.nodes.length != 0 && 'SZ' in tree.nodes[0] ? tree.nodes[0]['SZ'].toInt() : 19
+        baseboard = new Board(size)
+    }
+
+    tree.nodes.each(function(node) {
+        if ('B' in node) {
+            baseboard = baseboard.makeMove(1, exports.point2tuple(node.B[0]))
+        } else if ('W' in node) {
+            baseboard = baseboard.makeMove(-1, exports.point2tuple(node.W[0]))
+        } else {
+            if ('AB' in node) {
+                baseboard = new Board(baseboard.size, baseboard.arrangements, baseboard.captures)
+
+                node.AB.each(function(point) {
+                    baseboard.arrangements[exports.point2tuple(point)] = 1
+                })
+            }
+            if ('AW' in node) {
+                baseboard = new Board(baseboard.size, baseboard.arrangements, baseboard.captures)
+
+                node.AW.each(function(point) {
+                    baseboard.arrangements[exports.point2tuple(point)] = -1
+                })
+            }
+            if ('AE' in node) {
+                baseboard = new Board(baseboard.size, baseboard.arrangements, baseboard.captures)
+
+                node.AE.each(function(point) {
+                    baseboard.arrangements[exports.point2tuple(point)] = 1
+                })
+            }
+        }
+
+        node.board = baseboard
+    })
+
+    tree.subtrees.each(function(t) {
+        exports.addBoards(t, baseboard)
+    })
 }
