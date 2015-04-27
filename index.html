@@ -203,17 +203,26 @@ function buildMenu() {
                 },
                 {
                     label: 'Go To &Beginning',
-                    accelerator: 'CmdOrCtrl+Home'
+                    accelerator: 'CmdOrCtrl+Home',
+                    click: function() {
+                        var tree = getTree()
+                        if (tree.nodes.length == 0) return
+                        setCurrentTreePosition(tree, 0)
+                    }
                 },
                 {
                     label: 'Go To &End',
-                    accelerator: 'CmdOrCtrl+End'
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To Move...',
-                    accelerator: 'CmdOrCtrl+G'
-                },
+                    accelerator: 'CmdOrCtrl+End',
+                    click: function() {
+                        getCurrentTreePosition().unpack(function(tree, position) {
+                            var t = tree
+                            while (t.current != null) {
+                                t = t.subtrees[t.current]
+                            }
+                            setCurrentTreePosition(t, t.nodes.length - 1)
+                        })
+                    }
+                }
             ]
         },
         {
