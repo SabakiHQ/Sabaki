@@ -1,3 +1,4 @@
+var Board = require('./board.js')
 var Tuple = require('../lib/tuple')
 var fs = require('fs')
 
@@ -93,26 +94,18 @@ exports.parse = function(tokens, start, end) {
 
         tokens[i].unpack(function(type, data) {
             if (type == 'semicolon') {
-                node = { properties: [] }
+                node = { }
                 tree['nodes'].push(node)
             } else if (type == 'prop_ident') {
-                property = { id: data, values: [] }
-                node['properties'].push(property)
+                node[data] = []
+                property = node[data]
             } else if (type == 'c_value_type') {
-                property['values'].push(data)
+                property.push(data)
             }
         })
 
         i++
     }
-
-    tree['nodes'].each(function(node) {
-        node['properties'].each(function(property) {
-            if (property['values'].length != 1) return
-            property['value'] = property['values'][0]
-            delete property['values']
-        })
-    })
 
     var depth = 0
     var newstart = 0
