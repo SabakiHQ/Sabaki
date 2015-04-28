@@ -246,6 +246,15 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
+                    label: 'Go Back To &Fork',
+                    accelerator: 'CmdOrCtrl+Up'
+                },
+                {
+                    label: 'Go To &Next Fork',
+                    accelerator: 'CmdOrCtrl+Down'
+                },
+                { type: 'separator' },
+                {
                     label: 'Go To &Beginning',
                     accelerator: 'CmdOrCtrl+Home',
                     click: goToBeginning
@@ -254,13 +263,6 @@ function buildMenu() {
                     label: 'Go To &End',
                     accelerator: 'CmdOrCtrl+End',
                     click: goToEnd
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go Back To &Fork'
-                },
-                {
-                    label: 'Go To &Next Fork'
                 }
             ]
         },
