@@ -11,7 +11,7 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     window = new BrowserWindow({
-        // 'resizable': false,
+        'resizable': false,
         'use-content-size': true,
         'show': false
         // 'auto-hide-menu-bar': true

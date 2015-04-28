@@ -67,7 +67,7 @@
         border-radius: 8px;
         opacity: .4;
     }
-    #goban.variations li.ghost_-1::after { display: block; background: black; }
+    #goban.variations li.ghost_1::after { display: block; background: black; }
     #goban.variations li.ghost_-1::after { display: block; background: white; }
     #goban li::before {
         content: ' ';

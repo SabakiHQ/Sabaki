@@ -99,22 +99,22 @@ function setBoard(board) {
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[new Tuple(x, y)]
+            var sign = board.arrangement[li.retrieve('tuple')]
 
             li.removeClass('ghost_1').removeClass('ghost_-1')
-                .removeClass('circle').removeClass('triangle').removeClass('cross').removeClass('square')
+                .removeClass('circle').removeClass('triangle').removeClass('cross')
+                .removeClass('square').removeClass('label')
             if (li.hasClass('sign_' + sign)) continue
 
-            li.className = 'pos_' + x + '-' + y
+            li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
             li.addClass('sign_' + sign)
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
     
     board.overlays.each(function(data) {
-        data.unpack(function(point, type) {
-            var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-            li.addClass(type)
+        data.unpack(function(v, type) {
+            $('goban').getElement('.pos_' + v[0] + '-' + v[1]).addClass(type)
         })
     })
 
@@ -144,7 +144,7 @@ function buildBoard(board) {
                 draggable: false
             }).addEvent('click', positionClicked.bind(li))
 
-            if (hoshi.some(function(v) { return v.equals(new Tuple(x, y)) }))
+            if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
                 li.addClass('hoshi')
 
             ol.adopt(li.adopt(img))
@@ -236,12 +236,12 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&Back',
-                    accelerator: 'Left',
+                    accelerator: 'Up',
                     click: goBack
                 },
                 {
                     label: '&Forward',
-                    accelerator: 'Right',
+                    accelerator: 'Down',
                     click: goForward
                 },
                 { type: 'separator' },

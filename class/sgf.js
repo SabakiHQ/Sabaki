@@ -219,8 +219,12 @@ exports.addBoards = function(tree, baseboard) {
                 if (subtree.nodes.length == 0) return
 
                 if ('B' in subtree.nodes[0]) {
-                    baseboard.overlays.push(new Tuple(sgf.point2tuple(subtree.nodes[0].B[0]), 'ghost_1'))
+                    var vertex = sgf.point2tuple(subtree.nodes[0].B[0])
+                    if (!baseboard.hasVertex(vertex)) return
+                    baseboard.overlays.push(new Tuple(vertex, 'ghost_1'))
                 } else if ('W' in subtree.nodes[0]) {
+                    var vertex = sgf.point2tuple(subtree.nodes[0].W[0])
+                    if (!baseboard.hasVertex(vertex)) return
                     baseboard.overlays.push(new Tuple(sgf.point2tuple(subtree.nodes[0].W[0]), 'ghost_-1'))
                 }
             })
