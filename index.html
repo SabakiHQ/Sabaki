@@ -158,6 +158,31 @@ function goForward() {
     })
 }
 
+function goToBeginning() {
+    var tree = getTree()
+    if (tree.nodes.length == 0) return
+    setCurrentTreePosition(tree, 0)
+}
+
+function goToEnd() {
+    getCurrentTreePosition().unpack(function(tree, position) {
+        var t = tree
+        while (t.current != null) {
+            t = t.subtrees[t.current]
+        }
+        setCurrentTreePosition(t, t.nodes.length - 1)
+    })
+}
+
+function loadGame() {
+    var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        filters: [{ name: 'SGF Files', extensions: ['sgf'] }]
+    })[0]
+    var tree = sgf.parseFile(filename)
+    if (tree.subtrees.length == 0) return
+    setTree(tree.subtrees[0])
+}
+
 function buildMenu() {
     var template = [
         {
@@ -170,14 +195,7 @@ function buildMenu() {
                 {
                     label: '&Load...',
                     accelerator: 'CmdOrCtrl+O',
-                    click: function() {
-                        var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
-                            filters: [{ name: 'SGF Files', extensions: ['sgf'] }]
-                        })[0]
-                        var tree = sgf.parseFile(filename)
-                        if (tree.subtrees.length == 0) return
-                        setTree(tree.subtrees[0])
-                    }
+                    click: loadGame
                 },
                 { type: 'separator' },
                 {
@@ -212,24 +230,12 @@ function buildMenu() {
                 {
                     label: 'Go To &Beginning',
                     accelerator: 'CmdOrCtrl+Home',
-                    click: function() {
-                        var tree = getTree()
-                        if (tree.nodes.length == 0) return
-                        setCurrentTreePosition(tree, 0)
-                    }
+                    click: goToBeginning
                 },
                 {
                     label: 'Go To &End',
                     accelerator: 'CmdOrCtrl+End',
-                    click: function() {
-                        getCurrentTreePosition().unpack(function(tree, position) {
-                            var t = tree
-                            while (t.current != null) {
-                                t = t.subtrees[t.current]
-                            }
-                            setCurrentTreePosition(t, t.nodes.length - 1)
-                        })
-                    }
+                    click: goToEnd
                 }
             ]
         },
