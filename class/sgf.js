@@ -171,28 +171,28 @@ exports.addBoards = function(tree, baseboard) {
             baseboard = baseboard.makeMove(1, exports.point2tuple(node.B[0]))
         } else if ('W' in node) {
             baseboard = baseboard.makeMove(-1, exports.point2tuple(node.W[0]))
-        } else {
-            if ('AB' in node) {
-                baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
+        }
 
-                node.AB.each(function(point) {
-                    baseboard.arrangement[exports.point2tuple(point)] = 1
-                })
-            }
-            if ('AW' in node) {
-                baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
+        if ('AB' in node) {
+            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
 
-                node.AW.each(function(point) {
-                    baseboard.arrangement[exports.point2tuple(point)] = -1
-                })
-            }
-            if ('AE' in node) {
-                baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
+            node.AB.each(function(point) {
+                baseboard.arrangement[exports.point2tuple(point)] = 1
+            })
+        }
+        if ('AW' in node) {
+            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
 
-                node.AE.each(function(point) {
-                    baseboard.arrangement[exports.point2tuple(point)] = 1
-                })
-            }
+            node.AW.each(function(point) {
+                baseboard.arrangement[exports.point2tuple(point)] = -1
+            })
+        }
+        if ('AE' in node) {
+            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
+
+            node.AE.each(function(point) {
+                baseboard.arrangement[exports.point2tuple(point)] = 1
+            })
         }
 
         node.board = baseboard

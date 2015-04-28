@@ -138,6 +138,26 @@ function buildBoard(board) {
     $('goban').empty().adopt(rows)
 }
 
+function goBack() {
+    getCurrentTreePosition().unpack(function(tree, position) {
+        if (position - 1 >= 0) {
+            setCurrentTreePosition(tree, position - 1)
+        } else if (tree.parent != null && tree.parent.nodes.length != 0) {
+            setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+        }
+    })
+}
+
+function goForward() {
+    getCurrentTreePosition().unpack(function(tree, position) {
+        if (tree.nodes.length > position + 1) {
+            setCurrentTreePosition(tree, position + 1)
+        } else if (tree.current != null && tree.subtrees[tree.current].nodes.length != 0) {
+            setCurrentTreePosition(tree.subtrees[tree.current], 0)
+        }
+    })
+}
+
 function buildMenu() {
     var template = [
         {
@@ -181,28 +201,12 @@ function buildMenu() {
                 {
                     label: '&Back',
                     accelerator: 'Left',
-                    click: function() {
-                        getCurrentTreePosition().unpack(function(tree, position) {
-                            if (position - 1 >= 0) {
-                                setCurrentTreePosition(tree, position - 1)
-                            } else if (tree.parent != null && tree.parent.nodes.length != 0) {
-                                setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-                            }
-                        })
-                    }
+                    click: goBack
                 },
                 {
                     label: '&Forward',
                     accelerator: 'Right',
-                    click: function() {
-                        getCurrentTreePosition().unpack(function(tree, position) {
-                            if (tree.nodes.length > position + 1) {
-                                setCurrentTreePosition(tree, position + 1)
-                            } else if (tree.current != null && tree.subtrees[tree.current].nodes.length != 0) {
-                                setCurrentTreePosition(tree.subtrees[tree.current], 0)
-                            }
-                        })
-                    }
+                    click: goForward
                 },
                 { type: 'separator' },
                 {
@@ -293,6 +297,9 @@ document.addEvent('keydown', function(e) {
     } else if (e.code === 116) {
         location.reload()
     }
+}).addEvent('mousewheel', function(e) {
+    if (e.wheel < 0) goForward()
+    else if (e.wheel > 0) goBack()
 }).addEvent('domready', function() {
     buildMenu()
     setBoard(new Board())
