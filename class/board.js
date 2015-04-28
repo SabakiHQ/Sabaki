@@ -5,8 +5,10 @@ var Board = new Class({
         this.size = arguments.length >= 1 ? size : 19
         this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
         this.arrangement = {}
-        this.ghosts = { '-1': [], '1': [] }
 
+        this.ghosts = { '-1': [], '1': [] }
+        this.overlays = { circles: [], triangles: [], crosses: [], squares: [] }
+        
         // Initialize arrangement
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {

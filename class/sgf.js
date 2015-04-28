@@ -176,25 +176,31 @@ exports.addBoards = function(tree, baseboard) {
         }
 
         if ('AB' in node) {
-            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
-
             node.AB.each(function(point) {
                 baseboard.arrangement[exports.point2tuple(point)] = 1
             })
         }
         if ('AW' in node) {
-            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
-
             node.AW.each(function(point) {
                 baseboard.arrangement[exports.point2tuple(point)] = -1
             })
         }
         if ('AE' in node) {
-            baseboard = new Board(baseboard.size, baseboard.arrangement, baseboard.captures)
-
             node.AE.each(function(point) {
                 baseboard.arrangement[exports.point2tuple(point)] = 1
             })
+        }
+        if ('CR' in node) {
+            baseboard.overlays.circles = baseboard.overlays.circles.concat(node.CR.map(exports.point2tuple))
+        }
+        if ('MA' in node) {
+            baseboard.overlays.crosses = baseboard.overlays.crosses.concat(node.MA.map(exports.point2tuple))
+        }
+        if ('SQ' in node) {
+            baseboard.overlays.squares = baseboard.overlays.squares.concat(node.SQ.map(exports.point2tuple))
+        }
+        if ('TR' in node) {
+            baseboard.overlays.triangles = baseboard.overlays.triangles.concat(node.TR.map(exports.point2tuple))
         }
 
         node.board = baseboard
