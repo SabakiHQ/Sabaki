@@ -13,7 +13,8 @@ app.on('ready', function() {
     window = new BrowserWindow({
         'resizable': false,
         'use-content-size': true,
-        'show': false,
+        'show': false
+        // 'auto-hide-menu-bar': true
     })
 
     window.webContents.on('did-finish-load', function() {

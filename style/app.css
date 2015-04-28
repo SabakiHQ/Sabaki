@@ -12,6 +12,7 @@
 body {
     font: 14px/1.5 'Segoe UI', sans-serif;
     cursor: default;
+    overflow: hidden;
     -webkit-user-select: none;
 }
 

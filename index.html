@@ -31,6 +31,14 @@ var Menu = remote.require('menu')
 var Tuple = require('./lib/tuple')
 var Board = require('./class/board.js')
 
+function getShowVariations() {
+    return $('goban').retrieve('showVariations')
+}
+
+function setShowVariations(show) {
+    $('goban').store('showVariations', show)
+}
+
 function getPlayerName(sign) {
     return $('player_' + sign).get('text')
 }
@@ -184,6 +192,8 @@ function loadGame() {
 }
 
 function buildMenu() {
+    setShowVariations(true)
+
     var template = [
         {
             label: '&Game',
@@ -236,6 +246,13 @@ function buildMenu() {
                     label: 'Go To &End',
                     accelerator: 'CmdOrCtrl+End',
                     click: goToEnd
+                },
+                { type: 'separator' },
+                {
+                    label: 'Go Back To &Fork'
+                },
+                {
+                    label: 'Go To &Next Fork'
                 }
             ]
         },
@@ -248,7 +265,13 @@ function buildMenu() {
                 },
                 {
                     label: 'Show &Variations',
-                    accelerator: 'CmdOrCtrl+V'
+                    accelerator: 'CmdOrCtrl+V',
+                    type: 'checkbox',
+                    checked: getShowVariations(),
+                    click: function() {
+                        setShowVariations(!getShowVariations())
+                        setBoard(getBoard())
+                    }
                 },
                 { type: 'separator' },
                 {
