@@ -191,16 +191,24 @@ exports.addBoards = function(tree, baseboard) {
             })
         }
         if ('CR' in node) {
-            baseboard.overlays.circles = baseboard.overlays.circles.concat(node.CR.map(exports.point2tuple))
+            baseboard.overlays = baseboard.overlays.concat(node.CR.map(function(point) {
+                return new Tuple(exports.point2tuple(point), 'circle')
+            }))
         }
         if ('MA' in node) {
-            baseboard.overlays.crosses = baseboard.overlays.crosses.concat(node.MA.map(exports.point2tuple))
+            baseboard.overlays = baseboard.overlays.concat(node.MA.map(function(point) {
+                return new Tuple(exports.point2tuple(point), 'cross')
+            }))
         }
         if ('SQ' in node) {
-            baseboard.overlays.squares = baseboard.overlays.squares.concat(node.SQ.map(exports.point2tuple))
+            baseboard.overlays = baseboard.overlays.concat(node.SQ.map(function(point) {
+                return new Tuple(exports.point2tuple(point), 'square')
+            }))
         }
         if ('TR' in node) {
-            baseboard.overlays.triangles = baseboard.overlays.triangles.concat(node.TR.map(exports.point2tuple))
+            baseboard.overlays = baseboard.overlays.concat(node.TR.map(function(point) {
+                return new Tuple(exports.point2tuple(point), 'triangle')
+            }))
         }
 
         node.board = baseboard
@@ -211,9 +219,9 @@ exports.addBoards = function(tree, baseboard) {
                 if (subtree.nodes.length == 0) return
 
                 if ('B' in subtree.nodes[0]) {
-                    baseboard.ghosts['1'].push(sgf.point2tuple(subtree.nodes[0].B[0]))
+                    baseboard.overlays.push(new Tuple(sgf.point2tuple(subtree.nodes[0].B[0]), 'ghost_1'))
                 } else if ('W' in subtree.nodes[0]) {
-                    baseboard.ghosts['-1'].push(sgf.point2tuple(subtree.nodes[0].W[0]))
+                    baseboard.overlays.push(new Tuple(sgf.point2tuple(subtree.nodes[0].W[0]), 'ghost_-1'))
                 }
             })
         }

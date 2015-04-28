@@ -7,7 +7,7 @@ var Board = new Class({
         this.arrangement = {}
 
         this.ghosts = { '-1': [], '1': [] }
-        this.overlays = { circles: [], triangles: [], crosses: [], squares: [] }
+        this.overlays = []
         
         // Initialize arrangement
         for (var x = 0; x < this.size; x++) {

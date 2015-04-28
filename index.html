@@ -100,46 +100,22 @@ function setBoard(board) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[new Tuple(x, y)]
-            var skip = false
 
-            if (li.hasClass('sign_' + sign)) skip = true
+            li.removeClass('ghost_1').removeClass('ghost_-1')
+                .removeClass('circle').removeClass('triangle').removeClass('cross').removeClass('square')
+            if (li.hasClass('sign_' + sign)) continue
+
             li.className = 'pos_' + x + '-' + y
-
-            if (skip) continue
-
             li.addClass('sign_' + sign)
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
-
-    board.ghosts['1'].each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('ghost_1')
-    })
     
-    board.ghosts['-1'].each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('ghost_-1')
-    })
-    
-    board.overlays.circles.each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('circle')
-    })
-    
-    board.overlays.triangles.each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('triangle')
-    })
-    
-    board.overlays.crosses.each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('cross')
-    })
-    
-    board.overlays.squares.each(function(point) {
-        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
-        li.addClass('square')
+    board.overlays.each(function(data) {
+        data.unpack(function(point, type) {
+            var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
+            li.addClass(type)
+        })
     })
 
     $('goban').store('board', board)
