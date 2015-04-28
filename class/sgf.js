@@ -171,6 +171,8 @@ exports.addBoards = function(tree, baseboard) {
             baseboard = baseboard.makeMove(1, exports.point2tuple(node.B[0]))
         } else if ('W' in node) {
             baseboard = baseboard.makeMove(-1, exports.point2tuple(node.W[0]))
+        } else {
+            baseboard = baseboard.makeMove(0)
         }
 
         if ('AB' in node) {
@@ -196,6 +198,19 @@ exports.addBoards = function(tree, baseboard) {
         }
 
         node.board = baseboard
+
+        if (node == tree.nodes[tree.nodes.length - 1] && tree.subtrees.length > 0) {
+            // Add variations
+            tree.subtrees.each(function(subtree) {
+                if (subtree.nodes.length == 0) return
+
+                if ('B' in subtree.nodes[0]) {
+                    baseboard.ghosts['1'].push(sgf.point2tuple(subtree.nodes[0].B[0]))
+                } else if ('W' in subtree.nodes[0]) {
+                    baseboard.ghosts['-1'].push(sgf.point2tuple(subtree.nodes[0].W[0]))
+                }
+            })
+        }
     })
     
     if (tree.subtrees.length == 0) return tree

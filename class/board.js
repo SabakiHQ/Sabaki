@@ -5,6 +5,7 @@ var Board = new Class({
         this.size = arguments.length >= 1 ? size : 19
         this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
         this.arrangement = {}
+        this.ghosts = { '-1': [], '1': [] }
 
         // Initialize arrangement
         for (var x = 0; x < this.size; x++) {
@@ -74,8 +75,8 @@ var Board = new Class({
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
 
-        if (!this.hasVertex(vertex)) return move
-        if (sign == 0 || this.arrangement[vertex] != 0) return null
+        if (sign == 0 || !this.hasVertex(vertex)) return move
+        if (this.arrangement[vertex] != 0) return null
 
         sign = sign > 0 ? 1 : -1
         var suicide = true

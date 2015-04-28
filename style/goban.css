@@ -17,6 +17,7 @@
     }
     #goban li {
         display: inline-block;
+        position: relative;
         height: 30px;
         width: 30px;
         background: url('../img/inner.png') center;
@@ -51,7 +52,22 @@
     #goban li img {
         width: 100%;
         height: 100%;
-}
+    }
+    #goban.variations li.ghost_1::after, #goban.variations li.ghost_-1::after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 16px;
+        height: 16px;
+        margin-left: -9px;
+        margin-top: -9px;
+        background: black;
+        border-radius: 8px;
+        opacity: .4;
+    }
+    #goban.variations li.ghost_-1::after { background: white; }
 
 header span {
         position: absolute;

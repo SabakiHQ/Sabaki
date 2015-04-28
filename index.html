@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<section id="goban"></section>
+<section id="goban" class="variations"></section>
 
 <header>
     <span id="player_1">Black</span>
@@ -32,11 +32,12 @@ var Tuple = require('./lib/tuple')
 var Board = require('./class/board.js')
 
 function getShowVariations() {
-    return $('goban').retrieve('showVariations')
+    return $('goban').hasClass('variations')
 }
 
 function setShowVariations(show) {
-    $('goban').store('showVariations', show)
+    if (show) $('goban').addClass('variations')
+    else $('goban').removeClass('variations')
 }
 
 function getPlayerName(sign) {
@@ -100,13 +101,23 @@ function setBoard(board) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[new Tuple(x, y)]
 
+            li.removeClass('ghost_1').removeClass('ghost_-1')
             if (li.hasClass('sign_' + sign)) continue
 
-            li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
-                .addClass('sign_' + sign)
+            li.className = 'pos_' + x + '-' + y
+            li.addClass('sign_' + sign)
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
+
+    board.ghosts['1'].each(function(point) {
+        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
+        li.addClass('ghost_1')
+    })
+    board.ghosts['-1'].each(function(point) {
+        var li = $('goban').getElement('.pos_' + point[0] + '-' + point[1])
+        li.addClass('ghost_-1')
+    })
 
     $('goban').store('board', board)
 }
@@ -192,8 +203,6 @@ function loadGame() {
 }
 
 function buildMenu() {
-    setShowVariations(true)
-
     var template = [
         {
             label: '&Game',
