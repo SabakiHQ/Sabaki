@@ -195,24 +195,24 @@ exports.addBoards = function(tree, baseboard) {
             })
         }
         if ('CR' in node) {
-            baseboard.overlays = baseboard.overlays.concat(node.CR.map(function(point) {
-                return new Tuple(exports.point2tuple(point), 'circle')
-            }))
+            node.CR.each(function(point) {
+                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'circle'))
+            })
         }
         if ('MA' in node) {
-            baseboard.overlays = baseboard.overlays.concat(node.MA.map(function(point) {
-                return new Tuple(exports.point2tuple(point), 'cross')
-            }))
+            node.MA.each(function(point) {
+                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'cross'))
+            })
         }
         if ('SQ' in node) {
-            baseboard.overlays = baseboard.overlays.concat(node.SQ.map(function(point) {
-                return new Tuple(exports.point2tuple(point), 'square')
-            }))
+            node.SQ.each(function(point) {
+                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'square'))
+            })
         }
         if ('TR' in node) {
-            baseboard.overlays = baseboard.overlays.concat(node.TR.map(function(point) {
-                return new Tuple(exports.point2tuple(point), 'triangle')
-            }))
+            node.TR.each(function(point) {
+                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'triangle'))
+            })
         }
         if (!baseboard.overlays.some(function(overlay) {
             return overlay[0].equals(vertex)
