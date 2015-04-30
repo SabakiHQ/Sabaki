@@ -116,7 +116,7 @@ function setBoard(board) {
         data.unpack(function(v, type) {
             var li = $('goban').getElement('.pos_' + v[0] + '-' + v[1])
 
-            if (type.slice(0, 5) == 'label') {
+            if (type.indexOf(':') >= 0) {
                 var label = type.slice(6)
                 type = 'label'
                 li.set('data-label', label)

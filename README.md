@@ -1,6 +1,6 @@
 # Goban
 
-Eventually the best virtual Goban. This is a work in progress.
+Eventually the best virtual Go board. This is a work in progress.
 
 ## Third Party Libraries
 

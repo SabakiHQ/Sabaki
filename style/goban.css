@@ -66,11 +66,14 @@
         border-radius: 8px;
         opacity: .3;
     }
+    #goban li.ghost_1::after,
+    #goban li.sign_-1.point::after { background: black; }
+    #goban li.ghost_-1::after,
+    #goban li.sign_1.point::after { background: white; }
     #goban.variations li.ghost_1::after,
-    #goban.variations li.sign_-1.point::after { display: block; background: black; }
-    #goban.variations li.ghost_-1::after,
-    #goban.variations li.sign_1.point::after { display: block; background: white; }
+    #goban.variations li.ghost_-1::after { display: block; }
     #goban li.point::after {
+        display: block;
         width: 8px;
         height: 8px;
         margin-left: -5px;
