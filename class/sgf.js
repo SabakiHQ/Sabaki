@@ -179,23 +179,18 @@ exports.addBoards = function(tree, baseboard) {
             baseboard = baseboard.makeMove(0)
         }
 
+        var ids = ['AW', 'AE', 'AB']
+
+        for (var i = 0; i < ids.length; i++) {
+            if (!(ids[i] in node)) continue
+
+            node[ids[i]].each(function(point) {
+                baseboard.arrangement[exports.point2tuple(point)] = i - 1
+            })
+        }
+
         if (vertex != null) {
             baseboard.overlays[vertex] = new Tuple('point', 0, '')
-        }
-        if ('AB' in node) {
-            node.AB.each(function(point) {
-                baseboard.arrangement[exports.point2tuple(point)] = 1
-            })
-        }
-        if ('AW' in node) {
-            node.AW.each(function(point) {
-                baseboard.arrangement[exports.point2tuple(point)] = -1
-            })
-        }
-        if ('AE' in node) {
-            node.AE.each(function(point) {
-                baseboard.arrangement[exports.point2tuple(point)] = 1
-            })
         }
 
         var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -203,6 +198,7 @@ exports.addBoards = function(tree, baseboard) {
 
         for (var i = 0; i < ids.length; i++) {
             if (!(ids[i] in node)) continue
+            
             node[ids[i]].each(function(point) {
                 baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
             })
