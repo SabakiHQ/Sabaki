@@ -197,26 +197,17 @@ exports.addBoards = function(tree, baseboard) {
                 baseboard.arrangement[exports.point2tuple(point)] = 1
             })
         }
-        if ('CR' in node) {
-            node.CR.each(function(point) {
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple('circle', 0, '')
+
+        var ids = ['CR', 'MA', 'SQ', 'TR']
+        var classes = ['circle', 'cross', 'square', 'triangle']
+
+        for (var i = 0; i < ids.length; i++) {
+            if (!(ids[i] in node)) continue
+            node[ids[i]].each(function(point) {
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
             })
         }
-        if ('MA' in node) {
-            node.MA.each(function(point) {
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple('cross', 0, '')
-            })
-        }
-        if ('SQ' in node) {
-            node.SQ.each(function(point) {
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple('square', 0, '')
-            })
-        }
-        if ('TR' in node) {
-            node.TR.each(function(point) {
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple('triangle', 0, '')
-            })
-        }
+
         if ('LB' in node) {
             node.LB.each(function(composed) {
                 var sep = composed.indexOf(':')
@@ -233,22 +224,23 @@ exports.addBoards = function(tree, baseboard) {
             tree.subtrees.each(function(subtree) {
                 if (subtree.nodes.length == 0) return
 
-                if ('B' in subtree.nodes[0]) {
-                    var vertex = sgf.point2tuple(subtree.nodes[0].B[0])
+                var v, sign
 
-                    if (vertex in baseboard.overlays)
-                        baseboard.overlays[vertex].unpack(function(a, b, c) {
-                            baseboard.overlays[vertex] = new Tuple(a, 1, c)
-                        })
-                    else baseboard.overlays[vertex] = new Tuple('', 1, '')
+                if ('B' in subtree.nodes[0]) {
+                    v = sgf.point2tuple(subtree.nodes[0].B[0])
+                    sign = 1
                 } else if ('W' in subtree.nodes[0]) {
-                    var vertex = sgf.point2tuple(subtree.nodes[0].W[0])
-                    if (vertex in baseboard.overlays)
-                        baseboard.overlays[vertex].unpack(function(a, b, c) {
-                            baseboard.overlays[vertex] = new Tuple(a, -1, c)
-                        })
-                    else baseboard.overlays[vertex] = new Tuple('', -1, '')
+                    v = sgf.point2tuple(subtree.nodes[0].W[0])
+                    sign = -1
+                } else {
+                    return
                 }
+
+                if (v in baseboard.overlays)
+                    baseboard.overlays[v] = baseboard.overlays[v].unpack(function(a, b, c) {
+                         return new Tuple(a, sign, c)
+                    })
+                else baseboard.overlays[v] = new Tuple('', sign, '')
             })
         }
     })
