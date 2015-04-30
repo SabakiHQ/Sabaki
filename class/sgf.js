@@ -214,6 +214,14 @@ exports.addBoards = function(tree, baseboard) {
                 baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'triangle'))
             })
         }
+        if ('LB' in node) {
+            node.LB.each(function(composed) {
+                var sep = composed.indexOf(':')
+                var point = composed.slice(0, sep)
+                var label = composed.slice(sep + 1).replace(/\s+/, ' ')
+                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'label:' + label))
+            })
+        }
         if (!baseboard.overlays.some(function(overlay) {
             return overlay[0].equals(vertex)
         })) baseboard.overlays.push(new Tuple(vertex, 'point'))
