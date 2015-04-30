@@ -103,7 +103,7 @@ function setBoard(board) {
 
             li.removeClass('ghost_1').removeClass('ghost_-1')
                 .removeClass('circle').removeClass('triangle').removeClass('cross')
-                .removeClass('square').removeClass('label')
+                .removeClass('square').removeClass('label').removeClass('point')
             if (li.hasClass('sign_' + sign)) continue
 
             li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
@@ -280,7 +280,6 @@ function buildMenu() {
                     checked: getShowVariations(),
                     click: function() {
                         setShowVariations(!getShowVariations())
-                        setBoard(getBoard())
                     }
                 },
                 { type: 'separator' },

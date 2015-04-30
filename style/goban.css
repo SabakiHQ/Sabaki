@@ -63,12 +63,20 @@
         height: 16px;
         margin-left: -9px;
         margin-top: -9px;
-        background: black;
         border-radius: 8px;
         opacity: .4;
     }
-    #goban.variations li.ghost_1::after { display: block; background: black; }
-    #goban.variations li.ghost_-1::after { display: block; background: white; }
+    #goban.variations li.ghost_1::after,
+    #goban.variations li.sign_-1.point::after { display: block; background: black; }
+    #goban.variations li.ghost_-1::after,
+    #goban.variations li.sign_1.point::after { display: block; background: white; }
+    #goban li.point::after {
+        width: 8px;
+        height: 8px;
+        margin-left: -5px;
+        margin-top: -5px;
+        opacity: 1;
+    }
     #goban li::before {
         content: ' ';
         display: none;
@@ -133,7 +141,7 @@ header span {
         top: 0;
         bottom: 0;
         padding-left: 10px;
-        padding-right: 30px; 
+        padding-right: 30px;
         text-align: right;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -157,4 +165,4 @@ header span {
         right: 5px;
         height: 32px;
         transform: translateY(-50%);
-    }
+}

@@ -133,7 +133,7 @@ exports.parse = function(tokens, start, end) {
 exports.parseFile = function(filename) {
     var input = fs.readFileSync(filename, { encoding: 'utf8' })
     var tokens = exports.tokenize(input)
-    
+
     return exports.parse(tokens)
 }
 
@@ -167,10 +167,14 @@ exports.addBoards = function(tree, baseboard) {
     }
 
     tree.nodes.each(function(node) {
+        var vertex = null
+
         if ('B' in node) {
-            baseboard = baseboard.makeMove(1, exports.point2tuple(node.B[0]))
+            vertex = exports.point2tuple(node.B[0])
+            baseboard = baseboard.makeMove(1, vertex)
         } else if ('W' in node) {
-            baseboard = baseboard.makeMove(-1, exports.point2tuple(node.W[0]))
+            vertex = exports.point2tuple(node.W[0])
+            baseboard = baseboard.makeMove(-1, vertex)
         } else {
             baseboard = baseboard.makeMove(0)
         }
@@ -210,6 +214,9 @@ exports.addBoards = function(tree, baseboard) {
                 return new Tuple(exports.point2tuple(point), 'triangle')
             }))
         }
+        if (!baseboard.overlays.some(function(overlay) {
+            return overlay[0].equals(vertex)
+        })) baseboard.overlays.push(new Tuple(vertex, 'point'))
 
         node.board = baseboard
 
@@ -230,9 +237,9 @@ exports.addBoards = function(tree, baseboard) {
             })
         }
     })
-    
+
     if (tree.subtrees.length == 0) return tree
- 
+
     exports.addBoards(tree.subtrees[tree.current], baseboard)
     return tree
 }
