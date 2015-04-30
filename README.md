@@ -1,5 +1,5 @@
 # Goban
-Eventually the best virtual Goban.
+Eventually the best virtual Goban. This is a work in progress.
 
 ## Third Party Libraries
 * [Electron](http://electron.atom.io/)

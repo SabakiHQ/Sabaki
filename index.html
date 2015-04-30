@@ -111,7 +111,7 @@ function setBoard(board) {
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
-    
+
     board.overlays.each(function(data) {
         data.unpack(function(v, type) {
             $('goban').getElement('.pos_' + v[0] + '-' + v[1]).addClass(type)
