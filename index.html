@@ -114,7 +114,15 @@ function setBoard(board) {
 
     board.overlays.each(function(data) {
         data.unpack(function(v, type) {
-            $('goban').getElement('.pos_' + v[0] + '-' + v[1]).addClass(type)
+            var li = $('goban').getElement('.pos_' + v[0] + '-' + v[1])
+
+            if (type.slice(0, 5) == 'label') {
+                var label = type.slice(6)
+                type = 'label'
+                li.set('data-label', label)
+            }
+
+            li.addClass(type)
         })
     })
 

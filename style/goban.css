@@ -64,7 +64,7 @@
         margin-left: -9px;
         margin-top: -9px;
         border-radius: 8px;
-        opacity: .4;
+        opacity: .3;
     }
     #goban.variations li.ghost_1::after,
     #goban.variations li.sign_-1.point::after { display: block; background: black; }
@@ -91,19 +91,22 @@
         border: 2px solid #5E2E0C;
         color: #5E2E0C;
         text-align: center;
+        text-shadow: 0 1px 0 #D28D32;
         line-height: 16px;
         font-size: 19px;
         font-weight: bold;
     }
     #goban li.sign_1::before {
         background: transparent;
-        color: white;
         border-color: white;
+        color: white;
+        text-shadow: none;
     }
     #goban li.sign_-1::before {
         background: transparent;
-        color: black;
         border-color: black;
+        color: black;
+        text-shadow: none;
     }
     #goban li.circle::before {
         display: block;
@@ -132,6 +135,15 @@
         margin-top: -11px;
         border: none;
         font-size: 25px;
+    }
+    #goban li.label::before {
+        content: attr(data-label);
+        display: block;
+        border: none;
+        width: 16px;
+        height: 16px;
+        font-weight: normal;
+        font-size: 16px;
 }
 
 header span {

@@ -222,7 +222,7 @@ exports.addBoards = function(tree, baseboard) {
                 baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'label:' + label))
             })
         }
-        if (!baseboard.overlays.some(function(overlay) {
+        if (vertex != null && !baseboard.overlays.some(function(overlay) {
             return overlay[0].equals(vertex)
         })) baseboard.overlays.push(new Tuple(vertex, 'point'))
 
