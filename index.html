@@ -100,31 +100,31 @@ function setBoard(board) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[li.retrieve('tuple')]
+            var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
+                'cross', 'square', 'label', 'point']
 
-            li.removeClass('ghost_1').removeClass('ghost_-1')
-                .removeClass('circle').removeClass('triangle').removeClass('cross')
-                .removeClass('square').removeClass('label').removeClass('point')
+            types.each(function(x) {
+                if (li.hasClass(x)) li.removeClass(x)
+            })
+
+            if (li.retrieve('tuple') in board.overlays) {
+                board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
+                    if (type != '') li.addClass(type)
+                    if (ghost != 0) li.addClass('ghost_' + ghost)
+                    if (label != '') li.set('data-label', label)
+                })
+            }
+
             if (li.hasClass('sign_' + sign)) continue
 
-            li.removeClass('sign_0').removeClass('sign_1').removeClass('sign_-1')
+            for (var i = -1; i <= 1; i++) {
+                if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
+            }
+
             li.addClass('sign_' + sign)
                 .getElement('img').set('src', 'img/stone_' + sign + '.png')
         }
     }
-
-    board.overlays.each(function(data) {
-        data.unpack(function(v, type) {
-            var li = $('goban').getElement('.pos_' + v[0] + '-' + v[1])
-
-            if (type.indexOf(':') >= 0) {
-                var label = type.slice(6)
-                type = 'label'
-                li.set('data-label', label)
-            }
-
-            li.addClass(type)
-        })
-    })
 
     $('goban').store('board', board)
 }

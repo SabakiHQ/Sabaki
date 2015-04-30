@@ -5,7 +5,7 @@ var Board = new Class({
         this.size = arguments.length >= 1 ? size : 19
         this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
         this.arrangement = {}
-        this.overlays = []
+        this.overlays = {}
 
         // Initialize arrangement
         for (var x = 0; x < this.size; x++) {

@@ -179,6 +179,9 @@ exports.addBoards = function(tree, baseboard) {
             baseboard = baseboard.makeMove(0)
         }
 
+        if (vertex != null) {
+            baseboard.overlays[vertex] = new Tuple('point', 0, '')
+        }
         if ('AB' in node) {
             node.AB.each(function(point) {
                 baseboard.arrangement[exports.point2tuple(point)] = 1
@@ -196,22 +199,22 @@ exports.addBoards = function(tree, baseboard) {
         }
         if ('CR' in node) {
             node.CR.each(function(point) {
-                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'circle'))
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple('circle', 0, '')
             })
         }
         if ('MA' in node) {
             node.MA.each(function(point) {
-                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'cross'))
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple('cross', 0, '')
             })
         }
         if ('SQ' in node) {
             node.SQ.each(function(point) {
-                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'square'))
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple('square', 0, '')
             })
         }
         if ('TR' in node) {
             node.TR.each(function(point) {
-                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'triangle'))
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple('triangle', 0, '')
             })
         }
         if ('LB' in node) {
@@ -219,12 +222,9 @@ exports.addBoards = function(tree, baseboard) {
                 var sep = composed.indexOf(':')
                 var point = composed.slice(0, sep)
                 var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-                baseboard.overlays.push(new Tuple(exports.point2tuple(point), 'label:' + label))
+                baseboard.overlays[exports.point2tuple(point)] = new Tuple('label', 0, label)
             })
         }
-        if (vertex != null && !baseboard.overlays.some(function(overlay) {
-            return overlay[0].equals(vertex)
-        })) baseboard.overlays.push(new Tuple(vertex, 'point'))
 
         node.board = baseboard
 
@@ -235,12 +235,19 @@ exports.addBoards = function(tree, baseboard) {
 
                 if ('B' in subtree.nodes[0]) {
                     var vertex = sgf.point2tuple(subtree.nodes[0].B[0])
-                    if (!baseboard.hasVertex(vertex)) return
-                    baseboard.overlays.push(new Tuple(vertex, 'ghost_1'))
+
+                    if (vertex in baseboard.overlays)
+                        baseboard.overlays[vertex].unpack(function(a, b, c) {
+                            baseboard.overlays[vertex] = new Tuple(a, 1, c)
+                        })
+                    else baseboard.overlays[vertex] = new Tuple('', 1, '')
                 } else if ('W' in subtree.nodes[0]) {
                     var vertex = sgf.point2tuple(subtree.nodes[0].W[0])
-                    if (!baseboard.hasVertex(vertex)) return
-                    baseboard.overlays.push(new Tuple(sgf.point2tuple(subtree.nodes[0].W[0]), 'ghost_-1'))
+                    if (vertex in baseboard.overlays)
+                        baseboard.overlays[vertex].unpack(function(a, b, c) {
+                            baseboard.overlays[vertex] = new Tuple(a, -1, c)
+                        })
+                    else baseboard.overlays[vertex] = new Tuple('', -1, '')
                 }
             })
         }
