@@ -167,7 +167,7 @@ exports.addBoard = function(tree, index, baseboard) {
                 var size = 'SZ' in node ? node.SZ[0].toInt() : 19
                 baseboard = new Board(size)
             } else {
-                baseboard = tree.parent.nodes[tree.parent.nodes.length - 1].board
+                baseboard = tree.parent.nodes.getLast().board
             }
         }
     }
