@@ -8,7 +8,7 @@
     display: inline-block;
     border: 10px solid #B48F5F;
     padding: 10px 8px 8px 10px;
-    background: #DFB277 url('../img/goban.png') center;
+    background: #DFB277 url('../img/goban.png') center fixed;
 }
 
 #goban ol {
@@ -90,7 +90,7 @@
         height: 12px;
         margin-left: -9px;
         margin-top: -9px;
-        background: #E0B378;
+        background: #DFB277 url('../img/goban.png') center fixed;
         border: 2px solid #5E2E0C;
         color: #5E2E0C;
         text-align: center;
@@ -128,6 +128,7 @@
         width: 16px;
         height: 16px;
         border: none;
+        line-height: 13px;
     }
     #goban li.triangle::before {
         content: '\25b3';
@@ -138,6 +139,7 @@
         margin-top: -11px;
         border: none;
         font-size: 25px;
+        line-height: 13px
     }
     #goban li.label::before {
         content: attr(data-label);

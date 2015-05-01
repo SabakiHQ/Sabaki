@@ -89,7 +89,8 @@ function setCurrentTreePosition(tree, index) {
     else if ('W' in tree.nodes[index]) setCurrentPlayer(1)
     else if ('PL' in tree.nodes[index])
         setCurrentPlayer(tree.nodes[index].PL[0] == 'W' ? -1 : 1)
-    else if ('HA' in tree.nodes[index]) setCurrentPlayer(-1)
+    else if ('HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
+        setCurrentPlayer(-1)
 }
 
 function getCurrentTreePosition() {
