@@ -166,8 +166,9 @@ function positionClicked() {
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
         // Search for variation
+
+        var color = getCurrentPlayer() > 0 ? 'B' : 'W'
         var variations = tree.subtrees.filter(function(subtree) {
-            var color = getCurrentPlayer() > 0 ? 'B' : 'W'
             return subtree.nodes.length > 0
                 && color in subtree.nodes[0]
                 && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
@@ -176,13 +177,16 @@ function positionClicked() {
         if (variations.length > 0) {
             setCurrentTreePosition(variations[0], 0)
         } else {
+            // Create variation
+
             var splitted = sgf.splitTree(tree, index)
-            var node = {}
-            node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [sgf.tuple2point(this.retrieve('tuple'))]
+            var node = {}; node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
             var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
 
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
+
+            sgf.addBoard(newtree, newtree.nodes.length - 1)
             setCurrentTreePosition(newtree, 0)
         }
     }

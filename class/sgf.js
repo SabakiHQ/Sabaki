@@ -155,10 +155,11 @@ exports.tuple2point = function(tuple) {
 }
 
 exports.addBoard = function(tree, index, baseboard) {
+    if (index >= tree.nodes.length) return tree
+
     var node = tree.nodes[index]
     var vertex = null
 
-    if (index >= tree.nodes.length) return tree
     if (arguments.length <= 2) {
         if (index != 0) {
             baseboard = tree.nodes[index - 1].board
@@ -268,9 +269,10 @@ exports.splitTree = function(tree, index) {
     tree.nodes = tree.nodes.slice(index + 1)
 
     var newtree = { nodes: newnodes, subtrees: [tree], parent: tree.parent, current: 0 }
+    tree.parent = newtree
 
-    if (tree.parent != null) {
-        tree.parent.subtrees[tree.parent.subtrees.indexOf(tree)] = newtree
+    if (newtree.parent != null) {
+        newtree.parent.subtrees[newtree.parent.subtrees.indexOf(tree)] = newtree
     }
 
     return newtree
