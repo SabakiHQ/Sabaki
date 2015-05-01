@@ -82,6 +82,9 @@ function setTree(tree) {
 
 function setCurrentTreePosition(tree, index) {
     $('goban').store('position', new Tuple(tree, index))
+
+    if (tree.parent != null) tree.parent.current = tree.parent.subtrees.indexOf(tree)
+
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
     setCurrentPlayer(1)
 
@@ -148,11 +151,24 @@ function positionClicked() {
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         var node = {}
-        node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [ sgf.tuple2point(this.retrieve('tuple')) ]
+        node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [sgf.tuple2point(this.retrieve('tuple'))]
         tree.nodes.push(node)
 
-        setCurrentPlayer(-getCurrentPlayer())
         setCurrentTreePosition(tree, tree.nodes.length - 1)
+    } else {
+        // Search for variation
+        var variations = tree.subtrees.filter(function(subtree) {
+            var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+            return subtree.nodes.length > 0
+                && color in subtree.nodes[0]
+                && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
+        }.bind(this))
+
+        if (variations.length > 0) {
+            setCurrentTreePosition(variations[0], 0)
+        } else {
+            // TODO
+        }
     }
 }
 
