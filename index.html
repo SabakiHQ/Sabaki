@@ -167,7 +167,14 @@ function positionClicked() {
         if (variations.length > 0) {
             setCurrentTreePosition(variations[0], 0)
         } else {
-            // TODO
+            var splitted = sgf.splitTree(tree, index)
+            var node = {}
+            node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [sgf.tuple2point(this.retrieve('tuple'))]
+            var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
+
+            splitted.subtrees.push(newtree)
+            splitted.current = splitted.subtrees.length - 1
+            setCurrentTreePosition(newtree, 0)
         }
     }
 }

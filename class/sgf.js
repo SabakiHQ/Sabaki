@@ -267,7 +267,7 @@ exports.splitTree = function(tree, index) {
     var newnodes = tree.nodes.slice(0, index + 1)
     tree.nodes = tree.nodes.slice(index + 1)
 
-    var newtree = { nodes: newnodes, subtrees: [ tree ], parent: tree.parent, current: 0 }
+    var newtree = { nodes: newnodes, subtrees: [tree], parent: tree.parent, current: 0 }
 
     if (tree.parent != null) {
         tree.parent.subtrees[tree.parent.subtrees.indexOf(tree)] = newtree
