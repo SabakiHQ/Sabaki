@@ -68,7 +68,7 @@ function getTree() {
 }
 
 function setTree(tree) {
-    $('goban').store('tree', tree)
+    $('goban').store('tree', sgf.addBoards(tree))
 
     if (tree.nodes.length == 0) return
     setCurrentTreePosition(tree, 0)

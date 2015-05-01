@@ -161,8 +161,6 @@ exports.addBoard = function(tree, index, baseboard) {
     if (index >= tree.nodes.length) return tree
     if (arguments.length <= 2) {
         if (index != 0) {
-            if (!('board' in tree.nodes[index - 1]))
-                exports.addBoard(tree, index - 1)
             baseboard = tree.nodes[index - 1].board
         } else {
             if (tree.parent == null || tree.parent.nodes.length == 0) {
