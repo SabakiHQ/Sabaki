@@ -154,94 +154,110 @@ exports.tuple2point = function(tuple) {
     })
 }
 
-exports.addBoards = function(tree, baseboard) {
-    if (tree.nodes.length == 0 || 'board' in tree.nodes[0]) return tree
+exports.addBoard = function(tree, index, baseboard) {
+    var node = tree.nodes[index]
+    var vertex = null
 
-    if (arguments.length <= 1) {
-        if (tree.parent == null || tree.parent.nodes.length == 0) {
-            var size = tree.nodes.length != 0 && 'SZ' in tree.nodes[0] ? tree.nodes[0].SZ[0].toInt() : 19
-            baseboard = new Board(size)
+    if (index >= tree.nodes.length) return tree
+    if (arguments.length <= 2) {
+        if (index != 0) {
+            if (!('board' in tree.nodes[index - 1]))
+                exports.addBoard(tree, index - 1)
+            baseboard = tree.nodes[index - 1].board
         } else {
-            baseboard = tree.parent.nodes[tree.parent.nodes.length - 1].board
+            if (tree.parent == null || tree.parent.nodes.length == 0) {
+                var size = 'SZ' in node ? node.SZ[0].toInt() : 19
+                baseboard = new Board(size)
+            } else {
+                baseboard = tree.parent.nodes[tree.parent.nodes.length - 1].board
+            }
         }
     }
 
-    tree.nodes.each(function(node) {
-        var vertex = null
+    if ('B' in node) {
+        vertex = exports.point2tuple(node.B[0])
+        baseboard = baseboard.makeMove(1, vertex)
+    } else if ('W' in node) {
+        vertex = exports.point2tuple(node.W[0])
+        baseboard = baseboard.makeMove(-1, vertex)
+    } else {
+        baseboard = baseboard.makeMove(0)
+    }
 
-        if ('B' in node) {
-            vertex = exports.point2tuple(node.B[0])
-            baseboard = baseboard.makeMove(1, vertex)
-        } else if ('W' in node) {
-            vertex = exports.point2tuple(node.W[0])
-            baseboard = baseboard.makeMove(-1, vertex)
-        } else {
-            baseboard = baseboard.makeMove(0)
-        }
+    var ids = ['AW', 'AE', 'AB']
 
-        var ids = ['AW', 'AE', 'AB']
+    for (var i = 0; i < ids.length; i++) {
+        if (!(ids[i] in node)) continue
 
-        for (var i = 0; i < ids.length; i++) {
-            if (!(ids[i] in node)) continue
+        node[ids[i]].each(function(point) {
+            baseboard.arrangement[exports.point2tuple(point)] = i - 1
+        })
+    }
 
-            node[ids[i]].each(function(point) {
-                baseboard.arrangement[exports.point2tuple(point)] = i - 1
-            })
-        }
+    if (vertex != null) {
+        baseboard.overlays[vertex] = new Tuple('point', 0, '')
+    }
 
-        if (vertex != null) {
-            baseboard.overlays[vertex] = new Tuple('point', 0, '')
-        }
+    var ids = ['CR', 'MA', 'SQ', 'TR']
+    var classes = ['circle', 'cross', 'square', 'triangle']
 
-        var ids = ['CR', 'MA', 'SQ', 'TR']
-        var classes = ['circle', 'cross', 'square', 'triangle']
+    for (var i = 0; i < ids.length; i++) {
+        if (!(ids[i] in node)) continue
 
-        for (var i = 0; i < ids.length; i++) {
-            if (!(ids[i] in node)) continue
+        node[ids[i]].each(function(point) {
+            baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
+        })
+    }
 
-            node[ids[i]].each(function(point) {
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
-            })
-        }
+    if ('LB' in node) {
+        node.LB.each(function(composed) {
+            var sep = composed.indexOf(':')
+            var point = composed.slice(0, sep)
+            var label = composed.slice(sep + 1).replace(/\s+/, ' ')
+            baseboard.overlays[exports.point2tuple(point)] = new Tuple('label', 0, label)
+        })
+    }
 
-        if ('LB' in node) {
-            node.LB.each(function(composed) {
-                var sep = composed.indexOf(':')
-                var point = composed.slice(0, sep)
-                var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-                baseboard.overlays[exports.point2tuple(point)] = new Tuple('label', 0, label)
-            })
-        }
+    node.board = baseboard
 
-        node.board = baseboard
+    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
+        // Add variations
 
-        if (node == tree.nodes[tree.nodes.length - 1] && tree.subtrees.length > 0) {
-            // Add variations
-            tree.subtrees.each(function(subtree) {
-                if (subtree.nodes.length == 0) return
+        tree.subtrees.each(function(subtree) {
+            if (subtree.nodes.length == 0) return
 
-                var v, sign
+            var v, sign
 
-                if ('B' in subtree.nodes[0]) {
-                    v = sgf.point2tuple(subtree.nodes[0].B[0])
-                    sign = 1
-                } else if ('W' in subtree.nodes[0]) {
-                    v = sgf.point2tuple(subtree.nodes[0].W[0])
-                    sign = -1
-                } else {
-                    return
-                }
+            if ('B' in subtree.nodes[0]) {
+                v = sgf.point2tuple(subtree.nodes[0].B[0])
+                sign = 1
+            } else if ('W' in subtree.nodes[0]) {
+                v = sgf.point2tuple(subtree.nodes[0].W[0])
+                sign = -1
+            } else {
+                return
+            }
 
-                if (v in baseboard.overlays)
-                    baseboard.overlays[v] = baseboard.overlays[v].unpack(function(a, b, c) {
-                         return new Tuple(a, sign, c)
-                    })
-                else baseboard.overlays[v] = new Tuple('', sign, '')
-            })
-        }
-    })
+            if (v in baseboard.overlays)
+                baseboard.overlays[v] = baseboard.overlays[v].unpack(function(a, b, c) {
+                     return new Tuple(a, sign, c)
+                })
+            else baseboard.overlays[v] = new Tuple('', sign, '')
+        })
+    }
 
-    if (tree.subtrees.length == 0) return tree
+    return tree
+}
+
+exports.addBoards = function(tree, baseboard) {
+    if (tree.nodes.length == 0) return tree
+
+    for (var j = 0; j < tree.nodes.length; j++) {
+        if ('board' in tree.nodes[j]) continue
+        exports.addBoard(tree, j)
+    }
+
+    if (tree.current == null) return tree
 
     exports.addBoards(tree.subtrees[tree.current], baseboard)
     return tree
