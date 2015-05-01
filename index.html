@@ -249,6 +249,25 @@ function goForward() {
     })
 }
 
+function goToNextFork() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        if (index != tree.nodes.length - 1)
+            setCurrentTreePosition(tree, tree.nodes.length - 1)
+        else if (tree.current != null) {
+            var subtree = tree.subtrees[tree.current]
+            setCurrentTreePosition(subtree, subtree.nodes.length - 1)
+        }
+    })
+}
+
+function goToPreviousFork() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        if (tree.parent == null || tree.parent.nodes.length == 0)
+            setCurrentTreePosition(tree, 0)
+        else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    })
+}
+
 function goToBeginning() {
     var tree = getTree()
     if (tree.nodes.length == 0) return
@@ -326,12 +345,14 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Go Back To &Fork',
-                    accelerator: 'CmdOrCtrl+Up'
+                    label: 'Go To &Previous Fork',
+                    accelerator: 'CmdOrCtrl+Up',
+                    click: goToPreviousFork
                 },
                 {
                     label: 'Go To &Next Fork',
-                    accelerator: 'CmdOrCtrl+Down'
+                    accelerator: 'CmdOrCtrl+Down',
+                    click: goToNextFork
                 },
                 { type: 'separator' },
                 {
