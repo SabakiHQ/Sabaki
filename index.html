@@ -146,16 +146,15 @@ function buildBoard(board) {
         for (var x = 0; x < board.size; x++) {
             var sign = board.arrangement[new Tuple(y, x)]
             var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
-
             var img = new Element('img', {
                 src: 'img/stone_0.png',
                 draggable: false
-            }).addEvent('click', positionClicked.bind(li))
+            })
 
             if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
                 li.addClass('hoshi')
 
-            ol.adopt(li.adopt(img))
+            ol.adopt(li.adopt(img).addEvent('click', positionClicked))
         }
 
         rows.push(ol)
