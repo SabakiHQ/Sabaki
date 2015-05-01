@@ -33,6 +33,10 @@ var Menu = remote.require('menu')
 var Tuple = require('./lib/tuple')
 var Board = require('./class/board.js')
 
+/**
+ * Methods
+ */
+
 function setIsLoading(loading) {
     if (loading) document.body.addClass('loading')
     else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
@@ -228,6 +232,16 @@ function buildBoard(board) {
     $('goban').empty().adopt(rows, coordx, coordy)
         .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
 }
+
+function resizeWindow() {
+    var width = $('goban').getSize().x
+    var height = $('goban').getSize().y + $$('header')[0].getSize().y
+    remote.getCurrentWindow().setContentSize(width, height)
+}
+
+/**
+ * Menu
+ */
 
 function goBack() {
     getCurrentTreePosition().unpack(function(tree, position) {
@@ -430,11 +444,9 @@ function openHeaderMenu() {
     menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
 }
 
-function resizeWindow() {
-    var width = $('goban').getSize().x
-    var height = $('goban').getSize().y + $$('header')[0].getSize().y
-    remote.getCurrentWindow().setContentSize(width, height)
-}
+/**
+ * Main
+ */
 
 document.addEvent('keydown', function(e) {
     if (e.code === 123) {
