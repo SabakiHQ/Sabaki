@@ -37,8 +37,9 @@ img {
         top: 0;
         bottom: 0;
         background: #26292C;
-        opacity: .5;
+        opacity: 0;
     }
     body.loading #loading {
         display: block;
+        opacity: .5;
 }

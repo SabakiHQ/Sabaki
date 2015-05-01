@@ -35,7 +35,10 @@ var Board = require('./class/board.js')
 
 function setIsLoading(loading) {
     if (loading) document.body.addClass('loading')
-    else document.body.removeClass('loading')
+    else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
+        document.body.removeClass('loading')
+        $('loading').setStyle('opacity', null)
+    })
 }
 
 function getShowVariations() {
@@ -218,13 +221,15 @@ function goToEnd() {
 function loadGame() {
     setIsLoading(true)
 
-    var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
+    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
         filters: [{ name: 'SGF Files', extensions: ['sgf'] }]
-    })[0]
+    })
 
-    var tree = sgf.parseFile(filename)
-    if (tree.subtrees.length == 0) return
-    setTree(tree.subtrees[0])
+    if (result) {
+        var tree = sgf.parseFile(result[0])
+        if (tree.subtrees.length == 0) return
+        setTree(tree.subtrees[0])
+    }
 
     setIsLoading(false)
 }
