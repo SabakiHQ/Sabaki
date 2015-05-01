@@ -198,7 +198,7 @@ exports.addBoards = function(tree, baseboard) {
 
         for (var i = 0; i < ids.length; i++) {
             if (!(ids[i] in node)) continue
-            
+
             node[ids[i]].each(function(point) {
                 baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
             })
@@ -245,4 +245,19 @@ exports.addBoards = function(tree, baseboard) {
 
     exports.addBoards(tree.subtrees[tree.current], baseboard)
     return tree
+}
+
+exports.splitTree = function(tree, index) {
+    if (index < 0 || index >= tree.nodes.length - 1) return tree
+
+    var newnodes = tree.nodes.slice(0, index + 1)
+    tree.nodes = tree.nodes.slice(index + 1)
+
+    var newtree = { nodes: newnodes, subtrees: [ tree ], parent: tree.parent, current: 0 }
+
+    if (tree.parent != null) {
+        tree.parent.subtrees[tree.parent.subtrees.indexOf(tree)] = newtree
+    }
+
+    return newtree
 }
