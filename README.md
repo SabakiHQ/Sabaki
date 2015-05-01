@@ -2,6 +2,8 @@
 
 Eventually the best virtual Go board. This is a work in progress.
 
+![Screenshot](screenshot.png)
+
 ## Third Party Libraries
 
 * [Electron](http://electron.atom.io/)
