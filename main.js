@@ -13,7 +13,8 @@ app.on('ready', function() {
     window = new BrowserWindow({
         'resizable': false,
         'use-content-size': true,
-        'show': false
+        'show': false,
+        'icon': __dirname + '/img/stone_0.png'
         // 'auto-hide-menu-bar': true
     })
 

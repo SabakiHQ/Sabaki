@@ -120,14 +120,14 @@ var Board = new Class({
         var near = this.size >= 13 ? 3 : 2
         var far = this.size - near - 1
 
-        var result = [ new Tuple(near, near), new Tuple(far, far), new Tuple(near, far), new Tuple(far, near) ]
+        var result = [new Tuple(near, near), new Tuple(far, far), new Tuple(near, far), new Tuple(far, near)]
 
         if (this.size % 2 != 0) {
             var middle = (this.size - 1) / 2
             if (count == 5) result.push(new Tuple(middle, middle))
-            result.append([ new Tuple(near, middle), new Tuple(far, middle) ])
+            result.append([new Tuple(near, middle), new Tuple(far, middle)])
             if (count == 7) result.push(new Tuple(middle, middle))
-            result.append([ new Tuple(middle, near), new Tuple(middle, far), new Tuple(middle, middle) ])
+            result.append([new Tuple(middle, near), new Tuple(middle, far), new Tuple(middle, middle)])
         }
 
         return result.slice(0, count)
