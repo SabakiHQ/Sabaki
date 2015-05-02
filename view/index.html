@@ -27,6 +27,7 @@
 <script>
 
 var remote = require('remote')
+var process = remote.require('process')
 var app = remote.require('app');
 var dialog = remote.require('dialog')
 var sgf = require('../class/sgf.js')
@@ -259,19 +260,21 @@ function newGame() {
     setTree(tree)
 }
 
-function loadGame() {
+function loadGame(filename) {
     setIsLoading(true)
 
-    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-        filters: [{ name: 'SGF Files', extensions: ['sgf'] },
-                  { name: 'All Files', extensions: ['*'] }]
-    })
+    if (arguments.length == 0) {
+        var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+            filters: [{ name: 'SGF Files', extensions: ['sgf'] },
+                      { name: 'All Files', extensions: ['*'] }]
+        })
 
-    if (result) {
-        var tree = sgf.parseFile(result[0])
-        if (tree.subtrees.length == 0) return
-        setTree(tree.subtrees[0])
+        if (result) filename = result[0]
     }
+
+    var tree = sgf.parseFile(filename)
+    if (tree.subtrees.length == 0) return
+    setTree(tree.subtrees[0])
 
     setIsLoading(false)
 }
@@ -344,7 +347,7 @@ function buildMenu() {
                 {
                     label: '&Load...',
                     accelerator: 'CmdOrCtrl+O',
-                    click: loadGame
+                    click: function() { loadGame() }
                 },
                 { type: 'separator' },
                 {
@@ -477,7 +480,9 @@ document.addEvent('keydown', function(e) {
     else if (e.wheel > 0) goBack()
 }).addEvent('domready', function() {
     buildMenu()
-    newGame()
+
+    if (process.argv.length >= 2) loadGame(process.argv[1])
+    else newGame()
 })
 
 </script>
