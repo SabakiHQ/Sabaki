@@ -21,7 +21,7 @@ app.on('ready', function() {
         window.show()
     })
 
-    window.loadUrl('file://' + __dirname + '/index.html')
+    window.loadUrl('file://' + __dirname + '/view/index.html')
 
     window.on('closed', function() {
         window = null

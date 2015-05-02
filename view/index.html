@@ -6,9 +6,9 @@
 <title>Goban</title>
 <meta name="author" content="Yichuan Shen" />
 
-<link rel="stylesheet" type="text/css" href="style/app.css" />
-<link rel="stylesheet" type="text/css" href="style/goban.css" />
-<script src="lib/mootools.js"></script>
+<link rel="stylesheet" type="text/css" href="../style/app.css" />
+<link rel="stylesheet" type="text/css" href="../style/goban.css" />
+<script src="../lib/mootools.js"></script>
 
 </head>
 <body>
@@ -17,9 +17,9 @@
 
 <header>
     <span id="player_1">Black</span>
-    <img id="currentplayer" src="img/blacktoplay.png" onload="this.draggable = false" />
+    <img id="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
     <span id="player_-1">White</span>
-    <img id="headermenu" src="img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
+    <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
 </header>
 
 <section id="loading"></section>
@@ -28,10 +28,10 @@
 
 var remote = require('remote')
 var dialog = remote.require('dialog')
-var sgf = require('./class/sgf.js')
+var sgf = require('../class/sgf.js')
 var Menu = remote.require('menu')
-var Tuple = require('./lib/tuple')
-var Board = require('./class/board.js')
+var Tuple = require('../lib/tuple')
+var Board = require('../class/board.js')
 
 /**
  * Methods
@@ -72,11 +72,11 @@ function setPlayerName(sign, name) {
 }
 
 function getCurrentPlayer() {
-    return $('currentplayer').get('src') == 'img/blacktoplay.png' ? 1 : -1
+    return $('currentplayer').get('src') == '../img/blacktoplay.png' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $('currentplayer').set('src', sign > 0 ? 'img/blacktoplay.png' : 'img/whitetoplay.png')
+    $('currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
 }
 
 function getTree() {
@@ -149,7 +149,7 @@ function setBoard(board) {
             }
 
             li.addClass('sign_' + sign)
-                .getElement('img').set('src', 'img/stone_' + sign + '.png')
+                .getElement('img').set('src', '../img/stone_' + sign + '.png')
         }
     }
 
@@ -207,7 +207,7 @@ function buildBoard(board) {
             var sign = board.arrangement[new Tuple(y, x)]
             var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
             var img = new Element('img', {
-                src: 'img/stone_0.png',
+                src: '../img/stone_0.png',
                 draggable: false
             })
 
@@ -242,6 +242,23 @@ function resizeWindow() {
 /**
  * Menu
  */
+
+function loadGame() {
+    setIsLoading(true)
+
+    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        filters: [{ name: 'SGF Files', extensions: ['sgf'] },
+                  { name: 'All Files', extensions: ['*'] }]
+    })
+
+    if (result) {
+        var tree = sgf.parseFile(result[0])
+        if (tree.subtrees.length == 0) return
+        setTree(tree.subtrees[0])
+    }
+
+    setIsLoading(false)
+}
 
 function goBack() {
     getCurrentTreePosition().unpack(function(tree, position) {
@@ -296,22 +313,6 @@ function goToEnd() {
         }
         setCurrentTreePosition(t, t.nodes.length - 1)
     })
-}
-
-function loadGame() {
-    setIsLoading(true)
-
-    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-        filters: [{ name: 'SGF Files', extensions: ['sgf'] }]
-    })
-
-    if (result) {
-        var tree = sgf.parseFile(result[0])
-        if (tree.subtrees.length == 0) return
-        setTree(tree.subtrees[0])
-    }
-
-    setIsLoading(false)
 }
 
 function buildMenu() {
