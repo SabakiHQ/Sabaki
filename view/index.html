@@ -162,18 +162,17 @@ function positionClicked() {
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
+    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
 
     new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         var node = {}
-        node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [sgf.tuple2point(this.retrieve('tuple'))]
+        node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
         tree.nodes.push(node)
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
-        var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-
         if (index == tree.nodes.length - 1) {
             // Search for variation
 
@@ -184,7 +183,7 @@ function positionClicked() {
             }.bind(this))
 
             if (variations.length > 0) {
-                setCurrentTreePosition(variations[0], 0)
+                setCurrentTreePosition(sgf.addBoards(variations[0]), 0)
                 return
             }
         }
