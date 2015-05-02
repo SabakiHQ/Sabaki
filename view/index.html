@@ -81,14 +81,17 @@ function setCurrentPlayer(sign) {
     $('currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
 }
 
-function getTree() {
-    return $('goban').retrieve('tree')
+function getTreeRoot() {
+    return getCurrentTreePosition().unpack(function(tree, index) {
+        while (tree.parent != null) tree = tree.parent
+        return tree
+    })
 }
 
-function setTree(tree) {
-    $('goban').store('tree', sgf.addBoards(tree))
-
+function setTreeRoot(tree) {
     if (tree.nodes.length == 0) return
+
+    tree.parent = null
     setCurrentTreePosition(tree, 0)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
@@ -257,7 +260,7 @@ function newGame() {
     buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
 
     var tree = sgf.parse(sgf.tokenize(buffer))
-    setTree(tree)
+    setTreeRoot(tree)
 }
 
 function loadGame(filename) {
@@ -272,9 +275,11 @@ function loadGame(filename) {
         if (result) filename = result[0]
     }
 
-    var tree = sgf.parseFile(filename)
-    if (tree.subtrees.length == 0) return
-    setTree(tree.subtrees[0])
+    if (filename) {
+        var tree = sgf.parseFile(filename)
+        if (tree.subtrees.length == 0) return
+        setTreeRoot(tree.subtrees[0])
+    }
 
     setIsLoading(false)
 }
@@ -319,7 +324,7 @@ function goToPreviousFork() {
 }
 
 function goToBeginning() {
-    var tree = getTree()
+    var tree = getTreeRoot()
     if (tree.nodes.length == 0) return
     setCurrentTreePosition(tree, 0)
 }

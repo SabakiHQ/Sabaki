@@ -277,3 +277,34 @@ exports.splitTree = function(tree, index) {
 
     return newtree
 }
+
+exports.tree2string = function(tree) {
+    var output = '('
+
+    tree.nodes.each(function(node) {
+        output += ';'
+
+        Object.each(node, function(values, id) {
+            if (id.toUpperCase() != id) return
+            output += id
+
+            values.each(function(value) {
+                output += '[' + exports.escapeString(value) + ']'
+            })
+        })
+
+        output += '\n'
+    })
+
+    if (tree.subtrees.length != 0) {
+        tree.subtrees.each(function(subtree) {
+            output += exports.tree2string(subtree)
+        })
+    }
+
+    return output + ')'
+}
+
+exports.escapeString = function(input) {
+    return input.replace('\\', '\\\\').replace(']', '\\]')
+}
