@@ -27,6 +27,7 @@
 <script>
 
 var remote = require('remote')
+var app = remote.require('app');
 var dialog = remote.require('dialog')
 var sgf = require('../class/sgf.js')
 var Menu = remote.require('menu')
@@ -249,6 +250,16 @@ function resizeWindow() {
  * Menu
  */
 
+function newGame() {
+    if (arguments.length >= 1) new Audio('../sound/newgame.wav').play()
+
+    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
+
+    var tree = sgf.parse(sgf.tokenize(buffer))
+    setTree(tree)
+}
+
 function loadGame() {
     setIsLoading(true)
 
@@ -328,7 +339,8 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&New',
-                    accelerator: 'CmdOrCtrl+N'
+                    accelerator: 'CmdOrCtrl+N',
+                    click: newGame
                 },
                 {
                     label: '&Load...',
@@ -466,8 +478,7 @@ document.addEvent('keydown', function(e) {
     else if (e.wheel > 0) goBack()
 }).addEvent('domready', function() {
     buildMenu()
-    setBoard(new Board())
-    resizeWindow()
+    newGame()
 })
 
 </script>

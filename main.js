@@ -17,6 +17,8 @@ app.on('ready', function() {
         // 'auto-hide-menu-bar': true
     })
 
+    // window.toggleDevTools()
+
     window.webContents.on('did-finish-load', function() {
         window.show()
     })
