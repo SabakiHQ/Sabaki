@@ -162,6 +162,8 @@ function positionClicked() {
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
 
+    new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
+
     if (tree.current == null && tree.nodes.length - 1 == index) {
         var node = {}
         node[getCurrentPlayer() > 0 ? 'B' : 'W'] = [sgf.tuple2point(this.retrieve('tuple'))]
@@ -169,33 +171,35 @@ function positionClicked() {
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
-        // Search for variation
-
         var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-        var variations = tree.subtrees.filter(function(subtree) {
-            return subtree.nodes.length > 0
-                && color in subtree.nodes[0]
-                && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
-        }.bind(this))
 
-        if (index == tree.nodes.length - 1 && variations.length > 0) {
-            setCurrentTreePosition(variations[0], 0)
-        } else {
-            // Create variation
+        if (index == tree.nodes.length - 1) {
+            // Search for variation
 
-            var splitted = sgf.splitTree(tree, index)
-            var node = {}; node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
-            var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
+            var variations = tree.subtrees.filter(function(subtree) {
+                return subtree.nodes.length > 0
+                    && color in subtree.nodes[0]
+                    && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
+            }.bind(this))
 
-            splitted.subtrees.push(newtree)
-            splitted.current = splitted.subtrees.length - 1
-
-            sgf.addBoard(newtree, newtree.nodes.length - 1)
-            setCurrentTreePosition(newtree, 0)
+            if (variations.length > 0) {
+                setCurrentTreePosition(variations[0], 0)
+                return
+            }
         }
-    }
 
-    new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
+        // Create variation
+
+        var splitted = sgf.splitTree(tree, index)
+        var node = {}; node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
+        var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
+
+        splitted.subtrees.push(newtree)
+        splitted.current = splitted.subtrees.length - 1
+
+        sgf.addBoard(newtree, newtree.nodes.length - 1)
+        setCurrentTreePosition(newtree, 0)
+    }
 }
 
 function buildBoard(board) {
