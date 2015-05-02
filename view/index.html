@@ -178,7 +178,7 @@ function positionClicked() {
                 && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
         }.bind(this))
 
-        if (variations.length > 0) {
+        if (index == tree.nodes.length - 1 && variations.length > 0) {
             setCurrentTreePosition(variations[0], 0)
         } else {
             // Create variation
