@@ -194,6 +194,8 @@ function positionClicked() {
             setCurrentTreePosition(newtree, 0)
         }
     }
+
+    new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
 }
 
 function buildBoard(board) {
