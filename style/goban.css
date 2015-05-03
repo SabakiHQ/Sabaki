@@ -176,7 +176,7 @@
         font-size: 16px;
 }
 
-header span {
+header > span {
         position: absolute;
         left: 0;
         right: 50%;
@@ -195,6 +195,20 @@ header span {
         padding-right: 42px;
         padding-left: 30px;
         text-align: left;
+    }
+    header > span > .captures {
+        display: inline-block;
+        height: 20px;
+        min-width: 10px;
+        border-radius: 10px;
+        padding: 0 5px;
+        margin: 0 5px;
+        background: black;
+        line-height: 20px;
+        text-align: center;
+        opacity: .7;
+        font-size: .8em;
+        transition: .2s opacity;
     }
     header img {
         position: absolute;

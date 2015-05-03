@@ -16,9 +16,9 @@
 <section id="goban" class="variations"></section>
 
 <header>
-    <span id="player_1">Black</span>
+    <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
     <img id="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
-    <span id="player_-1">White</span>
+    <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
     <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
 </header>
 
@@ -66,11 +66,25 @@ function setShowCoordinates(show) {
 }
 
 function getPlayerName(sign) {
-    return $('player_' + sign).get('text')
+    return $$('#player_' + sign + ' .name')[0].get('text')
 }
 
 function setPlayerName(sign, name) {
-    $('player_' + sign).set('text', name)
+    $$('#player_' + sign + ' .name')[0].set('text', name)
+}
+
+function getCaptures() {
+    return {
+        '-1': $$('#player_-1 .captures')[0].get('text').toInt(),
+        '1': $$('#player_1 .captures')[0].get('text').toInt()
+    }
+}
+
+function setCaptures(captures) {
+    $$('#player_-1 .captures')[0].set('text', captures['-1'])
+        .setStyle('opacity', captures['-1'] == 0 ? 0 : .7)
+    $$('#player_1 .captures')[0].set('text', captures['1'])
+        .setStyle('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
 function getCurrentPlayer() {
@@ -92,7 +106,7 @@ function setTreeRoot(tree) {
     if (tree.nodes.length == 0) return
 
     tree.parent = null
-    setCurrentTreePosition(tree, 0)
+    setCurrentTreePosition(sgf.addBoards(tree), 0)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
@@ -127,6 +141,8 @@ function setBoard(board) {
         buildBoard(board)
         resizeWindow()
     }
+
+    setCaptures(board.captures)
 
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
