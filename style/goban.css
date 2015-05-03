@@ -184,6 +184,7 @@ header span {
         bottom: 0;
         padding-left: 10px;
         padding-right: 30px;
+        overflow: hidden;
         text-align: right;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -191,7 +192,7 @@ header span {
     #player_-1 {
         left: 50%;
         right: 0;
-        padding-right: 10px;
+        padding-right: 42px;
         padding-left: 30px;
         text-align: left;
     }
