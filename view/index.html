@@ -177,8 +177,8 @@ function setBoard(board) {
     $('goban').store('board', board)
 }
 
-function positionClicked() {
-    if (!this.hasClass('sign_0')) return
+function makeMove(vertex) {
+    if (getBoard().arrangement[vertex] != 0) return
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
@@ -190,7 +190,7 @@ function positionClicked() {
         // Append move
 
         var node = {}
-        node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
+        node[color] = [sgf.tuple2point(vertex)]
         tree.nodes.push(node)
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
@@ -200,7 +200,7 @@ function positionClicked() {
 
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && sgf.point2tuple(nextNode[color][0]).equals(this.retrieve('tuple'))
+                && sgf.point2tuple(nextNode[color][0]).equals(vertex)
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
@@ -212,7 +212,7 @@ function positionClicked() {
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
-                    && sgf.point2tuple(subtree.nodes[0][color][0]).equals(this.retrieve('tuple'))
+                    && sgf.point2tuple(subtree.nodes[0][color][0]).equals(vertex)
             }.bind(this))
 
             if (variations.length > 0) {
@@ -224,7 +224,7 @@ function positionClicked() {
         // Create variation
 
         var splitted = sgf.splitTree(tree, index)
-        var node = {}; node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
+        var node = {}; node[color] = [sgf.tuple2point(vertex)]
         var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
 
         splitted.subtrees.push(newtree)
@@ -243,7 +243,6 @@ function buildBoard(board) {
         var ol = new Element('ol.row')
 
         for (var x = 0; x < board.size; x++) {
-            var sign = board.arrangement[new Tuple(y, x)]
             var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
             var img = new Element('img', {
                 src: '../img/stone_0.png',
@@ -253,7 +252,9 @@ function buildBoard(board) {
             if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
                 li.addClass('hoshi')
 
-            ol.adopt(li.adopt(img).addEvent('click', positionClicked))
+            ol.adopt(li.adopt(img).addEvent('click', function() {
+                makeMove(this.retrieve('tuple'))
+            }))
         }
 
         rows.push(ol)
