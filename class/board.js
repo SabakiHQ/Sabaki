@@ -107,6 +107,7 @@ var Board = new Class({
             if (suicide) {
                 chain.each(function(c) {
                     move.arrangement[c] = 0
+                    move.captures[(-sign).toString()]++
                 })
             }
         }
