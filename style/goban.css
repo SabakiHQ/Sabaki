@@ -197,6 +197,8 @@ header > span {
         text-align: left;
     }
     header > span > .captures {
+        position: relative;
+        top: -1px;
         display: inline-block;
         height: 20px;
         min-width: 10px;
