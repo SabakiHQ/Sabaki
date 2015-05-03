@@ -178,13 +178,16 @@ function setBoard(board) {
 }
 
 function makeMove(vertex) {
-    if (getBoard().arrangement[vertex] != 0) return
+    if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
+        return
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
     var color = getCurrentPlayer() > 0 ? 'B' : 'W'
 
-    new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
+    if (getBoard().hasVertex(vertex))
+        new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
+    else new Audio('../sound/pass.wav').play()
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
@@ -482,7 +485,10 @@ function buildMenu() {
 function openHeaderMenu() {
     var template = [
         {
-            label: '&Pass'
+            label: '&Pass',
+            click: function() {
+                makeMove(new Tuple(-1, -1))
+            }
         },
         {
             label: '&Resign'
