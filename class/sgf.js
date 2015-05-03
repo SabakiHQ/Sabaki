@@ -279,7 +279,7 @@ exports.splitTree = function(tree, index) {
 }
 
 exports.tree2string = function(tree) {
-    var output = '('
+    var output = ''
 
     tree.nodes.each(function(node) {
         output += ';'
@@ -298,11 +298,11 @@ exports.tree2string = function(tree) {
 
     if (tree.subtrees.length != 0) {
         tree.subtrees.each(function(subtree) {
-            output += exports.tree2string(subtree)
+            output += '(' + exports.tree2string(subtree) + ')'
         })
     }
 
-    return output + ')'
+    return output
 }
 
 exports.escapeString = function(input) {

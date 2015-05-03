@@ -171,13 +171,26 @@ function positionClicked() {
     new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play();
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
+        // Append move
+
         var node = {}
         node[color] = [sgf.tuple2point(this.retrieve('tuple'))]
         tree.nodes.push(node)
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
-        if (index == tree.nodes.length - 1) {
+        if (index != tree.nodes.length - 1) {
+            // Search for next move
+
+            var nextNode = tree.nodes[index + 1]
+            var moveExists = color in nextNode
+                && sgf.point2tuple(nextNode[color][0]).equals(this.retrieve('tuple'))
+
+            if (moveExists) {
+                setCurrentTreePosition(tree, index + 1)
+                return
+            }
+        } else {
             // Search for variation
 
             var variations = tree.subtrees.filter(function(subtree) {
@@ -257,7 +270,7 @@ function newGame() {
     if (arguments.length >= 1) new Audio('../sound/newgame.wav').play()
 
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
+    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[9]'
 
     var tree = sgf.parse(sgf.tokenize(buffer))
     setTreeRoot(tree)
