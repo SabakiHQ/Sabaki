@@ -1,21 +1,6 @@
-# Goban
-
-Eventually the best virtual Go board. This is a work in progress.
-
-![Screenshot](screenshot.png)
-
-## Third Party Libraries
-
-* [Electron](http://electron.atom.io/)
-* [MooTools](http://mootools.net/)
-* [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
-* [tuple](https://github.com/Wolfy87/tuple)
-
-## License
-
 The MIT License (MIT)
 
-Copyright (c) 2015 Yichuan Shen
+Copyright (c) Noel Delgado <pixelia.me@gmail.com> (pixelia.me)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
