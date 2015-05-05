@@ -25,504 +25,502 @@
 <section id="loading"></section>
 
 <script>
+    var remote = require('remote')
+    var process = remote.require('process')
+    var app = remote.require('app');
+    var dialog = remote.require('dialog')
+    var sgf = require('../class/sgf.js')
+    var Menu = remote.require('menu')
+    var Tuple = require('../lib/tuple')
+    var Board = require('../class/board.js')
 
-var remote = require('remote')
-var process = remote.require('process')
-var app = remote.require('app');
-var dialog = remote.require('dialog')
-var sgf = require('../class/sgf.js')
-var Menu = remote.require('menu')
-var Tuple = require('../lib/tuple')
-var Board = require('../class/board.js')
+    /**
+     * Methods
+     */
 
-/**
- * Methods
- */
-
-function setIsLoading(loading) {
-    if (loading) document.body.addClass('loading')
-    else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
-        document.body.removeClass('loading')
-        $('loading').setStyle('opacity', null)
-    })
-}
-
-function getShowVariations() {
-    return $('goban').hasClass('variations')
-}
-
-function setShowVariations(show) {
-    if (show) $('goban').addClass('variations')
-    else $('goban').removeClass('variations')
-}
-
-function getShowCoordinates() {
-    return $('goban').hasClass('coordinates')
-}
-
-function setShowCoordinates(show) {
-    if (show) $('goban').addClass('coordinates')
-    else $('goban').removeClass('coordinates')
-}
-
-function getPlayerName(sign) {
-    return $$('#player_' + sign + ' .name')[0].get('text')
-}
-
-function setPlayerName(sign, name) {
-    $$('#player_' + sign + ' .name')[0].set('text', name)
-}
-
-function getCaptures() {
-    return {
-        '-1': $$('#player_-1 .captures')[0].get('text').toInt(),
-        '1': $$('#player_1 .captures')[0].get('text').toInt()
-    }
-}
-
-function setCaptures(captures) {
-    $$('#player_-1 .captures')[0].set('text', captures['-1'])
-        .setStyle('opacity', captures['-1'] == 0 ? 0 : .7)
-    $$('#player_1 .captures')[0].set('text', captures['1'])
-        .setStyle('opacity', captures['1'] == 0 ? 0 : .7)
-}
-
-function getCurrentPlayer() {
-    return $('currentplayer').get('src') == '../img/blacktoplay.png' ? 1 : -1
-}
-
-function setCurrentPlayer(sign) {
-    $('currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
-}
-
-function getTreeRoot() {
-    return getCurrentTreePosition().unpack(function(tree, index) {
-        while (tree.parent != null) tree = tree.parent
-        return tree
-    })
-}
-
-function setTreeRoot(tree) {
-    if (tree.nodes.length == 0) return
-
-    tree.parent = null
-    setCurrentTreePosition(sgf.addBoards(tree), 0)
-
-    if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
-    if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
-}
-
-function setCurrentTreePosition(tree, index) {
-    $('goban').store('position', new Tuple(tree, index))
-
-    if (tree.parent != null) tree.parent.current = tree.parent.subtrees.indexOf(tree)
-
-    setBoard(sgf.addBoard(tree, index).nodes[index].board)
-    setCurrentPlayer(1)
-
-    if ('B' in tree.nodes[index]) setCurrentPlayer(-1)
-    else if ('W' in tree.nodes[index]) setCurrentPlayer(1)
-    else if ('PL' in tree.nodes[index])
-        setCurrentPlayer(tree.nodes[index].PL[0] == 'W' ? -1 : 1)
-    else if ('HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
-        setCurrentPlayer(-1)
-}
-
-function getCurrentTreePosition() {
-    return $('goban').retrieve('position')
-}
-
-function getBoard() {
-    return $('goban').retrieve('board')
-}
-
-function setBoard(board) {
-    if (!getBoard() || getBoard().size != board.size) {
-        buildBoard(board)
-        resizeWindow()
+    function setIsLoading(loading) {
+        if (loading) document.body.addClass('loading')
+        else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
+            document.body.removeClass('loading')
+            $('loading').setStyle('opacity', null)
+        })
     }
 
-    setCaptures(board.captures)
+    function getShowVariations() {
+        return $('goban').hasClass('variations')
+    }
 
-    for (var x = 0; x < board.size; x++) {
-        for (var y = 0; y < board.size; y++) {
-            var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[li.retrieve('tuple')]
-            var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
-                'cross', 'square', 'label', 'point']
+    function setShowVariations(show) {
+        if (show) $('goban').addClass('variations')
+        else $('goban').removeClass('variations')
+    }
 
-            types.each(function(x) {
-                if (li.hasClass(x)) li.removeClass(x)
-            })
+    function getShowCoordinates() {
+        return $('goban').hasClass('coordinates')
+    }
 
-            if (li.retrieve('tuple') in board.overlays) {
-                board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
-                    if (type != '') li.addClass(type)
-                    if (ghost != 0) li.addClass('ghost_' + ghost)
-                    if (label != '') li.set('data-label', label)
-                })
-            }
+    function setShowCoordinates(show) {
+        if (show) $('goban').addClass('coordinates')
+        else $('goban').removeClass('coordinates')
+    }
 
-            if (li.hasClass('sign_' + sign)) continue
+    function getPlayerName(sign) {
+        return $$('#player_' + sign + ' .name')[0].get('text')
+    }
 
-            for (var i = -1; i <= 1; i++) {
-                if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
-            }
+    function setPlayerName(sign, name) {
+        $$('#player_' + sign + ' .name')[0].set('text', name)
+    }
 
-            li.addClass('sign_' + sign)
-                .getElement('img').set('src', '../img/stone_' + sign + '.png')
+    function getCaptures() {
+        return {
+            '-1': $$('#player_-1 .captures')[0].get('text').toInt(),
+            '1': $$('#player_1 .captures')[0].get('text').toInt()
         }
     }
 
-    $('goban').store('board', board)
-}
+    function setCaptures(captures) {
+        $$('#player_-1 .captures')[0].set('text', captures['-1'])
+            .setStyle('opacity', captures['-1'] == 0 ? 0 : .7)
+        $$('#player_1 .captures')[0].set('text', captures['1'])
+            .setStyle('opacity', captures['1'] == 0 ? 0 : .7)
+    }
 
-function makeMove(vertex) {
-    if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
-        return
+    function getCurrentPlayer() {
+        return $('currentplayer').get('src') == '../img/blacktoplay.png' ? 1 : -1
+    }
 
-    var position = getCurrentTreePosition()
-    var tree = position[0], index = position[1]
-    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+    function setCurrentPlayer(sign) {
+        $('currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
+    }
 
-    if (getBoard().hasVertex(vertex))
-        new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
-    else new Audio('../sound/pass.wav').play()
+    function getTreeRoot() {
+        return getCurrentTreePosition().unpack(function(tree, index) {
+            while (tree.parent != null) tree = tree.parent
+            return tree
+        })
+    }
 
-    if (tree.current == null && tree.nodes.length - 1 == index) {
-        // Append move
+    function setTreeRoot(tree) {
+        if (tree.nodes.length == 0) return
 
-        var node = {}
-        node[color] = [sgf.tuple2point(vertex)]
-        tree.nodes.push(node)
+        tree.parent = null
+        setCurrentTreePosition(sgf.addBoards(tree), 0)
 
-        setCurrentTreePosition(tree, tree.nodes.length - 1)
-    } else {
-        if (index != tree.nodes.length - 1) {
-            // Search for next move
+        if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
+        if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
+    }
 
-            var nextNode = tree.nodes[index + 1]
-            var moveExists = color in nextNode
-                && sgf.point2tuple(nextNode[color][0]).equals(vertex)
+    function setCurrentTreePosition(tree, index) {
+        $('goban').store('position', new Tuple(tree, index))
 
-            if (moveExists) {
-                setCurrentTreePosition(tree, index + 1)
-                return
-            }
-        } else {
-            // Search for variation
+        if (tree.parent != null) tree.parent.current = tree.parent.subtrees.indexOf(tree)
 
-            var variations = tree.subtrees.filter(function(subtree) {
-                return subtree.nodes.length > 0
-                    && color in subtree.nodes[0]
-                    && sgf.point2tuple(subtree.nodes[0][color][0]).equals(vertex)
-            }.bind(this))
+        setBoard(sgf.addBoard(tree, index).nodes[index].board)
+        setCurrentPlayer(1)
 
-            if (variations.length > 0) {
-                setCurrentTreePosition(sgf.addBoards(variations[0]), 0)
-                return
-            }
+        if ('B' in tree.nodes[index]) setCurrentPlayer(-1)
+        else if ('W' in tree.nodes[index]) setCurrentPlayer(1)
+        else if ('PL' in tree.nodes[index])
+            setCurrentPlayer(tree.nodes[index].PL[0] == 'W' ? -1 : 1)
+        else if ('HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
+            setCurrentPlayer(-1)
+    }
+
+    function getCurrentTreePosition() {
+        return $('goban').retrieve('position')
+    }
+
+    function getBoard() {
+        return $('goban').retrieve('board')
+    }
+
+    function setBoard(board) {
+        if (!getBoard() || getBoard().size != board.size) {
+            buildBoard(board)
+            resizeWindow()
         }
 
-        // Create variation
-
-        var splitted = sgf.splitTree(tree, index)
-        var node = {}; node[color] = [sgf.tuple2point(vertex)]
-        var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
-
-        splitted.subtrees.push(newtree)
-        splitted.current = splitted.subtrees.length - 1
-
-        sgf.addBoard(newtree, newtree.nodes.length - 1)
-        setCurrentTreePosition(newtree, 0)
-    }
-}
-
-function buildBoard(board) {
-    var rows = []
-    var hoshi = board.getHandicapPlacement(9)
-
-    for (var y = 0; y < board.size; y++) {
-        var ol = new Element('ol.row')
+        setCaptures(board.captures)
 
         for (var x = 0; x < board.size; x++) {
-            var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
-            var img = new Element('img', {
-                src: '../img/stone_0.png',
-                draggable: false
+            for (var y = 0; y < board.size; y++) {
+                var li = $('goban').getElement('.pos_' + x + '-' + y)
+                var sign = board.arrangement[li.retrieve('tuple')]
+                var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
+                    'cross', 'square', 'label', 'point']
+
+                types.each(function(x) {
+                    if (li.hasClass(x)) li.removeClass(x)
+                })
+
+                if (li.retrieve('tuple') in board.overlays) {
+                    board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
+                        if (type != '') li.addClass(type)
+                        if (ghost != 0) li.addClass('ghost_' + ghost)
+                        if (label != '') li.set('data-label', label)
+                    })
+                }
+
+                if (li.hasClass('sign_' + sign)) continue
+
+                for (var i = -1; i <= 1; i++) {
+                    if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
+                }
+
+                li.addClass('sign_' + sign)
+                    .getElement('img').set('src', '../img/stone_' + sign + '.png')
+            }
+        }
+
+        $('goban').store('board', board)
+    }
+
+    function makeMove(vertex) {
+        if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
+            return
+
+        var position = getCurrentTreePosition()
+        var tree = position[0], index = position[1]
+        var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+
+        if (getBoard().hasVertex(vertex))
+            new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
+        else new Audio('../sound/pass.wav').play()
+
+        if (tree.current == null && tree.nodes.length - 1 == index) {
+            // Append move
+
+            var node = {}
+            node[color] = [sgf.tuple2point(vertex)]
+            tree.nodes.push(node)
+
+            setCurrentTreePosition(tree, tree.nodes.length - 1)
+        } else {
+            if (index != tree.nodes.length - 1) {
+                // Search for next move
+
+                var nextNode = tree.nodes[index + 1]
+                var moveExists = color in nextNode
+                    && sgf.point2tuple(nextNode[color][0]).equals(vertex)
+
+                if (moveExists) {
+                    setCurrentTreePosition(tree, index + 1)
+                    return
+                }
+            } else {
+                // Search for variation
+
+                var variations = tree.subtrees.filter(function(subtree) {
+                    return subtree.nodes.length > 0
+                        && color in subtree.nodes[0]
+                        && sgf.point2tuple(subtree.nodes[0][color][0]).equals(vertex)
+                }.bind(this))
+
+                if (variations.length > 0) {
+                    setCurrentTreePosition(sgf.addBoards(variations[0]), 0)
+                    return
+                }
+            }
+
+            // Create variation
+
+            var splitted = sgf.splitTree(tree, index)
+            var node = {}; node[color] = [sgf.tuple2point(vertex)]
+            var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
+
+            splitted.subtrees.push(newtree)
+            splitted.current = splitted.subtrees.length - 1
+
+            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            setCurrentTreePosition(newtree, 0)
+        }
+    }
+
+    function buildBoard(board) {
+        var rows = []
+        var hoshi = board.getHandicapPlacement(9)
+
+        for (var y = 0; y < board.size; y++) {
+            var ol = new Element('ol.row')
+
+            for (var x = 0; x < board.size; x++) {
+                var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
+                var img = new Element('img', {
+                    src: '../img/stone_0.png',
+                    draggable: false
+                })
+
+                if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
+                    li.addClass('hoshi')
+
+                ol.adopt(li.adopt(img).addEvent('click', function() {
+                    makeMove(this.retrieve('tuple'))
+                }))
+            }
+
+            rows.push(ol)
+        }
+
+        var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+        var coordx = new Element('ol.coordx')
+        var coordy = new Element('ol.coordy')
+
+        for (var i = 0; i < board.size; i++) {
+            coordx.adopt(new Element('li', { text: alpha[i] }))
+            coordy.adopt(new Element('li', { text: board.size - i }))
+        }
+
+        $('goban').empty().adopt(rows, coordx, coordy)
+            .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+    }
+
+    function resizeWindow() {
+        var width = $('goban').getSize().x
+        var height = $('goban').getSize().y + $$('header')[0].getSize().y
+        remote.getCurrentWindow().setContentSize(width, height)
+    }
+
+    /**
+     * Menu
+     */
+
+    function newGame() {
+        if (arguments.length >= 1) new Audio('../sound/newgame.wav').play()
+
+        var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+        buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
+
+        var tree = sgf.parse(sgf.tokenize(buffer))
+        setTreeRoot(tree)
+    }
+
+    function loadGame(filename) {
+        setIsLoading(true)
+
+        if (arguments.length == 0) {
+            var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                filters: [{ name: 'SGF Files', extensions: ['sgf'] },
+                          { name: 'All Files', extensions: ['*'] }]
             })
 
-            if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
-                li.addClass('hoshi')
-
-            ol.adopt(li.adopt(img).addEvent('click', function() {
-                makeMove(this.retrieve('tuple'))
-            }))
+            if (result) filename = result[0]
         }
 
-        rows.push(ol)
+        if (filename) {
+            var tree = sgf.parseFile(filename)
+            if (tree.subtrees.length == 0) return
+            setTreeRoot(tree.subtrees[0])
+        }
+
+        setIsLoading(false)
     }
 
-    var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-    var coordx = new Element('ol.coordx')
-    var coordy = new Element('ol.coordy')
-
-    for (var i = 0; i < board.size; i++) {
-        coordx.adopt(new Element('li', { text: alpha[i] }))
-        coordy.adopt(new Element('li', { text: board.size - i }))
-    }
-
-    $('goban').empty().adopt(rows, coordx, coordy)
-        .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
-}
-
-function resizeWindow() {
-    var width = $('goban').getSize().x
-    var height = $('goban').getSize().y + $$('header')[0].getSize().y
-    remote.getCurrentWindow().setContentSize(width, height)
-}
-
-/**
- * Menu
- */
-
-function newGame() {
-    if (arguments.length >= 1) new Audio('../sound/newgame.wav').play()
-
-    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
-
-    var tree = sgf.parse(sgf.tokenize(buffer))
-    setTreeRoot(tree)
-}
-
-function loadGame(filename) {
-    setIsLoading(true)
-
-    if (arguments.length == 0) {
-        var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-            filters: [{ name: 'SGF Files', extensions: ['sgf'] },
-                      { name: 'All Files', extensions: ['*'] }]
-        })
-
-        if (result) filename = result[0]
-    }
-
-    if (filename) {
-        var tree = sgf.parseFile(filename)
-        if (tree.subtrees.length == 0) return
-        setTreeRoot(tree.subtrees[0])
-    }
-
-    setIsLoading(false)
-}
-
-function goBack() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        if (position - 1 >= 0) {
-            setCurrentTreePosition(tree, position - 1)
-        } else if (tree.parent != null && tree.parent.nodes.length != 0) {
-            setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-        }
-    })
-}
-
-function goForward() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        if (tree.nodes.length > position + 1) {
-            setCurrentTreePosition(tree, position + 1)
-        } else if (tree.current != null && tree.subtrees[tree.current].nodes.length != 0) {
-            setCurrentTreePosition(tree.subtrees[tree.current], 0)
-        }
-    })
-}
-
-function goToNextFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (index != tree.nodes.length - 1)
-            setCurrentTreePosition(tree, tree.nodes.length - 1)
-        else if (tree.current != null) {
-            var subtree = tree.subtrees[tree.current]
-            setCurrentTreePosition(subtree, subtree.nodes.length - 1)
-        }
-    })
-}
-
-function goToPreviousFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (tree.parent == null || tree.parent.nodes.length == 0)
-            setCurrentTreePosition(tree, 0)
-        else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-    })
-}
-
-function goToBeginning() {
-    var tree = getTreeRoot()
-    if (tree.nodes.length == 0) return
-    setCurrentTreePosition(tree, 0)
-}
-
-function goToEnd() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        var t = tree
-        while (t.current != null) {
-            t = t.subtrees[t.current]
-        }
-        setCurrentTreePosition(t, t.nodes.length - 1)
-    })
-}
-
-function buildMenu() {
-    var template = [
-        {
-            label: '&Game',
-            submenu: [
-                {
-                    label: '&New',
-                    accelerator: 'CmdOrCtrl+N',
-                    click: newGame
-                },
-                {
-                    label: '&Load...',
-                    accelerator: 'CmdOrCtrl+O',
-                    click: function() { loadGame() }
-                },
-                { type: 'separator' },
-                {
-                    label: '&Save',
-                    accelerator: 'CmdOrCtrl+S'
-                },
-                {
-                    label: 'Save &As...',
-                    accelerator: 'CmdOrCtrl+Shift+S'
-                },
-                { type: 'separator' },
-                {
-                    label: '&Info',
-                    accelerator: 'CmdOrCtrl+I'
-                }
-            ]
-        },
-        {
-            label: '&Navigation',
-            submenu: [
-                {
-                    label: '&Back',
-                    accelerator: 'Up',
-                    click: goBack
-                },
-                {
-                    label: '&Forward',
-                    accelerator: 'Down',
-                    click: goForward
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To &Previous Fork',
-                    accelerator: 'CmdOrCtrl+Up',
-                    click: goToPreviousFork
-                },
-                {
-                    label: 'Go To &Next Fork',
-                    accelerator: 'CmdOrCtrl+Down',
-                    click: goToNextFork
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To &Beginning',
-                    accelerator: 'CmdOrCtrl+Home',
-                    click: goToBeginning
-                },
-                {
-                    label: 'Go To &End',
-                    accelerator: 'CmdOrCtrl+End',
-                    click: goToEnd
-                }
-            ]
-        },
-        {
-            label: '&View',
-            submenu: [
-                {
-                    label: 'Show &Coordinates',
-                    accelerator: 'CmdOrCtrl+Shift+C',
-                    type: 'checkbox',
-                    checked: getShowCoordinates(),
-                    click: function() {
-                        setShowCoordinates(!getShowCoordinates())
-                        resizeWindow()
-                    }
-                },
-                {
-                    label: 'Show &Variations',
-                    accelerator: 'CmdOrCtrl+Shift+V',
-                    type: 'checkbox',
-                    checked: getShowVariations(),
-                    click: function() {
-                        setShowVariations(!getShowVariations())
-                    }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Show &History',
-                    accelerator: 'CmdOrCtrl+H'
-                }
-            ]
-        },
-        {
-            label: '&Help',
-            submenu: [
-                {
-                    label: '&About Goban'
-                }
-            ]
-        }
-    ]
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
-}
-
-function openHeaderMenu() {
-    var template = [
-        {
-            label: '&Pass',
-            click: function() {
-                makeMove(new Tuple(-1, -1))
+    function goBack() {
+        getCurrentTreePosition().unpack(function(tree, position) {
+            if (position - 1 >= 0) {
+                setCurrentTreePosition(tree, position - 1)
+            } else if (tree.parent != null && tree.parent.nodes.length != 0) {
+                setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
             }
-        },
-        {
-            label: '&Count...'
-        },
-        { type: 'separator' },
-        {
-            label: '&Info'
-        }
-    ]
-
-    menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
-}
-
-/**
- * Main
- */
-
-document.addEvent('keydown', function(e) {
-    if (e.code === 123) {
-        remote.getCurrentWindow().toggleDevTools()
-    } else if (e.code === 116) {
-        location.reload()
+        })
     }
-}).addEvent('mousewheel', function(e) {
-    if (e.wheel < 0) goForward()
-    else if (e.wheel > 0) goBack()
-}).addEvent('domready', function() {
-    buildMenu()
 
-    if (process.argv.length >= 2) loadGame(process.argv[1])
-    else newGame()
-})
+    function goForward() {
+        getCurrentTreePosition().unpack(function(tree, position) {
+            if (tree.nodes.length > position + 1) {
+                setCurrentTreePosition(tree, position + 1)
+            } else if (tree.current != null && tree.subtrees[tree.current].nodes.length != 0) {
+                setCurrentTreePosition(tree.subtrees[tree.current], 0)
+            }
+        })
+    }
 
+    function goToNextFork() {
+        getCurrentTreePosition().unpack(function(tree, index) {
+            if (index != tree.nodes.length - 1)
+                setCurrentTreePosition(tree, tree.nodes.length - 1)
+            else if (tree.current != null) {
+                var subtree = tree.subtrees[tree.current]
+                setCurrentTreePosition(subtree, subtree.nodes.length - 1)
+            }
+        })
+    }
+
+    function goToPreviousFork() {
+        getCurrentTreePosition().unpack(function(tree, index) {
+            if (tree.parent == null || tree.parent.nodes.length == 0)
+                setCurrentTreePosition(tree, 0)
+            else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+        })
+    }
+
+    function goToBeginning() {
+        var tree = getTreeRoot()
+        if (tree.nodes.length == 0) return
+        setCurrentTreePosition(tree, 0)
+    }
+
+    function goToEnd() {
+        getCurrentTreePosition().unpack(function(tree, position) {
+            var t = tree
+            while (t.current != null) {
+                t = t.subtrees[t.current]
+            }
+            setCurrentTreePosition(t, t.nodes.length - 1)
+        })
+    }
+
+    function buildMenu() {
+        var template = [
+            {
+                label: '&Game',
+                submenu: [
+                    {
+                        label: '&New',
+                        accelerator: 'CmdOrCtrl+N',
+                        click: newGame
+                    },
+                    {
+                        label: '&Load...',
+                        accelerator: 'CmdOrCtrl+O',
+                        click: function() { loadGame() }
+                    },
+                    { type: 'separator' },
+                    {
+                        label: '&Save',
+                        accelerator: 'CmdOrCtrl+S'
+                    },
+                    {
+                        label: 'Save &As...',
+                        accelerator: 'CmdOrCtrl+Shift+S'
+                    },
+                    { type: 'separator' },
+                    {
+                        label: '&Info',
+                        accelerator: 'CmdOrCtrl+I'
+                    }
+                ]
+            },
+            {
+                label: '&Navigation',
+                submenu: [
+                    {
+                        label: '&Back',
+                        accelerator: 'Up',
+                        click: goBack
+                    },
+                    {
+                        label: '&Forward',
+                        accelerator: 'Down',
+                        click: goForward
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Go To &Previous Fork',
+                        accelerator: 'CmdOrCtrl+Up',
+                        click: goToPreviousFork
+                    },
+                    {
+                        label: 'Go To &Next Fork',
+                        accelerator: 'CmdOrCtrl+Down',
+                        click: goToNextFork
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Go To &Beginning',
+                        accelerator: 'CmdOrCtrl+Home',
+                        click: goToBeginning
+                    },
+                    {
+                        label: 'Go To &End',
+                        accelerator: 'CmdOrCtrl+End',
+                        click: goToEnd
+                    }
+                ]
+            },
+            {
+                label: '&View',
+                submenu: [
+                    {
+                        label: 'Show &Coordinates',
+                        accelerator: 'CmdOrCtrl+Shift+C',
+                        type: 'checkbox',
+                        checked: getShowCoordinates(),
+                        click: function() {
+                            setShowCoordinates(!getShowCoordinates())
+                            resizeWindow()
+                        }
+                    },
+                    {
+                        label: 'Show &Variations',
+                        accelerator: 'CmdOrCtrl+Shift+V',
+                        type: 'checkbox',
+                        checked: getShowVariations(),
+                        click: function() {
+                            setShowVariations(!getShowVariations())
+                        }
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Show &History',
+                        accelerator: 'CmdOrCtrl+H'
+                    }
+                ]
+            },
+            {
+                label: '&Help',
+                submenu: [
+                    {
+                        label: '&About Goban'
+                    }
+                ]
+            }
+        ]
+
+        Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    }
+
+    function openHeaderMenu() {
+        var template = [
+            {
+                label: '&Pass',
+                click: function() {
+                    makeMove(new Tuple(-1, -1))
+                }
+            },
+            {
+                label: '&Count...'
+            },
+            { type: 'separator' },
+            {
+                label: '&Info'
+            }
+        ]
+
+        menu = Menu.buildFromTemplate(template)
+        menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
+    }
+
+    /**
+     * Main
+     */
+
+    document.addEvent('keydown', function(e) {
+        if (e.code === 123) {
+            remote.getCurrentWindow().toggleDevTools()
+        } else if (e.code === 116) {
+            location.reload()
+        }
+    }).addEvent('mousewheel', function(e) {
+        if (e.wheel < 0) goForward()
+        else if (e.wheel > 0) goBack()
+    }).addEvent('domready', function() {
+        buildMenu()
+
+        if (process.argv.length >= 2) loadGame(process.argv[1])
+        else newGame()
+    })
 </script>
 
 </body>
