@@ -85,6 +85,7 @@
         background-image: url('../img/corner-se.png');
     }
     #goban .row img {
+        position: relative;
         width: 100%;
         height: 100%;
 }
@@ -187,4 +188,65 @@
         height: 16px;
         font-weight: normal;
         font-size: 16px;
+}
+
+/**
+ * Fuzzy stone placement
+ */
+
+#goban.fuzzy .row li.shift_1 img {
+        left: -2px;
+    }
+    #goban.fuzzy .row li.point.shift_1::after {
+        margin-left: -7px;
+    }
+    #goban.fuzzy .row li.shift_2 img {
+        top: -2px;
+    }
+    #goban.fuzzy .row li.point.shift_2::after {
+        margin-top: -7px;
+    }
+    #goban.fuzzy .row li.shift_3 img {
+        left: 2px;
+    }
+    #goban.fuzzy .row li.point.shift_3::after {
+        margin-left: -3px;
+    }
+    #goban.fuzzy .row li.shift_4 img {
+        top: 2px;
+    }
+    #goban.fuzzy .row li.point.shift_4::after {
+        margin-top: -3px;
+    }
+    #goban.fuzzy .row li.shift_5 img {
+        top: -1px;
+        left: -1px;
+    }
+    #goban.fuzzy .row li.point.shift_5::after {
+        margin-top: -6px;
+        margin-left: -6px;
+    }
+    #goban.fuzzy .row li.shift_6 img {
+        top: -1px;
+        left: 1px;
+    }
+    #goban.fuzzy .row li.point.shift_6::after {
+        margin-top: -6px;
+        margin-left: -4px;
+    }
+    #goban.fuzzy .row li.shift_7 img {
+        top: 1px;
+        left: 1px;
+    }
+    #goban.fuzzy .row li.point.shift_7::after {
+        margin-top: -4px;
+        margin-left: -4px;
+    }
+    #goban.fuzzy .row li.shift_8 img {
+        top: 1px;
+        left: -1px;
+    }
+    #goban.fuzzy .row li.point.shift_8::after {
+        margin-top: -4px;
+        margin-left: -6px;
 }

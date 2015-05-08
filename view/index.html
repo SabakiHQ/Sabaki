@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<section id="goban" class="variations"></section>
+<section id="goban" class="variations fuzzy"></section>
 
 <header>
     <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
@@ -104,6 +104,15 @@
     function setShowVariations(show) {
         if (show) $('goban').addClass('variations')
         else $('goban').removeClass('variations')
+    }
+
+    function getFuzzyStonePlacement() {
+        return $('goban').hasClass('fuzzy')
+    }
+
+    function setFuzzyStonePlacement(fuzzy) {
+        if (fuzzy) $('goban').addClass('fuzzy')
+        else $('goban').removeClass('fuzzy')
     }
 
     function getShowCoordinates() {
@@ -286,6 +295,32 @@
             sgf.addBoard(newtree, newtree.nodes.length - 1)
             setCurrentTreePosition(newtree, 0)
         }
+
+        // Randomize shift and readjust
+
+        var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
+        var direction = Math.floor(Math.random() * 9)
+
+        for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
+        li.addClass('shift_' + direction)
+
+        if (direction == 1 || direction == 5 || direction == 8) {
+            // Left
+            $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
+                .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
+        } else if (direction == 2 || direction == 5 || direction == 6) {
+            // Top
+            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
+                .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
+        } else if (direction == 3 || direction == 7 || direction == 6) {
+            // Right
+            $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
+                .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
+        } else if (direction == 4 || direction == 7 || direction == 8) {
+            // Bottom
+            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
+                .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
+        }
     }
 
     function buildBoard(board) {
@@ -296,7 +331,10 @@
             var ol = new Element('ol.row')
 
             for (var x = 0; x < board.size; x++) {
-                var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
+                var li = new Element('li.pos_' + x + '-' + y)
+                    .store('tuple', new Tuple(x, y))
+                    .addClass('shift_' + Math.floor(Math.random() * 9))
+
                 var img = new Element('img', {
                     src: '../img/stone_0.png',
                     draggable: false
@@ -510,6 +548,14 @@
             {
                 label: '&View',
                 submenu: [
+                    {
+                        label: '&Fuzzy Stone Placement',
+                        type: 'checkbox',
+                        checked: getFuzzyStonePlacement(),
+                        click: function() {
+                            setFuzzyStonePlacement(!getFuzzyStonePlacement())
+                        }
+                    },
                     {
                         label: 'Show &Coordinates',
                         accelerator: 'CmdOrCtrl+Shift+C',
