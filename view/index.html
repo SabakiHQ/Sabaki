@@ -121,7 +121,6 @@
 
     function setPlayerName(sign, name) {
         $$('#player_' + sign + ' .name')[0].set('text', name)
-        $$('#info input[name="name_' + sign + '"]')[0].set('value', name)
     }
 
     function getCaptures() {
@@ -369,6 +368,7 @@
         }
 
         setIsLoading(false)
+        closeGameInfo()
     }
 
     function goBack() {
@@ -427,12 +427,10 @@
     }
 
     function showGameInfo() {
-        setIsLoading(true)
-        $('info').addClass('show')
+        $('info').addClass('show').getElement('input[name="name_1"]').focus()
     }
 
     function closeGameInfo() {
-        setIsLoading(false)
         $('info').removeClass('show')
     }
 

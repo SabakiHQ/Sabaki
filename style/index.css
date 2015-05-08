@@ -58,7 +58,7 @@ header > span {
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
-        z-index: 2;
+        z-index: 1;
     }
     #info.show {
         bottom: 0;
@@ -69,7 +69,7 @@ header > span {
         background: #111;
         color: #eee;
     }
-    #info input:focus, #info select:focus, #info button:hover {
+    #info input:focus, #info select:focus, #info button:hover, #info button:focus {
         background: #1a1a1a;
     }
     #info section {
