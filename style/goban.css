@@ -5,16 +5,15 @@
  */
 
 #goban {
-    position: relative;
-    display: inline-block;
-    border: 10px solid #B48F5F;
-    padding: 10px 8px 8px 10px;
-    background: #DFB277 url('../img/goban.png') center fixed;
-    color: #5E2E0C;
-    text-shadow: 0 1px 0 #D28D32;
-}
-
-#goban ol {
+        position: relative;
+        display: inline-block;
+        border: 10px solid #B48F5F;
+        padding: 10px 8px 8px 10px;
+        background: #DFB277 url('../img/goban.png') center fixed;
+        color: #5E2E0C;
+        text-shadow: 0 1px 0 #D28D32;
+    }
+    #goban ol {
         list-style: none;
         white-space: nowrap;
         margin: 0 23px;
@@ -25,8 +24,13 @@
         width: 30px;
         text-align: center;
         line-height: 30px;
-    }
-    #goban .coordy {
+}
+
+/**
+ * Coordinates
+ */
+
+#goban .coordy {
         position: absolute;
         left: 2px;
         top: 33px;
@@ -44,6 +48,10 @@
     #goban:not(.coordinates) ol {
         margin: 0;
 }
+
+/**
+ * Board images
+ */
 
 #goban .row li {
         position: relative;
@@ -79,8 +87,13 @@
     #goban .row img {
         width: 100%;
         height: 100%;
-    }
-    #goban .row li::after, #goban .row li::after {
+}
+
+/**
+ * Overlays
+ */
+
+#goban .row li::after, #goban .row li::after {
         content: ' ';
         display: none;
         position: absolute;
