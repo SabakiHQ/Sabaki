@@ -338,13 +338,16 @@
      */
 
     function newGame() {
-        if (arguments.length >= 1) new Audio('../sound/newgame.wav').play()
-
         var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
         buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
 
         var tree = sgf.parse(sgf.tokenize(buffer))
         setTreeRoot(tree)
+
+        if (arguments.length >= 1) {
+            new Audio('../sound/newgame.wav').play()
+            showGameInfo()
+        }
     }
 
     function loadGame(filename) {
@@ -423,7 +426,7 @@
         })
     }
 
-    function openGameInfo() {
+    function showGameInfo() {
         setIsLoading(true)
         $('info').addClass('show')
     }
@@ -465,7 +468,7 @@
                     {
                         label: '&Info',
                         accelerator: 'CmdOrCtrl+I',
-                        click: openGameInfo
+                        click: showGameInfo
                     }
                 ]
             },
@@ -562,7 +565,7 @@
             { type: 'separator' },
             {
                 label: '&Info',
-                click: openGameInfo
+                click: showGameInfo
             }
         ]
 
