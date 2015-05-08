@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<section id="goban" class="variations"></section>
+<section id="goban" class="variations fuzzy"></section>
 
 <header>
     <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
@@ -104,6 +104,15 @@
     function setShowVariations(show) {
         if (show) $('goban').addClass('variations')
         else $('goban').removeClass('variations')
+    }
+
+    function getFuzzyStonePlacement() {
+        return $('goban').hasClass('fuzzy')
+    }
+
+    function setFuzzyStonePlacement(fuzzy) {
+        if (fuzzy) $('goban').addClass('fuzzy')
+        else $('goban').removeClass('fuzzy')
     }
 
     function getShowCoordinates() {
@@ -539,6 +548,14 @@
             {
                 label: '&View',
                 submenu: [
+                    {
+                        label: '&Fuzzy Stone Placement',
+                        type: 'checkbox',
+                        checked: getFuzzyStonePlacement(),
+                        click: function() {
+                            setFuzzyStonePlacement(!getFuzzyStonePlacement())
+                        }
+                    },
                     {
                         label: 'Show &Coordinates',
                         accelerator: 'CmdOrCtrl+Shift+C',
