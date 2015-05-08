@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" type="text/css" href="../style/app.css" />
 <link rel="stylesheet" type="text/css" href="../style/goban.css" />
+<link rel="stylesheet" type="text/css" href="../style/index.css" />
 <script src="../lib/mootools.js"></script>
 
 </head>
@@ -17,10 +18,60 @@
 
 <header>
     <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
-    <img id="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
+    <img class="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
     <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
     <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
 </header>
+
+<section id="info">
+    <form>
+        <section>
+            <input type="text" name="rank_1" placeholder="Rank" />
+            <input type="text" name="name_1" placeholder="Player Black" />
+            <img class="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
+            <input type="text" name="name_-1" placeholder="Player White" />
+            <input type="text" name="rank_-1" placeholder="Rank" />
+        </section>
+
+        <ul>
+            <li>
+                <label><span>Result:</span>
+                <input type="text" name="result" placeholder="None" /></label>
+            </li>
+            <li>
+                <label><span>Komi:</span>
+                <input type="text" name="komi" placeholder="6.5" /></label>
+            </li>
+            <li>
+                <label><span>Handicap:</span>
+                <select name="handicap">
+                    <option>No stones</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                </select></label>
+            </li>
+            <li>
+                <label><span>Board size:</span>
+                <select name="size">
+                    <option>19</option>
+                    <option>13</option>
+                    <option>9</option>
+                </select></label>
+            </li>
+        </ul>
+
+        <p>
+            <button type="submit" onclick="updateGameInfo(); closeGameInfo(); return false">OK</button>
+            <button name="cancel" onclick="closeGameInfo(); return false">Cancel</button>
+        </p>
+    </form>
+</section>
 
 <section id="loading"></section>
 
@@ -70,6 +121,7 @@
 
     function setPlayerName(sign, name) {
         $$('#player_' + sign + ' .name')[0].set('text', name)
+        $$('#info input[name="name_' + sign + '"]')[0].set('value', name)
     }
 
     function getCaptures() {
@@ -87,11 +139,11 @@
     }
 
     function getCurrentPlayer() {
-        return $('currentplayer').get('src') == '../img/blacktoplay.png' ? 1 : -1
+        return $$('.currentplayer')[0].get('src') == '../img/blacktoplay.png' ? 1 : -1
     }
 
     function setCurrentPlayer(sign) {
-        $('currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
+        $$('.currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
     }
 
     function getTreeRoot() {
@@ -371,6 +423,20 @@
         })
     }
 
+    function openGameInfo() {
+        setIsLoading(true)
+        $('info').addClass('show')
+    }
+
+    function closeGameInfo() {
+        setIsLoading(false)
+        $('info').removeClass('show')
+    }
+
+    function updateGameInfo() {
+
+    }
+
     function buildMenu() {
         var template = [
             {
@@ -398,7 +464,8 @@
                     { type: 'separator' },
                     {
                         label: '&Info',
-                        accelerator: 'CmdOrCtrl+I'
+                        accelerator: 'CmdOrCtrl+I',
+                        click: openGameInfo
                     }
                 ]
             },
@@ -494,7 +561,8 @@
             },
             { type: 'separator' },
             {
-                label: '&Info'
+                label: '&Info',
+                click: openGameInfo
             }
         ]
 

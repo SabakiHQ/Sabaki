@@ -1,0 +1,99 @@
+header > span {
+        position: absolute;
+        left: 0;
+        right: 50%;
+        top: 0;
+        bottom: 0;
+        padding-left: 10px;
+        padding-right: 30px;
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #player_-1 {
+        left: 50%;
+        right: 0;
+        padding-right: 42px;
+        padding-left: 30px;
+        text-align: left;
+    }
+    header > span > .captures {
+        position: relative;
+        top: -1px;
+        display: inline-block;
+        height: 20px;
+        min-width: 10px;
+        border-radius: 10px;
+        padding: 0 5px;
+        margin: 0 5px;
+        background: black;
+        line-height: 20px;
+        text-align: center;
+        opacity: .7;
+        font-size: .8em;
+        transition: .2s opacity;
+    }
+    header img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        height: 21px;
+        transform: translate(-50%, -50%);
+    }
+    #headermenu {
+        left: auto;
+        right: 5px;
+        height: 32px;
+        transform: translateY(-50%);
+}
+
+#info {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: -285px;
+        height: 245px;
+        padding: 20px;
+        background: #26292C;
+        color: #eee;
+        transition: .5s bottom;
+    }
+    #info.show {
+        bottom: 0;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+    }
+    #info input, #info select, #info button {
+        border: 0;
+        background: #111;
+        color: #eee;
+    }
+    #info input:focus, #info select:focus, #info button:hover {
+        background: #1a1a1a;
+    }
+    #info section {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    #info section img {
+        margin: 0 10px;
+        height: 31px;
+    }
+    #info section input[name$="_1"] {
+        text-align: right;
+    }
+    #info section input[name^="rank"] {
+        width: 40px;
+    }
+    #info input[name="komi"] {
+        width: 40px;
+    }
+    #info label span {
+        display: inline-block;
+        width: 6em;
+        margin-right: 10px;
+        text-align: right;
+    }
+    #info form p:last-child {
+        text-align: right;
+}

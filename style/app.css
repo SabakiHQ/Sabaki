@@ -9,8 +9,11 @@
     padding: 0;
 }
 
-body {
+body, input, button, select, option {
     font: 14px/1.5 'Segoe UI', sans-serif;
+}
+
+body {
     cursor: default;
     overflow: hidden;
     -webkit-user-select: none;
@@ -41,5 +44,24 @@ img {
     }
     body.loading #loading {
         display: block;
-        opacity: .5;
+        opacity: .3;
+}
+
+form p, form ul li {
+        margin: 10px 0;
+    }
+    form ul {
+        list-style: none;
+    }
+    input {
+        width: 125px;
+    }
+    input, button, select {
+        padding: 5px 10px;
+    }
+    button {
+        padding: 5px 20px;
+    }
+    input:focus, button:focus, select:focus {
+        outline: none;
 }
