@@ -41,6 +41,7 @@ img {
         bottom: 0;
         background: #26292C;
         opacity: 0;
+        z-index: 1;
     }
     body.loading #loading {
         display: block;

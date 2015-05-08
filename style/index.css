@@ -58,6 +58,7 @@ header > span {
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
+        z-index: 2;
     }
     #info.show {
         bottom: 0;
