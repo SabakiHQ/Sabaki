@@ -77,6 +77,7 @@
         background-image: url('../img/corner-se.png');
     }
     #goban .row img {
+        position: relative;
         width: 100%;
         height: 100%;
     }
@@ -174,4 +175,37 @@
         height: 16px;
         font-weight: normal;
         font-size: 16px;
+}
+
+/**
+ * Shifting
+ */
+
+#goban .row li.shift_1 img {
+        left: -1px;
+    }
+    #goban .row li.shift_2 img {
+        top: -1px;
+    }
+    #goban .row li.shift_3 img {
+        left: 1px;
+    }
+    #goban .row li.shift_4 img {
+        top: 1px;
+    }
+    #goban .row li.shift_5 img {
+        top: -1px;
+        left: -1px;
+    }
+    #goban .row li.shift_6 img {
+        top: -1px;
+        left: 1px;
+    }
+    #goban .row li.shift_7 img {
+        top: 1px;
+        left: 1px;
+    }
+    #goban .row li.shift_8 img {
+        top: 1px;
+        left: -1px;
 }
