@@ -184,32 +184,32 @@
 #goban .row li.shift_1 img {
         left: -1px;
     }
-    #goban .row li.shift_1::after {
+    #goban .row li.point.shift_1::after {
         margin-left: -6px;
     }
     #goban .row li.shift_2 img {
         top: -1px;
     }
-    #goban .row li.shift_2::after {
+    #goban .row li.point.shift_2::after {
         margin-top: -6px;
     }
     #goban .row li.shift_3 img {
         left: 1px;
     }
-    #goban .row li.shift_3::after {
+    #goban .row li.point.shift_3::after {
         margin-left: -4px;
     }
     #goban .row li.shift_4 img {
         top: 1px;
     }
-    #goban .row li.shift_4::after {
+    #goban .row li.point.shift_4::after {
         margin-top: -4px;
     }
     #goban .row li.shift_5 img {
         top: -1px;
         left: -1px;
     }
-    #goban .row li.shift_5::after {
+    #goban .row li.point.shift_5::after {
         margin-top: -6px;
         margin-left: -6px;
     }
@@ -217,7 +217,7 @@
         top: -1px;
         left: 1px;
     }
-    #goban .row li.shift_6::after {
+    #goban .row li.point.shift_6::after {
         margin-top: -6px;
         margin-left: -4px;
     }
@@ -225,7 +225,7 @@
         top: 1px;
         left: 1px;
     }
-    #goban .row li.shift_7::after {
+    #goban .row li.point.shift_7::after {
         margin-top: -4px;
         margin-left: -4px;
     }
@@ -233,7 +233,7 @@
         top: 1px;
         left: -1px;
     }
-    #goban .row li.shift_8::after {
+    #goban .row li.point.shift_8::after {
         margin-top: -4px;
         margin-left: -6px;
 }
