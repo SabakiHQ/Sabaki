@@ -296,7 +296,10 @@
             var ol = new Element('ol.row')
 
             for (var x = 0; x < board.size; x++) {
-                var li = new Element('li.pos_' + x + '-' + y).store('tuple', new Tuple(x, y))
+                var li = new Element('li.pos_' + x + '-' + y)
+                    .store('tuple', new Tuple(x, y))
+                    .addClass('shift_' + Math.floor(Math.random() * 9))
+
                 var img = new Element('img', {
                     src: '../img/stone_0.png',
                     draggable: false
