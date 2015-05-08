@@ -182,28 +182,28 @@
  */
 
 #goban .row li.shift_1 img {
-        left: -1px;
+        left: -2px;
     }
     #goban .row li.point.shift_1::after {
-        margin-left: -6px;
+        margin-left: -7px;
     }
     #goban .row li.shift_2 img {
-        top: -1px;
+        top: -2px;
     }
     #goban .row li.point.shift_2::after {
-        margin-top: -6px;
+        margin-top: -7px;
     }
     #goban .row li.shift_3 img {
-        left: 1px;
+        left: 2px;
     }
     #goban .row li.point.shift_3::after {
-        margin-left: -4px;
+        margin-left: -3px;
     }
     #goban .row li.shift_4 img {
-        top: 1px;
+        top: 2px;
     }
     #goban .row li.point.shift_4::after {
-        margin-top: -4px;
+        margin-top: -3px;
     }
     #goban .row li.shift_5 img {
         top: -1px;
