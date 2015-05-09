@@ -366,6 +366,33 @@
         remote.getCurrentWindow().setContentSize(width, height)
     }
 
+    function showGameInfo() {
+        var rootNode = getTreeRoot().nodes[0]
+        var info = $('info')
+
+        info.addClass('show').getElement('input[name="name_1"]').focus()
+
+        info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
+        info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+        info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
+        info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+        info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
+        info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
+        info.getElement('input[name="size"]').set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
+
+        if ('HA' in rootNode) {
+            info.getElement('select[name="handicap"]').selectedIndex = rootNode.HA[0].toInt() - 1
+        }
+    }
+
+    function closeGameInfo() {
+        $('info').removeClass('show')
+    }
+
+    function updateGameInfo() {
+
+    }
+
     /**
      * Menu
      */
@@ -458,33 +485,6 @@
             }
             setCurrentTreePosition(t, t.nodes.length - 1)
         })
-    }
-
-    function showGameInfo() {
-        var rootNode = getTreeRoot().nodes[0]
-        var info = $('info')
-
-        info.addClass('show').getElement('input[name="name_1"]').focus()
-
-        info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
-        info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
-        info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
-        info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
-        info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
-        info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
-        info.getElement('input[name="size"]').set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
-
-        if ('HA' in rootNode) {
-            info.getElement('select[name="handicap"]').selectedIndex = rootNode.HA[0].toInt() - 1
-        }
-    }
-
-    function closeGameInfo() {
-        $('info').removeClass('show')
-    }
-
-    function updateGameInfo() {
-
     }
 
     function buildMenu() {
