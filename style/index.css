@@ -53,12 +53,15 @@ header > span {
         left: 0;
         right: 0;
         bottom: -285px;
-        height: 225px;
-        padding: 20px;
+        height: 275px;
+        overflow: auto;
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
         z-index: 1;
+    }
+    #info .gm-scroll-view form {
+        margin: 20px;
     }
     #info.show {
         bottom: 0;

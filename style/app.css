@@ -1,3 +1,5 @@
+@import url('../lib/gemini-scrollbar/gemini-scrollbar.css');
+
 /**
  * app.css
  *
@@ -65,4 +67,12 @@ form p, form ul li {
     }
     input:focus, button:focus, select:focus {
         outline: none;
+}
+
+/**
+ * Gemini Scrollbars
+ */
+
+.gm-scrollbar .thumb {
+    cursor: default;
 }
