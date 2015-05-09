@@ -45,11 +45,11 @@ img {
     }
     body.loading #loading {
         display: block;
-        opacity: .3;
+        opacity: .5;
 }
 
 form p, form ul li {
-        margin: 10px 0;
+        margin: 5px 0;
     }
     form ul {
         list-style: none;

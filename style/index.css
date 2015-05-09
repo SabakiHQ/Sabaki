@@ -53,7 +53,7 @@ header > span {
         left: 0;
         right: 0;
         bottom: -285px;
-        height: 245px;
+        height: 225px;
         padding: 20px;
         background: #26292C;
         color: #eee;
@@ -86,7 +86,7 @@ header > span {
     #info section input[name^="rank"] {
         width: 40px;
     }
-    #info input[name="komi"] {
+    #info input[name="komi"], #info input[name="size"] {
         width: 40px;
     }
     #info label span {

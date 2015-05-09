@@ -40,7 +40,7 @@
             </li>
             <li>
                 <label><span>Komi:</span>
-                <input type="text" name="komi" placeholder="6.5" /></label>
+                <input type="text" name="komi" placeholder="0" /></label>
             </li>
             <li>
                 <label><span>Handicap:</span>
@@ -58,17 +58,13 @@
             </li>
             <li>
                 <label><span>Board size:</span>
-                <select name="size">
-                    <option>19</option>
-                    <option>13</option>
-                    <option>9</option>
-                </select></label>
+                <input type="text" name="size" placeholder="19" /></label>
             </li>
         </ul>
 
         <p>
             <button type="submit" onclick="updateGameInfo(); closeGameInfo(); return false">OK</button>
-            <button name="cancel" onclick="closeGameInfo(); return false">Cancel</button>
+            <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
         </p>
     </form>
 </section>
@@ -465,7 +461,22 @@
     }
 
     function showGameInfo() {
-        $('info').addClass('show').getElement('input[name="name_1"]').focus()
+        var rootNode = getTreeRoot().nodes[0]
+        var info = $('info')
+
+        info.addClass('show').getElement('input[name="name_1"]').focus()
+
+        info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
+        info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+        info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
+        info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+        info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
+        info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
+        info.getElement('input[name="size"]').set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
+
+        if ('HA' in rootNode) {
+            info.getElement('select[name="handicap"]').selectedIndex = rootNode.HA[0].toInt() - 1
+        }
     }
 
     function closeGameInfo() {
