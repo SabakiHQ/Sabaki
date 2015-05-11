@@ -58,7 +58,7 @@ header > span {
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
-        z-index: 1;
+        z-index: 3;
     }
     #info .gm-scroll-view form {
         margin: 20px;
