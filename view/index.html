@@ -460,6 +460,15 @@
         }
     }
 
+    function getEditMode() {
+        return $('bar').hasClass('edit')
+    }
+
+    function setEditMode(editMode) {
+        if (editMode) $('bar').addClass('edit')
+        else $('bar').removeClass('edit')
+    }
+
     /**
      * Menu
      */
@@ -602,6 +611,49 @@
                         label: '&Info',
                         accelerator: 'CmdOrCtrl+I',
                         click: showGameInfo
+                    }
+                ]
+            },
+            {
+                label: '&Edit',
+                submenu: [
+                    {
+                        label: '&Edit Mode',
+                        type: 'checkbox',
+                        accelerator: 'CmdOrCtrl+E',
+                        checked: getEditMode(),
+                        click: function() {
+                            setEditMode(!getEditMode())
+                        }
+                    },
+                    { type: 'separator' },
+                    {
+                        label: '&Stone Tool',
+                        accelerator: 'CmdOrCtrl+1'
+                    },
+                    {
+                        label: '&Cross Tool',
+                        accelerator: 'CmdOrCtrl+2'
+                    },
+                    {
+                        label: '&Triangle Tool',
+                        accelerator: 'CmdOrCtrl+3'
+                    },
+                    {
+                        label: '&Square Tool',
+                        accelerator: 'CmdOrCtrl+4'
+                    },
+                    {
+                        label: '&Circle Tool',
+                        accelerator: 'CmdOrCtrl+5'
+                    },
+                    {
+                        label: '&Label Tool',
+                        accelerator: 'CmdOrCtrl+6'
+                    },
+                    {
+                        label: '&Number Tool',
+                        accelerator: 'CmdOrCtrl+7'
                     }
                 ]
             },
