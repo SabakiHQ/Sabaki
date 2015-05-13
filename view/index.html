@@ -159,14 +159,14 @@
         $$('.currentplayer').set('src', sign > 0 ? '../img/blacktoplay.png' : '../img/whitetoplay.png')
     }
 
-    function getTreeRoot() {
+    function getRootTree() {
         return getCurrentTreePosition().unpack(function(tree, index) {
             while (tree.parent != null) tree = tree.parent
             return tree
         })
     }
 
-    function setTreeRoot(tree) {
+    function setRootTree(tree) {
         if (tree.nodes.length == 0) return
 
         tree.parent = null
@@ -378,7 +378,7 @@
     }
 
     function showGameInfo() {
-        var tree = getTreeRoot()
+        var tree = getRootTree()
         var rootNode = tree.nodes[0]
         var info = $('info')
 
@@ -408,7 +408,7 @@
     }
 
     function updateGameInfo() {
-        var rootNode = getTreeRoot().nodes[0]
+        var rootNode = getRootTree().nodes[0]
         var info = $('info')
 
         rootNode.BR = [info.getElement('input[name="rank_1"]').get('value')]
@@ -433,6 +433,21 @@
         var size = info.getElement('input[name="size"]').get('value').toInt()
         rootNode.SZ = [String.from(size)]
         if (isNaN(size)) rootNode.SZ = ['19']
+
+        if (!handicap.disabled) {
+            setCurrentTreePosition(getRootTree(), 0)
+
+            if (!('HA' in rootNode)) return
+            var board = getBoard()
+            var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
+            rootNode.AB = []
+
+            for (var i = 0; i < stones.length; i++) {
+                rootNode.AB.push(sgf.tuple2point(stones[i]))
+            }
+
+            setCurrentTreePosition(getRootTree(), 0)
+        }
     }
 
     /**
@@ -444,7 +459,7 @@
         buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
 
         var tree = sgf.parse(sgf.tokenize(buffer))
-        setTreeRoot(tree)
+        setRootTree(tree)
 
         if (arguments.length >= 1) {
             new Audio('../sound/newgame.wav').play()
@@ -467,7 +482,7 @@
         if (filename) {
             var tree = sgf.parseFile(filename)
             if (tree.subtrees.length == 0) return
-            setTreeRoot(tree.subtrees[0])
+            setRootTree(tree.subtrees[0])
         }
 
         setIsLoading(false)
@@ -514,7 +529,7 @@
     }
 
     function goToBeginning() {
-        var tree = getTreeRoot()
+        var tree = getRootTree()
         if (tree.nodes.length == 0) return
         setCurrentTreePosition(tree, 0)
     }
