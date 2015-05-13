@@ -389,9 +389,9 @@
         info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
         info.getElement('input[name="size"]').set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
 
-        if ('HA' in rootNode) {
-            info.getElement('select[name="handicap"]').selectedIndex = rootNode.HA[0].toInt() - 1
-        }
+        var handicap = info.getElement('select[name="handicap"]')
+        if ('HA' in rootNode) handicap.selectedIndex = rootNode.HA[0].toInt() - 1
+        else handicap.selectedIndex = 0
     }
 
     function closeGameInfo() {
@@ -399,7 +399,31 @@
     }
 
     function updateGameInfo() {
+        var rootNode = getTreeRoot().nodes[0]
+        var info = $('info')
 
+        rootNode.BR = [info.getElement('input[name="rank_1"]').get('value')]
+        rootNode.WR = [info.getElement('input[name="rank_-1"]').get('value')]
+        rootNode.PB = [info.getElement('input[name="name_1"]').get('value')]
+        rootNode.PW = [info.getElement('input[name="name_-1"]').get('value')]
+        setPlayerName(1, rootNode.PB[0])
+        setPlayerName(-1, rootNode.PW[0])
+
+        var result = info.getElement('input[name="result"]').get('value')
+        rootNode.RE = [result]
+        if (result == '') delete rootNode.RE
+
+        var komi = info.getElement('input[name="komi"]').get('value').toFloat()
+        rootNode.KM = [String.from(komi)]
+        if (komi == '') delete rootNode.KM
+
+        var handicap = info.getElement('select[name="handicap"]').selectedIndex
+        if (handicap == 0) delete rootNode.HA
+        else rootNode.HA = [String.from(handicap + 1)]
+
+        var size = info.getElement('input[name="size"]').get('value').toInt()
+        rootNode.SZ = [String.from(size)]
+        if (isNaN(size)) rootNode.SZ = ['19']
     }
 
     /**
