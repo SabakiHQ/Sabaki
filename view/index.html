@@ -23,6 +23,9 @@
         <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
         <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
     </header>
+    <section id="edit">
+        Blah
+    </section>
 </section>
 
 <section id="info">
@@ -83,10 +86,11 @@
 
 <script>
     var remote = require('remote')
+    var fs = require('fs')
     var process = remote.require('process')
     var app = remote.require('app');
     var dialog = remote.require('dialog')
-    var fs = require('fs')
+
     var sgf = require('../class/sgf.js')
     var Menu = remote.require('menu')
     var Tuple = require('../lib/tuple')

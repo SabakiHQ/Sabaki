@@ -22,12 +22,13 @@ body {
 }
 
 #bar {
+    position: relative;
     height: 40px;
+    overflow: hidden;
+    text-align: center;
     background: #26292C;
     color: #eee;
     line-height: 40px;
-    position: relative;
-    text-align: center;
 }
 
 img {

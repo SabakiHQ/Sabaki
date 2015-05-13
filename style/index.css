@@ -1,4 +1,12 @@
-header > span {
+header, #bar #edit {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 40px;
+        transition: .2s top;
+    }
+    header > span {
         position: absolute;
         left: 0;
         right: 50%;
@@ -46,6 +54,23 @@ header > span {
         right: 5px;
         height: 32px;
         transform: translateY(-50%);
+}
+
+#bar {
+        transition: .2s background;
+    }
+    #bar.edit {
+        background: #C4BD64;
+    }
+    #bar #edit {
+        color: #333;
+        top: 40px;
+    }
+    #bar.edit #edit {
+        top: 0;
+    }
+    #bar.edit header {
+        top: -40px;
 }
 
 #info {
