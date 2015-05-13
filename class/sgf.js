@@ -139,14 +139,14 @@ exports.parseFile = function(filename) {
     return exports.parse(tokens)
 }
 
-exports.point2tuple = function(point) {
+exports.point2vertex = function(point) {
     if (point.length != 2) return new Tuple(-1, -1)
 
     point = point.toLowerCase()
     return new Tuple(alpha.indexOf(point[0]), alpha.indexOf(point[1]))
 }
 
-exports.tuple2point = function(tuple) {
+exports.vertex2point = function(tuple) {
     return tuple.unpack(function(x, y) {
         if (x < 0 || y < 0) return ''
         return alpha[x] + alpha[y]
@@ -173,10 +173,10 @@ exports.addBoard = function(tree, index, baseboard) {
     }
 
     if ('B' in node) {
-        vertex = exports.point2tuple(node.B[0])
+        vertex = exports.point2vertex(node.B[0])
         baseboard = baseboard.makeMove(1, vertex)
     } else if ('W' in node) {
-        vertex = exports.point2tuple(node.W[0])
+        vertex = exports.point2vertex(node.W[0])
         baseboard = baseboard.makeMove(-1, vertex)
     } else {
         baseboard = baseboard.makeMove(0)
@@ -188,7 +188,7 @@ exports.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].each(function(point) {
-            baseboard.arrangement[exports.point2tuple(point)] = i - 1
+            baseboard.arrangement[exports.point2vertex(point)] = i - 1
         })
     }
 
@@ -203,7 +203,7 @@ exports.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].each(function(point) {
-            baseboard.overlays[exports.point2tuple(point)] = new Tuple(classes[i], 0, '')
+            baseboard.overlays[exports.point2vertex(point)] = new Tuple(classes[i], 0, '')
         })
     }
 
@@ -212,7 +212,7 @@ exports.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            baseboard.overlays[exports.point2tuple(point)] = new Tuple('label', 0, label)
+            baseboard.overlays[exports.point2vertex(point)] = new Tuple('label', 0, label)
         })
     }
 
@@ -227,10 +227,10 @@ exports.addBoard = function(tree, index, baseboard) {
             var v, sign
 
             if ('B' in subtree.nodes[0]) {
-                v = sgf.point2tuple(subtree.nodes[0].B[0])
+                v = sgf.point2vertex(subtree.nodes[0].B[0])
                 sign = 1
             } else if ('W' in subtree.nodes[0]) {
-                v = sgf.point2tuple(subtree.nodes[0].W[0])
+                v = sgf.point2vertex(subtree.nodes[0].W[0])
                 sign = -1
             } else {
                 return
