@@ -440,15 +440,14 @@
 
             if (!('HA' in rootNode)) {
                 delete rootNode.AB
-                return
-            }
+            } else {
+                var board = getBoard()
+                var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
+                rootNode.AB = []
 
-            var board = getBoard()
-            var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
-            rootNode.AB = []
-
-            for (var i = 0; i < stones.length; i++) {
-                rootNode.AB.push(sgf.vertex2point(stones[i]))
+                for (var i = 0; i < stones.length; i++) {
+                    rootNode.AB.push(sgf.vertex2point(stones[i]))
+                }
             }
 
             setCurrentTreePosition(getRootTree(), 0)
