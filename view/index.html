@@ -84,6 +84,7 @@
     var process = remote.require('process')
     var app = remote.require('app');
     var dialog = remote.require('dialog')
+    var fs = require('fs')
     var sgf = require('../class/sgf.js')
     var Menu = remote.require('menu')
     var Tuple = require('../lib/tuple')
@@ -489,6 +490,24 @@
         closeGameInfo()
     }
 
+    function saveGame() {
+        setIsLoading(true)
+
+        var result = dialog.showSaveDialog(remote.getCurrentWindow(), {
+            filters: [{ name: 'SGF Files', extensions: ['sgf'] },
+                      { name: 'All Files', extensions: ['*'] }]
+        })
+
+        if (result) {
+            var tree = getRootTree()
+            var text = '(' + sgf.tree2string(tree) + ')'
+
+            fs.writeFile(result, text)
+        }
+
+        setIsLoading(false)
+    }
+
     function goBack() {
         getCurrentTreePosition().unpack(function(tree, position) {
             if (position - 1 >= 0) {
@@ -566,7 +585,8 @@
                     // },
                     {
                         label: 'Save &As...',
-                        accelerator: 'CmdOrCtrl+S'
+                        accelerator: 'CmdOrCtrl+S',
+                        click: function() { saveGame() }
                     },
                     { type: 'separator' },
                     {
