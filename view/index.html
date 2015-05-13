@@ -438,7 +438,11 @@
         if (!info.getElement('select[name="handicap"]').disabled) {
             setCurrentTreePosition(getRootTree(), 0)
 
-            if (!('HA' in rootNode)) return
+            if (!('HA' in rootNode)) {
+                delete rootNode.AB
+                return
+            }
+
             var board = getBoard()
             var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
             rootNode.AB = []
