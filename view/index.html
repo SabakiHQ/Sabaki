@@ -415,7 +415,7 @@
 
         var komi = info.getElement('input[name="komi"]').get('value').toFloat()
         rootNode.KM = [String.from(komi)]
-        if (komi == '') delete rootNode.KM
+        if (isNaN(komi)) rootNode.KM = ['0']
 
         var handicap = info.getElement('select[name="handicap"]').selectedIndex
         if (handicap == 0) delete rootNode.HA
