@@ -2,6 +2,8 @@ var Board = require('./board.js')
 var Tuple = require('../lib/tuple')
 var fs = require('fs')
 
+var alpha = 'abcdefghijklmnopqrstuvwxyz'
+
 exports.tokenize = function(input) {
     var tokens = []
     var builder = ''
@@ -140,14 +142,11 @@ exports.parseFile = function(filename) {
 exports.point2tuple = function(point) {
     if (point.length != 2) return new Tuple(-1, -1)
 
-    var alpha = 'abcdefghijklmnopqrstuvwxyz'
     point = point.toLowerCase()
     return new Tuple(alpha.indexOf(point[0]), alpha.indexOf(point[1]))
 }
 
 exports.tuple2point = function(tuple) {
-    var alpha = 'abcdefghijklmnopqrstuvwxyz'
-
     return tuple.unpack(function(x, y) {
         if (x < 0 || y < 0) return ''
         return alpha[x] + alpha[y]
