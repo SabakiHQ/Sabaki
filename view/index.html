@@ -16,12 +16,14 @@
 
 <section id="goban" class="variations fuzzy"></section>
 
-<header>
-    <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
-    <img class="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
-    <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
-    <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
-</header>
+<section id="bar">
+    <header>
+        <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
+        <img class="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
+        <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
+        <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
+    </header>
+</section>
 
 <section id="info">
     <div class="gm-scrollbar -vertical">
@@ -374,7 +376,7 @@
 
     function resizeWindow() {
         var width = $('goban').getSize().x
-        var height = $('goban').getSize().y + $$('header')[0].getSize().y
+        var height = $('goban').getSize().y + $('bar').getSize().y
         remote.getCurrentWindow().setContentSize(width, height)
     }
 

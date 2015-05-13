@@ -21,7 +21,7 @@ body {
     -webkit-user-select: none;
 }
 
-header {
+#bar {
     height: 40px;
     background: #26292C;
     color: #eee;
