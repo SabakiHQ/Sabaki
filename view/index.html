@@ -253,6 +253,8 @@
             new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
         else new Audio('../sound/pass.wav').play()
 
+        closeGameInfo()
+
         if (tree.current == null && tree.nodes.length - 1 == index) {
             // Append move
 
@@ -376,7 +378,8 @@
     }
 
     function showGameInfo() {
-        var rootNode = getTreeRoot().nodes[0]
+        var tree = getTreeRoot()
+        var rootNode = tree.nodes[0]
         var info = $('info')
 
         info.addClass('show').getElement('input[name="name_1"]').focus()
@@ -387,11 +390,17 @@
         info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
         info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
         info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
-        info.getElement('input[name="size"]').set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
+
+        var size = info.getElement('input[name="size"]')
+        size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
 
         var handicap = info.getElement('select[name="handicap"]')
         if ('HA' in rootNode) handicap.selectedIndex = rootNode.HA[0].toInt() - 1
         else handicap.selectedIndex = 0
+
+        var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
+        handicap.disabled = disabled
+        size.disabled = disabled
     }
 
     function closeGameInfo() {

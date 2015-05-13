@@ -72,6 +72,9 @@ header > span {
         background: #111;
         color: #eee;
     }
+    #info input:disabled, #info select:disabled, #info button:disabled {
+        opacity: .5;
+    }
     #info input:focus, #info select:focus, #info button:hover, #info button:focus {
         background: #1a1a1a;
     }
