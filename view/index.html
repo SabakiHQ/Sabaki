@@ -778,6 +778,8 @@
             remote.getCurrentWindow().toggleDevTools()
         } else if (e.code === 116) {
             location.reload()
+        } else if (e.code = 27) {
+            closeGameInfo()
         }
     }).addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
