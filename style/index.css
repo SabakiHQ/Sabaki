@@ -64,13 +64,27 @@ header, #bar #edit {
     }
     #bar #edit {
         color: #333;
-        top: 40px;
+        top: -40px;
     }
     #bar.edit #edit {
         top: 0;
     }
     #bar.edit header {
-        top: -40px;
+        top: 40px;
+}
+
+#edit ul {
+        display: table;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+    #edit ul li {
+        float: left;
+    }
+    #edit ul li a {
+        display: block;
+        height: 40px;
+        width: 40px;
 }
 
 #info {

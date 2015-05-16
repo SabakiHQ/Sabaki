@@ -17,15 +17,23 @@
 <section id="goban" class="variations fuzzy"></section>
 
 <section id="bar">
+    <section id="edit">
+        <ul>
+            <li><a href="#">Stone Tool</a></li>
+            <li><a href="#">Cross Tool</a></li>
+            <li><a href="#">Triangle Tool</a></li>
+            <li><a href="#">Square Tool</a></li>
+            <li><a href="#">Circle Tool</a></li>
+            <li><a href="#">Label Tool</a></li>
+            <li><a href="#">Number Tool</a></li>
+        </ul>
+    </section>
     <header>
         <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
         <img class="currentplayer" src="../img/blacktoplay.png" />
         <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
         <img id="headermenu" src="../img/menu.png" onclick="openHeaderMenu()" />
     </header>
-    <section id="edit">
-        Blah
-    </section>
 </section>
 
 <section id="info">
@@ -753,12 +761,12 @@
                 }
             },
             {
-                label: '&Undo',
-            },
-            {
                 label: '&Count...'
             },
             { type: 'separator' },
+            {
+                label: '&Edit'
+            },
             {
                 label: '&Info',
                 click: showGameInfo
