@@ -15,10 +15,15 @@ body, input, button, select, option {
     font: 14px/1.5 'Segoe UI', sans-serif;
 }
 
-body {
+body, a {
     cursor: default;
     overflow: hidden;
+    outline: 0;
     -webkit-user-select: none;
+}
+
+a, img {
+    -webkit-user-drag: none;
 }
 
 #bar {

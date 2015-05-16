@@ -19,9 +19,9 @@
 <section id="bar">
     <header>
         <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
-        <img class="currentplayer" src="../img/blacktoplay.png" onload="this.draggable = false" />
+        <img class="currentplayer" src="../img/blacktoplay.png" />
         <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
-        <img id="headermenu" src="../img/menu.png" onload="this.draggable = false" onclick="openHeaderMenu()" />
+        <img id="headermenu" src="../img/menu.png" onclick="openHeaderMenu()" />
     </header>
     <section id="edit">
         Blah
@@ -348,11 +348,7 @@
                 var li = new Element('li.pos_' + x + '-' + y)
                     .store('tuple', new Tuple(x, y))
                     .addClass('shift_' + Math.floor(Math.random() * 9))
-
-                var img = new Element('img', {
-                    src: '../img/stone_0.png',
-                    draggable: false
-                })
+                var img = new Element('img', { src: '../img/stone_0.png' })
 
                 if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
                     li.addClass('hoshi')
