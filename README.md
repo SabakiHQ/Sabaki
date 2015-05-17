@@ -4,6 +4,15 @@ Eventually the best virtual Go board. This is a work in progress.
 
 ![Screenshot](screenshot.png)
 
+## Features
+
+- [x] Read and save SGF files
+- [x] Supports Variations
+- [x] [Natural stone placement](http://senseis.xmp.net/?NaturalStonePlacement)
+- [ ] SGF editing tools
+- [ ] Show and manipulate game tree
+- [ ] Counting tool
+
 ## Third Party Libraries
 
 * [Electron](http://electron.atom.io/) ([MIT License](https://github.com/atom/electron/blob/master/LICENSE))
