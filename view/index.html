@@ -358,6 +358,11 @@
         }
     }
 
+    function positionClicked() {
+        if (!getEditMode())
+            makeMove(this.retrieve('tuple'))
+    }
+
     function buildBoard(board) {
         var rows = []
         var hoshi = board.getHandicapPlacement(9)
@@ -374,9 +379,7 @@
                 if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
                     li.addClass('hoshi')
 
-                ol.adopt(li.adopt(img).addEvent('click', function() {
-                    makeMove(this.retrieve('tuple'))
-                }))
+                ol.adopt(li.adopt(img).addEvent('click', positionClicked))
             }
 
             rows.push(ol)
