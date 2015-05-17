@@ -6,7 +6,7 @@ Eventually the best virtual Go board. This is a work in progress.
 
 ## Third Party Libraries
 
-* [Electron](http://electron.atom.io/) ([License](https://github.com/atom/electron/blob/master/LICENSE))
+* [Electron](http://electron.atom.io/) ([MIT License](https://github.com/atom/electron/blob/master/LICENSE))
 * [MooTools](http://mootools.net/) ([MIT License](https://github.com/mootools/mootools-core/blob/master/Source/license.txt))
 * [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/) ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
 * [tuple](https://github.com/Wolfy87/tuple) ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
