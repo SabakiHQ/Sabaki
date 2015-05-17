@@ -7,7 +7,7 @@ Eventually the best virtual Go board. This is a work in progress.
 ## Features
 
 - [x] Read and save SGF files
-- [x] Supports Variations
+- [x] Supports nested variations
 - [x] [Natural stone placement](http://senseis.xmp.net/?NaturalStonePlacement)
 - [ ] SGF editing tools
 - [ ] Show and manipulate game tree
