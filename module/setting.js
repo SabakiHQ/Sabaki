@@ -1,17 +1,16 @@
-var remote = require('remote')
 var fs = require('fs')
 var path = require('path')
-var app = remote.require('app')
+var app = require('app')
 
 var filename = path.join(app.getPath('userData'), 'settings.json')
 var settings = {}
 
 exports.load = function() {
-    settings = JSON.decode(fs.readFileSync(filename, { encoding: 'utf8' }))
+    settings = JSON.parse(fs.readFileSync(filename, { encoding: 'utf8' }))
 }
 
 exports.save = function() {
-    fs.writeFileSync(filename, JSON.encode(settings))
+    fs.writeFileSync(filename, JSON.stringify(settings, null, '    '))
 }
 
 exports.get = function(key) {
@@ -21,7 +20,7 @@ exports.get = function(key) {
 
 exports.set = function(key, value) {
     settings[key] = value
-    fs.writeFileSync(filename, JSON.encode(settings))
+    exports.save()
 }
 
 exports.default = function(key, value) {
