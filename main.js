@@ -5,7 +5,6 @@ var BrowserWindow = require('browser-window')
 var window = null
 
 // Generate default settings
-
 setting.default('view.fuzzy_stone_placement', true)
 setting.default('view.show_coordinates', false)
 setting.default('view.show_variations', true)
@@ -22,8 +21,11 @@ app.on('ready', function() {
     window = new BrowserWindow({
         'resizable': false,
         'use-content-size': true,
-        'show': false
-        // 'auto-hide-menu-bar': true
+        'show': false,
+        'web-preferences': {
+            'text-areas-are-resizable': false,
+            'webaudio': setting.get('sound.enable')
+        }
     })
 
     // window.toggleDevTools()
