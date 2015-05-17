@@ -8,7 +8,7 @@ var window = null
 
 setting.default('view.fuzzy_stone_placement', true)
 setting.default('view.show_coordinates', false)
-setting.default('view.show_variations', false)
+setting.default('view.show_variations', true)
 setting.default('view.show_tree', false)
 setting.default('sound.enable', true)
 

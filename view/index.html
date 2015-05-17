@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<section id="goban" class="variations fuzzy"></section>
+<section id="goban"></section>
 
 <section id="bar">
     <section id="edit">
@@ -110,6 +110,15 @@
      * Methods
      */
 
+    function loadSettings() {
+        if (setting.get('view.fuzzy_stone_placement'))
+            $('goban').addClass('fuzzy')
+        if (setting.get('view.show_coordinates'))
+            $('goban').addClass('coordinates')
+        if (setting.get('view.show_variations'))
+            $('goban').addClass('variations')
+    }
+
     function setIsLoading(loading) {
         if (loading) document.body.addClass('loading')
         else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
@@ -125,6 +134,7 @@
     function setShowVariations(show) {
         if (show) $('goban').addClass('variations')
         else $('goban').removeClass('variations')
+        setting.set('view.show_variations', show)
     }
 
     function getFuzzyStonePlacement() {
@@ -134,6 +144,7 @@
     function setFuzzyStonePlacement(fuzzy) {
         if (fuzzy) $('goban').addClass('fuzzy')
         else $('goban').removeClass('fuzzy')
+        setting.set('view.fuzzy_stone_placement', fuzzy)
     }
 
     function getShowCoordinates() {
@@ -143,6 +154,7 @@
     function setShowCoordinates(show) {
         if (show) $('goban').addClass('coordinates')
         else $('goban').removeClass('coordinates')
+        setting.set('view.show_coordinates', show)
     }
 
     function getPlayerName(sign) {
@@ -794,6 +806,7 @@
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     }).addEvent('domready', function() {
+        loadSettings()
         buildMenu()
 
         if (process.argv.length >= 2) loadGame(process.argv[1])
