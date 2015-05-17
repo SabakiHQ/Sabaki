@@ -77,14 +77,31 @@ header, #bar #edit {
         display: table;
         margin: 0 auto;
         overflow: hidden;
+        list-style: none;
     }
     #edit ul li {
+        margin: 0 2px;
         float: left;
     }
     #edit ul li a {
+        position: relative;
         display: block;
         height: 40px;
-        width: 40px;
+        width: 35px;
+    }
+    #bar.edit #edit ul li a:hover {
+        background: #B3AC53;
+    }
+    #bar.edit #edit ul li.selected a, #bar.edit #edit ul li a:active {
+        background: #A29B42;
+    }
+    #edit ul li a img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        transform: translate(-50%, -50%);
 }
 
 #info {
