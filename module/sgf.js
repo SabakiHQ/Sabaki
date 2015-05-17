@@ -153,6 +153,23 @@ exports.vertex2point = function(tuple) {
     })
 }
 
+exports.compressed2list = function(compressed) {
+    var colon = compressed.indexOf(':')
+    if (colon < 0) return [exports.point2vertex(compressed)]
+
+    var v1 = exports.point2vertex(compressed.slice(0, colon))
+    var v2 = exports.point2vertex(compressed.slice(colon + 1))
+    var list = []
+
+    for (var i = v1[0]; i <= v2[0]; i++) {
+        for (var j = v1[1]; j <= v2[1]; j++) {
+            list.push(new Tuple(i, j))
+        }
+    }
+
+    return list
+}
+
 exports.addBoard = function(tree, index, baseboard) {
     if (index >= tree.nodes.length) return tree
 
