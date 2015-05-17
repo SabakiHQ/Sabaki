@@ -7,7 +7,8 @@ var filename = path.join(app.getPath('userData'), 'settings.json')
 var settings = JSON.decode(fs.readFileSync(filename, { encoding: 'utf8' }))
 
 exports.get = function(key) {
-    return settings[key]
+    if (key in settings) return settings[key]
+    else return null
 }
 
 exports.set = function(key, value) {
