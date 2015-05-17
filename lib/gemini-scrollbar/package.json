@@ -1,0 +1,31 @@
+{
+  "name": "gemini-scrollbar",
+  "version": "1.2.4",
+  "description": "Custom scrollbars with native scrolling",
+  "license": "MIT",
+  "repository": "noeldelgado/gemini-scrollbar.git",
+  "author": "Noel Delgado <auhcsei@gmail.com> (http://pixelia.me/)",
+  "homepage": "https://github.com/noeldelgado/gemini-scrollbar",
+  "scripts": {
+    "css": "uglifycss gemini-scrollbar.css > dist/gemini-scrollbar.min.css",
+    "js": "uglifyjs index.js -m -c sequences=true,properties=true,dead_code=true,conditionals=true,comparisons=true,booleans=true,loops=true,cascade=true,hoist_funs=true,unused=true,if_return=true,join_vars=true --comments --screw-ie8=true -o dist/gemini-scrollbar.min.js",
+    "dist": "npm run js && npm run css"
+  },
+  "files": [
+    "index.js",
+    "gemini-scrollbar.css"
+  ],
+  "keywords": [
+    "native",
+    "scrolling",
+    "skinnable",
+    "custom",
+    "scrollbar",
+    "scrollbars",
+    "scroll",
+    "mousewheel",
+    "trackpad",
+    "smooth-scroll"
+  ],
+  "devDependencies": {}
+}
