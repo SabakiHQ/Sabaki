@@ -204,8 +204,16 @@ exports.addBoard = function(tree, index, baseboard) {
     for (var i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].each(function(point) {
-            baseboard.arrangement[exports.point2vertex(point)] = i - 1
+        node[ids[i]].each(function(value) {
+            if (value.indexOf(':') < 0) {
+                // Single point
+                baseboard.arrangement[exports.point2vertex(value)] = i - 1
+            } else {
+                // Compressed point list
+                exports.compressed2list(value).each(function(vertex) {
+                    baseboard.arrangement[vertex] = i - 1
+                })
+            }
         })
     }
 
@@ -219,8 +227,16 @@ exports.addBoard = function(tree, index, baseboard) {
     for (var i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].each(function(point) {
-            baseboard.overlays[exports.point2vertex(point)] = new Tuple(classes[i], 0, '')
+        node[ids[i]].each(function(value) {
+            if (value.indexOf(':') < 0) {
+                // Single point
+                baseboard.overlays[exports.point2vertex(value)] = new Tuple(classes[i], 0, '')
+            } else {
+                // Compressed point list
+                exports.compressed2list(value).each(function(vertex) {
+                    baseboard.overlays[vertex] = new Tuple(classes[i], 0, '')
+                })
+            }
         })
     }
 
