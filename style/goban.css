@@ -9,7 +9,7 @@
         display: inline-block;
         border: 10px solid #C69555;
         padding: 10px 8px 8px 10px;
-        background: #DFB277 url('../img/goban.png') center fixed;
+        background: #DFB277 url('../img/goban/board.png') center fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
@@ -55,34 +55,34 @@
 
 #goban .row li {
         position: relative;
-        background: url('../img/inner.png') center;
+        background: url('../img/goban/inner.png') center;
     }
     #goban .row li.hoshi {
-        background-image: url('../img/hoshi.png');
+        background-image: url('../img/goban/hoshi.png');
     }
     #goban .row:nth-child(3) li {
-        background-image: url('../img/side-n.png');
+        background-image: url('../img/goban/side-n.png');
     }
     #goban .row:nth-last-child(3) li {
-        background-image: url('../img/side-s.png');
+        background-image: url('../img/goban/side-s.png');
     }
     #goban .row li:first-child {
-        background-image: url('../img/side-w.png');
+        background-image: url('../img/goban/side-w.png');
     }
     #goban .row li:last-child {
-        background-image: url('../img/side-e.png');
+        background-image: url('../img/goban/side-e.png');
     }
     #goban .row:nth-child(3) li:first-child {
-        background-image: url('../img/corner-nw.png');
+        background-image: url('../img/goban/corner-nw.png');
     }
     #goban .row:nth-child(3) li:last-child {
-        background-image: url('../img/corner-ne.png');
+        background-image: url('../img/goban/corner-ne.png');
     }
     #goban .row:nth-last-child(3) li:first-child {
-        background-image: url('../img/corner-sw.png');
+        background-image: url('../img/goban/corner-sw.png');
     }
     #goban .row:nth-last-child(3) li:last-child {
-        background-image: url('../img/corner-se.png');
+        background-image: url('../img/goban/corner-se.png');
     }
     #goban .row img {
         position: relative;
@@ -134,7 +134,7 @@
         margin-left: -9px;
         margin-top: -9px;
         overflow: hidden;
-        background: #DFB277 url('../img/goban.png') center fixed;
+        background: #DFB277 url('../img/goban/board.png') center fixed;
         border: 2px solid #5E2E0C;
         text-align: center;
         line-height: 16px;
