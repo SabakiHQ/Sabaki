@@ -19,13 +19,13 @@
 <section id="bar">
     <section id="edit">
         <ul>
-            <li class="selected"><a href="#" title="Stone Tool"><img src="../img/edit/stone_1.png" /></a></li>
-            <li><a href="#" title="Cross Tool"><img src="../img/edit/cross.png" /></a></li>
-            <li><a href="#" title="Triangle Tool"><img src="../img/edit/triangle.png" /></a></li>
-            <li><a href="#" title="Square Tool"><img src="../img/edit/square.png" /></a></li>
-            <li><a href="#" title="Circle Tool"><img src="../img/edit/circle.png" /></a></li>
-            <li><a href="#" title="Label Tool"><img src="../img/edit/label.png" /></a></li>
-            <li><a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a></li>
+            <li class="selected stone-tool"><a href="#" title="Stone Tool"><img src="../img/edit/stone_1.png" /></a></li>
+            <li class="cross-tool"><a href="#" title="Cross Tool"><img src="../img/edit/cross.png" /></a></li>
+            <li class="triangle-tool"><a href="#" title="Triangle Tool"><img src="../img/edit/triangle.png" /></a></li>
+            <li class="square-tool"><a href="#" title="Square Tool"><img src="../img/edit/square.png" /></a></li>
+            <li class="circle-tool"><a href="#" title="Circle Tool"><img src="../img/edit/circle.png" /></a></li>
+            <li class="label-tool"><a href="#" title="Label Tool"><img src="../img/edit/label.png" /></a></li>
+            <li class="number-tool"><a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a></li>
         </ul>
     </section>
     <header>
@@ -493,6 +493,19 @@
         }
     }
 
+    function prepareEditTools() {
+        $$('#edit a').addEvent('click', function() {
+            if (!this.getParent().hasClass('selected')) {
+                $$('#edit .selected').removeClass('selected')
+                this.getParent().addClass('selected')
+            } else if (this.getParent().hasClass('stone-tool')) {
+                var img = this.getElement('img')
+                var black = img.get('src') == '../img/edit/stone_1.png'
+                img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
+            }
+        })
+    }
+
     /**
      * Menu
      */
@@ -811,6 +824,7 @@
     }).addEvent('domready', function() {
         loadSettings()
         buildMenu()
+        prepareEditTools()
 
         if (process.argv.length >= 2) loadGame(process.argv[1])
         else newGame()
