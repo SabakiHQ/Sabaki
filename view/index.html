@@ -336,7 +336,7 @@
                     return subtree.nodes.length > 0
                         && color in subtree.nodes[0]
                         && sgf.point2vertex(subtree.nodes[0][color][0]).equals(vertex)
-                }.bind(this))
+                })
 
                 if (variations.length > 0) {
                     setCurrentTreePosition(sgf.addBoards(variations[0]), 0)
