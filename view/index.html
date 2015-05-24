@@ -666,31 +666,59 @@
                     { type: 'separator' },
                     {
                         label: '&Stone Tool',
-                        accelerator: 'CmdOrCtrl+1'
+                        accelerator: 'CmdOrCtrl+1',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .stone-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Cross Tool',
-                        accelerator: 'CmdOrCtrl+2'
+                        accelerator: 'CmdOrCtrl+2',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .cross-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Triangle Tool',
-                        accelerator: 'CmdOrCtrl+3'
+                        accelerator: 'CmdOrCtrl+3',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .triangle-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Square Tool',
-                        accelerator: 'CmdOrCtrl+4'
+                        accelerator: 'CmdOrCtrl+4',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .square-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Circle Tool',
-                        accelerator: 'CmdOrCtrl+5'
+                        accelerator: 'CmdOrCtrl+5',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .circle-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Label Tool',
-                        accelerator: 'CmdOrCtrl+6'
+                        accelerator: 'CmdOrCtrl+6',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .label-tool a').fireEvent('click')
+                        }
                     },
                     {
                         label: '&Number Tool',
-                        accelerator: 'CmdOrCtrl+7'
+                        accelerator: 'CmdOrCtrl+7',
+                        click: function() {
+                            setEditMode(true)
+                            $$('#edit .number-tool a').fireEvent('click')
+                        }
                     }
                 ]
             },
