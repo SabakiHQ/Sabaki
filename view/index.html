@@ -820,7 +820,10 @@
             },
             { type: 'separator' },
             {
-                label: '&Edit'
+                label: '&Edit',
+                click: function() {
+                    setEditMode(true)
+                }
             },
             {
                 label: '&Info',
@@ -843,6 +846,7 @@
             location.reload()
         } else if (e.code == 27) {
             closeGameInfo()
+            setEditMode(false)
         }
     }).addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
