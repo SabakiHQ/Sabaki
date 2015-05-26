@@ -56,7 +56,10 @@
     .goban .coordy li { display: block; }
     .goban .coordx:nth-child(2) { margin-top: -5px; }
     .goban .coordx:nth-last-child(2) { margin-bottom: -2px; }
-    .goban:not(.coordinates) .coordx, .goban:not(.coordinates) .coordy { display: none; }
+    .goban:not(.coordinates) .coordx, .goban:not(.coordinates) .coordy {
+        overflow: hidden;
+        height: 0;
+    }
     .goban:not(.coordinates) ol {
         margin: 0;
 }
