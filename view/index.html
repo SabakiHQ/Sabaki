@@ -231,10 +231,8 @@
     }
 
     function setBoard(board) {
-        if (!getBoard() || getBoard().size != board.size) {
+        if (!getBoard() || getBoard().size != board.size)
             buildBoard(board)
-            resizeWindow()
-        }
 
         setCaptures(board.captures)
 
@@ -398,10 +396,22 @@
 
         $('goban').empty().adopt(rows, coordx, coordy)
             .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+
+        resizeBoard()
     }
 
-    function resizeWindow() {
-        // $('goban').setStyle('width')
+    function resizeBoard() {
+        var board = getBoard()
+        if (!board) return
+
+        var width = $('goban').getStyle('width').toInt()
+        var height = $('goban').getStyle('height').toInt()
+        var min = Math.min(width, height)
+        var fieldsize = min / board.size
+        console.log(fieldsize)
+
+        $$('#goban ol').setStyle('height', fieldsize)
+        $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     }
 
     function showGameInfo() {
@@ -775,7 +785,7 @@
                         checked: getShowCoordinates(),
                         click: function() {
                             setShowCoordinates(!getShowCoordinates())
-                            resizeWindow()
+                            resizeBoard()
                         }
                     },
                     {
@@ -864,6 +874,10 @@
             autoshow: true,
             createElements: false
         }).create()
+    })
+
+    window.addEvent('resize', function() {
+        resizeBoard()
     })
 </script>
 
