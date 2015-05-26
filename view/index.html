@@ -408,9 +408,8 @@
         var height = $('goban').getStyle('height').toInt()
         var min = Math.min(width, height)
         var fieldsize = min / board.size
-        console.log(fieldsize)
 
-        $$('#goban ol').setStyle('height', fieldsize)
+        $$('#goban .row').setStyle('height', fieldsize)
         $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     }
 
