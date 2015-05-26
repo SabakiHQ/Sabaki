@@ -231,8 +231,9 @@
     }
 
     function setBoard(board) {
-        if (!getBoard() || getBoard().size != board.size)
+        if (!getBoard() || getBoard().size != board.size) {
             buildBoard(board)
+        }
 
         setCaptures(board.captures)
 
@@ -395,7 +396,7 @@
         }
 
         $('goban').empty().adopt(rows, coordx, coordy)
-            .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+        $('goban').grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
 
         resizeBoard()
     }
@@ -405,7 +406,10 @@
         if (!board) return
 
         var width = $('goban').getStyle('width').toInt()
+        width -= $$('#goban .coordy')[0].getStyle('width').toInt() * 2
         var height = $('goban').getStyle('height').toInt()
+        height -= $$('#goban .coordx')[0].getStyle('height').toInt() * 2
+
         var min = Math.min(width, height)
         var fieldsize = min / board.size
 
