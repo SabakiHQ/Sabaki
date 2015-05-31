@@ -23,7 +23,6 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     window = new BrowserWindow({
-        // 'resizable': false,
         'width': setting.get('window.width'),
         'height': setting.get('window.height'),
         'min-width': setting.get('window.minwidth'),
