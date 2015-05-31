@@ -83,7 +83,7 @@ var Board = new Class({
 
         // Remove captured stones
         this.getNeighborhood(vertex).each(function(n) {
-            if (this.arrangement[n] != -sign) return;
+            if (move.arrangement[n] != -sign) return;
 
             var ll = this.getLiberties(n)
             if (ll.length != 1) return;
@@ -102,9 +102,8 @@ var Board = new Class({
         // Detect suicide
         if (suicide) {
             var chain = move.getChain(vertex)
-            suicide = move.getLiberties(vertex).length == 0
 
-            if (suicide) {
+            if (move.getLiberties(vertex).length == 0) {
                 chain.each(function(c) {
                     move.arrangement[c] = 0
                     move.captures[(-sign).toString()]++
