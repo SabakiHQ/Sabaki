@@ -12,7 +12,7 @@
         bottom: 40px;
         border: 10px solid #C69555;
         padding: 10px 8px 8px 10px;
-        background: #DFB277 url('../img/goban/board.png') center fixed;
+        background: #EDB163 url('../img/goban/board.png') center fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
@@ -29,10 +29,7 @@
     .goban li {
         position: relative;
         display: inline-block;
-        height: 30px;
-        width: 30px;
         text-align: center;
-        line-height: 30px;
     }
     .goban li img {
         position: absolute;
@@ -136,7 +133,7 @@
         margin-left: -9px;
         margin-top: -9px;
         overflow: hidden;
-        background: #DFB277 url('../img/goban/board.png') center fixed;
+        background: #EDB163 url('../img/goban/board.png') center fixed;
         border: 2px solid #5E2E0C;
         text-align: center;
         line-height: 16px;
