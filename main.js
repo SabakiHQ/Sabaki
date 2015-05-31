@@ -5,6 +5,10 @@ var BrowserWindow = require('browser-window')
 var window = null
 
 // Generate default settings
+setting.default('window.width', 608)
+setting.default('window.height', 648)
+setting.default('window.minwidth', 550)
+setting.default('window.minheight', 590)
 setting.default('view.fuzzy_stone_placement', true)
 setting.default('view.show_coordinates', false)
 setting.default('view.show_variations', true)
@@ -20,10 +24,10 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
     window = new BrowserWindow({
         // 'resizable': false,
-        'width': 608,
-        'height': 648,
-        'min-width': 550,
-        'min-height': 590,
+        'width': setting.get('window.width'),
+        'height': setting.get('window.height'),
+        'min-width': setting.get('window.minwidth'),
+        'min-height': setting.get('window.minheight'),
         'use-content-size': true,
         'show': false,
         'web-preferences': {

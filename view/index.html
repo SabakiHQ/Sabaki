@@ -428,8 +428,7 @@
         $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
 
         $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
-        if (hasCoordinates)
-            $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
+        $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
 
         $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     }
