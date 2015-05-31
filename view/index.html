@@ -219,6 +219,21 @@
         return $('goban').retrieve('position')
     }
 
+    function selectTool(tool) {
+        $$('#edit .' + tool + '-tool a').fireEvent('click')
+    }
+
+    function getSelectedTool() {
+        var li = $$('#edit .selected')[0]
+        var tool = li.get('class').replace('selected', '').replace('-tool', '').trim()
+
+        if (tool == 'stone') {
+            return li.getElement('img').get('src').contains('_1') ? 'stone_1' : 'stone_-1'
+        } else {
+            return tool
+        }
+    }
+
     function getBoard() {
         return $('goban').retrieve('board')
     }
@@ -353,8 +368,38 @@
     }
 
     function positionClicked() {
-        if (!getEditMode())
-            makeMove(this.retrieve('tuple'))
+        var vertex = this.retrieve('tuple')
+        var point = sgf.vertex2point(vertex)
+
+        if (!getEditMode()) {
+            makeMove(vertex)
+            return
+        }
+
+        getCurrentTreePosition().unpack(function(tree, index) {
+            var node = tree.nodes[index]
+            var tool = getSelectedTool()
+            var dictionary = {
+                'cross': 'MA',
+                'triangle': 'TR',
+                'circle': 'CR',
+                'square': 'SQ'
+            }
+
+            if (!tool.contains('stone') && tool != 'label' && tool != 'number') {
+                var id = dictionary[tool]
+
+                if (id in node) {
+                    var i = node[id].indexOf(point)
+                    if (i >= 0) node[id].splice(i, 1);
+                    else node[id].push(point)
+                } else {
+                    node[id] = [point]
+                }
+            }
+
+            setCurrentTreePosition(tree, index)
+        })
     }
 
     function buildBoard() {
@@ -687,7 +732,7 @@
                         accelerator: 'CmdOrCtrl+1',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .stone-tool a').fireEvent('click')
+                            selectTool('stone')
                         }
                     },
                     {
@@ -695,7 +740,7 @@
                         accelerator: 'CmdOrCtrl+2',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .cross-tool a').fireEvent('click')
+                            selectTool('cross')
                         }
                     },
                     {
@@ -703,7 +748,7 @@
                         accelerator: 'CmdOrCtrl+3',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .triangle-tool a').fireEvent('click')
+                            selectTool('triangle')
                         }
                     },
                     {
@@ -711,7 +756,7 @@
                         accelerator: 'CmdOrCtrl+4',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .square-tool a').fireEvent('click')
+                            selectTool('square')
                         }
                     },
                     {
@@ -719,7 +764,7 @@
                         accelerator: 'CmdOrCtrl+5',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .circle-tool a').fireEvent('click')
+                            selectTool('circle')
                         }
                     },
                     {
@@ -727,7 +772,7 @@
                         accelerator: 'CmdOrCtrl+6',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .label-tool a').fireEvent('click')
+                            selectTool('label')
                         }
                     },
                     {
@@ -735,7 +780,7 @@
                         accelerator: 'CmdOrCtrl+7',
                         click: function() {
                             setEditMode(true)
-                            $$('#edit .number-tool a').fireEvent('click')
+                            selectTool('number')
                         }
                     }
                 ]
