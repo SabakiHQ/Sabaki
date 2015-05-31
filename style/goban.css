@@ -16,6 +16,12 @@
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
+    .goban div {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
     .goban ol {
         list-style: none;
         white-space: nowrap;

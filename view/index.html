@@ -15,7 +15,9 @@
 <body>
 
 <section id="main">
-    <section id="goban" class="goban"></section>
+    <section id="goban" class="goban">
+        <div></div>
+    </section>
 
     <section id="bar">
         <section id="edit">
@@ -395,8 +397,9 @@
             coordy.adopt(new Element('li', { text: board.size - i }))
         }
 
-        $('goban').empty().adopt(rows, coordx, coordy)
-        $('goban').grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+        var goban = $$('#goban div')[0]
+        goban.empty().adopt(rows, coordx, coordy)
+        goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
 
         resizeBoard()
     }
@@ -413,6 +416,7 @@
         var min = Math.min(width, height)
         var fieldsize = min / board.size
 
+        $$('#goban div').setStyle('width', min).setStyle('height', min)
         $$('#goban .row').setStyle('height', fieldsize)
         $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     }
