@@ -22,6 +22,8 @@ app.on('ready', function() {
         // 'resizable': false,
         'width': 608,
         'height': 648,
+        'min-width': 550,
+        'min-height': 590,
         'use-content-size': true,
         'show': false,
         'web-preferences': {
