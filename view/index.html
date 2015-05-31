@@ -379,6 +379,7 @@
         getCurrentTreePosition().unpack(function(tree, index) {
             var node = tree.nodes[index]
             var tool = getSelectedTool()
+            var board = getBoard()
             var dictionary = {
                 'cross': 'MA',
                 'triangle': 'TR',
@@ -387,15 +388,23 @@
             }
 
             if (!tool.contains('stone') && tool != 'label' && tool != 'number') {
-                var id = dictionary[tool]
-
-                if (id in node) {
-                    var i = node[id].indexOf(point)
-                    if (i >= 0) node[id].splice(i, 1);
-                    else node[id].push(point)
+                if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
+                    delete board.overlays[vertex]
                 } else {
-                    node[id] = [point]
+                    board.overlays[vertex] = new Tuple(tool, 0, '')
                 }
+
+                Object.each(dictionary, function(id) { delete node[id] })
+
+                $$('#goban .row li').each(function(li) {
+                    if (!(li.retrieve('tuple') in board.overlays)) return
+
+                    var id = dictionary[board.overlays[li.retrieve('tuple')][0]]
+                    var pt = sgf.vertex2point(li.retrieve('tuple'))
+                    
+                    if (id in node) node[id].push(pt)
+                    else node[id] = [pt]
+                })
             }
 
             setCurrentTreePosition(tree, index)
