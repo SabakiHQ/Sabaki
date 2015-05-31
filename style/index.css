@@ -109,15 +109,13 @@ header, #bar #edit {
         left: 0;
         right: 0;
         bottom: -285px;
-        height: 275px;
+        height: 235px;
         overflow: auto;
+        padding: 20px;
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
         z-index: 3;
-    }
-    #info .gm-scroll-view form {
-        margin: 20px;
     }
     #info.show {
         bottom: 0;
