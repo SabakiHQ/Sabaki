@@ -19,7 +19,11 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     window = new BrowserWindow({
-        'resizable': false,
+        // 'resizable': false,
+        'width': 608,
+        'height': 648,
+        'min-width': 550,
+        'min-height': 590,
         'use-content-size': true,
         'show': false,
         'web-preferences': {

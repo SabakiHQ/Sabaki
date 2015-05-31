@@ -14,80 +14,84 @@
 </head>
 <body>
 
-<section id="goban"></section>
-
-<section id="bar">
-    <section id="edit">
-        <ul>
-            <li class="selected stone-tool"><a href="#" title="Stone Tool"><img src="../img/edit/stone_1.png" /></a></li>
-            <li class="cross-tool"><a href="#" title="Cross Tool"><img src="../img/edit/cross.png" /></a></li>
-            <li class="triangle-tool"><a href="#" title="Triangle Tool"><img src="../img/edit/triangle.png" /></a></li>
-            <li class="square-tool"><a href="#" title="Square Tool"><img src="../img/edit/square.png" /></a></li>
-            <li class="circle-tool"><a href="#" title="Circle Tool"><img src="../img/edit/circle.png" /></a></li>
-            <li class="label-tool"><a href="#" title="Label Tool"><img src="../img/edit/label.png" /></a></li>
-            <li class="number-tool"><a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a></li>
-        </ul>
+<section id="main">
+    <section id="goban" class="goban">
+        <div></div>
     </section>
-    <header>
-        <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
-        <img class="currentplayer" src="../img/ui/blacktoplay.png" />
-        <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
-        <img id="headermenu" src="../img/ui/menu.png" onclick="openHeaderMenu()" />
-    </header>
-</section>
 
-<section id="info">
-    <div class="gm-scrollbar -vertical">
-        <div class="thumb"></div>
-    </div>
-    <div class="gm-scrollbar -horizontal">
-        <div class="thumb"></div>
-    </div>
-    <div class="gm-scroll-view">
-        <form>
-            <section>
-                <input type="text" name="rank_1" placeholder="Rank" />
-                <input type="text" name="name_1" placeholder="Player Black" />
-                <img class="currentplayer" src="../img/ui/blacktoplay.png" onload="this.draggable = false" />
-                <input type="text" name="name_-1" placeholder="Player White" />
-                <input type="text" name="rank_-1" placeholder="Rank" />
-            </section>
-
+    <section id="bar">
+        <section id="edit">
             <ul>
-                <li>
-                    <label><span>Result:</span>
-                    <input type="text" name="result" placeholder="None" /></label>
-                </li>
-                <li>
-                    <label><span>Komi:</span>
-                    <input type="text" name="komi" placeholder="0" /></label>
-                </li>
-                <li>
-                    <label><span>Handicap:</span>
-                    <select name="handicap">
-                        <option>No stones</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                    </select></label>
-                </li>
-                <li>
-                    <label><span>Board size:</span>
-                    <input type="number" name="size" placeholder="19" max="26" min="9" /></label>
-                </li>
+                <li class="selected stone-tool"><a href="#" title="Stone Tool"><img src="../img/edit/stone_1.png" /></a></li>
+                <li class="cross-tool"><a href="#" title="Cross Tool"><img src="../img/edit/cross.png" /></a></li>
+                <li class="triangle-tool"><a href="#" title="Triangle Tool"><img src="../img/edit/triangle.png" /></a></li>
+                <li class="square-tool"><a href="#" title="Square Tool"><img src="../img/edit/square.png" /></a></li>
+                <li class="circle-tool"><a href="#" title="Circle Tool"><img src="../img/edit/circle.png" /></a></li>
+                <li class="label-tool"><a href="#" title="Label Tool"><img src="../img/edit/label.png" /></a></li>
+                <li class="number-tool"><a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a></li>
             </ul>
+        </section>
+        <header>
+            <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
+            <img class="currentplayer" src="../img/ui/blacktoplay.png" />
+            <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
+            <img id="headermenu" src="../img/ui/menu.png" onclick="openHeaderMenu()" />
+        </header>
+    </section>
 
-            <p>
-                <button type="submit" onclick="updateGameInfo(); closeGameInfo(); return false">OK</button>
-                <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
-            </p>
-        </form>
-    </div>
+    <section id="info">
+        <div class="gm-scrollbar -vertical">
+            <div class="thumb"></div>
+        </div>
+        <div class="gm-scrollbar -horizontal">
+            <div class="thumb"></div>
+        </div>
+        <div class="gm-scroll-view">
+            <form>
+                <section>
+                    <input type="text" name="rank_1" placeholder="Rank" />
+                    <input type="text" name="name_1" placeholder="Player Black" />
+                    <img class="currentplayer" src="../img/ui/blacktoplay.png" onload="this.draggable = false" />
+                    <input type="text" name="name_-1" placeholder="Player White" />
+                    <input type="text" name="rank_-1" placeholder="Rank" />
+                </section>
+
+                <ul>
+                    <li>
+                        <label><span>Result:</span>
+                        <input type="text" name="result" placeholder="None" /></label>
+                    </li>
+                    <li>
+                        <label><span>Komi:</span>
+                        <input type="text" name="komi" placeholder="0" /></label>
+                    </li>
+                    <li>
+                        <label><span>Handicap:</span>
+                        <select name="handicap">
+                            <option>No stones</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                        </select></label>
+                    </li>
+                    <li>
+                        <label><span>Board size:</span>
+                        <input type="number" name="size" placeholder="19" max="25" min="9" /></label>
+                    </li>
+                </ul>
+
+                <p>
+                    <button type="submit" onclick="updateGameInfo(); closeGameInfo(); return false">OK</button>
+                    <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
+                </p>
+            </form>
+        </div>
+    </section>
 </section>
 
 <section id="loading"></section>
@@ -230,10 +234,11 @@
 
     function setBoard(board) {
         if (!getBoard() || getBoard().size != board.size) {
-            buildBoard(board)
-            resizeWindow()
+            $('goban').store('board', board)
+            buildBoard()
         }
 
+        $('goban').store('board', board)
         setCaptures(board.captures)
 
         for (var x = 0; x < board.size; x++) {
@@ -265,8 +270,6 @@
                     .getElement('img').set('src', '../img/goban/stone_' + sign + '.png')
             }
         }
-
-        $('goban').store('board', board)
     }
 
     function makeMove(vertex) {
@@ -363,7 +366,8 @@
             makeMove(this.retrieve('tuple'))
     }
 
-    function buildBoard(board) {
+    function buildBoard() {
+        var board = getBoard()
         var rows = []
         var hoshi = board.getHandicapPlacement(9)
 
@@ -394,14 +398,40 @@
             coordy.adopt(new Element('li', { text: board.size - i }))
         }
 
-        $('goban').empty().adopt(rows, coordx, coordy)
-            .grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+        var goban = $$('#goban div')[0]
+        goban.empty().adopt(rows, coordx, coordy)
+        goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+
+        resizeBoard()
     }
 
-    function resizeWindow() {
-        var width = $('goban').getSize().x
-        var height = $('goban').getSize().y + $('bar').getSize().y
-        remote.getCurrentWindow().setContentSize(width, height)
+    function resizeBoard() {
+        var board = getBoard()
+        if (!board) return
+
+        var width = $('goban').getStyle('width').toInt()
+        var height = $('goban').getStyle('height').toInt()
+        var min = Math.min(width, height)
+        var hasCoordinates = getShowCoordinates()
+
+        var fieldsize = Math.floor(min / board.size)
+        min = fieldsize * board.size
+
+        if (hasCoordinates) {
+            fieldsize = Math.floor(min / (board.size + 2))
+            min = fieldsize * (board.size + 2)
+        }
+
+        $$('#goban div').setStyle('width', min).setStyle('height', min)
+
+        $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
+        $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
+
+        $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
+        if (hasCoordinates)
+            $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
+
+        $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     }
 
     function showGameInfo() {
@@ -775,7 +805,7 @@
                         checked: getShowCoordinates(),
                         click: function() {
                             setShowCoordinates(!getShowCoordinates())
-                            resizeWindow()
+                            resizeBoard()
                         }
                     },
                     {
@@ -864,6 +894,10 @@
             autoshow: true,
             createElements: false
         }).create()
+    })
+
+    window.addEvent('resize', function() {
+        resizeBoard()
     })
 </script>
 
