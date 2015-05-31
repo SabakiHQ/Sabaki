@@ -6,9 +6,10 @@ Eventually the best virtual Go board. This is a work in progress.
 
 ## Features
 
+- [x] Resizable game board
 - [x] Read and save SGF files
 - [x] Supports nested variations
-- [x] [Natural stone placement](http://senseis.xmp.net/?NaturalStonePlacement)
+- [x] Fuzzy stone placement
 - [ ] SGF editing tools
 - [ ] Show and manipulate game tree
 - [ ] Counting tool
