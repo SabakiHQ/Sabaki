@@ -25,7 +25,6 @@
     .goban ol {
         list-style: none;
         white-space: nowrap;
-        margin: 0 23px;
     }
     .goban li {
         position: relative;
@@ -50,28 +49,12 @@
 
 .goban .coordy {
         position: absolute;
-        left: 2px;
-        top: 33px;
-        width: 30px;
+        left: 0;
         margin: 0;
-    }
-    .goban .coordy:last-child {
-        left: auto;
-        right: 3px;
     }
     .goban .coordy li { display: block; }
-    .goban .coordx {
-        left: -2px;
-    }
-    .goban .coordx:nth-child(2) { margin-top: -5px; }
-    .goban .coordx:nth-last-child(2) { margin-bottom: -2px; }
     .goban:not(.coordinates) .coordx, .goban:not(.coordinates) .coordy {
-        overflow: hidden;
-        height: 0;
-        width: 0;
-    }
-    .goban:not(.coordinates) ol {
-        margin: 0;
+        display: none;
 }
 
 /**
