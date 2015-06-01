@@ -367,10 +367,7 @@
         }
     }
 
-    function positionClicked() {
-        var vertex = this.retrieve('tuple')
-        var point = sgf.vertex2point(vertex)
-
+    function vertexClicked() {
         if (!getEditMode()) {
             makeMove(vertex)
             return
@@ -420,15 +417,16 @@
             var ol = new Element('ol.row')
 
             for (var x = 0; x < board.size; x++) {
+                var vertex = new Tuple(x, y)
                 var li = new Element('li.pos_' + x + '-' + y)
-                    .store('tuple', new Tuple(x, y))
+                    .store('tuple', vertex)
                     .addClass('shift_' + Math.floor(Math.random() * 9))
                 var img = new Element('img', { src: '../img/goban/stone_0.png' })
 
-                if (hoshi.some(function(v) { return v.equals(li.retrieve('tuple')) }))
+                if (hoshi.some(function(v) { return v.equals(vertex) }))
                     li.addClass('hoshi')
 
-                ol.adopt(li.adopt(img).addEvent('click', positionClicked))
+                ol.adopt(li.adopt(img).addEvent('click', vertexClicked.bind(vertex)))
             }
 
             rows.push(ol)
