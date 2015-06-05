@@ -996,6 +996,10 @@
 
     window.addEvent('resize', function() {
         resizeBoard()
+    }).addEvent('beforeunload', function() {
+        var size = $('main').getSize()
+        setting.set('window.width', size.x)
+        setting.set('window.height', size.y)
     })
 </script>
 
