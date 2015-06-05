@@ -431,6 +431,24 @@
                     } else {
                         board.overlays[this] = new Tuple(tool, 0, number.toString())
                     }
+                } else {
+                    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                    var k = 0
+
+                    if ('LB' in node) {
+                        node.LB.each(function(value) {
+                            if (value.length != 4 || !alpha.contains(value[3])) return
+
+                            var label = value[3]
+                            k = Math.max(k, (alpha.indexOf(label) + 1) % alpha.length)
+                        })
+                    }
+
+                    if (this in board.overlays && board.overlays[this][0] == 'label') {
+                        delete board.overlays[this]
+                    } else {
+                        board.overlays[this] = new Tuple(tool, 0, alpha[k])
+                    }
                 }
 
                 Object.each(dictionary, function(id) { delete node[id] })
