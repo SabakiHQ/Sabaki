@@ -6,14 +6,14 @@ var window = null
 
 // Generate default settings
 setting.default('window.width', 608)
-setting.default('window.height', 648)
-setting.default('window.minwidth', 550)
-setting.default('window.minheight', 590)
-setting.default('view.fuzzy_stone_placement', true)
-setting.default('view.show_coordinates', false)
-setting.default('view.show_variations', true)
-setting.default('view.show_tree', false)
-setting.default('sound.enable', true)
+    .default('window.height', 648)
+    .default('window.minwidth', 550)
+    .default('window.minheight', 590)
+    .default('view.fuzzy_stone_placement', true)
+    .default('view.show_coordinates', false)
+    .default('view.show_variations', true)
+    .default('view.show_tree', false)
+    .default('sound.enable', true)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
