@@ -373,6 +373,8 @@
             return
         }
 
+        // Edit Mode activated
+
         if (!getEditMode()) return
         if (event.which != 1 || event.button != 0) return
 
@@ -414,16 +416,32 @@
                     } else {
                         board.overlays[this] = new Tuple(tool, 0, '')
                     }
+                } else if (tool == 'number') {
+                    var number = 1
+
+                    if ('LB' in node) {
+                        node.LB.each(function(value) {
+                            var label = value.substr(3).toInt()
+                            if (!isNaN(label)) number = Math.max(number, label + 1)
+                        })
+                    }
+
+                    if (this in board.overlays && board.overlays[this][0] == 'label') {
+                        delete board.overlays[this]
+                    } else {
+                        board.overlays[this] = new Tuple(tool, 0, number.toString())
+                    }
                 }
 
                 Object.each(dictionary, function(id) { delete node[id] })
 
                 $$('#goban .row li').each(function(li) {
-                    if (!(li.retrieve('tuple') in board.overlays)) return
+                    var vertex = li.retrieve('tuple')
+                    if (!(vertex in board.overlays)) return
 
-                    var id = dictionary[board.overlays[li.retrieve('tuple')][0]]
-                    var pt = sgf.vertex2point(li.retrieve('tuple'))
-                    if (id == 'LB') pt += ':' + li.get('data-label')
+                    var id = dictionary[board.overlays[vertex][0]]
+                    var pt = sgf.vertex2point(vertex)
+                    if (id == 'LB') pt += ':' + board.overlays[vertex][2]
 
                     if (id in node) node[id].push(pt)
                     else node[id] = [pt]
