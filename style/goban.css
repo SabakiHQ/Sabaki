@@ -187,8 +187,9 @@
         content: attr(data-label);
         display: block;
         border: none;
-        width: 16px;
+        width: 20px;
         height: 16px;
+        margin-left: -11px;
         font-weight: normal;
         font-size: 16px;
 }
