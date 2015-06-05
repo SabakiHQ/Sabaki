@@ -970,7 +970,7 @@
     }
 
     /**
-     * Main
+     * Main events
      */
 
     document.addEvent('keydown', function(e) {
@@ -997,6 +997,8 @@
     window.addEvent('resize', function() {
         resizeBoard()
     }).addEvent('beforeunload', function() {
+        if (remote.getCurrentWindow().isMaximized()) return
+
         var size = $('main').getSize()
         setting.set('window.width', size.x)
         setting.set('window.height', size.y)
