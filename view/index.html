@@ -90,11 +90,11 @@
 
 <script>
     var remote = require('remote')
+    var fs = require('fs')
+    var sgf = require('../module/sgf.js')
     var process = remote.require('process')
     var app = remote.require('app');
     var dialog = remote.require('dialog')
-    var fs = require('fs')
-    var sgf = require('../module/sgf.js')
     var setting = remote.require('./module/setting.js')
 
     var Menu = remote.require('menu')
@@ -975,10 +975,13 @@
 
     document.addEvent('keydown', function(e) {
         if (e.code == 123) {
+            // F12
             remote.getCurrentWindow().toggleDevTools()
         } else if (e.code == 116) {
+            // F5
             location.reload()
         } else if (e.code == 27) {
+            // Escape key
             closeGameInfo()
             setEditMode(false)
         }
