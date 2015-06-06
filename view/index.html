@@ -409,6 +409,8 @@
 
             if (tool.contains('stone')) {
                 var sign = tool.contains('_1') ? 1 : -1
+                if (event.button == 2) sign = -sign
+
                 var oldSign = board.arrangement[this]
                 var ids = ['AW', 'AE', 'AB']
                 var id = ids[sign + 1]
@@ -509,7 +511,7 @@
                 if (hoshi.some(function(v) { return v.equals(vertex) }))
                     li.addClass('hoshi')
 
-                ol.adopt(li.adopt(img).addEvent('click', vertexClicked.bind(vertex)))
+                ol.adopt(li.adopt(img).addEvent('mousedown', vertexClicked.bind(vertex)))
             }
 
             rows.push(ol)
