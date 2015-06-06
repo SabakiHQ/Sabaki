@@ -385,7 +385,7 @@
     }
 
     function vertexClicked() {
-        if (!getEditMode()) {
+        if (!getEditMode() && event.button == 0) {
             makeMove(this)
             return
         }
@@ -433,6 +433,8 @@
                     else node.AE = [point]
                 }
             } else {
+                if (event.button != 0) return
+
                 if (tool != 'label' && tool != 'number') {
                     if (this in board.overlays && board.overlays[this][0] == tool) {
                         delete board.overlays[this]
