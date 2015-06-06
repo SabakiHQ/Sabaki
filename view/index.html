@@ -30,6 +30,9 @@
                 <li class="label-tool"><a href="#" title="Label Tool"><img src="../img/edit/label.png" /></a></li>
                 <li class="number-tool"><a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a></li>
             </ul>
+            <a class="close" href="#" onclick="setEditMode(false)">
+                <img src="../img/edit/close_pressed.png" />
+            </a>
         </section>
         <header>
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
@@ -628,7 +631,7 @@
     }
 
     function prepareEditTools() {
-        $$('#edit a').addEvent('click', function() {
+        $$('#edit ul a').addEvent('click', function() {
             if (!this.getParent().hasClass('selected')) {
                 $$('#edit .selected').removeClass('selected')
                 this.getParent().addClass('selected')
@@ -1004,7 +1007,7 @@
 
         var size = $('main').getSize()
         setting.set('window.width', size.x)
-        setting.set('window.height', size.y)
+            .set('window.height', size.y)
     })
 </script>
 

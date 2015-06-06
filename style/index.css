@@ -73,7 +73,25 @@ header, #bar #edit {
         top: 40px;
 }
 
-#edit ul {
+#edit {
+        position: relative;
+    }
+    #edit a.close {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 40px;
+        width: 35px;
+        background: no-repeat url('../img/edit/close.png') center;
+    }
+    #edit a.close img {
+        opacity: 0;
+    }
+    #edit a.close:active {
+        background: no-repeat url('../img/edit/close_pressed.png') center;
+    }
+    #edit ul {
         display: table;
         margin: 0 auto;
         overflow: hidden;
