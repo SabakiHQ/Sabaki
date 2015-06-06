@@ -321,7 +321,7 @@ exports.tree2string = function(tree) {
             output += id
 
             values.each(function(value) {
-                output += '[' + exports.escapeString(value) + ']'
+                output += '[' + exports.escapeString(value.toString()) + ']'
             })
         })
 
