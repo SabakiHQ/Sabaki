@@ -328,10 +328,12 @@ exports.tree2string = function(tree) {
         output += '\n'
     })
 
-    if (tree.subtrees.length != 0) {
-        tree.subtrees.each(function(subtree) {
-            output += '(' + exports.tree2string(subtree) + ')'
-        })
+    if (tree.current != null)
+        output += '(' + exports.tree2string(tree.subtrees[tree.current]) + ')'
+
+    for (var i = 0; i < tree.subtrees.length; i++) {
+        if (i == tree.current) continue
+        output += '(' + exports.tree2string(tree.subtrees[i]) + ')'
     }
 
     return output
