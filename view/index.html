@@ -441,6 +441,10 @@
                     k = node[ids[i + 1]].indexOf(point)
                     if (k >= 0) {
                         node[ids[i + 1]].splice(k, 1)
+
+                        if (node[ids[i + 1]].length == 0) {
+                            delete node[ids[i + 1]]
+                        }
                     }
                 }
 
