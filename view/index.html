@@ -513,7 +513,7 @@
                 if (hoshi.some(function(v) { return v.equals(vertex) }))
                     li.addClass('hoshi')
 
-                ol.adopt(li.adopt(img).addEvent('mousedown', vertexClicked.bind(vertex)))
+                ol.adopt(li.adopt(img).addEvent('mouseup', vertexClicked.bind(vertex)))
             }
 
             rows.push(ol)
