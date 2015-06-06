@@ -307,8 +307,6 @@
             new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
         else new Audio('../sound/pass.wav').play()
 
-        closeGameInfo()
-
         // Randomize shift and readjust
 
         var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
@@ -385,6 +383,8 @@
     }
 
     function vertexClicked() {
+        closeGameInfo()
+
         if (!getEditMode() && event.button == 0) {
             makeMove(this)
             return
