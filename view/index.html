@@ -393,7 +393,6 @@
         // Edit Mode activated
 
         if (!getEditMode()) return
-        if (event.which != 1 || event.button != 0) return
 
         getCurrentTreePosition().unpack(function(tree, index) {
             var node = tree.nodes[index]
@@ -410,21 +409,26 @@
 
             if (tool.contains('stone')) {
                 var sign = tool.contains('_1') ? 1 : -1
-                var id = sign > 0 ? 'AB' : 'AW'
+                var oldSign = board.arrangement[this]
+                var ids = ['AW', 'AE', 'AB']
+                var id = ids[sign + 1]
                 var point = sgf.vertex2point(this)
 
-                if (board.arrangement[this] != sign) {
+                for (var i = -1; i <= 1; i++) {
+                    if (!(ids[i + 1] in node)) continue
+
+                    k = node[ids[i + 1]].indexOf(point)
+                    if (k >= 0) {
+                        node[ids[i + 1]].splice(k, 1)
+                    }
+                }
+
+                if (oldSign != sign) {
                     if (id in node) node[id].push(point)
                     else node[id] = [point]
-                } else {
-                    var i = -1
-                    if (id in node) {
-                        i = node[id].indexOf(point)
-                        if (i >= 0) node[id].splice(i, 1)
-                    } else if (i < 0) {
-                        if ('AE' in node) node.AE.push(point)
-                        else node.AE = [point]
-                    }
+                } else if (oldSign == sign) {
+                    if ('AE' in node) node.AE.push(point)
+                    else node.AE = [point]
                 }
             } else {
                 if (tool != 'label' && tool != 'number') {
@@ -448,7 +452,7 @@
 
                         board.overlays[this] = new Tuple(tool, 0, number.toString())
                     }
-                } else {
+                } else if (tool == 'label') {
                     if (this in board.overlays && board.overlays[this][0] == 'label') {
                         delete board.overlays[this]
                     } else {
