@@ -96,7 +96,7 @@ exports.parse = function(tokens, start, end) {
 
         tokens[i].unpack(function(type, data) {
             if (type == 'semicolon') {
-                node = { }
+                node = {}
                 tree.nodes.push(node)
             } else if (type == 'prop_ident') {
                 node[data] = []
