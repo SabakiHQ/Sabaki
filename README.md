@@ -10,7 +10,7 @@ Eventually the best virtual Go board. This is a work in progress.
 - [x] Read and save SGF files
 - [x] Supports nested variations
 - [x] Fuzzy stone placement
-- [ ] SGF editing tools
+- [x] SGF editing tools
 - [ ] Show and manipulate game tree
 - [ ] Counting tool
 
