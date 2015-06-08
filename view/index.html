@@ -44,9 +44,7 @@
                     <a href="#" title="Number Tool"><img src="../img/edit/number.png" /></a>
                 </li>
             </ul>
-            <a class="close" href="#" onclick="setEditMode(false)">
-                <img src="../img/ui/close_pressed.png" />
-            </a>
+            <a class="close" href="#" onclick="setEditMode(false)"></a>
         </section>
         <header>
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
@@ -54,6 +52,10 @@
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
             <img id="headermenu" src="../img/ui/menu.png" onclick="openHeaderMenu()" />
         </header>
+        <section id="scoring">
+            <button>Done</button> Please select dead stones.
+            <a class="close" href="#" onclick="setScoringMode(false)"></a>
+        </section>
     </section>
 
     <section id="info">
@@ -680,6 +682,7 @@
     function setEditMode(editMode) {
         if (editMode) {
             $('bar').addClass('edit')
+            setScoringMode(false)
             closeGameInfo()
         } else {
             $('bar').removeClass('edit')
@@ -687,15 +690,17 @@
     }
 
     function getScoringMode() {
-        return $('bar').hasClass('scoring')
+        return $$('body').hasClass('scoring')
     }
 
     function setScoringMode(scoringMode) {
         if (scoringMode) {
-            $('bar').addClass('scoring')
+            $$('body').addClass('scoring')
+            $('bar').removeClass('edit')
             closeGameInfo()
         } else {
-            $('bar').removeClass('scoring')
+            $$('body').removeClass('scoring')
+            $$('.dead').removeClass('dead')
         }
     }
 
@@ -749,6 +754,7 @@
 
         setIsLoading(false)
         closeGameInfo()
+        setScoringMode(false)
     }
 
     function saveGame() {
@@ -1059,6 +1065,7 @@
             // Escape key
             closeGameInfo()
             setEditMode(false)
+            setScoringMode(false)
         }
     }).addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()

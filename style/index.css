@@ -1,4 +1,4 @@
-header, #bar #edit {
+header, #bar #edit, #bar #scoring {
         position: absolute;
         left: 0;
         right: 0;
@@ -62,6 +62,9 @@ header, #bar #edit {
     #bar.edit {
         background: #C4BD64;
     }
+    .scoring #bar {
+        background: #C42311;
+    }
     #bar #edit {
         color: #333;
         top: -40px;
@@ -71,6 +74,21 @@ header, #bar #edit {
     }
     #bar.edit header {
         top: 40px;
+    }
+    #bar #scoring {
+        top: 40px;
+    }
+    #bar #scoring button {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .scoring #bar #scoring {
+        top: 0;
+    }
+    .scoring #bar header {
+        top: -40px;
 }
 
 #edit {
@@ -140,15 +158,15 @@ header, #bar #edit {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .8);
     }
-    #info input, #info select, #info button {
+    #info input, #info select, button {
         border: 0;
         background: #111;
         color: #eee;
     }
-    #info input:disabled, #info select:disabled, #info button:disabled {
+    #info input:disabled, #info select:disabled, button:disabled {
         opacity: .5;
     }
-    #info input:focus, #info select:focus, #info button:hover, #info button:focus {
+    #info input:focus, #info select:focus, button:hover, button:focus {
         background: #1a1a1a;
     }
     #info section {
