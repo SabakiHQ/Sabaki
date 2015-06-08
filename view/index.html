@@ -778,6 +778,8 @@
     }
 
     function goBack() {
+        if (getScoringMode()) return
+
         getCurrentTreePosition().unpack(function(tree, position) {
             if (position - 1 >= 0) {
                 setCurrentTreePosition(tree, position - 1)
@@ -788,6 +790,8 @@
     }
 
     function goForward() {
+        if (getScoringMode()) return
+
         getCurrentTreePosition().unpack(function(tree, position) {
             if (tree.nodes.length > position + 1) {
                 setCurrentTreePosition(tree, position + 1)
@@ -798,6 +802,8 @@
     }
 
     function goToNextFork() {
+        if (getScoringMode()) return
+
         getCurrentTreePosition().unpack(function(tree, index) {
             if (index != tree.nodes.length - 1)
                 setCurrentTreePosition(tree, tree.nodes.length - 1)
@@ -809,6 +815,8 @@
     }
 
     function goToPreviousFork() {
+        if (getScoringMode()) return
+
         getCurrentTreePosition().unpack(function(tree, index) {
             if (tree.parent == null || tree.parent.nodes.length == 0)
                 setCurrentTreePosition(tree, 0)
@@ -817,12 +825,16 @@
     }
 
     function goToBeginning() {
+        if (getScoringMode()) return
+
         var tree = getRootTree()
         if (tree.nodes.length == 0) return
         setCurrentTreePosition(tree, 0)
     }
 
     function goToEnd() {
+        if (getScoringMode()) return
+
         getCurrentTreePosition().unpack(function(tree, position) {
             var t = tree
             while (t.current != null) {
