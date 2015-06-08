@@ -91,6 +91,14 @@
 }
 
 /**
+ * Scoring
+ */
+
+.goban .row li.dead img {
+    opacity: .5;
+}
+
+/**
  * Overlays
  */
 

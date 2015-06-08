@@ -393,15 +393,23 @@
     function vertexClicked() {
         closeGameInfo()
 
-        if (!getEditMode() && event.button == 0) {
+        if (!getEditMode() && !getScoringMode()) {
+            if (event.button != 0) return
             makeMove(this)
+
             return
         }
 
-        // Edit Mode activated
+        // Scoring mode activated
+        if (getScoringMode()) {
+            getBoard().getChain(this).each(function(vertex) {
+                $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
+            })
 
-        if (!getEditMode()) return
+            return
+        }
 
+        // Edit mode activated
         getCurrentTreePosition().unpack(function(tree, index) {
             var node = tree.nodes[index]
             var tool = getSelectedTool()
@@ -675,6 +683,19 @@
             closeGameInfo()
         } else {
             $('bar').removeClass('edit')
+        }
+    }
+
+    function getScoringMode() {
+        return $('bar').hasClass('scoring')
+    }
+
+    function setScoringMode(scoringMode) {
+        if (scoringMode) {
+            $('bar').addClass('scoring')
+            closeGameInfo()
+        } else {
+            $('bar').removeClass('scoring')
         }
     }
 
@@ -1001,7 +1022,10 @@
                 }
             },
             {
-                label: '&Count...'
+                label: '&Score',
+                click: function() {
+                    setScoringMode(true)
+                }
             },
             { type: 'separator' },
             {
@@ -1054,8 +1078,7 @@
         if (remote.getCurrentWindow().isMaximized()) return
 
         var size = $('main').getSize()
-        setting.set('window.width', size.x)
-            .set('window.height', size.y)
+        setting.set('window.width', size.x).set('window.height', size.y)
     })
 </script>
 
