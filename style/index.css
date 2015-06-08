@@ -82,7 +82,14 @@ header, #bar #edit, #bar #scoring {
         position: absolute;
         left: 10px;
         top: 50%;
+        background: #400000;
         transform: translateY(-50%);
+    }
+    #bar #scoring button:hover, #bar #scoring button:focus {
+        background: #600000;
+    }
+    #bar #scoring button:active {
+        transform: translateY(-46%);
     }
     .scoring #bar #scoring {
         top: 0;
@@ -168,6 +175,10 @@ header, #bar #edit, #bar #scoring {
     }
     #info input:focus, #info select:focus, button:hover, button:focus {
         background: #1a1a1a;
+    }
+    button:active {
+        position: relative;
+        top: 2px;
     }
     #info section {
         text-align: center;
