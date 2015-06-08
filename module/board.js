@@ -42,7 +42,6 @@ var Board = new Class({
 
     getChain: function(vertex, result) {
         if (!this.hasVertex(vertex)) return [];
-
         if (arguments.length < 2) result = [vertex]
 
         // Recursive depth-first search
@@ -71,6 +70,27 @@ var Board = new Class({
 
         return liberties
     },
+
+    getRegionSign: function(vertex) {
+        if (!this.hasVertex(vertex) || this.arrangement[vertex] != 0) return 0
+
+        var chain = this.getChain(vertex)
+        var result = 0
+        var dame = false
+
+        chain.each(function(c) {
+            if (dame) return
+
+            chain.getNeighborhood().each(function(n) {
+                if (this.arrangement[n] == 0 || dame) return
+
+                result = Math.min(Math.max(result + this.arrangement[n], -1), 1)
+                if (result == 0) dame = true
+            }.bind(this))
+        }.bind(this))
+
+        return dame ? 0 : result
+    }
 
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
