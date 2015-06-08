@@ -90,7 +90,7 @@ var Board = new Class({
         }.bind(this))
 
         return dame ? 0 : result
-    }
+    },
 
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
