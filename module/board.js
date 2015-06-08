@@ -81,7 +81,7 @@ var Board = new Class({
         chain.each(function(c) {
             if (dame) return
 
-            chain.getNeighborhood().each(function(n) {
+            this.getNeighborhood(c).each(function(n) {
                 if (this.arrangement[n] == 0 || dame) return
 
                 result = Math.min(Math.max(result + this.arrangement[n], -1), 1)
