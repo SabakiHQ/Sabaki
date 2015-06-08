@@ -76,7 +76,7 @@ header, #bar #edit {
 #edit {
         position: relative;
     }
-    #edit a.close {
+    #edit a.close, #scoring a.close {
         display: block;
         position: absolute;
         right: 4px;
@@ -84,12 +84,13 @@ header, #bar #edit {
         height: 40px;
         width: 35px;
         background: no-repeat url('../img/ui/close.png') center;
+        opacity: .5;
     }
-    #edit a.close img {
-        opacity: 0;
+    #scoring a.close {
+        background: no-repeat url('../img/ui/close_invert.png') center;
     }
-    #edit a.close:active {
-        background: no-repeat url('../img/ui/close_pressed.png') center;
+    #edit a.close:active, #scoring a.close:active {
+        opacity: .7;
     }
     #edit ul {
         display: table;
