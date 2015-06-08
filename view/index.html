@@ -690,7 +690,7 @@
     }
 
     function getScoringMode() {
-        return $$('body').hasClass('scoring')
+        return $$('body')[0].hasClass('scoring')
     }
 
     function setScoringMode(scoringMode) {
