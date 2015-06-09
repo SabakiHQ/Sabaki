@@ -588,7 +588,7 @@
             min = fieldsize * (board.size + 2)
         }
 
-        $$('#goban div').setStyle('width', min).setStyle('height', min)
+        $$('#goban > div').setStyle('width', min).setStyle('height', min)
 
         $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
         $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
@@ -698,6 +698,15 @@
             $$('body').addClass('scoring')
             $('bar').removeClass('edit')
             closeGameInfo()
+
+            var map = getBoard().getAreaMap()
+
+            $$('#goban .row li').each(function(li) {
+                li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+                    .addClass('area_' + map[li.retrieve('tuple')])
+                if (!li.getElement('div.area'))
+                    li.grab(new Element('div', { class: 'area' }))
+            })
         } else {
             $$('body').removeClass('scoring')
             $$('.dead').removeClass('dead')

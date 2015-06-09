@@ -98,6 +98,22 @@
     opacity: .5;
 }
 
+.goban .row li div.area { display: none; }
+
+.scoring .goban .row li div.area {
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: .3;
+    }
+    .scoring .goban .row li.area_1 div.area {
+        background-color: black;
+    }
+    .scoring .goban .row li.area_-1 div.area {
+        background-color: white;
+}
+
 /**
  * Overlays
  */
