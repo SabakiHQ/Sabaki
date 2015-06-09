@@ -40,20 +40,24 @@ var Board = new Class({
         }.bind(this))
     },
 
-    getChain: function(vertex, result) {
-        if (!this.hasVertex(vertex)) return [];
-        if (arguments.length < 2) result = [vertex]
+    getConnectedComponent: function(vertex, colors, result) {
+        if (!this.hasVertex(vertex)) return []
+        if (arguments.length < 3) result = [vertex]
 
         // Recursive depth-first search
         this.getNeighborhood(vertex).each(function(v) {
-            if (this.arrangement[v] != this.arrangement[vertex]) return
+            if (!colors.contains(this.arrangement[v])) return
             if (result.some(function(w) { return w.equals(v) })) return
 
             result.push(v)
-            this.getChain(v, result)
+            this.getConnectedComponent(v, colors, result)
         }.bind(this))
 
         return result
+    },
+
+    getChain: function(vertex) {
+        return this.getConnectedComponent(vertex, [this.arrangement[vertex]])
     },
 
     getLiberties: function(vertex) {
@@ -82,7 +86,7 @@ var Board = new Class({
             this.getNeighborhood(v).each(function(n) {
                 if (this.arrangement[n] != this.arrangement[vertex]) return
                 if (result.some(function(x) { return x.equals(n) })) return
-                
+
                 result = result.concat(this.getChain(n))
             }.bind(this))
         }.bind(this))
