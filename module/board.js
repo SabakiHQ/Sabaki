@@ -78,20 +78,10 @@ var Board = new Class({
     getRelatedChains: function(vertex) {
         if (this.arrangement[vertex] == 0) return []
 
-        var liberty = this.getLiberties(vertex)[0]
-        var area = this.getChain(liberty)
-        var result = []
-
-        area.each(function(v) {
-            this.getNeighborhood(v).each(function(n) {
-                if (this.arrangement[n] != this.arrangement[vertex]) return
-                if (result.some(function(x) { return x.equals(n) })) return
-
-                result = result.concat(this.getChain(n))
-            }.bind(this))
-        }.bind(this))
-
-        return result
+        var area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
+        return area.filter(function(v) {
+            return this.arrangement[v] == this.arrangement[vertex]
+        }, this)
     },
 
     getAreaMap: function() {
