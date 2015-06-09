@@ -121,17 +121,8 @@
     var Board = require('../module/board.js')
 
     /**
-     * Methods
+     * Getters and setters
      */
-
-    function loadSettings() {
-        if (setting.get('view.fuzzy_stone_placement'))
-            $('goban').addClass('fuzzy')
-        if (setting.get('view.show_coordinates'))
-            $('goban').addClass('coordinates')
-        if (setting.get('view.show_variations'))
-            $('goban').addClass('variations')
-    }
 
     function setIsLoading(loading) {
         if (loading) document.body.addClass('loading')
@@ -238,10 +229,6 @@
         return $('goban').retrieve('position')
     }
 
-    function selectTool(tool) {
-        $$('#edit .' + tool + '-tool a').fireEvent('click')
-    }
-
     function getSelectedTool() {
         var li = $$('#edit .selected')[0]
         var tool = li.get('class').replace('selected', '').replace('-tool', '').trim()
@@ -295,6 +282,54 @@
                     .getElement('img').set('src', '../img/goban/stone_' + sign + '.png')
             }
         }
+    }
+
+    function getEditMode() {
+        return $('bar').hasClass('edit')
+    }
+
+    function setEditMode(editMode) {
+        if (editMode) {
+            $('bar').addClass('edit')
+            setScoringMode(false)
+            closeGameInfo()
+        } else {
+            $('bar').removeClass('edit')
+        }
+    }
+
+    function getScoringMode() {
+        return $$('body')[0].hasClass('scoring')
+    }
+
+    function setScoringMode(scoringMode) {
+        if (scoringMode) {
+            $$('body').addClass('scoring')
+            $('bar').removeClass('edit')
+
+            closeGameInfo()
+            updateAreaMap()
+        } else {
+            $$('body').removeClass('scoring')
+            $$('.dead').removeClass('dead')
+        }
+    }
+
+    /**
+     * Methods
+     */
+
+    function loadSettings() {
+        if (setting.get('view.fuzzy_stone_placement'))
+            $('goban').addClass('fuzzy')
+        if (setting.get('view.show_coordinates'))
+            $('goban').addClass('coordinates')
+        if (setting.get('view.show_variations'))
+            $('goban').addClass('variations')
+    }
+
+    function selectTool(tool) {
+        $$('#edit .' + tool + '-tool a').fireEvent('click')
     }
 
     function makeMove(vertex) {
@@ -675,37 +710,6 @@
             }
 
             setCurrentTreePosition(getRootTree(), 0)
-        }
-    }
-
-    function getEditMode() {
-        return $('bar').hasClass('edit')
-    }
-
-    function setEditMode(editMode) {
-        if (editMode) {
-            $('bar').addClass('edit')
-            setScoringMode(false)
-            closeGameInfo()
-        } else {
-            $('bar').removeClass('edit')
-        }
-    }
-
-    function getScoringMode() {
-        return $$('body')[0].hasClass('scoring')
-    }
-
-    function setScoringMode(scoringMode) {
-        if (scoringMode) {
-            $$('body').addClass('scoring')
-            $('bar').removeClass('edit')
-
-            closeGameInfo()
-            updateAreaMap()
-        } else {
-            $$('body').removeClass('scoring')
-            $$('.dead').removeClass('dead')
         }
     }
 
