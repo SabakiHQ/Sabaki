@@ -78,7 +78,10 @@ var Board = new Class({
             for (var j = 0; j < this.size; j++) {
                 var vertex = new Tuple(i, j)
                 if (!this.hasVertex(vertex) || vertex in map) continue
-                if (this.arrangement[vertex] != 0) map[vertex] = this.arrangement[vertex]
+                if (this.arrangement[vertex] != 0) {
+                    map[vertex] = this.arrangement[vertex]
+                    continue
+                }
 
                 var chain = this.getChain(vertex)
                 var result = 0
