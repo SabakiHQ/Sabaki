@@ -77,7 +77,7 @@ var Board = new Class({
         for (var i = 0; i < this.size; i++) {
             for (var j = 0; j < this.size; j++) {
                 var vertex = new Tuple(i, j)
-                if (!this.hasVertex(vertex) || vertex in map) return 0
+                if (!this.hasVertex(vertex) || vertex in map) continue
                 if (this.arrangement[vertex] != 0) map[vertex] = this.arrangement[vertex]
 
                 var chain = this.getChain(vertex)
@@ -98,10 +98,12 @@ var Board = new Class({
                 result = dame ? 0 : result
 
                 chain.each(function(c) {
-                    map[vertex] = result
+                    map[c] = result
                 })
             }
         }
+
+        return map
     },
 
     makeMove: function(sign, vertex) {
