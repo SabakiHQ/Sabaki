@@ -84,24 +84,23 @@ var Board = new Class({
                 }
 
                 var chain = this.getChain(vertex)
-                var result = 0
-                var dame = false
+                var sign = 0
+                var indicator = 1
 
                 chain.each(function(c) {
-                    if (dame) return
+                    if (indicator == 0) return
 
                     this.getNeighborhood(c).each(function(n) {
-                        if (this.arrangement[n] == 0 || dame) return
+                        if (this.arrangement[n] == 0 || indicator == 0) return
 
-                        result = Math.min(Math.max(result + this.arrangement[n], -1), 1)
-                        if (result == 0) dame = true
+                        sign = Math.min(Math.max(sign + this.arrangement[n], -1), 1)
+                        indicator *= Math.abs(sign)
+                        sign *= indicator
                     }.bind(this))
                 }.bind(this))
 
-                result = dame ? 0 : result
-
                 chain.each(function(c) {
-                    map[c] = result
+                    map[c] = sign
                 })
             }
         }
