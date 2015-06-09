@@ -406,7 +406,7 @@
         if (getScoringMode()) {
             if (getBoard().arrangement[this] == 0) return
 
-            getBoard().getRelatedChains(this).each(function(vertex) {
+            getBoard().getChain(this).each(function(vertex) {
                 $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
             })
 
