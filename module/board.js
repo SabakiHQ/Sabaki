@@ -72,12 +72,16 @@ var Board = new Class({
     },
 
     getAreaMap: function() {
-        var map = Object.clone(this.arrangement)
+        var map = {}
 
         for (var i = 0; i < this.size; i++) {
             for (var j = 0; j < this.size; j++) {
                 var vertex = new Tuple(i, j)
-                if (map[vertex] != 0) continue
+                if (vertex in map) continue
+                if (this.arrangement[vertex] != 0) {
+                    map[vertex] = this.arrangement[vertex]
+                    continue
+                }
 
                 var chain = this.getChain(vertex)
                 var sign = 0
@@ -87,10 +91,10 @@ var Board = new Class({
                     if (indicator == 0) return
 
                     this.getNeighborhood(c).each(function(n) {
-                        if (map[n] == 0 || indicator == 0) return
+                        if (this.arrangement[n] == 0 || indicator == 0) return
 
-                        if (sign == 0) sign = map[n]
-                        else if (sign != map[n]) indicator = 0
+                        if (sign == 0) sign = map[n] = this.arrangement[n]
+                        else if (sign != this.arrangement[n]) indicator = 0
                     }.bind(this))
                 }.bind(this))
 
