@@ -313,42 +313,39 @@
             var map = board.getAreaMap()
             var done = {}
 
-            for (var i = 0; i < board.size; i++) {
-                for (var j = 0; j < board.size; j++) {
-                    var li = $$('#goban .pos_' + i + '-' + j)[0]
-                    var vertex = li.retrieve('tuple')
-                    if (map[vertex] != 0 || vertex in done) continue
+            $$('#goban .row li').each(function(li) {
+                var vertex = li.retrieve('tuple')
+                if (map[vertex] != 0 || vertex in done) return
 
-                    var posArea = board.getConnectedComponent(vertex, [0, -1])
-                    var negArea = board.getConnectedComponent(vertex, [0, 1])
-                    var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
-                    var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
-                    var sign = 0
-                    var actualArea = []
-                    var actualDead = []
+                var posArea = board.getConnectedComponent(vertex, [0, -1])
+                var negArea = board.getConnectedComponent(vertex, [0, 1])
+                var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
+                var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
+                var sign = 0
+                var actualArea = []
+                var actualDead = []
 
-                    if (negDead.length <= 10 && posDead.length > negDead.length && posArea.length > negArea.length) {
-                        sign = -1
-                        actualDead = negDead
-                        actualArea = negArea
-                    } else if (posDead.length <= 10 && negDead.length > posDead.length && negArea.length > posArea.length) {
-                        sign = 1
-                        actualDead = posDead
-                        actualArea = posArea
-                    }
-
-                    if (sign == 0) actualArea = board.getChain(vertex)
-
-                    actualDead.each(function(v) {
-                        $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-                    })
-
-                    actualArea.each(function(v) {
-                        map[v] = sign
-                        done[v] = 1
-                    })
+                if (negDead.length <= 10 && posDead.length > negDead.length && posArea.length > negArea.length) {
+                    sign = -1
+                    actualDead = negDead
+                    actualArea = negArea
+                } else if (posDead.length <= 10 && negDead.length > posDead.length && negArea.length > posArea.length) {
+                    sign = 1
+                    actualDead = posDead
+                    actualArea = posArea
                 }
-            }
+
+                if (sign == 0) actualArea = board.getChain(vertex)
+
+                actualDead.each(function(v) {
+                    $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+                })
+
+                actualArea.each(function(v) {
+                    map[v] = sign
+                    done[v] = 1
+                })
+            })
 
             updateAreaMap()
         } else {
