@@ -53,7 +53,7 @@
             <img id="headermenu" src="../img/ui/menu.png" onclick="openHeaderMenu()" />
         </header>
         <section id="scoring">
-            <button onclick="setScoringMode(false)">Done</button> Please select dead stones.
+            <button onclick="showScore()">Done</button> Please select dead stones.
             <a class="close" href="#" onclick="setScoringMode(false)"></a>
         </section>
     </section>
@@ -100,6 +100,17 @@
             <p>
                 <button type="submit" onclick="updateGameInfo(); closeGameInfo(); return false">OK</button>
                 <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
+            </p>
+        </form>
+    </section>
+
+    <section id="score">
+        <h2>Score</h2>
+
+        <form>
+            <p>
+                <button type="submit" onclick="closeScore(); return false">Update Result</button>
+                <button type="submit" onclick="closeScore(); return false">Cancel</button>
             </p>
         </form>
     </section>
@@ -305,7 +316,7 @@
     function setScoringMode(scoringMode) {
         if (scoringMode) {
             $$('body').addClass('scoring')
-            $('bar').removeClass('edit')
+            setEditMode(false)
             closeGameInfo()
 
             var deadstones = getBoard().guessDeadStones()
@@ -643,6 +654,8 @@
     }
 
     function showGameInfo() {
+        closeScore()
+
         var tree = getRootTree()
         var rootNode = tree.nodes[0]
         var info = $('info')
@@ -670,6 +683,16 @@
 
     function closeGameInfo() {
         $('info').removeClass('show')
+    }
+
+    function showScore() {
+        closeGameInfo()
+        $('score').addClass('show')
+    }
+
+    function closeScore() {
+        $('score').removeClass('show')
+        setScoringMode(false)
     }
 
     function updateGameInfo() {
@@ -1114,6 +1137,7 @@
         } else if (e.code == 27) {
             // Escape key
             closeGameInfo()
+            closeScore()
             setEditMode(false)
             setScoringMode(false)
         }

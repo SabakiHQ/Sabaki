@@ -148,7 +148,7 @@ header, #bar #edit, #bar #scoring {
         transform: translate(-50%, -50%);
 }
 
-#info {
+#info, #score {
         position: fixed;
         left: 0;
         right: 0;
@@ -161,17 +161,13 @@ header, #bar #edit, #bar #scoring {
         transition: .5s bottom;
         z-index: 3;
     }
-    #info.show {
+    #info.show, #score.show {
         bottom: 0;
-        box-shadow: 0 0 10px rgba(0, 0, 0, .8);
+        box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
     #info input, #info select, button {
-        border: 0;
         background: #111;
         color: #eee;
-    }
-    #info input:disabled, #info select:disabled, button:disabled {
-        opacity: .5;
     }
     #info input:focus, #info select:focus, button:hover, button:focus {
         background: #1a1a1a;
@@ -202,7 +198,9 @@ header, #bar #edit, #bar #scoring {
         width: 6em;
         margin-right: 10px;
         text-align: right;
-    }
-    #info form p:last-child {
-        text-align: right;
+}
+
+#score {
+    background: #FBF593;
+    color: #333;
 }

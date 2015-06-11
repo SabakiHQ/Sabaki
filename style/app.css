@@ -76,14 +76,21 @@ form p, form ul li {
     input {
         width: 125px;
     }
-    input, button, select {
+    input, button, select, textarea {
+        border: 0;
         padding: 5px 10px;
     }
     button {
         padding: 5px 20px;
     }
-    input:focus, button:focus, select:focus {
+    input:focus, button:focus, select:focus, textarea:focus {
         outline: none;
+    }
+    input:disabled, select:disabled, button:disabled, textarea:disabled {
+        opacity: .5;
+    }
+    form p:last-child {
+        text-align: right;
 }
 
 /**
