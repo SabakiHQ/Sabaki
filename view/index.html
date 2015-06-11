@@ -321,29 +321,45 @@
                 var negArea = board.getConnectedComponent(vertex, [0, 1])
                 var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
                 var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
+
                 var sign = 0
                 var actualArea = []
                 var actualDead = []
 
-                if (negDead.length <= 10 && posDead.length > negDead.length && posArea.length > negArea.length) {
-                    sign = -1
-                    actualDead = negDead
+                var negDiff = negArea.filter(function(y) {
+                    return !negDead.some(function(x) { return x.equals(y) })
+                        && !posArea.some(function(x) { return x.equals(y) })
+                })
+
+                var posDiff = posArea.filter(function(y) {
+                    return !posDead.some(function(x) { return x.equals(y) })
+                        && !negArea.some(function(x) { return x.equals(y) })
+                })
+
+                if (negDiff.length <= 1) {
+                    sign--
                     actualArea = negArea
-                } else if (posDead.length <= 10 && negDead.length > posDead.length && negArea.length > posArea.length) {
-                    sign = 1
-                    actualDead = posDead
-                    actualArea = posArea
+                    actualDead = negDead
                 }
 
-                if (sign == 0) actualArea = board.getChain(vertex)
+                if (posDiff.length <= 1) {
+                    sign++
+                    actualArea = posArea
+                    actualDead = posDead
+                }
 
-                actualDead.each(function(v) {
-                    $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-                })
+                if (sign == 0) {
+                    actualArea = board.getChain(vertex)
+                    actualDead = []
+                }
 
                 actualArea.each(function(v) {
                     map[v] = sign
                     done[v] = 1
+                })
+
+                actualDead.each(function(v) {
+                    $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
                 })
             })
 
