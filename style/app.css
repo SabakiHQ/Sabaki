@@ -30,6 +30,12 @@ body, a {
     bottom: 0;
 }
 
+h2 {
+    font-size: 1.7em;
+    font-weight: normal;
+    text-transform: lowercase;
+}
+
 a, img {
     -webkit-user-drag: none;
 }

@@ -201,6 +201,13 @@ header, #bar #edit, #bar #scoring {
 }
 
 #score {
-    background: #FBF593;
-    color: #333;
-}
+        background: #FBF593;
+        color: #333;
+    }
+    #score button {
+        background: rgba(0, 0, 0, .1);
+        color: #333;
+    }
+    #score button:focus, #score button:hover {
+        background: rgba(0, 0, 0, .2);
+    }
