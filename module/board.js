@@ -179,6 +179,64 @@ var Board = new Class({
         }
 
         return result.slice(0, count)
+    },
+
+    guessDeadStones: function() {
+        var board = this
+        var map = board.getAreaMap()
+        var done = {}
+        var result = []
+
+        for (var i = 0; i < this.size; i++) {
+            for (var j = 0; j < this.size; j++) {
+                var vertex = new Tuple(i, j)
+                if (map[vertex] != 0 || vertex in done) continue
+
+                var posArea = board.getConnectedComponent(vertex, [0, -1])
+                var negArea = board.getConnectedComponent(vertex, [0, 1])
+                var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
+                var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
+
+                var sign = 0
+                var actualArea = []
+                var actualDead = []
+
+                var negDiff = negArea.filter(function(y) {
+                    return !negDead.some(function(x) { return x.equals(y) })
+                        && !posArea.some(function(x) { return x.equals(y) })
+                })
+
+                var posDiff = posArea.filter(function(y) {
+                    return !posDead.some(function(x) { return x.equals(y) })
+                        && !negArea.some(function(x) { return x.equals(y) })
+                })
+
+                if (negDiff.length <= 1) {
+                    sign--
+                    actualArea = negArea
+                    actualDead = negDead
+                }
+
+                if (posDiff.length <= 1) {
+                    sign++
+                    actualArea = posArea
+                    actualDead = posDead
+                }
+
+                if (sign == 0) {
+                    actualArea = board.getChain(vertex)
+                    actualDead = []
+                }
+
+                actualArea.each(function(v) {
+                    done[v] = 1
+                })
+
+                result.combine(actualDead)
+            }
+        }
+
+        return result
     }
 })
 

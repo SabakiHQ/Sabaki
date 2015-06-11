@@ -308,59 +308,9 @@
             $('bar').removeClass('edit')
             closeGameInfo()
 
-            // Heuristic for dead stones
-            var board = getBoard()
-            var map = board.getAreaMap()
-            var done = {}
-
-            $$('#goban .row li').each(function(li) {
-                var vertex = li.retrieve('tuple')
-                if (map[vertex] != 0 || vertex in done) return
-
-                var posArea = board.getConnectedComponent(vertex, [0, -1])
-                var negArea = board.getConnectedComponent(vertex, [0, 1])
-                var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
-                var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
-
-                var sign = 0
-                var actualArea = []
-                var actualDead = []
-
-                var negDiff = negArea.filter(function(y) {
-                    return !negDead.some(function(x) { return x.equals(y) })
-                        && !posArea.some(function(x) { return x.equals(y) })
-                })
-
-                var posDiff = posArea.filter(function(y) {
-                    return !posDead.some(function(x) { return x.equals(y) })
-                        && !negArea.some(function(x) { return x.equals(y) })
-                })
-
-                if (negDiff.length <= 1) {
-                    sign--
-                    actualArea = negArea
-                    actualDead = negDead
-                }
-
-                if (posDiff.length <= 1) {
-                    sign++
-                    actualArea = posArea
-                    actualDead = posDead
-                }
-
-                if (sign == 0) {
-                    actualArea = board.getChain(vertex)
-                    actualDead = []
-                }
-
-                actualArea.each(function(v) {
-                    map[v] = sign
-                    done[v] = 1
-                })
-
-                actualDead.each(function(v) {
-                    $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-                })
+            var deadstones = getBoard().guessDeadStones()
+            deadstones.each(function(v) {
+                $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
             })
 
             updateAreaMap()
