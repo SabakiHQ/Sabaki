@@ -211,13 +211,13 @@ var Board = new Class({
                         && !negArea.some(function(x) { return x.equals(y) })
                 })
 
-                if (negDiff.length <= 1) {
+                if (negDiff.length <= 1 && negDead.length <= posDead.length) {
                     sign--
                     actualArea = negArea
                     actualDead = negDead
                 }
 
-                if (posDiff.length <= 1) {
+                if (posDiff.length <= 1 && posDead.length <= negDead.length) {
                     sign++
                     actualArea = posArea
                     actualDead = posDead
