@@ -157,7 +157,6 @@
         height: 12px;
         margin-left: -9px;
         margin-top: -9px;
-        overflow: hidden;
         background: #EDB163 url('../img/goban/board.png') center fixed;
         border: 2px solid #5E2E0C;
         text-align: center;
