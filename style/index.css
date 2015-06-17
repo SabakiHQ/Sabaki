@@ -205,8 +205,10 @@ header, #bar #edit, #bar #scoring {
         color: #333;
     }
     #score table {
+        margin: 0 auto;
         margin-bottom: 1em;
         width: 100%;
+        max-width: 750px;
         border-collapse: collapse;
     }
     #score th, #score td {

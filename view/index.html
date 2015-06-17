@@ -111,9 +111,9 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th class="disabled">Area</th>
-                    <th>Territory</th>
-                    <th>Captures</th>
+                    <th class="area disabled">Area</th>
+                    <th class="territory">Territory</th>
+                    <th class="territory">Captures</th>
                     <th>Komi</th>
                     <th>Total</th>
                 </tr>
@@ -121,17 +121,17 @@
             <tbody>
                 <tr>
                     <th><img src="../img/goban/stone_1.png" alt="Black" width="24" height="24" /></th>
-                    <td class="disabled">0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td class="area disabled">0</td>
+                    <td class="territory">0</td>
+                    <td class="territory">0</td>
                     <td></td>
                     <td>0</td>
                 </tr>
                 <tr>
                     <th><img src="../img/goban/stone_-1.png" alt="White" width="24" height="24" /></th>
-                    <td class="disabled">0</td>
-                    <td>0</td>
-                    <td>0</td>
+                    <td class="area disabled">0</td>
+                    <td class="territory">0</td>
+                    <td class="territory">0</td>
                     <td>0</td>
                     <td>0</td>
                 </tr>
@@ -361,6 +361,15 @@
             $$('body').removeClass('scoring')
             $$('.dead').removeClass('dead')
         }
+    }
+
+    function getScoringMethod() {
+        return $$('#score .area')[0].hasClass('disabled') ? 'territory' : 'area'
+    }
+
+    function setScoringMethod(method) {
+        $$('#score td').addClass('disabled')
+        $$('#score .' + method).removeClass('disabled')
     }
 
     /**
