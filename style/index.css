@@ -254,7 +254,7 @@ header, #bar #edit, #bar #scoring {
         opacity: .7;
     }
     #score tbody tr:first-child {
-        border-bottom: 1px solid rgba(0, 0, 0, .2);
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
     #score button {
         background: rgba(0, 0, 0, .1);
