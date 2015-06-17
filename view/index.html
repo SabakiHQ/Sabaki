@@ -107,6 +107,37 @@
     <section id="score">
         <h2>Score</h2>
 
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Area</th>
+                    <th>Territory</th>
+                    <th>Captures</th>
+                    <th>Komi</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th><img src="../img/goban/stone_1.png" alt="Black" width="32" height="32" /></th>
+                    <th>0</th>
+                    <th>0</th>
+                    <th>0</th>
+                    <th></th>
+                    <th>0</th>
+                </tr>
+                <tr>
+                    <th><img src="../img/goban/stone_-1.png" alt="White" width="32" height="32" /></th>
+                    <th>0</th>
+                    <th>0</th>
+                    <th>0</th>
+                    <th>0</th>
+                    <th>0</th>
+                </tr>
+            </tbody>
+        </table>
+
         <form>
             <p>
                 <button type="submit" onclick="closeScore(); return false">Update Result</button>
@@ -704,7 +735,7 @@
         rootNode.WR = [info.getElement('input[name="rank_-1"]').get('value').trim()]
         rootNode.PB = [info.getElement('input[name="name_1"]').get('value').trim()]
         rootNode.PW = [info.getElement('input[name="name_-1"]').get('value').trim()]
-        
+
         setPlayerName(1, rootNode.PB[0])
         setPlayerName(-1, rootNode.PW[0])
 
