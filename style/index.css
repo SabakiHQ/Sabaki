@@ -204,10 +204,35 @@ header, #bar #edit, #bar #scoring {
         background: #FBF593;
         color: #333;
     }
+    #score table {
+        margin-bottom: 1em;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    #score th, #score td {
+        padding: 10px;
+        width: 4em;
+    }
+    #score th {
+        font-weight: normal;
+        font-size: .8em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+    #score td {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    #score table .disabled {
+        opacity: .7;
+    }
+    #score tbody tr:first-child {
+        border-bottom: 1px solid #D9D371;
+    }
     #score button {
         background: rgba(0, 0, 0, .1);
         color: #333;
     }
     #score button:focus, #score button:hover {
         background: rgba(0, 0, 0, .2);
-    }
+}
