@@ -7,7 +7,7 @@ var alpha = 'abcdefghijklmnopqrstuvwxyz'
 exports.tokenize = function(input) {
     var tokens = []
     var builder = ''
-    var propIdentRegex = /^[A-Z]+/
+    var propIdentRegex = /^[A-Za-z]+/
 
     var i = 0
     var inCValueType = false
