@@ -212,11 +212,11 @@ header, #bar #edit, #bar #scoring {
     #score th, #score td {
         padding: 10px;
         width: 4em;
+        text-align: right;
     }
     #score th {
         font-weight: normal;
         font-size: .8em;
-        text-align: left;
         text-transform: uppercase;
     }
     #score td {
