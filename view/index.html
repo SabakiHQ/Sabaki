@@ -381,6 +381,19 @@
         $$('#score .method .' + method).addClass('current')
         $$('#score tr > *').addClass('disabled')
         $$('#score table .' + method).removeClass('disabled')
+
+        // Update UI
+        for (var sign = -1; sign <= 1; sign += 2) {
+            var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
+            var tds = tr.getElements('td')
+
+            tds[4].set('text', 0)
+
+            for (var i = 0; i <= 3; i++) {
+                if (tds[i].hasClass('disabled') || isNaN(tds[i].get('text').toFloat())) continue
+                tds[4].set('text', tds[4].get('text').toFloat() + tds[i].get('text').toFloat())
+            }
+        }
     }
 
     /**
@@ -749,7 +762,10 @@
             tds[0].set('text', score['area_' + sign])
             tds[1].set('text', score['territory_' + sign])
             tds[2].set('text', score['captures_' + sign])
-            if (sign < 0) tds[3].set('text', 'KM' in rootNode ? rootNode.KM[0] : '0')
+            if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+            tds[4].set('text', 0)
+
+            setScoringMethod('territory')
         }
 
         closeGameInfo()
