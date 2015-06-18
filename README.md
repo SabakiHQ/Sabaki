@@ -11,7 +11,7 @@ Eventually the best virtual Go board. This is a work in progress.
 - [x] Supports nested variations
 - [x] Fuzzy stone placement
 - [x] SGF editing tools
-- [ ] Scoring tool
+- [x] Scoring tool
 - [ ] Show and manipulate game tree
 
 ## Third Party Libraries

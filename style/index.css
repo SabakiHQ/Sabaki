@@ -252,7 +252,7 @@ header, #bar #edit, #bar #scoring {
         transition: .2s opacity;
     }
     #score table .disabled {
-        opacity: .7;
+        opacity: .5;
     }
     #score tbody tr:first-child {
         border-bottom: 1px solid rgba(0, 0, 0, .1);
