@@ -120,6 +120,26 @@ var Board = new Class({
         return map
     },
 
+    getScore: function(areaMap) {
+        var score = {}
+
+        score['area_1'] = 0
+        score['area_-1'] = 0
+        score['territory_1'] = 0
+        score['territory_-1'] = 0
+        score['captures_1'] = this.captures['1']
+        score['captures_-1'] = this.captures['-1']
+
+        Object.each(areaMap, function(sign, vertex) {
+            if (sign == 0) return
+
+            score['area_' + sign]++
+            if (this.arrangement[vertex] == 0) score['territory_' + sign]++
+        }, this)
+
+        return score
+    },
+
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
 
