@@ -149,7 +149,7 @@
 
         <form>
             <p>
-                <button type="submit" onclick="closeScore(); return false">Update Result</button>
+                <button type="submit" onclick="updateScore(); closeScore(); return false">Update Result</button>
                 <button type="submit" onclick="closeScore(); return false">Cancel</button>
             </p>
         </form>
@@ -752,33 +752,6 @@
         $('info').removeClass('show')
     }
 
-    function showScore() {
-        var board = $('goban').retrieve('finalboard')
-        var score = board.getScore($('goban').retrieve('areamap'))
-        var rootNode = getRootTree().nodes[0]
-
-        for (var sign = -1; sign <= 1; sign += 2) {
-            var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-            var tds = tr.getElements('td')
-
-            tds[0].set('text', score['area_' + sign])
-            tds[1].set('text', score['territory_' + sign])
-            tds[2].set('text', score['captures_' + sign])
-            if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
-            tds[4].set('text', 0)
-
-            setScoringMethod(setting.get('scoring.method'))
-        }
-
-        closeGameInfo()
-        $('score').addClass('show')
-    }
-
-    function closeScore() {
-        $('score').removeClass('show')
-        setScoringMode(false)
-    }
-
     function updateGameInfo() {
         var rootNode = getRootTree().nodes[0]
         var info = $('info')
@@ -824,6 +797,43 @@
 
             setCurrentTreePosition(getRootTree(), 0)
         }
+    }
+
+    function showScore() {
+        var board = $('goban').retrieve('finalboard')
+        var score = board.getScore($('goban').retrieve('areamap'))
+        var rootNode = getRootTree().nodes[0]
+
+        for (var sign = -1; sign <= 1; sign += 2) {
+            var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
+            var tds = tr.getElements('td')
+
+            tds[0].set('text', score['area_' + sign])
+            tds[1].set('text', score['territory_' + sign])
+            tds[2].set('text', score['captures_' + sign])
+            if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+            tds[4].set('text', 0)
+
+            setScoringMethod(setting.get('scoring.method'))
+        }
+
+        closeGameInfo()
+        $('score').addClass('show')
+    }
+
+    function closeScore() {
+        $('score').removeClass('show')
+        setScoringMode(false)
+    }
+
+    function updateScore() {
+        var rootNode = getRootTree().nodes[0]
+        var results = $$('#score tbody td:last-child').get('text')
+        var diff = results[1].toFloat() - results[0].toFloat()
+        var color = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : '')
+        var result = color + Math.abs(diff)
+
+        rootNode.RE = [result]
     }
 
     function updateAreaMap() {
