@@ -382,6 +382,8 @@
         $$('#score tr > *').addClass('disabled')
         $$('#score table .' + method).removeClass('disabled')
 
+        setting.set('scoring.method', method)
+
         // Update UI
         for (var sign = -1; sign <= 1; sign += 2) {
             var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
@@ -765,7 +767,7 @@
             if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
             tds[4].set('text', 0)
 
-            setScoringMethod('territory')
+            setScoringMethod(setting.get('scoring.method'))
         }
 
         closeGameInfo()

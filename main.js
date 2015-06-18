@@ -13,6 +13,7 @@ setting.default('window.width', 608)
     .default('view.show_coordinates', false)
     .default('view.show_variations', true)
     .default('view.show_tree', false)
+    .default('scoring.method', 'territory')
     .default('sound.enable', true)
 
 // Quit when all windows are closed.
