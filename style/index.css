@@ -249,6 +249,7 @@ header, #bar #edit, #bar #scoring {
     #score td {
         font-size: 1.5em;
         font-weight: bold;
+        transition: .2s opacity;
     }
     #score table .disabled {
         opacity: .7;
