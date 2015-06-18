@@ -32,11 +32,11 @@ app.on('ready', function() {
         'show': false,
         'web-preferences': {
             'text-areas-are-resizable': false,
-            'webaudio': setting.get('sound.enable')
         }
     })
 
     // window.toggleDevTools()
+    window.webContents.setAudioMuted(!setting.get('sound.enable'))
 
     window.on('closed', function() { window = null })
     window.webContents.on("will-navigate", function(e, url) { e.preventDefault() })
