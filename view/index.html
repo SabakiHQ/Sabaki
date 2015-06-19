@@ -425,19 +425,19 @@
         var color = getCurrentPlayer() > 0 ? 'B' : 'W'
         var sign = color == 'B' ? 1 : -1
 
+        // Play sounds
         if (getBoard().hasVertex(vertex)) {
             // Detect captured stones
             if (getBoard().getNeighborhood(vertex).some(function(v) {
                 return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
             })) setTimeout(function() {
                 new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
-            }, 400 + Math.floor(Math.random() * 100))
+            }, 400 + Math.floor(Math.random() * 200))
 
             new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
         } else new Audio('../sound/pass.wav').play()
 
         // Randomize shift and readjust
-
         var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
         var direction = Math.floor(Math.random() * 9)
 
