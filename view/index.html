@@ -830,7 +830,7 @@
         var rootNode = getRootTree().nodes[0]
         var results = $$('#score tbody td:last-child').get('text')
         var diff = results[1].toFloat() - results[0].toFloat()
-        var color = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : '')
+        var color = diff > 0 ? 'W+' : (diff < 0 ? 'B+' : '')
         var result = color + Math.abs(diff)
 
         rootNode.RE = [result]
