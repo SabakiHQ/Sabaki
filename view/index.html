@@ -161,6 +161,7 @@
 <script>
     var remote = require('remote')
     var fs = require('fs')
+    var shell = require('shell')
     var sgf = require('../module/sgf.js')
     var process = remote.require('process')
     var app = remote.require('app');
@@ -1180,7 +1181,25 @@
                 label: '&Help',
                 submenu: [
                     {
-                        label: '&About Goban'
+                        label: app.getName(),
+                        enabled: false
+                    },
+                    {
+                        label: 'Version ' + app.getVersion(),
+                        enabled: false
+                    },
+                    { type: 'separator' },
+                    {
+                        label: 'Issues',
+                        click: function() {
+                            shell.openExternal('https://github.com/yishn/Goban/issues')
+                        }
+                    },
+                    {
+                        label: 'GitHub Respository',
+                        click: function() {
+                            shell.openExternal('https://github.com/yishn/Goban')
+                        }
                     }
                 ]
             }
