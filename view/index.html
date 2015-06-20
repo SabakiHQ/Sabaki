@@ -1153,7 +1153,6 @@
                     },
                     {
                         label: 'Show &Coordinates',
-                        accelerator: 'CmdOrCtrl+Shift+C',
                         type: 'checkbox',
                         checked: getShowCoordinates(),
                         click: function() {
@@ -1163,18 +1162,17 @@
                     },
                     {
                         label: 'Show &Variations',
-                        accelerator: 'CmdOrCtrl+Shift+V',
                         type: 'checkbox',
                         checked: getShowVariations(),
                         click: function() {
                             setShowVariations(!getShowVariations())
                         }
                     },
-                    // { type: 'separator' },
-                    // {
-                    //     label: 'Show &History',
-                    //     accelerator: 'CmdOrCtrl+H'
-                    // }
+                    { type: 'separator' },
+                    {
+                        label: 'Show &History',
+                        accelerator: 'CmdOrCtrl+H'
+                    }
                 ]
             },
             {
