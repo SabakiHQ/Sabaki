@@ -778,7 +778,7 @@
         else rootNode.HA = [String.from(handicap + 1)]
 
         var size = info.getElement('input[name="size"]').get('value').toInt()
-        rootNode.SZ = [Math.max(Math.min(String.from(size), 26), 9)]
+        rootNode.SZ = [String.from(Math.max(Math.min(size), 26), 9)]
         if (isNaN(size)) rootNode.SZ = ['19']
 
         if (!info.getElement('select[name="handicap"]').disabled) {
