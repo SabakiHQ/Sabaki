@@ -1,6 +1,6 @@
 # Goban
 
-Eventually the best virtual Go board. This is a work in progress.
+Eventually the best virtual Go board. [Download the latest release](https://github.com/yishn/Goban/releases) of Goban.
 
 ![Screenshot](screenshot.png)
 
