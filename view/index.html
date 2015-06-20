@@ -735,7 +735,7 @@
         info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
         info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
         info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
-        info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0] : '')
+        info.getElement('input[name="komi"]').set('value', ('KM' in rootNode ? rootNode.KM[0] : '').toFloat())
 
         var size = info.getElement('input[name="size"]')
         size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
