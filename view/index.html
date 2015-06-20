@@ -214,6 +214,16 @@
         setting.set('view.show_coordinates', show)
     }
 
+    function getShowTree() {
+        return document.body.hasClass('tree')
+    }
+
+    function setShowTree(show) {
+        if (show) document.body.addClass('tree')
+        else document.body.removeClass('tree')
+        setting.set('view.show_tree', show)
+    }
+
     function getPlayerName(sign) {
         return $$('#player_' + sign + ' .name')[0].get('text')
     }
@@ -410,6 +420,8 @@
             $('goban').addClass('coordinates')
         if (setting.get('view.show_variations'))
             $('goban').addClass('variations')
+        if (setting.get('view.show_tree'))
+            document.body.addClass('tree')
     }
 
     function selectTool(tool) {
@@ -1170,8 +1182,14 @@
                     },
                     { type: 'separator' },
                     {
-                        label: 'Show &History',
-                        accelerator: 'CmdOrCtrl+H'
+                        label: 'Show &Tree',
+                        type: 'checkbox',
+                        accelerator: 'CmdOrCtrl+T',
+                        checked: getShowTree(),
+                        click: function() {
+                            setShowTree(!getShowTree())
+                            resizeBoard()
+                        }
                     }
                 ]
             },
