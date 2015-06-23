@@ -59,7 +59,7 @@ exports.tokenize = function(input) {
                         inBackslash = true
                         break
                     case '\n':
-                        builder += '\\'
+                        builder += '\n'
                         break
                     case ']':
                         inCValueType = false
