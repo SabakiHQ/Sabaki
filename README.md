@@ -16,14 +16,22 @@ Eventually the best virtual Go board. [Download the latest release](https://gith
 
 ## Third Party Libraries
 
-* [Electron](http://electron.atom.io/)
+* [Electron]
   ([MIT License](https://github.com/atom/electron/blob/master/LICENSE))
-* [MooTools](http://mootools.net/)
+* [MooTools]
   ([MIT License](https://github.com/mootools/mootools-core/blob/master/Source/license.txt))
-* [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
+* [sigma]
+  ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
+* [gemini-scrollbar]
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
-* [tuple](https://github.com/Wolfy87/tuple)
+* [tuple]
   ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
+
+[Electron]: http://electron.atom.io/
+[MooTools]: http://mootools.net/
+[sigma]: http://sigmajs.org/
+[gemini-scrollbar]: http://noeldelgado.github.io/gemini-scrollbar/
+[tuple]: https://github.com/Wolfy87/tuple
 
 ## License
 
