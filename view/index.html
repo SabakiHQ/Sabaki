@@ -233,6 +233,7 @@
         var win  = remote.getCurrentWindow()
         var size = win.getContentSize()
 
+        if (win.isMaximized()) return
         win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.tree_width').toInt(), size[1])
     }
 
