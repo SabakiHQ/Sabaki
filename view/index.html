@@ -1293,7 +1293,7 @@
     }).addEvent('beforeunload', function() {
         if (remote.getCurrentWindow().isMaximized() || remote.getCurrentWindow().isMinimized()) return
 
-        var size = $('main').getSize()
+        var size = document.body.getSize()
         setting.set('window.width', size.x).set('window.height', size.y)
     })
 </script>
