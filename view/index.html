@@ -225,7 +225,15 @@
     function setShowTree(show) {
         if (show) document.body.addClass('tree')
         else document.body.removeClass('tree')
+
+        $('tree').setStyle('width', setting.get('view.tree_width'))
         setting.set('view.show_tree', show)
+
+        // Resize window
+        var win  = remote.getCurrentWindow()
+        var size = win.getContentSize()
+
+        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.tree_width').toInt(), size[1])
     }
 
     function getPlayerName(sign) {
