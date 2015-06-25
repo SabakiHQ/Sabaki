@@ -2,15 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
-### Added
+## [Unreleased][unreleased]
 
+**Added**
 * Game tree
 
-### Changed
-
+**Changed**
 * Update to latest Electron version
 
-### Fixed
-
+**Fixed**
 * Fix SGF comments problem
+
+## Goban v0.1.0
+
+First release
+
+[unreleased]: https://github.com/yishn/Goban/compare/v0.1.0...master
