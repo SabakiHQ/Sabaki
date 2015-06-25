@@ -148,6 +148,22 @@ header, #bar #edit, #bar #scoring {
         transform: translate(-50%, -50%);
 }
 
+#tree {
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        width: 200px;
+        background: #222;
+    }
+    .tree #tree {
+        display: block;
+    }
+    .tree #main {
+        right: 200px;
+}
+
 #info, #score {
         position: fixed;
         left: 0;
