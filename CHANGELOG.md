@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 
 * Game tree
 
+### Changed
+
+* Update to latest Electron version
+
 ### Fixed
 
 * Fix SGF comments problem
