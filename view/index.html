@@ -156,7 +156,7 @@
     </section>
 </section>
 
-<section id="tree">
+<section id="sidebar">
 
 </section>
 
@@ -218,23 +218,23 @@
         setting.set('view.show_coordinates', show)
     }
 
-    function getShowTree() {
-        return document.body.hasClass('tree')
+    function getShowSidebar() {
+        return document.body.hasClass('sidebar')
     }
 
-    function setShowTree(show) {
-        if (show) document.body.addClass('tree')
-        else document.body.removeClass('tree')
+    function setShowSidebar(show) {
+        if (show) document.body.addClass('sidebar')
+        else document.body.removeClass('sidebar')
 
-        $('tree').setStyle('width', setting.get('view.tree_width'))
-        setting.set('view.show_tree', show)
+        $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
+        setting.set('view.show_sidebar', show)
 
         // Resize window
         var win  = remote.getCurrentWindow()
         var size = win.getContentSize()
 
         if (win.isMaximized()) return
-        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.tree_width').toInt(), size[1])
+        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width').toInt(), size[1])
     }
 
     function getPlayerName(sign) {
@@ -433,8 +433,8 @@
             $('goban').addClass('coordinates')
         if (setting.get('view.show_variations'))
             $('goban').addClass('variations')
-        if (setting.get('view.show_tree'))
-            document.body.addClass('tree')
+        if (setting.get('view.show_sidebar'))
+            document.body.addClass('sidebar')
     }
 
     function selectTool(tool) {
@@ -1198,9 +1198,9 @@
                         label: 'Show &Tree',
                         type: 'checkbox',
                         accelerator: 'CmdOrCtrl+T',
-                        checked: getShowTree(),
+                        checked: getShowSidebar(),
                         click: function() {
-                            setShowTree(!getShowTree())
+                            setShowSidebar(!getShowSidebar())
                             resizeBoard()
                         }
                     }
