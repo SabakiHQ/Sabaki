@@ -170,7 +170,7 @@ exports.compressed2list = function(compressed) {
     return list
 }
 
-exports.navigate(tree, index, step) {
+exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return new Tuple(tree, index + step)
     } else if (index + step < 0 && tree.parent) {
