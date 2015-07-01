@@ -982,11 +982,9 @@
         if (getScoringMode()) return
 
         getCurrentTreePosition().unpack(function(tree, position) {
-            if (position - 1 >= 0) {
-                setCurrentTreePosition(tree, position - 1)
-            } else if (tree.parent != null && tree.parent.nodes.length != 0) {
-                setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-            }
+            sgf.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
+                setCurrentTreePosition(prevTree, prevIndex)
+            })
         })
     }
 
@@ -994,10 +992,8 @@
         if (getScoringMode()) return
 
         getCurrentTreePosition().unpack(function(tree, position) {
-            if (tree.nodes.length > position + 1) {
-                setCurrentTreePosition(tree, position + 1)
-            } else if (tree.current != null && tree.subtrees[tree.current].nodes.length != 0) {
-                setCurrentTreePosition(tree.subtrees[tree.current], 0)
+            sgf.navigate(tree, position, 1).unpack(function(nextTree, nextIndex)) {
+                setCurrentTreePosition(nextTree, nextIndex)
             }
         })
     }
