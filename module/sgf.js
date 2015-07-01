@@ -182,7 +182,7 @@ exports.navigate = function(tree, index, step) {
         else if (prev.parent)
             return new Tuple(prev.parent, prev.parent.nodes.length - 1)
     } else if (index + step >= tree.nodes.length && tree.current != null) {
-        index = index + step - tree.nodes.length + 1
+        index = index + step - tree.nodes.length
         var next = tree.subtrees[tree.current]
 
         if (index < next.nodes.length)
