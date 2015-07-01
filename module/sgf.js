@@ -170,6 +170,30 @@ exports.compressed2list = function(compressed) {
     return list
 }
 
+exports.navigate(tree, index, step) {
+    if (index + step >= 0 && index + step < tree.nodes.length) {
+        return new Tuple(tree, index + step)
+    } else if (index + step < 0 && tree.parent) {
+        var prev = tree.parent
+        index = prev.nodes.length + index + step
+
+        if (index >= 0)
+            return new Tuple(prev, index)
+        else if (prev.parent)
+            return new Tuple(prev.parent, prev.parent.nodes.length - 1)
+    } else if (index + step >= tree.nodes.length && tree.current != null) {
+        index = index + step - tree.nodes.length + 1
+        var next = tree.subtrees[tree.current]
+
+        if (index < next.nodes.length)
+            return new Tuple(next, index)
+        else if (next.current != null)
+            return new Tuple(next.subtrees[next.current], 0)
+    }
+
+    return new Tuple(null, 0)
+}
+
 exports.addBoard = function(tree, index, baseboard) {
     if (index >= tree.nodes.length) return tree
 
