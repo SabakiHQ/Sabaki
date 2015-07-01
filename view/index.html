@@ -992,9 +992,9 @@
         if (getScoringMode()) return
 
         getCurrentTreePosition().unpack(function(tree, position) {
-            sgf.navigate(tree, position, 1).unpack(function(nextTree, nextIndex)) {
+            sgf.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
                 setCurrentTreePosition(nextTree, nextIndex)
-            }
+            })
         })
     }
 
