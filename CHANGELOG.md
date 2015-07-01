@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Game tree
+* Detect and notify user about ko
 
 **Changed**
 * Update to latest Electron version
