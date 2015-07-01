@@ -450,6 +450,25 @@
         var color = getCurrentPlayer() > 0 ? 'B' : 'W'
         var sign = color == 'B' ? 1 : -1
 
+        // Check for ko
+        var ko = sgf.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
+            if (!prevTree) return
+
+            var hash = getBoard().makeMove(sign, vertex).getHash()
+            return prevTree.nodes[prevIndex].board.getHash() == hash
+        })
+
+        if (ko) {
+            var button = dialog.showMessageBox(remote.getCurrentWindow(), {
+                type: 'warning',
+                buttons: ['Play anyway', 'Cancel'],
+                message: 'You are about to play a move, which repeats a board position. '
+                    + 'This is invalid in some rulesets.'
+            })
+
+            if (button == 1) return
+        }
+
         // Play sounds
         if (getBoard().hasVertex(vertex)) {
             // Detect captured stones
