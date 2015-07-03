@@ -2,5 +2,15 @@
     "name": "goban",
     "productName": "Goban",
     "version": "0.1.0",
-    "main": "main.js"
+    "description": "Eventually the best virtual Go board.",
+    "author": "Yichuan Shen",
+    "main": "main.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yishn/Goban"
+    },
+    "bugs": {
+        "url": "https://github.com/yishn/Goban/issues"
+    },
+    "license": "MIT"
 }
