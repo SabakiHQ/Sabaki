@@ -1146,6 +1146,36 @@ document.addEvent('keydown', function(e) {
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
+
+    var s = new sigma('sidebar')
+    s.settings({
+        defaultNodeColor: '#eee',
+        borderSize: 2,
+        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+        zoomMax: 1,
+        zoomMin: 1,
+        autoResize: false,
+        autoRescale: false
+    })
+
+    s.graph.addNode({
+        id: 'n0',
+        x: 0,
+        y: 0,
+        size: 4
+    }).addNode({
+        id: 'n1',
+        x: 0,
+        y: 30,
+        size: 4
+    }).addEdge({
+        id: 'e0',
+        source: 'n0',
+        target: 'n1'
+    })
+
+    s.refresh()
+    s.render()
 })
 
 window.addEvent('resize', function() {
