@@ -10,6 +10,7 @@ var setting = remote.require('./module/setting.js')
 var Menu = remote.require('menu')
 var Tuple = require('../lib/tuple')
 var Board = require('../module/board.js')
+var Scrollbar = require('../lib/gemini-scrollbar')
 
 /**
  * Getters and setters
@@ -300,7 +301,8 @@ function loadSettings() {
         zoomMax: 1,
         zoomMin: 1,
         autoResize: false,
-        autoRescale: false
+        autoRescale: false,
+        mouseEnabled: false
     })
 
     container.store('sigma', s)
