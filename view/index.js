@@ -1158,24 +1158,31 @@ document.addEvent('keydown', function(e) {
         autoRescale: false
     })
 
-    s.graph.addNode({
-        id: 'n0',
-        x: 0,
-        y: 0,
-        size: 4
-    }).addNode({
-        id: 'n1',
-        x: 0,
-        y: 30,
-        size: 4
-    }).addEdge({
-        id: 'e0',
-        source: 'n0',
-        target: 'n1'
+    s.graph.read({
+        nodes: [
+            {
+                id: 'n0',
+                x: 0,
+                y: 0,
+                size: 4
+            },
+            {
+                id: 'n1',
+                x: 0,
+                y: 30,
+                size: 4
+            }
+        ],
+        edges: [
+            {
+                id: 'e0',
+                source: 'n0',
+                target: 'n1'
+            }
+        ]
     })
 
     s.refresh()
-    s.render()
 })
 
 window.addEvent('resize', function() {
