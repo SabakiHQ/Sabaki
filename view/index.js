@@ -118,6 +118,8 @@ function setRootTree(tree) {
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
+
+    setGraph(sgf.tree2graph(tree)[0])
 }
 
 function getGraph() {
@@ -126,20 +128,11 @@ function getGraph() {
 
 function setGraph(graph) {
     var container = $('sidebar')
-    var s = new sigma(container)
+    var s = container.retrieve('sigma')
 
     container.store('graph', graph)
 
-    s.settings({
-        defaultNodeColor: '#eee',
-        borderSize: 2,
-        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
-        zoomMax: 1,
-        zoomMin: 1,
-        autoResize: false,
-        autoRescale: false
-    })
-
+    s.graph.clear()
     s.graph.read(graph)
     s.refresh()
 }
@@ -295,6 +288,22 @@ function loadSettings() {
         $('goban').addClass('variations')
     if (setting.get('view.show_sidebar'))
         document.body.addClass('sidebar')
+
+    // Create sigma object
+    var container = $('sidebar')
+    var s = new sigma(container)
+
+    s.settings({
+        defaultNodeColor: '#eee',
+        borderSize: 2,
+        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+        zoomMax: 1,
+        zoomMin: 1,
+        autoResize: false,
+        autoRescale: false
+    })
+
+    container.store('sigma', s)
 }
 
 function selectTool(tool) {

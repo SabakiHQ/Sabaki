@@ -1,5 +1,7 @@
 var Board = require('./board.js')
 var Tuple = require('../lib/tuple')
+
+var uuid = require('../lib/node-uuid')
 var fs = require('fs')
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
@@ -365,4 +367,53 @@ exports.tree2string = function(tree) {
 
 exports.escapeString = function(input) {
     return input.replace('\\', '\\\\').replace(']', '\\]')
+}
+
+exports.tree2graph = function(tree, xshift, yshift) {
+    if (!xshift) xshift = 0
+    if (!yshift) yshift = 0
+
+    var graph = { nodes: [], edges: [] }
+    var id = uuid.v1()
+    var width = 1
+
+    for (var i = 0; i < tree.nodes.length; i++) {
+        graph.nodes.push({
+            'id': id + '-' + i,
+            x: xshift * 30,
+            y: (yshift + i) * 30,
+            size: 4
+        })
+
+        if (i != 0) {
+            graph.edges.push({
+                'id': id + '-e' + i,
+                source: id + '-' + (i - 1),
+                target: id + '-' + i
+            })
+        }
+    }
+
+    for (var i = 0; i < tree.subtrees.length; i++) {
+        var subtree = tree.subtrees[i]
+        var result = exports.tree2graph(subtree, xshift, yshift + tree.nodes.length)
+
+        result[0].nodes.each(function(node) {
+            graph.nodes.push(node)
+        })
+
+        graph.edges.push({
+            'id': id + '-b' + i,
+            source: id + '-' + (tree.nodes.length - 1),
+            target: result[0].nodes[0].id
+        })
+        result[0].edges.each(function(edge) {
+            graph.edges.push(edge)
+        })
+
+        xshift += result[1]
+        width += result[1]
+    }
+
+    return new Tuple(graph, width)
 }
