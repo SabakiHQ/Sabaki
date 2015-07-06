@@ -1,4 +1,7 @@
 examples/
+benchmark/
+bin/
+test/
 stone*.wav
 
 # Windows image file caches

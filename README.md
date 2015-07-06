@@ -24,6 +24,8 @@ Eventually the best virtual Go board. [Download the latest release](https://gith
   ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
 * [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
+* [node-uuid](https://github.com/broofa/node-uuid)
+  ([MIT License](https://github.com/broofa/node-uuid/blob/master/LICENSE.md))
 * [tuple](https://github.com/Wolfy87/tuple)
   ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
 
