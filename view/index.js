@@ -120,6 +120,30 @@ function setRootTree(tree) {
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
 }
 
+function getGraph() {
+    return $('sidebar').retrieve('graph')
+}
+
+function setGraph(graph) {
+    var container = $('sidebar')
+    var s = new sigma(container)
+
+    container.store('graph', graph)
+
+    s.settings({
+        defaultNodeColor: '#eee',
+        borderSize: 2,
+        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+        zoomMax: 1,
+        zoomMin: 1,
+        autoResize: false,
+        autoRescale: false
+    })
+
+    s.graph.read(graph)
+    s.refresh()
+}
+
 function setCurrentTreePosition(tree, index) {
     if (!tree) return
 
@@ -1146,43 +1170,6 @@ document.addEvent('keydown', function(e) {
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
-
-    var s = new sigma('sidebar')
-    s.settings({
-        defaultNodeColor: '#eee',
-        borderSize: 2,
-        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
-        zoomMax: 1,
-        zoomMin: 1,
-        autoResize: false,
-        autoRescale: false
-    })
-
-    s.graph.read({
-        nodes: [
-            {
-                id: 'n0',
-                x: 0,
-                y: 0,
-                size: 4
-            },
-            {
-                id: 'n1',
-                x: 0,
-                y: 30,
-                size: 4
-            }
-        ],
-        edges: [
-            {
-                id: 'e0',
-                source: 'n0',
-                target: 'n1'
-            }
-        ]
-    })
-
-    s.refresh()
 })
 
 window.addEvent('resize', function() {
