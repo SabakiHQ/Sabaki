@@ -301,8 +301,7 @@ function loadSettings() {
         zoomMax: 1,
         zoomMin: 1,
         autoResize: false,
-        autoRescale: false,
-        mouseEnabled: false
+        autoRescale: false
     })
 
     container.store('sigma', s)

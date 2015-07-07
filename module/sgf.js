@@ -369,12 +369,34 @@ exports.escapeString = function(input) {
     return input.replace('\\', '\\\\').replace(']', '\\]')
 }
 
+exports.getDepth = function(tree) {
+    var depth = 0
+
+    tree.subtrees.each(function(subtree) {
+        depth = Math.max(exports.getDepth(subtree), depth)
+    })
+
+    return depth + tree.nodes.length
+}
+
+exports.getSections = function(tree, n) {
+    if (n < tree.nodes.length) return [tree.nodes[n]]
+
+    var sections = []
+
+    tree.subtrees.each(function(subtree) {
+        sections.combine(exports.getSections(subtree, n - tree.nodes.length))
+    })
+
+    return sections
+}
+
 exports.tree2graph = function(tree, xshift, yshift) {
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
 
     var graph = { nodes: [], edges: [] }
-    var id = uuid.v1()
+    var id = uuid.v4()
     var width = 1
 
     for (var i = 0; i < tree.nodes.length; i++) {
@@ -413,6 +435,7 @@ exports.tree2graph = function(tree, xshift, yshift) {
 
         xshift += result[1]
         width += result[1]
+        if (i == 0) width--
     }
 
     return new Tuple(graph, width)
