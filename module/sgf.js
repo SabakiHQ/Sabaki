@@ -380,7 +380,7 @@ exports.getDepth = function(tree) {
 }
 
 exports.getSections = function(tree, n) {
-    if (n < tree.nodes.length) return [tree.nodes[n]]
+    if (n < tree.nodes.length) return [new Tuple(tree, n)]
 
     var sections = []
 
