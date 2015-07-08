@@ -391,7 +391,7 @@ exports.getSections = function(tree, n) {
     return sections
 }
 
-exports.tree2graph = function(tree, xshift, yshift) {
+exports.tree2graph = function(tree, xshift, yshift, getWidth) {
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
 
@@ -418,19 +418,15 @@ exports.tree2graph = function(tree, xshift, yshift) {
 
     for (var i = 0; i < tree.subtrees.length; i++) {
         var subtree = tree.subtrees[i]
-        var result = exports.tree2graph(subtree, xshift, yshift + tree.nodes.length)
+        var result = exports.tree2graph(subtree, xshift, yshift + tree.nodes.length, true)
 
-        result[0].nodes.each(function(node) {
-            graph.nodes.push(node)
-        })
+        result[0].nodes.each(function(node) { graph.nodes.push(node) })
+        result[0].edges.each(function(edge) { graph.edges.push(edge) })
 
         graph.edges.push({
             'id': id + '-b' + i,
             source: id + '-' + (tree.nodes.length - 1),
             target: result[0].nodes[0].id
-        })
-        result[0].edges.each(function(edge) {
-            graph.edges.push(edge)
         })
 
         xshift += result[1]
@@ -450,5 +446,6 @@ exports.tree2graph = function(tree, xshift, yshift) {
         }
     }
 
-    return new Tuple(graph, width)
+    if (getWidth) return new Tuple(graph, width)
+    else return graph
 }
