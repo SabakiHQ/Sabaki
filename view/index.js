@@ -120,7 +120,7 @@ function setRootTree(tree) {
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
 
-    setGraph(sgf.tree2graph(tree)[0])
+    setGraph(sgf.tree2graph(tree))
 }
 
 function getGraph() {

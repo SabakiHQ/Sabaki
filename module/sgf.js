@@ -391,52 +391,64 @@ exports.getSections = function(tree, n) {
     return sections
 }
 
-exports.tree2graph = function(tree, xshift, yshift) {
-    if (!xshift) xshift = 0
-    if (!yshift) yshift = 0
-
+exports.tree2graph = function(tree) {
+    var depth = exports.getDepth(tree) - 1
     var graph = { nodes: [], edges: [] }
-    var id = uuid.v4()
-    var width = 1
+    var currentTree = null
+    var currentShift = 0
 
-    for (var i = 0; i < tree.nodes.length; i++) {
-        graph.nodes.push({
-            'id': id + '-' + i,
-            x: xshift * 30,
-            y: (yshift + i) * 30,
-            size: 4
-        })
+    var sections = null
+    var trees = null
+    var shifts = {}
+    var uuids = {}
 
-        if (i != 0) {
-            graph.edges.push({
-                'id': id + '-e' + i,
-                source: id + '-' + (i - 1),
-                target: id + '-' + i
+    for (var i = depth; i >= 0; i--) {
+        sections = exports.getSections(tree, i).sort(function(s1, s2) { return s1[1] - s2[1] })
+        trees = sections.map(function(tuple) { return tuple[0] })
+
+        if (!currentTree) currentTree = trees[0]
+        else if (trees.indexOf(currentTree) == -1) currentTree = currentTree.parent
+        if (!('id' in currentTree)) currentTree.id = uuid.v4()
+        shifts[currentTree.id] = currentShift
+
+        // Determine shifts
+        var maxShift = 0
+
+        for (var k = 0; k < trees.length; k++) {
+            // Generate tree ids
+            if (!('id' in trees[k]))
+                trees[k].id = uuid.v4()
+            if (trees[k].parent && !('id' in trees[k].parent))
+                trees[k].parent.id = uuid.v4()
+
+            if (!(trees[k].id in shifts)) continue
+
+            maxShift = Math.max(maxShift, shifts[trees[k].id])
+        }
+
+        for (var k = 0; k < trees.length; k++) {
+            if (trees[k].id in shifts) continue
+            shifts[trees[k].id] = ++maxShift
+        }
+
+        // Add nodes
+        for (var k = 0; k < trees.length; k++) {
+            graph.nodes.push({
+                id: trees[k].id + '-' + sections[k][1],
+                x: shifts[trees[k].id] * 30,
+                y: i * 30,
+                size: 4
+            })
+
+            var prev = sgf.navigate(trees[k], sections[k][1], -1)
+
+            if (prev[0]) graph.edges.push({
+                id: trees[k].id + '-e' + sections[k][1],
+                source: trees[k].id + '-' + sections[k][1],
+                target: prev[0].id + '-' + prev[1],
             })
         }
     }
 
-    for (var i = 0; i < tree.subtrees.length; i++) {
-        var subtree = tree.subtrees[i]
-        var result = exports.tree2graph(subtree, xshift, yshift + tree.nodes.length)
-
-        result[0].nodes.each(function(node) {
-            graph.nodes.push(node)
-        })
-
-        graph.edges.push({
-            'id': id + '-b' + i,
-            source: id + '-' + (tree.nodes.length - 1),
-            target: result[0].nodes[0].id
-        })
-        result[0].edges.each(function(edge) {
-            graph.edges.push(edge)
-        })
-
-        xshift += result[1]
-        width += result[1]
-        if (i == 0) width--
-    }
-
-    return new Tuple(graph, width)
+    return graph
 }
