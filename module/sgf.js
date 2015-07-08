@@ -435,7 +435,19 @@ exports.tree2graph = function(tree, xshift, yshift) {
 
         xshift += result[1]
         width += result[1]
+
+        // Adjust width
         if (i == 0) width--
+        if (i < tree.subtrees.length - 1) {
+            var depth = Math.max.apply(this, tree.subtrees.slice(i + 1).map(function(t) {
+                return exports.getDepth(t)
+            }))
+
+            if (subtree.nodes.length >= depth) {
+                xshift -= result[1] - 1
+                width -= result[1] - 1
+            }
+        }
     }
 
     return new Tuple(graph, width)
