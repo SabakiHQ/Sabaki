@@ -396,8 +396,10 @@ exports.tree2graph = function(tree, xshift, yshift, getWidth) {
     if (!yshift) yshift = 0
 
     var graph = { nodes: [], edges: [] }
-    var id = uuid.v4()
     var width = 1
+
+    if (!('id' in tree)) tree.id = uuid.v4()
+    var id = tree.id
 
     for (var i = 0; i < tree.nodes.length; i++) {
         graph.nodes.push({
