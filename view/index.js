@@ -585,7 +585,16 @@ function buildBoard() {
             if (hoshi.some(function(v) { return v.equals(vertex) }))
                 li.addClass('hoshi')
 
-            ol.adopt(li.adopt(img).addEvent('mouseup', vertexClicked.bind(vertex)))
+            ol.adopt(li.adopt(img)
+                .addEvent('mouseup', function() {
+                    if (!$('goban').retrieve('mousedown')) return
+                    $('goban').store('mousedown', false)
+                    vertexClicked.call(this)
+                }.bind(vertex))
+                .addEvent('mousedown', function() {
+                    $('goban').store('mousedown', true)
+                })
+            )
         }
 
         rows.push(ol)
