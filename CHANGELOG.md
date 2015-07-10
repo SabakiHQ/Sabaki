@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased][unreleased]
 
 **Added**
-* Game tree
+* Game graph
 * Detect and notify user about ko
 
 **Changed**
