@@ -113,14 +113,13 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
+    setGraph(sgf.tree2graph(tree))
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoards(tree), 0)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
-
-    setGraph(sgf.tree2graph(tree))
 }
 
 function getGraph() {
@@ -140,6 +139,21 @@ function setGraph(graph) {
 
 function setCurrentTreePosition(tree, index) {
     if (!tree) return
+
+    if ('id' in tree) {
+        var nodeid = tree.id + '-' + index
+        var s = $('sidebar').retrieve('sigma')
+        var n = s.graph.nodes(nodeid)
+
+        sigma.misc.animation.camera(
+            s.camera,
+            {
+                x: n[s.camera.readPrefix + 'x'],
+                y: n[s.camera.readPrefix + 'y']
+            },
+            { duration: s.settings('animationsTime') || 300 }
+        )
+    }
 
     $('goban').store('position', new Tuple(tree, index))
     if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
