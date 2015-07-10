@@ -1179,13 +1179,15 @@ document.addEvent('keydown', function(e) {
         closeScore()
         setEditMode(false)
     }
-}).addEvent('mousewheel', function(e) {
-    if (e.wheel < 0) goForward()
-    else if (e.wheel > 0) goBack()
 }).addEvent('domready', function() {
     loadSettings()
     buildMenu()
     prepareEditTools()
+
+    $('goban').addEvent('mousewheel', function(e) {
+        if (e.wheel < 0) goForward()
+        else if (e.wheel > 0) goBack()
+    })
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
