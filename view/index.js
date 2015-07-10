@@ -1117,7 +1117,6 @@ function buildMenu() {
                 {
                     label: 'Show Game &Graph',
                     type: 'checkbox',
-                    accelerator: 'CmdOrCtrl+G',
                     checked: getShowSidebar(),
                     click: function() {
                         setShowSidebar(!getShowSidebar())
