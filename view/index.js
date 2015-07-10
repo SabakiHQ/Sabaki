@@ -172,6 +172,8 @@ function centerGraphCamera() {
         var s = container.retrieve('sigma')
         var n = s.graph.nodes(nodeid)
 
+        if (!n) return
+
         sigma.misc.animation.camera(
             s.camera,
             {
