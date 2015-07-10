@@ -142,7 +142,8 @@ function setCurrentTreePosition(tree, index) {
 
     if ('id' in tree) {
         var nodeid = tree.id + '-' + index
-        var s = $('sidebar').retrieve('sigma')
+        var container = $('sidebar')
+        var s = container.retrieve('sigma')
         var n = s.graph.nodes(nodeid)
 
         sigma.misc.animation.camera(
@@ -151,7 +152,7 @@ function setCurrentTreePosition(tree, index) {
                 x: n[s.camera.readPrefix + 'x'],
                 y: n[s.camera.readPrefix + 'y']
             },
-            { duration: s.settings('animationsTime') || 300 }
+            { duration: 300 }
         )
     }
 
