@@ -141,11 +141,11 @@ function setGraph(graph) {
 
 function setCurrentTreePosition(tree, index) {
     if (!tree) return
-    centerGraphCamera()
 
     $('goban').store('position', new Tuple(tree, index))
     if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
 
+    centerGraphCamera()
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
     setCurrentPlayer(1)
 
