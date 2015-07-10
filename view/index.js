@@ -1115,9 +1115,9 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Show &Tree',
+                    label: 'Show Game &Graph',
                     type: 'checkbox',
-                    accelerator: 'CmdOrCtrl+T',
+                    accelerator: 'CmdOrCtrl+G',
                     checked: getShowSidebar(),
                     click: function() {
                         setShowSidebar(!getShowSidebar())
