@@ -65,6 +65,8 @@ function setShowSidebar(show) {
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     setting.set('view.show_sidebar', show)
 
+    if (show) centerGraphCamera()
+
     // Resize window
     var win  = remote.getCurrentWindow()
     var size = win.getContentSize()
@@ -139,22 +141,7 @@ function setGraph(graph) {
 
 function setCurrentTreePosition(tree, index) {
     if (!tree) return
-
-    if ('id' in tree) {
-        var nodeid = tree.id + '-' + index
-        var container = $('sidebar')
-        var s = container.retrieve('sigma')
-        var n = s.graph.nodes(nodeid)
-
-        sigma.misc.animation.camera(
-            s.camera,
-            {
-                x: n[s.camera.readPrefix + 'x'],
-                y: n[s.camera.readPrefix + 'y']
-            },
-            { duration: 300 }
-        )
-    }
+    centerGraphCamera()
 
     $('goban').store('position', new Tuple(tree, index))
     if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
@@ -172,6 +159,28 @@ function setCurrentTreePosition(tree, index) {
 
 function getCurrentTreePosition() {
     return $('goban').retrieve('position')
+}
+
+function centerGraphCamera() {
+    if (!getShowSidebar()) return
+
+    getCurrentTreePosition().unpack(function(tree, index) {
+        if (!('id' in tree)) return
+
+        var nodeid = tree.id + '-' + index
+        var container = $('sidebar')
+        var s = container.retrieve('sigma')
+        var n = s.graph.nodes(nodeid)
+
+        sigma.misc.animation.camera(
+            s.camera,
+            {
+                x: n[s.camera.readPrefix + 'x'],
+                y: n[s.camera.readPrefix + 'y']
+            },
+            { duration: 300 }
+        )
+    })
 }
 
 function getSelectedTool() {
