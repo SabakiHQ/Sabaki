@@ -65,7 +65,8 @@ function setShowSidebar(show) {
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     setting.set('view.show_sidebar', show)
 
-    if (show) centerGraphCamera()
+    var node = getCurrentGraphNode()
+    if (show && node) centerGraphCameraAt(node)
 
     // Resize window
     var win  = remote.getCurrentWindow()
