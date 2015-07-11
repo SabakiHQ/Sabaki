@@ -391,63 +391,71 @@ exports.getSections = function(tree, n) {
     return sections
 }
 
-exports.tree2graph = function(tree, xshift, yshift, getWidth) {
+exports.tree2matrix = function(tree, matrix, xshift, yshift) {
+    if (!matrix) matrix = Array.apply(null, new Array(exports.getDepth(tree))).map(function() { return [] });
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
-
-    var graph = { nodes: [], edges: [] }
-    var width = 1
-
     if (!('id' in tree)) tree.id = uuid.v4()
-    var id = tree.id
 
-    for (var i = 0; i < tree.nodes.length; i++) {
-        graph.nodes.push({
-            'id': id + '-' + i,
-            x: xshift * 30,
-            y: (yshift + i) * 30,
-            size: 4
-        })
+    var hasCollisions = true
+    while (hasCollisions) {
+        hasCollisions = false
 
-        if (i != 0) {
-            graph.edges.push({
-                'id': id + '-e' + i,
-                source: id + '-' + (i - 1),
-                target: id + '-' + i
-            })
-        }
-    }
-
-    for (var i = 0; i < tree.subtrees.length; i++) {
-        var subtree = tree.subtrees[i]
-        var result = exports.tree2graph(subtree, xshift, yshift + tree.nodes.length, true)
-
-        result[0].nodes.each(function(node) { graph.nodes.push(node) })
-        result[0].edges.each(function(edge) { graph.edges.push(edge) })
-
-        graph.edges.push({
-            'id': id + '-b' + i,
-            source: id + '-' + (tree.nodes.length - 1),
-            target: result[0].nodes[0].id
-        })
-
-        xshift += result[1]
-        width += result[1]
-
-        // Adjust width
-        if (i == 0) width--
-        if (i < tree.subtrees.length - 1) {
-            var depth = Math.max.apply(this, tree.subtrees.slice(i + 1).map(function(t) {
-                return exports.getDepth(t)
-            }))
-
-            if (subtree.nodes.length >= depth) {
-                xshift -= result[1] - 1
-                width -= result[1] - 1
+        for (var y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+            if (xshift < matrix[yshift + y].length) {
+                hasCollisions = true
+                xshift++
+                break
             }
         }
     }
 
-    if (getWidth) return new Tuple(graph, width)
-    else return graph
+    for (var y = 0; y < tree.nodes.length; y++) {
+        while (xshift >= matrix[yshift + y].length) {
+            matrix[yshift + y].push(null)
+        }
+
+        matrix[yshift + y][xshift] = new Tuple(tree, y)
+    }
+
+    for (var k = 0; k < tree.subtrees.length; k++) {
+        var subtree = tree.subtrees[k]
+        exports.tree2matrix(subtree, matrix, xshift, yshift + tree.nodes.length)
+    }
+
+    return matrix
+}
+
+exports.tree2graph = function(tree) {
+    var matrix = exports.tree2matrix(tree)
+    var graph = { nodes: [], edges: [] }
+    var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
+
+    for (x = 0; x < width; x++) {
+        for (y = 0; y < matrix.length; y++) {
+            if (!matrix[y][x]) continue
+
+            var tree = matrix[y][x][0]
+            var index = matrix[y][x][1]
+            var id = tree.id + '-' + index
+
+            graph.nodes.push({
+                'id': id,
+                'x': x * 30,
+                'y': y * 30,
+                'size': 4
+            })
+
+            var prev = exports.navigate(tree, index, -1)
+            if (!prev[0]) continue
+
+            graph.edges.push({
+                'id': id + '-e',
+                'source': id,
+                'target': prev[0].id + '-' + prev[1]
+            })
+        }
+    }
+
+    return graph
 }
