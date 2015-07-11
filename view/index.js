@@ -153,7 +153,11 @@ function setCurrentTreePosition(tree, index) {
     var n = getCurrentGraphNode()
     if (n) {
         n.color = '#E64533'
-        centerGraphCameraAt(n)
+
+        setTimeout(function() {
+            if (getCurrentGraphNode() != n) return
+            centerGraphCameraAt(n)
+        }, 300);
     }
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
@@ -829,7 +833,9 @@ function prepareEditTools() {
 
 function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
+
     var s = $('sidebar').retrieve('sigma');
+    s.refresh()
 
     sigma.misc.animation.camera(
         s.camera,
@@ -839,8 +845,6 @@ function centerGraphCameraAt(node) {
         },
         { duration: 300 }
     )
-
-    s.refresh()
 }
 
 /**
