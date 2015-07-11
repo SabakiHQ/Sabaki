@@ -148,7 +148,7 @@ function setGraph(graph) {
 }
 
 function setCurrentTreePosition(tree, index) {
-    if (!tree) return
+    if (!tree || getScoringMode()) return
 
     // Remove current graph node color
     var n = getCurrentGraphNode()
@@ -917,8 +917,6 @@ function saveGame() {
 }
 
 function goBack() {
-    if (getScoringMode()) return
-
     getCurrentTreePosition().unpack(function(tree, position) {
         sgf.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
             setCurrentTreePosition(prevTree, prevIndex)
@@ -927,8 +925,6 @@ function goBack() {
 }
 
 function goForward() {
-    if (getScoringMode()) return
-
     getCurrentTreePosition().unpack(function(tree, position) {
         sgf.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
             setCurrentTreePosition(nextTree, nextIndex)
@@ -937,8 +933,6 @@ function goForward() {
 }
 
 function goToNextFork() {
-    if (getScoringMode()) return
-
     getCurrentTreePosition().unpack(function(tree, index) {
         if (index != tree.nodes.length - 1)
             setCurrentTreePosition(tree, tree.nodes.length - 1)
@@ -950,8 +944,6 @@ function goToNextFork() {
 }
 
 function goToPreviousFork() {
-    if (getScoringMode()) return
-
     getCurrentTreePosition().unpack(function(tree, index) {
         if (tree.parent == null || tree.parent.nodes.length == 0)
             setCurrentTreePosition(tree, 0)
@@ -960,16 +952,12 @@ function goToPreviousFork() {
 }
 
 function goToBeginning() {
-    if (getScoringMode()) return
-
     var tree = getRootTree()
     if (tree.nodes.length == 0) return
     setCurrentTreePosition(tree, 0)
 }
 
 function goToEnd() {
-    if (getScoringMode()) return
-
     getCurrentTreePosition().unpack(function(tree, position) {
         var t = tree
         while (t.current != null) {
