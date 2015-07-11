@@ -161,28 +161,36 @@ function getCurrentTreePosition() {
     return $('goban').retrieve('position')
 }
 
+function getCurrentGraphNode() {
+    var id = getCurrentTreePosition().unpack(function(tree, index) {
+        if (!('id' in tree)) return null
+        return tree.id + '-' + index
+    })
+
+    if (!id) return null
+
+    var container = $('sidebar')
+    var s = container.retrieve('sigma')
+    var n = s.graph.nodes(id)
+
+    return n
+}
+
 function centerGraphCamera() {
     if (!getShowSidebar()) return
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (!('id' in tree)) return
+    var s = $('sidebar').retrieve('sigma');
+    var n = getCurrentGraphNode()
+    if (!n) return
 
-        var nodeid = tree.id + '-' + index
-        var container = $('sidebar')
-        var s = container.retrieve('sigma')
-        var n = s.graph.nodes(nodeid)
-
-        if (!n) return
-
-        sigma.misc.animation.camera(
-            s.camera,
-            {
-                x: n[s.camera.readPrefix + 'x'],
-                y: n[s.camera.readPrefix + 'y']
-            },
-            { duration: 300 }
-        )
-    })
+    sigma.misc.animation.camera(
+        s.camera,
+        {
+            x: n[s.camera.readPrefix + 'x'],
+            y: n[s.camera.readPrefix + 'y']
+        },
+        { duration: 300 }
+    )
 }
 
 function getSelectedTool() {
