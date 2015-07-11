@@ -144,9 +144,7 @@ function setCurrentTreePosition(tree, index) {
 
     // Remove current graph node color
     var n = getCurrentGraphNode()
-    if (n) {
-        n.color = '#eee'
-    }
+    if (n) n.color = '#eee'
 
     $('goban').store('position', new Tuple(tree, index))
     if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
