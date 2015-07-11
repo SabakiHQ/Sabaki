@@ -203,19 +203,16 @@ exports.addBoard = function(tree, index, baseboard) {
     var vertex = null
 
     if (arguments.length <= 2) {
-        if (index != 0) {
-            if (!tree.nodes[index - 1].board)
-                exports.addBoard(tree, index - 1)
-            baseboard = tree.nodes[index - 1].board
+        var prev = exports.navigate(tree, index, -1)
+
+        if (!prev[0]) {
+            var size = 'SZ' in node ? node.SZ[0].toInt() : 19
+            baseboard = new Board(size)
         } else {
-            if (tree.parent == null || tree.parent.nodes.length == 0) {
-                var size = 'SZ' in node ? node.SZ[0].toInt() : 19
-                baseboard = new Board(size)
-            } else {
-                if (!tree.parent.nodes.getLast().board)
-                    exports.addBoard(tree.parent, tree.parent.nodes.length - 1)
-                baseboard = tree.parent.nodes.getLast().board
-            }
+            var prevNode = prev[0].nodes[prev[1]]
+
+            if (!prevNode.board) exports.addBoard(prev[0], prev[1])
+            baseboard = prevNode.board
         }
     }
 
