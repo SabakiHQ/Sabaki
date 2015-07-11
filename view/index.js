@@ -142,10 +142,22 @@ function setGraph(graph) {
 function setCurrentTreePosition(tree, index) {
     if (!tree) return
 
+    // Remove current graph node color
+    var n = getCurrentGraphNode()
+    if (n) {
+        n.color = '#eee'
+    }
+
     $('goban').store('position', new Tuple(tree, index))
     if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
 
-    centerGraphCamera()
+    // Update graph
+    var n = getCurrentGraphNode()
+    if (n) {
+        n.color = '#E64533'
+        centerGraphCameraAt(n)
+    }
+
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
     setCurrentPlayer(1)
 
