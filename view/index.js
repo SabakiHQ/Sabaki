@@ -162,6 +162,8 @@ function getCurrentTreePosition() {
 }
 
 function getCurrentGraphNode() {
+    if (!getCurrentTreePosition()) return null
+
     var id = getCurrentTreePosition().unpack(function(tree, index) {
         if (!('id' in tree)) return null
         return tree.id + '-' + index
@@ -174,23 +176,6 @@ function getCurrentGraphNode() {
     var n = s.graph.nodes(id)
 
     return n
-}
-
-function centerGraphCamera() {
-    if (!getShowSidebar()) return
-
-    var s = $('sidebar').retrieve('sigma');
-    var n = getCurrentGraphNode()
-    if (!n) return
-
-    sigma.misc.animation.camera(
-        s.camera,
-        {
-            x: n[s.camera.readPrefix + 'x'],
-            y: n[s.camera.readPrefix + 'y']
-        },
-        { duration: 300 }
-    )
 }
 
 function getSelectedTool() {
@@ -330,8 +315,10 @@ function loadSettings() {
 
     s.settings({
         defaultNodeColor: '#eee',
-        borderSize: 2,
+        defaultEdgeColor: '#eee',
         defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+        edgeColor: 'default',
+        borderSize: 2,
         zoomMax: 1,
         zoomMin: 1,
         autoResize: false,
@@ -828,6 +815,22 @@ function prepareEditTools() {
             img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
         }
     })
+}
+
+function centerGraphCameraAt(node) {
+    if (!getShowSidebar()) return
+    var s = $('sidebar').retrieve('sigma');
+
+    sigma.misc.animation.camera(
+        s.camera,
+        {
+            x: node[s.camera.readPrefix + 'x'],
+            y: node[s.camera.readPrefix + 'y']
+        },
+        { duration: 300 }
+    )
+
+    s.refresh()
 }
 
 /**
