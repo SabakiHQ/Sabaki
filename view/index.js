@@ -137,6 +137,13 @@ function setGraph(graph) {
 
     s.graph.clear()
     s.graph.read(graph)
+
+    s.bind('clickNode', function(e) {
+        e.data.node.data.unpack(function(tree, index) {
+            setCurrentTreePosition(tree, index)
+        })
+    })
+
     s.refresh()
 }
 

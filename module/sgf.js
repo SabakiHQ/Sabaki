@@ -204,12 +204,16 @@ exports.addBoard = function(tree, index, baseboard) {
 
     if (arguments.length <= 2) {
         if (index != 0) {
+            if (!tree.nodes[index - 1].board)
+                exports.addBoard(tree, index - 1)
             baseboard = tree.nodes[index - 1].board
         } else {
             if (tree.parent == null || tree.parent.nodes.length == 0) {
                 var size = 'SZ' in node ? node.SZ[0].toInt() : 19
                 baseboard = new Board(size)
             } else {
+                if (!tree.parent.nodes.getLast().board)
+                    exports.addBoard(tree.parent, tree.parent.nodes.length - 1)
                 baseboard = tree.parent.nodes.getLast().board
             }
         }
@@ -442,7 +446,8 @@ exports.matrix2graph = function(matrix) {
                 'id': id,
                 'x': x * 25,
                 'y': y * 25,
-                'size': 4
+                'size': 4,
+                'data': matrix[y][x]
             })
 
             var prev = exports.navigate(tree, index, -1)
