@@ -440,8 +440,8 @@ exports.matrix2graph = function(matrix) {
 
             graph.nodes.push({
                 'id': id,
-                'x': x * 30,
-                'y': y * 30,
+                'x': x * 25,
+                'y': y * 25,
                 'size': 4
             })
 
