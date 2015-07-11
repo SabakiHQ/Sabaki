@@ -426,8 +426,7 @@ exports.tree2matrix = function(tree, matrix, xshift, yshift) {
     return matrix
 }
 
-exports.tree2graph = function(tree) {
-    var matrix = exports.tree2matrix(tree)
+exports.matrix2graph = function(matrix) {
     var graph = { nodes: [], edges: [] }
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
 
@@ -458,4 +457,8 @@ exports.tree2graph = function(tree) {
     }
 
     return graph
+}
+
+exports.tree2graph = function(tree) {
+    return exports.matrix2graph(exports.tree2matrix(tree))
 }
