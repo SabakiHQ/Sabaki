@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+* Display SGF node comments
+* Edit SGF properties
+
+**Changed**
+* Update to latest Electron version
+
 ## [Goban v0.2.0][v0.2.0]
 
 **Added**
@@ -15,4 +24,5 @@ All notable changes to this project will be documented in this file.
 
 First release
 
+[unreleased]: https://github.com/yishn/Goban/compare/v0.2.0...master
 [v0.2.0]: https://github.com/yishn/Goban/compare/v0.1.0...v0.2.0
