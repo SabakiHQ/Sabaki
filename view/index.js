@@ -160,12 +160,10 @@ function setCurrentTreePosition(tree, index) {
     // Update graph
     var n = getCurrentGraphNode()
     if (n) {
-        n.color = '#E64533'
-
         setTimeout(function() {
             if (getCurrentGraphNode() != n) return
             centerGraphCameraAt(n)
-        }, 300);
+        }, 300)
     }
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
@@ -466,6 +464,10 @@ function makeMove(vertex) {
         sgf.addBoard(newtree, newtree.nodes.length - 1)
         setCurrentTreePosition(newtree, 0)
     }
+
+    // Update graph
+    setGraph(sgf.tree2graph(getRootTree()))
+    centerGraphCameraAt(getCurrentGraphNode())
 }
 
 function vertexClicked() {
@@ -842,7 +844,8 @@ function prepareEditTools() {
 function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
-    var s = $('sidebar').retrieve('sigma');
+    var s = $('sidebar').retrieve('sigma')
+    node.color = '#E64533'
     s.refresh()
 
     sigma.misc.animation.camera(
