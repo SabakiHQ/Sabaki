@@ -116,7 +116,7 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
-    setGraph(sgf.tree2graph(tree))
+    setGraphMatrix(sgf.tree2matrix(tree))
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoards(tree), 0)
@@ -125,18 +125,18 @@ function setRootTree(tree) {
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
 }
 
-function getGraph() {
-    return $('sidebar').retrieve('graph')
+function getGraphMatrix() {
+    return $('sidebar').retrieve('graphmatrix')
 }
 
-function setGraph(graph) {
+function setGraphMatrix(matrix) {
     var container = $('sidebar')
     var s = container.retrieve('sigma')
 
-    container.store('graph', graph)
+    container.store('graphmatrix', matrix)
 
     s.graph.clear()
-    s.graph.read(graph)
+    s.graph.read(sgf.matrix2graph(matrix))
 
     s.bind('clickNode', function(e) {
         e.data.node.data.unpack(function(tree, index) {
@@ -466,7 +466,7 @@ function makeMove(vertex) {
     }
 
     // Update graph
-    setGraph(sgf.tree2graph(getRootTree()))
+    setGraphMatrix(sgf.tree2matrix(getRootTree()))
     centerGraphCameraAt(getCurrentGraphNode())
 }
 
