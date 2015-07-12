@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Goban v0.2.0][v0.2.0]
 
 **Added**
 * Game graph
@@ -11,11 +11,8 @@ All notable changes to this project will be documented in this file.
 **Changed**
 * Update to latest Electron version
 
-**Fixed**
-* Fix SGF comments problem
-
 ## Goban v0.1.0
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.1.0...master
+[v0.2.0]: https://github.com/yishn/Goban/compare/v0.1.0...v0.2.0

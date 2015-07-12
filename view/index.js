@@ -68,8 +68,7 @@ function setShowSidebar(show) {
     if (show) {
         // Create game graph
         setGraphMatrix(sgf.tree2matrix(getRootTree()))
-        var node = getCurrentGraphNode()
-        centerGraphCameraAt(node)
+        centerGraphCameraAt(getCurrentGraphNode())
     }
 
     // Resize window
