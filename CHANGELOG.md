@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 * Detect and notify user about ko
 
 **Changed**
-* Update to latest Electron version
+* Update to Electron v0.28.3
 
 ## Goban v0.1.0
 
