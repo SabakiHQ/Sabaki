@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 * Update to latest Electron version
 
-## [Goban v0.2.0][v0.2.0]
+## [Goban v0.2.0][v0.2.0] (2015-07-12)
 
 **Added**
 * Game graph
@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 * Update to Electron v0.28.3
 
-## Goban v0.1.0
+## Goban v0.1.0 (2015-06-20)
 
 First release
 
