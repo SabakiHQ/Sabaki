@@ -65,8 +65,12 @@ function setShowSidebar(show) {
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     setting.set('view.show_sidebar', show)
 
-    var node = getCurrentGraphNode()
-    if (show && node) centerGraphCameraAt(node)
+    if (show) {
+        // Create game graph
+        setGraphMatrix(sgf.tree2matrix(getRootTree()))
+        var node = getCurrentGraphNode()
+        centerGraphCameraAt(node)
+    }
 
     // Resize window
     var win  = remote.getCurrentWindow()
@@ -116,7 +120,7 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
-    setGraphMatrix(sgf.tree2matrix(tree))
+    if (getShowSidebar()) setGraphMatrix(sgf.tree2matrix(tree))
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoards(tree), 0)
@@ -130,6 +134,8 @@ function getGraphMatrix() {
 }
 
 function setGraphMatrix(matrix) {
+    if (!getShowSidebar()) return
+
     var container = $('sidebar')
     var s = container.retrieve('sigma')
 
