@@ -6,13 +6,13 @@ Eventually the best virtual Go board. [Download the latest release](https://gith
 
 ## Features
 
-- [x] Resizable game board
-- [x] Read and save SGF files
-- [x] Supports nested variations
-- [x] Fuzzy stone placement
-- [x] SGF editing tools
-- [x] Scoring tool
-- [x] Show game graph
+- Resizable game board
+- Read and save SGF files
+- Supports nested variations
+- Fuzzy stone placement
+- SGF editing tools
+- Scoring tool
+- Show game graph
 
 ## Third Party Libraries
 
