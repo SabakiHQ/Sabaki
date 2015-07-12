@@ -12,7 +12,7 @@ Eventually the best virtual Go board. [Download the latest release](https://gith
 - [x] Fuzzy stone placement
 - [x] SGF editing tools
 - [x] Scoring tool
-- [ ] Show and manipulate game tree
+- [x] Show game graph
 
 ## Third Party Libraries
 
