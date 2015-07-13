@@ -157,11 +157,27 @@ header, #bar #edit, #bar #scoring {
         width: 200px;
         background: #222;
     }
+    #sidebar .verticalslider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 10px;
+        cursor: ew-resize;
+    }
     .sidebar #sidebar {
         display: block;
     }
     .sidebar #main {
         right: 200px;
+}
+
+#graph {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 10px;
 }
 
 #info, #score {

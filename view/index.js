@@ -129,13 +129,13 @@ function setRootTree(tree) {
 }
 
 function getGraphMatrix() {
-    return $('sidebar').retrieve('graphmatrix')
+    return $('graph').retrieve('graphmatrix')
 }
 
 function setGraphMatrix(matrix) {
     if (!getShowSidebar()) return
 
-    var container = $('sidebar')
+    var container = $('graph')
     var s = container.retrieve('sigma')
 
     container.store('graphmatrix', matrix)
@@ -196,7 +196,7 @@ function getCurrentGraphNode() {
 
     if (!id) return null
 
-    var container = $('sidebar')
+    var container = $('graph')
     var s = container.retrieve('sigma')
     var n = s.graph.nodes(id)
 
@@ -335,7 +335,7 @@ function loadSettings() {
         document.body.addClass('sidebar')
 
     // Create sigma object
-    var container = $('sidebar')
+    var container = $('graph')
     var s = new sigma(container)
 
     s.settings({
@@ -849,7 +849,7 @@ function prepareEditTools() {
 function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
-    var s = $('sidebar').retrieve('sigma')
+    var s = $('graph').retrieve('sigma')
     node.color = '#E64533'
     s.refresh()
 
