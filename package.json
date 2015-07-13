@@ -1,7 +1,7 @@
 {
     "name": "goban",
     "productName": "Goban",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Eventually the best virtual Go board.",
     "author": "Yichuan Shen",
     "main": "main.js",
