@@ -6,7 +6,11 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Display SGF node comments
-* Edit SGF properties
+* Resizable sidebar
+
+**Fixed**
+* When the game is a draw, the SGF result will be updated correctly
+* Game graph won't disappear suddenly when dragged
 
 **Changed**
 * Update to latest Electron version

@@ -162,8 +162,9 @@ header, #bar #edit, #bar #scoring {
         top: 0;
         left: 0;
         bottom: 0;
-        width: 10px;
+        width: 5px;
         cursor: ew-resize;
+        z-index: 10;
     }
     .sidebar #sidebar {
         display: block;
@@ -177,7 +178,8 @@ header, #bar #edit, #bar #scoring {
     top: 0;
     bottom: 0;
     right: 0;
-    left: 10px;
+    left: 0;
+    z-index: 1;
 }
 
 #info, #score {
