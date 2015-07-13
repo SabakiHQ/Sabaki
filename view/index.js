@@ -65,7 +65,7 @@ function setShowSidebar(show) {
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     setting.set('view.show_sidebar', show)
 
-    if (show) {
+    if (show && getRootTree()) {
         // Create game graph
         setGraphMatrix(sgf.tree2matrix(getRootTree()))
         centerGraphCameraAt(getCurrentGraphNode())
@@ -120,6 +120,8 @@ function setCurrentPlayer(sign) {
 }
 
 function getRootTree() {
+    if (!getCurrentTreePosition()) return null
+
     return getCurrentTreePosition().unpack(function(tree, index) {
         while (tree.parent != null) tree = tree.parent
         return tree
@@ -340,8 +342,10 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
-    if (setting.get('view.show_sidebar'))
+    if (setting.get('view.show_sidebar')) {
         document.body.addClass('sidebar')
+        setSidebarWidth(setting.get('view.sidebar_width'))
+    }
 
     // Create sigma object
     var container = $('graph')
