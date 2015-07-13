@@ -488,8 +488,10 @@ function makeMove(vertex) {
     }
 
     // Update graph
-    setGraphMatrix(sgf.tree2matrix(getRootTree()))
-    centerGraphCameraAt(getCurrentGraphNode())
+    if (getShowSidebar()) {
+        setGraphMatrix(sgf.tree2matrix(getRootTree()))
+        centerGraphCameraAt(getCurrentGraphNode())
+    }
 }
 
 function vertexClicked() {
