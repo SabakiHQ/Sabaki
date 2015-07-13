@@ -79,6 +79,15 @@ function setShowSidebar(show) {
     win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width').toInt(), size[1])
 }
 
+function getSidebarWidth() {
+    return $('sidebar').getStyle('width').toInt()
+}
+
+function setSidebarWidth(width) {
+    $('sidebar').setStyle('width', width)
+    $$('.sidebar #main').setStyle('right', width)
+}
+
 function getPlayerName(sign) {
     return $$('#player_' + sign + ' .name')[0].get('text')
 }
