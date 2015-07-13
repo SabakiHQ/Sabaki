@@ -876,6 +876,9 @@ function wireEvents() {
         if (!$('sidebar').retrieve('initpos')) return
 
         $('sidebar').store('initpos', null)
+        if ($('graph').retrieve('sigma'))
+            $('graph').retrieve('sigma').renderers[0].resize().render()
+
         setting.set('view.sidebar_width', getSidebarWidth())
     }).addEvent('mousemove', function() {
         var initPos = $('sidebar').retrieve('initpos')
