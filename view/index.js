@@ -63,6 +63,7 @@ function setShowSidebar(show) {
     else document.body.removeClass('sidebar')
 
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
+    $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
     setting.set('view.show_sidebar', show)
 
     if (show && getRootTree()) {
