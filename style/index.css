@@ -193,7 +193,7 @@ header, #bar #edit, #bar #scoring {
         background: #26292C;
         color: #eee;
         transition: .5s bottom;
-        z-index: 3;
+        z-index: 15;
     }
     #info.show, #score.show {
         bottom: 0;
