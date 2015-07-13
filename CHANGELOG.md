@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 * Update to latest Electron version
 
-## [Goban v0.2.1][v0.2.1]
+## [Goban v0.2.1][v0.2.1] (2015-07-13)
 
 **Added**
 * Resizable sidebar
