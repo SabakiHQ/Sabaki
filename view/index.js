@@ -846,6 +846,13 @@ function prepareEditTools() {
     })
 }
 
+function wireEvents() {
+    $('goban').addEvent('mousewheel', function(e) {
+        if (e.wheel < 0) goForward()
+        else if (e.wheel > 0) goBack()
+    })
+}
+
 function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
@@ -1237,11 +1244,7 @@ document.addEvent('keydown', function(e) {
     loadSettings()
     buildMenu()
     prepareEditTools()
-
-    $('goban').addEvent('mousewheel', function(e) {
-        if (e.wheel < 0) goForward()
-        else if (e.wheel > 0) goBack()
-    })
+    wireEvents()
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
