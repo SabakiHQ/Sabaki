@@ -155,12 +155,6 @@ function setGraphMatrix(matrix) {
     s.graph.clear()
     s.graph.read(sgf.matrix2graph(matrix))
 
-    s.bind('clickNode', function(e) {
-        e.data.node.data.unpack(function(tree, index) {
-            setCurrentTreePosition(tree, index)
-        })
-    })
-
     s.refresh()
 }
 
@@ -349,8 +343,9 @@ function loadSettings() {
         document.body.addClass('sidebar')
         setSidebarWidth(setting.get('view.sidebar_width'))
     }
+}
 
-    // Create sigma object
+function prepareGameGraph() {
     var container = $('graph')
     var s = new sigma(container)
 
@@ -364,6 +359,12 @@ function loadSettings() {
         zoomMin: 1,
         autoResize: false,
         autoRescale: false
+    })
+
+    s.bind('clickNode', function(e) {
+        e.data.node.data.unpack(function(tree, index) {
+            setCurrentTreePosition(tree, index)
+        })
     })
 
     container.store('sigma', s)
@@ -1284,6 +1285,7 @@ document.addEvent('keydown', function(e) {
     loadSettings()
     buildMenu()
     prepareEditTools()
+    prepareGameGraph()
     wireEvents()
 
     if (process.argv.length >= 2) loadGame(process.argv[1])

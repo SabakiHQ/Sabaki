@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Display SGF node comments
 
+**Fixed**
+* Fix unresponsiveness when clicking on a vertex on the game graph
+
 **Changed**
 * Update to latest Electron version
 
