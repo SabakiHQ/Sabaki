@@ -201,8 +201,9 @@ exports.addBoard = function(tree, index, baseboard) {
 
     var node = tree.nodes[index]
     var vertex = null
+    var board = null
 
-    if (arguments.length <= 2) {
+    if (!baseboard) {
         var prev = exports.navigate(tree, index, -1)
 
         if (!prev[0]) {
@@ -218,12 +219,12 @@ exports.addBoard = function(tree, index, baseboard) {
 
     if ('B' in node) {
         vertex = exports.point2vertex(node.B[0])
-        baseboard = baseboard.makeMove(1, vertex)
+        board = baseboard.makeMove(1, vertex)
     } else if ('W' in node) {
         vertex = exports.point2vertex(node.W[0])
-        baseboard = baseboard.makeMove(-1, vertex)
+        board = baseboard.makeMove(-1, vertex)
     } else {
-        baseboard = baseboard.makeMove(0)
+        board = baseboard.makeMove(0)
     }
 
     var ids = ['AW', 'AE', 'AB']
@@ -234,18 +235,18 @@ exports.addBoard = function(tree, index, baseboard) {
         node[ids[i]].each(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
-                baseboard.arrangement[exports.point2vertex(value)] = i - 1
+                board.arrangement[exports.point2vertex(value)] = i - 1
             } else {
                 // Compressed point list
                 exports.compressed2list(value).each(function(vertex) {
-                    baseboard.arrangement[vertex] = i - 1
+                    board.arrangement[vertex] = i - 1
                 })
             }
         })
     }
 
     if (vertex != null) {
-        baseboard.overlays[vertex] = new Tuple('point', 0, '')
+        board.overlays[vertex] = new Tuple('point', 0, '')
     }
 
     var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -257,11 +258,11 @@ exports.addBoard = function(tree, index, baseboard) {
         node[ids[i]].each(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
-                baseboard.overlays[exports.point2vertex(value)] = new Tuple(classes[i], 0, '')
+                board.overlays[exports.point2vertex(value)] = new Tuple(classes[i], 0, '')
             } else {
                 // Compressed point list
                 exports.compressed2list(value).each(function(vertex) {
-                    baseboard.overlays[vertex] = new Tuple(classes[i], 0, '')
+                    board.overlays[vertex] = new Tuple(classes[i], 0, '')
                 })
             }
         })
@@ -272,11 +273,11 @@ exports.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            baseboard.overlays[exports.point2vertex(point)] = new Tuple('label', 0, label)
+            board.overlays[exports.point2vertex(point)] = new Tuple('label', 0, label)
         })
     }
 
-    node.board = baseboard
+    node.board = board
 
     if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
         // Add variations
@@ -296,11 +297,11 @@ exports.addBoard = function(tree, index, baseboard) {
                 return
             }
 
-            if (v in baseboard.overlays)
-                baseboard.overlays[v] = baseboard.overlays[v].unpack(function(a, b, c) {
+            if (v in board.overlays)
+                board.overlays[v] = board.overlays[v].unpack(function(a, b, c) {
                      return new Tuple(a, sign, c)
                 })
-            else baseboard.overlays[v] = new Tuple('', sign, '')
+            else board.overlays[v] = new Tuple('', sign, '')
         })
     }
 

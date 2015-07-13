@@ -184,6 +184,8 @@ function setCurrentTreePosition(tree, index) {
     }
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
+
+    // Determine current player
     setCurrentPlayer(1)
 
     if ('B' in tree.nodes[index]) setCurrentPlayer(-1)
