@@ -72,6 +72,16 @@ function setShowSidebar(show) {
         centerGraphCameraAt(getCurrentGraphNode())
     }
 
+    if (!show) {
+        // Clear game graph
+        var s = $('graph').retrieve('sigma')
+
+        if (s) {
+            s.graph.clear()
+            s.refresh()
+        }
+    }
+
     // Resize window
     var win  = remote.getCurrentWindow()
     var size = win.getContentSize()
@@ -147,10 +157,8 @@ function getGraphMatrix() {
 function setGraphMatrix(matrix) {
     if (!getShowSidebar()) return
 
-    var container = $('graph')
-    var s = container.retrieve('sigma')
-
-    container.store('graphmatrix', matrix)
+    var s = $('graph').retrieve('sigma')
+    $('graph').store('graphmatrix', matrix)
 
     s.graph.clear()
     s.graph.read(sgf.matrix2graph(matrix))
