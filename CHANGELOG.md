@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 * Resizable sidebar
 
 **Fixed**
-* When the game is a draw, the SGF result will be updated correctly
+* When updating the score of a drawed game, the SGF result will be updated correctly
 * Game graph won't disappear suddenly when dragged
 
 ## [Goban v0.2.0][v0.2.0] (2015-07-12)
