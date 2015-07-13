@@ -864,6 +864,27 @@ function wireEvents() {
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     })
+
+    // Resize sidebar
+
+    $$('#sidebar .verticalslider').addEvent('mousedown', function() {
+        if (event.button != 0) return
+        $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
+    })
+    document.body.addEvent('mouseup', function() {
+        if (!$('sidebar').retrieve('initpos')) return
+
+        $('sidebar').store('initpos', null)
+        setting.set('view.sidebar_width', getSidebarWidth())
+    }).addEvent('mousemove', function() {
+        var initPos = $('sidebar').retrieve('initpos')
+
+        if (!initPos) return
+        initPos.unpack(function(initX, initWidth) {
+            setSidebarWidth(initWidth - event.x + initX)
+            resizeBoard()
+        })
+    })
 }
 
 function centerGraphCameraAt(node) {
