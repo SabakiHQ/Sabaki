@@ -803,9 +803,9 @@ function closeScore() {
 function updateScore() {
     var rootNode = getRootTree().nodes[0]
     var results = $$('#score tbody td:last-child').get('text')
-    var diff = results[1].toFloat() - results[0].toFloat()
-    var color = diff > 0 ? 'W+' : (diff < 0 ? 'B+' : '')
-    var result = color + Math.abs(diff)
+    var diff = results[0].toFloat() - results[1].toFloat()
+    var result = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : 'Draw')
+    if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
 }
