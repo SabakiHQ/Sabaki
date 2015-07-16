@@ -385,27 +385,27 @@ exports.escapeString = function(input) {
     return input.replace('\\', '\\\\').replace(']', '\\]')
 }
 
-exports.getDepth = function(tree) {
+exports.getHeight = function(tree) {
     var depth = 0
 
     tree.subtrees.each(function(subtree) {
-        depth = Math.max(exports.getDepth(subtree), depth)
+        depth = Math.max(exports.getHeight(subtree), depth)
     })
 
     return depth + tree.nodes.length
 }
 
-exports.getCurrentDepth = function(tree) {
+exports.getCurrentHeight = function(tree) {
     var depth = tree.nodes.length
 
     if (tree.current)
-        depth += exports.getCurrentDepth(tree.subtrees[tree.current])
+        depth += exports.getCurrentHeight(tree.subtrees[tree.current])
 
     return depth
 }
 
 exports.tree2matrix = function(tree, matrix, xshift, yshift) {
-    if (!matrix) matrix = Array.apply(null, new Array(exports.getDepth(tree))).map(function() { return [] });
+    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(function() { return [] });
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
     if (!('id' in tree)) tree.id = uuid.v4()
