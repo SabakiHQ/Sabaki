@@ -395,6 +395,15 @@ exports.getDepth = function(tree) {
     return depth + tree.nodes.length
 }
 
+exports.getCurrentDepth = function(tree) {
+    var depth = tree.nodes.length
+
+    if (tree.current)
+        depth += exports.getCurrentDepth(tree.subtrees[tree.current])
+
+    return depth
+}
+
 exports.tree2matrix = function(tree, matrix, xshift, yshift) {
     if (!matrix) matrix = Array.apply(null, new Array(exports.getDepth(tree))).map(function() { return [] });
     if (!xshift) xshift = 0
