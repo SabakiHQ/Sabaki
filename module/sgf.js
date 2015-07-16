@@ -338,6 +338,20 @@ exports.splitTree = function(tree, index) {
     return newtree
 }
 
+exports.reduceTree = function(tree) {
+    if (tree.subtrees.length != 1) return tree
+
+    tree.nodes = tree.nodes.concat(tree.subtrees[0].nodes)
+    tree.current = tree.subtrees[0].current
+    tree.subtrees = tree.subtrees[0].subtrees
+
+    tree.subtrees.each(function(subtree) {
+        subtree.parent = tree
+    })
+
+    return tree
+}
+
 exports.tree2string = function(tree) {
     var output = ''
 
