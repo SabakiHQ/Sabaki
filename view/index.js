@@ -1039,7 +1039,7 @@ function goToEnd() {
 }
 
 function removeNode(tree, index) {
-    if (tree == getRootTree() && index == 0) {
+    if (!tree.parent && index == 0) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'warning',
             title: 'Goban',
@@ -1050,15 +1050,25 @@ function removeNode(tree, index) {
         return
     }
 
-    tree.nodes.splice(index, tree.nodes.length)
-    tree.current = null
-    tree.subtrees.length = 0
+    var prev = sgf.navigate(tree, index, -1)
+
+    if (index != 0) {
+        tree.nodes.splice(index, tree.nodes.length)
+        tree.current = null
+        tree.subtrees.length = 0
+    } else {
+        var parent = tree.parent
+        var i = parent.subtrees.indexOf(tree)
+
+        parent.subtrees.splice(i, 1)
+        if (parent.current > i) parent.current--
+        sgf.reduceTree(parent)
+    }
 
     setGraphMatrix(sgf.tree2matrix(getRootTree()))
+
     if (!getCurrentGraphNode()) {
-        sgf.navigate(tree, index, -1).unpack(function(t, i) {
-            setCurrentTreePosition(t, i)
-        })
+        setCurrentTreePosition(prev[0], prev[1])
     }
 }
 
