@@ -1281,7 +1281,18 @@ function openHeaderMenu() {
 function openNodeMenu(tree, index) {
     var template = [
         {
-            label: '&Remove'
+            label: '&Remove',
+            click: function() {
+                tree.nodes.splice(index, tree.nodes.length)
+                tree.subtrees.length = 0
+
+                setGraphMatrix(sgf.tree2matrix(getRootTree()))
+                if (!getCurrentGraphNode()) {
+                    sgf.navigate(tree, index, -1).unpack(function(t, i) {
+                        setCurrentTreePosition(t, i)
+                    })
+                }
+            }
         }
     ]
 
