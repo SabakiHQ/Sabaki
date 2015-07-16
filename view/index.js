@@ -1069,6 +1069,8 @@ function removeNode(tree, index) {
 
     if (!getCurrentGraphNode()) {
         setCurrentTreePosition(prev[0], prev[1])
+    } else {
+        centerGraphCameraAt(getCurrentGraphNode())
     }
 }
 
