@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 * Fix unresponsiveness when clicking on a vertex on the game graph
 
 **Changed**
-* Update to latest Electron version
+* Update to Electron v0.30.0
 
 ## [Goban v0.2.1][v0.2.1] (2015-07-13)
 
