@@ -405,13 +405,14 @@ function makeMove(vertex) {
 
     if (ko) {
         var button = dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'warning',
-            buttons: ['Play anyway', 'Cancel'],
-            message: 'You are about to play a move, which repeats a previous board position. '
+            type: 'info',
+            title: 'Goban',
+            buttons: ['Play anyway', "Don't play", 'Cancel'],
+            message: 'You are about to play a move which repeats a previous board position. '
                 + 'This is invalid in some rulesets.'
         })
 
-        if (button == 1) return
+        if (button != 0) return
     }
 
     // Play sounds
@@ -1041,6 +1042,7 @@ function removeNode(tree, index) {
     if (tree == getRootTree() && index == 0) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'warning',
+            title: 'Goban',
             buttons: ['OK'],
             message: 'The root node cannot be removed.'
         })
