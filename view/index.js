@@ -1049,6 +1049,7 @@ function removeNode(tree, index) {
     }
 
     tree.nodes.splice(index, tree.nodes.length)
+    tree.current = null
     tree.subtrees.length = 0
 
     setGraphMatrix(sgf.tree2matrix(getRootTree()))
