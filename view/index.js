@@ -1304,6 +1304,8 @@ function openHeaderMenu() {
 }
 
 function openNodeMenu(tree, index) {
+    if (getScoringMode()) return
+
     var template = [
         {
             label: '&Remove',
