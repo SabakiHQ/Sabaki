@@ -174,7 +174,13 @@ function setCurrentTreePosition(tree, index) {
     if (n) delete n.color
 
     $('goban').store('position', new Tuple(tree, index))
-    if (tree.parent) tree.parent.current = tree.parent.subtrees.indexOf(tree)
+
+    // Set current path
+    var t = tree
+    while (t.parent) {
+        t.parent.current = t.parent.subtrees.indexOf(t)
+        t = t.parent
+    }
 
     // Update graph
     var n = getCurrentGraphNode()
