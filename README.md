@@ -1,6 +1,6 @@
-<img src="logo.png" width="100" height="100">
-
 # Goban
+
+<img src="logo.png" width="100" height="100">
 
 Eventually the best virtual Go board. [Download the latest release](https://github.com/yishn/Goban/releases) of Goban.
 
