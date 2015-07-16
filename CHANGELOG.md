@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Display SGF node comments
 
+## [Goban v0.2.2][v0.2.2] (2015-07-16)
+
+**Added**
+* Ability to remove SGF nodes
+
 **Fixed**
 * Fix unresponsiveness when clicking on a vertex on the game graph
 
@@ -35,6 +40,7 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.2.1...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.2.2...master
+[v0.2.2]: https://github.com/yishn/Goban/compare/v0.2.2...v0.2.1
 [v0.2.1]: https://github.com/yishn/Goban/compare/v0.2.1...v0.2.0
 [v0.2.0]: https://github.com/yishn/Goban/compare/v0.1.0...v0.2.0
