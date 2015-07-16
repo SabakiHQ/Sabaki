@@ -1037,6 +1037,28 @@ function goToEnd() {
     })
 }
 
+function removeNode(tree, index) {
+    if (tree == getRootTree() && index == 0) {
+        dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'warning',
+            buttons: ['OK'],
+            message: 'The root node cannot be removed.'
+        })
+
+        return
+    }
+
+    tree.nodes.splice(index, tree.nodes.length)
+    tree.subtrees.length = 0
+
+    setGraphMatrix(sgf.tree2matrix(getRootTree()))
+    if (!getCurrentGraphNode()) {
+        sgf.navigate(tree, index, -1).unpack(function(t, i) {
+            setCurrentTreePosition(t, i)
+        })
+    }
+}
+
 function buildMenu() {
     var template = [
         {
@@ -1283,15 +1305,7 @@ function openNodeMenu(tree, index) {
         {
             label: '&Remove',
             click: function() {
-                tree.nodes.splice(index, tree.nodes.length)
-                tree.subtrees.length = 0
-
-                setGraphMatrix(sgf.tree2matrix(getRootTree()))
-                if (!getCurrentGraphNode()) {
-                    sgf.navigate(tree, index, -1).unpack(function(t, i) {
-                        setCurrentTreePosition(t, i)
-                    })
-                }
+                removeNode(tree, index)
             }
         }
     ]
