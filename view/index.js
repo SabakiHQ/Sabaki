@@ -373,6 +373,10 @@ function prepareGameGraph() {
         e.data.node.data.unpack(function(tree, index) {
             setCurrentTreePosition(tree, index)
         })
+    }).bind('rightClickNode', function(e) {
+        e.data.node.data.unpack(function(tree, index) {
+            openNodeMenu(tree, index)
+        })
     })
 
     container.store('sigma', s)
@@ -1272,6 +1276,17 @@ function openHeaderMenu() {
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
+}
+
+function openNodeMenu(tree, index) {
+    var template = [
+        {
+            label: '&Remove'
+        }
+    ]
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
 /**
