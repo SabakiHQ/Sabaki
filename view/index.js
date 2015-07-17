@@ -892,7 +892,7 @@ function wireEvents() {
 
     // Resize sidebar
 
-    $$('#sidebar .verticalslider').addEvent('mousedown', function() {
+    $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
         $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
     })
