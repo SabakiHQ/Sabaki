@@ -68,7 +68,7 @@ function setShowSidebar(show) {
 
     if (show && getRootTree()) {
         // Create game graph
-        setGraphMatrix(sgf.tree2matrixdict(getRootTree()))
+        setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
         centerGraphCameraAt(getCurrentGraphNode())
     }
 
@@ -141,7 +141,7 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
-    if (getShowSidebar()) setGraphMatrix(sgf.tree2matrixdict(tree))
+    if (getShowSidebar()) setGraphMatrixDict(sgf.tree2matrixdict(tree))
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoards(tree), 0)
@@ -154,14 +154,14 @@ function getGraphMatrixDict() {
     return $('graph').retrieve('graphmatrixdict')
 }
 
-function setGraphMatrixDict(matrix) {
+function setGraphMatrixDict(matrixdict) {
     if (!getShowSidebar()) return
 
     var s = $('graph').retrieve('sigma')
-    $('graph').store('graphmatrixdict', matrix)
+    $('graph').store('graphmatrixdict', matrixdict)
 
     s.graph.clear()
-    s.graph.read(sgf.matrix2graph(matrix))
+    s.graph.read(sgf.matrix2graph(matrixdict))
 
     s.refresh()
 }
@@ -508,7 +508,7 @@ function makeMove(vertex) {
 
     // Update graph
     if (getShowSidebar()) {
-        setGraphMatrix(sgf.tree2matrixdict(getRootTree()))
+        setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
         centerGraphCameraAt(getCurrentGraphNode())
     }
 }
@@ -1071,7 +1071,7 @@ function removeNode(tree, index) {
         sgf.reduceTree(parent)
     }
 
-    setGraphMatrix(sgf.tree2matrixdict(getRootTree()))
+    setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
 
     if (!getCurrentGraphNode()) {
         setCurrentTreePosition(prev[0], prev[1])
