@@ -413,7 +413,7 @@ function makeMove(vertex) {
         var button = dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'info',
             title: 'Goban',
-            buttons: ['Play anyway', "Don't play", 'Cancel'],
+            buttons: ['Play Anyway', 'Don’t Play', 'Cancel'],
             message: 'You are about to play a move which repeats a previous board position. '
                 + 'This is invalid in some rulesets.'
         })
