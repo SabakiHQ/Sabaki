@@ -398,7 +398,7 @@ exports.getHeight = function(tree) {
 exports.getCurrentHeight = function(tree) {
     var depth = tree.nodes.length
 
-    if (tree.current)
+    if (tree.current != null)
         depth += exports.getCurrentHeight(tree.subtrees[tree.current])
 
     return depth
