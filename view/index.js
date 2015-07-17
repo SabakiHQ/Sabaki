@@ -190,12 +190,16 @@ function setCurrentTreePosition(tree, index) {
         t = t.parent
     }
 
-    // Update graph
+    // Update graph and slider
     var n = getCurrentGraphNode()
     if (n) {
         setTimeout(function() {
             if (getCurrentGraphNode() != n) return
             centerGraphCameraAt(n)
+
+            var total = sgf.getCurrentHeight(getRootTree()) - 1
+            var relative = total + 1 - sgf.getCurrentHeight(tree) + index
+            setSliderValue(total == 0 ? 100 : relative * 100 / total)
         }, 300)
     }
 
