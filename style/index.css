@@ -166,6 +166,23 @@ header, #bar #edit, #bar #scoring {
         cursor: ew-resize;
         z-index: 10;
     }
+    #sidebar .slider {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 8px;
+        z-index: 10;
+    }
+    #sidebar .slider div {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 0%;
+        background: #444;
+        transition: .5s height;
+    }
     .sidebar #sidebar {
         display: block;
     }
