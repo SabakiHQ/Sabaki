@@ -404,8 +404,9 @@ exports.getCurrentHeight = function(tree) {
     return depth
 }
 
-exports.tree2matrix = function(tree, matrix, xshift, yshift) {
+exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(function() { return [] });
+    if (!dict) dict = {}
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
     if (!('id' in tree)) tree.id = uuid.v4()
@@ -429,17 +430,20 @@ exports.tree2matrix = function(tree, matrix, xshift, yshift) {
         }
 
         matrix[yshift + y][xshift] = new Tuple(tree, y)
+        dict[tree.id + '-' + y] = new Tuple(xshift, yshift + y)
     }
 
     for (var k = 0; k < tree.subtrees.length; k++) {
         var subtree = tree.subtrees[k]
-        exports.tree2matrix(subtree, matrix, xshift, yshift + tree.nodes.length)
+        exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
     }
 
-    return matrix
+    return new Tuple(matrix, dict)
 }
 
-exports.matrix2graph = function(matrix) {
+exports.matrix2graph = function(matrixdict) {
+    var matrix = matrixdict[0]
+    var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
 
@@ -461,12 +465,35 @@ exports.matrix2graph = function(matrix) {
 
             var prev = exports.navigate(tree, index, -1)
             if (!prev[0]) continue
+            var prevId = prev[0].id + '-' + prev[1]
+            var prevPos = dict[prevId]
 
-            graph.edges.push({
-                'id': id + '-e',
-                'source': id,
-                'target': prev[0].id + '-' + prev[1]
-            })
+            if (prevPos[0] != x) {
+                graph.nodes.push({
+                    'id': id + '-h',
+                    'x': (x - 1) * 25,
+                    'y': (y - 1) * 25,
+                    'size': 0
+                })
+
+                graph.edges.push({
+                    'id': id + '-e1',
+                    'source': id,
+                    'target': id + '-h'
+                })
+
+                graph.edges.push({
+                    'id': id + '-e2',
+                    'source': id + '-h',
+                    'target': prevId
+                })
+            } else {
+                graph.edges.push({
+                    'id': id + '-e1',
+                    'source': id,
+                    'target': prevId
+                })
+            }
         }
     }
 
@@ -474,5 +501,5 @@ exports.matrix2graph = function(matrix) {
 }
 
 exports.tree2graph = function(tree) {
-    return exports.matrix2graph(exports.tree2matrix(tree))
+    return exports.matrix2graph(exports.tree2matrixdict(tree))
 }
