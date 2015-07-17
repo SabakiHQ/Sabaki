@@ -130,6 +130,14 @@ function setCurrentPlayer(sign) {
     $$('.currentplayer').set('src', sign > 0 ? '../img/ui/blacktoplay.png' : '../img/ui/whitetoplay.png')
 }
 
+function getSliderValue() {
+    return $$('#sidebar .slider div')[0].getStyle('height').toInt()
+}
+
+function setSliderValue(value) {
+    $$('#sidebar .slider div')[0].setStyle('height', value + '%')
+}
+
 function getRootTree() {
     if (!getCurrentTreePosition()) return null
 
