@@ -1044,6 +1044,26 @@ function goToEnd() {
     })
 }
 
+function goToNextVariation() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        if (!tree.parent) return
+
+        var mod = tree.parent.subtrees.length
+        tree.parent.current = (tree.parent.current + 1) % mod
+        setCurrentTreePosition(tree.parent.subtrees[tree.parent.current], 0)
+    })
+}
+
+function goToPreviousVariation() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        if (!tree.parent) return
+
+        var mod = tree.parent.subtrees.length
+        tree.parent.current = (tree.parent.current + mod - 1) % mod
+        setCurrentTreePosition(tree.parent.subtrees[tree.parent.current], 0)
+    })
+}
+
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
@@ -1216,6 +1236,17 @@ function buildMenu() {
                     label: 'Go To &End',
                     accelerator: 'CmdOrCtrl+End',
                     click: goToEnd
+                },
+                { type: 'separator' },
+                {
+                    label: 'Go To Next Variatio&n',
+                    accelerator: 'Right',
+                    click: goToNextVariation
+                },
+                {
+                    label: 'Go To Previous &Variation',
+                    accelerator: 'Left',
+                    click: goToPreviousVariation
                 }
             ]
         },
