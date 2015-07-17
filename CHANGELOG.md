@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Display SGF node comments
+* Add slider
 * Add navigation to sibling variations
 
 ## [Goban v0.2.2][v0.2.2] (2015-07-16)
