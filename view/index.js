@@ -1107,7 +1107,7 @@ function removeNode(tree, index) {
         var i = parent.subtrees.indexOf(tree)
 
         parent.subtrees.splice(i, 1)
-        if (parent.current > i) parent.current--
+        if (parent.current >= i) parent.current--
         sgf.reduceTree(parent)
     }
 
