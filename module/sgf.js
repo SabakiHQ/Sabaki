@@ -3,6 +3,7 @@ var Tuple = require('../lib/tuple')
 
 var uuid = require('../lib/node-uuid')
 var fs = require('fs')
+var setting = require('remote').require('./module/setting')
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -433,6 +434,7 @@ exports.matrix2graph = function(matrixdict) {
     var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
+    var gridSize = setting.get('graph.grid_size')
 
     for (x = 0; x < width; x++) {
         for (y = 0; y < matrix.length; y++) {
@@ -444,8 +446,8 @@ exports.matrix2graph = function(matrixdict) {
 
             graph.nodes.push({
                 'id': id,
-                'x': x * 25,
-                'y': y * 25,
+                'x': x * gridSize,
+                'y': y * gridSize,
                 'size': 4,
                 'data': matrix[y][x]
             })
@@ -458,8 +460,8 @@ exports.matrix2graph = function(matrixdict) {
             if (prevPos[0] != x) {
                 graph.nodes.push({
                     'id': id + '-h',
-                    'x': (x - 1) * 25,
-                    'y': (y - 1) * 25,
+                    'x': (x - 1) * gridSize,
+                    'y': (y - 1) * gridSize,
                     'size': 0
                 })
 
