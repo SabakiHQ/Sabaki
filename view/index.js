@@ -969,13 +969,12 @@ function centerGraphCameraAt(node) {
 
 function newGame(playSound) {
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'GM[1]CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
+    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
 
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree)
 
     if (arguments.length >= 1 && playSound) {
-        // Called from menu
         new Audio('../sound/newgame.wav').play()
         showGameInfo()
     }
