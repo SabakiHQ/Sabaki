@@ -149,7 +149,13 @@ function setRootTree(tree) {
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0)
-    if (getShowSidebar()) updateGraph()
+
+    // Update UI
+
+    if (getShowSidebar()) {
+        updateGraph()
+        updateSlider()
+    }
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
@@ -522,7 +528,7 @@ function updateSlider() {
     getCurrentTreePosition().unpack(function(tree, index) {
         var total = sgf.getCurrentHeight(getRootTree()) - 1
         var relative = total + 1 - sgf.getCurrentHeight(tree) + index
-        setSliderValue(total == 0 ? 100 : relative * 100 / total)
+        setSliderValue(total == 0 ? 0 : relative * 100 / total)
     })
 }
 
