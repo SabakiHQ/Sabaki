@@ -146,7 +146,7 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
-    if (getShowSidebar()) setGraphMatrixDict(sgf.tree2matrixdict(tree))
+    if (getShowSidebar()) updateGraph()
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoards(tree), 0)
