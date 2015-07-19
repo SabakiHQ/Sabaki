@@ -176,7 +176,7 @@ function setCurrentTreePosition(tree, index) {
 
     // Remove current graph node color
     var n = getCurrentGraphNode()
-    if (n) delete n.color
+    if (n && n != getGraphNode(tree, index)) delete n.color
 
     $('goban').store('position', new Tuple(tree, index))
 
