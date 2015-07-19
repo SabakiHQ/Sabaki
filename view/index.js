@@ -152,7 +152,6 @@ function setRootTree(tree) {
     setCurrentTreePosition(sgf.addBoard(tree), 0)
 
     // Update UI
-
     if (getShowSidebar()) {
         updateGraph()
         updateSlider()
@@ -503,7 +502,13 @@ function makeMove(vertex) {
 
         var splitted = sgf.splitTree(tree, index)
         var node = {}; node[color] = [sgf.vertex2point(vertex)]
-        var newtree = { id: uuid.v4(), nodes: [node], subtrees: [], parent: splitted, current: null }
+        var newtree = {
+            id: uuid.v4(),
+            nodes: [node],
+            subtrees: [],
+            parent: splitted,
+            current: null
+        }
 
         splitted.subtrees.push(newtree)
         splitted.current = splitted.subtrees.length - 1

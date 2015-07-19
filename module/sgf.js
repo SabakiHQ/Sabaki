@@ -90,8 +90,13 @@ exports.parse = function(tokens, start, end) {
 
     var i = start
 
-    var tree = { id: uuid.v4(), nodes: [], subtrees: [], parent: null, current: null }
-    var node, property
+    var node, property, tree = {
+        id: uuid.v4(),
+        nodes: [],
+        subtrees: [],
+        parent: null,
+        current: null
+    }
 
     while (i <= end) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break
