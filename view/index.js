@@ -146,10 +146,10 @@ function getRootTree() {
 
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
-    if (getShowSidebar()) updateGraph()
 
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0)
+    if (getShowSidebar()) updateGraph()
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
