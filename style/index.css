@@ -182,6 +182,7 @@ header, #bar #edit, #bar #scoring {
         height: 0%;
         background: #393939;
         transition: .5s height;
+        box-shadow: 0 0 10px #111;
     }
     .sidebar #sidebar {
         display: block;
