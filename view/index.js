@@ -2,6 +2,7 @@ var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../module/sgf.js')
+var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app');
 var dialog = remote.require('dialog')
@@ -502,7 +503,7 @@ function makeMove(vertex) {
 
         var splitted = sgf.splitTree(tree, index)
         var node = {}; node[color] = [sgf.vertex2point(vertex)]
-        var newtree = { nodes: [node], subtrees: [], parent: splitted, current: null }
+        var newtree = { id: uuid.v4(), nodes: [node], subtrees: [], parent: splitted, current: null }
 
         splitted.subtrees.push(newtree)
         splitted.current = splitted.subtrees.length - 1
