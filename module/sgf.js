@@ -90,7 +90,7 @@ exports.parse = function(tokens, start, end) {
 
     var i = start
 
-    var tree = { nodes: [], subtrees: [], parent: null, current: null }
+    var tree = { id: uuid.v4(), nodes: [], subtrees: [], parent: null, current: null }
     var node, property
 
     while (i <= end) {
@@ -397,7 +397,6 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     if (!dict) dict = {}
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
-    if (!('id' in tree)) tree.id = uuid.v4()
 
     var hasCollisions = true
     while (hasCollisions) {
