@@ -216,19 +216,12 @@ function getCurrentTreePosition() {
 
 function getCurrentGraphNode() {
     if (!getCurrentTreePosition()) return null
+    return getCurrentTreePosition().unpack(getGraphNode)
+}
 
-    var id = getCurrentTreePosition().unpack(function(tree, index) {
-        if (!('id' in tree)) return null
-        return tree.id + '-' + index
-    })
-
-    if (!id) return null
-
-    var container = $('graph')
-    var s = container.retrieve('sigma')
-    var n = s.graph.nodes(id)
-
-    return n
+function getGraphNode(tree, index) {
+    var s = $('graph').retrieve('sigma')
+    return s.graph.nodes(tree.id + '-' + index)
 }
 
 function getSelectedTool() {
