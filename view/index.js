@@ -66,13 +66,10 @@ function setShowSidebar(show) {
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
     setting.set('view.show_sidebar', show)
 
-    if (show && getRootTree()) {
-        // Create game graph
-        setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
-        centerGraphCameraAt(getCurrentGraphNode())
-    }
-
-    if (!show) {
+    if (show) {
+        updateGraph()
+        updateSlider()
+    } else {
         // Clear game graph
         var s = $('graph').retrieve('sigma')
 
@@ -196,10 +193,7 @@ function setCurrentTreePosition(tree, index) {
         setTimeout(function() {
             if (getCurrentGraphNode() != n) return
             centerGraphCameraAt(n)
-
-            var total = sgf.getCurrentHeight(getRootTree()) - 1
-            var relative = total + 1 - sgf.getCurrentHeight(tree) + index
-            setSliderValue(total == 0 ? 100 : relative * 100 / total)
+            updateSlider()
         }, 300)
     }
 
@@ -518,11 +512,25 @@ function makeMove(vertex) {
         setCurrentTreePosition(newtree, 0)
     }
 
-    // Update graph
-    if (getShowSidebar()) {
-        setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
-        centerGraphCameraAt(getCurrentGraphNode())
-    }
+    updateGraph()
+    updateSlider()
+}
+
+function updateGraph() {
+    if (!getShowSidebar() || !getRootTree()) return
+
+    setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
+    centerGraphCameraAt(getCurrentGraphNode())
+}
+
+function updateSlider() {
+    if (!getShowSidebar()) return
+
+    getCurrentTreePosition().unpack(function(tree, index) {
+        var total = sgf.getCurrentHeight(getRootTree()) - 1
+        var relative = total + 1 - sgf.getCurrentHeight(tree) + index
+        setSliderValue(total == 0 ? 100 : relative * 100 / total)
+    })
 }
 
 function vertexClicked() {
