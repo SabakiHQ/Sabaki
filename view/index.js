@@ -950,13 +950,17 @@ function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
     var s = $('graph').retrieve('sigma')
+    var matrixdict = getGraphMatrixDict()
+    var width = matrixdict[0][matrixdict[1][node.id][1]].length
+    var diff = (width - 1) * setting.get('graph.grid_size') / 2
+
     node.color = '#E64533'
     s.refresh()
 
     sigma.misc.animation.camera(
         s.camera,
         {
-            x: node[s.camera.readPrefix + 'x'],
+            x: node[s.camera.readPrefix + 'x'] + diff,
             y: node[s.camera.readPrefix + 'y']
         },
         { duration: 300 }
