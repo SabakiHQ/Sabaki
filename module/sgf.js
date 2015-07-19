@@ -197,6 +197,7 @@ exports.navigate = function(tree, index, step) {
 }
 
 exports.addBoard = function(tree, index, baseboard) {
+    if (isNaN(index)) index = 0
     if (index >= tree.nodes.length) return tree
 
     var node = tree.nodes[index]
@@ -305,20 +306,6 @@ exports.addBoard = function(tree, index, baseboard) {
         })
     }
 
-    return tree
-}
-
-exports.addBoards = function(tree, baseboard) {
-    if (tree.nodes.length == 0) return tree
-
-    for (var j = 0; j < tree.nodes.length; j++) {
-        if ('board' in tree.nodes[j]) continue
-        exports.addBoard(tree, j)
-    }
-
-    if (tree.current == null) return tree
-
-    exports.addBoards(tree.subtrees[tree.current], baseboard)
     return tree
 }
 

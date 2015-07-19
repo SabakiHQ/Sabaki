@@ -149,7 +149,7 @@ function setRootTree(tree) {
     if (getShowSidebar()) updateGraph()
 
     tree.parent = null
-    setCurrentTreePosition(sgf.addBoards(tree), 0)
+    setCurrentTreePosition(sgf.addBoard(tree), 0)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
@@ -494,7 +494,7 @@ function makeMove(vertex) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(sgf.addBoards(variations[0]), 0)
+                setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
                 return
             }
         }
