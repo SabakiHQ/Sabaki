@@ -580,7 +580,13 @@ function vertexClicked() {
                 var splitted = sgf.splitTree(tree, index)
 
                 if (splitted != tree || splitted.subtrees.length != 0) {
-                    tree = { nodes: [], subtrees: [], current: null, parent: splitted }
+                    tree = {
+                        id: uuid.v4(),
+                        nodes: [],
+                        subtrees: [],
+                        current: null,
+                        parent: splitted
+                    }
                     splitted.subtrees.push(tree)
                 }
 
