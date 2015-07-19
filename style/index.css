@@ -180,8 +180,7 @@ header, #bar #edit, #bar #scoring {
         right: 0;
         left: 0;
         height: 0%;
-        background: white;
-        opacity: .2;
+        background: #393939;
         transition: .5s height;
     }
     .sidebar #sidebar {
