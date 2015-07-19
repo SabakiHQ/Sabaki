@@ -155,7 +155,7 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         right: 0;
         width: 200px;
-        background: #222;
+        background: #111;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -180,7 +180,8 @@ header, #bar #edit, #bar #scoring {
         right: 0;
         left: 0;
         height: 0%;
-        background: #444;
+        background: white;
+        opacity: .2;
         transition: .5s height;
     }
     .sidebar #sidebar {
