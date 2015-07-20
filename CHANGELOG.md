@@ -9,6 +9,9 @@ All notable changes to this project will be documented in this file.
 * Add slider
 * Add navigation to sibling variations
 
+**Fixed**
+* Fix a bug where removed variations show up on the board
+
 **Changed**
 * Improve camera panning of the game graph
 
