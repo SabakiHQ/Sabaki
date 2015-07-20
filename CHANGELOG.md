@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 * Add navigation to sibling variations
 
 **Changed**
-* Improve camera panning
+* Improve camera panning of the game graph
 
 ## [Goban v0.2.2][v0.2.2] (2015-07-16)
 
