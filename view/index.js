@@ -1132,12 +1132,8 @@ function removeNode(tree, index) {
     }
 
     setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
-
-    if (!getCurrentGraphNode()) {
-        setCurrentTreePosition(prev[0], prev[1])
-    } else {
-        centerGraphCameraAt(getCurrentGraphNode())
-    }
+    if (getCurrentGraphNode()) prev = getCurrentTreePosition()
+    setCurrentTreePosition(prev[0], prev[1])
 }
 
 function buildMenu() {
