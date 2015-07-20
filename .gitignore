@@ -2,6 +2,7 @@ examples/
 benchmark/
 bin/
 test/
+sigma/plugins/
 stone*.wav
 
 # Windows image file caches
