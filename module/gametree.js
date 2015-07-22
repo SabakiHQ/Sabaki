@@ -9,21 +9,14 @@ exports.navigate = function(tree, index, step) {
         return new Tuple(tree, index + step)
     } else if (index + step < 0 && tree.parent) {
         var prev = tree.parent
-        index = prev.nodes.length + index + step
+        var newstep = index + step + 1
 
-        if (index >= 0)
-            return new Tuple(prev, index)
-        else if (prev.parent)
-            return new Tuple(prev.parent, prev.parent.nodes.length - 1)
+        return exports.navigate(prev, prev.nodes.length - 1, newstep)
     } else if (index + step >= tree.nodes.length && tree.current != null) {
-        index = index + step - tree.nodes.length
-
         var next = tree.subtrees[tree.current]
+        var newstep = index + step - tree.nodes.length
 
-        if (index < next.nodes.length)
-            return new Tuple(next, index)
-        else if (next.current != null)
-            return new Tuple(next.subtrees[next.current], 0)
+        return exports.navigate(next, 0, newstep)
     }
 
     return new Tuple(null, 0)
