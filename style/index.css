@@ -173,6 +173,10 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         width: 8px;
         z-index: 10;
+        transition: .2s background;
+    }
+    #sidebar .slider.active, #sidebar .slider:hover {
+        background: #292929;
     }
     #sidebar .slider div {
         position: absolute;
