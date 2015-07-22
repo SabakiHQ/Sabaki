@@ -270,7 +270,7 @@ function prepareSlider() {
             return
 
         var percentage = event.clientY / slider.getSize().y
-        var height = Math.round(gametree.getCurrentHeight(getRootTree()) * percentage)
+        var height = Math.round((gametree.getCurrentHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
         if (pos.equals(getCurrentTreePosition())) return
