@@ -420,7 +420,8 @@ function updateSlider() {
     getCurrentTreePosition().unpack(function(tree, index) {
         var total = gametree.getCurrentHeight(getRootTree()) - 1
         var relative = total + 1 - gametree.getCurrentHeight(tree) + index
-        setSliderValue(total == 0 ? 0 : relative * 100 / total)
+
+        setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
     })
 }
 

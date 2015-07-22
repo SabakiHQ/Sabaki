@@ -110,11 +110,21 @@ function setCurrentPlayer(sign) {
 }
 
 function getSliderValue() {
-    return $$('#sidebar .slider div')[0].getStyle('height').toInt()
+    var value = $$('#sidebar .slider div')[0].getStyle('height').toInt()
+    var label = $$('#sidebar .slider span')[0].get('text')
+
+    return new Tuple(value, label)
 }
 
-function setSliderValue(value) {
-    $$('#sidebar .slider div')[0].setStyle('height', value + '%')
+function setSliderValue(value, label) {
+    var handle = $$('#sidebar .slider div')[0]
+    var labelel = $$('#sidebar .slider span')[0]
+
+    var top = value * $('sidebar').getSize().y / 100 - labelel.getSize().y / 2
+    top = Math.min(Math.max(top, 10), $('sidebar').getSize().y - 10 - labelel.getSize().y)
+
+    handle.setStyle('height', value + '%')
+    labelel.set('text', label).setStyle('top', top)
 }
 
 function getEditMode() {

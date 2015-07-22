@@ -183,11 +183,27 @@ header, #bar #edit, #bar #scoring {
         background: #393939;
         transition: .5s height;
         box-shadow: 0 0 10px #111;
+        z-index: 2;
     }
     #sidebar .slider.active div, #sidebar .slider:hover div {
         background: #494949;
     }
     #sidebar .slider.active div { transition: none; }
+    #sidebar .slider span {
+        position: absolute;
+        right: 12px;
+        top: 25px;
+        width: 30px;
+        padding: 0 5px;
+        background: #494949;
+        color: #eee;
+        text-align: center;
+        opacity: 0;
+        box-shadow: 0 0 10px #111;
+        z-index: 1;
+        transition: .2s opacity;
+    }
+    #sidebar .slider:hover span, #sidebar .slider.active span { opacity: 1; }
     .sidebar #sidebar {
         display: block;
     }
