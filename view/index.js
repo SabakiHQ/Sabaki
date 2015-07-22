@@ -584,6 +584,10 @@ function wireEvents() {
         else if (e.wheel > 0) goBack()
     })
 
+    document.body.addEvent('mouseup', function() {
+        $('goban').store('mousedown', false)
+    })
+
     // Resize sidebar
 
     $$('#sidebar .verticalresizer').addEvent('mousedown', function() {

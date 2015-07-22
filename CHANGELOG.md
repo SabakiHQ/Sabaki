@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased][unreleased]
 
 **Added**
-* Display SGF node comments
 * Add slider
 * Add navigation to sibling variations
 
 **Fixed**
+* Prevent accidentally clicking on the board when dragging graph
 * Fix a bug where removed variations show up on the board
 
 **Changed**
