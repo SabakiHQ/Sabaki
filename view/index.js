@@ -2,6 +2,7 @@ var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../module/sgf.js')
+var gametree = require('../module/gametree.js')
 var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app');
@@ -172,7 +173,7 @@ function setGraphMatrixDict(matrixdict) {
     $('graph').store('graphmatrixdict', matrixdict)
 
     s.graph.clear()
-    s.graph.read(sgf.matrix2graph(matrixdict))
+    s.graph.read(gametree.matrix2graph(matrixdict))
 
     s.refresh()
 }
@@ -407,7 +408,7 @@ function makeMove(vertex) {
     var sign = color == 'B' ? 1 : -1
 
     // Check for ko
-    var ko = sgf.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
+    var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
         if (!prevTree) return
 
         var hash = getBoard().makeMove(sign, vertex).getHash()
@@ -500,7 +501,7 @@ function makeMove(vertex) {
 
         // Create variation
 
-        var splitted = sgf.splitTree(tree, index)
+        var splitted = gametree.splitTree(tree, index)
         var node = {}; node[color] = [sgf.vertex2point(vertex)]
         var newtree = {
             id: uuid.v4(),
@@ -524,7 +525,7 @@ function makeMove(vertex) {
 function updateGraph() {
     if (!getShowSidebar() || !getRootTree()) return
 
-    setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
+    setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     centerGraphCameraAt(getCurrentGraphNode())
 }
 
@@ -532,8 +533,8 @@ function updateSlider() {
     if (!getShowSidebar()) return
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        var total = sgf.getCurrentHeight(getRootTree()) - 1
-        var relative = total + 1 - sgf.getCurrentHeight(tree) + index
+        var total = gametree.getCurrentHeight(getRootTree()) - 1
+        var relative = total + 1 - gametree.getCurrentHeight(tree) + index
         setSliderValue(total == 0 ? 0 : relative * 100 / total)
     })
 }
@@ -577,7 +578,7 @@ function vertexClicked() {
         if (tool.contains('stone')) {
             if ('B' in node || 'W' in node) {
                 // New variation needed
-                var splitted = sgf.splitTree(tree, index)
+                var splitted = gametree.splitTree(tree, index)
 
                 if (splitted != tree || splitted.subtrees.length != 0) {
                     tree = {
@@ -1025,7 +1026,7 @@ function saveGame() {
 
     if (result) {
         var tree = getRootTree()
-        var text = '(' + sgf.tree2string(tree) + ')'
+        var text = '(' + gametree.tree2string(tree) + ')'
 
         fs.writeFile(result, text)
     }
@@ -1035,7 +1036,7 @@ function saveGame() {
 
 function goBack() {
     getCurrentTreePosition().unpack(function(tree, position) {
-        sgf.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
+        gametree.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
             setCurrentTreePosition(prevTree, prevIndex)
         })
     })
@@ -1043,7 +1044,7 @@ function goBack() {
 
 function goForward() {
     getCurrentTreePosition().unpack(function(tree, position) {
-        sgf.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
+        gametree.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
             setCurrentTreePosition(nextTree, nextIndex)
         })
     })
@@ -1116,7 +1117,7 @@ function removeNode(tree, index) {
         return
     }
 
-    var prev = sgf.navigate(tree, index, -1)
+    var prev = gametree.navigate(tree, index, -1)
 
     if (index != 0) {
         tree.nodes.splice(index, tree.nodes.length)
@@ -1128,10 +1129,10 @@ function removeNode(tree, index) {
 
         parent.subtrees.splice(i, 1)
         if (parent.current >= i) parent.current--
-        sgf.reduceTree(parent)
+        gametree.reduceTree(parent)
     }
 
-    setGraphMatrixDict(sgf.tree2matrixdict(getRootTree()))
+    setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     if (getCurrentGraphNode()) prev = getCurrentTreePosition()
     setCurrentTreePosition(prev[0], prev[1])
 }
