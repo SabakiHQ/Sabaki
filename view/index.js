@@ -253,7 +253,9 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    $$('#sidebar .slider').addEvent('mousedown', function() {
+    var slider = $$('#sidebar .slider')[0]
+
+    slider.addEvent('mousedown', function() {
         if (event.buttons != 1) return
 
         this.store('mousedown', true).addClass('active')
@@ -261,20 +263,19 @@ function prepareSlider() {
     })
 
     document.addEvent('mouseup', function() {
-        $$('#sidebar .slider').store('mousedown', false)
+        slider.store('mousedown', false)
             .removeClass('active')
     }).addEvent('mousemove', function() {
-        if (event.buttons != 1 || !$$('#sidebar .slider')[0].retrieve('mousedown'))
+        if (event.buttons != 1 || !slider.retrieve('mousedown'))
             return
 
-        var percentage = event.clientY / $$('#sidebar .slider')[0].getSize().y
+        var percentage = event.clientY / slider.getSize().y
         var height = Math.round(gametree.getCurrentHeight(getRootTree()) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
         if (pos.equals(getCurrentTreePosition())) return
-        pos.unpack(function(tree, index) {
-            setCurrentTreePosition(tree, index)
-        })
+        pos.unpack(setCurrentTreePosition)
+        updateSlider()
     })
 }
 

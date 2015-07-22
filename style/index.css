@@ -187,6 +187,7 @@ header, #bar #edit, #bar #scoring {
     #sidebar .slider.active div, #sidebar .slider:hover div {
         background: #494949;
     }
+    #sidebar .slider.active div { transition: none; }
     .sidebar #sidebar {
         display: block;
     }
