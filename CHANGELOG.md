@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+* Faster slider response
+
 **Fixed**
 * Fix a bug where the graph camera is not positioned correctly when opening sidebar
 
