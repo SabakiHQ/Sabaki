@@ -184,8 +184,8 @@ header, #bar #edit, #bar #scoring {
         transition: .5s height;
         box-shadow: 0 0 10px #111;
     }
-    #sidebar .slider.active div {
-        background: #444;
+    #sidebar .slider.active div, #sidebar .slider:hover div {
+        background: #494949;
     }
     .sidebar #sidebar {
         display: block;

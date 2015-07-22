@@ -27,6 +27,19 @@ function loadSettings() {
     }
 }
 
+function prepareEditTools() {
+    $$('#edit ul a').addEvent('click', function() {
+        if (!this.getParent().hasClass('selected')) {
+            $$('#edit .selected').removeClass('selected')
+            this.getParent().addClass('selected')
+        } else if (this.getParent().hasClass('stone-tool')) {
+            var img = this.getElement('img')
+            var black = img.get('src') == '../img/edit/stone_1.png'
+            img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
+        }
+    })
+}
+
 function prepareGameGraph() {
     var container = $('graph')
     var s = new sigma(container)
@@ -56,16 +69,27 @@ function prepareGameGraph() {
     container.store('sigma', s)
 }
 
-function prepareEditTools() {
-    $$('#edit ul a').addEvent('click', function() {
-        if (!this.getParent().hasClass('selected')) {
-            $$('#edit .selected').removeClass('selected')
-            this.getParent().addClass('selected')
-        } else if (this.getParent().hasClass('stone-tool')) {
-            var img = this.getElement('img')
-            var black = img.get('src') == '../img/edit/stone_1.png'
-            img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
-        }
+function prepareSlider() {
+    $$('#sidebar .slider').addEvent('mousedown', function() {
+        this.store('mousedown', true)
+            .addClass('active')
+    })
+
+    document.addEvent('mouseup', function() {
+        $$('#sidebar .slider').store('mousedown', false)
+            .removeClass('active')
+    }).addEvent('mousemove', function() {
+        if (event.buttons != 1 || !$$('#sidebar .slider')[0].retrieve('mousedown'))
+            return
+
+        var percentage = event.clientY / $$('#sidebar .slider')[0].getSize().y
+        var height = Math.round(gametree.getCurrentHeight(getRootTree()) * percentage)
+        var pos = gametree.navigate(getRootTree(), 0, height)
+
+        if (pos.equals(getCurrentTreePosition())) return
+        pos.unpack(function(tree, index) {
+            setCurrentTreePosition(tree, index)
+        })
     })
 }
 
@@ -789,6 +813,7 @@ document.addEvent('keydown', function(e) {
     loadSettings()
     prepareEditTools()
     prepareGameGraph()
+    prepareSlider()
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
