@@ -842,8 +842,7 @@ function loadGame(filename) {
 
     if (arguments.length == 0) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-            filters: [{ name: 'SGF Files', extensions: ['sgf'] },
-                      { name: 'All Files', extensions: ['*'] }]
+            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
 
         if (result) filename = result[0]
@@ -864,8 +863,7 @@ function saveGame() {
     setIsLoading(true)
 
     var result = dialog.showSaveDialog(remote.getCurrentWindow(), {
-        filters: [{ name: 'SGF Files', extensions: ['sgf'] },
-                  { name: 'All Files', extensions: ['*'] }]
+        filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
     })
 
     if (result) {

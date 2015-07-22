@@ -6,6 +6,11 @@ var fs = require('fs')
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
 
+exports.meta = {
+    name: 'Smart Game Format',
+    extensions: ['sgf']
+}
+
 exports.tokenize = function(input) {
     var tokens = []
     var builder = ''
