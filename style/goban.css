@@ -157,7 +157,7 @@
         height: 12px;
         margin-left: -9px;
         margin-top: -9px;
-        background: #EDB163 url('../img/goban/board.png') center fixed;
+        background: #EFB65D url('../img/goban/board.png') center;
         border: 2px solid #5E2E0C;
         text-align: center;
         line-height: 16px;
@@ -211,10 +211,11 @@
         content: attr(title);
         display: block;
         border: none;
-        width: 20px;
+        width: 26px;
         height: 16px;
-        margin-left: -11px;
+        margin-left: -14px;
         overflow: hidden;
+        text-overflow: ellipsis;
         font-weight: normal;
         font-size: 16px;
 }
