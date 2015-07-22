@@ -208,12 +208,13 @@
         line-height: 13px
     }
     .goban .row li.label::before {
-        content: attr(data-label);
+        content: attr(title);
         display: block;
         border: none;
         width: 20px;
         height: 16px;
         margin-left: -11px;
+        overflow: hidden;
         font-weight: normal;
         font-size: 16px;
 }

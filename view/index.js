@@ -151,7 +151,7 @@ function setBoard(board) {
                 board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
                     if (type != '') li.addClass(type)
                     if (ghost != 0) li.addClass('ghost_' + ghost)
-                    if (label != '') li.set('data-label', label)
+                    if (label != '') li.set('title', label)
                 })
             }
 
