@@ -193,10 +193,11 @@ header, #bar #edit, #bar #scoring {
         position: absolute;
         right: 12px;
         top: 25px;
-        width: 30px;
-        padding: 0 5px;
+        width: 20px;
+        padding: 2px 5px;
         background: #494949;
-        color: #eee;
+        color: #ccc;
+        font-size: .8em;
         text-align: center;
         opacity: 0;
         box-shadow: 0 0 10px #111;
