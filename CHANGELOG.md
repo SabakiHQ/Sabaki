@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Goban v0.3.1][v0.3.1] (2015-07-22)
+
+**Fixed**
+* Fix uncaught exception when saving SGF file
+
 ## [Goban v0.3.0][v0.3.0] (2015-07-22)
 
 **Added**
