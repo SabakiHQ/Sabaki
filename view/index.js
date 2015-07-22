@@ -681,7 +681,7 @@ function saveGame() {
 
     if (result) {
         var tree = getRootTree()
-        var text = '(' + gametree.tree2string(tree) + ')'
+        var text = '(' + sgf.tree2string(tree) + ')'
 
         fs.writeFile(result, text)
     }
