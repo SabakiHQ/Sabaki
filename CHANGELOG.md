@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Add move count indicator next to slider
+
 **Changed**
 * Faster slider response
 
