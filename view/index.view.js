@@ -461,7 +461,9 @@ document.addEvent('domready', function() {
 
         if (!initPos) return
         initPos.unpack(function(initX, initWidth) {
-            setSidebarWidth(initWidth - event.x + initX)
+            var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
+
+            setSidebarWidth(newwidth)
             resizeBoard()
         })
     })
