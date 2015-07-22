@@ -71,8 +71,10 @@ function prepareGameGraph() {
 
 function prepareSlider() {
     $$('#sidebar .slider').addEvent('mousedown', function() {
-        this.store('mousedown', true)
-            .addClass('active')
+        if (event.buttons != 1) return
+
+        this.store('mousedown', true).addClass('active')
+        document.fireEvent('mousemove')
     })
 
     document.addEvent('mouseup', function() {
