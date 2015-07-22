@@ -195,9 +195,10 @@ header, #bar #edit, #bar #scoring {
     #sidebar .slider.active div { transition: none; }
     #sidebar .slider span {
         position: absolute;
-        right: 12px;
+        right: 8px;
         top: 25px;
         width: 20px;
+        border-right: 5px solid #111;
         padding: 2px 5px;
         background: #494949;
         color: #ccc;
