@@ -606,6 +606,8 @@ function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
     var s = $('graph').retrieve('sigma')
+    s.renderers[0].resize().render()
+
     var matrixdict = getGraphMatrixDict()
     var width = Math.max.apply(null, Object.keys(new Int8Array(10)).map(function(i) {
         return parseFloat(i) + matrixdict[1][node.id][1] - 4

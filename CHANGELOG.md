@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+* Fix a bug where the graph camera is not positioned correctly when opening sidebar
+
 ## [Goban v0.3.1][v0.3.1] (2015-07-22)
 
 **Fixed**
