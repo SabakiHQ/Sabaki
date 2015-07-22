@@ -513,6 +513,7 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Show Game &Graph',
+                    accelerator: 'CmdOrCtrl+G',
                     type: 'checkbox',
                     checked: getShowSidebar(),
                     click: function() {
