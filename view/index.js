@@ -56,6 +56,19 @@ function prepareGameGraph() {
     container.store('sigma', s)
 }
 
+function prepareEditTools() {
+    $$('#edit ul a').addEvent('click', function() {
+        if (!this.getParent().hasClass('selected')) {
+            $$('#edit .selected').removeClass('selected')
+            this.getParent().addClass('selected')
+        } else if (this.getParent().hasClass('stone-tool')) {
+            var img = this.getElement('img')
+            var black = img.get('src') == '../img/edit/stone_1.png'
+            img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
+        }
+    })
+}
+
 function selectTool(tool) {
     $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
@@ -565,54 +578,6 @@ function updateAreaMap() {
         .store('finalboard', board)
 }
 
-function prepareEditTools() {
-    $$('#edit ul a').addEvent('click', function() {
-        if (!this.getParent().hasClass('selected')) {
-            $$('#edit .selected').removeClass('selected')
-            this.getParent().addClass('selected')
-        } else if (this.getParent().hasClass('stone-tool')) {
-            var img = this.getElement('img')
-            var black = img.get('src') == '../img/edit/stone_1.png'
-            img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
-        }
-    })
-}
-
-function wireEvents() {
-    $('goban').addEvent('mousewheel', function(e) {
-        if (e.wheel < 0) goForward()
-        else if (e.wheel > 0) goBack()
-    })
-
-    document.body.addEvent('mouseup', function() {
-        $('goban').store('mousedown', false)
-    })
-
-    // Resize sidebar
-
-    $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
-        if (event.button != 0) return
-        $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
-    })
-    document.body.addEvent('mouseup', function() {
-        if (!$('sidebar').retrieve('initpos')) return
-
-        $('sidebar').store('initpos', null)
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
-
-        setting.set('view.sidebar_width', getSidebarWidth())
-    }).addEvent('mousemove', function() {
-        var initPos = $('sidebar').retrieve('initpos')
-
-        if (!initPos) return
-        initPos.unpack(function(initX, initWidth) {
-            setSidebarWidth(initWidth - event.x + initX)
-            resizeBoard()
-        })
-    })
-}
-
 function centerGraphCameraAt(node) {
     if (!getShowSidebar()) return
 
@@ -822,10 +787,8 @@ document.addEvent('keydown', function(e) {
     }
 }).addEvent('domready', function() {
     loadSettings()
-    buildMenu()
     prepareEditTools()
     prepareGameGraph()
-    wireEvents()
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()

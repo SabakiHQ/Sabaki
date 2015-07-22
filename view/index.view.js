@@ -599,3 +599,44 @@ function openNodeMenu(tree, index) {
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
+
+/**
+ * Main
+ */
+
+document.addEvent('domready', function() {
+    buildMenu()
+
+    $('goban').addEvent('mousewheel', function(e) {
+        if (e.wheel < 0) goForward()
+        else if (e.wheel > 0) goBack()
+    })
+
+    document.body.addEvent('mouseup', function() {
+        $('goban').store('mousedown', false)
+    })
+
+    // Resize sidebar
+
+    $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
+        if (event.button != 0) return
+        $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
+    })
+    document.body.addEvent('mouseup', function() {
+        if (!$('sidebar').retrieve('initpos')) return
+
+        $('sidebar').store('initpos', null)
+        if ($('graph').retrieve('sigma'))
+            $('graph').retrieve('sigma').renderers[0].resize().render()
+
+        setting.set('view.sidebar_width', getSidebarWidth())
+    }).addEvent('mousemove', function() {
+        var initPos = $('sidebar').retrieve('initpos')
+
+        if (!initPos) return
+        initPos.unpack(function(initX, initWidth) {
+            setSidebarWidth(initWidth - event.x + initX)
+            resizeBoard()
+        })
+    })
+})
