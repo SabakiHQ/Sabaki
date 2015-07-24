@@ -799,7 +799,8 @@ function centerGraphCameraAt(node) {
     var width = Math.max.apply(null, Object.keys(new Int8Array(10)).map(function(i) {
         return parseFloat(i) + matrixdict[1][node.id][1] - 4
     }).filter(function(i) { return i >= 0 && i < matrixdict[0].length }).map(function(i) {
-        return matrixdict[0][i].length
+        var a = matrixdict[0][i]
+        return a.length > 0 ? a.length - a.indexOf(a.pick()) : 0
     }));
     var relX = width == 1 ? 0 : matrixdict[1][node.id][0] / (width - 1)
     var diff = (width - 1) * setting.get('graph.grid_size') / 2
