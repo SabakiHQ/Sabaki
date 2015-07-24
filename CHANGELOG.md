@@ -4,14 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+## [Goban v0.3.2][v0.3.2] (2015-07-24)
+
 **Added**
 * Add move count indicator next to slider
 
-**Changed**
-* Faster slider response
-
 **Fixed**
 * Fix a bug where the graph camera is not positioned correctly when opening sidebar
+
+**Changed**
+* Faster slider response
+* Update to Electron v0.30.1
 
 ## [Goban v0.3.1][v0.3.1] (2015-07-22)
 
@@ -64,7 +67,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.1...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.3.2...master
+[v0.3.2]: https://github.com/yishn/Goban/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/yishn/Goban/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/yishn/Goban/compare/v0.2.2...v0.3.0
 [v0.2.2]: https://github.com/yishn/Goban/compare/v0.2.1...v0.2.2
