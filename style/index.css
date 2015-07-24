@@ -184,10 +184,10 @@ header, #bar #edit, #bar #scoring {
         right: 0;
         left: 0;
         height: 0%;
-        background: #393939;
-        transition: .5s height;
-        box-shadow: 0 0 10px #111;
         z-index: 2;
+        background: #393939;
+        box-shadow: 0 0 10px #111;
+        transition: .5s height, .2s background;
     }
     #sidebar .slider.active div, #sidebar .slider:hover div {
         background: #494949;
