@@ -195,6 +195,7 @@
         height: 16px;
         border: none;
         line-height: 13px;
+        text-indent: -2px;
     }
     .goban .row li.triangle::before {
         content: '\25b3';
