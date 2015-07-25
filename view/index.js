@@ -1006,6 +1006,15 @@ document.addEvent('keydown', function(e) {
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
+
+    Element.NativeEvents.dragover = 2
+    Element.NativeEvents.drop = 2
+    $('goban').addEvent('dragover', function() {
+        return false
+    }).addEvent('drop', function(e) {
+        e.preventDefault()
+        loadGame(e.event.dataTransfer.files[0].path)
+    })
 })
 
 window.addEvent('resize', function() {
