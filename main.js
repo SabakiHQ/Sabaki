@@ -6,20 +6,20 @@ var window = null
 
 // Generate default settings
 setting
-    .default('game.show_ko_warning', true)
-    .default('graph.grid_size', 25)
-    .default('scoring.method', 'territory')
-    .default('sound.enable', true)
-    .default('view.fuzzy_stone_placement', true)
-    .default('view.show_coordinates', false)
-    .default('view.show_variations', true)
-    .default('view.show_sidebar', false)
-    .default('view.sidebar_width', 200)
-    .default('view.sidebar_minwidth', 100)
-    .default('window.width', 608)
-    .default('window.height', 648)
-    .default('window.minwidth', 550)
-    .default('window.minheight', 590)
+.default('game.show_ko_warning', true)
+.default('graph.grid_size', 25)
+.default('scoring.method', 'territory')
+.default('sound.enable', true)
+.default('view.fuzzy_stone_placement', true)
+.default('view.show_coordinates', false)
+.default('view.show_variations', true)
+.default('view.show_sidebar', false)
+.default('view.sidebar_width', 200)
+.default('view.sidebar_minwidth', 100)
+.default('window.height', 648)
+.default('window.minheight', 590)
+.default('window.minwidth', 550)
+.default('window.width', 608)
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function() {
