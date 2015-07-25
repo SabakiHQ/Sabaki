@@ -304,9 +304,10 @@ function makeMove(vertex) {
         var button = dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'info',
             title: 'Goban',
-            buttons: ['Play Anyway', 'Don’t Play', 'Cancel'],
+            buttons: ['Play Anyway', 'Don’t Play'],
             message: 'You are about to play a move which repeats a previous board position. '
-                + 'This is invalid in some rulesets.'
+                + 'This is invalid in some rulesets.',
+            noLink: true
         })
 
         if (button != 0) return
@@ -319,7 +320,7 @@ function makeMove(vertex) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
         })) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
-        }, 400 + Math.floor(Math.random() * 200))
+        }, 300 + Math.floor(Math.random() * 200))
 
         new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
     } else new Audio('../sound/pass.wav').play()
