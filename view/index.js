@@ -293,22 +293,26 @@ function makeMove(vertex) {
     var sign = color == 'B' ? 1 : -1
 
     // Check for ko
-    var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
-        if (!prevTree) return
+    if (setting.get('game.show_ko_warning')) {
+        var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
+            if (!prevTree) return
 
-        var hash = getBoard().makeMove(sign, vertex).getHash()
-        return prevTree.nodes[prevIndex].board.getHash() == hash
-    })
+            var hash = getBoard().makeMove(sign, vertex).getHash()
+            return prevTree.nodes[prevIndex].board.getHash() == hash
+        })
 
-    if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
-        type: 'info',
-        title: 'Goban',
-        buttons: ['Play Anyway', 'Don’t Play'],
-        message: 'You are about to play a move which repeats a previous board position. '
-            + 'This is invalid in some rulesets.',
-        cancelId: 1,
-        noLink: true
-    }) != 0) return
+        if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'info',
+            title: 'Goban',
+            buttons: ['Play Anyway', 'Don’t Play'],
+            message: [
+                'You are about to play a move which repeats a previous board position.',
+                'This is invalid in some rulesets.'
+            ].join(' '),
+            cancelId: 1,
+            noLink: true
+        }) != 0) return
+    }
 
     // Play sounds
     if (getBoard().hasVertex(vertex)) {
