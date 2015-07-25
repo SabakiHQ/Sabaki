@@ -1013,7 +1013,8 @@ document.addEvent('keydown', function(e) {
         return false
     }).addEvent('drop', function(e) {
         e.preventDefault()
-        loadGame(e.event.dataTransfer.files[0].path)
+        if (e.event.dataTransfer.files.length > 0)
+            loadGame(e.event.dataTransfer.files[0].path)
     })
 })
 
