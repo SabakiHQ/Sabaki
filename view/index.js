@@ -300,19 +300,15 @@ function makeMove(vertex) {
         return prevTree.nodes[prevIndex].board.getHash() == hash
     })
 
-    if (ko) {
-        var button = dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'info',
-            title: 'Goban',
-            buttons: ['Play Anyway', 'Don’t Play'],
-            message: 'You are about to play a move which repeats a previous board position. '
-                + 'This is invalid in some rulesets.',
-            cancelId: 1,
-            noLink: true
-        })
-
-        if (button != 0) return
-    }
+    if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
+        type: 'info',
+        title: 'Goban',
+        buttons: ['Play Anyway', 'Don’t Play'],
+        message: 'You are about to play a move which repeats a previous board position. '
+            + 'This is invalid in some rulesets.',
+        cancelId: 1,
+        noLink: true
+    }) != 0) return
 
     // Play sounds
     if (getBoard().hasVertex(vertex)) {
