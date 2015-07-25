@@ -200,7 +200,7 @@ header, #bar #edit, #bar #scoring {
         width: 20px;
         border-right: 3px solid #111;
         padding: 2px 9px 2px 5px;
-        background: #494949 url('../img/ui/sliderlabelarrow.png') right no-repeat;
+        background: #494949 url('../img/ui/sliderlabelarrow.png') no-repeat right;
         color: #ccc;
         font-size: .8em;
         text-align: center;
