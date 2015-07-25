@@ -307,6 +307,7 @@ function makeMove(vertex) {
             buttons: ['Play Anyway', 'Don’t Play'],
             message: 'You are about to play a move which repeats a previous board position. '
                 + 'This is invalid in some rulesets.',
+            cancelId: 1,
             noLink: true
         })
 
