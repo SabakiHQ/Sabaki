@@ -1009,7 +1009,7 @@ document.addEvent('keydown', function(e) {
 
     Element.NativeEvents.dragover = 2
     Element.NativeEvents.drop = 2
-    $('goban').addEvent('dragover', function() {
+    $$('body').addEvent('dragover', function() {
         return false
     }).addEvent('drop', function(e) {
         e.preventDefault()

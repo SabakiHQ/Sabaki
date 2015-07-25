@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Ability to load game by dropping file onto the board
+
 **Fixed**
 * Fix a bug where the game graph is not updated when adding/removing stones manually
 
