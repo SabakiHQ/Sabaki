@@ -480,6 +480,9 @@ function vertexClicked() {
                 node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
                 index = tree.nodes.length
                 tree.nodes.push(node)
+
+                updateGraph()
+                updateSlider()
             }
 
             var sign = tool.contains('_1') ? 1 : -1
