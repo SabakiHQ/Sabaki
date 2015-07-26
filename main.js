@@ -7,6 +7,7 @@ var window = null
 // Generate default settings
 setting
 .default('game.show_ko_warning', true)
+.default('graph.delay', 300)
 .default('graph.grid_size', 25)
 .default('scoring.method', 'territory')
 .default('sound.enable', true)

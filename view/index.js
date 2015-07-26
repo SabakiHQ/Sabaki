@@ -82,7 +82,7 @@ function setCurrentTreePosition(tree, index) {
             if (getCurrentGraphNode() != n) return
             centerGraphCameraAt(n)
             updateSlider()
-        }, 300)
+        }, setting.get('graph.delay'))
     }
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
@@ -820,7 +820,7 @@ function centerGraphCameraAt(node) {
             x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
             y: node[s.camera.readPrefix + 'y']
         },
-        { duration: 300 }
+        { duration: setting.get('graph.delay')) }
     )
 }
 
