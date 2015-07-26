@@ -801,10 +801,13 @@ function centerGraphCameraAt(node) {
     s.renderers[0].resize().render()
 
     var matrixdict = getGraphMatrixDict()
-    var width = gametree.getWidth(matrixdict[1][node.id][1], matrixdict[0])
-    var relX = width == 1 ? 0 : matrixdict[1][node.id][0] / (width - 1)
+    var x = matrixdict[1][node.id][0] - padding
+    var y = matrixdict[1][node.id][1]
+    var width = gametree.getWidth(y, matrixdict[0])
+    var padding = matrixdict[0][y].length - width
+    var relX = width == 1 ? 0 : x / (width - 1)
     var diff = (width - 1) * setting.get('graph.grid_size') / 2
-    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size') / 2)
+    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
     node.color = '#E64533'
     s.refresh()

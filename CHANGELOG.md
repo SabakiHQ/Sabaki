@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Fix a bug where the game graph is not updated when adding/removing stones manually
+* Fix weird graph camera behavior
 
 ## [Goban v0.3.2][v0.3.2] (2015-07-24)
 
