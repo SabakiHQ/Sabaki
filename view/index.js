@@ -820,7 +820,7 @@ function centerGraphCameraAt(node) {
             x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
             y: node[s.camera.readPrefix + 'y']
         },
-        { duration: setting.get('graph.delay')) }
+        { duration: setting.get('graph.delay') }
     )
 }
 
