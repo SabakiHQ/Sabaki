@@ -410,7 +410,7 @@ function makeMove(vertex) {
 }
 
 function updateGraph() {
-    if (!getShowSidebar() || !getRootTree()) return
+    if (!getShowSidebar() || !getCurrentTreePosition()) return
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     centerGraphCameraAt(getCurrentGraphNode())
