@@ -54,7 +54,7 @@ function setGraphMatrixDict(matrixdict) {
     $('graph').store('graphmatrixdict', matrixdict)
 
     s.graph.clear()
-    s.graph.read(gametree.matrix2graph(matrixdict))
+    s.graph.read(gametree.matrixdict2graph(matrixdict))
 
     s.refresh()
 }

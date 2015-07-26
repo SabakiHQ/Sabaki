@@ -113,7 +113,7 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     return new Tuple(matrix, dict)
 }
 
-exports.matrix2graph = function(matrixdict) {
+exports.matrixdict2graph = function(matrixdict) {
     var matrix = matrixdict[0]
     var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
@@ -171,8 +171,4 @@ exports.matrix2graph = function(matrixdict) {
     }
 
     return graph
-}
-
-exports.tree2graph = function(tree) {
-    return exports.matrix2graph(exports.tree2matrixdict(tree))
 }
