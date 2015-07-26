@@ -62,11 +62,11 @@ function setShowSidebar(show) {
     }
 
     // Resize window
-    var win  = remote.getCurrentWindow()
+    var win = remote.getCurrentWindow()
     var size = win.getContentSize()
 
     if (win.isMaximized()) return
-    win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width').toInt(), size[1])
+    win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
 }
 
 function getSidebarWidth() {
