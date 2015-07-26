@@ -1,4 +1,4 @@
-var Board = require('./board.js')
+var Board = require('./board')
 var Tuple = require('../lib/tuple')
 
 var uuid = require('../lib/node-uuid')

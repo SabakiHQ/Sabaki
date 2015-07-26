@@ -1,16 +1,16 @@
 var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
-var sgf = require('../module/sgf.js')
-var gametree = require('../module/gametree.js')
+var sgf = require('../module/sgf')
+var gametree = require('../module/gametree')
 var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app');
 var dialog = remote.require('dialog')
-var setting = remote.require('./module/setting.js')
+var setting = remote.require('./module/setting')
 
 var Tuple = require('../lib/tuple')
-var Board = require('../module/board.js')
+var Board = require('../module/board')
 var Scrollbar = require('../lib/gemini-scrollbar')
 var Menu = remote.require('menu')
 

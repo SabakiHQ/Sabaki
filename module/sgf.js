@@ -1,6 +1,6 @@
 var Tuple = require('../lib/tuple')
 
-var gametree = require('../module/gametree.js')
+var gametree = require('../module/gametree')
 var uuid = require('../lib/node-uuid')
 var fs = require('fs')
 
