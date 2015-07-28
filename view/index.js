@@ -319,18 +319,35 @@ function makeMove(vertex) {
         }) != 0) return
     }
 
+    // Check for suicide
+    var suicide = getBoard().getNeighborhood(vertex).filter(function(v) {
+        return getBoard().arrangement[v] == sign
+    }).every(function(v) {
+        return getBoard().getLiberties(v).length == 1
+    }) && getBoard().getNeighborhood(vertex).filter(function(v) {
+        return getBoard().arrangement[v] == 0
+    }).length == 0
+
+    if (suicide && setting.get('game.show_suicide_warning')) {
+        if (dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'info',
+            title: 'Goban',
+            buttons: ['Play Anyway', 'Don’t Play'],
+            message: [
+                'You are about to play a suicide move.',
+                'This is invalid in some rulesets.'
+            ].join(' '),
+            cancelId: 1,
+            noLink: true
+        }) != 0) return
+    }
+
     // Play sounds
     if (getBoard().hasVertex(vertex)) {
         // Detect captured stones
         if (getBoard().getNeighborhood(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
-        }) || getBoard().getNeighborhood(vertex).filter(function(v) {
-            return getBoard().arrangement[v] == sign
-        }).every(function(v) {
-            return getBoard().getLiberties(v).length == 1
-        }) && getBoard().getNeighborhood(vertex).filter(function(v) {
-            return getBoard().arrangement[v] == 0
-        }).length == 0) setTimeout(function() {
+        }) || suicide) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
         }, 300 + Math.floor(Math.random() * 200))
 

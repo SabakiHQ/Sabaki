@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Ability to load a game by dropping file onto the board
 * Show error message when file is unreadable
+* Warn user about suicide moves
 * Play capture sounds when making suicide moves
 
 **Fixed**
