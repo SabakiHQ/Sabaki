@@ -39,7 +39,7 @@ app.on('ready', function() {
         'use-content-size': true,
         'show': false,
         'web-preferences': {
-            'text-areas-are-resizable': false,
+            'text-areas-are-resizable': false
         }
     })
 
