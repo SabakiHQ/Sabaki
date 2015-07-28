@@ -128,7 +128,7 @@ function setSelectedTool(tool) {
         setEditMode(true)
         if (getSelectedTool().contains(tool)) return
     }
-    
+
     $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
 
@@ -714,7 +714,7 @@ function newGame(playSound) {
 function loadGame(filename) {
     setIsLoading(true)
 
-    if (arguments.length == 0) {
+    if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
@@ -722,10 +722,19 @@ function loadGame(filename) {
         if (result) filename = result[0]
     }
 
-    if (filename) {
-        var tree = sgf.parseFile(filename)
-        if (tree.subtrees.length == 0) return
-        setRootTree(tree.subtrees[0])
+    try {
+        if (filename) {
+            var tree = sgf.parseFile(filename)
+            if (tree.subtrees.length == 0) return
+            setRootTree(tree.subtrees[0])
+        }
+    } catch(e) {
+        dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'warning',
+            buttons: ['OK'],
+            title: 'Goban',
+            message: 'This file is unreadable.'
+        })
     }
 
     setIsLoading(false)
