@@ -9,6 +9,7 @@ setting
 .default('game.show_ko_warning', true)
 .default('graph.delay', 300)
 .default('graph.grid_size', 25)
+.default('graph.node_size', 4)
 .default('scoring.method', 'territory')
 .default('sound.enable', true)
 .default('view.fuzzy_stone_placement', true)
