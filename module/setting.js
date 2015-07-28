@@ -22,8 +22,7 @@ exports.get = function(key) {
 
 exports.set = function(key, value) {
     settings[key] = value
-    exports.save()
-    return exports
+    return exports.save()
 }
 
 exports.default = function(key, value) {
