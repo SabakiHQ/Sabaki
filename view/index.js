@@ -324,7 +324,13 @@ function makeMove(vertex) {
         // Detect captured stones
         if (getBoard().getNeighborhood(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
-        })) setTimeout(function() {
+        }) || getBoard().getNeighborhood(vertex).filter(function(v) {
+            return getBoard().arrangement[v] == sign
+        }).every(function(v) {
+            return getBoard().getLiberties(v).length == 1
+        }) && getBoard().getNeighborhood(vertex).filter(function(v) {
+            return getBoard().arrangement[v] == 0
+        }).length == 0) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
         }, 300 + Math.floor(Math.random() * 200))
 

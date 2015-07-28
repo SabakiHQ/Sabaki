@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Ability to load game by dropping file onto the board
 * Show error message when file is unreadable
+* Play capture sounds when making suicide moves
 
 **Fixed**
 * Fix a bug where the game graph is not updated when adding/removing stones manually
