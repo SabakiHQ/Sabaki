@@ -167,6 +167,115 @@ function setScoringMode(scoringMode) {
  * Menu
  */
 
+function buildBoard() {
+    var board = getBoard()
+    var rows = []
+    var hoshi = board.getHandicapPlacement(9)
+
+    for (var y = 0; y < board.size; y++) {
+        var ol = new Element('ol.row')
+
+        for (var x = 0; x < board.size; x++) {
+            var vertex = new Tuple(x, y)
+            var li = new Element('li.pos_' + x + '-' + y)
+                .store('tuple', vertex)
+                .addClass('shift_' + Math.floor(Math.random() * 9))
+            var img = new Element('img', { src: '../img/goban/stone_0.png' })
+
+            if (hoshi.some(function(v) { return v.equals(vertex) }))
+                li.addClass('hoshi')
+
+            ol.adopt(li.adopt(img)
+                .addEvent('mouseup', function() {
+                    if (!$('goban').retrieve('mousedown')) return
+                    $('goban').store('mousedown', false)
+                    vertexClicked.call(this)
+                }.bind(vertex))
+                .addEvent('mousedown', function() {
+                    $('goban').store('mousedown', true)
+                })
+            )
+        }
+
+        rows.push(ol)
+    }
+
+    var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+    var coordx = new Element('ol.coordx')
+    var coordy = new Element('ol.coordy')
+
+    for (var i = 0; i < board.size; i++) {
+        coordx.adopt(new Element('li', { text: alpha[i] }))
+        coordy.adopt(new Element('li', { text: board.size - i }))
+    }
+
+    var goban = $$('#goban div')[0]
+    goban.empty().adopt(rows, coordx, coordy)
+    goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+
+    resizeBoard()
+}
+
+function resizeBoard() {
+    var board = getBoard()
+    if (!board) return
+
+    var width = $('goban').getStyle('width').toInt()
+    var height = $('goban').getStyle('height').toInt()
+    var min = Math.min(width, height)
+    var hasCoordinates = getShowCoordinates()
+
+    var fieldsize = Math.floor(min / board.size)
+    min = fieldsize * board.size
+
+    if (hasCoordinates) {
+        fieldsize = Math.floor(min / (board.size + 2))
+        min = fieldsize * (board.size + 2)
+    }
+
+    $$('#goban > div').setStyle('width', min).setStyle('height', min)
+
+    $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
+    $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
+
+    $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
+    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
+
+    $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
+}
+
+function showGameInfo() {
+    closeScore()
+
+    var tree = getRootTree()
+    var rootNode = tree.nodes[0]
+    var info = $('info')
+
+    info.addClass('show').getElement('input[name="name_1"]').focus()
+
+    info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
+    info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+    info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
+    info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+    info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
+    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+
+    var size = info.getElement('input[name="size"]')
+    size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
+
+    var handicap = info.getElement('select[name="handicap"]')
+    if ('HA' in rootNode) handicap.selectedIndex = rootNode.HA[0].toInt() - 1
+    else handicap.selectedIndex = 0
+
+    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
+    handicap.disabled = disabled
+    size.disabled = disabled
+}
+
+function closeGameInfo() {
+    $('info').removeClass('show')
+}
+
 function buildMenu() {
     var template = [
         {
