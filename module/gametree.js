@@ -147,7 +147,7 @@ exports.matrixdict2graph = function(matrixdict) {
                 'id': id,
                 'x': x * gridSize,
                 'y': y * gridSize,
-                'size': 4,
+                'size': setting.get('graph.node_size'),
                 'data': matrix[y][x]
             })
 
