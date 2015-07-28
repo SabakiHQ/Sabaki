@@ -5,7 +5,7 @@ var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
-var app = remote.require('app');
+var app = remote.require('app')
 var dialog = remote.require('dialog')
 var setting = remote.require('./module/setting')
 
