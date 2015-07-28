@@ -440,7 +440,7 @@ function buildMenu() {
                     click: function() { setFuzzyStonePlacement(!getFuzzyStonePlacement()) }
                 },
                 {
-                    label: 'Show &Coordinates',
+                    label: '&Coordinates',
                     type: 'checkbox',
                     checked: getShowCoordinates(),
                     click: function() {
@@ -449,14 +449,14 @@ function buildMenu() {
                     }
                 },
                 {
-                    label: 'Show &Variations',
+                    label: '&Variations',
                     type: 'checkbox',
                     checked: getShowVariations(),
                     click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Show Game &Graph',
+                    label: 'Game &Graph',
                     accelerator: 'CmdOrCtrl+G',
                     type: 'checkbox',
                     checked: getShowSidebar(),
