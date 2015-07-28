@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+## [Goban v0.3.3][v0.3.3] (2015-07-29)
+
 **Added**
 * Ability to load a game by dropping file onto the board
 * Show error message when file is unreadable
@@ -77,7 +79,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.2...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.3.3...master
+[v0.3.3]: https://github.com/yishn/Goban/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/yishn/Goban/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/yishn/Goban/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/yishn/Goban/compare/v0.2.2...v0.3.0
