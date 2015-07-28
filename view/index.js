@@ -123,6 +123,10 @@ function getSelectedTool() {
     }
 }
 
+function setSelectedTool(tool) {
+    $$('#edit .' + tool + '-tool a').fireEvent('click')
+}
+
 function getBoard() {
     return $('goban').retrieve('board')
 }
@@ -277,10 +281,6 @@ function prepareSlider() {
         pos.unpack(setCurrentTreePosition)
         updateSlider()
     })
-}
-
-function selectTool(tool) {
-    $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
 
 function makeMove(vertex) {

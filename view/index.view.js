@@ -352,7 +352,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+1',
                     click: function() {
                         setEditMode(true)
-                        selectTool('stone')
+                        setSelectedTool('stone')
                     }
                 },
                 {
@@ -360,7 +360,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+2',
                     click: function() {
                         setEditMode(true)
-                        selectTool('cross')
+                        setSelectedTool('cross')
                     }
                 },
                 {
@@ -368,7 +368,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+3',
                     click: function() {
                         setEditMode(true)
-                        selectTool('triangle')
+                        setSelectedTool('triangle')
                     }
                 },
                 {
@@ -376,7 +376,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+4',
                     click: function() {
                         setEditMode(true)
-                        selectTool('square')
+                        setSelectedTool('square')
                     }
                 },
                 {
@@ -384,7 +384,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+5',
                     click: function() {
                         setEditMode(true)
-                        selectTool('circle')
+                        setSelectedTool('circle')
                     }
                 },
                 {
@@ -392,7 +392,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+6',
                     click: function() {
                         setEditMode(true)
-                        selectTool('label')
+                        setSelectedTool('label')
                     }
                 },
                 {
@@ -400,7 +400,7 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+7',
                     click: function() {
                         setEditMode(true)
-                        selectTool('number')
+                        setSelectedTool('number')
                     }
                 }
             ]
