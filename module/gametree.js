@@ -103,11 +103,11 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
         hasCollisions = false
 
         for (var y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift < matrix[yshift + y].length) {
-                hasCollisions = true
-                xshift++
-                break
-            }
+            if (xshift >= matrix[yshift + y].length) continue
+
+            hasCollisions = true
+            xshift++
+            break
         }
     }
 
