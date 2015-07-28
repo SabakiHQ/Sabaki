@@ -351,7 +351,6 @@ function buildMenu() {
                     label: '&Stone Tool',
                     accelerator: 'CmdOrCtrl+1',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('stone')
                     }
                 },
@@ -359,7 +358,6 @@ function buildMenu() {
                     label: '&Cross Tool',
                     accelerator: 'CmdOrCtrl+2',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('cross')
                     }
                 },
@@ -367,7 +365,6 @@ function buildMenu() {
                     label: '&Triangle Tool',
                     accelerator: 'CmdOrCtrl+3',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('triangle')
                     }
                 },
@@ -375,7 +372,6 @@ function buildMenu() {
                     label: '&Square Tool',
                     accelerator: 'CmdOrCtrl+4',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('square')
                     }
                 },
@@ -383,7 +379,6 @@ function buildMenu() {
                     label: '&Circle Tool',
                     accelerator: 'CmdOrCtrl+5',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('circle')
                     }
                 },
@@ -391,7 +386,6 @@ function buildMenu() {
                     label: '&Label Tool',
                     accelerator: 'CmdOrCtrl+6',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('label')
                     }
                 },
@@ -399,7 +393,6 @@ function buildMenu() {
                     label: '&Number Tool',
                     accelerator: 'CmdOrCtrl+7',
                     click: function() {
-                        setEditMode(true)
                         setSelectedTool('number')
                     }
                 }

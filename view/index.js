@@ -124,6 +124,11 @@ function getSelectedTool() {
 }
 
 function setSelectedTool(tool) {
+    if (!getEditMode()) {
+        setEditMode(true)
+        if (getSelectedTool().contains(tool)) return
+    }
+    
     $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
 
