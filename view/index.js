@@ -802,24 +802,25 @@ function centerGraphCameraAt(node) {
 
     var matrixdict = getGraphMatrixDict()
     var y = matrixdict[1][node.id][1]
-    var width = gametree.getWidth(y, matrixdict[0])
-    var padding = matrixdict[0][y].length - width
-    var x = matrixdict[1][node.id][0] - padding
-    var relX = width == 1 ? 0 : x / (width - 1)
-    var diff = (width - 1) * setting.get('graph.grid_size') / 2
-    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
-    node.color = '#E64533'
-    s.refresh()
+    gametree.getWidth(y, matrixdict[0]).unpack(function(width, padding) {
+        var x = matrixdict[1][node.id][0] - padding
+        var relX = width == 1 ? 0 : x / (width - 1)
+        var diff = (width - 1) * setting.get('graph.grid_size') / 2
+        diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
-    sigma.misc.animation.camera(
-        s.camera,
-        {
-            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
-            y: node[s.camera.readPrefix + 'y']
-        },
-        { duration: setting.get('graph.delay') }
-    )
+        node.color = '#E64533'
+        s.refresh()
+
+        sigma.misc.animation.camera(
+            s.camera,
+            {
+                x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
+                y: node[s.camera.readPrefix + 'y']
+            },
+            { duration: setting.get('graph.delay') }
+        )
+    })
 }
 
 /**

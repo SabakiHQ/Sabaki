@@ -78,7 +78,18 @@ exports.getCurrentHeight = function(tree) {
 }
 
 exports.getWidth = function(y, matrix) {
-    return matrix[y].length > 0 ? matrix[y].length - matrix[y].indexOf(matrix[y].pick()) : 0
+    var keys = Object.keys(new Int8Array(10)).map(function(i) {
+        return parseFloat(i) + y - 4
+    }).filter(function(i) { return i >= 0 && i < matrix.length })
+
+    var padding = Math.min.apply(null, keys.map(function(i) {
+        return matrix[i].indexOf(matrix[i].pick())
+    }))
+    var width = Math.max.apply(null, keys.map(function(i) {
+        return matrix[i].length
+    })) - padding
+
+    return new Tuple(width, padding)
 }
 
 exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
