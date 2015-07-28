@@ -342,59 +342,43 @@ function buildMenu() {
                 {
                     label: 'Toggle &Edit Mode',
                     accelerator: 'CmdOrCtrl+E',
-                    click: function() {
-                        setEditMode(!getEditMode())
-                    }
+                    click: function() { setEditMode(!getEditMode()) }
                 },
                 { type: 'separator' },
                 {
                     label: '&Stone Tool',
                     accelerator: 'CmdOrCtrl+1',
-                    click: function() {
-                        setSelectedTool('stone')
-                    }
+                    click: function() { setSelectedTool('stone') }
                 },
                 {
                     label: '&Cross Tool',
                     accelerator: 'CmdOrCtrl+2',
-                    click: function() {
-                        setSelectedTool('cross')
-                    }
+                    click: function() { setSelectedTool('cross') }
                 },
                 {
                     label: '&Triangle Tool',
                     accelerator: 'CmdOrCtrl+3',
-                    click: function() {
-                        setSelectedTool('triangle')
-                    }
+                    click: function() { setSelectedTool('triangle') }
                 },
                 {
                     label: '&Square Tool',
                     accelerator: 'CmdOrCtrl+4',
-                    click: function() {
-                        setSelectedTool('square')
-                    }
+                    click: function() { setSelectedTool('square') }
                 },
                 {
                     label: '&Circle Tool',
                     accelerator: 'CmdOrCtrl+5',
-                    click: function() {
-                        setSelectedTool('circle')
-                    }
+                    click: function() { setSelectedTool('circle') }
                 },
                 {
                     label: '&Label Tool',
                     accelerator: 'CmdOrCtrl+6',
-                    click: function() {
-                        setSelectedTool('label')
-                    }
+                    click: function() { setSelectedTool('label') }
                 },
                 {
                     label: '&Number Tool',
                     accelerator: 'CmdOrCtrl+7',
-                    click: function() {
-                        setSelectedTool('number')
-                    }
+                    click: function() { setSelectedTool('number') }
                 }
             ]
         },
@@ -453,9 +437,7 @@ function buildMenu() {
                     label: '&Fuzzy Stone Placement',
                     type: 'checkbox',
                     checked: getFuzzyStonePlacement(),
-                    click: function() {
-                        setFuzzyStonePlacement(!getFuzzyStonePlacement())
-                    }
+                    click: function() { setFuzzyStonePlacement(!getFuzzyStonePlacement()) }
                 },
                 {
                     label: 'Show &Coordinates',
@@ -470,9 +452,7 @@ function buildMenu() {
                     label: 'Show &Variations',
                     type: 'checkbox',
                     checked: getShowVariations(),
-                    click: function() {
-                        setShowVariations(!getShowVariations())
-                    }
+                    click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
