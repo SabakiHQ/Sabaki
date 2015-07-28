@@ -276,6 +276,33 @@ function closeGameInfo() {
     $('info').removeClass('show')
 }
 
+function showScore() {
+    var board = $('goban').retrieve('finalboard')
+    var score = board.getScore($('goban').retrieve('areamap'))
+    var rootNode = getRootTree().nodes[0]
+
+    for (var sign = -1; sign <= 1; sign += 2) {
+        var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
+        var tds = tr.getElements('td')
+
+        tds[0].set('text', score['area_' + sign])
+        tds[1].set('text', score['territory_' + sign])
+        tds[2].set('text', score['captures_' + sign])
+        if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+        tds[4].set('text', 0)
+
+        setScoringMethod(setting.get('scoring.method'))
+    }
+
+    closeGameInfo()
+    $('score').addClass('show')
+}
+
+function closeScore() {
+    $('score').removeClass('show')
+    setScoringMode(false)
+}
+
 function buildMenu() {
     var template = [
         {
