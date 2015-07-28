@@ -364,7 +364,6 @@ function makeMove(vertex) {
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
-
         var node = {}
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
@@ -373,7 +372,6 @@ function makeMove(vertex) {
     } else {
         if (index != tree.nodes.length - 1) {
             // Search for next move
-
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
                 && sgf.point2vertex(nextNode[color][0]).equals(vertex)
@@ -384,7 +382,6 @@ function makeMove(vertex) {
             }
         } else {
             // Search for variation
-
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
@@ -398,7 +395,6 @@ function makeMove(vertex) {
         }
 
         // Create variation
-
         var splitted = gametree.splitTree(tree, index)
         var node = {}; node[color] = [sgf.vertex2point(vertex)]
         var newtree = {
