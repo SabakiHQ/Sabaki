@@ -320,7 +320,11 @@ function makeMove(vertex) {
     }
 
     // Check for suicide
-    var suicide = getBoard().getNeighborhood(vertex).filter(function(v) {
+    var capture = getBoard().getNeighborhood(vertex).some(function(v) {
+        return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
+    })
+
+    var suicide = !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
         return getBoard().arrangement[v] == sign
     }).every(function(v) {
         return getBoard().getLiberties(v).length == 1
@@ -345,9 +349,7 @@ function makeMove(vertex) {
     // Play sounds
     if (getBoard().hasVertex(vertex)) {
         // Detect captured stones
-        if (getBoard().getNeighborhood(vertex).some(function(v) {
-            return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
-        }) || suicide) setTimeout(function() {
+        if (capture || suicide) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
         }, 300 + Math.floor(Math.random() * 200))
 
