@@ -297,29 +297,29 @@ function makeMove(vertex) {
     var color = getCurrentPlayer() > 0 ? 'B' : 'W'
     var sign = color == 'B' ? 1 : -1
 
-    // Check for ko
-    if (setting.get('game.show_ko_warning')) {
-        var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
-            if (!prevTree) return
-
-            var hash = getBoard().makeMove(sign, vertex).getHash()
-            return prevTree.nodes[prevIndex].board.getHash() == hash
-        })
-
-        if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'info',
-            title: 'Goban',
-            buttons: ['Play Anyway', 'Don’t Play'],
-            message: [
-                'You are about to play a move which repeats a previous board position.',
-                'This is invalid in some rulesets.'
-            ].join(' '),
-            cancelId: 1,
-            noLink: true
-        }) != 0) return
-    }
-
     if (getBoard().hasVertex(vertex)) {
+        // Check for ko
+        if (setting.get('game.show_ko_warning')) {
+            var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
+                if (!prevTree) return
+
+                var hash = getBoard().makeMove(sign, vertex).getHash()
+                return prevTree.nodes[prevIndex].board.getHash() == hash
+            })
+
+            if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
+                type: 'info',
+                title: 'Goban',
+                buttons: ['Play Anyway', 'Don’t Play'],
+                message: [
+                    'You are about to play a move which repeats a previous board position.',
+                    'This is invalid in some rulesets.'
+                ].join(' '),
+                cancelId: 1,
+                noLink: true
+            }) != 0) return
+        }
+
         // Check for suicide
         var capture = getBoard().getNeighborhood(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
@@ -347,6 +347,31 @@ function makeMove(vertex) {
             }) != 0) return
         }
 
+        // Randomize shift and readjust
+        var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
+        var direction = Math.floor(Math.random() * 9)
+
+        for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
+        li.addClass('shift_' + direction)
+
+        if (direction == 1 || direction == 5 || direction == 8) {
+            // Left
+            $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
+                .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
+        } else if (direction == 2 || direction == 5 || direction == 6) {
+            // Top
+            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
+                .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
+        } else if (direction == 3 || direction == 7 || direction == 6) {
+            // Right
+            $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
+                .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
+        } else if (direction == 4 || direction == 7 || direction == 8) {
+            // Bottom
+            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
+                .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
+        }
+        
         // Play sounds
         if (capture || suicide) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
@@ -355,30 +380,6 @@ function makeMove(vertex) {
         new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
     } else new Audio('../sound/pass.wav').play()
 
-    // Randomize shift and readjust
-    var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
-    var direction = Math.floor(Math.random() * 9)
-
-    for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
-    li.addClass('shift_' + direction)
-
-    if (direction == 1 || direction == 5 || direction == 8) {
-        // Left
-        $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
-            .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
-    } else if (direction == 2 || direction == 5 || direction == 6) {
-        // Top
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
-            .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
-    } else if (direction == 3 || direction == 7 || direction == 6) {
-        // Right
-        $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
-            .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
-    } else if (direction == 4 || direction == 7 || direction == 8) {
-        // Bottom
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
-            .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
-    }
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
