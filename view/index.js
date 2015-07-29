@@ -1,13 +1,13 @@
 var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
-var http = require('http')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
+var http = remote.require('http')
 var setting = remote.require('./module/setting')
 
 var Tuple = require('../lib/tuple')
@@ -308,14 +308,14 @@ function checkForUpdates() {
     http.request(url, function(response) {
         console.log(response)
 
-        // if (dialog.showMessageBox(remote.getCurrentWindow(), {
-        //     type: 'info',
-        //     buttons: ['Download Update', 'Not Now'],
-        //     title: 'Goban',
-        //     message: 'There is a new update of ' + app.getName() + ' available.',
-        //     cancelId: 1,
-        //     noLink: true
-        // }) == 0) shell.openExternal(url)
+        if (dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'info',
+            buttons: ['Download Update', 'Not Now'],
+            title: 'Goban',
+            message: 'There is a new update of ' + app.getName() + ' available.',
+            cancelId: 1,
+            noLink: true
+        }) == 0) shell.openExternal(url)
     }).end()
 }
 
