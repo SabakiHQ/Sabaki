@@ -309,7 +309,7 @@ function checkForUpdates() {
         message: 'There is a new update of ' + app.getName() + ' available.',
         cancelId: 1,
         noLink: true
-    }) == 0) shell.openExternal('https://github.com/yishn/Goban/releases')
+    }) == 0) shell.openExternal('https://github.com/yishn/Goban/releases/latest')
 }
 
 function makeMove(vertex) {
