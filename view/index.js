@@ -288,6 +288,19 @@ function prepareSlider() {
     })
 }
 
+function prepareDragDropFiles() {
+    Element.NativeEvents.dragover = 2
+    Element.NativeEvents.drop = 2
+    $$('body').addEvent('dragover', function() {
+        return false
+    }).addEvent('drop', function(e) {
+        e.preventDefault()
+        
+        if (e.event.dataTransfer.files.length == 0) return
+        loadGame(e.event.dataTransfer.files[0].path)
+    })
+}
+
 function makeMove(vertex) {
     if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
         return
@@ -371,7 +384,7 @@ function makeMove(vertex) {
             $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
                 .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
         }
-        
+
         // Play sounds
         if (capture || suicide) setTimeout(function() {
             new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
@@ -902,22 +915,13 @@ document.addEvent('keydown', function(e) {
     }
 }).addEvent('domready', function() {
     loadSettings()
+    prepareDragDropFiles()
     prepareEditTools()
     prepareGameGraph()
     prepareSlider()
 
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
-
-    Element.NativeEvents.dragover = 2
-    Element.NativeEvents.drop = 2
-    $$('body').addEvent('dragover', function() {
-        return false
-    }).addEvent('drop', function(e) {
-        e.preventDefault()
-        if (e.event.dataTransfer.files.length > 0)
-            loadGame(e.event.dataTransfer.files[0].path)
-    })
 })
 
 window.addEvent('resize', function() {
