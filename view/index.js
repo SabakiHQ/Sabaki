@@ -295,10 +295,21 @@ function prepareDragDropFiles() {
         return false
     }).addEvent('drop', function(e) {
         e.preventDefault()
-        
+
         if (e.event.dataTransfer.files.length == 0) return
         loadGame(e.event.dataTransfer.files[0].path)
     })
+}
+
+function checkForUpdates() {
+    if (dialog.showMessageBox(remote.getCurrentWindow(), {
+        type: 'info',
+        buttons: ['Download Update', 'Not Now'],
+        title: 'Goban',
+        message: 'There is a new update of ' + app.getName() + ' available.',
+        cancelId: 1,
+        noLink: true
+    }) == 0) shell.openExternal('https://github.com/yishn/Goban/releases')
 }
 
 function makeMove(vertex) {
@@ -924,7 +935,10 @@ document.addEvent('keydown', function(e) {
     else newGame()
 })
 
-window.addEvent('resize', function() {
+window.addEvent('load', function() {
+    if (!setting.get('app.check_for_updates')) return
+    checkForUpdates()
+}).addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function() {
     if (remote.getCurrentWindow().isMaximized() || remote.getCurrentWindow().isMinimized()) return

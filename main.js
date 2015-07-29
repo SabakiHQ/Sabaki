@@ -6,6 +6,7 @@ var window = null
 
 // Generate default settings
 setting
+.default('app.check_for_updates', true)
 .default('game.show_ko_warning', true)
 .default('game.show_suicide_warning', true)
 .default('graph.delay', 300)

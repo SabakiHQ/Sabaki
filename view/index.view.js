@@ -478,6 +478,10 @@ function buildMenu() {
                     label: 'Version ' + app.getVersion(),
                     enabled: false
                 },
+                {
+                    label: 'Check For Updates',
+                    click: checkForUpdates
+                },
                 { type: 'separator' },
                 {
                     label: 'Issues',
