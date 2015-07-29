@@ -1,6 +1,7 @@
 var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
+var http = require('http')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var uuid = require('../lib/node-uuid')
@@ -302,14 +303,20 @@ function prepareDragDropFiles() {
 }
 
 function checkForUpdates() {
-    if (dialog.showMessageBox(remote.getCurrentWindow(), {
-        type: 'info',
-        buttons: ['Download Update', 'Not Now'],
-        title: 'Goban',
-        message: 'There is a new update of ' + app.getName() + ' available.',
-        cancelId: 1,
-        noLink: true
-    }) == 0) shell.openExternal('https://github.com/yishn/Goban/releases/latest')
+    var url = 'http://github.com/yishn/Goban/releases/latest'
+
+    http.request(url, function(response) {
+        console.log(response)
+
+        // if (dialog.showMessageBox(remote.getCurrentWindow(), {
+        //     type: 'info',
+        //     buttons: ['Download Update', 'Not Now'],
+        //     title: 'Goban',
+        //     message: 'There is a new update of ' + app.getName() + ' available.',
+        //     cancelId: 1,
+        //     noLink: true
+        // }) == 0) shell.openExternal(url)
+    }).end()
 }
 
 function makeMove(vertex) {
