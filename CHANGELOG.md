@@ -4,11 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+## [Goban v0.3.4][v0.3.4] (2015-08-01)
+
 **Added**
 * Check for updates at startup
 
 **Changed**
 * Prune game graph for performance
+* Update to Electron v0.30.2
 
 ## [Goban v0.3.3][v0.3.3] (2015-07-29)
 
@@ -85,7 +88,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.3...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.3.4...master
+[v0.3.4]: https://github.com/yishn/Goban/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/yishn/Goban/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/yishn/Goban/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/yishn/Goban/compare/v0.3.0...v0.3.1
