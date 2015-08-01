@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Check for updates at startup
+
 ## [Goban v0.3.3][v0.3.3] (2015-07-29)
 
 **Added**
