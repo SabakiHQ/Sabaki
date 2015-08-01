@@ -17,7 +17,9 @@ function getShowVariations() {
 function setShowVariations(show) {
     if (show) $('goban').addClass('variations')
     else $('goban').removeClass('variations')
+
     setting.set('view.show_variations', show)
+    getMainMenu().items[3].submenu.items[2].checked = show
 }
 
 function getFuzzyStonePlacement() {
@@ -27,7 +29,9 @@ function getFuzzyStonePlacement() {
 function setFuzzyStonePlacement(fuzzy) {
     if (fuzzy) $('goban').addClass('fuzzy')
     else $('goban').removeClass('fuzzy')
+
     setting.set('view.fuzzy_stone_placement', fuzzy)
+    getMainMenu().items[3].submenu.items[0].checked = fuzzy
 }
 
 function getShowCoordinates() {
@@ -37,7 +41,9 @@ function getShowCoordinates() {
 function setShowCoordinates(show) {
     if (show) $('goban').addClass('coordinates')
     else $('goban').removeClass('coordinates')
+
     setting.set('view.show_coordinates', show)
+    getMainMenu().items[3].submenu.items[1].checked = show
 }
 
 function getShowSidebar() {
@@ -51,6 +57,7 @@ function setShowSidebar(show) {
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
     setting.set('view.show_sidebar', show)
+    getMainMenu().items[3].submenu.items[4].checked = show
 
     if (show) {
         updateGraph()
