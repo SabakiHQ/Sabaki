@@ -1,3 +1,7 @@
+function getMenu() {
+    return $$('body')[0].retrieve('menu')
+}
+
 function setIsLoading(loading) {
     if (loading) document.body.addClass('loading')
     else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
@@ -498,8 +502,10 @@ function buildMenu() {
             ]
         }
     ]
+    var menu = Menu.buildFromTemplate(template)
 
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    $$('body')[0].store('menu', menu)
+    Menu.setApplicationMenu(menu)
 }
 
 function openHeaderMenu() {
