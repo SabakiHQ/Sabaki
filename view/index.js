@@ -306,29 +306,29 @@ function prepareDragDropFiles() {
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
-    var internetConnection = true
 
     // Check internet connection first
-    dns.resolve('github.com', function(err) { internetConnection = !err })
-    if (internetConnection) return
+    dns.lookup('github.com', function(err) {
+        if (err) return
 
-    https.get(url, function(response) {
-        response.on('data', function(chunk) {
-            chunk = '' + chunk
-            var hasUpdates = !chunk.contains('v' + app.getVersion())
+        https.get(url, function(response) {
+            response.on('data', function(chunk) {
+                chunk = '' + chunk
+                var hasUpdates = !chunk.contains('v' + app.getVersion())
 
-            if (hasUpdates && dialog.showMessageBox(remote.getCurrentWindow(), {
-                type: 'info',
-                buttons: ['Download Update', 'Not Now'],
-                title: app.getName(),
-                message: 'There is a new version of ' + app.getName() + ' available.',
-                cancelId: 1,
-                noLink: true
-            }) == 0) shell.openExternal(url)
+                if (hasUpdates && dialog.showMessageBox(remote.getCurrentWindow(), {
+                    type: 'info',
+                    buttons: ['Download Update', 'Not Now'],
+                    title: app.getName(),
+                    message: 'There is a new version of ' + app.getName() + ' available.',
+                    cancelId: 1,
+                    noLink: true
+                }) == 0) shell.openExternal(url)
 
-            callback(hasUpdates)
-        })
-    }).on('error', function(e) {})
+                callback(hasUpdates)
+            })
+        }).on('error', function(e) {})
+    })
 }
 
 function makeMove(vertex) {
