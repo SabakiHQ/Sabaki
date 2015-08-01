@@ -474,24 +474,6 @@ function makeMove(vertex) {
     updateSlider()
 }
 
-function updateGraph() {
-    if (!getShowSidebar() || !getCurrentTreePosition()) return
-
-    setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
-    centerGraphCameraAt(getCurrentGraphNode())
-}
-
-function updateSlider() {
-    if (!getShowSidebar()) return
-
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var total = gametree.getCurrentHeight(getRootTree()) - 1
-        var relative = total + 1 - gametree.getCurrentHeight(tree) + index
-
-        setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
-    })
-}
-
 function vertexClicked() {
     closeGameInfo()
 
@@ -636,6 +618,24 @@ function vertexClicked() {
 
         setCurrentTreePosition(tree, index)
     }.bind(this))
+}
+
+function updateGraph() {
+    if (!getShowSidebar() || !getCurrentTreePosition()) return
+
+    setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
+    centerGraphCameraAt(getCurrentGraphNode())
+}
+
+function updateSlider() {
+    if (!getShowSidebar()) return
+
+    getCurrentTreePosition().unpack(function(tree, index) {
+        var total = gametree.getCurrentHeight(getRootTree()) - 1
+        var relative = total + 1 - gametree.getCurrentHeight(tree) + index
+
+        setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
+    })
 }
 
 function updateGameInfo() {
