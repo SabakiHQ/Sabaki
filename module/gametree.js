@@ -128,9 +128,11 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
         dict[tree.id + '-' + y] = new Tuple(xshift, yshift + y)
     }
 
-    for (var k = 0; k < tree.subtrees.length; k++) {
-        var subtree = tree.subtrees[k]
-        exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+    if (!tree.collapsed) {
+        for (var k = 0; k < tree.subtrees.length; k++) {
+            var subtree = tree.subtrees[k]
+            exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+        }
     }
 
     return new Tuple(matrix, dict)

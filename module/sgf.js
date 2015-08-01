@@ -88,12 +88,14 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, start, end) {
-    if (arguments.length <= 2) end = tokens.length - 1
-    if (arguments.length <= 1) start = 0
+exports.parse = function(tokens, start, end, depth) {
+    if (isNaN(start)) start = 0
+    if (isNaN(end)) end = tokens.length - 1
+    if (isNaN(depth)) depth = 0
 
     var i = start
     var node, property, tree = gametree.new()
+    tree.collapsed = depth >= setting.get('graph.max_depth')
 
     while (i <= end) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break
@@ -114,17 +116,17 @@ exports.parse = function(tokens, start, end) {
         i++
     }
 
-    var depth = 0
+    var parenDepth = 0
     var newstart = 0
 
     while (i <= end) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) {
-            depth++
-            if (depth == 1) newstart = i + 1
+            parenDepth++
+            if (parenDepth == 1) newstart = i + 1
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
-            depth--
-            if (depth == 0) {
-                t = exports.parse(tokens, newstart, i - 1)
+            parenDepth--
+            if (parenDepth == 0) {
+                t = exports.parse(tokens, newstart, i - 1, depth + Math.min(tree.subtrees.length, 1))
                 t.parent = tree
                 tree.subtrees.push(t)
                 tree.current = 0
