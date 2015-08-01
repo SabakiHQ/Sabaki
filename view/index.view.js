@@ -1,5 +1,5 @@
 function getMainMenu() {
-    return $$('body')[0].retrieve('menu')
+    return $$('body')[0].retrieve('mainmenu')
 }
 
 function setIsLoading(loading) {
@@ -521,7 +521,7 @@ function buildMenu() {
     ]
     var menu = Menu.buildFromTemplate(template)
 
-    $$('body')[0].store('menu', menu)
+    $$('body')[0].store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
 }
 
