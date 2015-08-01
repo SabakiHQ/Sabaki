@@ -46,9 +46,8 @@ exports.splitTree = function(tree, index) {
     newtree.current = 0
     tree.parent = newtree
 
-    if (newtree.parent != null) {
+    if (newtree.parent)
         newtree.parent.subtrees[newtree.parent.subtrees.indexOf(tree)] = newtree
-    }
 
     return newtree
 }
