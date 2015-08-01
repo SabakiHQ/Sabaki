@@ -7,6 +7,7 @@ var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
+var dns = remote.require('dns')
 var https = remote.require('https')
 var setting = remote.require('./module/setting')
 
@@ -304,8 +305,14 @@ function prepareDragDropFiles() {
 
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
+    var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
+    var internetConnection = true
 
-    https.get('https://github.com/yishn/' + app.getName() + '/releases/latest', function(response) {
+    // Check internet connection first
+    dns.resolve('github.com', function(err) { internetConnection = !err })
+    if (internetConnection) return
+
+    https.get(url, function(response) {
         response.on('data', function(chunk) {
             chunk = '' + chunk
             var hasUpdates = !chunk.contains('v' + app.getVersion())
@@ -321,7 +328,7 @@ function checkForUpdates(callback) {
 
             callback(hasUpdates)
         })
-    })
+    }).on('error', function(e) {})
 }
 
 function makeMove(vertex) {
