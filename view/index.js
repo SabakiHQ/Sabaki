@@ -305,7 +305,7 @@ function prepareDragDropFiles() {
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
 
-    https.get('https://github.com/yishn/Goban/releases/latest', function(response) {
+    https.get('https://github.com/yishn/' + app.getName() + '/releases/latest', function(response) {
         response.on('data', function(chunk) {
             chunk = '' + chunk
             var hasUpdates = !chunk.contains('v' + app.getVersion())
@@ -313,7 +313,7 @@ function checkForUpdates(callback) {
             if (hasUpdates && dialog.showMessageBox(remote.getCurrentWindow(), {
                 type: 'info',
                 buttons: ['Download Update', 'Not Now'],
-                title: 'Goban',
+                title: app.getName(),
                 message: 'There is a new update of ' + app.getName() + ' available.',
                 cancelId: 1,
                 noLink: true
@@ -345,7 +345,7 @@ function makeMove(vertex) {
 
             if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
                 type: 'info',
-                title: 'Goban',
+                title: app.getName(),
                 buttons: ['Play Anyway', 'Don’t Play'],
                 message: [
                     'You are about to play a move which repeats a previous board position.',
@@ -372,7 +372,7 @@ function makeMove(vertex) {
         if (suicide && setting.get('game.show_suicide_warning')) {
             if (dialog.showMessageBox(remote.getCurrentWindow(), {
                 type: 'info',
-                title: 'Goban',
+                title: app.getName(),
                 buttons: ['Play Anyway', 'Don’t Play'],
                 message: [
                     'You are about to play a suicide move.',
@@ -790,7 +790,7 @@ function loadGame(filename) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'warning',
             buttons: ['OK'],
-            title: 'Goban',
+            title: app.getName(),
             message: 'This file is unreadable.'
         })
     }
@@ -892,7 +892,7 @@ function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
             type: 'warning',
-            title: 'Goban',
+            title: app.getName(),
             buttons: ['OK'],
             message: 'The root node cannot be removed.'
         })

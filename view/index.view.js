@@ -497,7 +497,7 @@ function buildMenu() {
                             dialog.showMessageBox(remote.getCurrentWindow(), {
                                 type: 'info',
                                 buttons: ['OK'],
-                                title: 'Goban',
+                                title: app.getName(),
                                 message: 'There are no updates available',
                             })
                         })
@@ -507,13 +507,13 @@ function buildMenu() {
                 {
                     label: 'Issues',
                     click: function() {
-                        shell.openExternal('https://github.com/yishn/Goban/issues')
+                        shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
                     }
                 },
                 {
                     label: 'GitHub Respository',
                     click: function() {
-                        shell.openExternal('https://github.com/yishn/Goban')
+                        shell.openExternal('https://github.com/yishn/' + app.getName())
                     }
                 }
             ]
