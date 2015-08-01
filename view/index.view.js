@@ -1,4 +1,4 @@
-function getMenu() {
+function getMainMenu() {
     return $$('body')[0].retrieve('menu')
 }
 
