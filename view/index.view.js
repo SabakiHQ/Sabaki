@@ -335,9 +335,7 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: '&Score',
-                    click: function() {
-                        setScoringMode(true)
-                    }
+                    click: function() { setScoringMode(true) }
                 },
                 {
                     label: '&Info',
@@ -528,22 +526,16 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Pass',
-            click: function() {
-                makeMove(new Tuple(-1, -1))
-            }
+            click: function() { makeMove(new Tuple(-1, -1)) }
         },
         {
             label: '&Score',
-            click: function() {
-                setScoringMode(true)
-            }
+            click: function() { setScoringMode(true) }
         },
         { type: 'separator' },
         {
             label: '&Edit',
-            click: function() {
-                setEditMode(true)
-            }
+            click: function() { setEditMode(true) }
         },
         {
             label: '&Info',
