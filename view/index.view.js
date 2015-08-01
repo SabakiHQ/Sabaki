@@ -334,6 +334,12 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
+                    label: '&Score',
+                    click: function() {
+                        setScoringMode(true)
+                    }
+                },
+                {
                     label: '&Info',
                     accelerator: 'CmdOrCtrl+I',
                     click: showGameInfo
