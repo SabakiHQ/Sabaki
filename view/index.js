@@ -459,13 +459,9 @@ function makeMove(vertex) {
         // Create variation
         var splitted = gametree.splitTree(tree, index)
         var node = {}; node[color] = [sgf.vertex2point(vertex)]
-        var newtree = {
-            id: uuid.v4(),
-            nodes: [node],
-            subtrees: [],
-            parent: splitted,
-            current: null
-        }
+        var newtree = gametree.new()
+        newtree.nodes = [node]
+        newtree.parent = splitted
 
         splitted.subtrees.push(newtree)
         splitted.current = splitted.subtrees.length - 1
@@ -538,13 +534,8 @@ function vertexClicked() {
                 var splitted = gametree.splitTree(tree, index)
 
                 if (splitted != tree || splitted.subtrees.length != 0) {
-                    tree = {
-                        id: uuid.v4(),
-                        nodes: [],
-                        subtrees: [],
-                        current: null,
-                        parent: splitted
-                    }
+                    tree = gametree.new()
+                    tree.parent = splitted
                     splitted.subtrees.push(tree)
                 }
 

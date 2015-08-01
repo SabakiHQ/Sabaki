@@ -93,14 +93,7 @@ exports.parse = function(tokens, start, end) {
     if (arguments.length <= 1) start = 0
 
     var i = start
-
-    var node, property, tree = {
-        id: uuid.v4(),
-        nodes: [],
-        subtrees: [],
-        parent: null,
-        current: null
-    }
+    var node, property, tree = gametree.new()
 
     while (i <= end) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break

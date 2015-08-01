@@ -4,6 +4,17 @@ var Tuple = require('../lib/tuple')
 var uuid = require('../lib/node-uuid')
 var setting = require('remote').require('./module/setting')
 
+exports.new = function(id) {
+    return {
+        id: uuid.v4(),
+        nodes: [],
+        subtrees: [],
+        current: null,
+        parent: null,
+        collapsed: false
+    }
+}
+
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return new Tuple(tree, index + step)
@@ -28,13 +39,11 @@ exports.splitTree = function(tree, index) {
     var newnodes = tree.nodes.slice(0, index + 1)
     tree.nodes = tree.nodes.slice(index + 1)
 
-    var newtree = {
-        id: uuid.v4(),
-        nodes: newnodes,
-        subtrees: [tree],
-        parent: tree.parent,
-        current: 0
-    }
+    var newtree = exports.new()
+    newtree.nodes = newnodes
+    newtree.subtrees = [tree]
+    newtree.parent = tree.parent
+    newtree.current = 0
     tree.parent = newtree
 
     if (newtree.parent != null) {
