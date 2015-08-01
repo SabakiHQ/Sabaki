@@ -302,10 +302,10 @@ function prepareDragDropFiles() {
     })
 }
 
-function checkForUpdates() {
-    var url = 'https://github.com/yishn/Goban/releases/latest'
+function checkForUpdates(callback) {
+    if (!callback) callback = function(hasUpdates) {}
 
-    https.get(url, function(response) {
+    https.get('https://github.com/yishn/Goban/releases/latest', function(response) {
         response.on('data', function(chunk) {
             chunk = '' + chunk
             var hasUpdates = !chunk.contains('v' + app.getVersion())
@@ -318,6 +318,13 @@ function checkForUpdates() {
                 cancelId: 1,
                 noLink: true
             }) == 0) shell.openExternal(url)
+
+            if (!hasUpdates) {
+                var menu = getMainMenu()
+                console.log(menu.items)
+            }
+
+            callback(hasUpdates)
         })
     })
 }
