@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Check for updates at startup
 
+**Changed**
+* Prune game graph for performance
+
 ## [Goban v0.3.3][v0.3.3] (2015-07-29)
 
 **Added**
