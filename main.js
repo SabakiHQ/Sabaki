@@ -49,7 +49,6 @@ app.on('ready', function() {
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
 
     window.on('closed', function() { window = null })
-    window.webContents.on("will-navigate", function(e, url) { e.preventDefault() })
     window.webContents.on('dom-ready', function() { window.show() })
 
     window.loadUrl('file://' + __dirname + '/view/index.html')
