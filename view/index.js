@@ -314,7 +314,7 @@ function checkForUpdates(callback) {
                 type: 'info',
                 buttons: ['Download Update', 'Not Now'],
                 title: app.getName(),
-                message: 'There is a new update of ' + app.getName() + ' available.',
+                message: 'There is a new version of ' + app.getName() + ' available.',
                 cancelId: 1,
                 noLink: true
             }) == 0) shell.openExternal(url)
