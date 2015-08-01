@@ -666,7 +666,7 @@ function updateGameInfo() {
 
     var size = info.getElement('input[name="size"]').get('value').toInt()
     rootNode.SZ = [String.from(Math.max(Math.min(size, 26), 9))]
-    if (isNaN(size)) rootNode.SZ = ['19']
+    if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
     if (!info.getElement('select[name="handicap"]').disabled) {
         setCurrentTreePosition(getRootTree(), 0)
@@ -755,7 +755,8 @@ function centerGraphCameraAt(node) {
 
 function newGame(playSound) {
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[6.5]SZ[19]'
+    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
+        + ']SZ[' + setting.get('game.default_board_size') + ']'
 
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree)
