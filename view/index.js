@@ -943,8 +943,10 @@ document.addEvent('keydown', function(e) {
 })
 
 window.addEvent('load', function() {
-    if (!setting.get('app.check_for_updates')) return
-    checkForUpdates()
+    setTimeout(function() {
+        if (!setting.get('app.check_for_updates')) return
+        checkForUpdates()
+    }, setting.get('app.startup_update_delay'))
 }).addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function() {
