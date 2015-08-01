@@ -319,11 +319,6 @@ function checkForUpdates(callback) {
                 noLink: true
             }) == 0) shell.openExternal(url)
 
-            if (!hasUpdates) {
-                var menu = getMainMenu()
-                console.log(menu.items)
-            }
-
             callback(hasUpdates)
         })
     })
