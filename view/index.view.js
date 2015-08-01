@@ -479,11 +479,7 @@ function buildMenu() {
             label: '&Help',
             submenu: [
                 {
-                    label: app.getName(),
-                    enabled: false
-                },
-                {
-                    label: 'Version ' + app.getVersion(),
+                    label: app.getName() + ' v' + app.getVersion(),
                     enabled: false
                 },
                 {
