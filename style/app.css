@@ -19,6 +19,7 @@ body, a {
     cursor: default;
     overflow: hidden;
     outline: 0;
+    -webkit-transform-style: preserve-3d;
     -webkit-user-select: none;
 }
 
