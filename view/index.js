@@ -951,7 +951,7 @@ window.addEvent('load', function() {
     if (setting.get('app.check_for_updates')) {
         setTimeout(function() {
             checkForUpdates()
-        }, setting.get('app.startup_update_delay'))
+        }, setting.get('app.startup_check_update_delay'))
     }
 }).addEvent('resize', function() {
     resizeBoard()
