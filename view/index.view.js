@@ -484,7 +484,17 @@ function buildMenu() {
                 },
                 {
                     label: 'Check For Updates',
-                    click: checkForUpdates
+                    click: function() {
+                        checkForUpdates(function(hasUpdates) {
+                            if (hasUpdates) return
+                            dialog.showMessageBox(remote.getCurrentWindow(), {
+                                type: 'info',
+                                buttons: ['OK'],
+                                title: 'Goban',
+                                message: 'There are no updates available',
+                            })
+                        })
+                    }
                 },
                 { type: 'separator' },
                 {
