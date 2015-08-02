@@ -79,13 +79,11 @@ function setCurrentTreePosition(tree, index) {
 
     // Update graph and slider
     var n = getCurrentGraphNode()
-    if (n) {
-        setTimeout(function() {
-            if (getCurrentGraphNode() != n) return
+    setTimeout(function() {
+        if (n && getCurrentGraphNode() == n)
             centerGraphCameraAt(n)
-            updateSlider()
-        }, setting.get('graph.delay'))
-    }
+        updateSlider()
+    }, setting.get('graph.delay'))
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
 
