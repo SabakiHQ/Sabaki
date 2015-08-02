@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Fixed**
+* Fix uncaught exception when playing in pruned subgraphs
+
 ## [Goban v0.3.4][v0.3.4] (2015-08-01)
 
 **Added**

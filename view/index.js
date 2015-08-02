@@ -719,7 +719,7 @@ function updateAreaMap() {
 }
 
 function centerGraphCameraAt(node) {
-    if (!getShowSidebar()) return
+    if (!getShowSidebar() || !node) return
 
     var s = $('graph').retrieve('sigma')
     s.renderers[0].resize().render()
