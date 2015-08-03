@@ -14,7 +14,7 @@ setting
 .default('game.show_suicide_warning', true)
 .default('graph.delay', 300)
 .default('graph.grid_size', 25)
-.default('graph.prune_max_depth', 3)
+.default('graph.prune_max_depth', 2)
 .default('graph.prune_tokens_count', 100000)
 .default('graph.node_size', 4)
 .default('scoring.method', 'territory')

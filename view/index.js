@@ -79,6 +79,12 @@ function setCurrentTreePosition(tree, index) {
 
     // Update graph and slider
     var n = getCurrentGraphNode()
+
+    if (!n && tree.parent && tree.parent.collapsed) {
+        tree.parent.collapsed = false
+        updateGraph()
+    }
+
     setTimeout(function() {
         if (n && getCurrentGraphNode() == n)
             centerGraphCameraAt(n)
