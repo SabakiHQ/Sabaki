@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Show taskbar progress when loading large SGF files
+
 **Fixed**
 * Fix uncaught exception when playing in pruned subgraphs
 * Fix a bug where the slider won't update when playing in pruned subgraphs
