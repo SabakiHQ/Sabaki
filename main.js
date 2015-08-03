@@ -12,7 +12,7 @@ setting
 .default('game.default_komi', 6.5)
 .default('game.show_ko_warning', true)
 .default('game.show_suicide_warning', true)
-.default('graph.collapse_min_depth', 2)
+.default('graph.collapse_min_depth', 1)
 .default('graph.collapse_tokens_count', 100000)
 .default('graph.delay', 300)
 .default('graph.grid_size', 25)
