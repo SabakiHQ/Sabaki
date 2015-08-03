@@ -6,10 +6,12 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Show taskbar progress when loading large SGF files
+* Automatically expand collapsed subgraphs
 
 **Fixed**
 * Fix uncaught exception when playing in pruned subgraphs
 * Fix a bug where the slider won't update when playing in pruned subgraphs
+* Fix a bug where label tooltips are not removed
 
 ## [Goban v0.3.4][v0.3.4] (2015-08-01)
 
