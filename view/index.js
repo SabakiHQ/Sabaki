@@ -791,7 +791,6 @@ function loadGame(filename) {
 
             if (tree.subtrees.length != 0) tree = tree.subtrees[0]
             setRootTree(tree)
-
             win.setProgressBar(0)
         }
     } catch(e) {
