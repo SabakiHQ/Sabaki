@@ -74,6 +74,7 @@ function setCurrentTreePosition(tree, index) {
     // Set current path
     var t = tree
     while (t.parent) {
+        t.parent.collapsed = false
         t.parent.current = t.parent.subtrees.indexOf(t)
         t = t.parent
     }
