@@ -108,8 +108,9 @@ function getCurrentGraphNode() {
 }
 
 function getGraphNode(tree, index) {
+    var id = typeof tree === 'object' ? tree.id + '-' + index : tree
     var s = $('graph').retrieve('sigma')
-    return s.graph.nodes(tree.id + '-' + index)
+    return s.graph.nodes(id)
 }
 
 function getSelectedTool() {
