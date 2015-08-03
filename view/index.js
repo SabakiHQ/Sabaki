@@ -245,8 +245,8 @@ function prepareGameGraph() {
     var s = new sigma(container)
 
     s.settings({
-        defaultNodeColor: '#eee',
-        defaultEdgeColor: '#eee',
+        defaultNodeColor: setting.get('graph.node_color'),
+        defaultEdgeColor: setting.get('graph.node_color'),
         defaultNodeBorderColor: 'rgba(255,255,255,.2)',
         edgeColor: 'default',
         borderSize: 2,
@@ -739,7 +739,7 @@ function centerGraphCameraAt(node) {
         var diff = (width - 1) * setting.get('graph.grid_size') / 2
         diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
-        node.color = '#E64533'
+        node.color = setting.get('graph.node_active_color')
         s.refresh()
 
         sigma.misc.animation.camera(

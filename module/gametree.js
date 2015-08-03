@@ -152,14 +152,17 @@ exports.matrixdict2graph = function(matrixdict) {
             var tree = matrix[y][x][0]
             var index = matrix[y][x][1]
             var id = tree.id + '-' + index
+            var node = {
+                id: id,
+                x: x * gridSize,
+                y: y * gridSize,
+                size: setting.get('graph.node_size'),
+                data: matrix[y][x]
+            }
 
-            graph.nodes.push({
-                'id': id,
-                'x': x * gridSize,
-                'y': y * gridSize,
-                'size': setting.get('graph.node_size'),
-                'data': matrix[y][x]
-            })
+            if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
+                node.color = setting.get('graph.node_collapsed_color')
+            graph.nodes.push(node)
 
             var prev = exports.navigate(tree, index, -1)
             if (!prev[0]) continue
