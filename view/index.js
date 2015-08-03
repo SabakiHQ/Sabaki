@@ -779,8 +779,8 @@ function loadGame(filename) {
     try {
         if (filename) {
             var tree = sgf.parseFile(filename)
-            if (tree.subtrees.length == 0) return
-            setRootTree(tree.subtrees[0])
+            if (tree.subtrees.length != 0) tree = tree.subtrees[0]
+            setRootTree(tree)
         }
     } catch(e) {
         dialog.showMessageBox(remote.getCurrentWindow(), {
