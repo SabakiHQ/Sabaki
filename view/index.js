@@ -78,12 +78,12 @@ function setCurrentTreePosition(tree, index) {
     }
 
     // Update graph and slider
-    var n = getCurrentGraphNode()
-
-    if (!n && tree.parent && tree.parent.collapsed) {
-        tree.parent.collapsed = false
+    if (tree.collapsed && index == tree.nodes.length - 1) {
+        tree.collapsed = false
         updateGraph()
     }
+
+    var n = getCurrentGraphNode()
 
     setTimeout(function() {
         if (n && getCurrentGraphNode() == n)
