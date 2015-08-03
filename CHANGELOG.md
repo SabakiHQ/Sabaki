@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+## [Goban v0.3.5][v0.3.5] (2015-08-04)
+
 **Added**
 * Show taskbar progress when loading large SGF files
 * Color-code collapsed subgraphs
@@ -98,7 +100,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.4...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.3.5...master
+[v0.3.5]: https://github.com/yishn/Goban/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/yishn/Goban/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/yishn/Goban/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/yishn/Goban/compare/v0.3.1...v0.3.2
