@@ -95,7 +95,8 @@ exports.parse = function(tokens, callback, start, depth) {
 
     var i = start[0]
     var node, property, tree = gametree.new()
-    tree.collapsed = depth >= setting.get('graph.max_depth')
+    tree.collapsed = tokens.length >= setting.get('graph.prune_tokens_count')
+        && depth >= setting.get('graph.prune_max_depth')
 
     while (i < tokens.length) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break

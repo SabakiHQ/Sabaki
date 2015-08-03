@@ -16,8 +16,7 @@ exports.save = function() {
 }
 
 exports.get = function(key) {
-    if (key in settings) return settings[key]
-    else return null
+    return settings[key]
 }
 
 exports.set = function(key, value) {
