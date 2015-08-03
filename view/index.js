@@ -162,6 +162,7 @@ function setBoard(board) {
             types.each(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
+            li.set('title', '')
 
             if (li.retrieve('tuple') in board.overlays) {
                 board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
