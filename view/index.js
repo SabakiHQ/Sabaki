@@ -301,7 +301,8 @@ function prepareSlider() {
 function prepareDragDropFiles() {
     Element.NativeEvents.dragover = 2
     Element.NativeEvents.drop = 2
-    $$('body').addEvent('dragover', function() {
+    
+    document.body.addEvent('dragover', function() {
         return false
     }).addEvent('drop', function(e) {
         e.preventDefault()
