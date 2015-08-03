@@ -88,7 +88,8 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, start, depth) {
+exports.parse = function(tokens, callback, start, depth) {
+    if (!callback) callback = function(progress) {}
     if (!start) start = [0]
     if (isNaN(depth)) depth = 0
 
@@ -117,9 +118,10 @@ exports.parse = function(tokens, start, depth) {
 
     while (i < tokens.length) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) {
+            var newdepth = depth + Math.min(tree.subtrees.length, 1)
             start[0] = i + 1
 
-            t = exports.parse(tokens, start, depth + Math.min(tree.subtrees.length, 1))
+            t = exports.parse(tokens, callback, start, newdepth)
             t.parent = tree
             tree.subtrees.push(t)
             tree.current = 0
@@ -127,6 +129,7 @@ exports.parse = function(tokens, start, depth) {
             i = start[0]
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
             start[0] = i
+            callback(i / tokens.length)
             break
         }
 
@@ -136,11 +139,11 @@ exports.parse = function(tokens, start, depth) {
     return tree
 }
 
-exports.parseFile = function(filename) {
+exports.parseFile = function(filename, callback) {
     var input = fs.readFileSync(filename, { encoding: 'utf8' })
     var tokens = exports.tokenize(input)
 
-    return exports.parse(tokens)
+    return exports.parse(tokens, callback)
 }
 
 exports.point2vertex = function(point) {
