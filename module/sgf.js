@@ -126,7 +126,7 @@ exports.parse = function(tokens, start, depth) {
 
             i = start[0]
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
-            start[0] = i + 1
+            start[0] = i
             break
         }
 
