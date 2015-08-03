@@ -88,18 +88,17 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, start, end, depth) {
-    if (isNaN(start)) start = 0
-    if (isNaN(end)) end = tokens.length - 1
+exports.parse = function(tokens, start, depth) {
+    if (!start) start = [0]
     if (isNaN(depth)) depth = 0
 
-    var i = start
+    var i = start[0]
     var node, property, tree = gametree.new()
     tree.collapsed = depth >= setting.get('graph.max_depth')
 
-    while (i <= end) {
+    while (i < tokens.length) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break
-        if (new Tuple('parenthesis', ')').equals(tokens[i])) return null
+        if (new Tuple('parenthesis', ')').equals(tokens[i])) return tree
 
         tokens[i].unpack(function(type, data) {
             if (type == 'semicolon') {
@@ -113,24 +112,22 @@ exports.parse = function(tokens, start, end, depth) {
             }
         })
 
-        i++
+        start[0] = ++i
     }
 
-    var parenDepth = 0
-    var newstart = 0
-
-    while (i <= end) {
+    while (i < tokens.length) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) {
-            parenDepth++
-            if (parenDepth == 1) newstart = i + 1
+            start[0] = i + 1
+
+            t = exports.parse(tokens, start, depth + Math.min(tree.subtrees.length, 1))
+            t.parent = tree
+            tree.subtrees.push(t)
+            tree.current = 0
+
+            i = start[0]
         } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
-            parenDepth--
-            if (parenDepth == 0) {
-                t = exports.parse(tokens, newstart, i - 1, depth + Math.min(tree.subtrees.length, 1))
-                t.parent = tree
-                tree.subtrees.push(t)
-                tree.current = 0
-            }
+            start[0] = i + 1
+            break
         }
 
         i++
