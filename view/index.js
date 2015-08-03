@@ -778,7 +778,10 @@ function loadGame(filename) {
 
     try {
         if (filename) {
-            var tree = sgf.parseFile(filename)
+            var win = remote.getCurrentWindow()
+            var tree = sgf.parseFile(filename, win.setProgressBar)
+            win.setProgressBar(0)
+
             if (tree.subtrees.length != 0) tree = tree.subtrees[0]
             setRootTree(tree)
         }
