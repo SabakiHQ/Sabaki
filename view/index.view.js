@@ -1,5 +1,5 @@
 function getMainMenu() {
-    return $$('body')[0].retrieve('mainmenu')
+    return document.body.retrieve('mainmenu')
 }
 
 function setIsLoading(loading) {
@@ -153,12 +153,12 @@ function setEditMode(editMode) {
 }
 
 function getScoringMode() {
-    return $$('body')[0].hasClass('scoring')
+    return document.body.hasClass('scoring')
 }
 
 function setScoringMode(scoringMode) {
     if (scoringMode) {
-        $$('body').addClass('scoring')
+        document.body.addClass('scoring')
         setEditMode(false)
         closeGameInfo()
 
@@ -169,7 +169,7 @@ function setScoringMode(scoringMode) {
 
         updateAreaMap()
     } else {
-        $$('body').removeClass('scoring')
+        document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
     }
 }
@@ -521,7 +521,7 @@ function buildMenu() {
     ]
     var menu = Menu.buildFromTemplate(template)
 
-    $$('body')[0].store('mainmenu', menu)
+    document.body.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
 }
 
