@@ -498,7 +498,7 @@ function buildMenu() {
                                 type: 'info',
                                 buttons: ['OK'],
                                 title: app.getName(),
-                                message: 'There are no updates available',
+                                message: 'There are no updates available.',
                             })
                         })
                     }
