@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Show taskbar progress when loading large SGF files
 * Color-code collapsed subgraphs
+* Color-code commented nodes
 * Automatically expand collapsed subgraphs
 
 **Fixed**
