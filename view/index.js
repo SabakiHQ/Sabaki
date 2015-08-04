@@ -74,22 +74,29 @@ function setCurrentTreePosition(tree, index) {
     // Set current path
     var t = tree
     while (t.parent) {
-        t.parent.collapsed = false
         t.parent.current = t.parent.subtrees.indexOf(t)
         t = t.parent
     }
 
     // Update graph and slider
-    if (tree.collapsed && index == tree.nodes.length - 1) {
-        tree.collapsed = false
-        updateGraph()
-    }
-
-    var n = getCurrentGraphNode()
-
     setTimeout(function() {
-        if (n && getCurrentGraphNode() == n)
-            centerGraphCameraAt(n)
+        if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
+
+        var expanded = false || tree.collapsed && index == tree.nodes.length - 1
+        var t = tree
+
+        while (t.parent && t.parent.collapsed) {
+            expanded = true
+            t.parent.collapsed = false
+            t = t.parent
+        }
+
+        if (expanded) {
+            tree.collapsed = false
+            updateGraph()
+        }
+
+        centerGraphCameraAt(getCurrentGraphNode())
         updateSlider()
     }, setting.get('graph.delay'))
 
@@ -301,7 +308,7 @@ function prepareSlider() {
 function prepareDragDropFiles() {
     Element.NativeEvents.dragover = 2
     Element.NativeEvents.drop = 2
-    
+
     document.body.addEvent('dragover', function() {
         return false
     }).addEvent('drop', function(e) {
