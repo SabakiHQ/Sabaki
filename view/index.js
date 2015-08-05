@@ -52,9 +52,10 @@ function getGraphMatrixDict() {
 function setGraphMatrixDict(matrixdict) {
     if (!getShowSidebar()) return
 
+    var s = $('graph').retrieve('sigma')
+    s.graph.clear()
+
     try {
-        var s = $('graph').retrieve('sigma')
-        s.graph.clear()
         s.graph.read(gametree.matrixdict2graph(matrixdict))
         s.refresh()
     } catch(e) {
