@@ -69,9 +69,12 @@ function setCurrentTreePosition(tree, index) {
 
     // Remove current graph node color
     var n = getCurrentGraphNode()
-    if (n && n != getGraphNode(tree, index))
+    var node = getGraphNode(tree, index)
+
+    if (n && n != node)
         n.color = n.originalColor
 
+    // Store new position
     $('goban').store('position', new Tuple(tree, index))
 
     // Set current path
@@ -85,16 +88,16 @@ function setCurrentTreePosition(tree, index) {
     setTimeout(function() {
         if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
 
-        var expanded = false || tree.collapsed && index == tree.nodes.length - 1
+        var update = !node || tree.collapsed && index == tree.nodes.length - 1
         var t = tree
 
         while (t.parent && t.parent.collapsed) {
-            expanded = true
+            update = true
             t.parent.collapsed = false
             t = t.parent
         }
 
-        if (expanded) {
+        if (update) {
             tree.collapsed = false
             updateGraph()
         }
@@ -488,9 +491,6 @@ function makeMove(vertex) {
         sgf.addBoard(newtree, newtree.nodes.length - 1)
         setCurrentTreePosition(newtree, 0)
     }
-
-    updateGraph()
-    updateSlider()
 }
 
 function vertexClicked() {
