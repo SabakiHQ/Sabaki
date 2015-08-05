@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Fix uncaught exception when playing in pruned subgraphs again
+* Faster click response when playing in large graphs
 
 ## [Goban v0.3.5][v0.3.5] (2015-08-04)
 
