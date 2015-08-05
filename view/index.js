@@ -35,12 +35,6 @@ function setRootTree(tree) {
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0)
 
-    // Update UI
-    if (getShowSidebar()) {
-        updateGraph()
-        updateSlider()
-    }
-
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
 }
