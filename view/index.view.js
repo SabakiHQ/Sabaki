@@ -398,6 +398,11 @@ function buildMenu() {
                     label: '&Number Tool',
                     accelerator: 'CmdOrCtrl+7',
                     click: function() { setSelectedTool('number') }
+                },
+                { type: 'separator' },
+                {
+                    label: '&Remove Node',
+                    click: function() { getCurrentTreePosition().unpack(removeNode) }
                 }
             ]
         },
