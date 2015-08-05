@@ -257,7 +257,7 @@ function prepareGameGraph() {
     var s = new sigma(container)
 
     s.settings({
-        defaultNodeColor: setting.get('graph.node_color'),
+        defaultNodeColor: setting.get('graph.node_inactive_color'),
         defaultEdgeColor: setting.get('graph.node_color'),
         defaultNodeBorderColor: 'rgba(255,255,255,.2)',
         edgeColor: 'default',

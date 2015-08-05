@@ -138,6 +138,10 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     return new Tuple(matrix, dict)
 }
 
+exports.onCurrentTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && exports.onCurrentTrack(tree.parent)
+}
+
 exports.matrixdict2graph = function(matrixdict) {
     var matrix = matrixdict[0]
     var dict = matrixdict[1]
@@ -162,10 +166,13 @@ exports.matrixdict2graph = function(matrixdict) {
             }
 
             if ('C' in tree.nodes[index])
-                node.originalColor = node.color = setting.get('graph.node_comment_color')
+                node.originalColor = setting.get('graph.node_comment_color')
 
             if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
-                node.originalColor = node.color = setting.get('graph.node_inactive_color')
+                node.originalColor = setting.get('graph.node_inactive_color')
+
+            if (exports.onCurrentTrack(tree))
+                node.color = node.originalColor
 
             graph.nodes.push(node)
 
