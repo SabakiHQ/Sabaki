@@ -901,8 +901,8 @@ function goToNextVariation() {
         if (!tree.parent) return
 
         var mod = tree.parent.subtrees.length
-        tree.parent.current = (tree.parent.current + 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[tree.parent.current], 0)
+        var i = (tree.parent.current + 1) % mod
+        setCurrentTreePosition(tree.parent.subtrees[i], 0)
     })
 }
 
@@ -911,8 +911,8 @@ function goToPreviousVariation() {
         if (!tree.parent) return
 
         var mod = tree.parent.subtrees.length
-        tree.parent.current = (tree.parent.current + mod - 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[tree.parent.current], 0)
+        var i = (tree.parent.current + mod - 1) % mod
+        setCurrentTreePosition(tree.parent.subtrees[i], 0)
     })
 }
 
