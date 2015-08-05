@@ -390,7 +390,8 @@ function makeMove(vertex) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
         })
 
-        var suicide = !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
+        var suicide = setting.get('game.show_suicide_warning')
+        suicide = suicide && !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
             return getBoard().arrangement[v] == sign
         }).every(function(v) {
             return getBoard().getLiberties(v).length == 1
@@ -398,7 +399,7 @@ function makeMove(vertex) {
             return getBoard().arrangement[v] == 0
         }).length == 0
 
-        if (suicide && setting.get('game.show_suicide_warning')) {
+        if (suicide) {
             if (dialog.showMessageBox(remote.getCurrentWindow(), {
                 type: 'info',
                 title: app.getName(),
