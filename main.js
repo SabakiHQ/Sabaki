@@ -17,7 +17,7 @@ setting
 .default('graph.delay', 300)
 .default('graph.grid_size', 25)
 .default('graph.node_active_color', '#f76047')
-.default('graph.node_collapsed_color', '#555')
+.default('graph.node_inactive_color', '#555')
 .default('graph.node_color', '#eee')
 .default('graph.node_comment_color', '#5bc1c4')
 .default('graph.node_size', 4)

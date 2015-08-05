@@ -165,7 +165,7 @@ exports.matrixdict2graph = function(matrixdict) {
                 node.originalColor = node.color = setting.get('graph.node_comment_color')
 
             if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
-                node.originalColor = node.color = setting.get('graph.node_collapsed_color')
+                node.originalColor = node.color = setting.get('graph.node_inactive_color')
 
             graph.nodes.push(node)
 
