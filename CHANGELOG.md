@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Highlight current game track in graph
+
 **Fixed**
 * Fix uncaught exception when playing in pruned subgraphs again
 * Faster click response when playing in large graphs
