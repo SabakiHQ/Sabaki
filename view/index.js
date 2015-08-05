@@ -52,13 +52,16 @@ function getGraphMatrixDict() {
 function setGraphMatrixDict(matrixdict) {
     if (!getShowSidebar()) return
 
-    var s = $('graph').retrieve('sigma')
+    try {
+        var s = $('graph').retrieve('sigma')
+        s.graph.clear()
+        s.graph.read(gametree.matrixdict2graph(matrixdict))
+        s.refresh()
+    } catch(e) {
+        setGraphMatrixDict(matrixdict)
+    }
+
     $('graph').store('graphmatrixdict', matrixdict)
-
-    s.graph.clear()
-    s.graph.read(gametree.matrixdict2graph(matrixdict))
-
-    s.refresh()
 }
 
 function setCurrentTreePosition(tree, index) {
