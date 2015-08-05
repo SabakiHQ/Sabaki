@@ -19,7 +19,7 @@ setting
 .default('graph.node_active_color', '#f76047')
 .default('graph.node_inactive_color', '#555')
 .default('graph.node_color', '#eee')
-.default('graph.node_comment_color', '#5bc1c4')
+.default('graph.node_comment_color', '#6bb1ff')
 .default('graph.node_size', 4)
 .default('scoring.method', 'territory')
 .default('sound.enable', true)
