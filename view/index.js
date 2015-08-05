@@ -68,15 +68,17 @@ function setGraphMatrixDict(matrixdict) {
 function setCurrentTreePosition(tree, index) {
     if (!tree || getScoringMode()) return
 
-    // Remove current graph node color
-    var n = getCurrentGraphNode()
+    // Remove old graph node color
+    var oldNode = getCurrentGraphNode()
+    var oldPos = getCurrentTreePosition()
     var node = getGraphNode(tree, index)
 
-    if (n && n != node)
-        n.color = n.originalColor
+    if (oldNode && oldNode != node)
+        oldNode.color = oldNode.originalColor
 
     // Store new position
     $('goban').store('position', new Tuple(tree, index))
+    var retrack = !gametree.onCurrentTrack(tree)
 
     // Set current path
     var t = tree
@@ -89,16 +91,16 @@ function setCurrentTreePosition(tree, index) {
     setTimeout(function() {
         if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
 
-        var update = !node || tree.collapsed && index == tree.nodes.length - 1
+        var redraw = !node || retrack || tree.collapsed && index == tree.nodes.length - 1
         var t = tree
 
         while (t.parent && t.parent.collapsed) {
-            update = true
+            redraw = true
             t.parent.collapsed = false
             t = t.parent
         }
 
-        if (update) {
+        if (redraw) {
             tree.collapsed = false
             updateGraph()
         }
