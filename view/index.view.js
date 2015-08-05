@@ -2,11 +2,15 @@ function getMainMenu() {
     return document.body.retrieve('mainmenu')
 }
 
-function setIsLoading(loading) {
-    if (loading) document.body.addClass('loading')
-    else $('loading').tween('opacity', 0).get('tween').addEvent('complete', function() {
-        document.body.removeClass('loading')
-        $('loading').setStyle('opacity', null)
+function getIsBusy() {
+    return document.body.hasClass('busy')
+}
+
+function setIsBusy(busy) {
+    if (busy) document.body.addClass('busy')
+    else $('busy').tween('opacity', 0).get('tween').addEvent('complete', function() {
+        document.body.removeClass('busy')
+        $('busy').setStyle('opacity', null)
     })
 }
 

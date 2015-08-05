@@ -775,6 +775,8 @@ function centerGraphCameraAt(node) {
  */
 
 function newGame(playSound) {
+    if (getIsBusy()) return
+
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
     buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
         + ']SZ[' + setting.get('game.default_board_size') + ']'
@@ -791,7 +793,8 @@ function newGame(playSound) {
 }
 
 function loadGame(filename) {
-    setIsLoading(true)
+    if (getIsBusy()) return
+    setIsBusy(true)
 
     if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -819,13 +822,14 @@ function loadGame(filename) {
         })
     }
 
-    setIsLoading(false)
+    setIsBusy(false)
     closeGameInfo()
     closeScore()
 }
 
 function saveGame() {
-    setIsLoading(true)
+    if (getIsBusy()) return
+    setIsBusy(true)
 
     var result = dialog.showSaveDialog(remote.getCurrentWindow(), {
         filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
@@ -838,7 +842,7 @@ function saveGame() {
         fs.writeFile(result, text)
     }
 
-    setIsLoading(false)
+    setIsBusy(false)
 }
 
 function goBack() {

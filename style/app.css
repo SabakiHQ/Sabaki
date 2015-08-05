@@ -58,7 +58,7 @@ img {
     vertical-align: bottom;
 }
 
-#loading {
+#busy {
         display: none;
         position: fixed;
         left: 0;
@@ -69,7 +69,7 @@ img {
         opacity: 0;
         z-index: 999;
     }
-    body.loading #loading {
+    body.busy #busy {
         display: block;
         opacity: .5;
 }
