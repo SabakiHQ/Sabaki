@@ -499,7 +499,7 @@ function buildMenu() {
                     enabled: false
                 },
                 {
-                    label: 'Check For Updates',
+                    label: 'Check For &Updates',
                     click: function() {
                         checkForUpdates(function(hasUpdates) {
                             if (hasUpdates) return
@@ -514,15 +514,15 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Issues',
+                    label: 'GitHub &Respository',
                     click: function() {
-                        shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
+                        shell.openExternal('https://github.com/yishn/' + app.getName())
                     }
                 },
                 {
-                    label: 'GitHub Respository',
+                    label: 'Report &Issue',
                     click: function() {
-                        shell.openExternal('https://github.com/yishn/' + app.getName())
+                        shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
                     }
                 }
             ]

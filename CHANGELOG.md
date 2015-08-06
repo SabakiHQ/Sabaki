@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
-## [Goban v0.3.6][v0.3.6] (2015-08-06)
+## [Goban v0.3.6][v0.3.6] (2015-08-07)
 
 **Added**
 * Highlight current game track in graph
