@@ -51,7 +51,6 @@ function setGraphMatrixDict(matrixdict) {
 
     try {
         s.graph.read(gametree.matrixdict2graph(matrixdict))
-        s.refresh()
     } catch(e) {
         setGraphMatrixDict(matrixdict)
     }
