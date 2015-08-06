@@ -146,6 +146,7 @@ exports.matrixdict2graph = function(matrixdict) {
     var matrix = matrixdict[0]
     var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
+    var currentTrack = []
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
     var gridSize = setting.get('graph.grid_size')
 
@@ -168,8 +169,10 @@ exports.matrixdict2graph = function(matrixdict) {
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
 
-            if (exports.onCurrentTrack(tree))
+            if (currentTrack.contains(tree.id) || exports.onCurrentTrack(tree)) {
                 node.color = node.originalColor
+                currentTrack.push(tree.id)
+            }
 
             if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
                 node.color = node.originalColor = setting.get('graph.node_collapsed_color')
