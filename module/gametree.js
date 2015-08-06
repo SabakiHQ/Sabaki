@@ -67,22 +67,22 @@ exports.reduceTree = function(tree) {
 }
 
 exports.getHeight = function(tree) {
-    var depth = 0
+    var height = 0
 
     tree.subtrees.each(function(subtree) {
-        depth = Math.max(exports.getHeight(subtree), depth)
+        height = Math.max(exports.getHeight(subtree), height)
     })
 
-    return depth + tree.nodes.length
+    return height + tree.nodes.length
 }
 
 exports.getCurrentHeight = function(tree) {
-    var depth = tree.nodes.length
+    var height = tree.nodes.length
 
     if (tree.current != null)
-        depth += exports.getCurrentHeight(tree.subtrees[tree.current])
+        height += exports.getCurrentHeight(tree.subtrees[tree.current])
 
-    return depth
+    return height
 }
 
 exports.getWidth = function(y, matrix) {
