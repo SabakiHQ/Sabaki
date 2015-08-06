@@ -147,11 +147,12 @@ exports.matrixdict2graph = function(matrixdict) {
     var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
     var currentTrack = []
+    var notCurrentTrack = []
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
     var gridSize = setting.get('graph.grid_size')
 
-    for (x = 0; x < width; x++) {
-        for (y = 0; y < matrix.length; y++) {
+    for (y = 0; y < matrix.length; y++) {
+        for (x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
             var tree = matrix[y][x][0]
@@ -169,9 +170,15 @@ exports.matrixdict2graph = function(matrixdict) {
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
 
-            if (currentTrack.contains(tree.id) || exports.onCurrentTrack(tree)) {
+            if (currentTrack.contains(tree.id)) {
                 node.color = node.originalColor
-                currentTrack.push(tree.id)
+            } else if (!notCurrentTrack.contains(tree.id)) {
+                if (exports.onCurrentTrack(tree)) {
+                    currentTrack.push(tree.id)
+                    node.color = node.originalColor
+                } else {
+                    notCurrentTrack.push(tree.id)
+                }
             }
 
             if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
