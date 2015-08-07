@@ -189,12 +189,12 @@
         margin-top: -8px;
     }
     .goban .row li.cross::before {
-        content: '\2715';
+        content: '\2573';
         display: block;
         width: 16px;
         height: 16px;
         border: none;
-        line-height: 13px;
+        font-size: 13px;
         text-indent: -2px;
     }
     .goban .row li.triangle::before {
