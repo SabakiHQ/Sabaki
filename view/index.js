@@ -80,15 +80,10 @@ function setCurrentTreePosition(tree, index) {
     // Store new position
     $('goban').store('position', new Tuple(tree, index))
     var retrack = !gametree.onCurrentTrack(tree)
-    var redraw = !node || retrack || tree.collapsed && index == tree.nodes.length - 1
 
     // Set current path
     var t = tree
-    t.collapsed = false
-
     while (t.parent) {
-        redraw = redraw || t.parent.collapsed
-        t.parent.collapsed = false
         t.parent.current = t.parent.subtrees.indexOf(t)
         t = t.parent
     }
@@ -96,7 +91,20 @@ function setCurrentTreePosition(tree, index) {
     // Update graph and slider
     setTimeout(function() {
         if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
-        if (redraw) updateGraph()
+
+        var redraw = !node || retrack || tree.collapsed && index == tree.nodes.length - 1
+        var t = tree
+
+        while (t.parent && t.parent.collapsed) {
+            redraw = true
+            t.parent.collapsed = false
+            t = t.parent
+        }
+
+        if (redraw) {
+            tree.collapsed = false
+            updateGraph()
+        }
 
         centerGraphCameraAt(getCurrentGraphNode())
         updateSlider()
