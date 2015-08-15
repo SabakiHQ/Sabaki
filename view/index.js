@@ -3,6 +3,7 @@ var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
+var sound = require('../module/sound')
 var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app')
@@ -435,11 +436,11 @@ function makeMove(vertex) {
 
         // Play sounds
         if (capture || suicide) setTimeout(function() {
-            new Audio('../sound/capture' + Math.floor(Math.random() * 5) + '.wav').play()
+            sound.playCaptureSound()
         }, 300 + Math.floor(Math.random() * 200))
 
-        new Audio('../sound/' + Math.floor(Math.random() * 5) + '.wav').play()
-    } else new Audio('../sound/pass.wav').play()
+        sound.playPachiSound()
+    } else sound.playPassSound()
 
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
