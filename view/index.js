@@ -51,9 +51,7 @@ function setGraphMatrixDict(matrixdict) {
         var graph = gametree.matrixdict2graph(matrixdict)
         s.graph.clear()
         s.graph.read(graph)
-    } catch(e) {
-        setGraphMatrixDict(matrixdict)
-    }
+    } catch(e) { }
 
     $('graph').store('graphmatrixdict', matrixdict)
 }
