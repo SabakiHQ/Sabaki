@@ -775,7 +775,7 @@ function newGame(playSound) {
     setRootTree(tree)
 
     if (arguments.length >= 1 && playSound) {
-        new Audio('../sound/newgame.wav').play()
+        sound.playNewGameSound()
         showGameInfo()
     }
 
