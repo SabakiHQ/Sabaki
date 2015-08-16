@@ -166,7 +166,22 @@ header, #bar #edit, #bar #scoring {
         cursor: ew-resize;
         z-index: 10;
     }
-    #sidebar .slider {
+    .sidebar #sidebar {
+        display: block;
+    }
+    .sidebar #main {
+        right: 200px;
+}
+
+#graph {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 50%;
+        z-index: 1;
+    }
+    #graph .slider {
         position: absolute;
         top: 0;
         right: 0;
@@ -175,10 +190,10 @@ header, #bar #edit, #bar #scoring {
         z-index: 10;
         transition: .2s background;
     }
-    #sidebar .slider.active, #sidebar .slider:hover {
+    #graph .slider.active, #graph .slider:hover {
         background: #292929;
     }
-    #sidebar .slider div {
+    #graph .slider div {
         position: absolute;
         top: 0;
         right: 0;
@@ -186,14 +201,14 @@ header, #bar #edit, #bar #scoring {
         height: 0%;
         z-index: 2;
         background: #393939;
-        box-shadow: 0 0 10px #111;
+        box-shadow: 0 0 10px #070707;
         transition: .5s height, .2s background;
     }
-    #sidebar .slider.active div, #sidebar .slider:hover div {
+    #graph .slider.active div, #graph .slider:hover div {
         background: #494949;
     }
-    #sidebar .slider.active div { transition: none; }
-    #sidebar .slider span {
+    #graph .slider.active div { transition: none; }
+    #graph .slider span {
         position: absolute;
         right: 8px;
         top: 25px;
@@ -209,21 +224,8 @@ header, #bar #edit, #bar #scoring {
         z-index: 1;
         transition: .2s opacity;
     }
-    #sidebar .slider:hover span, #sidebar .slider.active span { opacity: 1; }
-    .sidebar #sidebar {
-        display: block;
-    }
-    .sidebar #main {
-        right: 200px;
-}
-
-#graph {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    height: 50%;
-    z-index: 1;
+    #graph .slider:hover span, #graph .slider.active span {
+        opacity: 1;
 }
 
 #properties {
