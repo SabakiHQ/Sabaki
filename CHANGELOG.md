@@ -3,10 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+## [Goban v0.3.7][v0.3.7] (2015-08-16)
 
 **Fixed**
+* Fix wrong cross symbol on Windows 10
 * Fix a bug where current game track is not correctly highlighted in the graph
 * Fix a bug where stone sounds are not played immediately
+* Fix graph performance issues
 
 **Changed**
 * Update to Electron v0.30.4
@@ -117,7 +120,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.6...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.3.7...master
+[v0.3.7]: https://github.com/yishn/Goban/compare/v0.3.7...v0.3.6
 [v0.3.6]: https://github.com/yishn/Goban/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/yishn/Goban/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/yishn/Goban/compare/v0.3.3...v0.3.4
