@@ -4,7 +4,6 @@ var shell = require('shell')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var sound = require('../module/sound')
-var uuid = require('../lib/node-uuid')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
@@ -440,11 +439,11 @@ function makeMove(vertex) {
 
         // Play sounds
         if (capture || suicide) setTimeout(function() {
-            sound.playCaptureSound()
+            sound.playCapture()
         }, 300 + Math.floor(Math.random() * 200))
 
-        sound.playPachiSound()
-    } else sound.playPassSound()
+        sound.playPachi()
+    } else sound.playPass()
 
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
@@ -779,7 +778,7 @@ function newGame(playSound) {
     setRootTree(tree)
 
     if (arguments.length >= 1 && playSound) {
-        sound.playNewGameSound()
+        sound.playNewGame()
         showGameInfo()
     }
 

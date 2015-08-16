@@ -9,13 +9,13 @@ var pachiSounds = Object.keys(new Int8Array(5)).map(function(x) {
 var newGameSound = new Audio('../sound/newgame.wav')
 var passSound = new Audio('../sound/pass.wav')
 
-exports.playCaptureSound = function() {
+exports.playCapture = function() {
     captureSounds[Math.floor(Math.random() * 5)].play()
 }
 
-exports.playPachiSound = function() {
+exports.playPachi = function() {
     pachiSounds[Math.floor(Math.random() * 5)].play()
 }
 
-exports.playNewGameSound = function() { newGameSound.play() }
-exports.playPassSound = function() { passSound.play() }
+exports.playNewGame = function() { newGameSound.play() }
+exports.playPass = function() { passSound.play() }
