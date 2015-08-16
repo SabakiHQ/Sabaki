@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Fix a bug where current game track is not correctly highlighted in the graph
+* Fix a bug where stone sounds are not played immediately
 
 **Changed**
 * Update to Electron v0.30.4
