@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Fixed**
+* Fix a bug where current game track is not correctly highlighted in the graph
+
+**Changed**
+* Update to Electron v0.30.4
+
 ## [Goban v0.3.6][v0.3.6] (2015-08-07)
 
 **Added**
