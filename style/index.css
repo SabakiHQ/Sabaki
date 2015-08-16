@@ -155,7 +155,7 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         right: 0;
         width: 200px;
-        background: #070707;
+        background: #111;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -178,7 +178,7 @@ header, #bar #edit, #bar #scoring {
         top: 0;
         right: 0;
         left: 0;
-        height: 50%;
+        height: 100%;
         z-index: 1;
     }
     #graph .slider {
@@ -201,7 +201,7 @@ header, #bar #edit, #bar #scoring {
         height: 0%;
         z-index: 2;
         background: #393939;
-        box-shadow: 0 0 10px #070707;
+        box-shadow: 0 0 10px #111;
         transition: .5s height, .2s background;
     }
     #graph .slider.active div, #graph .slider:hover div {
@@ -229,12 +229,13 @@ header, #bar #edit, #bar #scoring {
 }
 
 #properties {
+    display: none;
     position: absolute;
     top: 50%;
     right: 0;
     left: 0;
     bottom: 0;
-    background: #111;
+    background: #181818;
     z-index: 1;
 }
 
