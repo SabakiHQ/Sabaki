@@ -155,7 +155,7 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         right: 0;
         width: 200px;
-        background: #111;
+        background: #070707;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -220,9 +220,19 @@ header, #bar #edit, #bar #scoring {
 #graph {
     position: absolute;
     top: 0;
-    bottom: 0;
     right: 0;
     left: 0;
+    height: 50%;
+    z-index: 1;
+}
+
+#properties {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background: #111;
     z-index: 1;
 }
 

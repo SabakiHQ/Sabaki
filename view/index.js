@@ -78,7 +78,9 @@ function setCurrentTreePosition(tree, index) {
 
     // Store new position
     $('goban').store('position', new Tuple(tree, index))
-    var redraw = !node || !gametree.onCurrentTrack(tree) || tree.collapsed && index == tree.nodes.length - 1
+    var redraw = !node
+        || !gametree.onCurrentTrack(tree)
+        || tree.collapsed && index == tree.nodes.length - 1
 
     var t = tree
     t.collapsed = false

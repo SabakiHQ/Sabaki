@@ -135,8 +135,8 @@ function setSliderValue(value, label) {
     var handle = $$('#sidebar .slider div')[0]
     var labelel = $$('#sidebar .slider span')[0]
 
-    var top = value * $('sidebar').getSize().y / 100 - labelel.getSize().y / 2
-    top = Math.min(Math.max(top, 10), $('sidebar').getSize().y - 10 - labelel.getSize().y)
+    var top = value * $('graph').getSize().y / 100 - labelel.getSize().y / 2
+    top = Math.min(Math.max(top, 10), $('graph').getSize().y - 10 - labelel.getSize().y)
 
     handle.setStyle('height', value + '%')
     labelel.set('text', label).setStyle('top', top)
