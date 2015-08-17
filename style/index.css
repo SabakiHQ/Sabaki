@@ -230,15 +230,23 @@ header, #bar #edit, #bar #scoring {
 }
 
 #properties {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    left: 0;
-    height: 50%;
-    overflow: show;
-    z-index: 2;
-    background: #181818;
-    box-shadow: 0 0 10px #111;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        height: 50%;
+        overflow: show;
+        z-index: 2;
+        background: #181818;
+        box-shadow: 0 0 10px #111;
+    }
+    #properties .thumb {
+        background: #393939;
+        border-radius: 0;
+        transition: .2s background;
+    }
+    #properties .thumb:hover, #properties .thumb:active {
+        background: #494949;
 }
 
 #info, #score {
