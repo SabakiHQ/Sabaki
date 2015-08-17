@@ -54,7 +54,7 @@ var myScrollbar = new GeminiScrollbar({
 **LESS**
 
 ```less
-@import (css) "<path-to-gemini-scrollbar>/gemini-scrollbar.css";
+@import (inline) "<path-to-gemini-scrollbar>/gemini-scrollbar.css";
 ```
 
 **CSS**
@@ -80,13 +80,18 @@ createElements | Boolean | `true` | Create and append the require HTMLElements a
 
 \* `required`
 
-## Methods
+## Basic Methods
 
 name | description
 :--- | :---
 create | Bind the events, create the required elements and display the scrollbars.
 update | Recalculate the viewbox and scrollbar dimensions.
 destroy | Unbind the events and remove the custom scrollbar elements.
+
+## Other Mehods
+
+name | description
+:-- | :--
 getViewElement | Returns the scrollable element
 
 ## Customization

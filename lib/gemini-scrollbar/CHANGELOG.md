@@ -1,3 +1,29 @@
+## 1.2.8 (2015-07-18)
+
+Bugfixes:
+
+- do not remove class selectors if the markup is already defined (createElements: false)
+
+## 1.2.7 (2015-06-28)
+
+Bugfixes:
+
+- do not re-append elements on `create` if `createElements` option is `false`
+- do not add `gm-prevented` after destroy
+- clean document and window references on `destroy` for `reateElements: false`
+
+## 1.2.6 (2015-06-23)
+
+Bugfixes:
+
+- [#9](../../issues/9) better support for scrollbars with offset positions
+
+## 1.2.5 (2015-06-21)
+
+Bugfixes:
+
+- [#7](../../issues/7) do not remove elements when calling the `destroy` method if the `createElements` option was set to `false`
+
 ## 1.2.4 (2015-05-13)
 
 Bugfixes:

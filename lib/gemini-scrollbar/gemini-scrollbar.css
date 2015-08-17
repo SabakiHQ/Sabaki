@@ -1,6 +1,6 @@
 /**
  * gemini-scrollbar
- * @version 1.2.4
+ * @version 1.2.8
  * @link http://noeldelgado.github.io/gemini-scrollbar/
  * @license MIT
  */
@@ -62,6 +62,7 @@
 
 .gm-scrollbar .thumb {
   position: relative;
+  display: block;
   width: 0;
   height: 0;
   cursor: pointer;
@@ -99,4 +100,3 @@
   opacity: 1;
   transition: opacity 340ms ease-out;
 }
-
