@@ -592,10 +592,13 @@ document.addEvent('domready', function() {
     })
 
     // Properties scrollbar
-    new Scrollbar({
+
+    var scrollbar = new Scrollbar({
         element: $('properties'),
         createElements: false
     }).create()
+
+    $('properties').store('scrollbar', scrollbar)
 
     // Resize sidebar
 
@@ -603,6 +606,7 @@ document.addEvent('domready', function() {
         if (event.button != 0) return
         $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
     })
+
     document.body.addEvent('mouseup', function() {
         if (!$('sidebar').retrieve('initpos')) return
 
@@ -621,5 +625,7 @@ document.addEvent('domready', function() {
             setSidebarWidth(newwidth)
             resizeBoard()
         })
+
+        $('properties').retrieve('scrollbar').update()
     })
 })
