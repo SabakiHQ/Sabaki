@@ -155,6 +155,7 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         right: 0;
         width: 200px;
+        overflow: hidden;
         background: #111;
     }
     #sidebar .verticalresizer {
@@ -178,7 +179,7 @@ header, #bar #edit, #bar #scoring {
         top: 0;
         right: 0;
         left: 0;
-        height: 100%;
+        height: 50%;
         z-index: 1;
     }
     #graph .slider {
@@ -229,14 +230,14 @@ header, #bar #edit, #bar #scoring {
 }
 
 #properties {
-    display: none;
     position: absolute;
     top: 50%;
     right: 0;
     left: 0;
     bottom: 0;
+    z-index: 2;
     background: #181818;
-    z-index: 1;
+    box-shadow: 0 0 10px #111;
 }
 
 #info, #score {
