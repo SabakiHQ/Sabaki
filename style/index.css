@@ -234,7 +234,8 @@ header, #bar #edit, #bar #scoring {
     top: 50%;
     right: 0;
     left: 0;
-    bottom: 0;
+    height: 50%;
+    overflow: show;
     z-index: 2;
     background: #181818;
     box-shadow: 0 0 10px #111;

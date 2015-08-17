@@ -591,6 +591,12 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
+    // Properties scrollbar
+    new Scrollbar({
+        element: $('properties'),
+        createElements: false
+    }).create()
+
     // Resize sidebar
 
     $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
