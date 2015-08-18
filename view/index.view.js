@@ -129,8 +129,18 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
+    var html = text.trim()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&rt;')
+        .replace(/\n/g, '<br/>')
+    console.log(JSON.stringify(html))
+
     $('properties').store('commenttext', text)
-        .getElement('.inner').set('text', text)
+        .getElement('.inner').set('html', html)
+        .getParent().scrollTo(0, 0)
+
+    $('properties').retrieve('scrollbar').update()
 }
 
 function getSliderValue() {

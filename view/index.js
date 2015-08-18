@@ -90,7 +90,7 @@ function setCurrentTreePosition(tree, index) {
         t = t.parent
     }
 
-    // Update graph and slider
+    // Update graph, slider and comment text
     setTimeout(function() {
         if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
 
@@ -105,6 +105,7 @@ function setCurrentTreePosition(tree, index) {
 
         centerGraphCameraAt(getCurrentGraphNode())
         updateSlider()
+        updateCommentText()
     }, setting.get('graph.delay'))
 
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
@@ -653,6 +654,17 @@ function updateSlider() {
         var relative = total + 1 - gametree.getCurrentHeight(tree) + index
 
         setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
+    })
+}
+
+function updateCommentText() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        var comment
+
+        if ('C' in tree.nodes[index]) comment = tree.nodes[index].C[0]
+        else comment = ''
+
+        setCommentText(comment)
     })
 }
 
