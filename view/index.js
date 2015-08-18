@@ -659,12 +659,8 @@ function updateSlider() {
 
 function updateCommentText() {
     getCurrentTreePosition().unpack(function(tree, index) {
-        var comment
-
-        if ('C' in tree.nodes[index]) comment = tree.nodes[index].C[0]
-        else comment = ''
-
-        setCommentText(comment)
+        var node = tree.nodes[index]
+        setCommentText('C' in node ? node.C[0] : '')
     })
 }
 
