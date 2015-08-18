@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Added**
+* Comment view
+
+**Fixed**
+* Fix a bug where saving games could lead to unescaped characters
+
 ## [Goban v0.3.7][v0.3.7] (2015-08-16)
 
 **Fixed**
