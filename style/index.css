@@ -237,7 +237,7 @@ header, #bar #edit, #bar #scoring {
         height: 50%;
         overflow: show;
         z-index: 2;
-        color: #ddd;
+        color: #d0d0d0;
         background: #181818;
         box-shadow: 0 0 10px #111;
     }
@@ -259,7 +259,7 @@ header, #bar #edit, #bar #scoring {
     #properties .thumb {
         background: #393939;
         border-radius: 0;
-        transition: .2s background;
+        transition: .2s background, .5s height, .5s width;
     }
     #properties .thumb:hover, #properties .thumb:active {
         background: #494949;
