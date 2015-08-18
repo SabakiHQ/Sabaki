@@ -192,7 +192,7 @@ header, #bar #edit, #bar #scoring {
         transition: .2s background;
     }
     #graph .slider.active, #graph .slider:hover {
-        background: #292929;
+        background: #181818;
     }
     #graph .slider div {
         position: absolute;
@@ -237,8 +237,24 @@ header, #bar #edit, #bar #scoring {
         height: 50%;
         overflow: show;
         z-index: 2;
+        color: #ddd;
         background: #181818;
         box-shadow: 0 0 10px #111;
+    }
+    #properties .inner {
+        margin: 1em;
+    }
+    #properties .gm-scrollbar {
+        bottom: 0;
+        right: 0;
+    }
+    #properties .gm-scrollbar.-vertical {
+        width: 8px;
+        top: 0;
+    }
+    #properties .gm-scrollbar.-horizontal {
+        height: 8px;
+        left: 0;
     }
     #properties .thumb {
         background: #393939;
