@@ -134,7 +134,6 @@ function setCommentText(text) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&rt;')
         .replace(/\n/g, '<br/>')
-    console.log(JSON.stringify(html))
 
     $('properties').store('commenttext', text)
         .getElement('.inner').set('html', html)
