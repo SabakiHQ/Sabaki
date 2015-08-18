@@ -124,6 +124,15 @@ function setCurrentPlayer(sign) {
     $$('.currentplayer').set('src', sign > 0 ? '../img/ui/blacktoplay.png' : '../img/ui/whitetoplay.png')
 }
 
+function getCommentText() {
+    return $('properties').retrieve('commenttext')
+}
+
+function setCommentText(text) {
+    $('properties').store('commenttext', text)
+        .getElement('.inner').set('text', text)
+}
+
 function getSliderValue() {
     var value = $$('#sidebar .slider div')[0].getStyle('height').toInt()
     var label = $$('#sidebar .slider span')[0].get('text')
