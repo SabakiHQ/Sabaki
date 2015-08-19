@@ -241,6 +241,12 @@ header, #bar #edit, #bar #scoring {
         background: #181818;
         box-shadow: 0 0 10px #111;
     }
+    #properties hr {
+        border: 0;
+        margin: 1em 0;
+        height: 2px;
+        background: #393939;
+    }
     #properties .inner {
         margin: 1em;
     }
