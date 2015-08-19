@@ -1,20 +1,20 @@
 var Tuple = require('../lib/tuple')
 
-var Board = new Class({
-    initialize: function(size, arrangement, captures) {
-        this.size = arguments.length >= 1 ? size : 19
-        this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
-        this.arrangement = {}
-        this.overlays = {}
+var Board = function(size, arrangement, captures) {
+    this.size = arguments.length >= 1 ? size : 19
+    this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
+    this.arrangement = {}
+    this.overlays = {}
 
-        // Initialize arrangement
-        for (var x = 0; x < this.size; x++) {
-            for (var y = 0; y < this.size; y++) {
-                this.arrangement[new Tuple(x, y)] = arguments.length >= 2 ? arrangement[new Tuple(x, y)] : 0
-            }
+    // Initialize arrangement
+    for (var x = 0; x < this.size; x++) {
+        for (var y = 0; y < this.size; y++) {
+            this.arrangement[new Tuple(x, y)] = arguments.length >= 2 ? arrangement[new Tuple(x, y)] : 0
         }
-    },
+    }
+}
 
+Board.prototype = {
     hasVertex: function(v) {
         return v.unpack(function(x, y) {
             return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
@@ -273,6 +273,6 @@ var Board = new Class({
 
         return hash
     }
-})
+}
 
 module.exports = Board
