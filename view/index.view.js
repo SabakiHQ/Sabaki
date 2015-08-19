@@ -155,8 +155,12 @@ function setCommentText(text) {
 
     $('properties').store('commenttext', text)
         .getElement('.inner').set('html', html)
-        .getParent().scrollTo(0, 0)
+        .getElements('a').addEvent('click', function() {
+            shell.openExternal(this.href)
+            return false
+        })
 
+    $$('#properties .gm-scrollbar')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
 }
 
