@@ -141,6 +141,12 @@ function setCommentText(text) {
             return s.replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&rt;')
+                .replace(/((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
+                    return '<a href="' + url + '">' + url + '</a>'
+                })
+                .replace(/\S+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+/g, function(email) {
+                    return '<a href="mailto:' + email + '">' + email + '</a>'
+                })
         })
         .join('<br>')
         .replace(/<br><br>/g, '</p><p>')
