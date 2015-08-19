@@ -321,5 +321,5 @@ exports.tree2string = function(tree) {
 }
 
 exports.escapeString = function(input) {
-    return input.replace(/\\/g, '\\\\').replace(/]/g, '\\]')
+    return input.replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
 }
