@@ -244,6 +244,10 @@ header, #bar #edit, #bar #scoring {
     #properties p {
         margin: 1em 0;
     }
+    #properties a {
+        color: white;
+        cursor: pointer;
+    }
     #properties hr {
         border: 0;
         margin: 1em 0;
