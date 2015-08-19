@@ -256,6 +256,7 @@ header, #bar #edit, #bar #scoring {
     }
     #properties .inner {
         margin: 1em;
+        word-wrap: break-word;
     }
     #properties .gm-scrollbar {
         bottom: 0;
