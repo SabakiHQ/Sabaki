@@ -268,10 +268,13 @@ header, #bar #edit, #bar #scoring {
     #properties .thumb {
         background: #393939;
         border-radius: 0;
-        transition: .2s background, .5s height, .5s width;
+        transition: .2s background, .5s height, .5s width, .2s transform;
     }
     #properties .thumb:hover, #properties .thumb:active {
         background: #494949;
+    }
+    #properties .thumb:active {
+        transition: none;
 }
 
 #info, #score {

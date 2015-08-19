@@ -66,6 +66,7 @@ img {
         top: 0;
         bottom: 0;
         background: #26292C;
+        cursor: wait;
         opacity: 0;
         z-index: 999;
     }
