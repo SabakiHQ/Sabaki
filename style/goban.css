@@ -212,9 +212,9 @@
         content: attr(title);
         display: block;
         border: none;
-        width: 26px;
+        width: 20px;
         height: 16px;
-        margin-left: -14px;
+        margin-left: -11px;
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: normal;
