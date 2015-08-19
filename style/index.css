@@ -241,6 +241,9 @@ header, #bar #edit, #bar #scoring {
         background: #181818;
         box-shadow: 0 0 10px #111;
     }
+    #properties p {
+        margin: 1em 0;
+    }
     #properties hr {
         border: 0;
         margin: 1em 0;

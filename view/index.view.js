@@ -129,21 +129,23 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = text.trim()
+    var html = '<p>' + text.trim()
         .split('\n')
         .map(function(s) {
             if (s.trim() == '') return ''
 
             if (s.trim().split('').every(function(x) {
                 return x == '-' || x == '='
-            })) return '<hr>'
+            })) return '</p><hr><p>'
 
             return s.replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&rt;')
         })
         .join('<br>')
-        .replace(/(<br>)*<hr>(<br>)*/g, '<hr>')
+        .replace(/<br><br>/g, '</p><p>')
+        .replace(/(<br>)*<p>(<br>)*/g, '<p>')
+        .replace(/(<br>)*<\/p>(<br>)*/g, '</p>') + '</p>'
 
     $('properties').store('commenttext', text)
         .getElement('.inner').set('html', html)
