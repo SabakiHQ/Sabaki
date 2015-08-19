@@ -130,10 +130,20 @@ function getCommentText() {
 
 function setCommentText(text) {
     var html = text.trim()
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&rt;')
-        .replace(/\n/g, '<br/>')
+        .split('\n')
+        .map(function(s) {
+            if (s.trim() == '') return ''
+
+            if (s.trim().split('').every(function(x) {
+                return x == '-' || x == '='
+            })) return '<hr>'
+
+            return s.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&rt;')
+        })
+        .join('<br>')
+        .replace(/(<br>)*<hr>(<br>)*/g, '<hr>')
 
     $('properties').store('commenttext', text)
         .getElement('.inner').set('html', html)
