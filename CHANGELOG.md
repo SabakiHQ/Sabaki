@@ -8,7 +8,10 @@ All notable changes to this project will be documented in this file.
 * Comment view
 
 **Fixed**
-* Fix a bug where saving games could lead to unescaped characters
+* Fix a bug where saving games with comments could lead to unescaped characters
+
+**Changed**
+* Update to Electron v0.31.0
 
 ## [Goban v0.3.7][v0.3.7] (2015-08-16)
 
