@@ -60,7 +60,7 @@ function setShowSidebar(show) {
 
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
-    setting.set('view.show_sidebar', show)
+    setting.set('view.show_graph', show)
     getMainMenu().items[3].submenu.items[4].checked = show
 
     if (show) {

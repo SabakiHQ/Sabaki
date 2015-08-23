@@ -27,7 +27,7 @@ setting
 .default('view.fuzzy_stone_placement', true)
 .default('view.show_coordinates', false)
 .default('view.show_variations', true)
-.default('view.show_sidebar', false)
+.default('view.show_graph', false)
 .default('view.sidebar_width', 200)
 .default('view.sidebar_minwidth', 100)
 .default('window.height', 648)
