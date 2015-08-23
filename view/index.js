@@ -238,10 +238,12 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
-    if (setting.get('view.show_graph')) {
-        document.body.addClass('sidebar')
-        setSidebarWidth(setting.get('view.sidebar_width'))
-    }
+    if (setting.get('view.show_graph'))
+        document.body.addClass('graph').addClass('sidebar')
+    if (setting.get('view.show_comments'))
+        document.body.addClass('comments').addClass('sidebar')
+
+    setSidebarWidth(setting.get('view.sidebar_width'))
 }
 
 function prepareEditTools() {

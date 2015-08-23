@@ -25,6 +25,7 @@ setting
 .default('scoring.method', 'territory')
 .default('sound.enable', true)
 .default('view.fuzzy_stone_placement', true)
+.default('view.show_comments', false)
 .default('view.show_coordinates', false)
 .default('view.show_variations', true)
 .default('view.show_graph', false)

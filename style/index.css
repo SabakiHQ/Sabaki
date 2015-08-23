@@ -179,8 +179,14 @@ header, #bar #edit, #bar #scoring {
         top: 0;
         right: 0;
         left: 0;
-        height: 50%;
+        height: 100%;
         z-index: 1;
+    }
+    body.comments.graph #graph {
+        height: 50%;
+    }
+    body:not(.graph) #graph {
+        height: 0;
     }
     #graph .slider {
         position: absolute;
@@ -231,15 +237,21 @@ header, #bar #edit, #bar #scoring {
 
 #properties {
         position: absolute;
-        top: 50%;
+        bottom: 0;
         right: 0;
         left: 0;
-        height: 50%;
+        height: 100%;
         overflow: show;
         z-index: 2;
         color: #d0d0d0;
         background: #181818;
         box-shadow: 0 0 10px #111;
+    }
+    body:not(.comments) #properties {
+        height: 0;
+    }
+    body.graph.comments #properties {
+        height: 50%;
     }
     #properties p {
         margin: 1em 0;

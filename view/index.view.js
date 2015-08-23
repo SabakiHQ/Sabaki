@@ -55,17 +55,17 @@ function getShowSidebar() {
 }
 
 function setShowSidebar(show) {
+    if (getShowSidebar() == show) return
     if (show) document.body.addClass('sidebar')
     else document.body.removeClass('sidebar')
 
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
-    setting.set('view.show_graph', show)
-    getMainMenu().items[3].submenu.items[4].checked = show
 
     if (show) {
         updateGraph()
         updateSlider()
+        updateCommentText();
     } else {
         // Clear game graph
         var s = $('graph').retrieve('sigma')
@@ -82,6 +82,42 @@ function setShowSidebar(show) {
 
     if (win.isMaximized()) return
     win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+
+    resizeBoard()
+}
+
+function getShowGraph() {
+    return document.body.hasClass('graph')
+}
+
+function setShowGraph(show) {
+    if (show) document.body.addClass('graph')
+    else document.body.removeClass('graph')
+
+    getMainMenu().items[3].submenu.items[4].checked = show
+    setting.set('view.show_graph', show)
+
+    $('graph').retrieve('sigma').renderers[0].resize().render()
+    $('properties').retrieve('scrollbar').update()
+
+    setShowSidebar(getShowComments() || getShowGraph())
+}
+
+function getShowComments() {
+    return document.body.hasClass('comments')
+}
+
+function setShowComments(show) {
+    if (show) document.body.addClass('comments')
+    else document.body.removeClass('comments')
+
+    getMainMenu().items[3].submenu.items[5].checked = show
+    setting.set('view.show_comments', show)
+
+    $('graph').retrieve('sigma').renderers[0].resize().render()
+    $('properties').retrieve('scrollbar').update()
+
+    setShowSidebar(getShowComments() || getShowGraph())
 }
 
 function getSidebarWidth() {
@@ -523,11 +559,15 @@ function buildMenu() {
                     label: 'Game &Graph',
                     accelerator: 'CmdOrCtrl+G',
                     type: 'checkbox',
-                    checked: getShowSidebar(),
-                    click: function() {
-                        setShowSidebar(!getShowSidebar())
-                        resizeBoard()
-                    }
+                    checked: getShowGraph(),
+                    click: function() { setShowGraph(!getShowGraph()) }
+                },
+                {
+                    label: 'Co&mments',
+                    accelerator: 'CmdOrCtrl+H',
+                    type: 'checkbox',
+                    checked: getShowComments(),
+                    click: function() { setShowComments(!getShowComments()) }
                 }
             ]
         },
