@@ -58,7 +58,7 @@ app.on('ready', function() {
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
 
     window.on('closed', function() { window = null })
-    window.webContents.on('dom-ready', function() { window.show() })
+    window.webContents.on('did-finish-load', function() { window.show() })
 
     window.loadUrl('file://' + __dirname + '/view/index.html')
 })
