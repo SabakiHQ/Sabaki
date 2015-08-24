@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+## [Goban v0.4.0][v0.4.0] (2015-08-24)
 
 **Added**
 * Comment view
@@ -130,7 +131,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Goban/compare/v0.3.7...master
+[unreleased]: https://github.com/yishn/Goban/compare/v0.4.0...master
+[v0.3.7]: https://github.com/yishn/Goban/compare/v0.4.0...v0.3.7
 [v0.3.7]: https://github.com/yishn/Goban/compare/v0.3.7...v0.3.6
 [v0.3.6]: https://github.com/yishn/Goban/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/yishn/Goban/compare/v0.3.4...v0.3.5
