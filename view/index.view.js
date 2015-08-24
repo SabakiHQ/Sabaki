@@ -660,6 +660,7 @@ function openNodeMenu(tree, index) {
  */
 
 document.addEvent('domready', function() {
+    document.title = app.getName();
     buildMenu()
 
     $('goban').addEvent('mousewheel', function(e) {
