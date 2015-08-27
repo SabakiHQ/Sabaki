@@ -104,8 +104,11 @@ function setSidebarArrangement(graph, comments) {
         setShowSidebar(true)
     }
 
-    getMainMenu().items[3].submenu.items[4].checked = graph
-    getMainMenu().items[3].submenu.items[5].checked = comments
+    if (getMainMenu()) {
+        getMainMenu().items[3].submenu.items[4].checked = graph
+        getMainMenu().items[3].submenu.items[5].checked = comments
+    }
+    
     setting.set('view.show_graph', graph)
     setting.set('view.show_comments', comments)
 }

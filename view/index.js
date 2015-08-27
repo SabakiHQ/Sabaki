@@ -969,9 +969,7 @@ document.addEvent('keydown', function(e) {
         closeScore()
         setEditMode(false)
     }
-})
-
-window.addEvent('load', function() {
+}).addEvent('domready', function() {
     loadSettings()
     prepareDragDropFiles()
     prepareEditTools()
@@ -982,7 +980,9 @@ window.addEvent('load', function() {
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     })
+})
 
+window.addEvent('load', function() {
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
 
