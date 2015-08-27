@@ -214,7 +214,7 @@ function setCommentText(text) {
             return false
         })
 
-    $$('#properties .gm-scrollbar')[0].scrollTo(0, 0)
+    $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
 }
 
