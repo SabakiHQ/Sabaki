@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Resizable comment view
 
+**Changed**
+* Change name to Sabaki
+
 ## [Goban v0.4.0][v0.4.0] (2015-08-24)
 
 **Added**
