@@ -138,6 +138,15 @@ function setSidebarWidth(width) {
     $$('.sidebar #main').setStyle('right', width)
 }
 
+function getPropertiesHeight() {
+    return $('properties').getSize().y * 100 / $('sidebar').getSize().y
+}
+
+function setPropertiesHeight(height) {
+    $('graph').setStyle('height', (100 - height) + '%')
+    $('properties').setStyle('height', height + '%')
+}
+
 function getPlayerName(sign) {
     return $$('#player_' + sign + ' .name')[0].get('text')
 }
@@ -694,28 +703,50 @@ document.addEvent('domready', function() {
 
     $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initpos', new Tuple(event.x, getSidebarWidth()))
+        $('sidebar').store('initposx', new Tuple(event.x, getSidebarWidth()))
+    })
+    $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
+        if (event.button != 0) return
+        $('sidebar').store('initposy', new Tuple(event.y, getPropertiesHeight()))
+        $('properties').setStyle('transition', 'none')
     })
 
     document.body.addEvent('mouseup', function() {
-        if (!$('sidebar').retrieve('initpos')) return
+        if ($('sidebar').retrieve('initposx')) {
+            $('sidebar').store('initposx', null)
 
-        $('sidebar').store('initpos', null)
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
+            if ($('graph').retrieve('sigma'))
+                $('graph').retrieve('sigma').renderers[0].resize().render()
 
-        setting.set('view.sidebar_width', getSidebarWidth())
+            setting.set('view.sidebar_width', getSidebarWidth())
+        } else if ($('sidebar').retrieve('initposy')) {
+            $('sidebar').store('initposy', null)
+            $('properties').setStyle('transition', '.2s height')
+
+            if ($('graph').retrieve('sigma'))
+                $('graph').retrieve('sigma').renderers[0].resize().render()
+
+            setting.set('view.comments_height', getPropertiesHeight())
+        }
     }).addEvent('mousemove', function() {
-        var initPos = $('sidebar').retrieve('initpos')
+        var initPosX = $('sidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
 
-        if (!initPos) return
-        initPos.unpack(function(initX, initWidth) {
-            var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
+        if (initPosX) {
+            initPosX.unpack(function(initX, initWidth) {
+                var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
+                setSidebarWidth(newwidth)
+                resizeBoard()
+            })
 
-            setSidebarWidth(newwidth)
-            resizeBoard()
-        })
+            $('properties').retrieve('scrollbar').update()
+        } else if (initPosY) {
+            initPosY.unpack(function(initY, initHeight) {
+                var newheight = initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y
+                setPropertiesHeight(newheight)
+            })
 
-        $('properties').retrieve('scrollbar').update()
+            $('properties').retrieve('scrollbar').update()
+        }
     })
 })

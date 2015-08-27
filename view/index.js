@@ -244,6 +244,7 @@ function loadSettings() {
         document.body.addClass('comments').addClass('sidebar')
 
     setSidebarWidth(setting.get('view.sidebar_width'))
+    setPropertiesHeight(setting.get('view.comments_height'))
 }
 
 function prepareEditTools() {

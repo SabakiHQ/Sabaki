@@ -24,6 +24,7 @@ setting
 .default('graph.node_size', 4)
 .default('scoring.method', 'territory')
 .default('sound.enable', true)
+.default('view.comments_height', 50)
 .default('view.fuzzy_stone_placement', true)
 .default('view.show_comments', false)
 .default('view.show_coordinates', false)
