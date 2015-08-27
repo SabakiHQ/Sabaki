@@ -1,8 +1,8 @@
-# Goban
+# Sabaki
 
 <img src="logo.png" width="100" height="100">
 
-Eventually the best virtual Go board. [Download the latest release](https://github.com/yishn/Goban/releases) of Goban.
+A modern virtual Go board for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
 ![Screenshot](screenshot.png)
 

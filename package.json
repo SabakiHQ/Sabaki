@@ -1,16 +1,16 @@
 {
-    "name": "goban",
-    "productName": "Goban",
+    "name": "sabaki",
+    "productName": "Sabaki",
     "version": "0.4.1",
-    "description": "Eventually the best virtual Go board.",
+    "description": "A modern virtual Go board for a more civilized age.",
     "author": "Yichuan Shen",
     "main": "main.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/yishn/Goban"
+        "url": "https://github.com/yishn/Sabaki"
     },
     "bugs": {
-        "url": "https://github.com/yishn/Goban/issues"
+        "url": "https://github.com/yishn/Sabaki/issues"
     },
     "license": "MIT"
 }
