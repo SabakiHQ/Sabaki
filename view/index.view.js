@@ -742,7 +742,11 @@ document.addEvent('domready', function() {
             $('properties').retrieve('scrollbar').update()
         } else if (initPosY) {
             initPosY.unpack(function(initY, initHeight) {
-                var newheight = initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y
+                var newheight = Math.min(Math.max(
+                    initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
+                    setting.get('view.comments_minheight')
+                ), 100 - setting.get('view.comments_minheight'))
+                
                 setPropertiesHeight(newheight)
             })
 
