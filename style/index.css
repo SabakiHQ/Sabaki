@@ -182,12 +182,6 @@ header, #bar #edit, #bar #scoring {
         height: 100%;
         z-index: 1;
     }
-    body.comments.graph #graph {
-        height: 50%;
-    }
-    body:not(.graph) #graph {
-        height: 0;
-    }
     #graph .slider {
         position: absolute;
         top: 0;
@@ -240,7 +234,7 @@ header, #bar #edit, #bar #scoring {
         bottom: 0;
         right: 0;
         left: 0;
-        height: 100%;
+        height: 0;
         overflow: show;
         z-index: 2;
         color: #d0d0d0;
@@ -256,12 +250,6 @@ header, #bar #edit, #bar #scoring {
         height: 5px;
         cursor: ns-resize;
         z-index: 10;
-    }
-    body:not(.comments) #properties {
-        height: 0;
-    }
-    body.graph.comments #properties {
-        height: 50%;
     }
     #properties p {
         margin: 1em 0;

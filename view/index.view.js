@@ -86,36 +86,36 @@ function setShowSidebar(show) {
     resizeBoard()
 }
 
-function getShowGraph() {
-    return document.body.hasClass('graph')
+function getSidebarArrangement() {
+    return new Tuple(
+        getShowSidebar() && getCommentsHeight() != 100,
+        getShowSidebar() && getCommentsHeight() != 0
+    )
 }
 
-function setShowGraph(show) {
+function setSidebarArrangement(graph, comments) {
     updateSidebarLayout()
 
-    if (show) document.body.addClass('graph')
-    else document.body.removeClass('graph')
+    if (!graph && !comments) setShowSidebar(false)
+    else {
+        if (!graph && comments) setCommentsHeight(100)
+        else if (comments) setCommentsHeight(setting.get('view.comments_height'))
+        else if (!comments) setCommentsHeight(0)
+        setShowSidebar(true)
+    }
 
-    getMainMenu().items[3].submenu.items[4].checked = show
-    setting.set('view.show_graph', show)
+    getMainMenu().items[3].submenu.items[4].checked = graph
+    getMainMenu().items[3].submenu.items[5].checked = comments
+    setting.set('view.show_graph', graph)
+    setting.set('view.show_comments', comments)
+}
 
-    setShowSidebar(getShowComments() || getShowGraph())
+function getShowGraph() {
+    return getSidebarArrangement()[0]
 }
 
 function getShowComments() {
-    return document.body.hasClass('comments')
-}
-
-function setShowComments(show) {
-    updateSidebarLayout()
-
-    if (show) document.body.addClass('comments')
-    else document.body.removeClass('comments')
-
-    getMainMenu().items[3].submenu.items[5].checked = show
-    setting.set('view.show_comments', show)
-
-    setShowSidebar(getShowComments() || getShowGraph())
+    return getSidebarArrangement()[1]
 }
 
 function updateSidebarLayout() {
@@ -578,14 +578,14 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+G',
                     type: 'checkbox',
                     checked: getShowGraph(),
-                    click: function() { setShowGraph(!getShowGraph()) }
+                    click: function() { setSidebarArrangement(!getShowGraph(), getShowComments()) }
                 },
                 {
                     label: 'Co&mments',
                     accelerator: 'CmdOrCtrl+H',
                     type: 'checkbox',
                     checked: getShowComments(),
-                    click: function() { setShowComments(!getShowComments()) }
+                    click: function() { setSidebarArrangement(getShowGraph(), !getShowComments()) }
                 }
             ]
         },
@@ -680,11 +680,6 @@ function openNodeMenu(tree, index) {
 document.addEvent('domready', function() {
     document.title = app.getName();
     buildMenu()
-
-    $('goban').addEvent('mousewheel', function(e) {
-        if (e.wheel < 0) goForward()
-        else if (e.wheel > 0) goBack()
-    })
 
     document.body.addEvent('mouseup', function() {
         $('goban').store('mousedown', false)

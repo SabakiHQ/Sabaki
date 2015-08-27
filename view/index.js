@@ -238,13 +238,12 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
-    if (setting.get('view.show_graph'))
-        document.body.addClass('graph').addClass('sidebar')
-    if (setting.get('view.show_comments'))
-        document.body.addClass('comments').addClass('sidebar')
+    if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
+        document.body.addClass('sidebar')
+        setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
+    }
 
     setSidebarWidth(setting.get('view.sidebar_width'))
-    setCommentsHeight(setting.get('view.comments_height'))
 }
 
 function prepareEditTools() {
@@ -970,18 +969,23 @@ document.addEvent('keydown', function(e) {
         closeScore()
         setEditMode(false)
     }
-}).addEvent('domready', function() {
+})
+
+window.addEvent('load', function() {
     loadSettings()
     prepareDragDropFiles()
     prepareEditTools()
     prepareGameGraph()
     prepareSlider()
 
+    $('goban').addEvent('mousewheel', function(e) {
+        if (e.wheel < 0) goForward()
+        else if (e.wheel > 0) goBack()
+    })
+
     if (process.argv.length >= 2) loadGame(process.argv[1])
     else newGame()
-})
 
-window.addEvent('load', function() {
     if (setting.get('app.startup_check_updates')) {
         setTimeout(function() {
             checkForUpdates()
