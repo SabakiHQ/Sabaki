@@ -88,29 +88,29 @@ function setShowSidebar(show) {
 
 function getSidebarArrangement() {
     return new Tuple(
-        getShowSidebar() && getCommentsHeight() != 100,
-        getShowSidebar() && getCommentsHeight() != 0
+        getShowSidebar() && getCommentHeight() != 100,
+        getShowSidebar() && getCommentHeight() != 0
     )
 }
 
-function setSidebarArrangement(graph, comments) {
+function setSidebarArrangement(graph, comment) {
     updateSidebarLayout()
 
-    if (!graph && !comments) setShowSidebar(false)
+    if (!graph && !comment) setShowSidebar(false)
     else {
-        if (!graph && comments) setCommentsHeight(100)
-        else if (comments) setCommentsHeight(setting.get('view.comments_height'))
-        else if (!comments) setCommentsHeight(0)
+        if (!graph && comment) setCommentHeight(100)
+        else if (comment) setCommentHeight(setting.get('view.comments_height'))
+        else if (!comment) setCommentHeight(0)
         setShowSidebar(true)
     }
 
     if (getMainMenu()) {
         getMainMenu().items[3].submenu.items[4].checked = graph
-        getMainMenu().items[3].submenu.items[5].checked = comments
+        getMainMenu().items[3].submenu.items[5].checked = comment
     }
 
     setting.set('view.show_graph', graph)
-    setting.set('view.show_comments', comments)
+    setting.set('view.show_comments', comment)
 }
 
 function getShowGraph() {
@@ -141,11 +141,11 @@ function setSidebarWidth(width) {
     $$('.sidebar #main').setStyle('right', width)
 }
 
-function getCommentsHeight() {
+function getCommentHeight() {
     return $('properties').getSize().y * 100 / $('sidebar').getSize().y
 }
 
-function setCommentsHeight(height) {
+function setCommentHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
 }
@@ -705,7 +705,7 @@ document.addEvent('domready', function() {
     })
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposy', new Tuple(event.y, getCommentsHeight()))
+        $('sidebar').store('initposy', new Tuple(event.y, getCommentHeight()))
         $('properties').setStyle('transition', 'none')
     })
 
@@ -720,7 +720,7 @@ document.addEvent('domready', function() {
         } else if (initPosY) {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
-            setting.set('view.comments_height', getCommentsHeight())
+            setting.set('view.comments_height', getCommentHeight())
             setSidebarArrangement(true, true)
         }
 
@@ -744,7 +744,7 @@ document.addEvent('domready', function() {
                     setting.get('view.comments_minheight')
                 ), 100 - setting.get('view.comments_minheight'))
 
-                setCommentsHeight(newheight)
+                setCommentHeight(newheight)
             })
         }
 
