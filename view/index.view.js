@@ -91,14 +91,13 @@ function getShowGraph() {
 }
 
 function setShowGraph(show) {
+    updateSidebarLayout()
+
     if (show) document.body.addClass('graph')
     else document.body.removeClass('graph')
 
     getMainMenu().items[3].submenu.items[4].checked = show
     setting.set('view.show_graph', show)
-
-    $('graph').retrieve('sigma').renderers[0].resize().render()
-    $('properties').retrieve('scrollbar').update()
 
     setShowSidebar(getShowComments() || getShowGraph())
 }
@@ -108,16 +107,26 @@ function getShowComments() {
 }
 
 function setShowComments(show) {
+    updateSidebarLayout()
+
     if (show) document.body.addClass('comments')
     else document.body.removeClass('comments')
 
     getMainMenu().items[3].submenu.items[5].checked = show
     setting.set('view.show_comments', show)
 
-    $('graph').retrieve('sigma').renderers[0].resize().render()
-    $('properties').retrieve('scrollbar').update()
-
     setShowSidebar(getShowComments() || getShowGraph())
+}
+
+function updateSidebarLayout() {
+    var container = $$('#properties .gm-scroll-view')[0]
+    container.fade('hide')
+
+    setTimeout(function() {
+        $('graph').retrieve('sigma').renderers[0].resize().render()
+        $('properties').retrieve('scrollbar').update()
+        container.set('tween', { duration: 200 }).fade('in')
+    }, 300)
 }
 
 function getSidebarWidth() {

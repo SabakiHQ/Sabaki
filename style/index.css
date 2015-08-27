@@ -246,6 +246,7 @@ header, #bar #edit, #bar #scoring {
         color: #d0d0d0;
         background: #181818;
         box-shadow: 0 0 10px #111;
+        transition: .2s height;
     }
     body:not(.comments) #properties {
         height: 0;
