@@ -332,6 +332,7 @@ function prepareDragDropFiles() {
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
+    var cancel = false
 
     // Check internet connection first
     dns.lookup('github.com', function(err) {
@@ -339,6 +340,9 @@ function checkForUpdates(callback) {
 
         https.get(url, function(response) {
             response.on('data', function(chunk) {
+                if (cancel) return
+                cancel = true
+
                 chunk = '' + chunk
                 var hasUpdates = !chunk.contains('v' + app.getVersion())
 
