@@ -108,7 +108,7 @@ function setSidebarArrangement(graph, comments) {
         getMainMenu().items[3].submenu.items[4].checked = graph
         getMainMenu().items[3].submenu.items[5].checked = comments
     }
-    
+
     setting.set('view.show_graph', graph)
     setting.set('view.show_comments', comments)
 }
@@ -721,6 +721,7 @@ document.addEvent('domready', function() {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
             setting.set('view.comments_height', getCommentsHeight())
+            setSidebarArrangement(true, true)
         }
 
         if ($('graph').retrieve('sigma'))
