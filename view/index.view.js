@@ -93,8 +93,8 @@ function getSidebarArrangement() {
     )
 }
 
-function setSidebarArrangement(graph, comment) {
-    updateSidebarLayout()
+function setSidebarArrangement(graph, comment, updateLayout) {
+    if (updateLayout == null || updateLayout) updateSidebarLayout()
 
     if (!graph && !comment) setShowSidebar(false)
     else {
@@ -721,11 +721,7 @@ document.addEvent('domready', function() {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
             setting.set('view.comments_height', getCommentHeight())
-
-            if (getMainMenu()) {
-                getMainMenu().items[3].submenu.items[4].checked = true
-                getMainMenu().items[3].submenu.items[5].checked = true
-            }
+            setSidebarArrangement(true, true, false)
         }
 
         if ($('graph').retrieve('sigma'))
