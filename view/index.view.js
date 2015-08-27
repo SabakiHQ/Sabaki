@@ -138,11 +138,11 @@ function setSidebarWidth(width) {
     $$('.sidebar #main').setStyle('right', width)
 }
 
-function getPropertiesHeight() {
+function getCommentsHeight() {
     return $('properties').getSize().y * 100 / $('sidebar').getSize().y
 }
 
-function setPropertiesHeight(height) {
+function setCommentsHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
 }
@@ -707,7 +707,7 @@ document.addEvent('domready', function() {
     })
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposy', new Tuple(event.y, getPropertiesHeight()))
+        $('sidebar').store('initposy', new Tuple(event.y, getCommentsHeight()))
         $('properties').setStyle('transition', 'none')
     })
 
@@ -722,7 +722,7 @@ document.addEvent('domready', function() {
         } else if (initPosY) {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
-            setting.set('view.comments_height', getPropertiesHeight())
+            setting.set('view.comments_height', getCommentsHeight())
         }
 
         if ($('graph').retrieve('sigma'))
@@ -745,7 +745,7 @@ document.addEvent('domready', function() {
                     setting.get('view.comments_minheight')
                 ), 100 - setting.get('view.comments_minheight'))
 
-                setPropertiesHeight(newheight)
+                setCommentsHeight(newheight)
             })
         }
 
