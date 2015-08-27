@@ -721,7 +721,11 @@ document.addEvent('domready', function() {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
             setting.set('view.comments_height', getCommentHeight())
-            setSidebarArrangement(true, true)
+
+            if (getMainMenu()) {
+                getMainMenu().items[3].submenu.items[4].checked = true
+                getMainMenu().items[3].submenu.items[5].checked = true
+            }
         }
 
         if ($('graph').retrieve('sigma'))
