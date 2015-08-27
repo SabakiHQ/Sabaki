@@ -248,6 +248,15 @@ header, #bar #edit, #bar #scoring {
         box-shadow: 0 0 10px #111;
         transition: .2s height;
     }
+    #properties .horizontalresizer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        cursor: ns-resize;
+        z-index: 10;
+    }
     body:not(.comments) #properties {
         height: 0;
     }

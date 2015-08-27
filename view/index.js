@@ -450,7 +450,6 @@ function makeMove(vertex) {
         sound.playPachi()
     } else sound.playPass()
 
-
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
         var node = {}
