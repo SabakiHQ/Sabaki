@@ -712,25 +712,25 @@ document.addEvent('domready', function() {
     })
 
     document.body.addEvent('mouseup', function() {
-        if ($('sidebar').retrieve('initposx')) {
+        var initPosX = $('sidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
+        if (!initPosX && !initPosY) return
+
+        if (initPosX) {
             $('sidebar').store('initposx', null)
-
-            if ($('graph').retrieve('sigma'))
-                $('graph').retrieve('sigma').renderers[0].resize().render()
-
             setting.set('view.sidebar_width', getSidebarWidth())
-        } else if ($('sidebar').retrieve('initposy')) {
+        } else if (initPosY) {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '.2s height')
-
-            if ($('graph').retrieve('sigma'))
-                $('graph').retrieve('sigma').renderers[0].resize().render()
-
             setting.set('view.comments_height', getPropertiesHeight())
         }
+
+        if ($('graph').retrieve('sigma'))
+            $('graph').retrieve('sigma').renderers[0].resize().render()
     }).addEvent('mousemove', function() {
         var initPosX = $('sidebar').retrieve('initposx')
         var initPosY = $('sidebar').retrieve('initposy')
+        if (!initPosX && !initPosY) return
 
         if (initPosX) {
             initPosX.unpack(function(initX, initWidth) {
@@ -738,19 +738,17 @@ document.addEvent('domready', function() {
                 setSidebarWidth(newwidth)
                 resizeBoard()
             })
-
-            $('properties').retrieve('scrollbar').update()
         } else if (initPosY) {
             initPosY.unpack(function(initY, initHeight) {
                 var newheight = Math.min(Math.max(
                     initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
                     setting.get('view.comments_minheight')
                 ), 100 - setting.get('view.comments_minheight'))
-                
+
                 setPropertiesHeight(newheight)
             })
-
-            $('properties').retrieve('scrollbar').update()
         }
+
+        $('properties').retrieve('scrollbar').update()
     })
 })
