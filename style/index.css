@@ -264,6 +264,14 @@ header, #bar #edit, #bar #scoring {
         height: 2px;
         background: #393939;
     }
+    #properties .coord {
+        padding: 0 5px;
+        background: #101010;
+        color: white;
+    }
+    #properties .coord:hover {
+        background: #0082F0;
+    }
     #properties .inner {
         margin: 1em;
         word-wrap: break-word;

@@ -204,6 +204,9 @@ function setCommentText(text) {
                 .replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
                     return '<a href="mailto:' + email + '">' + email + '</a>'
                 })
+                .replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
+                    return '<span class="coord">' + coord + '</span>'
+                })
         })
         .join('<br>')
         .replace(/<br><br>/g, '</p><p>')
