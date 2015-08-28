@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+## [Sabaki v0.4.2][v0.4.2]
 
 **Added**
 * Add keyboard shortcut for 'Remove Node'
@@ -152,7 +153,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.4.1...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.4.2...master
+[v0.4.2]: https://github.com/yishn/Sabaki/compare/v0.4.1...v0.4.2
 [v0.4.1]: https://github.com/yishn/Sabaki/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/yishn/Sabaki/compare/v0.3.7...v0.4.0
 [v0.3.7]: https://github.com/yishn/Sabaki/compare/v0.3.6...v0.3.7
