@@ -220,6 +220,22 @@ function setCommentText(text) {
             return false
         })
 
+    $$('#properties .coord').addEvent('mouseenter', function() {
+        var x = 'abcdefghjklmnopqrstuvwxyz'.indexOf(this.get('text')[0].toLowerCase())
+        var y = getBoard().size - this.get('text').slice(1).toInt()
+        var li = $$('#goban .pos_' + x + '-' + y)
+
+        if (li.length == 0) return
+        li = li[0]
+
+        $('indicator').setStyle('top', li.getPosition().y)
+            .setStyle('left', li.getPosition().x)
+            .setStyle('height', li.getSize().y)
+            .setStyle('width', li.getSize().x)
+    }).addEvent('mouseleave', function() {
+        $('indicator').setStyle('top', '').setStyle('left', '')
+    })
+
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
 }

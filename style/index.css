@@ -300,6 +300,17 @@ header, #bar #edit, #bar #scoring {
         transition: none;
 }
 
+#indicator {
+    position: absolute;
+    top: 150%;
+    left: 150%;
+    margin-top: -2px;
+    margin-left: -2px;
+    background: rgba(0, 130, 240, .2);
+    border: 2px solid #0082F0;
+    border-radius: 5px;
+}
+
 #info, #score {
         position: fixed;
         left: 0;
