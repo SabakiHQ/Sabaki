@@ -117,7 +117,7 @@ function getShowGraph() {
     return getSidebarArrangement()[0]
 }
 
-function getShowComments() {
+function getShowComment() {
     return getSidebarArrangement()[1]
 }
 
@@ -618,14 +618,14 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+G',
                     type: 'checkbox',
                     checked: getShowGraph(),
-                    click: function() { setSidebarArrangement(!getShowGraph(), getShowComments()) }
+                    click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
                 },
                 {
                     label: 'Co&mments',
                     accelerator: 'CmdOrCtrl+H',
                     type: 'checkbox',
-                    checked: getShowComments(),
-                    click: function() { setSidebarArrangement(getShowGraph(), !getShowComments()) }
+                    checked: getShowComment(),
+                    click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
                 }
             ]
         },
