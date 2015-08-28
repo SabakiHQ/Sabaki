@@ -1,3 +1,7 @@
+/**
+ * Getter & setter
+ */
+
 function getMainMenu() {
     return document.body.retrieve('mainmenu')
 }
@@ -296,7 +300,7 @@ function setScoringMode(scoringMode) {
 }
 
 /**
- * Menu
+ * Methods
  */
 
 function readjustShifts(vertex) {
