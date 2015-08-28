@@ -208,7 +208,7 @@ header, #bar #edit, #bar #scoring {
     #graph .slider.active div, #graph .slider:hover div {
         background: #494949;
     }
-    #graph .slider.active div { transition: none; }
+    #graph .slider.active div, #graph .slider.active span { transition: none; }
     #graph .slider span {
         position: absolute;
         right: 8px;
@@ -223,7 +223,7 @@ header, #bar #edit, #bar #scoring {
         opacity: 0;
         box-shadow: 0 0 10px #111;
         z-index: 1;
-        transition: .2s opacity;
+        transition: .2s opacity, .5s top;
     }
     #graph .slider:hover span, #graph .slider.active span {
         opacity: 1;
