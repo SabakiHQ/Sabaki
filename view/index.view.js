@@ -499,6 +499,7 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: '&Remove Node',
+                    accelerator: 'CmdOrCtrl+Delete',
                     click: function() { getCurrentTreePosition().unpack(removeNode) }
                 }
             ]
