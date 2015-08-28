@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 * Hovering over coordinates in a comment will show the corresponding position on the board
 
 **Fixed**
-* Avoid initial collision of fuzzy placed stones
+* Avoid initial collision of fuzzily placed stones
 * Mouse wheel navigation works when pointing at the game graph
 * Fix slider arrow not being at the right place sometimes
 
