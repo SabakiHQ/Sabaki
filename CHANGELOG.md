@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Avoid initial collision of fuzzy placed stones
+* Mouse wheel navigation works when pointing at the game graph
 
 **Changed**
 * Update to Electron v0.31.1
