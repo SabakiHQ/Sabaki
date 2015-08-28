@@ -963,7 +963,7 @@ document.addEvent('keydown', function(e) {
     prepareGameGraph()
     prepareSlider()
 
-    $('goban').addEvent('mousewheel', function(e) {
+    $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     })
