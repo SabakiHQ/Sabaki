@@ -13,6 +13,7 @@ A modern virtual Go board for a more civilized age. [Download the latest release
 - Supports nested variations
 - Fuzzy stone placement
 - SGF editing tools
+- Display formatted SGF comments
 - Scoring tool
 - Show game graph
 
