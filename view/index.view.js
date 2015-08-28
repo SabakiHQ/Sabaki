@@ -198,10 +198,10 @@ function setCommentText(text) {
             return s.replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&rt;')
-                .replace(/((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
+                .replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)\b/g, function(url) {
                     return '<a href="' + url + '">' + url + '</a>'
                 })
-                .replace(/\S+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+/g, function(email) {
+                .replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
                     return '<a href="mailto:' + email + '">' + email + '</a>'
                 })
         })
