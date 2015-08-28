@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
-## [Sabaki v0.4.2][v0.4.2]
+## [Sabaki v0.4.2][v0.4.2] (2015-08-28)
 
 **Added**
 * Add keyboard shortcut for 'Remove Node'
