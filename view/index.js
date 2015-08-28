@@ -427,24 +427,7 @@ function makeMove(vertex) {
 
         for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
         li.addClass('shift_' + direction)
-
-        if (direction == 1 || direction == 5 || direction == 8) {
-            // Left
-            $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
-                .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
-        } else if (direction == 2 || direction == 5 || direction == 6) {
-            // Top
-            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
-                .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
-        } else if (direction == 3 || direction == 7 || direction == 6) {
-            // Right
-            $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
-                .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
-        } else if (direction == 4 || direction == 7 || direction == 8) {
-            // Bottom
-            $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
-                .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
-        }
+        readjustShifts(vertex)
 
         // Play sounds
         if (capture || suicide) setTimeout(function() {

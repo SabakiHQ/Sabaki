@@ -279,6 +279,36 @@ function setScoringMode(scoringMode) {
  * Menu
  */
 
+function readjustShifts(vertex) {
+    var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])[0]
+    var direction = li.get('class').split(' ').filter(function(x) {
+        return x.indexOf('shift_') == 0
+    }).map(function(x) {
+        return x.replace('shift_', '').toInt()
+    })
+
+    if (direction.length == 0) return
+    direction = direction[0]
+
+    if (direction == 1 || direction == 5 || direction == 8) {
+        // Left
+        $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
+            .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
+    } else if (direction == 2 || direction == 5 || direction == 6) {
+        // Top
+        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
+            .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
+    } else if (direction == 3 || direction == 7 || direction == 6) {
+        // Right
+        $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
+            .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
+    } else if (direction == 4 || direction == 7 || direction == 8) {
+        // Bottom
+        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
+            .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
+    }
+}
+
 function buildBoard() {
     var board = getBoard()
     var rows = []
@@ -326,6 +356,12 @@ function buildBoard() {
     goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
 
     resizeBoard()
+
+    // Readjust shifts
+
+    $$('#goban .row li:not(.shift_0)').each(function(li) {
+        readjustShifts(li.retrieve('tuple'))
+    })
 }
 
 function resizeBoard() {
