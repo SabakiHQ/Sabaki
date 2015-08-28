@@ -148,6 +148,7 @@ function getCommentHeight() {
 function setCommentHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
+    setSliderValue.apply(null, getSliderValue())
 }
 
 function getPlayerName(sign) {
