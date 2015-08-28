@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Added**
+* Add keyboard shortcut for 'Remove Node'
+* Hovering over coordinates in a comment will show the corresponding position on the board
+
+**Fixed**
+* Avoid initial collision of fuzzy placed stones
+
+**Changed**
+* Update to Electron v0.31.1
+
 ## [Sabaki v0.4.1][v0.4.1] (2015-08-28)
 
 **Added**
