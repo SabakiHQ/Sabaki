@@ -33,6 +33,7 @@ function setRootTree(tree) {
     if (tree.nodes.length == 0) return
 
     tree.parent = null
+    document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
@@ -780,12 +781,33 @@ function centerGraphCameraAt(node) {
     })
 }
 
+function askForSave() {
+    if (!getRootTree()) return true
+    var hash = gametree.getHash(getRootTree())
+
+    if (hash != document.body.retrieve('treehash')) {
+        var answer = dialog.showMessageBox(remote.getCurrentWindow(), {
+            type: 'info',
+            buttons: ['Save', 'Don’t Save', 'Cancel'],
+            title: app.getName(),
+            message: 'Your changes will be lost if you close this game without saving.',
+            noLink: true
+        })
+
+        if (answer == 0) saveGame()
+        else if (answer == 2) return false
+    }
+
+    return true
+}
+
 /**
  * Menu
  */
 
 function newGame(playSound) {
     if (getIsBusy()) return
+    if (!askForSave()) return
 
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
     buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
@@ -804,6 +826,7 @@ function newGame(playSound) {
 
 function loadGame(filename) {
     if (getIsBusy()) return
+    if (!askForSave()) return
     setIsBusy(true)
 
     if (!filename) {
@@ -850,6 +873,7 @@ function saveGame() {
         var text = '(' + sgf.tree2string(tree) + ')'
 
         fs.writeFile(result, text)
+        document.body.store('treehash', gametree.getHash(tree))
     }
 
     setIsBusy(false)
@@ -1011,7 +1035,8 @@ window.addEvent('load', function() {
     }
 }).addEvent('resize', function() {
     resizeBoard()
-}).addEvent('beforeunload', function() {
+}).addEvent('beforeunload', function(e) {
+    if (!askForSave()) e.event.returnValue = 'false'
     if (remote.getCurrentWindow().isMaximized() || remote.getCurrentWindow().isMinimized()) return
 
     var size = document.body.getSize()
