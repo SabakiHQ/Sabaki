@@ -607,21 +607,21 @@ function useTool(vertex) {
     })
 }
 
-function vertexClicked() {
+function vertexClicked(vertex) {
     closeGameInfo()
 
     if (!getEditMode() && !getScoringMode()) {
         if (event.button != 0) return
-        makeMove(this)
+        makeMove(vertex)
 
         return
     }
 
     // Scoring mode activated
     if (getScoringMode()) {
-        if (getBoard().arrangement[this] == 0) return
+        if (getBoard().arrangement[vertex] == 0) return
 
-        getBoard().getRelatedChains(this).each(function(vertex) {
+        getBoard().getRelatedChains(vertex).each(function(vertex) {
             $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
         })
 
@@ -630,7 +630,7 @@ function vertexClicked() {
     }
 
     // Edit mode activated
-    useTool(this)
+    useTool(vertex)
 }
 
 function updateGraph() {

@@ -355,7 +355,7 @@ function buildBoard() {
                 .addEvent('mouseup', function() {
                     if (!$('goban').retrieve('mousedown')) return
                     $('goban').store('mousedown', false)
-                    vertexClicked.call(this)
+                    vertexClicked(this)
                 }.bind(vertex))
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
