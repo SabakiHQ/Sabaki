@@ -105,16 +105,12 @@ All notable changes to this project will be documented in this file.
 * Add move count indicator next to slider
 
 **Fixed**
+* Fix uncaught exception when saving SGF file
 * Fix a bug where the graph camera is not positioned correctly when opening sidebar
 
 **Changed**
 * Faster slider response
 * Update to Electron v0.30.1
-
-## [Goban v0.3.1][v0.3.1] (2015-07-22)
-
-**Fixed**
-* Fix uncaught exception when saving SGF file
 
 ## [Goban v0.3.0][v0.3.0] (2015-07-22)
 
@@ -132,31 +128,18 @@ All notable changes to this project will be documented in this file.
 ## [Goban v0.2.2][v0.2.2] (2015-07-16)
 
 **Added**
-* Ability to remove SGF nodes
-
-**Fixed**
-* Fix unresponsiveness when clicking on a vertex on the game graph
-
-**Changed**
-* Update to Electron v0.30.0
-
-## [Goban v0.2.1][v0.2.1] (2015-07-13)
-
-**Added**
+* Game graph
 * Resizable sidebar
+* Detect and notify user about ko
+* Ability to remove SGF nodes
 
 **Fixed**
 * Fix an error where updating the score of a drawed game, the SGF result will not be correct
 * Fix sudden disappearances of the game graph when dragged
-
-## [Goban v0.2.0][v0.2.0] (2015-07-12)
-
-**Added**
-* Game graph
-* Detect and notify user about ko
+* Fix unresponsiveness when clicking on a vertex on the game graph
 
 **Changed**
-* Update to Electron v0.28.3
+* Update to Electron v0.30.0
 
 ## Goban v0.1.0 (2015-06-20)
 
@@ -171,9 +154,6 @@ First release
 [v0.3.5]: https://github.com/yishn/Sabaki/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/yishn/Sabaki/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/yishn/Sabaki/compare/v0.3.2...v0.3.3
-[v0.3.2]: https://github.com/yishn/Sabaki/compare/v0.3.1...v0.3.2
-[v0.3.1]: https://github.com/yishn/Sabaki/compare/v0.3.0...v0.3.1
+[v0.3.2]: https://github.com/yishn/Sabaki/compare/v0.3.0...v0.3.2
 [v0.3.0]: https://github.com/yishn/Sabaki/compare/v0.2.2...v0.3.0
-[v0.2.2]: https://github.com/yishn/Sabaki/compare/v0.2.1...v0.2.2
-[v0.2.1]: https://github.com/yishn/Sabaki/compare/v0.2.0...v0.2.1
-[v0.2.0]: https://github.com/yishn/Sabaki/compare/v0.1.0...v0.2.0
+[v0.2.2]: https://github.com/yishn/Sabaki/compare/v0.1.0...v0.2.2
