@@ -1,12 +1,11 @@
 var Board = require('./board')
 var Tuple = require('../lib/tuple')
 
-var uuid = require('../lib/node-uuid')
 var setting = require('remote').require('./module/setting')
 
 exports.new = function(id) {
     return {
-        id: uuid.v4(),
+        id: String.uniqueID(),
         nodes: [],
         subtrees: [],
         current: null,
