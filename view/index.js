@@ -484,29 +484,7 @@ function makeMove(vertex) {
     }
 }
 
-function vertexClicked() {
-    closeGameInfo()
-
-    if (!getEditMode() && !getScoringMode()) {
-        if (event.button != 0) return
-        makeMove(this)
-
-        return
-    }
-
-    // Scoring mode activated
-    if (getScoringMode()) {
-        if (getBoard().arrangement[this] == 0) return
-
-        getBoard().getRelatedChains(this).each(function(vertex) {
-            $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
-        })
-
-        updateAreaMap()
-        return
-    }
-
-    // Edit mode activated
+function useTool(vertex) {
     getCurrentTreePosition().unpack(function(tree, index) {
         var node = tree.nodes[index]
         var tool = getSelectedTool()
@@ -539,10 +517,10 @@ function vertexClicked() {
             var sign = tool.contains('_1') ? 1 : -1
             if (event.button == 2) sign = -sign
 
-            var oldSign = board.arrangement[this]
+            var oldSign = board.arrangement[vertex]
             var ids = ['AW', 'AE', 'AB']
             var id = ids[sign + 1]
-            var point = sgf.vertex2point(this)
+            var point = sgf.vertex2point(vertex)
 
             for (var i = -1; i <= 1; i++) {
                 if (!(ids[i + 1] in node)) continue
@@ -568,14 +546,14 @@ function vertexClicked() {
             if (event.button != 0) return
 
             if (tool != 'label' && tool != 'number') {
-                if (this in board.overlays && board.overlays[this][0] == tool) {
-                    delete board.overlays[this]
+                if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
+                    delete board.overlays[vertex]
                 } else {
-                    board.overlays[this] = new Tuple(tool, 0, '')
+                    board.overlays[vertex] = new Tuple(tool, 0, '')
                 }
             } else if (tool == 'number') {
-                if (this in board.overlays && board.overlays[this][0] == 'label') {
-                    delete board.overlays[this]
+                if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
+                    delete board.overlays[vertex]
                 } else {
                     var number = 1
 
@@ -586,11 +564,11 @@ function vertexClicked() {
                         })
                     }
 
-                    board.overlays[this] = new Tuple(tool, 0, number.toString())
+                    board.overlays[vertex] = new Tuple(tool, 0, number.toString())
                 }
             } else if (tool == 'label') {
-                if (this in board.overlays && board.overlays[this][0] == 'label') {
-                    delete board.overlays[this]
+                if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
+                    delete board.overlays[vertex]
                 } else {
                     var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                     var k = 0
@@ -604,19 +582,21 @@ function vertexClicked() {
                         })
                     }
 
-                    board.overlays[this] = new Tuple(tool, 0, alpha[k])
+                    board.overlays[vertex] = new Tuple(tool, 0, alpha[k])
                 }
             }
 
             Object.each(dictionary, function(id) { delete node[id] })
 
-            $$('#goban .row li').each(function(li) {
-                var vertex = li.retrieve('tuple')
-                if (!(vertex in board.overlays)) return
+            // Update SGF
 
-                var id = dictionary[board.overlays[vertex][0]]
-                var pt = sgf.vertex2point(vertex)
-                if (id == 'LB') pt += ':' + board.overlays[vertex][2]
+            $$('#goban .row li').each(function(li) {
+                var v = li.retrieve('tuple')
+                if (!(v in board.overlays)) return
+
+                var id = dictionary[board.overlays[v][0]]
+                var pt = sgf.vertex2point(v)
+                if (id == 'LB') pt += ':' + board.overlays[v][2]
 
                 if (id in node) node[id].push(pt)
                 else node[id] = [pt]
@@ -624,7 +604,33 @@ function vertexClicked() {
         }
 
         setCurrentTreePosition(tree, index)
-    }.bind(this))
+    })
+}
+
+function vertexClicked() {
+    closeGameInfo()
+
+    if (!getEditMode() && !getScoringMode()) {
+        if (event.button != 0) return
+        makeMove(this)
+
+        return
+    }
+
+    // Scoring mode activated
+    if (getScoringMode()) {
+        if (getBoard().arrangement[this] == 0) return
+
+        getBoard().getRelatedChains(this).each(function(vertex) {
+            $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
+        })
+
+        updateAreaMap()
+        return
+    }
+
+    // Edit mode activated
+    useTool(this)
 }
 
 function updateGraph() {
