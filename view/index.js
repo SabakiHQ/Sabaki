@@ -558,10 +558,18 @@ function useTool(vertex) {
                     var number = 1
 
                     if ('LB' in node) {
-                        node.LB.each(function(value) {
-                            var label = value.substr(3).toInt()
-                            if (!isNaN(label)) number = Math.max(number, label + 1)
+                        var list = node.LB.map(function(x) {
+                            return x.substr(3).toInt()
+                        }).filter(function(x) {
+                            return !isNaN(x)
                         })
+                        list.sort(function(a, b) { return a - b })
+
+                        for (var i = 0; i <= list.length; i++) {
+                            if (i < list.length && i + 1 == list[i]) continue
+                            number = i + 1
+                            break
+                        }
                     }
 
                     board.overlays[vertex] = new Tuple(tool, 0, number.toString())
@@ -574,12 +582,18 @@ function useTool(vertex) {
                     var k = 0
 
                     if ('LB' in node) {
-                        node.LB.each(function(value) {
-                            if (value.length != 4 || !alpha.contains(value[3])) return
+                        var list = node.LB.filter(function(x) {
+                            return x.length == 4
+                        }).map(function(x) {
+                            return alpha.indexOf(x[3])
+                        }).filter(function(x) { return x >= 0 })
+                        list.sort(function(a, b) { return a - b })
 
-                            var label = value[3]
-                            k = Math.max(k, (alpha.indexOf(label) + 1) % alpha.length)
-                        })
+                        for (var i = 0; i <= list.length; i++) {
+                            if (i < list.length && i == list[i]) continue
+                            k = Math.min(i, alpha.length - 1)
+                            break
+                        }
                     }
 
                     board.overlays[vertex] = new Tuple(tool, 0, alpha[k])
