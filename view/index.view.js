@@ -216,7 +216,7 @@ function setCommentText(text) {
 
     $$('#properties .coord').addEvent('mouseenter', function() {
         var x = 'abcdefghjklmnopqrstuvwxyz'.indexOf(this.get('text')[0].toLowerCase())
-        var y = getBoard().size - this.get('text').slice(1).toInt()
+        var y = getBoard().size - this.get('text').substr(1).toInt()
         var li = $$('#goban .pos_' + x + '-' + y)
 
         if (li.length == 0) return
