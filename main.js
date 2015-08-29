@@ -8,6 +8,7 @@ var window = null
 setting
 .default('app.startup_check_updates', true)
 .default('app.startup_check_updates_delay', 100)
+.default('app.startup_loadgame_delay', 100)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
 .default('game.show_ko_warning', true)

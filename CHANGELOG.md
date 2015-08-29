@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Add 'Clear All Overlays' menu item
+* Ask for saving file when closing a changed game
 
 **Changed**
 * Alpha and number tools use up lower, unused symbols before using higher symbols
