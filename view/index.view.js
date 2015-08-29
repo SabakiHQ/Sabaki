@@ -520,6 +520,10 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+E',
                     click: function() { setEditMode(!getEditMode()) }
                 },
+                {
+                    label: 'Clear &All Overlays',
+                    click: function() { clearAllOverlays() }
+                },
                 { type: 'separator' },
                 {
                     label: '&Stone Tool',
@@ -537,12 +541,12 @@ function buildMenu() {
                     click: function() { setSelectedTool('triangle') }
                 },
                 {
-                    label: '&Square Tool',
+                    label: 'S&quare Tool',
                     accelerator: 'CmdOrCtrl+4',
                     click: function() { setSelectedTool('square') }
                 },
                 {
-                    label: '&Circle Tool',
+                    label: 'C&ircle Tool',
                     accelerator: 'CmdOrCtrl+5',
                     click: function() { setSelectedTool('circle') }
                 },

@@ -855,6 +855,18 @@ function saveGame() {
     setIsBusy(false)
 }
 
+function clearAllOverlays() {
+    var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
+
+    getCurrentTreePosition().unpack(function(tree, index) {
+        overlayIds.each(function(id) {
+            delete tree.nodes[index][id]
+        })
+
+        setCurrentTreePosition(tree, index)
+    })
+}
+
 function goBack() {
     getCurrentTreePosition().unpack(function(tree, position) {
         gametree.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {

@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Add 'Clear All Overlays' menu item
+
 **Changed**
 * Alpha and number tools use up lower, unused symbols before using higher symbols
 
