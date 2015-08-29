@@ -1031,7 +1031,7 @@ window.addEvent('load', function() {
     }, setting.get('app.startup_loadgame_delay'))
 
     if (!setting.get('app.startup_check_updates')) return
-    
+
     setTimeout(function() {
         checkForUpdates()
     }, setting.get('app.startup_check_updates_delay'))

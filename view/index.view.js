@@ -253,16 +253,16 @@ function setSliderValue(value, label) {
 }
 
 function getEditMode() {
-    return $('bar').hasClass('edit')
+    return document.body.hasClass('edit')
 }
 
 function setEditMode(editMode) {
     if (editMode) {
-        $('bar').addClass('edit')
+        document.body.addClass('edit')
         closeScore()
         closeGameInfo()
     } else {
-        $('bar').removeClass('edit')
+        document.body.removeClass('edit')
     }
 }
 

@@ -59,7 +59,7 @@ header, #bar #edit, #bar #scoring {
 #bar {
         transition: .2s background;
     }
-    #bar.edit {
+    .edit #bar {
         background: #C4BD64;
     }
     .scoring #bar {
@@ -69,10 +69,10 @@ header, #bar #edit, #bar #scoring {
         color: #333;
         top: -40px;
     }
-    #bar.edit #edit {
+    .edit #bar #edit {
         top: 0;
     }
-    #bar.edit header {
+    .edit #bar header {
         top: 40px;
     }
     #bar #scoring {
@@ -133,10 +133,10 @@ header, #bar #edit, #bar #scoring {
         height: 40px;
         width: 35px;
     }
-    #bar.edit #edit ul li a:hover {
+    .edit #bar #edit ul li a:hover {
         background: #B3AC53;
     }
-    #bar.edit #edit ul li.selected a, #bar.edit #edit ul li a:active {
+    .edit #bar #edit ul li.selected a, .edit #bar #edit ul li a:active {
         background: #A29B42;
     }
     #edit ul li a img {
