@@ -125,17 +125,6 @@ function getShowComment() {
     return getSidebarArrangement()[1]
 }
 
-function updateSidebarLayout() {
-    var container = $$('#properties .gm-scroll-view')[0]
-    container.fade('hide')
-
-    setTimeout(function() {
-        $('graph').retrieve('sigma').renderers[0].resize().render()
-        $('properties').retrieve('scrollbar').update()
-        container.set('tween', { duration: 200 }).fade('in')
-    }, 300)
-}
-
 function getSidebarWidth() {
     return $('sidebar').getStyle('width').toInt()
 }
@@ -331,6 +320,17 @@ function readjustShifts(vertex) {
         $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
             .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
     }
+}
+
+function updateSidebarLayout() {
+    var container = $$('#properties .gm-scroll-view')[0]
+    container.fade('hide')
+
+    setTimeout(function() {
+        $('graph').retrieve('sigma').renderers[0].resize().render()
+        $('properties').retrieve('scrollbar').update()
+        container.set('tween', { duration: 200 }).fade('in')
+    }, 300)
 }
 
 function buildBoard() {
