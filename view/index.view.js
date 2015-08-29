@@ -252,6 +252,20 @@ function setSliderValue(value, label) {
     labelel.set('text', label).setStyle('top', top)
 }
 
+function getPickMode() {
+    return document.body.hasClass('pick')
+}
+
+function setPickMode(pickMode) {
+    if (pickMode) {
+        document.body.addClass('pick')
+        closeScore()
+        closeGameInfo()
+    } else {
+        document.body.removeClass('pick')
+    }
+}
+
 function getEditMode() {
     return document.body.hasClass('edit')
 }

@@ -1010,6 +1010,7 @@ document.addEvent('keydown', function(e) {
         closeGameInfo()
         closeScore()
         setEditMode(false)
+        setPickMode(false)
     }
 }).addEvent('domready', function() {
     loadSettings()
