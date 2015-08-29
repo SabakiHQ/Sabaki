@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Changed**
+* Alpha and number tools use up lower, unused symbols before using higher symbols
+
 ## [Sabaki v0.4.2][v0.4.2] (2015-08-28)
 
 **Added**
