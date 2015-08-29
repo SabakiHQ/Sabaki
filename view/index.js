@@ -1030,11 +1030,11 @@ window.addEvent('load', function() {
         if (process.argv.length >= 2) loadGame(process.argv[1])
     }, setting.get('app.startup_loadgame_delay'))
 
-    if (setting.get('app.startup_check_updates')) {
-        setTimeout(function() {
-            checkForUpdates()
-        }, setting.get('app.startup_check_updates_delay'))
-    }
+    if (!setting.get('app.startup_check_updates')) return
+    
+    setTimeout(function() {
+        checkForUpdates()
+    }, setting.get('app.startup_check_updates_delay'))
 }).addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
