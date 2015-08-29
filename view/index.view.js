@@ -522,7 +522,7 @@ function buildMenu() {
                 },
                 {
                     label: 'Clear &All Overlays',
-                    click: function() { clearAllOverlays() }
+                    click: clearAllOverlays
                 },
                 { type: 'separator' },
                 {
