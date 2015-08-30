@@ -12,7 +12,7 @@
 }
 
 body, input, button, select, option {
-    font: 14px/1.5 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+    font: 14px/1.5 'SF UI Text', 'Segoe UI', 'Open Sans', Ubuntu, 'Lucida Grande', Cantarell, sans-serif;
 }
 
 body, a {
