@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+## [Sabaki v0.4.3][v0.4.3] (2015-08-30)
 
 **Added**
 * Add 'Clear All Overlays' menu item
