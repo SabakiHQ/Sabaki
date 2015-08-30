@@ -787,7 +787,7 @@ function askForSave() {
 
     if (hash != document.body.retrieve('treehash')) {
         var answer = dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'info',
+            type: 'warning',
             buttons: ['Save', 'Don’t Save', 'Cancel'],
             title: app.getName(),
             message: 'Your changes will be lost if you close this game without saving.',
@@ -973,6 +973,14 @@ function removeNode(tree, index) {
 
         return
     }
+
+    if (dialog.showMessageBox(remote.getCurrentWindow(), {
+        type: 'warning',
+        title: app.getName(),
+        buttons: ['Remove Node', 'Cancel'],
+        message: 'Do you really want to remove this node permanently?',
+        noLink: true
+    }) == 1) return
 
     var prev = gametree.navigate(tree, index, -1)
 
