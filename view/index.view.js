@@ -12,10 +12,7 @@ function getIsBusy() {
 
 function setIsBusy(busy) {
     if (busy) document.body.addClass('busy')
-    else $('busy').tween('opacity', 0).get('tween').addEvent('complete', function() {
-        document.body.removeClass('busy')
-        $('busy').setStyle('opacity', null)
-    })
+    else document.body.removeClass('busy')
 }
 
 function getShowVariations() {
@@ -337,7 +334,9 @@ function readjustShifts(vertex) {
 }
 
 function showMessageBox(message, type, buttons, cancelId) {
-    return dialog.showMessageBox(remote.getCurrentWindow(), {
+    setIsBusy(true)
+
+    var result = dialog.showMessageBox(remote.getCurrentWindow(), {
         'type': type,
         'buttons': buttons,
         'title': app.getName(),
@@ -345,6 +344,9 @@ function showMessageBox(message, type, buttons, cancelId) {
         'cancelId': cancelId,
         'noLink': true
     })
+
+    setIsBusy(false)
+    return result
 }
 
 function updateSidebarLayout() {
