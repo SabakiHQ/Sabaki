@@ -65,14 +65,11 @@ img {
         right: 0;
         top: 0;
         bottom: 0;
-        background: #26292C;
         cursor: wait;
-        opacity: 0;
         z-index: 999;
     }
     body.busy #busy {
         display: block;
-        opacity: .5;
 }
 
 form p, form ul li {
