@@ -1,8 +1,8 @@
 var Board = require('./board')
 var Tuple = require('../lib/tuple')
 
-var crypto = require('crypto')
 var sgf = require('./sgf')
+var helper = require('./helper')
 var setting = require('remote').require('./module/setting')
 
 exports.new = function(id) {
@@ -225,6 +225,5 @@ exports.matrixdict2graph = function(matrixdict) {
 }
 
 exports.getHash = function(tree) {
-    var str = sgf.tree2string(tree)
-    return crypto.createHash('md5').update(str).digest('hex')
+    return helper.md5(sgf.tree2string(tree))
 }

@@ -4,6 +4,7 @@ var shell = require('shell')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var sound = require('../module/sound')
+var helper = require('../module/helper')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
@@ -870,10 +871,10 @@ function saveGame() {
 
     if (result) {
         var tree = getRootTree()
-        var text = '(' + sgf.tree2string(tree) + ')'
+        var text = sgf.tree2string(tree)
 
-        fs.writeFile(result, text)
-        document.body.store('treehash', gametree.getHash(tree))
+        fs.writeFile(result, '(' + text + ')')
+        document.body.store('treehash', helper.md5(text))
     }
 
     setIsBusy(false)

@@ -1,5 +1,5 @@
 var Tuple = require('../lib/tuple')
-var crypto = require('crypto')
+var helper = require('./helper')
 
 var Board = function(size, arrangement, captures) {
     this.size = arguments.length >= 1 ? size : 19
@@ -261,8 +261,7 @@ Board.prototype = {
     },
 
     getHash: function() {
-        var str = JSON.stringify(this.arrangement)
-        return crypto.createHash('md5').update(str).digest('hex')
+        return helper.md5(JSON.stringify(this.arrangement))
     }
 }
 
