@@ -380,10 +380,8 @@ function makeMove(vertex) {
             })
 
             if (ko && showMessageBox(
-                [
-                    'You are about to play a move which repeats a previous board position.',
-                    'This is invalid in some rulesets.'
-                ].join('\n'),
+                ['You are about to play a move which repeats a previous board position.',
+                'This is invalid in some rulesets.'].join('\n'),
                 'info',
                 ['Play Anyway', 'Don’t Play'], 1
             ) != 0) return
@@ -405,10 +403,8 @@ function makeMove(vertex) {
 
         if (suicide) {
             if (showMessageBox(
-                [
-                    'You are about to play a suicide move.',
-                    'This is invalid in some rulesets.'
-                ].join('\n'),
+                ['You are about to play a suicide move.',
+                'This is invalid in some rulesets.'].join('\n'),
                 'info',
                 ['Play Anyway', 'Don’t Play'], 1
             ) != 0) return
