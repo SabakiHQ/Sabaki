@@ -383,7 +383,7 @@ function makeMove(vertex) {
                 [
                     'You are about to play a move which repeats a previous board position.',
                     'This is invalid in some rulesets.'
-                ].join(' '),
+                ].join('\n'),
                 'info',
                 ['Play Anyway', 'Don’t Play'], 1
             ) != 0) return
@@ -408,7 +408,7 @@ function makeMove(vertex) {
                 [
                     'You are about to play a suicide move.',
                     'This is invalid in some rulesets.'
-                ].join(' '),
+                ].join('\n'),
                 'info',
                 ['Play Anyway', 'Don’t Play'], 1
             ) != 0) return
@@ -837,11 +837,7 @@ function loadGame(filename) {
             win.setProgressBar(0)
         }
     } catch(e) {
-        showMessageBox(
-            'This file is unreadable.',
-            'warning',
-            ['OK'], 0
-        )
+        showMessageBox('This file is unreadable.', 'warning', ['OK'], 0)
     }
 
     setIsBusy(false)
@@ -953,12 +949,7 @@ function goToPreviousVariation() {
 
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
-        showMessageBox(
-            'The root node cannot be removed.',
-            'warning',
-            ['OK'], 0
-        )
-
+        showMessageBox('The root node cannot be removed.', 'warning', ['OK'], 0)
         return
     }
 
