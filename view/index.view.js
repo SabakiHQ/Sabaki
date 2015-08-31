@@ -335,6 +335,7 @@ function readjustShifts(vertex) {
 
 function showMessageBox(message, type, buttons, cancelId) {
     setIsBusy(true)
+    if (isNaN(cancelId)) cancelId = 0
 
     var result = dialog.showMessageBox(remote.getCurrentWindow(), {
         'type': type,

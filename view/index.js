@@ -833,7 +833,7 @@ function loadGame(filename) {
             win.setProgressBar(0)
         }
     } catch(e) {
-        showMessageBox('This file is unreadable.', 'warning', ['OK'], 0)
+        showMessageBox('This file is unreadable.', 'warning', ['OK'])
     }
 
     setIsBusy(false)
@@ -945,7 +945,7 @@ function goToPreviousVariation() {
 
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
-        showMessageBox('The root node cannot be removed.', 'warning', ['OK'], 0)
+        showMessageBox('The root node cannot be removed.', 'warning', ['OK'])
         return
     }
 
