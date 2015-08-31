@@ -336,6 +336,17 @@ function readjustShifts(vertex) {
     }
 }
 
+function showMessageBox(message, type, buttons, cancelId) {
+    return dialog.showMessageBox(remote.getCurrentWindow(), {
+        'type': type,
+        'buttons': buttons,
+        'title': app.getName(),
+        'message': message,
+        'cancelId': cancelId,
+        'noLink': true
+    })
+}
+
 function updateSidebarLayout() {
     var container = $$('#properties .gm-scroll-view')[0]
     container.fade('hide')

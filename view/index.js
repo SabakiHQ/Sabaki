@@ -348,14 +348,11 @@ function checkForUpdates(callback) {
                 chunk = '' + chunk
                 var hasUpdates = !chunk.contains('v' + app.getVersion())
 
-                if (hasUpdates && dialog.showMessageBox(remote.getCurrentWindow(), {
-                    type: 'info',
-                    buttons: ['Download Update', 'Not Now'],
-                    title: app.getName(),
-                    message: 'There is a new version of ' + app.getName() + ' available.',
-                    cancelId: 1,
-                    noLink: true
-                }) == 0) shell.openExternal(url)
+                if (hasUpdates && showMessageBox(
+                    'There is a new version of ' + app.getName() + ' available.',
+                    'info',
+                    ['Download Update', 'Not Now'], 1
+                ) == 0) shell.openExternal(url)
 
                 callback(hasUpdates)
             })
@@ -382,17 +379,14 @@ function makeMove(vertex) {
                 return prevTree.nodes[prevIndex].board.getHash() == hash
             })
 
-            if (ko && dialog.showMessageBox(remote.getCurrentWindow(), {
-                type: 'info',
-                title: app.getName(),
-                buttons: ['Play Anyway', 'Don’t Play'],
-                message: [
+            if (ko && showMessageBox(
+                [
                     'You are about to play a move which repeats a previous board position.',
                     'This is invalid in some rulesets.'
                 ].join(' '),
-                cancelId: 1,
-                noLink: true
-            }) != 0) return
+                'info',
+                ['Play Anyway', 'Don’t Play'], 1
+            ) != 0) return
         }
 
         // Check for suicide
@@ -410,17 +404,14 @@ function makeMove(vertex) {
         }).length == 0
 
         if (suicide) {
-            if (dialog.showMessageBox(remote.getCurrentWindow(), {
-                type: 'info',
-                title: app.getName(),
-                buttons: ['Play Anyway', 'Don’t Play'],
-                message: [
+            if (showMessageBox(
+                [
                     'You are about to play a suicide move.',
                     'This is invalid in some rulesets.'
                 ].join(' '),
-                cancelId: 1,
-                noLink: true
-            }) != 0) return
+                'info',
+                ['Play Anyway', 'Don’t Play'], 1
+            ) != 0) return
         }
 
         // Randomize shift and readjust
@@ -787,13 +778,11 @@ function askForSave() {
     var hash = gametree.getHash(getRootTree())
 
     if (hash != document.body.retrieve('treehash')) {
-        var answer = dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'warning',
-            buttons: ['Save', 'Don’t Save', 'Cancel'],
-            title: app.getName(),
-            message: 'Your changes will be lost if you close this game without saving.',
-            noLink: true
-        })
+        var answer = showMessageBox(
+            'Your changes will be lost if you close this game without saving.',
+            'warning',
+            ['Save', 'Don’t Save', 'Cancel'], 2
+        )
 
         if (answer == 0) saveGame()
         else if (answer == 2) return false
@@ -848,12 +837,11 @@ function loadGame(filename) {
             win.setProgressBar(0)
         }
     } catch(e) {
-        dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'warning',
-            buttons: ['OK'],
-            title: app.getName(),
-            message: 'This file is unreadable.'
-        })
+        showMessageBox(
+            'This file is unreadable.',
+            'warning',
+            ['OK'], 0
+        )
     }
 
     setIsBusy(false)
@@ -965,23 +953,20 @@ function goToPreviousVariation() {
 
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
-        dialog.showMessageBox(remote.getCurrentWindow(), {
-            type: 'warning',
-            title: app.getName(),
-            buttons: ['OK'],
-            message: 'The root node cannot be removed.'
-        })
+        showMessageBox(
+            'The root node cannot be removed.',
+            'warning',
+            ['OK'], 0
+        )
 
         return
     }
 
-    if (dialog.showMessageBox(remote.getCurrentWindow(), {
-        type: 'warning',
-        title: app.getName(),
-        buttons: ['Remove Node', 'Cancel'],
-        message: 'Do you really want to remove this node permanently?',
-        noLink: true
-    }) == 1) return
+    if (showMessageBox(
+        'Do you really want to remove this node permanently?',
+        'warning',
+        ['Remove Node', 'Cancel'], 1
+    ) == 1) return
 
     var prev = gametree.navigate(tree, index, -1)
 
