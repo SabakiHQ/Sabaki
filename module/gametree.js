@@ -1,10 +1,9 @@
 var Board = require('./board')
 var Tuple = require('../lib/tuple')
 
-var remote = require('remote')
 var sgf = require('./sgf')
-var helper = remote.require('./module/helper')
-var setting = remote.require('./module/setting')
+var helper = require('./helper')
+var setting = require('remote').require('./module/setting')
 
 exports.new = function(id) {
     return {

@@ -1,5 +1,5 @@
 var Tuple = require('../lib/tuple')
-var helper = require('remote').require('./module/helper')
+var helper = require('./helper')
 
 var Board = function(size, arrangement, captures) {
     this.size = arguments.length >= 1 ? size : 19
