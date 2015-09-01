@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased][unreleased]
 
 **Added**
-* Add comment editing
+* Add comment editing to edit mode
 * Add Linux release
 
 **Fixed**
