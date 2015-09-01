@@ -254,6 +254,7 @@ header, #bar #edit, #bar #scoring {
         background: transparent;
         color: #d0d0d0;
         transition: .2s color;
+        z-index: 2;
     }
     .edit #properties {
         background: #E6DF86;
@@ -262,7 +263,6 @@ header, #bar #edit, #bar #scoring {
     .edit #properties textarea {
         display: block;
         color: #222;
-        z-index: 2;
     }
     .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
