@@ -242,6 +242,20 @@ header, #bar #edit, #bar #scoring {
         box-shadow: 0 0 10px #111;
         transition: .2s height;
     }
+    #properties textarea {
+        display: none;
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 15px;
+        width: 100%;
+        background: #FFEB8D;
+        color: #222;
+    }
+    .edit #properties textarea { display: block; }
+    .edit #properties .gm-scroll-view, .edit #properties .gm-scrollbar { display: none; }
     #properties .horizontalresizer {
         position: absolute;
         top: 0;
@@ -274,7 +288,7 @@ header, #bar #edit, #bar #scoring {
         background: #0082F0;
     }
     #properties .inner {
-        margin: 1em;
+        margin: 15px;
         word-wrap: break-word;
     }
     #properties .gm-scrollbar {

@@ -173,7 +173,7 @@ function setCurrentPlayer(sign) {
 }
 
 function getCommentText() {
-    return $('properties').retrieve('commenttext')
+    return $$('#properties textarea').get('value')[0]
 }
 
 function setCommentText(text) {
@@ -204,8 +204,8 @@ function setCommentText(text) {
         .replace(/(<br>)*<p>(<br>)*/g, '<p>')
         .replace(/(<br>)*<\/p>(<br>)*/g, '</p>') + '</p>'
 
-    $('properties').store('commenttext', text)
-        .getElement('.inner').set('html', html)
+    $$('#properties textarea').set('value', text)
+    $$('#properties .inner')[0].set('html', html)
         .getElements('a').addEvent('click', function() {
             shell.openExternal(this.href)
             return false
@@ -270,6 +270,7 @@ function getEditMode() {
 function setEditMode(editMode) {
     if (editMode) {
         document.body.addClass('edit')
+        $$('#properties textarea')[0].scrollTo(0, 0)
         closeScore()
         closeGameInfo()
     } else {
