@@ -12,7 +12,9 @@
 }
 
 body, input, button, select, option {
-    font: 14px/1.5 '.SFNSText-Regular', 'Segoe UI', 'Open Sans', Ubuntu, 'Lucida Grande', Cantarell, sans-serif;
+    font: menu;
+    font-size: 14px;
+    line-height: 1.5;
 }
 
 body, a {
