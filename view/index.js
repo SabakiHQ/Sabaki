@@ -17,6 +17,8 @@ var Board = require('../module/board')
 var Scrollbar = require('../lib/gemini-scrollbar')
 var Menu = remote.require('menu')
 
+var updateSidebar
+
 /**
  * Getter & setter
  */
@@ -71,6 +73,7 @@ function setCurrentTreePosition(tree, index) {
     if (!tree || getScoringMode()) return
 
     // Remove old graph node color
+
     var oldNode = getCurrentGraphNode()
     var oldPos = getCurrentTreePosition()
     var node = getGraphNode(tree, index)
@@ -79,6 +82,7 @@ function setCurrentTreePosition(tree, index) {
         oldNode.color = oldNode.originalColor
 
     // Store new position
+
     $('goban').store('position', new Tuple(tree, index))
     var redraw = !node
         || !gametree.onCurrentTrack(tree)
@@ -93,18 +97,20 @@ function setCurrentTreePosition(tree, index) {
     }
 
     // Update graph, slider and comment text
-    setTimeout(function() {
-        if (!new Tuple(tree, index).equals(getCurrentTreePosition())) return
 
+    if (updateSidebar) clearTimeout(updateSidebar)
+    updateSidebar = setTimeout(function() {
         // Set current path
+
         var t = tree
         while (t.parent) {
             t.parent.current = t.parent.subtrees.indexOf(t)
             t = t.parent
         }
 
-        if (redraw) updateGraph()
+        // Update
 
+        if (redraw) updateGraph()
         centerGraphCameraAt(getCurrentGraphNode())
         updateSlider()
         updateCommentText()
@@ -113,6 +119,7 @@ function setCurrentTreePosition(tree, index) {
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
 
     // Determine current player
+
     setCurrentPlayer(1)
 
     if ('B' in tree.nodes[index]) setCurrentPlayer(-1)
