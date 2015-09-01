@@ -240,22 +240,26 @@ header, #bar #edit, #bar #scoring {
         color: #d0d0d0;
         background: #181818;
         box-shadow: 0 0 10px #111;
-        transition: .2s height;
+        transition: .2s height, .2s color, .2s background;
     }
     #properties textarea {
         box-sizing: border-box;
+        display: none;
         position: absolute;
         left: 0;
-        top: 100%;
+        top: 0;
         height: 100%;
         width: 100%;
         padding: 15px;
+        background: transparent;
+        color: #222;
+    }
+    .edit #properties {
         background: #E6DF86;
         color: #222;
-        transition: .5s top;
     }
-    .edit #properties textarea { top: 0; }
-    .edit #properties .gm-scrollbar { opacity: 0; }
+    .edit #properties textarea { display: block; }
+    .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
         top: 0;
@@ -294,7 +298,6 @@ header, #bar #edit, #bar #scoring {
     #properties .gm-scrollbar {
         bottom: 0;
         right: 0;
-        transition: .2s opacity;
     }
     #properties .gm-scrollbar.-vertical {
         width: 8px;

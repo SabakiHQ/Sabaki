@@ -813,7 +813,7 @@ document.addEvent('domready', function() {
             setting.set('view.sidebar_width', getSidebarWidth())
         } else if (initPosY) {
             $('sidebar').store('initposy', null)
-            $('properties').setStyle('transition', '.2s height')
+            $('properties').setStyle('transition', '')
             setting.set('view.comments_height', getCommentHeight())
             setSidebarArrangement(true, true, false)
         }
