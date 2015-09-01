@@ -252,13 +252,18 @@ header, #bar #edit, #bar #scoring {
         width: 100%;
         padding: 15px;
         background: transparent;
-        color: #222;
+        color: #d0d0d0;
+        transition: .2s color;
     }
     .edit #properties {
         background: #E6DF86;
         color: #222;
     }
-    .edit #properties textarea { display: block; }
+    .edit #properties textarea {
+        display: block;
+        color: #222;
+        z-index: 2;
+    }
     .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
