@@ -228,6 +228,7 @@ function setCommentText(text) {
     })
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
+    $$('#properties textarea')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
 }
 
@@ -270,7 +271,6 @@ function getEditMode() {
 function setEditMode(editMode) {
     if (editMode) {
         document.body.addClass('edit')
-        $$('#properties textarea')[0].scrollTo(0, 0)
         closeScore()
         closeGameInfo()
     } else {
