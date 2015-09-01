@@ -336,6 +336,9 @@ function readjustShifts(vertex) {
 
 function showMessageBox(message, type, buttons, cancelId) {
     setIsBusy(true)
+
+    if (!type) type = 'info'
+    if (!buttons) buttons = ['OK']
     if (isNaN(cancelId)) cancelId = 0
 
     var result = dialog.showMessageBox(remote.getCurrentWindow(), {
@@ -698,12 +701,7 @@ function buildMenu() {
                     click: function() {
                         checkForUpdates(function(hasUpdates) {
                             if (hasUpdates) return
-                            dialog.showMessageBox(remote.getCurrentWindow(), {
-                                type: 'info',
-                                buttons: ['OK'],
-                                title: app.getName(),
-                                message: 'There are no updates available.',
-                            })
+                            showMessageBox('There are no updates available.')
                         })
                     }
                 },
