@@ -701,6 +701,7 @@ function commitCommentText() {
         tree.nodes[index].C = [$$('#properties textarea').get('value')[0]]
     })
 
+    updateCommentText()
     updateSidebar(true)
 }
 
