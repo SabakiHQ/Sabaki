@@ -275,6 +275,7 @@ function setEditMode(editMode) {
         closeGameInfo()
     } else {
         document.body.removeClass('edit')
+        commitCommentText()
     }
 }
 
@@ -304,6 +305,26 @@ function setScoringMode(scoringMode) {
  * Methods
  */
 
+function showMessageBox(message, type, buttons, cancelId) {
+    setIsBusy(true)
+
+    if (!type) type = 'info'
+    if (!buttons) buttons = ['OK']
+    if (isNaN(cancelId)) cancelId = 0
+
+    var result = dialog.showMessageBox(remote.getCurrentWindow(), {
+        'type': type,
+        'buttons': buttons,
+        'title': app.getName(),
+        'message': message,
+        'cancelId': cancelId,
+        'noLink': true
+    })
+
+    setIsBusy(false)
+    return result
+}
+
 function readjustShifts(vertex) {
     var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])[0]
     var direction = li.get('class').split(' ').filter(function(x) {
@@ -332,26 +353,6 @@ function readjustShifts(vertex) {
         $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
             .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
     }
-}
-
-function showMessageBox(message, type, buttons, cancelId) {
-    setIsBusy(true)
-
-    if (!type) type = 'info'
-    if (!buttons) buttons = ['OK']
-    if (isNaN(cancelId)) cancelId = 0
-
-    var result = dialog.showMessageBox(remote.getCurrentWindow(), {
-        'type': type,
-        'buttons': buttons,
-        'title': app.getName(),
-        'message': message,
-        'cancelId': cancelId,
-        'noLink': true
-    })
-
-    setIsBusy(false)
-    return result
 }
 
 function updateSidebarLayout() {

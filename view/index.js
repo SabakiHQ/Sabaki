@@ -667,7 +667,38 @@ function updateCommentText() {
     })
 }
 
-function updateGameInfo() {
+function updateAreaMap() {
+    var board = getBoard().makeMove(0)
+
+    $$('#goban .row li.dead').each(function(li) {
+        if (li.hasClass('sign_1')) board.captures['-1']++
+        else if (li.hasClass('sign_-1')) board.captures['1']++
+
+        board.arrangement[li.retrieve('tuple')] = 0
+    })
+
+    var map = board.getAreaMap()
+
+    $$('#goban .row li').each(function(li) {
+        li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+            .addClass('area_' + map[li.retrieve('tuple')])
+        if (!li.getElement('div.area'))
+            li.grab(new Element('div', { class: 'area' }))
+    })
+
+    $('goban').store('areamap', map)
+        .store('finalboard', board)
+}
+
+function commitCommentText() {
+    getCurrentTreePosition().unpack(function(tree, index) {
+        tree.nodes[index].C = [$$('#properties textarea').get('value')[0]]
+    })
+
+    updateCommentText()
+}
+
+function commitGameInfo() {
     var rootNode = getRootTree().nodes[0]
     var info = $('info')
 
@@ -714,7 +745,7 @@ function updateGameInfo() {
     }
 }
 
-function updateScore() {
+function commitScore() {
     var rootNode = getRootTree().nodes[0]
     var results = $$('#score tbody td:last-child').get('text')
     var diff = results[0].toFloat() - results[1].toFloat()
@@ -722,29 +753,6 @@ function updateScore() {
     if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
-}
-
-function updateAreaMap() {
-    var board = getBoard().makeMove(0)
-
-    $$('#goban .row li.dead').each(function(li) {
-        if (li.hasClass('sign_1')) board.captures['-1']++
-        else if (li.hasClass('sign_-1')) board.captures['1']++
-
-        board.arrangement[li.retrieve('tuple')] = 0
-    })
-
-    var map = board.getAreaMap()
-
-    $$('#goban .row li').each(function(li) {
-        li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[li.retrieve('tuple')])
-        if (!li.getElement('div.area'))
-            li.grab(new Element('div', { class: 'area' }))
-    })
-
-    $('goban').store('areamap', map)
-        .store('finalboard', board)
 }
 
 function centerGraphCameraAt(node) {
