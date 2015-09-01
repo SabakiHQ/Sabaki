@@ -275,7 +275,6 @@ function setEditMode(editMode) {
         closeGameInfo()
     } else {
         document.body.removeClass('edit')
-        commitCommentText()
     }
 }
 

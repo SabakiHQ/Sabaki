@@ -17,7 +17,7 @@ var Board = require('../module/board')
 var Scrollbar = require('../lib/gemini-scrollbar')
 var Menu = remote.require('menu')
 
-var updateSidebar
+var updateSidebarLambda
 
 /**
  * Getter & setter
@@ -98,24 +98,7 @@ function setCurrentTreePosition(tree, index) {
 
     // Update graph, slider and comment text
 
-    if (updateSidebar) clearTimeout(updateSidebar)
-    updateSidebar = setTimeout(function() {
-        // Set current path
-
-        var t = tree
-        while (t.parent) {
-            t.parent.current = t.parent.subtrees.indexOf(t)
-            t = t.parent
-        }
-
-        // Update
-
-        if (redraw) updateGraph()
-        centerGraphCameraAt(getCurrentGraphNode())
-        updateSlider()
-        updateCommentText()
-    }, setting.get('graph.delay'))
-
+    updateSidebar(redraw)
     setBoard(sgf.addBoard(tree, index).nodes[index].board)
 
     // Determine current player
@@ -642,6 +625,29 @@ function vertexClicked(vertex) {
     }
 }
 
+function updateSidebar(redraw) {
+    if (updateSidebarLambda) clearTimeout(updateSidebarLambda)
+
+    getCurrentTreePosition().unpack(function(tree, index) {
+        updateSidebarLambda = setTimeout(function() {
+            // Set current path
+
+            var t = tree
+            while (t.parent) {
+                t.parent.current = t.parent.subtrees.indexOf(t)
+                t = t.parent
+            }
+
+            // Update
+
+            updateSlider()
+            updateCommentText()
+            if (redraw) updateGraph()
+            centerGraphCameraAt(getCurrentGraphNode())
+        }, setting.get('graph.delay'))
+    })
+}
+
 function updateGraph() {
     if (!getShowSidebar() || !getCurrentTreePosition()) return
 
@@ -695,7 +701,7 @@ function commitCommentText() {
         tree.nodes[index].C = [$$('#properties textarea').get('value')[0]]
     })
 
-    updateCommentText()
+    updateSidebar(true)
 }
 
 function commitGameInfo() {
