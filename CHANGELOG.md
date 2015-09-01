@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased][unreleased]
 
 **Added**
+* Add comment editing
 * Add Linux release
 
 ## [Sabaki v0.4.3][v0.4.3] (2015-08-30)
