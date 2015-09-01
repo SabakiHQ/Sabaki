@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 * Add comment editing
 * Add Linux release
 
+**Fixed**
+* Always use system font
+
 ## [Sabaki v0.4.3][v0.4.3] (2015-08-30)
 
 **Added**
