@@ -46,14 +46,17 @@ header, #bar #edit, #bar #scoring {
         position: absolute;
         left: 50%;
         top: 50%;
-        height: 21px;
-        transform: translate(-50%, -50%);
+        width: 35px;
+        height: 22px;
+        margin-left: -17px;
+        margin-top: -11px;
     }
     #headermenu {
         left: auto;
         right: 5px;
+        width: 32px;
         height: 32px;
-        transform: translateY(-50%);
+        margin-top: -16px;
 }
 
 #bar {
@@ -145,7 +148,8 @@ header, #bar #edit, #bar #scoring {
         left: 50%;
         width: 20px;
         height: 20px;
-        transform: translate(-50%, -50%);
+        margin-left: -10px;
+        margin-top: -10px;
 }
 
 #sidebar {

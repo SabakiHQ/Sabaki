@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Always use system font
+* Fix weird rendering artifacts
 
 ## [Sabaki v0.4.3][v0.4.3] (2015-08-30)
 

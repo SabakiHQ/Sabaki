@@ -438,6 +438,7 @@ function resizeBoard() {
     }
 
     $$('#goban > div').setStyle('width', min).setStyle('height', min)
+        .setStyle('margin-left', -min / 2).setStyle('margin-top', -min / 2)
 
     $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
     $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
