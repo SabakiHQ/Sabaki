@@ -1,8 +1,8 @@
 {
     "name": "sabaki",
     "productName": "Sabaki",
-    "version": "0.4.3",
-    "description": "A modern virtual Go board for a more civilized age.",
+    "version": "0.5.0",
+    "description": "An elegant virtual Go board for a more civilized age.",
     "author": "Yichuan Shen",
     "main": "main.js",
     "repository": {
