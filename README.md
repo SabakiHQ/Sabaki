@@ -2,7 +2,7 @@
 
 <img src="logo.png" width="100" height="100">
 
-A modern virtual Go board for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
+An elegant virtual Go board for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
 ![Screenshot](screenshot.png)
 
