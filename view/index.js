@@ -698,7 +698,9 @@ function updateAreaMap() {
 
 function commitCommentText() {
     getCurrentTreePosition().unpack(function(tree, index) {
-        tree.nodes[index].C = [$$('#properties textarea').get('value')[0]]
+        var comment = $$('#properties textarea').get('value')[0]
+        if (comment != '') tree.nodes[index].C = [comment]
+        else delete tree.nodes[index].C
     })
 
     updateCommentText()
