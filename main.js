@@ -63,6 +63,7 @@ app.on('ready', function() {
 
     window.on('closed', function() { window = null })
     window.webContents.on('did-finish-load', function() { window.show() })
+        .on('new-window', function(e) { e.preventDefault() })
 
     window.loadUrl('file://' + __dirname + '/view/index.html')
 })
