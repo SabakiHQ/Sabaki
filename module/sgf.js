@@ -254,14 +254,14 @@ exports.tree2string = function(tree) {
     tree.nodes.each(function(node) {
         output += ';'
 
-        Object.each(node, function(values, id) {
+        for (var id in node) {
             if (id.toUpperCase() != id) return
             output += id
 
-            values.each(function(value) {
+            node[id].each(function(value) {
                 output += '[' + exports.escapeString(value.toString()) + ']'
             })
-        })
+        }
 
         output += '\n'
     })
