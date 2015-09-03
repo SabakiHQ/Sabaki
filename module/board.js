@@ -131,12 +131,13 @@ Board.prototype = {
         score['captures_1'] = this.captures['1']
         score['captures_-1'] = this.captures['-1']
 
-        Object.each(areaMap, function(sign, vertex) {
-            if (sign == 0) return
+        for (var vertex in areaMap) {
+            var sign = areaMap[vertex]
+            if (sign == 0) continue
 
             score['area_' + sign]++
             if (this.arrangement[vertex] == 0) score['territory_' + sign]++
-        }, this)
+        }
 
         return score
     },

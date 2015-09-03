@@ -579,7 +579,7 @@ function useTool(vertex) {
                 }
             }
 
-            Object.each(dictionary, function(id) { delete node[id] })
+            for (var id in dictionary) delete node[id]
 
             // Update SGF
 
