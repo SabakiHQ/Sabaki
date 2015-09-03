@@ -632,7 +632,7 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Go To &Beginning',
+                    label: 'Go To Be&ginning',
                     accelerator: 'CmdOrCtrl+Home',
                     click: goToBeginning
                 },
@@ -643,7 +643,7 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Go To Next Variatio&n',
+                    label: 'Go To Next Va&riation',
                     accelerator: 'Right',
                     click: goToNextVariation
                 },
@@ -651,6 +651,12 @@ function buildMenu() {
                     label: 'Go To Previous &Variation',
                     accelerator: 'Left',
                     click: goToPreviousVariation
+                },
+                { type: 'separator' },
+                {
+                    label: 'Find &Move',
+                    accelerator: 'CmdOrCtrl+F',
+                    click: findMove
                 }
             ]
         },

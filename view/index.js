@@ -967,6 +967,10 @@ function goToPreviousVariation() {
     })
 }
 
+function findMove(vertex) {
+    
+}
+
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
         showMessageBox('The root node cannot be removed.', 'warning')
