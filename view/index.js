@@ -877,7 +877,7 @@ function saveGame() {
         var tree = getRootTree()
         var text = sgf.tree2string(tree)
 
-        fs.writeFile(result, text)
+        fs.writeFile(result, '(' + text + ')')
         document.body.store('treehash', helper.md5(text))
     }
 
