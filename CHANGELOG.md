@@ -14,6 +14,9 @@ All notable changes to this project will be documented in this file.
 * Fix weird rendering artifacts
 * Prevent new windows when Ctrl-clicking links
 
+**Changed**
+* Update to Electron v0.31.2
+
 ## [Sabaki v0.4.3][v0.4.3] (2015-08-30)
 
 **Added**
