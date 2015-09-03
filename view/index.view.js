@@ -447,7 +447,7 @@ function resizeBoard() {
     $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
-    
+
     setSliderValue.apply(null, getSliderValue())
 }
 
