@@ -133,7 +133,7 @@ function getSelectedTool() {
     var tool = li.get('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return li.getElement('img').get('src').contains('_1') ? 'stone_1' : 'stone_-1'
+        return li.getElement('img').get('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
     } else {
         return tool
     }
@@ -142,7 +142,7 @@ function getSelectedTool() {
 function setSelectedTool(tool) {
     if (!getEditMode()) {
         setEditMode(true)
-        if (getSelectedTool().contains(tool)) return
+        if (getSelectedTool().indexOf(tool) != -1) return
     }
 
     $$('#edit .' + tool + '-tool a').fireEvent('click')
@@ -336,7 +336,7 @@ function checkForUpdates(callback) {
                 cancel = true
 
                 chunk = '' + chunk
-                var hasUpdates = !chunk.contains('v' + app.getVersion())
+                var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
 
                 if (hasUpdates && showMessageBox(
                     'There is a new version of ' + app.getName() + ' available.',
@@ -477,7 +477,7 @@ function useTool(vertex) {
             'label': 'LB'
         }
 
-        if (tool.contains('stone')) {
+        if (tool.indexOf('stone') != -1) {
             if ('B' in node || 'W' in node) {
                 // New variation needed
                 var splitted = gametree.splitTree(tree, index)
@@ -493,7 +493,7 @@ function useTool(vertex) {
                 tree.nodes.push(node)
             }
 
-            var sign = tool.contains('_1') ? 1 : -1
+            var sign = tool.indexOf('_1') != -1 ? 1 : -1
             if (event.button == 2) sign = -sign
 
             var oldSign = board.arrangement[vertex]

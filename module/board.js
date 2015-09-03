@@ -47,7 +47,7 @@ Board.prototype = {
 
         // Recursive depth-first search
         this.getNeighborhood(vertex).each(function(v) {
-            if (!colors.contains(this.arrangement[v])) return
+            if (colors.indexOf(this.arrangement[v]) == -1) return
             if (result.some(function(w) { return w.equals(v) })) return
 
             result.push(v)

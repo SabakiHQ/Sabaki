@@ -171,9 +171,9 @@ exports.matrixdict2graph = function(matrixdict) {
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
 
-            if (currentTrack.contains(tree.id)) {
+            if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
-            } else if (!notCurrentTrack.contains(tree.id)) {
+            } else if (notCurrentTrack.indexOf(tree.id) == -1) {
                 if (exports.onCurrentTrack(tree)) {
                     currentTrack.push(tree.id)
                     node.color = node.originalColor
