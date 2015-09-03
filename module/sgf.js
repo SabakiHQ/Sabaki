@@ -12,76 +12,34 @@ exports.meta = {
 
 exports.tokenize = function(input) {
     var tokens = []
-    var builder = ''
-    var propIdentRegex = /^[A-Za-z]+/
+    var dict = {
+        ignore: /^\s/,
+        parenthesis: /^(\(|\))/,
+        semicolon: /^;/,
+        prop_ident: /^[A-Za-z]+/,
+        c_value_type: /^\[(\]|[^]*?[^\\]\])/
+    }
 
-    var i = 0
-    var inCValueType = false
-    var inBackslash = false
+    while (input.length > 0) {
+        var token = null
+        var length = 0
 
-    while (i < input.length) {
-        if (!inCValueType) {
-            builder = ''
-            inBackslash = false
+        for (var name in dict) {
+            var matches = dict[name].exec(input)
+            if (!matches) continue
 
-            switch (input[i]) {
-                case '(':
-                    tokens.push(new Tuple('parenthesis', '('))
-                    i++
-                    break
-                case ')':
-                    tokens.push(new Tuple('parenthesis', ')'))
-                    i++
-                    break
-                case ';':
-                    tokens.push(new Tuple('semicolon', ';'))
-                    i++
-                    break
-                case '[':
-                    inCValueType = true
-                    i++
-                    break
-                default:
-                    if (/\s/.test(input[i])) {
-                        i++
-                        break
-                    }
+            var value = matches[0]
+            length = value.length
 
-                    var match = propIdentRegex.exec(input.slice(i))[0]
+            if (name == 'c_value_type')
+                value = exports.unescapeString(value.substr(1, length - 2))
+            token = new Tuple(name, value)
 
-                    if (match != null) {
-                        tokens.push(new Tuple('prop_ident', match))
-                        i += match.length
-                    } else {
-                        return []
-                    }
-
-                    break
-            }
-        } else {
-            if (!inBackslash) {
-                switch (input[i]) {
-                    case '\\':
-                        inBackslash = true
-                        break
-                    case '\n':
-                        builder += '\n'
-                        break
-                    case ']':
-                        inCValueType = false
-                        tokens.push(new Tuple('c_value_type', builder))
-                        break
-                    default:
-                        builder += input[i]
-                        break
-                }
-            } else {
-                inBackslash = false
-                builder += input[i]
-            }
-
-            i++
+            break
         }
+
+        if (token && token[0] != 'ignore') tokens.push(token)
+        input = input.substr(length)
     }
 
     return tokens
@@ -321,4 +279,8 @@ exports.tree2string = function(tree) {
 
 exports.escapeString = function(input) {
     return input.replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
+}
+
+exports.unescapeString = function(input) {
+    return input.replace(/\\(\r\n|\n\r|\n|\r)/g, '').replace(/\\(.)/g, function(m, p) { return p })
 }
