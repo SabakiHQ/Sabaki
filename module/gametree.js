@@ -92,7 +92,7 @@ exports.getWidth = function(y, matrix) {
     }).filter(function(i) { return i >= 0 && i < matrix.length })
 
     var padding = Math.min.apply(null, keys.map(function(i) {
-        return matrix[i].indexOf(matrix[i].pick())
+        return matrix[i].indexOf(helper.pick(matrix[i]))
     }))
     var width = Math.max.apply(null, keys.map(function(i) {
         return matrix[i].length
