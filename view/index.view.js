@@ -257,8 +257,7 @@ function getPickMode() {
 function setPickMode(pickMode) {
     if (pickMode) {
         document.body.addClass('pick')
-        closeScore()
-        closeGameInfo()
+        closeDrawers()
     } else {
         document.body.removeClass('pick')
     }
@@ -271,8 +270,7 @@ function getEditMode() {
 function setEditMode(editMode) {
     if (editMode) {
         document.body.addClass('edit')
-        closeScore()
-        closeGameInfo()
+        closeDrawers()
     } else {
         document.body.removeClass('edit')
     }
@@ -508,6 +506,11 @@ function showScore() {
 function closeScore() {
     $('score').removeClass('show')
     setScoringMode(false)
+}
+
+function closeDrawers() {
+    closeGameInfo()
+    closeScore()
 }
 
 function buildMenu() {
