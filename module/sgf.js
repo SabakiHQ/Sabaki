@@ -255,7 +255,7 @@ exports.tree2string = function(tree) {
         output += ';'
 
         for (var id in node) {
-            if (id.toUpperCase() != id) return
+            if (id.toUpperCase() != id) continue
             output += id
 
             node[id].each(function(value) {
