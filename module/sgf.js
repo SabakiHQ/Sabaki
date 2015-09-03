@@ -13,7 +13,7 @@ exports.meta = {
 exports.tokenize = function(input) {
     var tokens = []
     var dict = {
-        ignore: /^\s/,
+        ignore: /^\s+/,
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
         prop_ident: /^[A-Za-z]+/,
@@ -267,14 +267,14 @@ exports.tree2string = function(tree) {
     })
 
     if (tree.current != null)
-        output += '(' + exports.tree2string(tree.subtrees[tree.current]) + ')'
+        output += exports.tree2string(tree.subtrees[tree.current])
 
     for (var i = 0; i < tree.subtrees.length; i++) {
         if (i == tree.current) continue
-        output += '(' + exports.tree2string(tree.subtrees[i]) + ')'
+        output += exports.tree2string(tree.subtrees[i])
     }
 
-    return output
+    return '(' + output + ')'
 }
 
 exports.escapeString = function(input) {
