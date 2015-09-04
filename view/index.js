@@ -935,13 +935,8 @@ function goToBeginning() {
 }
 
 function goToEnd() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        var t = tree
-        while (t.current != null) {
-            t = t.subtrees[t.current]
-        }
-        setCurrentTreePosition(t, t.nodes.length - 1)
-    })
+    var tree = getCurrentTreePosition()[0]
+    gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1).unpack(setCurrentTreePosition)
 }
 
 function goToNextVariation() {
