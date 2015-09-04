@@ -30,9 +30,6 @@ exports.tokenize = function(input) {
 
             var value = matches[0]
             length = value.length
-
-            if (type == 'c_value_type')
-                value = exports.unescapeString(value.substr(1, length - 2))
             token = new Tuple(type, value)
 
             break
@@ -67,7 +64,7 @@ exports.parse = function(tokens, callback, start, depth) {
                 node[value] = []
                 property = node[value]
             } else if (type == 'c_value_type') {
-                property.push(value)
+                property.push(exports.unescapeString(value.substr(1, value.length - 2)))
             }
         })
 
