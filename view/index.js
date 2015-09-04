@@ -69,6 +69,10 @@ function setGraphMatrixDict(matrixdict) {
     $('graph').store('graphmatrixdict', matrixdict)
 }
 
+function getCurrentTreePosition() {
+    return $('goban').retrieve('position')
+}
+
 function setCurrentTreePosition(tree, index) {
     if (!tree || getScoringMode()) return
 
@@ -111,10 +115,6 @@ function setCurrentTreePosition(tree, index) {
         setCurrentPlayer(tree.nodes[index].PL[0] == 'W' ? -1 : 1)
     else if ('HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
         setCurrentPlayer(-1)
-}
-
-function getCurrentTreePosition() {
-    return $('goban').retrieve('position')
 }
 
 function getCurrentGraphNode() {
@@ -616,6 +616,34 @@ function vertexClicked(vertex) {
         useTool(vertex)
     } else if (getFindMode()) {
         showIndicator(vertex)
+        setIsBusy(true)
+
+        var pos = getCurrentTreePosition()
+        var step = $$('#find button')[0].hasClass('selected') ? -1 : 1
+
+        while (true) {
+            pos = gametree.navigate(pos[0], pos[1], step)
+
+            if (!pos[0]) {
+                if (step == 1) {
+                    pos = new Tuple(getRootTree(), 0)
+                } else {
+                    var tree = getCurrentTreePosition()[0]
+                    pos = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+                }
+            }
+
+            if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
+                var node = tree.nodes[index]
+
+                return ['B', 'W'].some(function(c) {
+                    return c in node && node[c][0].toLowerCase() == sgf.vertex2point(vertex)
+                })
+            })) break
+        }
+
+        pos.unpack(setCurrentTreePosition)
+        setIsBusy(false)
     } else {
         // Playing mode
 

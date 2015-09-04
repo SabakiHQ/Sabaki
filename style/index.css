@@ -78,18 +78,24 @@ header, #edit, #scoring, #find {
     #scoring, #find {
         top: -40px;
     }
-    #scoring button {
+    #scoring button, #find button {
         position: absolute;
         left: 10px;
         top: 50%;
         background: #400000;
         transform: translateY(-50%);
     }
-    #scoring button:hover, #scoring button:focus {
-        background: #600000;
+    #scoring button:hover, #scoring button:focus { background: #600000; }
+    #scoring button:active, #find button:active { transform: translateY(-46%); }
+    #find button {
+        padding-left: 7px;
+        padding-right: 7px;
+        background: #002090;
     }
-    #scoring button:active {
-        transform: translateY(-46%);
+    #find button:first-child img { transform: scaleY(-1); }
+    #find button:nth-child(2) { left: 44px; }
+    #find button:hover, #find button.selected {
+        background: #001080;
 }
 
 #edit a.close, #scoring a.close, #find a.close {

@@ -823,6 +823,13 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
+    // Find bar buttons
+
+    $$('#find button').addEvent('click', function() {
+        $$('#find button').removeClass('selected')
+        this.addClass('selected')
+    })
+
     // Properties scrollbar
 
     var scrollbar = new Scrollbar({
