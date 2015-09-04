@@ -248,10 +248,8 @@ function getFindMode() {
 
 function setFindMode(pickMode) {
     if (pickMode) {
-        document.body.addClass('find')
         closeDrawers()
-        setScoringMode(false)
-        setEditMode(false)
+        document.body.addClass('find')
     } else {
         document.body.removeClass('find')
         hideIndicator()
@@ -264,10 +262,8 @@ function getEditMode() {
 
 function setEditMode(editMode) {
     if (editMode) {
-        document.body.addClass('edit')
         closeDrawers()
-        setScoringMode(false)
-        setFindMode(false)
+        document.body.addClass('edit')
     } else {
         document.body.removeClass('edit')
     }
@@ -279,10 +275,8 @@ function getScoringMode() {
 
 function setScoringMode(scoringMode) {
     if (scoringMode) {
+        closeDrawers()
         document.body.addClass('scoring')
-        setEditMode(false)
-        setFindMode(false)
-        closeGameInfo()
 
         var deadstones = getBoard().guessDeadStones()
         deadstones.each(function(v) {
@@ -516,6 +510,9 @@ function closeScore() {
 function closeDrawers() {
     closeGameInfo()
     closeScore()
+    setEditMode(false)
+    setScoringMode(false)
+    setFindMode(false)
 }
 
 function showIndicator(vertex) {

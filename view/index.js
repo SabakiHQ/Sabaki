@@ -831,7 +831,7 @@ function newGame(playSound) {
         showGameInfo()
     }
 
-    closeScore()
+    closeDrawers()
 }
 
 function loadGame(filename) {
@@ -861,8 +861,7 @@ function loadGame(filename) {
     }
 
     setIsBusy(false)
-    closeGameInfo()
-    closeScore()
+    closeDrawers()
 }
 
 function saveGame() {
@@ -1016,10 +1015,7 @@ document.addEvent('keydown', function(e) {
         location.reload()
     } else if (e.code == 27) {
         // Escape key
-        closeGameInfo()
-        closeScore()
-        setEditMode(false)
-        setFindMode(false)
+        closeDrawers()
     }
 }).addEvent('domready', function() {
     loadSettings()
