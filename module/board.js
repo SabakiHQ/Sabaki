@@ -2,22 +2,22 @@ var Tuple = require('../lib/tuple')
 var helper = require('./helper')
 
 var Board = function(size, arrangement, captures) {
-    this.size = arguments.length >= 1 ? size : 19
-    this.captures = arguments.length >= 3 ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
+    this.size = !isNaN(size) ? size : 19
+    this.captures = captures ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
     this.arrangement = {}
     this.overlays = {}
 
     // Initialize arrangement
     for (var x = 0; x < this.size; x++) {
         for (var y = 0; y < this.size; y++) {
-            this.arrangement[new Tuple(x, y)] = arguments.length >= 2 ? arrangement[new Tuple(x, y)] : 0
+            this.arrangement[new Tuple(x, y)] = arrangement ? arrangement[new Tuple(x, y)] : 0
         }
     }
 }
 
 Board.prototype = {
-    hasVertex: function(v) {
-        return v.unpack(function(x, y) {
+    hasVertex: function(vertex) {
+        return vertex.unpack(function(x, y) {
             return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
         }.bind(this))
     },
@@ -30,20 +30,22 @@ Board.prototype = {
         }
     },
 
-    getNeighborhood: function(v) {
-        if (!this.hasVertex(v)) return []
-        x = v[0]; y = v[1]
+    getNeighborhood: function(vertex) {
+        var self = this
+        if (!self.hasVertex(vertex)) return []
 
-        return [
-            new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
-        ].filter(function(item) {
-            return this.hasVertex(item)
-        }.bind(this))
+        return vertex.unpack(function(x, y) {
+            return [
+                new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
+            ].filter(function(item) {
+                return self.hasVertex(item)
+            })
+        })
     },
 
     getConnectedComponent: function(vertex, colors, result) {
         if (!this.hasVertex(vertex)) return []
-        if (arguments.length < 3) result = [vertex]
+        if (!result) result = [vertex]
 
         // Recursive depth-first search
         this.getNeighborhood(vertex).each(function(v) {
