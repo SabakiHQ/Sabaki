@@ -826,12 +826,11 @@ function newGame(playSound) {
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree)
 
+    closeDrawers()
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
         showGameInfo()
     }
-
-    closeDrawers()
 }
 
 function loadGame(filename) {
