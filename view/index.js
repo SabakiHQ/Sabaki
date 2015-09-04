@@ -968,7 +968,7 @@ function goToPreviousVariation() {
 }
 
 function findMove(vertex) {
-    
+    setFindMode(true)
 }
 
 function removeNode(tree, index) {
@@ -1019,7 +1019,7 @@ document.addEvent('keydown', function(e) {
         closeGameInfo()
         closeScore()
         setEditMode(false)
-        setPickMode(false)
+        setFindMode(false)
     }
 }).addEvent('domready', function() {
     loadSettings()

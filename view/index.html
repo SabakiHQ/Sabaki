@@ -50,16 +50,20 @@
             </ul>
             <a class="close" href="#" onclick="setEditMode(false)"></a>
         </section>
+        <section id="scoring">
+            <button onclick="showScore()">Done</button> Please select dead stones.
+            <a class="close" href="#" onclick="setScoringMode(false)"></a>
+        </section>
+        <section id="find">
+            Please select a vertex.
+            <a class="close" href="#" onclick="setFindMode(false)"></a>
+        </section>
         <header>
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
             <img class="currentplayer" src="../img/ui/blacktoplay.png" />
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
             <img id="headermenu" src="../img/ui/menu.png" onclick="openHeaderMenu()" />
         </header>
-        <section id="scoring">
-            <button onclick="showScore()">Done</button> Please select dead stones.
-            <a class="close" href="#" onclick="setScoringMode(false)"></a>
-        </section>
     </section>
 
     <section id="info">

@@ -1,4 +1,4 @@
-header, #bar #edit, #bar #scoring {
+header, #edit, #scoring, #find {
         position: absolute;
         left: 0;
         right: 0;
@@ -62,49 +62,37 @@ header, #bar #edit, #bar #scoring {
 #bar {
         transition: .2s background;
     }
-    .edit #bar {
-        background: #C4BD64;
-    }
-    .scoring #bar {
-        background: #C42311;
-    }
-    #bar #edit {
+    .edit #bar { background: #C4BD64; }
+    .scoring #bar { background: #C42311; }
+    .find #bar { background: #0082F0; }
+    #edit {
         color: #333;
         top: -40px;
     }
-    .edit #bar #edit {
+    .edit #edit, .scoring #scoring, .find #find {
         top: 0;
     }
-    .edit #bar header {
+    .edit header, .scoring header, .find header {
         top: 40px;
     }
-    #bar #scoring {
-        top: 40px;
+    #scoring, #find {
+        top: -40px;
     }
-    #bar #scoring button {
+    #scoring button {
         position: absolute;
         left: 10px;
         top: 50%;
         background: #400000;
         transform: translateY(-50%);
     }
-    #bar #scoring button:hover, #bar #scoring button:focus {
+    #scoring button:hover, #scoring button:focus {
         background: #600000;
     }
-    #bar #scoring button:active {
+    #scoring button:active {
         transform: translateY(-46%);
-    }
-    .scoring #bar #scoring {
-        top: 0;
-    }
-    .scoring #bar header {
-        top: -40px;
 }
 
-#edit {
-        position: relative;
-    }
-    #edit a.close, #scoring a.close {
+#edit a.close, #scoring a.close, #find a.close {
         display: block;
         position: absolute;
         right: 4px;
@@ -114,10 +102,10 @@ header, #bar #edit, #bar #scoring {
         background: no-repeat url('../img/ui/close.png') center;
         opacity: .5;
     }
-    #scoring a.close {
+    #scoring a.close, #find a.close {
         background: no-repeat url('../img/ui/close_invert.png') center;
     }
-    #edit a.close:active, #scoring a.close:active {
+    #edit a.close:active, #scoring a.close:active, #find a.close:active {
         opacity: .7;
     }
     #edit ul {

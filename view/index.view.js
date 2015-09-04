@@ -250,16 +250,18 @@ function setSliderValue(value, label) {
     labelel.set('text', label).setStyle('top', top)
 }
 
-function getPickMode() {
-    return document.body.hasClass('pick')
+function getFindMode() {
+    return document.body.hasClass('find')
 }
 
-function setPickMode(pickMode) {
+function setFindMode(pickMode) {
     if (pickMode) {
-        document.body.addClass('pick')
+        document.body.addClass('find')
         closeDrawers()
+        setScoringMode(false)
+        setEditMode(false)
     } else {
-        document.body.removeClass('pick')
+        document.body.removeClass('find')
     }
 }
 
@@ -271,6 +273,8 @@ function setEditMode(editMode) {
     if (editMode) {
         document.body.addClass('edit')
         closeDrawers()
+        setScoringMode(false)
+        setFindMode(false)
     } else {
         document.body.removeClass('edit')
     }
@@ -284,6 +288,7 @@ function setScoringMode(scoringMode) {
     if (scoringMode) {
         document.body.addClass('scoring')
         setEditMode(false)
+        setFindMode(false)
         closeGameInfo()
 
         var deadstones = getBoard().guessDeadStones()
@@ -753,6 +758,10 @@ function openHeaderMenu() {
         {
             label: '&Edit',
             click: function() { setEditMode(true) }
+        },
+        {
+            label: '&Find',
+            click: function() { setFindMode(true) }
         },
         {
             label: '&Info',
