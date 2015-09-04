@@ -12,7 +12,7 @@ exports.meta = {
 
 exports.tokenize = function(input) {
     var tokens = []
-    var dict = {
+    var rules = {
         ignore: /^\s+/,
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
@@ -24,16 +24,16 @@ exports.tokenize = function(input) {
         var token = null
         var length = 0
 
-        for (var name in dict) {
-            var matches = dict[name].exec(input)
+        for (var type in rules) {
+            var matches = rules[type].exec(input)
             if (!matches) continue
 
             var value = matches[0]
             length = value.length
 
-            if (name == 'c_value_type')
+            if (type == 'c_value_type')
                 value = exports.unescapeString(value.substr(1, length - 2))
-            token = new Tuple(name, value)
+            token = new Tuple(type, value)
 
             break
         }
@@ -59,15 +59,15 @@ exports.parse = function(tokens, callback, start, depth) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break
         if (new Tuple('parenthesis', ')').equals(tokens[i])) return tree
 
-        tokens[i].unpack(function(type, data) {
+        tokens[i].unpack(function(type, value) {
             if (type == 'semicolon') {
                 node = {}
                 tree.nodes.push(node)
             } else if (type == 'prop_ident') {
-                node[data] = []
-                property = node[data]
+                node[value] = []
+                property = node[value]
             } else if (type == 'c_value_type') {
-                property.push(data)
+                property.push(value)
             }
         })
 
