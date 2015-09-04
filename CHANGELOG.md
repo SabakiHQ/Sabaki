@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Find move
 
+**Fixed**
+* Fix overlays being off-center
+
 **Changed**
 * More crisp bar icons
 

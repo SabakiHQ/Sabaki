@@ -424,14 +424,9 @@ function resizeBoard() {
     var min = Math.min(width, height)
     var hasCoordinates = getShowCoordinates()
 
-    var fieldsize = Math.floor(min / board.size)
-    if (fieldsize % 2 == 1) fieldsize--
-    min = fieldsize * board.size
-
-    if (hasCoordinates) {
-        fieldsize = Math.floor(min / (board.size + 2))
-        min = fieldsize * (board.size + 2)
-    }
+    var size = !hasCoordinates ? board.size : board.size + 2
+    var fieldsize = helper.roundEven(min / size)
+    min = fieldsize * size
 
     $$('#goban > div').setStyle('width', min).setStyle('height', min)
         .setStyle('margin-left', -min / 2).setStyle('margin-top', -min / 2)
