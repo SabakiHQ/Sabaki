@@ -395,6 +395,7 @@ function buildBoard() {
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
+                .grab(new Element('div', { class: 'area' }))
             )
         }
 

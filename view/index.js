@@ -688,8 +688,6 @@ function updateAreaMap() {
     $$('#goban .row li').each(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
             .addClass('area_' + map[li.retrieve('tuple')])
-        if (!li.getElement('div.area'))
-            li.grab(new Element('div', { class: 'area' }))
     })
 
     $('goban').store('areamap', map)
