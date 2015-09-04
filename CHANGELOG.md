@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Added**
+* Find move
+
 ## [Sabaki v0.5.0][v0.5.0] (2015-09-03)
 
 **Added**
