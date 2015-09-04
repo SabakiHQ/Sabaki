@@ -296,6 +296,10 @@ function setScoringMode(scoringMode) {
     }
 }
 
+function getIndicatorVertex() {
+    return $('indicator').retrieve('vertex')
+}
+
 /**
  * Methods
  */
@@ -447,6 +451,7 @@ function resizeBoard() {
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
 
     setSliderValue.apply(null, getSliderValue())
+    if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
 }
 
 function showGameInfo() {
@@ -523,11 +528,14 @@ function showIndicator(vertex) {
             .setStyle('left', li.getPosition().x - 1)
             .setStyle('height', li.getSize().y)
             .setStyle('width', li.getSize().x)
+            .store('vertex', vertex)
     })
 }
 
 function hideIndicator() {
-    $('indicator').setStyle('top', '').setStyle('left', '')
+    $('indicator').setStyle('top', '')
+        .setStyle('left', '')
+        .store('vertex', null)
 }
 
 function buildMenu() {
