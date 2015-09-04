@@ -620,6 +620,7 @@ function vertexClicked(vertex) {
 
         var pos = getCurrentTreePosition()
         var step = $$('#find button')[0].hasClass('selected') ? -1 : 1
+        var point = sgf.vertex2point(vertex)
 
         while (true) {
             pos = gametree.navigate(pos[0], pos[1], step)
@@ -637,7 +638,7 @@ function vertexClicked(vertex) {
                 var node = tree.nodes[index]
 
                 return ['B', 'W'].some(function(c) {
-                    return c in node && node[c][0].toLowerCase() == sgf.vertex2point(vertex)
+                    return c in node && node[c][0].toLowerCase() == point
                 })
             })) break
         }
