@@ -138,7 +138,7 @@ function getCommentHeight() {
 function setCommentHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
-    setSliderValue.apply(null, getSliderValue())
+    getSliderValue().unpack(setSliderValue)
 }
 
 function getPlayerName(sign) {
@@ -422,9 +422,8 @@ function resizeBoard() {
     var width = $('goban').getStyle('width').toInt()
     var height = $('goban').getStyle('height').toInt()
     var min = Math.min(width, height)
-    var hasCoordinates = getShowCoordinates()
 
-    var size = !hasCoordinates ? board.size : board.size + 2
+    var size = !getShowCoordinates() ? board.size : board.size + 2
     var fieldsize = helper.roundEven(min / size)
     min = fieldsize * size
 
@@ -432,14 +431,14 @@ function resizeBoard() {
         .setStyle('margin-left', -min / 2).setStyle('margin-top', -min / 2)
 
     $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
-    $$('#goban .row, #goban .coordx').setStyle('margin-left', hasCoordinates ? fieldsize : 0)
+    $$('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
 
     $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
     $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
 
-    setSliderValue.apply(null, getSliderValue())
+    getSliderValue().unpack(setSliderValue)
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
 }
 
