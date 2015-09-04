@@ -816,8 +816,7 @@ function askForSave() {
  */
 
 function newGame(playSound) {
-    if (getIsBusy()) return
-    if (!askForSave()) return
+    if (getIsBusy() || !askForSave()) return
 
     var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
     buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
@@ -834,8 +833,7 @@ function newGame(playSound) {
 }
 
 function loadGame(filename) {
-    if (getIsBusy()) return
-    if (!askForSave()) return
+    if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
 
     if (!filename) {
