@@ -448,73 +448,6 @@ function resizeBoard() {
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
 }
 
-function showGameInfo() {
-    closeScore()
-
-    var tree = getRootTree()
-    var rootNode = tree.nodes[0]
-    var info = $('info')
-
-    info.addClass('show').getElement('input[name="name_1"]').focus()
-
-    info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
-    info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
-    info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
-    info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
-    info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
-    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
-
-    var size = info.getElement('input[name="size"]')
-    size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
-
-    var handicap = info.getElement('select[name="handicap"]')
-    if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
-    else handicap.selectedIndex = 0
-
-    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
-    handicap.disabled = disabled
-    size.disabled = disabled
-}
-
-function closeGameInfo() {
-    $('info').removeClass('show')
-}
-
-function showScore() {
-    var board = $('goban').retrieve('finalboard')
-    var score = board.getScore($('goban').retrieve('areamap'))
-    var rootNode = getRootTree().nodes[0]
-
-    for (var sign = -1; sign <= 1; sign += 2) {
-        var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.getElements('td')
-
-        tds[0].set('text', score['area_' + sign])
-        tds[1].set('text', score['territory_' + sign])
-        tds[2].set('text', score['captures_' + sign])
-        if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
-        tds[4].set('text', 0)
-
-        setScoringMethod(setting.get('scoring.method'))
-    }
-
-    closeGameInfo()
-    $('score').addClass('show')
-}
-
-function closeScore() {
-    $('score').removeClass('show')
-    setScoringMode(false)
-}
-
-function closeDrawers() {
-    closeGameInfo()
-    closeScore()
-    setEditMode(false)
-    setScoringMode(false)
-    setFindMode(false)
-}
-
 function showIndicator(vertex) {
     vertex.unpack(function(x, y) {
         var li = $$('#goban .pos_' + x + '-' + y)
@@ -805,6 +738,77 @@ function openNodeMenu(tree, index) {
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
+}
+
+/**
+ * Drawers
+ */
+
+function showGameInfo() {
+    closeScore()
+
+    var tree = getRootTree()
+    var rootNode = tree.nodes[0]
+    var info = $('info')
+
+    info.addClass('show').getElement('input[name="name_1"]').focus()
+
+    info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
+    info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+    info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
+    info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+    info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
+    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+
+    var size = info.getElement('input[name="size"]')
+    size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
+
+    var handicap = info.getElement('select[name="handicap"]')
+    if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
+    else handicap.selectedIndex = 0
+
+    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
+    handicap.disabled = disabled
+    size.disabled = disabled
+}
+
+function closeGameInfo() {
+    $('info').removeClass('show')
+}
+
+function showScore() {
+    var board = $('goban').retrieve('finalboard')
+    var score = board.getScore($('goban').retrieve('areamap'))
+    var rootNode = getRootTree().nodes[0]
+
+    for (var sign = -1; sign <= 1; sign += 2) {
+        var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
+        var tds = tr.getElements('td')
+
+        tds[0].set('text', score['area_' + sign])
+        tds[1].set('text', score['territory_' + sign])
+        tds[2].set('text', score['captures_' + sign])
+        if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+        tds[4].set('text', 0)
+
+        setScoringMethod(setting.get('scoring.method'))
+    }
+
+    closeGameInfo()
+    $('score').addClass('show')
+}
+
+function closeScore() {
+    $('score').removeClass('show')
+    setScoringMode(false)
+}
+
+function closeDrawers() {
+    closeGameInfo()
+    closeScore()
+    setEditMode(false)
+    setScoringMode(false)
+    setFindMode(false)
 }
 
 /**
