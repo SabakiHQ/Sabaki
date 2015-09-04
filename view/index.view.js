@@ -433,6 +433,7 @@ function resizeBoard() {
     var hasCoordinates = getShowCoordinates()
 
     var fieldsize = Math.floor(min / board.size)
+    if (fieldsize % 2 == 1) fieldsize--
     min = fieldsize * board.size
 
     if (hasCoordinates) {
