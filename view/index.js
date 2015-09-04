@@ -630,6 +630,9 @@ function updateSidebar(redraw) {
 
     getCurrentTreePosition().unpack(function(tree, index) {
         updateSidebarLambda = setTimeout(function() {
+            if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
+                return
+
             // Set current path
 
             var t = tree
