@@ -214,17 +214,9 @@ function setCommentText(text) {
     $$('#properties .coord').addEvent('mouseenter', function() {
         var x = 'abcdefghjklmnopqrstuvwxyz'.indexOf(this.get('text')[0].toLowerCase())
         var y = getBoard().size - this.get('text').substr(1).toInt()
-        var li = $$('#goban .pos_' + x + '-' + y)
-
-        if (li.length == 0) return
-        li = li[0]
-
-        $('indicator').setStyle('top', li.getPosition().y)
-            .setStyle('left', li.getPosition().x)
-            .setStyle('height', li.getSize().y)
-            .setStyle('width', li.getSize().x)
+        showIndicator(new Tuple(x, y))
     }).addEvent('mouseleave', function() {
-        $('indicator').setStyle('top', '').setStyle('left', '')
+        hideIndicator()
     })
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
@@ -262,6 +254,7 @@ function setFindMode(pickMode) {
         setEditMode(false)
     } else {
         document.body.removeClass('find')
+        hideIndicator()
     }
 }
 
@@ -518,6 +511,23 @@ function closeScore() {
 function closeDrawers() {
     closeGameInfo()
     closeScore()
+}
+
+function showIndicator(vertex) {
+    vertex.unpack(function(x, y) {
+        var li = $$('#goban .pos_' + x + '-' + y)
+        if (li.length == 0) return
+        li = li[0]
+
+        $('indicator').setStyle('top', li.getPosition().y - 1)
+            .setStyle('left', li.getPosition().x - 1)
+            .setStyle('height', li.getSize().y)
+            .setStyle('width', li.getSize().x)
+    })
+}
+
+function hideIndicator() {
+    $('indicator').setStyle('top', '').setStyle('left', '')
 }
 
 function buildMenu() {
