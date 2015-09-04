@@ -765,6 +765,7 @@ function openHeaderMenu() {
             label: '&Find',
             click: function() { setFindMode(true) }
         },
+        { type: 'separator' },
         {
             label: '&Info',
             click: showGameInfo
