@@ -603,25 +603,24 @@ function useTool(vertex) {
 function vertexClicked(vertex) {
     closeGameInfo()
 
-    if (!getEditMode() && !getScoringMode()) {
+    if (getScoringMode()) {
+        if (event.button != 0) return
+        if (getBoard().arrangement[vertex] == 0) return
+
+        getBoard().getRelatedChains(vertex).each(function(v) {
+            $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
+        })
+
+        updateAreaMap()
+    } else if (getEditMode()) {
+        useTool(vertex)
+    } else if (getFindMode()) {
+        showIndicator(vertex)
+    } else {
         // Playing mode
 
         if (event.button != 0) return
         makeMove(vertex)
-    } else if (getScoringMode()) {
-        // Scoring mode activated
-
-        if (event.button != 0) return
-        if (getBoard().arrangement[vertex] == 0) return
-
-        getBoard().getRelatedChains(vertex).each(function(vertex) {
-            $$('#goban .pos_' + vertex[0] + '-' + vertex[1]).toggleClass('dead')
-        })
-
-        updateAreaMap()
-    } else {
-        // Edit mode activated
-        useTool(vertex)
     }
 }
 
