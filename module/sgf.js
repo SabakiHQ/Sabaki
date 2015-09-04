@@ -22,7 +22,7 @@ exports.tokenize = function(input) {
 
     while (input.length > 0) {
         var token = null
-        var length = 0
+        var length = 1
 
         for (var type in rules) {
             var matches = rules[type].exec(input)
