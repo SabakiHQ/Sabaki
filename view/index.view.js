@@ -605,7 +605,7 @@ function buildMenu() {
                 {
                     label: 'Find &Move',
                     accelerator: 'CmdOrCtrl+F',
-                    click: findMove
+                    click: function() { setFindMode(true) }
                 }
             ]
         },

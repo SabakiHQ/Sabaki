@@ -600,6 +600,41 @@ function useTool(vertex) {
     })
 }
 
+function findMove(vertex, step) {
+    showIndicator(vertex)
+    setIsBusy(true)
+
+    if (isNaN(step)) step = 1
+    step = step >= 0 ? 1 : -1
+
+    var pos = getCurrentTreePosition()
+    var point = sgf.vertex2point(vertex)
+
+    while (true) {
+        pos = gametree.navigate(pos[0], pos[1], step)
+
+        if (!pos[0]) {
+            if (step == 1) {
+                pos = new Tuple(getRootTree(), 0)
+            } else {
+                var tree = getCurrentTreePosition()[0]
+                pos = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+            }
+        }
+
+        if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
+            var node = tree.nodes[index]
+
+            return ['B', 'W'].some(function(c) {
+                return c in node && node[c][0].toLowerCase() == point
+            })
+        })) break
+    }
+
+    pos.unpack(setCurrentTreePosition)
+    setIsBusy(false)
+}
+
 function vertexClicked(vertex) {
     closeGameInfo()
 
@@ -615,36 +650,8 @@ function vertexClicked(vertex) {
     } else if (getEditMode()) {
         useTool(vertex)
     } else if (getFindMode()) {
-        showIndicator(vertex)
-        setIsBusy(true)
-
-        var pos = getCurrentTreePosition()
-        var step = $$('#find button')[0].hasClass('selected') ? -1 : 1
-        var point = sgf.vertex2point(vertex)
-
-        while (true) {
-            pos = gametree.navigate(pos[0], pos[1], step)
-
-            if (!pos[0]) {
-                if (step == 1) {
-                    pos = new Tuple(getRootTree(), 0)
-                } else {
-                    var tree = getCurrentTreePosition()[0]
-                    pos = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
-                }
-            }
-
-            if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
-                var node = tree.nodes[index]
-
-                return ['B', 'W'].some(function(c) {
-                    return c in node && node[c][0].toLowerCase() == point
-                })
-            })) break
-        }
-
-        pos.unpack(setCurrentTreePosition)
-        setIsBusy(false)
+        if (event.button != 0) return
+        findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
     } else {
         // Playing mode
 
@@ -985,10 +992,6 @@ function goToPreviousVariation() {
         var i = (tree.parent.current + mod - 1) % mod
         setCurrentTreePosition(tree.parent.subtrees[i], 0)
     })
-}
-
-function findMove(vertex) {
-    setFindMode(true)
 }
 
 function removeNode(tree, index) {
