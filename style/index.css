@@ -93,7 +93,7 @@ header, #edit, #scoring, #find {
         background: #002090;
     }
     #find button:first-child img { transform: scaleY(-1); }
-    #find button:nth-child(2) { left: 44px; }
+    #find button:not(:first-child) { left: 44px; }
     #find button:hover, #find button.selected {
         background: #001080;
 }

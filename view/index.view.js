@@ -448,8 +448,8 @@ function showIndicator(vertex) {
         if (li.length == 0) return
         li = li[0]
 
-        $('indicator').setStyle('top', li.getPosition().y - 1)
-            .setStyle('left', li.getPosition().x - 1)
+        $('indicator').setStyle('top', li.getPosition().y)
+            .setStyle('left', li.getPosition().x)
             .setStyle('height', li.getSize().y)
             .setStyle('width', li.getSize().x)
             .store('vertex', vertex)
