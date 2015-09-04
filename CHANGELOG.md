@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Find move
 
+**Changed**
+* More crisp bar icons
+
 ## [Sabaki v0.5.0][v0.5.0] (2015-09-03)
 
 **Added**
