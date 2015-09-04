@@ -64,7 +64,7 @@ header, #edit, #scoring, #find {
     }
     .edit #bar { background: #C4BD64; }
     .scoring #bar { background: #C42311; }
-    .find #bar { background: #0082F0; }
+    .find #bar { background: #0050C0; }
     #edit {
         color: #333;
         top: -40px;
