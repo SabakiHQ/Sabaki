@@ -67,8 +67,6 @@ img {
         right: 0;
         top: 0;
         bottom: 0;
-        background: black;
-        opacity: .2;
         cursor: wait;
         z-index: 999;
     }
