@@ -91,6 +91,25 @@ exports.getCurrentHeight = function(tree) {
     return height
 }
 
+exports.getLevel = function(tree, index, relative) {
+    var totalHeight = exports.getCurrentHeight(relative)
+    var height = exports.getCurrentHeight(tree)
+    return totalHeight - height + index
+}
+
+exports.getSections = function(tree, level) {
+    if (level < 0) return []
+    if (level < tree.nodes.length) return [new Tuple(tree, level)]
+
+    var sections = []
+
+    tree.subtrees.each(function(subtree) {
+        sections.concat(exports.getSections(subtree, level - tree.nodes.length))
+    })
+
+    return sections
+}
+
 exports.getWidth = function(y, matrix) {
     var keys = Object.keys(new Int8Array(10)).map(function(i) {
         return parseFloat(i) + y - 4
