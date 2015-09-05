@@ -890,6 +890,7 @@ function loadGame(filename) {
         closeDrawers()
     }
 
+    if (setting.get('game.show_end_after_loading')) goToEnd()
     setIsBusy(false)
 }
 
