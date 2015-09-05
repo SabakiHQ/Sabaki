@@ -191,9 +191,11 @@
     .goban .row li.cross::before {
         content: '\2573';
         display: block;
+        border: none;
         width: 16px;
         height: 16px;
-        border: none;
+        margin-left: -8px;
+        margin-top: -10px;
         font-size: 13px;
         text-indent: -2px;
     }
