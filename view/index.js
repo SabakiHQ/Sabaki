@@ -601,39 +601,41 @@ function findMove(vertex, step) {
     showIndicator(vertex)
     setIsBusy(true)
 
-    if (isNaN(step)) step = 1
-    step = step >= 0 ? 1 : -1
+    setTimeout(function() {
+        if (isNaN(step)) step = 1
+        step = step >= 0 ? 1 : -1
 
-    var root = getRootTree()
-    var pos = getCurrentTreePosition()
-    var point = sgf.vertex2point(vertex)
-    var iterator = gametree.newNodeIterator.apply(null, pos)
+        var root = getRootTree()
+        var pos = getCurrentTreePosition()
+        var point = sgf.vertex2point(vertex)
+        var iterator = gametree.newNodeIterator.apply(null, pos)
 
-    while (true) {
-        pos = step >= 0 ? iterator.next() : iterator.prev()
+        while (true) {
+            pos = step >= 0 ? iterator.next() : iterator.prev()
 
-        if (!pos) {
-            if (step == 1) {
-                pos = new Tuple(root, 0)
-            } else {
-                var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
-                pos = sections[sections.length - 1]
+            if (!pos) {
+                if (step == 1) {
+                    pos = new Tuple(root, 0)
+                } else {
+                    var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
+                    pos = sections[sections.length - 1]
+                }
+
+                iterator = gametree.newNodeIterator.apply(null, pos)
             }
 
-            iterator = gametree.newNodeIterator.apply(null, pos)
+            if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
+                var node = tree.nodes[index]
+
+                return ['B', 'W'].some(function(c) {
+                    return c in node && node[c][0].toLowerCase() == point
+                })
+            })) break
         }
 
-        if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
-            var node = tree.nodes[index]
-
-            return ['B', 'W'].some(function(c) {
-                return c in node && node[c][0].toLowerCase() == point
-            })
-        })) break
-    }
-
-    setCurrentTreePosition.apply(null, pos)
-    setIsBusy(false)
+        setCurrentTreePosition.apply(null, pos)
+        setIsBusy(false)
+    }, 0)
 }
 
 function vertexClicked(vertex) {
