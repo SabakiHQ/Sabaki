@@ -650,13 +650,14 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: '&Fullscreen',
+                    label: 'Full&screen',
                     accelerator: 'F11',
                     type: 'checkbox',
                     checked: remote.getCurrentWindow().isFullScreen(),
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
+                        win.setAutoHideMenuBar(win.isFullScreen())
                         this.checked = win.isFullScreen()
                     }
                 }
