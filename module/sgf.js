@@ -73,10 +73,9 @@ exports.parse = function(tokens, callback, start, depth) {
 
     while (i < tokens.length) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) {
-            var newdepth = depth + Math.min(tree.subtrees.length, 1)
             start[0] = i + 1
 
-            t = exports.parse(tokens, callback, start, newdepth)
+            t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
             t.parent = tree
             tree.subtrees.push(t)
             tree.current = 0
