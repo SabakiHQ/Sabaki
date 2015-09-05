@@ -39,6 +39,42 @@ exports.navigate = function(tree, index, step) {
     return new Tuple(null, 0)
 }
 
+exports.newNodeIterator = function(tree, index) {
+    var root = exports.getRoot(tree)
+    var level = exports.getLevel(tree, index, root)
+    var sections = exports.getSections(root, level)
+    var j = sections.map(function(x) { return x[0] }).indexOf(tree)
+
+    return {
+        navigate: function(step) {
+            if (j + step >= 0 && j + step < sections.length) {
+                j = j + step
+            } else if (j + step >= sections.length) {
+                step = j + step - sections.length
+                sections = exports.getSections(root, ++level)
+                j = 0
+                if (sections.length != 0) this.navigate(step)
+            } else if (j + step < 0) {
+                step = j + step + 1
+                sections = exports.getSections(root, --level)
+                j = sections.length - 1
+                if (sections.length != 0) this.navigate(step)
+            }
+        },
+        value: function() {
+            return j < sections.length && j >= 0 ? sections[j] : null
+        },
+        next: function() {
+            this.navigate(1)
+            return this.value()
+        },
+        prev: function() {
+            this.navigate(-1)
+            return this.value()
+        }
+    }
+}
+
 exports.splitTree = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return tree
 
@@ -91,10 +127,8 @@ exports.getCurrentHeight = function(tree) {
     return height
 }
 
-exports.getLevel = function(tree, index, relative) {
-    var totalHeight = exports.getCurrentHeight(relative)
-    var height = exports.getCurrentHeight(tree)
-    return totalHeight - height + index
+exports.getLevel = function(tree, index) {
+    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
 
 exports.getSections = function(tree, level) {
@@ -104,7 +138,7 @@ exports.getSections = function(tree, level) {
     var sections = []
 
     tree.subtrees.each(function(subtree) {
-        sections.concat(exports.getSections(subtree, level - tree.nodes.length))
+        sections = sections.concat(exports.getSections(subtree, level - tree.nodes.length))
     })
 
     return sections

@@ -603,19 +603,23 @@ function findMove(vertex, step) {
     if (isNaN(step)) step = 1
     step = step >= 0 ? 1 : -1
 
+    var root = getRootTree()
     var pos = getCurrentTreePosition()
     var point = sgf.vertex2point(vertex)
+    var iterator = gametree.newNodeIterator.apply(null, pos)
 
     while (true) {
-        pos = gametree.navigate(pos[0], pos[1], step)
+        pos = step >= 0 ? iterator.next() : iterator.prev()
 
-        if (!pos[0]) {
+        if (!pos) {
             if (step == 1) {
-                pos = new Tuple(getRootTree(), 0)
+                pos = new Tuple(root, 0)
             } else {
-                var tree = getCurrentTreePosition()[0]
-                pos = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+                var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
+                pos = sections[sections.length - 1]
             }
+
+            iterator = gametree.newNodeIterator.apply(null, pos)
         }
 
         if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
@@ -627,7 +631,7 @@ function findMove(vertex, step) {
         })) break
     }
 
-    pos.unpack(setCurrentTreePosition)
+    setCurrentTreePosition.apply(null, pos)
     setIsBusy(false)
 }
 
