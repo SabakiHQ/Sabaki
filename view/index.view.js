@@ -647,6 +647,18 @@ function buildMenu() {
                     type: 'checkbox',
                     checked: getShowComment(),
                     click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
+                },
+                { type: 'separator' },
+                {
+                    label: '&Fullscreen',
+                    accelerator: 'F11',
+                    type: 'checkbox',
+                    checked: remote.getCurrentWindow().isFullScreen(),
+                    click: function() {
+                        var win = remote.getCurrentWindow()
+                        win.setFullScreen(!win.isFullScreen())
+                        this.checked = win.isFullScreen()
+                    }
                 }
             ]
         },

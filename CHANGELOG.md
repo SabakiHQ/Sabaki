@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Find move
+* Fullscreen mode
 
 **Fixed**
 * Fix overlays being off-center

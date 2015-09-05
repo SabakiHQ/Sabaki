@@ -1069,7 +1069,8 @@ window.addEvent('load', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) e.event.returnValue = 'false'
-    if (remote.getCurrentWindow().isMaximized() || remote.getCurrentWindow().isMinimized()) return
+    var win = remote.getCurrentWindow()
+    if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
     var size = document.body.getSize()
     setting.set('window.width', size.x).set('window.height', size.y)
