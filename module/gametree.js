@@ -16,6 +16,11 @@ exports.new = function(id) {
     }
 }
 
+exports.getRoot = function(tree) {
+    while (tree.parent != null) tree = tree.parent
+    return tree
+}
+
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return new Tuple(tree, index + step)

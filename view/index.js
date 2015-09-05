@@ -25,11 +25,7 @@ var updateSidebarLambda
 
 function getRootTree() {
     if (!getCurrentTreePosition()) return null
-
-    return getCurrentTreePosition().unpack(function(tree, index) {
-        while (tree.parent != null) tree = tree.parent
-        return tree
-    })
+    return gametree.getRoot(getCurrentTreePosition()[0])
 }
 
 function setRootTree(tree) {
