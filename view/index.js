@@ -608,7 +608,7 @@ function findMove(vertex, step) {
         var root = getRootTree()
         var pos = getCurrentTreePosition()
         var point = sgf.vertex2point(vertex)
-        var iterator = gametree.newNodeIterator.apply(null, pos)
+        var iterator = gametree.makeNodeIterator.apply(null, pos)
 
         while (true) {
             pos = step >= 0 ? iterator.next() : iterator.prev()
@@ -621,7 +621,7 @@ function findMove(vertex, step) {
                     pos = sections[sections.length - 1]
                 }
 
-                iterator = gametree.newNodeIterator.apply(null, pos)
+                iterator = gametree.makeNodeIterator.apply(null, pos)
             }
 
             if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {

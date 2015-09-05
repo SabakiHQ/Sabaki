@@ -39,7 +39,7 @@ exports.navigate = function(tree, index, step) {
     return new Tuple(null, 0)
 }
 
-exports.newNodeIterator = function(tree, index) {
+exports.makeNodeIterator = function(tree, index) {
     var root = exports.getRoot(tree)
     var level = exports.getLevel(tree, index, root)
     var sections = exports.getSections(root, level)
