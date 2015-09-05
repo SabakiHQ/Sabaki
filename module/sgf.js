@@ -154,6 +154,7 @@ exports.addBoard = function(tree, index, baseboard) {
         }
     }
 
+    if (!baseboard) return tree
     if ('B' in node) {
         vertex = exports.point2vertex(node.B[0])
         board = baseboard.makeMove(1, vertex)
@@ -165,6 +166,7 @@ exports.addBoard = function(tree, index, baseboard) {
     }
 
     var ids = ['AW', 'AE', 'AB']
+    if (!board) return tree
 
     for (var i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue

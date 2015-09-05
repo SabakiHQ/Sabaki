@@ -99,7 +99,8 @@ function setCurrentTreePosition(tree, index) {
     // Update graph, slider and comment text
 
     updateSidebar(redraw)
-    setBoard(sgf.addBoard(tree, index).nodes[index].board)
+    sgf.addBoard(tree, index)
+    if (tree.nodes[index].board) setBoard(tree.nodes[index].board)
 
     // Determine current player
 
