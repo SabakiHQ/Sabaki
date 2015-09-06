@@ -466,12 +466,12 @@ function useTool(vertex) {
         var tool = getSelectedTool()
         var board = getBoard()
         var dictionary = {
-            'cross': 'MA',
-            'triangle': 'TR',
-            'circle': 'CR',
-            'square': 'SQ',
-            'number': 'LB',
-            'label': 'LB'
+            cross: 'MA',
+            triangle: 'TR',
+            circle: 'CR',
+            square: 'SQ',
+            number: 'LB',
+            label: 'LB'
         }
 
         if (tool.indexOf('stone') != -1) {
@@ -576,7 +576,7 @@ function useTool(vertex) {
                 }
             }
 
-            for (var id in dictionary) delete node[id]
+            for (var id in dictionary) delete node[dictionary[id]]
 
             // Update SGF
 
