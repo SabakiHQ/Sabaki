@@ -15,7 +15,7 @@ An elegant virtual Go board for a more civilized age. [Download the latest relea
 - SGF editing tools
 - Display formatted SGF comments
 - Scoring tool
-- Show game graph
+- Game graph
 - Find move
 
 ## Third Party Libraries
