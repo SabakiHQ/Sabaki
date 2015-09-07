@@ -220,7 +220,7 @@ function setCommentText(text) {
         })
 
     $$('#properties .coord').addEvent('mouseenter', function() {
-        showIndicator(gtp.point2tuple(this.get('text'), getBoard().size))
+        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
     }).addEvent('mouseleave', function() {
         hideIndicator()
     })
