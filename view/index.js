@@ -341,11 +341,11 @@ function prepareConsole() {
         input.blur()
 
         var command = gtp.parseCommand(input.value)
-        if (setting.get('console.invalid_commands').indexOf(command.name) == -1) {
+        if (setting.get('console.blocked_commands').indexOf(command.name) == -1) {
             setIsBusy(true)
             sendGTPCommand(command)
         } else {
-            bumpConsoleEntry('<span class="error">invalid command</span>')
+            bumpConsoleEntry('<span class="error">blocked command</span>')
         }
     })
 }
