@@ -336,6 +336,7 @@ function prepareConsole() {
         e.preventDefault()
 
         var input = this.getElement('input')
+        if (input.value.trim() == '') return
         $$('#console form:last-child input')[0].value = input.value
         input.blur()
 
