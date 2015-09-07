@@ -59,6 +59,27 @@ function setShowCoordinates(show) {
     getMainMenu().items[3].submenu.items[1].checked = show
 }
 
+function getShowConsole() {
+    return document.body.hasClass('console')
+}
+
+function setShowConsole(show) {
+    if (getShowConsole() == show) return
+    if (show) document.body.addClass('console')
+    else document.body.removeClass('console')
+
+    $('console').setStyle('width', setting.get('view.console_width'))
+    $('main').setStyle('left', show ? setting.get('view.console_width') : 0)
+
+    // Resize window
+    var win = remote.getCurrentWindow()
+    var size = win.getContentSize()
+
+    if (!win.isMaximized())
+        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.console_width'), size[1])
+    resizeBoard()
+}
+
 function getShowSidebar() {
     return document.body.hasClass('sidebar')
 }
@@ -88,10 +109,10 @@ function setShowSidebar(show) {
     // Resize window
     var win = remote.getCurrentWindow()
     var size = win.getContentSize()
-    resizeBoard()
 
-    if (win.isMaximized()) return
-    win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+    if (!win.isMaximized())
+        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+    resizeBoard()
 }
 
 function getSidebarArrangement() {
@@ -852,9 +873,9 @@ document.addEvent('domready', function() {
 
     // Resize sidebar
 
-    $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
+    $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposx', new Tuple(event.x, getSidebarWidth()))
+        this.getParent().store('initposx', new Tuple(event.x, getSidebarWidth()))
     })
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return

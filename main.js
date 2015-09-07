@@ -28,6 +28,7 @@ setting
 .default('sound.enable', true)
 .default('view.comments_height', 50)
 .default('view.comments_minheight', 20)
+.default('view.console_width', 400)
 .default('view.fuzzy_stone_placement', true)
 .default('view.show_comments', false)
 .default('view.show_coordinates', false)
