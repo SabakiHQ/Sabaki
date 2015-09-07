@@ -15,6 +15,14 @@ function setIsBusy(busy) {
     else document.body.removeClass('busy')
 }
 
+function setProgressIndicator(progress, win) {
+    if (progress == 0) document.body.removeClass('progress')
+    else document.body.addClass('progress')
+
+    $$('#progress div').setStyle('width', (progress * 100) + '%')
+    if (win) win.setProgressBar(progress)
+}
+
 function getShowVariations() {
     return $('goban').hasClass('variations')
 }

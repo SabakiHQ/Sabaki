@@ -884,16 +884,19 @@ function loadGame(filename) {
     }
 
     if (filename) {
+        var win = remote.getCurrentWindow()
+
         try {
-            var win = remote.getCurrentWindow()
-            var tree = sgf.parseFile(filename, win.setProgressBar).subtrees[0]
+            var tree = sgf.parseFile(filename, function(progress) {
+                setProgressIndicator(progress, win)
+            }).subtrees[0]
 
             setRootTree(tree)
-            win.setProgressBar(0)
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
         }
 
+        setProgressIndicator(0, win)
         closeDrawers()
     }
 

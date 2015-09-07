@@ -1,4 +1,4 @@
-header, #edit, #scoring, #find {
+header, #edit, #scoring, #find, #progress {
         position: absolute;
         left: 0;
         right: 0;
@@ -96,6 +96,16 @@ header, #edit, #scoring, #find {
     #find button:not(:first-child) { left: 44px; }
     #find button:hover, #find button.selected {
         background: #001080;
+    }
+    #progress {
+        display: none;
+        background: #181818;
+    }
+    .progress #progress { display: block; }
+    #progress div {
+        height: 40px;
+        width: 0;
+        background: #26292C;
 }
 
 #edit a.close, #scoring a.close, #find a.close {
