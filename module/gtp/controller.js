@@ -1,6 +1,6 @@
 var child_process = require('child_process')
 var events = require('events')
-var Response = require('./response')
+var gtp = require('./index')
 
 /**
  * Attention! The GTP 2.0 draft specifies that the engine
@@ -23,7 +23,7 @@ var Controller = function(exec, args) {
         var start = self._buffer.indexOf('\n\n')
 
         while (start != -1) {
-            var response = Response.parse(self._buffer.substr(0, start))
+            var response = gtp.parseResponse(self._buffer.substr(0, start))
             self._buffer = self._buffer.substr(start + 2)
             self.emit('response', response)
 
