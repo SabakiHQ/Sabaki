@@ -3,6 +3,7 @@ benchmark/
 bin/
 test/
 lib/sigma/plugins/
+gnugo/
 stone*.wav
 
 # Windows image file caches

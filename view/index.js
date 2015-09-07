@@ -1064,7 +1064,7 @@ document.addEvent('keydown', function(e) {
 
 window.addEvent('load', function() {
     newGame()
-    
+
     setTimeout(function() {
         if (process.argv.length >= 2) loadGame(process.argv[1])
     }, setting.get('app.startup_loadgame_delay'))
