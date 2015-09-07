@@ -780,9 +780,10 @@ function bumpConsoleEntry(input) {
     container.grab(pre).grab(form)
 
     // Cleanup
-    var clean = $$('#console .inner pre').length - setting.get('console.max_history_count')
+    var pres = $$('#console .inner pre')
+    var clean = pres.length - setting.get('console.max_history_count')
+    
     if (clean > 0) {
-        var pres = $$('#console .inner pre')
         var forms = $$('#console .inner form')
 
         for (var i = 0; i < clean; i++) {
