@@ -336,10 +336,16 @@ function prepareConsole() {
         e.preventDefault()
 
         var input = this.getElement('input')
+        $$('#console form:last-child input')[0].value = input.value
         input.blur()
 
-        setIsBusy(true)
-        sendGTPCommand(gtp.parseCommand(input.value))
+        var command = gtp.parseCommand(input.value)
+        if (setting.get('console.invalid_commands').indexOf(command.name) == -1) {
+            setIsBusy(true)
+            sendGTPCommand(command)
+        } else {
+            bumpConsoleEntry('<span class="error">invalid command</span>')
+        }
     })
 }
 
@@ -830,10 +836,10 @@ function commitScore() {
 
 function sendGTPCommand(command) {
     var controller = $('console').retrieve('controller')
-    if (controller) {
-        $$('#console form:last-child input')[0].value = command.toString()
-        controller.sendCommand(command)
-    }
+    if (!controller) return
+
+    $$('#console form:last-child input')[0].value = command.toString()
+    controller.sendCommand(command)
 }
 
 function centerGraphCameraAt(node) {
