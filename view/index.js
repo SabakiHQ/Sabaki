@@ -1,6 +1,7 @@
 var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
+var gtp = require('../module/gtp')
 var sgf = require('../module/sgf')
 var gametree = require('../module/gametree')
 var sound = require('../module/sound')
