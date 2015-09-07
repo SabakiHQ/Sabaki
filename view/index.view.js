@@ -81,6 +81,7 @@ function setShowConsole(show) {
     // Update scrollbars
     var view = $$('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
+    view.getElement('form:last-child input').focus()
     $('console').retrieve('scrollbar').update()
 }
 
