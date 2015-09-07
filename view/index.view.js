@@ -852,9 +852,9 @@ document.addEvent('domready', function() {
 
     // Resize sidebar
 
-    $$('#sidebar .verticalresizer').addEvent('mousedown', function() {
+    $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposx', new Tuple(event.x, getSidebarWidth()))
+        this.getParent().store('initposx', new Tuple(event.x, getSidebarWidth()))
     })
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
