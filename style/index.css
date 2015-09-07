@@ -156,6 +156,22 @@ header, #edit, #scoring, #find, #progress {
         margin-top: -10px;
 }
 
+#console {
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 400px;
+        background: #111;
+    }
+    .console #console {
+        display: block;
+    }
+    .console #main {
+        left: 400px;
+}
+
 #sidebar {
         display: none;
         position: absolute;
