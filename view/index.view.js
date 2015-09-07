@@ -79,6 +79,14 @@ function setShowConsole(show) {
     setting.set('view.show_console', show)
 }
 
+function setConsoleWidth(width) {
+    setting.set('view.console_width', width)
+
+    if (!getShowConsole()) return
+    $('console').setStyle('width', width)
+    $('main').setStyle('left', width)
+}
+
 function getShowSidebar() {
     return document.body.hasClass('sidebar')
 }
