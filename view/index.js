@@ -337,6 +337,8 @@ function prepareConsole() {
 
         var input = this.getElement('input')
         input.blur()
+        $$('#console form:last-child input')[0].value = input.value
+
         setIsBusy(true)
         controller.sendCommand(gtp.parseCommand(input.value))
     })
