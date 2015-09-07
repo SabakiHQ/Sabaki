@@ -324,9 +324,18 @@ function prepareDragDropFiles() {
 }
 
 function prepareConsole() {
+    var controller = new gtp.Controller("gnugo/gnugo.exe", ['--mode', 'gtp'])
+    controller.on('response', function(response) {
+        bumpConsoleEntry(response.toString())
+        setIsBusy(false)
+    })
+
+    $('console').store('controller', controller)
+
     $$('#console form').addEvent('submit', function(e) {
         e.preventDefault()
-        bumpConsoleEntry(this.getElement('input').value)
+        setIsBusy(true)
+        controller.sendCommand(gtp.parseCommand(this.getElement('input').value))
     })
 }
 
