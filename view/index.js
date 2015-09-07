@@ -323,6 +323,13 @@ function prepareDragDropFiles() {
     })
 }
 
+function prepareConsole() {
+    $$('#console form').addEvent('submit', function(e) {
+        e.preventDefault()
+        bumpConsoleEntry(this.getElement('input').value)
+    })
+}
+
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
@@ -1059,6 +1066,7 @@ document.addEvent('keydown', function(e) {
     prepareEditTools()
     prepareGameGraph()
     prepareSlider()
+    prepareConsole()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()

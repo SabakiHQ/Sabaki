@@ -771,6 +771,21 @@ function openNodeMenu(tree, index) {
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
+function bumpConsoleEntry(input) {
+    var container = $$('#console .inner')[0]
+    var oldform = $$('#console .inner form:last-child')[0]
+    var form = oldform.clone().cloneEvents(oldform)
+    var pre = new Element('pre', { text: input })
+
+    container.grab(pre).grab(form)
+
+    // Update scrollbars
+    var view = $$('#console .gm-scroll-view')[0]
+    view.scrollTo(0, view.getScrollSize().y)
+    view.getElement('form:last-child input').set('value', '').focus()
+    $('console').retrieve('scrollbar').update()
+}
+
 /**
  * Drawers
  */
