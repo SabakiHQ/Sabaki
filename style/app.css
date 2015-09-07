@@ -11,6 +11,8 @@
     padding: 0;
 }
 
+body { overflow: hidden; }
+
 body, input, button, select, option, textarea {
     font: menu;
     font-size: 14px;
