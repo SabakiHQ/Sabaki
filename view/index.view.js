@@ -32,7 +32,6 @@ function setShowVariations(show) {
     else $('goban').removeClass('variations')
 
     setting.set('view.show_variations', show)
-    getMainMenu().items[3].submenu.items[2].checked = show
 }
 
 function getFuzzyStonePlacement() {
@@ -44,7 +43,6 @@ function setFuzzyStonePlacement(fuzzy) {
     else $('goban').removeClass('fuzzy')
 
     setting.set('view.fuzzy_stone_placement', fuzzy)
-    getMainMenu().items[3].submenu.items[0].checked = fuzzy
 }
 
 function getShowCoordinates() {
@@ -56,7 +54,6 @@ function setShowCoordinates(show) {
     else $('goban').removeClass('coordinates')
 
     setting.set('view.show_coordinates', show)
-    getMainMenu().items[3].submenu.items[1].checked = show
 }
 
 function getShowConsole() {
@@ -131,11 +128,6 @@ function setSidebarArrangement(graph, comment, updateLayout) {
         else if (comment) setCommentHeight(setting.get('view.comments_height'))
         else if (!comment) setCommentHeight(0)
         setShowSidebar(true)
-    }
-
-    if (getMainMenu()) {
-        getMainMenu().items[3].submenu.items[4].checked = graph
-        getMainMenu().items[3].submenu.items[5].checked = comment
     }
 
     setting.set('view.show_graph', graph)
@@ -648,47 +640,35 @@ function buildMenu() {
             label: '&View',
             submenu: [
                 {
-                    label: '&Fuzzy Stone Placement',
-                    type: 'checkbox',
-                    checked: getFuzzyStonePlacement(),
+                    label: 'Toggle &Fuzzy Stone Placement',
                     click: function() { setFuzzyStonePlacement(!getFuzzyStonePlacement()) }
                 },
                 {
-                    label: '&Coordinates',
-                    type: 'checkbox',
-                    checked: getShowCoordinates(),
+                    label: 'Toggle &Coordinates',
                     click: function() {
                         setShowCoordinates(!getShowCoordinates())
                         resizeBoard()
                     }
                 },
                 {
-                    label: '&Variations',
-                    type: 'checkbox',
-                    checked: getShowVariations(),
+                    label: 'Toggle &Variations',
                     click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Game &Graph',
+                    label: 'Toggle Game &Graph',
                     accelerator: 'CmdOrCtrl+G',
-                    type: 'checkbox',
-                    checked: getShowGraph(),
                     click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
                 },
                 {
-                    label: 'Co&mments',
+                    label: 'Toggle Co&mments',
                     accelerator: 'CmdOrCtrl+H',
-                    type: 'checkbox',
-                    checked: getShowComment(),
                     click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Full&screen',
+                    label: 'Toggle Full&screen',
                     accelerator: 'F11',
-                    type: 'checkbox',
-                    checked: remote.getCurrentWindow().isFullScreen(),
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
