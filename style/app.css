@@ -104,6 +104,27 @@ form p, form ul li {
  * Gemini Scrollbars
  */
 
-.gm-scrollbar .thumb {
-    cursor: default;
+.gm-scrollbar {
+        bottom: 0;
+        right: 0;
+    }
+    .gm-scrollbar.-vertical {
+        width: 8px;
+        top: 0;
+    }
+    .gm-scrollbar.-horizontal {
+        height: 8px;
+        left: 0;
+    }
+    .gm-scrollbar .thumb {
+        background: #393939;
+        border-radius: 0;
+        cursor: default;
+        transition: .2s background, .5s height, .5s width, .2s transform;
+    }
+    .gm-scrollbar .thumb:hover, .gm-scrollbar .thumb:active {
+        background: #494949;
+    }
+    .gm-scrollbar .thumb:active {
+        transition: none;
 }
