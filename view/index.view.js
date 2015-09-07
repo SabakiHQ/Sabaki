@@ -80,8 +80,6 @@ function setShowConsole(show) {
 }
 
 function setConsoleWidth(width) {
-    setting.set('view.console_width', width)
-
     if (!getShowConsole()) return
     $('console').setStyle('width', width)
     $('main').setStyle('left', width)
@@ -157,6 +155,7 @@ function getSidebarWidth() {
 }
 
 function setSidebarWidth(width) {
+    if (!getShowSidebar()) return
     $('sidebar').setStyle('width', width)
     $$('.sidebar #main').setStyle('right', width)
 }
