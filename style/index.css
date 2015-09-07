@@ -165,12 +165,41 @@ header, #edit, #scoring, #find, #progress {
         width: 400px;
         overflow: scroll;
         background: #181818;
+    }
+    #console, #console pre, #console input {
         color: #d0d0d0;
-        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+        font: 14px/1.2 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
     #console .inner {
         margin: 15px;
-        white-space: pre;
+        margin-right: 0;
+    }
+    #console .inner form {
+        position: relative;
+        height: 1.2em;
+        margin: 1.2em 0;
+        background: #222;
+    }
+    #console .inner form label::after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: -15px;
+        height: 1.2em;
+        width: 30px;
+        background: #393939;
+    }
+    #console .inner form:last-child label::after { background-color: #C42311; }
+    #console .inner form input {
+        box-sizing: border-box;
+        position: absolute;
+        border: none;
+        top: 0;
+        width: 100%;
+        bottom: 0;
+        padding: 0;
+        padding-left: 20px;
+        background: transparent;
     }
     .console #console {
         display: block;
