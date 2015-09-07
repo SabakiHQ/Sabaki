@@ -510,11 +510,6 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+O',
                     click: function() { loadGame() }
                 },
-                // { type: 'separator' },
-                // {
-                //     label: '&Save',
-                //     accelerator: 'CmdOrCtrl+S'
-                // },
                 {
                     label: 'Save &As…',
                     accelerator: 'CmdOrCtrl+S',
@@ -646,7 +641,7 @@ function buildMenu() {
             label: '&Engine',
             submenu: [
                 {
-                    label: 'Toggle &Console',
+                    label: 'Toggle GTP &Console',
                     click: function() { setShowConsole(!getShowConsole()) }
                 }
             ]
