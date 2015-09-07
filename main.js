@@ -9,6 +9,7 @@ setting
 .default('app.startup_check_updates', true)
 .default('app.startup_check_updates_delay', 100)
 .default('app.startup_loadgame_delay', 100)
+.default('console.max_history_count', 30)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
 .default('game.show_end_after_loading', false)

@@ -779,6 +779,18 @@ function bumpConsoleEntry(input) {
 
     container.grab(pre).grab(form)
 
+    // Cleanup
+    var clean = $$('#console .inner pre').length - setting.get('console.max_history_count')
+    if (clean > 0) {
+        var pres = $$('#console .inner pre')
+        var forms = $$('#console .inner form')
+
+        for (var i = 0; i < clean; i++) {
+            pres[i].dispose()
+            forms[i].dispose()
+        }
+    }
+
     // Update scrollbars
     var view = $$('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
