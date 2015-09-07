@@ -337,10 +337,9 @@ function prepareConsole() {
 
         var input = this.getElement('input')
         input.blur()
-        $$('#console form:last-child input')[0].value = input.value
 
         setIsBusy(true)
-        controller.sendCommand(gtp.parseCommand(input.value))
+        sendGTPCommand(gtp.parseCommand(input.value))
     })
 }
 
@@ -830,7 +829,11 @@ function commitScore() {
 }
 
 function sendGTPCommand(command) {
-    $$('#console form:last-child input')[0].set('value', command.toString()).getParent('form').submit()
+    var controller = $('console').retrieve('controller')
+    if (controller) {
+        $$('#console form:last-child input')[0].value = command.toString()
+        controller.sendCommand(command)
+    }
 }
 
 function centerGraphCameraAt(node) {
