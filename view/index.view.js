@@ -77,6 +77,11 @@ function setShowConsole(show) {
 
     resizeBoard()
     setting.set('view.show_console', show)
+
+    // Update scrollbars
+    var view = $$('#console .gm-scroll-view')[0]
+    view.scrollTo(0, view.getScrollSize().y)
+    $('console').retrieve('scrollbar').update()
 }
 
 function setConsoleWidth(width) {
