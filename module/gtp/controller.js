@@ -1,6 +1,4 @@
-var remote = require('remote')
-var util = require('util')
-var child_process = remote.require('child_process')
+var child_process = require('child_process')
 var events = require('events')
 
 var Controller = function(command, args) {
@@ -15,7 +13,7 @@ var Controller = function(command, args) {
     })
 }
 
-util.inherits(Controller, events.EventEmitter)
+require('util').inherits(Controller, events.EventEmitter)
 
 Controller.prototype.close = function() {
     this.process.close()
