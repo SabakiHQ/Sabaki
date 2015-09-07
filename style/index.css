@@ -164,6 +164,12 @@ header, #edit, #scoring, #find, #progress {
         left: 0;
         width: 400px;
         background: #111;
+        color: #d0d0d0;
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    }
+    #console .inner {
+        margin: 15px;
+        white-space: pre;
     }
     .console #console {
         display: block;
