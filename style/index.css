@@ -163,7 +163,8 @@ header, #edit, #scoring, #find, #progress {
         bottom: 0;
         left: 0;
         width: 400px;
-        background: #111;
+        overflow: scroll;
+        background: #181818;
         color: #d0d0d0;
         font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }

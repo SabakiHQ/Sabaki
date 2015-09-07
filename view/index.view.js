@@ -862,12 +862,15 @@ document.addEvent('domready', function() {
 
     // Properties scrollbar
 
-    var scrollbar = new Scrollbar({
+    $('properties').store('scrollbar', new Scrollbar({
         element: $('properties'),
         createElements: false
-    }).create()
+    }).create())
 
-    $('properties').store('scrollbar', scrollbar)
+    $('console').store('scrollbar', new Scrollbar({
+        element: $('console'),
+        createElements: false
+    }).create())
 
     // Resize sidebar
 
