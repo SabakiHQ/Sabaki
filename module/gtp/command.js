@@ -5,7 +5,8 @@ var Command = function(id, name, arguments) {
 }
 
 Command.parse = function(input) {
-    var inputs = input.replace(/\t/g, ' ').split(' ').filter(function(x) { return x != '' })
+    input = input.replace(/\t/g, ' ').trim()
+    var inputs = input.split(' ').filter(function(x) { return x != '' })
     var id = parseInt(inputs[0])
 
     if (!isNaN(id)) inputs.splice(0, 1)

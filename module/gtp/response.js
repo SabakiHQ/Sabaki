@@ -5,13 +5,15 @@ var Response = function(id, content, error) {
 }
 
 Response.parse = function(input) {
+    input = input.replace(/\t/g, ' ').trim()
     var error = input[0] != '='
+    var hasId = input[1] != ' '
+
     input = input.substr(1)
+    var id = hasId ? parseInt(input.split(' ')[0]) : null
 
-    var inputs = input.replace(/\t/g, ' ').split(' ').filter(function(x) { return x != '' })
-    var id = parseInt(inputs[0])
+    if (hasId) input = input.substr((id + '').length)
 
-    if (!isNaN(id)) input = input.substr((id + '').length)
     return new Response(id, input.substr(1), error)
 }
 
