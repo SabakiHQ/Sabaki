@@ -177,7 +177,7 @@ header, #edit, #scoring, #find, #progress {
     #console .inner form {
         position: relative;
         height: 1.3em;
-        margin: 1.3em 0;
+        margin: .7em 0;
         background: #222;
     }
     #console .inner form:last-child { margin-bottom: 100px; }

@@ -334,8 +334,11 @@ function prepareConsole() {
 
     $$('#console form').addEvent('submit', function(e) {
         e.preventDefault()
+
+        var input = this.getElement('input')
+        input.blur()
         setIsBusy(true)
-        controller.sendCommand(gtp.parseCommand(this.getElement('input').value))
+        controller.sendCommand(gtp.parseCommand(input.value))
     })
 }
 

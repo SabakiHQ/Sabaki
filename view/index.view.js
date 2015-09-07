@@ -782,7 +782,7 @@ function bumpConsoleEntry(input) {
     // Cleanup
     var pres = $$('#console .inner pre')
     var clean = pres.length - setting.get('console.max_history_count')
-    
+
     if (clean > 0) {
         var forms = $$('#console .inner form')
 
