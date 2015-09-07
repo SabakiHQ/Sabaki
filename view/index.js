@@ -829,6 +829,10 @@ function commitScore() {
     rootNode.RE = [result]
 }
 
+function sendGTPCommand(command) {
+    $$('#console form:last-child input')[0].set('value', command.toString()).getParent('form').submit()
+}
+
 function centerGraphCameraAt(node) {
     if (!getShowSidebar() || !node) return
 
