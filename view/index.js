@@ -326,7 +326,7 @@ function prepareDragDropFiles() {
 function prepareConsole() {
     var controller = new gtp.Controller("gnugo/gnugo.exe", ['--mode', 'gtp'])
     controller.on('response', function(response) {
-        bumpConsoleEntry(response.toString())
+        bumpConsoleEntry(response.toHtml())
         setIsBusy(false)
     })
 

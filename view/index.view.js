@@ -775,7 +775,7 @@ function bumpConsoleEntry(input) {
     var container = $$('#console .inner')[0]
     var oldform = $$('#console .inner form:last-child')[0]
     var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { text: input })
+    var pre = new Element('pre', { html: input })
 
     form.getElement('input').cloneEvents(oldform.getElement('input')).set('value', '')
     container.grab(pre).grab(form)
