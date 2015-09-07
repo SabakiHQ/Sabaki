@@ -636,6 +636,15 @@ function buildMenu() {
             ]
         },
         {
+            label: '&Engine',
+            submenu: [
+                {
+                    label: 'Toggle &Console',
+                    click: function() { setShowConsole(!getShowConsole()) }
+                }
+            ]
+        },
+        {
             label: '&View',
             submenu: [
                 {
