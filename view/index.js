@@ -228,6 +228,8 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
+    if (setting.get('view.show_console'))
+        document.body.addClass('console')
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         document.body.addClass('sidebar')
         setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))

@@ -74,7 +74,9 @@ function setShowConsole(show) {
 
     if (!win.isMaximized())
         win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.console_width'), size[1])
+
     resizeBoard()
+    setting.set('view.show_console', show)
 }
 
 function getShowSidebar() {

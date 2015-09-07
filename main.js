@@ -30,6 +30,7 @@ setting
 .default('view.comments_minheight', 20)
 .default('view.console_width', 300)
 .default('view.fuzzy_stone_placement', true)
+.default('view.show_console', false)
 .default('view.show_comments', false)
 .default('view.show_coordinates', false)
 .default('view.show_variations', true)
