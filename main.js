@@ -9,7 +9,12 @@ setting
 .default('app.startup_check_updates', true)
 .default('app.startup_check_updates_delay', 100)
 .default('app.startup_loadgame_delay', 100)
-.default('console.blocked_commands', ['boardsize', 'clear_board', 'play', 'genmove'])
+.default('console.blocked_commands', [
+    'boardsize', 'clear_board', 'play',
+    'genmove', 'undo', 'fixed_handicap',
+    'place_free_handicap', 'set_free_handicap',
+    'loadsgf'
+])
 .default('console.max_history_count', 30)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
