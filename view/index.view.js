@@ -219,9 +219,7 @@ function setCommentText(text) {
         })
 
     $$('#properties .coord').addEvent('mouseenter', function() {
-        var x = 'abcdefghjklmnopqrstuvwxyz'.indexOf(this.get('text')[0].toLowerCase())
-        var y = getBoard().size - this.get('text').substr(1).toInt()
-        showIndicator(new Tuple(x, y))
+        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
     }).addEvent('mouseleave', function() {
         hideIndicator()
     })
