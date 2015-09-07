@@ -777,6 +777,7 @@ function bumpConsoleEntry(input) {
     var form = oldform.clone().cloneEvents(oldform)
     var pre = new Element('pre', { text: input })
 
+    form.getElement('input').cloneEvents(oldform.getElement('input')).set('value', '')
     container.grab(pre).grab(form)
 
     // Cleanup
@@ -795,7 +796,7 @@ function bumpConsoleEntry(input) {
     // Update scrollbars
     var view = $$('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
-    view.getElement('form:last-child input').set('value', '').focus()
+    form.getElement('input').focus()
     $('console').retrieve('scrollbar').update()
 }
 
