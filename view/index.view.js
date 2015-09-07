@@ -779,6 +779,7 @@ function bumpConsoleEntry(input) {
 
     form.getElement('input').cloneEvents(oldform.getElement('input')).set('value', '')
     container.grab(pre).grab(form)
+    if (oldform.getElement('input').value == '') oldform.setStyle('display', 'none')
 
     // Cleanup
     var pres = $$('#console .inner pre')
