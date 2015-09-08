@@ -855,7 +855,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         }
     }
 
-    var listener = function(response, c) {
+    controller.on('response', function(response, c) {
         if (!pre.hasClass('waiting') || c.toString() != command.toString()) return
 
         pre.set('html', response.toHtml()).removeClass('waiting')
@@ -878,8 +878,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         view.scrollTo(0, view.getScrollSize().y)
         $$('#console form:last-child input')[0].focus()
         if (scrollbar) scrollbar.update()
-    }
-    controller.on('response', listener)
+    })
     controller.sendCommand(command)
 }
 
