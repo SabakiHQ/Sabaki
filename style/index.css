@@ -198,6 +198,7 @@ header, #edit, #scoring, #find, #progress {
         width: 30px;
         background: #393939 url(../img/ui/consoleinput.png) right no-repeat;
     }
+    #console .inner form.waiting label::after { background-color: #FBF593; }
     #console .inner form:last-child label::after { background-color: #F25C3D; }
     #console .inner form input {
         box-sizing: border-box;
