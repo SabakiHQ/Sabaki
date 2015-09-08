@@ -836,10 +836,10 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { class: 'waiting' })
+    var pre = new Element('pre')
 
-    oldform.getElement('input').value = command.toString()
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
+    oldform.addClass('waiting').getElement('input').value = command.toString()
     container.grab(pre).grab(form)
 
     // Cleanup
@@ -856,9 +856,10 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     }
 
     controller.on('response', function(response, c) {
-        if (!pre.hasClass('waiting') || c.toString() != command.toString()) return
+        if (!oldform.hasClass('waiting') || c.toString() != command.toString()) return
 
-        pre.set('html', response.toHtml()).removeClass('waiting')
+        pre.set('html', response.toHtml())
+        oldform.removeClass('waiting')
         if (callback) callback(response)
 
         // Handle links & coordinates
