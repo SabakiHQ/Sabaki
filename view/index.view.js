@@ -754,36 +754,6 @@ function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
 }
 
-function bumpConsoleEntry(input) {
-    var container = $$('#console .inner')[0]
-    var oldform = $$('#console .inner form:last-child')[0]
-    var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { html: input })
-
-    form.getElement('input').cloneEvents(oldform.getElement('input')).set('value', '')
-    container.grab(pre).grab(form)
-    if (oldform.getElement('input').value == '') oldform.setStyle('display', 'none')
-
-    // Cleanup
-    var pres = $$('#console .inner pre')
-    var clean = pres.length - setting.get('console.max_history_count')
-
-    if (clean > 0) {
-        var forms = $$('#console .inner form')
-
-        for (var i = 0; i < clean; i++) {
-            pres[i].dispose()
-            forms[i].dispose()
-        }
-    }
-
-    // Update scrollbars
-    var view = $$('#console .gm-scroll-view')[0]
-    view.scrollTo(0, view.getScrollSize().y)
-    form.getElement('input').focus()
-    $('console').retrieve('scrollbar').update()
-}
-
 /**
  * Drawers
  */

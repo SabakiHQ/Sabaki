@@ -16,6 +16,7 @@ var Controller = function(exec, args) {
 
     self._buffer = ''
     self.process = child_process.spawn(exec, args)
+    self.commands = []
 
     self.process.stdout.on('data', function(data) {
         self._buffer += (data + '').replace(/\r/g, '').replace(/#.*?\n/g, '').replace(/\t/g, ' ')
@@ -25,7 +26,11 @@ var Controller = function(exec, args) {
         while (start != -1) {
             var response = gtp.parseResponse(self._buffer.substr(0, start))
             self._buffer = self._buffer.substr(start + 2)
-            self.emit('response', response)
+
+            if (self.commands.length > 0) {
+                self.emit('response', response, self.commands[0])
+                self.commands.splice(0, 1)
+            }
 
             start = self._buffer.indexOf('\n\n')
         }
@@ -35,6 +40,7 @@ var Controller = function(exec, args) {
 require('util').inherits(Controller, events.EventEmitter)
 
 Controller.prototype.sendCommand = function(command) {
+    this.commands.push(command)
     this.process.stdin.write(command.toString() + '\n')
 }
 

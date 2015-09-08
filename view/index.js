@@ -325,11 +325,6 @@ function prepareDragDropFiles() {
 
 function prepareConsole() {
     var controller = new gtp.Controller("gnugo/gnugo.exe", ['--mode', 'gtp'])
-    controller.on('response', function(response) {
-        bumpConsoleEntry(response.toHtml())
-        setIsBusy(false)
-    })
-
     $('console').store('controller', controller)
 
     $$('#console form').addEvent('submit', function(e) {
@@ -337,17 +332,28 @@ function prepareConsole() {
 
         var input = this.getElement('input')
         if (input.value.trim() == '') return
-        $$('#console form:last-child input')[0].value = input.value
         input.blur()
 
         var command = gtp.parseCommand(input.value)
-        if (setting.get('console.blocked_commands').indexOf(command.name) == -1) {
-            setIsBusy(true)
-            sendGTPCommand(command)
-        } else {
-            bumpConsoleEntry('<span class="error">blocked command</span>')
+        sendGTPCommand(command)
+
+        // Cleanup
+        var pres = $$('#console .inner form') - 1
+        var clean = pres.length - setting.get('console.max_history_count')
+
+        if (clean > 0) {
+            var forms = $$('#console .inner form')
+
+            for (var i = 0; i < clean; i++) {
+                pres[i].dispose()
+                forms[i].dispose()
+            }
         }
     })
+
+    sendGTPCommand(new gtp.Command(1, 'name'), true)
+    sendGTPCommand(new gtp.Command(2, 'version'), true)
+    sendGTPCommand(new gtp.Command(3, 'protocol_version'), true)
 }
 
 function checkForUpdates(callback) {
@@ -835,11 +841,47 @@ function commitScore() {
     rootNode.RE = [result]
 }
 
-function sendGTPCommand(command) {
+function sendGTPCommand(command, ignoreBlocked) {
     var controller = $('console').retrieve('controller')
     if (!controller) return
 
-    $$('#console form:last-child input')[0].value = command.toString()
+    var container = $$('#console .inner')[0]
+    var oldform = container.getElement('form:last-child')
+    var form = oldform.clone().cloneEvents(oldform)
+    var pre = new Element('pre', { class: 'waiting' })
+
+    oldform.getElement('input').value = command.toString()
+    form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
+    container.grab(pre).grab(form)
+
+    // Cleanup
+    var pres = $$('#console .inner pre') - 1
+    var clean = pres.length - setting.get('console.max_history_count')
+
+    if (clean > 0) {
+        var forms = $$('#console .inner form')
+
+        for (var i = 0; i < clean; i++) {
+            pres[i].dispose()
+            forms[i].dispose()
+        }
+    }
+
+    var callback = function(response, c) {
+        if (c.toString() != command.toString()) return
+        pre.set('html', response.toHtml()).removeClass('waiting')
+
+        // Update scrollbars
+        var view = $$('#console .gm-scroll-view')[0]
+        var scrollbar = $('console').retrieve('scrollbar')
+
+        view.scrollTo(0, view.getScrollSize().y)
+        $$('#console form:last-child input')[0].focus()
+        if (scrollbar) scrollbar.update()
+
+        controller.removeListener('response', callback)
+    }
+    controller.on('response', callback)
     controller.sendCommand(command)
 }
 
