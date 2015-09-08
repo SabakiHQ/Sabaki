@@ -336,24 +336,12 @@ function prepareConsole() {
 
         var command = gtp.parseCommand(input.value)
         sendGTPCommand(command)
-
-        // Cleanup
-        var pres = $$('#console .inner form') - 1
-        var clean = pres.length - setting.get('console.max_history_count')
-
-        if (clean > 0) {
-            var forms = $$('#console .inner form')
-
-            for (var i = 0; i < clean; i++) {
-                pres[i].dispose()
-                forms[i].dispose()
-            }
-        }
     })
 
-    sendGTPCommand(new gtp.Command(1, 'name'), null, true)
-    sendGTPCommand(new gtp.Command(2, 'version'), null, true)
-    sendGTPCommand(new gtp.Command(3, 'protocol_version'), null, true)
+    sendGTPCommand(new gtp.Command(1, 'name'))
+    sendGTPCommand(new gtp.Command(2, 'version'))
+    sendGTPCommand(new gtp.Command(3, 'protocol_version'))
+    sendGTPCommand(new gtp.Command(4, 'list_commands'))
 }
 
 function checkForUpdates(callback) {
@@ -855,8 +843,8 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     container.grab(pre).grab(form)
 
     // Cleanup
-    var pres = $$('#console .inner pre') - 1
-    var clean = pres.length - setting.get('console.max_history_count')
+    var pres = $$('#console .inner pre')
+    var clean = pres.length - 1 - setting.get('console.max_history_count')
 
     if (clean > 0) {
         var forms = $$('#console .inner form')
