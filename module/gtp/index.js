@@ -1,3 +1,5 @@
+var Tuple = require('../../lib/tuple')
+
 exports.Command = require('./command.js')
 exports.Response = require('./response.js')
 exports.Controller = require('./controller.js')
