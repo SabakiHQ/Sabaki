@@ -866,7 +866,8 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         pre.getElements('a').addEvent('click', function() {
             shell.openExternal(this.href)
             return false
-        }).getElements('.coord').addEvent('mouseenter', function() {
+        })
+        pre.getElements('.coord').addEvent('mouseenter', function() {
             showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
         }).addEvent('mouseleave', function() {
             hideIndicator()
