@@ -844,7 +844,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
 
     // Cleanup
     var pres = $$('#console .inner pre')
-    var clean = pres.length - 1 - setting.get('console.max_history_count')
+    var clean = pres.length - setting.get('console.max_history_count')
 
     if (clean > 0) {
         var forms = $$('#console .inner form')
