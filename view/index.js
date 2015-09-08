@@ -855,7 +855,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         }
     }
 
-    controller.on('response', function(response, c) {
+    var listener = function(response, c) {
         if (!oldform.hasClass('waiting') || c.toString() != command.toString()) return
 
         pre.set('html', response.toHtml())
@@ -880,8 +880,14 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         view.scrollTo(0, view.getScrollSize().y)
         $$('#console form:last-child input')[0].focus()
         if (scrollbar) scrollbar.update()
-    })
-    controller.sendCommand(command)
+    }
+
+    if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
+        listener(new gtp.Response(null, 'blocked command', true), command)
+    } else {
+        controller.on('response', listener)
+        controller.sendCommand(command)
+    }
 }
 
 function centerGraphCameraAt(node) {
