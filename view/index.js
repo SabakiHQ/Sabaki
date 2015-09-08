@@ -873,6 +873,13 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
         pre.set('html', response.toHtml()).removeClass('waiting')
         if (callback) callback(response)
 
+        // Handle coordinates
+        pre.getElements('.coord').addEvent('mouseenter', function() {
+            showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
+        }).addEvent('mouseleave', function() {
+            hideIndicator()
+        })
+
         // Update scrollbars
         var view = $$('#console .gm-scroll-view')[0]
         var scrollbar = $('console').retrieve('scrollbar')
