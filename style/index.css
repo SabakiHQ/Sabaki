@@ -176,13 +176,12 @@ header, #edit, #scoring, #find, #progress {
         color: #d0d0d0;
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
+    #console pre {
+        margin: 15px;
+    }
     #console .success { color: #FFCC66; }
     #console .error { color: #F25C3D; }
     #console .id { color: #CC99CC; }
-    #console .inner {
-        margin: 15px;
-        margin-right: 0;
-    }
     #console .inner form {
         position: relative;
         height: 1.3em;
@@ -194,7 +193,7 @@ header, #edit, #scoring, #find, #progress {
         content: ' ';
         display: block;
         position: absolute;
-        left: -15px;
+        left: 0;
         height: 1.3em;
         width: 30px;
         background: #393939 url(../img/ui/consoleinput.png) right no-repeat;
@@ -207,9 +206,18 @@ header, #edit, #scoring, #find, #progress {
         top: 0;
         width: 100%;
         bottom: 0;
-        padding: 0;
-        padding-left: 25px;
+        padding: 0 10px 0 40px;
         background: transparent;
+}
+
+.coord {
+        padding: 0 5px;
+        background: #101010;
+        color: white;
+        border-radius: 3px;
+    }
+    .coord:hover {
+        background: #0082F0;
 }
 
 #sidebar {
@@ -350,15 +358,6 @@ header, #edit, #scoring, #find, #progress {
         margin: 1em 0;
         height: 2px;
         background: #393939;
-    }
-    #properties .coord {
-        padding: 0 5px;
-        background: #101010;
-        color: white;
-        border-radius: 3px;
-    }
-    #properties .coord:hover {
-        background: #0082F0;
     }
     #properties .inner {
         margin: 15px;

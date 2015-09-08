@@ -212,32 +212,7 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = '<p>' + text.trim()
-        .split('\n')
-        .map(function(s) {
-            if (s.trim() == '') return ''
-
-            if (s.trim().split('').every(function(x) {
-                return x == '-' || x == '='
-            })) return '</p><hr><p>'
-
-            return s.replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&rt;')
-                .replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
-                    return '<a href="' + url + '">' + url + '</a>'
-                })
-                .replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-                    return '<a href="mailto:' + email + '">' + email + '</a>'
-                })
-                .replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
-                    return '<span class="coord">' + coord + '</span>'
-                })
-        })
-        .join('<br>')
-        .replace(/<br><br>/g, '</p><p>')
-        .replace(/(<br>)*<p>(<br>)*/g, '<p>')
-        .replace(/(<br>)*<\/p>(<br>)*/g, '</p>') + '</p>'
+    var html = helper.htmlify(text, true, true, true, true)
 
     $$('#properties textarea').set('value', text)
     $$('#properties .inner')[0].set('html', html)
@@ -770,6 +745,10 @@ function openNodeMenu(tree, index) {
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
+
+/**
+ * Console
+ */
 
 function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()

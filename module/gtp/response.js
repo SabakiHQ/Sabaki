@@ -1,3 +1,5 @@
+var helper = require('../helper')
+
 var Response = function(id, content, error) {
     this.id = parseInt(id)
     this.content = content
@@ -13,7 +15,7 @@ Response.prototype = {
         var c = this.error ? 'error' : 'success'
         return '<span class="' + c + '">' + (this.error ? '?' : '=') + '</span>'
             + (!isNaN(this.id) ? '<span class="id">' + this.id + '</span>' : '')
-            + ' ' + this.content
+            + ' ' + helper.htmlify(this.content, true, true, true)
     }
 }
 
