@@ -868,10 +868,9 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     }
 
     var listener = function(response, c) {
-        if (c.toString() != command.toString()) return
-        controller.removeListener('response', listener)
-        pre.set('html', response.toHtml()).removeClass('waiting')
+        if (!pre.hasClass('waiting') || c.toString() != command.toString()) return
 
+        pre.set('html', response.toHtml()).removeClass('waiting')
         if (callback) callback(response)
 
         // Update scrollbars
