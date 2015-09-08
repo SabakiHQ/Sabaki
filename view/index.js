@@ -351,9 +351,9 @@ function prepareConsole() {
         }
     })
 
-    sendGTPCommand(new gtp.Command(1, 'name'), true)
-    sendGTPCommand(new gtp.Command(2, 'version'), true)
-    sendGTPCommand(new gtp.Command(3, 'protocol_version'), true)
+    sendGTPCommand(new gtp.Command(1, 'name'), null, true)
+    sendGTPCommand(new gtp.Command(2, 'version'), null, true)
+    sendGTPCommand(new gtp.Command(3, 'protocol_version'), null, true)
 }
 
 function checkForUpdates(callback) {
@@ -841,7 +841,7 @@ function commitScore() {
     rootNode.RE = [result]
 }
 
-function sendGTPCommand(command, ignoreBlocked) {
+function sendGTPCommand(command, callback, ignoreBlocked) {
     var controller = $('console').retrieve('controller')
     if (!controller) return
 
@@ -867,9 +867,12 @@ function sendGTPCommand(command, ignoreBlocked) {
         }
     }
 
-    var callback = function(response, c) {
+    var listener = function(response, c) {
         if (c.toString() != command.toString()) return
+        controller.removeListener('response', listener)
         pre.set('html', response.toHtml()).removeClass('waiting')
+
+        if (callback) callback(response)
 
         // Update scrollbars
         var view = $$('#console .gm-scroll-view')[0]
@@ -878,10 +881,8 @@ function sendGTPCommand(command, ignoreBlocked) {
         view.scrollTo(0, view.getScrollSize().y)
         $$('#console form:last-child input')[0].focus()
         if (scrollbar) scrollbar.update()
-
-        controller.removeListener('response', callback)
     }
-    controller.on('response', callback)
+    controller.on('response', listener)
     controller.sendCommand(command)
 }
 
