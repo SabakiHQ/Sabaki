@@ -325,9 +325,6 @@ function prepareDragDropFiles() {
 }
 
 function prepareConsole() {
-    var controller = new gtp.Controller("gnugo/gnugo.exe", ['--mode', 'gtp'])
-    $('console').store('controller', controller)
-
     $$('#console form').addEvent('submit', function(e) {
         e.preventDefault()
 
@@ -381,6 +378,13 @@ function prepareConsole() {
             })()
         }
     })
+}
+
+function attachEngine(exec, args) {
+    clearConsole()
+
+    var controller = new gtp.Controller(exec, args)
+    $('console').store('controller', controller)
 
     sendGTPCommand(new gtp.Command(null, 'name'))
     sendGTPCommand(new gtp.Command(null, 'version'))
@@ -388,6 +392,11 @@ function prepareConsole() {
     sendGTPCommand(new gtp.Command(null, 'list_commands'), function(response) {
         $('console').store('commands', response.content.split('\n'))
     })
+}
+
+function detachEngine() {
+    sendGTPCommand(new gtp.Command(null, 'quit'), null, true)
+    $('console').store('controller', null)
 }
 
 function checkForUpdates(callback) {

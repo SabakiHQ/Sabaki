@@ -608,6 +608,15 @@ function buildMenu() {
             label: '&Engine',
             submenu: [
                 {
+                    label: 'Attach &Engine',
+                    click: function() { attachEngine("gnugo/gnugo.exe", ['--mode', 'gtp']) }
+                },
+                {
+                    label: '&Detach Engine',
+                    click: detachEngine
+                },
+                { type: 'separator' },
+                {
                     label: 'Toggle &GTP Console',
                     click: function() { setShowConsole(!getShowConsole()) }
                 },
