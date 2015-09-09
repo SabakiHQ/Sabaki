@@ -218,6 +218,10 @@ function setScoringMethod(method) {
     }
 }
 
+function getIsEngineAttached() {
+    return $('console').retrieve('controller') ? true : false
+}
+
 /**
  * Methods
  */
@@ -399,10 +403,6 @@ function detachEngine() {
     sendGTPCommand(new gtp.Command(null, 'quit'), null, true)
     clearConsole()
     $('console').store('controller', null)
-}
-
-function isEngineAttached() {
-    return $('console').retrieve('controller') ? true : false
 }
 
 function checkForUpdates(callback) {
@@ -900,7 +900,7 @@ function commitScore() {
 }
 
 function sendGTPCommand(command, callback, ignoreBlocked) {
-    if (!isEngineAttached()) {
+    if (!getIsEngineAttached()) {
         $$('#console form:last-child input')[0].value = ''
         return
     }
@@ -909,7 +909,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { text: '…' })
+    var pre = new Element('pre', { text: ' ' })
 
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()
@@ -954,7 +954,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
 }
 
 function generateMove() {
-    if (!isEngineAttached()) return
+    if (!getIsEngineAttached() || getIsBusy()) return
     setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), function(r) {
