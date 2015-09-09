@@ -401,6 +401,10 @@ function detachEngine() {
     $('console').store('controller', null)
 }
 
+function isEngineAttached() {
+    return $('console').retrieve('controller') ? true : false
+}
+
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
@@ -896,9 +900,9 @@ function commitScore() {
 }
 
 function sendGTPCommand(command, callback, ignoreBlocked) {
+    if (!isEngineAttached()) return
+    
     var controller = $('console').retrieve('controller')
-    if (!controller) return
-
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
@@ -947,6 +951,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
 }
 
 function generateMove() {
+    if (!isEngineAttached()) return
     setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), function(r) {
