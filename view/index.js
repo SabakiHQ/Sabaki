@@ -2,6 +2,7 @@ var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../module/sgf')
+var fuzzyfinder = require('../module/fuzzyfinder')
 var gametree = require('../module/gametree')
 var sound = require('../module/sound')
 var helper = require('../module/helper')
@@ -359,13 +360,20 @@ function prepareConsole() {
             this.store('index', i)
         } else if (e.code == 9) {
             // Tab
+            var commands = $('console').retrieve('commands')
+            if (!commands) return
+            var result = fuzzyfinder.find(this.value, $('console').retrieve('commands'))
+            if (!result.length) return
+            this.value = result[0]
         }
     })
 
-    sendGTPCommand(new gtp.Command(1, 'name'))
-    sendGTPCommand(new gtp.Command(2, 'version'))
-    sendGTPCommand(new gtp.Command(3, 'protocol_version'))
-    sendGTPCommand(new gtp.Command(4, 'list_commands'))
+    sendGTPCommand(new gtp.Command(null, 'name'))
+    sendGTPCommand(new gtp.Command(null, 'version'))
+    sendGTPCommand(new gtp.Command(null, 'protocol_version'))
+    sendGTPCommand(new gtp.Command(null, 'list_commands'), function(response) {
+        $('console').store('commands', response.content.split('\n'))
+    })
 }
 
 function checkForUpdates(callback) {
