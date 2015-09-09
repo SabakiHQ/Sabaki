@@ -1,8 +1,9 @@
 exports.find = function(needle, haystack) {
-    needle = removeSpecialChars(needle)
     if (needle.trim() == '') return []
 
-    var regex = new RegExp(needle.split('').join('.*?'))
+    var regex = new RegExp(needle.split('').map(function(s) {
+        return escapeRegex(s)
+    }).join('.*?'))
 
     var result = haystack.map(function(s) {
         var info = regex.exec(s)
@@ -14,8 +15,8 @@ exports.find = function(needle, haystack) {
     return result.map(function(x) { return x[2] })
 }
 
-function removeSpecialChars(input) {
-    return input.replace(/[.*+?^${}()|[\]\\]/g, '')
+function escapeRegex(input) {
+    return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 function lexicalSort(a, b) {
