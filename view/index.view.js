@@ -605,7 +605,7 @@ function buildMenu() {
             ]
         },
         {
-            label: '&Engine',
+            label: 'Eng&ine',
             submenu: [
                 {
                     label: 'Attach &Engine',
