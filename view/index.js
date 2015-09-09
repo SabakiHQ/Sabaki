@@ -366,16 +366,19 @@ function prepareConsole() {
 
             var i = 0
             var selection = this.selectionStart
-            while (selection > tokens[i].length) {
-                i = Math.min(i + 1, tokens.length - 1)
-                selection -= tokens[i].length - 1
-            }
+            while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
+                selection -= tokens[i++].length + 1
 
             var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
             if (!result.length) return
             tokens[i] = result[0]
 
             this.value = tokens.join(' ')
+            this.selectionStart = this.selectionEnd = (function() {
+                var sum = 0
+                while (i >= 0) sum += tokens[i--].length + 1
+                return sum - 1
+            })()
         }
     })
 
