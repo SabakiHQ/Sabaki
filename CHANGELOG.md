@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Added**
+* Add GTP engines support
+
+**Changed**
+* Update to Electron v0.32.1
+
 ## [Sabaki v0.6.0][v0.6.0]
 
 **Added**
