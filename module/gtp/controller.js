@@ -41,7 +41,13 @@ require('util').inherits(Controller, events.EventEmitter)
 
 Controller.prototype.sendCommand = function(command) {
     this.commands.push(command)
-    this.process.stdin.write(command.toString() + '\n')
+
+    try {
+        this.process.stdin.write(command.toString() + '\n')
+    } catch(e) {
+        this.emit('response', new gtp.Response(command.id, 'process already quit', true, true), command)
+        this.commands.splice(0, 1)
+    }
 }
 
 module.exports = Controller
