@@ -608,11 +608,11 @@ function buildMenu() {
             label: 'Eng&ine',
             submenu: [
                 {
-                    label: 'Attach &Engine',
+                    label: '&Attach',
                     click: function() { attachEngine("gnugo/gnugo.exe", ['--mode', 'gtp']) }
                 },
                 {
-                    label: '&Detach Engine',
+                    label: '&Detach',
                     click: detachEngine
                 },
                 { type: 'separator' },
