@@ -7,7 +7,7 @@ exports.find = function(needle, haystack) {
     var result = haystack.map(function(s) {
         var info = regex.exec(s)
         if (!info) return null
-        return [info[0].length, info.index, info.input]
+        return [info.index, info[0].length, info.input]
     }).filter(function(s) { return s != null })
 
     result.sort(lexicalSort)
