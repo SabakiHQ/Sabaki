@@ -31,10 +31,8 @@ exports.parseResponse = function(input) {
     return new exports.Response(id, input.substr(1), error)
 }
 
-exports.vertex2point = function(tuple, size) {
-    return tuple.unpack(function(x, y) {
-        return alpha[x] + (size - y)
-    })
+exports.vertex2point = function(v, size) {
+    return alpha[v[0]] + (size - v[1])
 }
 
 exports.point2vertex = function(point, size) {

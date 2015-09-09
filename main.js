@@ -31,6 +31,7 @@ setting
 .default('graph.node_color', '#eee')
 .default('graph.node_comment_color', '#6bb1ff')
 .default('graph.node_size', 4)
+.default('gtp.move_delay', 300)
 .default('scoring.method', 'territory')
 .default('sound.enable', true)
 .default('view.comments_height', 50)

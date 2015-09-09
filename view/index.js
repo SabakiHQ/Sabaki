@@ -419,7 +419,8 @@ function checkForUpdates(callback) {
     })
 }
 
-function makeMove(vertex) {
+function makeMove(vertex, sendCommand) {
+    if (sendCommand == null) sendCommand = true
     if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
         return
 
@@ -429,6 +430,14 @@ function makeMove(vertex) {
     var sign = color == 'B' ? 1 : -1
 
     if (getBoard().hasVertex(vertex)) {
+        if (sendCommand) {
+            sendGTPCommand(
+                new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+                null, true
+            )
+            setTimeout(generateMove, setting.get('gtp.move_delay'))
+        }
+
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
             var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
