@@ -19,8 +19,6 @@ function removeSpecialChars(input) {
 }
 
 function lexicalSort(a, b) {
-    if (a.length == 0 || b.length == 0) return a.length - b.length
-    if (a[0] < b[0]) return -1
-    else if (a[0] > b[0]) return 1
-    return lexicalSort(a.slice(1), b.slice(1))
+    if (!a.length || !b.length) return a.length - b.length
+    return a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : lexicalSort(a.slice(1), b.slice(1)))
 }
