@@ -947,6 +947,8 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
 }
 
 function generateMove() {
+    setIsBusy(true)
+
     sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), function(r) {
         if (r.content.toLowerCase() == 'resign') return
 
@@ -955,6 +957,7 @@ function generateMove() {
             v = gtp.point2vertex(r.content, getBoard().size)
 
         makeMove(new Tuple(v[0], v[1]), false)
+        setIsBusy(false)
     }, true)
 }
 
