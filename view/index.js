@@ -802,6 +802,7 @@ function commitScore() {
     if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
+    showGameInfo()
 }
 
 function centerGraphCameraAt(node) {
