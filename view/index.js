@@ -935,6 +935,18 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     }
 }
 
+function generateMove() {
+    sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), function(r) {
+        if (r.content.toLowerCase() == 'resign') return
+
+        var v = new Tuple(-1, -1)
+        if (r.content.toLowerCase() != 'pass')
+            v = gtp.point2vertex(r.content, getBoard().size)
+
+        makeMove(new Tuple(v[0], v[1]), false)
+    }, true)
+}
+
 function centerGraphCameraAt(node) {
     if (!getShowSidebar() || !node) return
 
