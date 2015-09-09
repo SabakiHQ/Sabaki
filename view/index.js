@@ -360,11 +360,22 @@ function prepareConsole() {
             this.store('index', i)
         } else if (e.code == 9) {
             // Tab
+            var tokens = this.value.split(' ')
             var commands = $('console').retrieve('commands')
             if (!commands) return
-            var result = fuzzyfinder.find(this.value, $('console').retrieve('commands'))
+
+            var i = 0
+            var selection = this.selectionStart
+            while (selection > tokens[i].length) {
+                i = Math.min(i + 1, tokens.length - 1)
+                selection -= tokens[i].length - 1
+            }
+
+            var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
             if (!result.length) return
-            this.value = result[0]
+            tokens[i] = result[0]
+
+            this.value = tokens.join(' ')
         }
     })
 
