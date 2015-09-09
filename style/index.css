@@ -179,6 +179,7 @@ header, #edit, #scoring, #find, #progress {
     #console pre {
         margin: 15px;
     }
+    #console .internal { opacity: .5; }
     #console .success { color: #FFCC66; }
     #console .error { color: #F25C3D; }
     #console .id { color: #CC99CC; }

@@ -928,7 +928,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     }
 
     if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
-        listener(new gtp.Response(null, 'blocked command', true), command)
+        listener(new gtp.Response(null, 'blocked command', true, true), command)
     } else {
         controller.on('response', listener)
         controller.sendCommand(command)
