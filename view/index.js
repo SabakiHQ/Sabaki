@@ -879,7 +879,7 @@ function sendGTPCommand(command, callback, ignoreBlocked) {
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { text: '...' })
+    var pre = new Element('pre', { text: '…' })
 
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()

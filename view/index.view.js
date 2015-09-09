@@ -738,10 +738,6 @@ function openNodeMenu(tree, index) {
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
-/**
- * Console
- */
-
 function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
 }
