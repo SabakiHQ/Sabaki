@@ -617,6 +617,12 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
+                    label: 'Generate &Move',
+                    accelerator: 'F10',
+                    click: generateMove
+                },
+                { type: 'separator' },
+                {
                     label: 'Toggle &GTP Console',
                     click: function() { setShowConsole(!getShowConsole()) }
                 },
