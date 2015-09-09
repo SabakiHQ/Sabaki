@@ -213,19 +213,11 @@ function getCommentText() {
 
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
+    var container = $$('#properties .inner')[0]
 
     $$('#properties textarea').set('value', text)
-    $$('#properties .inner')[0].set('html', html)
-        .getElements('a').addEvent('click', function() {
-            shell.openExternal(this.href)
-            return false
-        })
-
-    $$('#properties .coord').addEvent('mouseenter', function() {
-        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
-    }).addEvent('mouseleave', function() {
-        hideIndicator()
-    })
+    container.set('html', html)
+    helper.wireLinks(container)
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)

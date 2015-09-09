@@ -1,4 +1,6 @@
+var gtp = require('./gtp')
 var crypto = require('crypto')
+var shell = require('shell')
 
 exports.md5 = function(str) {
     return crypto.createHash('md5').update(str).digest('hex')
@@ -45,4 +47,16 @@ exports.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagr
     }
 
     return input
+}
+
+exports.wireLinks = function(container) {
+    container.getElements('a').addEvent('click', function() {
+        shell.openExternal(this.href)
+        return false
+    })
+    container.getElements('.coord').addEvent('mouseenter', function() {
+        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
+    }).addEvent('mouseleave', function() {
+        hideIndicator()
+    })
 }
