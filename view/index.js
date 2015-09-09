@@ -900,8 +900,11 @@ function commitScore() {
 }
 
 function sendGTPCommand(command, callback, ignoreBlocked) {
-    if (!isEngineAttached()) return
-    
+    if (!isEngineAttached()) {
+        $$('#console form:last-child input')[0].value = ''
+        return
+    }
+
     var controller = $('console').retrieve('controller')
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
