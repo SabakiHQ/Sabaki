@@ -338,6 +338,30 @@ function prepareConsole() {
         sendGTPCommand(command)
     })
 
+    $$('#console form input').addEvent('keydown', function(e) {
+        if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
+        var inputs = $$('#console form input')
+
+        if (this.retrieve('index') == null) this.store('index', inputs.indexOf(this))
+        var i = this.retrieve('index')
+        var length = inputs.length
+
+        if ([38, 40].indexOf(e.code) != -1) {
+            if (e.code == 38) {
+                // Up
+                i = Math.max(i - 1, 0)
+            } else if (e.code == 40) {
+                // Down
+                i = Math.min(i + 1, length - 1)
+            }
+
+            this.value = i == length - 1 ? '' : inputs[i].value
+            this.store('index', i)
+        } else if (e.code == 9) {
+            // Tab
+        }
+    })
+
     sendGTPCommand(new gtp.Command(1, 'name'))
     sendGTPCommand(new gtp.Command(2, 'version'))
     sendGTPCommand(new gtp.Command(3, 'protocol_version'))
