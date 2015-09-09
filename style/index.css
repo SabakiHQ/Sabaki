@@ -188,7 +188,6 @@ header, #edit, #scoring, #find, #progress {
         margin: .7em 0;
         background: #222;
     }
-    #console .inner form:last-child { margin-bottom: 100px; }
     #console .inner form label::after {
         content: ' ';
         display: block;
