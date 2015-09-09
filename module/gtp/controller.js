@@ -18,6 +18,10 @@ var Controller = function(exec, args) {
     self.process = child_process.spawn(exec, args)
     self.commands = []
 
+    self.process.on('exit', function(signal) {
+        self.emit('quit', signal)
+    })
+
     self.process.stdout.on('data', function(data) {
         self._buffer += (data + '').replace(/\r/g, '').replace(/#.*?\n/g, '').replace(/\t/g, ' ')
 
@@ -45,7 +49,7 @@ Controller.prototype.sendCommand = function(command) {
     try {
         this.process.stdin.write(command.toString() + '\n')
     } catch(e) {
-        this.emit('response', new gtp.Response(command.id, 'process already quit', true, true), command)
+        this.emit('response', new gtp.Response(command.id, 'connection error', true, true), command)
         this.commands.splice(0, 1)
     }
 }

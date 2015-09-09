@@ -384,6 +384,7 @@ function attachEngine(exec, args) {
     clearConsole()
 
     var controller = new gtp.Controller(exec, args)
+    controller.on('quit', function() { $('console').store('controller', null) })
     $('console').store('controller', controller)
 
     sendGTPCommand(new gtp.Command(null, 'name'))
