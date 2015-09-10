@@ -1,16 +1,21 @@
 {
-    "name": "sabaki",
-    "productName": "Sabaki",
-    "version": "0.6.0",
-    "description": "An elegant virtual Go board for a more civilized age.",
-    "author": "Yichuan Shen",
-    "main": "main.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/yishn/Sabaki"
-    },
-    "bugs": {
-        "url": "https://github.com/yishn/Sabaki/issues"
-    },
-    "license": "MIT"
+  "name": "sabaki",
+  "productName": "Sabaki",
+  "version": "0.6.0",
+  "description": "An elegant virtual Go board for a more civilized age.",
+  "author": "Yichuan Shen",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yishn/Sabaki"
+  },
+  "bugs": {
+    "url": "https://github.com/yishn/Sabaki/issues"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "gemini-scrollbar": "^1.2.9",
+    "sigma": "^1.0.3",
+    "tuple-w": "^1.1.1"
+  }
 }

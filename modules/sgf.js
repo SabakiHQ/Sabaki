@@ -1,6 +1,6 @@
-var Tuple = require('../lib/tuple')
+var Tuple = require('tuple-w')
 
-var gametree = require('../module/gametree')
+var gametree = require('../modules/gametree')
 var fs = require('fs')
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'

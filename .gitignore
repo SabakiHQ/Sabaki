@@ -5,6 +5,7 @@ test/
 lib/sigma/plugins/
 gnugo/
 stone*.wav
+node_modules/
 
 # Windows image file caches
 Thumbs.db
