@@ -9,9 +9,7 @@ var helper = require('../modules/helper')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
-var dns = remote.require('dns')
 var gtp = remote.require('./modules/gtp')
-var https = remote.require('https')
 var setting = remote.require('./modules/setting')
 
 var Tuple = require('tuple-w')
@@ -411,10 +409,10 @@ function checkForUpdates(callback) {
     var cancel = false
 
     // Check internet connection first
-    dns.lookup('github.com', function(err) {
+    remote.require('dns').lookup('github.com', function(err) {
         if (err) return
 
-        https.get(url, function(response) {
+        remote.require('https').get(url, function(response) {
             response.on('data', function(chunk) {
                 if (cancel) return
                 cancel = true
