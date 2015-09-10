@@ -1,4 +1,4 @@
-var Tuple = require('../lib/tuple')
+var Tuple = require('tuple-w')
 var helper = require('./helper')
 
 var Board = function(size, arrangement, captures) {

@@ -1,22 +1,22 @@
 var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
-var sgf = require('../module/sgf')
-var fuzzyfinder = require('../module/fuzzyfinder')
-var gametree = require('../module/gametree')
-var sound = require('../module/sound')
-var helper = require('../module/helper')
+var sgf = require('../modules/sgf')
+var fuzzyfinder = require('../modules/fuzzyfinder')
+var gametree = require('../modules/gametree')
+var sound = require('../modules/sound')
+var helper = require('../modules/helper')
 var process = remote.require('process')
 var app = remote.require('app')
 var dialog = remote.require('dialog')
 var dns = remote.require('dns')
-var gtp = remote.require('./module/gtp')
+var gtp = remote.require('./modules/gtp')
 var https = remote.require('https')
-var setting = remote.require('./module/setting')
+var setting = remote.require('./modules/setting')
 
-var Tuple = require('../lib/tuple')
-var Board = require('../module/board')
-var Scrollbar = require('../lib/gemini-scrollbar')
+var Tuple = require('tuple-w')
+var Board = require('../modules/board')
+var Scrollbar = require('gemini-scrollbar')
 var Menu = remote.require('menu')
 
 var updateSidebarLambda
@@ -897,6 +897,7 @@ function commitScore() {
     if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
+    showGameInfo()
 }
 
 function sendGTPCommand(command, callback, ignoreBlocked) {

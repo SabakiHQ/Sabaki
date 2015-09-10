@@ -1,5 +1,5 @@
 var app = require('app')
-var setting = require('./module/setting')
+var setting = require('./modules/setting')
 var BrowserWindow = require('browser-window')
 
 var window = null
