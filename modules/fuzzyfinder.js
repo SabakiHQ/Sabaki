@@ -1,22 +1,39 @@
 exports.find = function(needle, haystack) {
-    if (needle.trim() == '') return []
+    var result = []
 
-    var regex = new RegExp(needle.split('').map(function(s) {
-        return escapeRegex(s)
-    }).join('.*?'))
-
-    var result = haystack.map(function(s) {
-        var info = regex.exec(s)
-        if (!info) return null
-        return [info.index, info[0].length, info.input]
-    }).filter(function(s) { return s != null })
+    for (var i = 0; i < haystack.length; i++) {
+        var v = generateVector(needle, haystack[i])
+        if (v) result.push(v)
+    }
 
     result.sort(lexicalSort)
-    return result.map(function(x) { return x[2] })
+    return result.map(function(x) { return x[x.length - 1] })
 }
 
-function escapeRegex(input) {
-    return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+exports.findOne = function(needle, haystack) {
+    var min = null
+
+    for (var i = 0; i < haystack.length; i++) {
+        var v = generateVector(needle, haystack[i])
+        if (v && (!min || lexicalSort(v, min) < 0)) min = v
+    }
+
+    return min ? min[min.length - 1] : null
+}
+
+function generateVector(needle, hay) {
+    if (needle == '') return null
+    var v = [-1]
+
+    for (var i = 0; i < needle.length; i++) {
+        var index = hay.indexOf(needle[i], v[v.length - 1] + 1)
+        if (index == -1) return null
+        v.push(index)
+    }
+
+    v[0] = v[v.length - 1] - v[1] + 1
+    v.push(hay)
+    return v
 }
 
 function lexicalSort(a, b) {
