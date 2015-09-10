@@ -24,14 +24,17 @@ exports.findOne = function(needle, haystack) {
 function generateVector(needle, hay) {
     if (needle == '') return null
     var v = [-1]
+    var last = -1
 
     for (var i = 0; i < needle.length; i++) {
-        var index = hay.indexOf(needle[i], v[v.length - 1] + 1)
+        var index = hay.indexOf(needle[i], last + 1)
         if (index == -1) return null
-        v.push(index)
+        v.push(index - last)
+        last = index
     }
 
-    v[0] = v[v.length - 1] - v[1] + 1
+    v[0] = last - v[1] + 1
+    v.push(v[1] - 1)
     v.push(hay)
     return v
 }
