@@ -1203,13 +1203,7 @@ function removeNode(tree, index) {
  */
 
 document.addEvent('keydown', function(e) {
-    if (e.code == 123) {
-        // F12
-        remote.getCurrentWindow().toggleDevTools()
-    } else if (e.code == 116) {
-        // F5
-        location.reload()
-    } else if (e.code == 27) {
+    if (e.code == 27) {
         // Escape key
         closeDrawers()
     }

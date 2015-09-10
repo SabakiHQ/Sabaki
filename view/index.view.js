@@ -624,6 +624,7 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Toggle &GTP Console',
+                    accelerator: 'F12',
                     click: function() { setShowConsole(!getShowConsole()) }
                 },
                 {
