@@ -1,4 +1,4 @@
-var Tuple = require('../../lib/tuple')
+var Tuple = require('tuple-w')
 
 exports.Command = require('./command.js')
 exports.Response = require('./response.js')
