@@ -22,6 +22,9 @@ exports.findOne = function(needle, haystack) {
 }
 
 function generateVector(needle, hay) {
+    // Create a list of the form:
+    // [compactness, difference of indices, position, hay]
+
     if (needle == '') return null
     var v = [-1]
     var last = -1
@@ -33,8 +36,8 @@ function generateVector(needle, hay) {
         last = index
     }
 
-    v[0] = last - v[1] + 1
     v.push(v[1] - 1)
+    v.splice(0, 2, last - v[1] + 1)
     v.push(hay)
     return v
 }
