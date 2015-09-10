@@ -13,6 +13,8 @@ Response.prototype = {
     },
 
     toHtml: function() {
+        if (!helper) return this.toString()
+        
         if (!this.internal) {
             var c = this.error ? 'error' : 'success'
             return '<span class="' + c + '">' + (this.error ? '?' : '=') + '</span>'
