@@ -407,17 +407,13 @@ function detachEngine() {
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
-    var cancel = false
 
     // Check internet connection first
     remote.require('dns').lookup('github.com', function(err) {
         if (err) return
 
         remote.require('https').get(url, function(response) {
-            response.on('data', function(chunk) {
-                if (cancel) return
-                cancel = true
-
+            response.once('data', function(chunk) {
                 chunk = '' + chunk
                 var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
 

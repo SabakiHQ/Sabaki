@@ -669,7 +669,6 @@ function buildMenu() {
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
-                        this.checked = win.isFullScreen()
                     }
                 }
             ]
