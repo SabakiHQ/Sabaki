@@ -374,7 +374,6 @@ function prepareConsole() {
                 selection -= tokens[i++].length + 1
 
             var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
-            console.log(fuzzyfinder.filter(tokens[i], $('console').retrieve('commands')))
             if (!result) return
             tokens[i] = result
 
@@ -398,13 +397,13 @@ function attachEngine(exec, args) {
     sendGTPCommand(new gtp.Command(null, 'name'))
     sendGTPCommand(new gtp.Command(null, 'version'))
     sendGTPCommand(new gtp.Command(null, 'protocol_version'))
-    sendGTPCommand(new gtp.Command(null, 'list_commands'), function(response) {
+    sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
         $('console').store('commands', response.content.split('\n'))
     })
 }
 
 function detachEngine() {
-    sendGTPCommand(new gtp.Command(null, 'quit'), null, true)
+    sendGTPCommand(new gtp.Command(null, 'quit'), true)
     clearConsole()
     $('console').store('controller', null)
 }
@@ -448,7 +447,7 @@ function makeMove(vertex, sendCommand) {
         if (sendCommand) {
             sendGTPCommand(
                 new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
-                null, true
+                true
             )
             setTimeout(generateMove, setting.get('gtp.move_delay'))
         }
@@ -900,7 +899,7 @@ function commitScore() {
     showGameInfo()
 }
 
-function sendGTPCommand(command, callback, ignoreBlocked) {
+function sendGTPCommand(command, ignoreBlocked, callback) {
     if (!getIsEngineAttached()) {
         $$('#console form:last-child input')[0].value = ''
         return
@@ -958,7 +957,7 @@ function generateMove() {
     if (!getIsEngineAttached() || getIsBusy()) return
     setIsBusy(true)
 
-    sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), function(r) {
+    sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), true, function(r) {
         setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') return
 
@@ -967,7 +966,7 @@ function generateMove() {
             v = gtp.point2vertex(r.content, getBoard().size)
 
         makeMove(new Tuple(v[0], v[1]), false)
-    }, true)
+    })
 }
 
 function centerGraphCameraAt(node) {
