@@ -153,16 +153,16 @@ Board.prototype = {
                 if (vertex in liberties) continue
 
                 var l = this.getLiberties(vertex)
-                if (l == 0 && this.arrangement(vertex) != 0) return false
+                if (l == 0 && this.arrangement[vertex] != 0) return false
 
                 this.getChain(vertex).each(function(v) {
-                    liberties[vertex] = l
+                    liberties[v] = l
                 })
             }
         }
 
         return true
-    }
+    },
 
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
