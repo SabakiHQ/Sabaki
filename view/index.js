@@ -469,7 +469,7 @@ function checkForUpdates(callback) {
 }
 
 function makeMove(vertex, sendCommand) {
-    if (sendCommand == null) sendCommand = true
+    if (sendCommand == null) sendCommand = getIsEngineAttached()
     if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
         return
 
