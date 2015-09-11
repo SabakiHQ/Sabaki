@@ -33,13 +33,12 @@ Board.prototype = {
     getNeighborhood: function(vertex) {
         var self = this
         if (!self.hasVertex(vertex)) return []
+        var x = vertex[0], y = vertex[1]
 
-        return vertex.unpack(function(x, y) {
-            return [
-                new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
-            ].filter(function(item) {
-                return self.hasVertex(item)
-            })
+        return [
+            new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
+        ].filter(function(item) {
+            return self.hasVertex(item)
         })
     },
 

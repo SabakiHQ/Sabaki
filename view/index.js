@@ -411,15 +411,17 @@ function detachEngine() {
 }
 
 function syncEngine() {
-    if (!getIsEngineAttached()) return
-    if (!getBoard().isValid()) {
+    var board = getBoard()
+
+    if (!getIsEngineAttached()
+        || $('console').retrieve('boardhash') == board.getHash()) return
+    if (!board.isValid()) {
         showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
         return
     }
 
     setIsBusy(true)
 
-    var board = getBoard()
     sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
     sendGTPCommand(new gtp.Command(null, 'boardsize', [board.size]), true)
     sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
@@ -437,6 +439,7 @@ function syncEngine() {
         }
     }
 
+    $('console').store('boardhash', board.getHash())
     setIsBusy(false)
 }
 
@@ -474,6 +477,8 @@ function makeMove(vertex, sendCommand) {
     var tree = position[0], index = position[1]
     var color = getCurrentPlayer() > 0 ? 'B' : 'W'
     var sign = color == 'B' ? 1 : -1
+
+    if (sendCommand) syncEngine()
 
     if (getBoard().hasVertex(vertex)) {
         // Check for ko
@@ -587,6 +592,7 @@ function makeMove(vertex, sendCommand) {
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
             true
         )
+        $('console').store('boardhash', getBoard().getHash())
         setTimeout(generateMove, setting.get('gtp.move_delay'))
     }
 }
@@ -985,6 +991,8 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 
 function generateMove() {
     if (!getIsEngineAttached() || getIsBusy()) return
+
+    syncEngine()
     setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), true, function(r) {
@@ -995,6 +1003,7 @@ function generateMove() {
         if (r.content.toLowerCase() != 'pass')
             v = gtp.point2vertex(r.content, getBoard().size)
 
+        $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(new Tuple(v[0], v[1]), false)
     })
 }
