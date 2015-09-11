@@ -101,7 +101,7 @@ exports.reduceTree = function(tree) {
     tree.current = tree.subtrees[0].current
     tree.subtrees = tree.subtrees[0].subtrees
 
-    tree.subtrees.each(function(subtree) {
+    tree.subtrees.forEach(function(subtree) {
         subtree.parent = tree
     })
 
@@ -111,7 +111,7 @@ exports.reduceTree = function(tree) {
 exports.getHeight = function(tree) {
     var height = 0
 
-    tree.subtrees.each(function(subtree) {
+    tree.subtrees.forEach(function(subtree) {
         height = Math.max(exports.getHeight(subtree), height)
     })
 
@@ -137,7 +137,7 @@ exports.getSections = function(tree, level) {
 
     var sections = []
 
-    tree.subtrees.each(function(subtree) {
+    tree.subtrees.forEach(function(subtree) {
         sections = sections.concat(exports.getSections(subtree, level - tree.nodes.length))
     })
 

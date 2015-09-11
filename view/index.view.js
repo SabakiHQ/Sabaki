@@ -279,7 +279,7 @@ function setScoringMode(scoringMode) {
         document.body.addClass('scoring')
 
         var deadstones = getBoard().guessDeadStones()
-        deadstones.each(function(v) {
+        deadstones.forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
         })
 
@@ -410,7 +410,7 @@ function buildBoard() {
 
     // Readjust shifts
 
-    $$('#goban .row li:not(.shift_0)').each(function(li) {
+    $$('#goban .row li:not(.shift_0)').forEach(function(li) {
         readjustShifts(li.retrieve('tuple'))
     })
 }

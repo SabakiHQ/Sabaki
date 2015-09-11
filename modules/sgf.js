@@ -170,13 +170,13 @@ exports.addBoard = function(tree, index, baseboard) {
     for (var i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].each(function(value) {
+        node[ids[i]].forEach(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
                 board.arrangement[exports.point2vertex(value)] = i - 1
             } else {
                 // Compressed point list
-                exports.compressed2list(value).each(function(vertex) {
+                exports.compressed2list(value).forEach(function(vertex) {
                     board.arrangement[vertex] = i - 1
                 })
             }
@@ -193,13 +193,13 @@ exports.addBoard = function(tree, index, baseboard) {
     for (var i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].each(function(value) {
+        node[ids[i]].forEach(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
                 board.overlays[exports.point2vertex(value)] = new Tuple(classes[i], 0, '')
             } else {
                 // Compressed point list
-                exports.compressed2list(value).each(function(vertex) {
+                exports.compressed2list(value).forEach(function(vertex) {
                     board.overlays[vertex] = new Tuple(classes[i], 0, '')
                 })
             }
@@ -207,7 +207,7 @@ exports.addBoard = function(tree, index, baseboard) {
     }
 
     if ('LB' in node) {
-        node.LB.each(function(composed) {
+        node.LB.forEach(function(composed) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
@@ -220,7 +220,7 @@ exports.addBoard = function(tree, index, baseboard) {
     if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
         // Add variations
 
-        tree.subtrees.each(function(subtree) {
+        tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
 
             var v, sign
@@ -249,14 +249,14 @@ exports.addBoard = function(tree, index, baseboard) {
 exports.tree2string = function(tree) {
     var output = ''
 
-    tree.nodes.each(function(node) {
+    tree.nodes.forEach(function(node) {
         output += ';'
 
         for (var id in node) {
             if (id.toUpperCase() != id) continue
             output += id
 
-            node[id].each(function(value) {
+            node[id].forEach(function(value) {
                 output += '[' + exports.escapeString(value.toString()) + ']'
             })
         }

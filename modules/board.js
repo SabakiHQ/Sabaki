@@ -48,7 +48,7 @@ Board.prototype = {
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighborhood(vertex).each(function(v) {
+        this.getNeighborhood(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
             if (result.some(function(w) { return w.equals(v) })) return
 
@@ -69,7 +69,7 @@ Board.prototype = {
         var chain = this.getChain(vertex)
         var liberties = []
 
-        chain.each(function(c) {
+        chain.forEach(function(c) {
             liberties.append(this.getNeighborhood(c).filter(function(n) {
                 return this.arrangement[n] == 0 && !liberties.some(function(v) { return v.equals(n) })
             }.bind(this)))
@@ -103,10 +103,10 @@ Board.prototype = {
                 var sign = 0
                 var indicator = 1
 
-                chain.each(function(c) {
+                chain.forEach(function(c) {
                     if (indicator == 0) return
 
-                    this.getNeighborhood(c).each(function(n) {
+                    this.getNeighborhood(c).forEach(function(n) {
                         if (this.arrangement[n] == 0 || indicator == 0) return
 
                         if (sign == 0) sign = map[n] = this.arrangement[n]
@@ -114,7 +114,7 @@ Board.prototype = {
                     }.bind(this))
                 }.bind(this))
 
-                chain.each(function(c) {
+                chain.forEach(function(c) {
                     map[c] = sign * indicator
                 })
             }
@@ -155,7 +155,7 @@ Board.prototype = {
                 var l = this.getLiberties(vertex)
                 if (l == 0 && this.arrangement[vertex] != 0) return false
 
-                this.getChain(vertex).each(function(v) {
+                this.getChain(vertex).forEach(function(v) {
                     liberties[v] = l
                 })
             }
@@ -174,14 +174,14 @@ Board.prototype = {
         var suicide = true
 
         // Remove captured stones
-        this.getNeighborhood(vertex).each(function(n) {
+        this.getNeighborhood(vertex).forEach(function(n) {
             if (move.arrangement[n] != -sign) return;
 
             var ll = this.getLiberties(n)
             if (ll.length != 1) return;
             if (!ll[0].equals(vertex)) return;
 
-            this.getChain(n).each(function(c) {
+            this.getChain(n).forEach(function(c) {
                 move.arrangement[c] = 0
                 move.captures[sign.toString()]++
             })
@@ -196,7 +196,7 @@ Board.prototype = {
             var chain = move.getChain(vertex)
 
             if (move.getLiberties(vertex).length == 0) {
-                chain.each(function(c) {
+                chain.forEach(function(c) {
                     move.arrangement[c] = 0
                     move.captures[(-sign).toString()]++
                 })
@@ -272,7 +272,7 @@ Board.prototype = {
                     actualDead = []
                 }
 
-                actualArea.each(function(v) {
+                actualArea.forEach(function(v) {
                     done[v] = 1
                 })
 
