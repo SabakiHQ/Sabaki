@@ -107,11 +107,10 @@ exports.point2vertex = function(point) {
     return new Tuple(alpha.indexOf(point[0]), alpha.indexOf(point[1]))
 }
 
-exports.vertex2point = function(tuple) {
-    return tuple.unpack(function(x, y) {
-        if (x < 0 || y < 0) return ''
-        return alpha[x] + alpha[y]
-    })
+exports.vertex2point = function(vertex) {
+    var x = vertex[0], y = vertex[1]
+    if (x < 0 || y < 0) return ''
+    return alpha[x] + alpha[y]
 }
 
 exports.compressed2list = function(compressed) {

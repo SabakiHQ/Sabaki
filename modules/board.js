@@ -17,9 +17,8 @@ var Board = function(size, arrangement, captures) {
 
 Board.prototype = {
     hasVertex: function(vertex) {
-        return vertex.unpack(function(x, y) {
-            return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
-        }.bind(this))
+        var x = vertex[0], y = vertex[1]
+        return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
     },
 
     clear: function() {
