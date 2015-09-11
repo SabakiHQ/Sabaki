@@ -475,15 +475,15 @@ function makeMove(vertex, sendCommand) {
     var color = getCurrentPlayer() > 0 ? 'B' : 'W'
     var sign = color == 'B' ? 1 : -1
 
+    if (sendCommand) {
+        sendGTPCommand(
+            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+            true
+        )
+        setTimeout(generateMove, setting.get('gtp.move_delay'))
+    }
+        
     if (getBoard().hasVertex(vertex)) {
-        if (sendCommand) {
-            sendGTPCommand(
-                new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
-                true
-            )
-            setTimeout(generateMove, setting.get('gtp.move_delay'))
-        }
-
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
             var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
