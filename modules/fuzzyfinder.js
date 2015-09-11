@@ -1,4 +1,4 @@
-exports.find = function(needle, haystack) {
+exports.filter = function(needle, haystack) {
     var result = []
 
     for (var i = 0; i < haystack.length; i++) {
@@ -10,7 +10,7 @@ exports.find = function(needle, haystack) {
     return result.map(function(x) { return x[x.length - 1] })
 }
 
-exports.findOne = function(needle, haystack) {
+exports.find = function(needle, haystack) {
     var min = null
 
     for (var i = 0; i < haystack.length; i++) {

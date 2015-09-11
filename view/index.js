@@ -368,7 +368,7 @@ function prepareConsole() {
             while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
                 selection -= tokens[i++].length + 1
 
-            var result = fuzzyfinder.findOne(tokens[i], $('console').retrieve('commands'))
+            var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
             if (!result) return
             tokens[i] = result
 
