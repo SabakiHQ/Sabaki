@@ -32,7 +32,7 @@ var Controller = function(exec, args) {
             self._buffer = self._buffer.substr(start + 2)
 
             if (self.commands.length > 0) {
-                self.emit('response', response, self.commands[0])
+                self.emit('response-' + self.commands[0].internalId, response, self.commands[0])
                 self.commands.splice(0, 1)
             }
 
@@ -49,7 +49,11 @@ Controller.prototype.sendCommand = function(command) {
     try {
         this.process.stdin.write(command.toString() + '\n')
     } catch(e) {
-        this.emit('response', new gtp.Response(command.id, 'connection error', true, true), command)
+        this.emit(
+            'response-' + command.internalId,
+            new gtp.Response(command.id, 'connection error', true, true),
+            command
+        )
         this.commands.splice(0, 1)
     }
 }

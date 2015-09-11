@@ -972,8 +972,6 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 
     var listener = function(response, c) {
-        if (!oldform.hasClass('waiting') || c.toString() != command.toString()) return
-
         pre.set('html', response.toHtml())
         helper.wireLinks(pre)
         oldform.removeClass('waiting')
@@ -991,7 +989,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
         listener(new gtp.Response(null, 'blocked command', true, true), command)
     } else {
-        controller.on('response', listener)
+        controller.once('response-' + command.internalId, listener)
         controller.sendCommand(command)
     }
 }
