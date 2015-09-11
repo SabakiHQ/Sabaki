@@ -165,7 +165,7 @@ function setBoard(board) {
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
                 'cross', 'square', 'label', 'point']
 
-            types.each(function(x) {
+            types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
             li.set('title', '')
@@ -675,7 +675,7 @@ function useTool(vertex) {
 
             // Update SGF
 
-            $$('#goban .row li').each(function(li) {
+            $$('#goban .row li').forEach(function(li) {
                 var v = li.retrieve('tuple')
                 if (!(v in board.overlays)) return
 
@@ -740,7 +740,7 @@ function vertexClicked(vertex) {
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
-        getBoard().getRelatedChains(vertex).each(function(v) {
+        getBoard().getRelatedChains(vertex).forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
         })
 
@@ -812,7 +812,7 @@ function updateCommentText() {
 function updateAreaMap() {
     var board = getBoard().makeMove(0)
 
-    $$('#goban .row li.dead').each(function(li) {
+    $$('#goban .row li.dead').forEach(function(li) {
         if (li.hasClass('sign_1')) board.captures['-1']++
         else if (li.hasClass('sign_-1')) board.captures['1']++
 
@@ -821,7 +821,7 @@ function updateAreaMap() {
 
     var map = board.getAreaMap()
 
-    $$('#goban .row li').each(function(li) {
+    $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
             .addClass('area_' + map[li.retrieve('tuple')])
     })
@@ -1093,7 +1093,7 @@ function clearAllOverlays() {
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        overlayIds.each(function(id) {
+        overlayIds.forEach(function(id) {
             delete tree.nodes[index][id]
         })
 
