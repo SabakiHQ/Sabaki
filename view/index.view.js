@@ -810,7 +810,7 @@ function showScore() {
         tds[0].set('text', score['area_' + sign])
         tds[1].set('text', score['territory_' + sign])
         tds[2].set('text', score['captures_' + sign])
-        if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+        if (sign < 0) tds[3].set('text', getKomi())
         tds[4].set('text', 0)
 
         setScoringMethod(setting.get('scoring.method'))

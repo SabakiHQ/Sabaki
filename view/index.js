@@ -216,6 +216,11 @@ function setScoringMethod(method) {
     }
 }
 
+function getKomi() {
+    var rootNode = getRootTree().nodes[0]
+    return 'KM' in rootNode ? rootNode.KM[0].toFloat() : 0
+}
+
 function getIsEngineAttached() {
     return $('console').retrieve('controller') ? true : false
 }
