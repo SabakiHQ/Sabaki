@@ -475,8 +475,8 @@ function makeMove(vertex, sendCommand) {
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
-    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-    var sign = color == 'B' ? 1 : -1
+    var sign = getCurrentPlayer()
+    var color = sign > 0 ? 'B' : 'W'
 
     if (sendCommand) syncEngine()
 
