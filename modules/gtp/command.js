@@ -1,4 +1,7 @@
+var helper = require('../helper')
+
 var Command = function(id, name, arguments) {
+    this.internalId = helper.getId()
     this.id = parseInt(id)
     this.name = name
     this.arguments = arguments ? arguments : []

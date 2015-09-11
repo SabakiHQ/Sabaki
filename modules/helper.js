@@ -2,6 +2,12 @@ var gtp = require('./gtp')
 var crypto = require('crypto')
 var shell = require('shell')
 
+var id = 0
+
+exports.getId = function() {
+    return ++id
+}
+
 exports.md5 = function(str) {
     return crypto.createHash('md5').update(str).digest('hex')
 }

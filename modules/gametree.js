@@ -7,7 +7,7 @@ var setting = require('remote').require('./modules/setting')
 
 exports.new = function(id) {
     return {
-        id: String.uniqueID(),
+        id: helper.getId(),
         nodes: [],
         subtrees: [],
         current: null,
