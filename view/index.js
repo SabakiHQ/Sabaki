@@ -477,6 +477,7 @@ function makeMove(vertex, sendCommand) {
     var tree = position[0], index = position[1]
     var sign = getCurrentPlayer()
     var color = sign > 0 ? 'B' : 'W'
+    var capture = false, suicide = false
 
     if (sendCommand) syncEngine()
 
@@ -499,12 +500,11 @@ function makeMove(vertex, sendCommand) {
         }
 
         // Check for suicide
-        var capture = getBoard().getNeighborhood(vertex).some(function(v) {
+        capture = getBoard().getNeighborhood(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
         })
 
-        var suicide = setting.get('game.show_suicide_warning')
-        suicide = suicide && !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
+        suicide = !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
             return getBoard().arrangement[v] == sign
         }).every(function(v) {
             return getBoard().getLiberties(v).length == 1
@@ -512,7 +512,7 @@ function makeMove(vertex, sendCommand) {
             return getBoard().arrangement[v] == 0
         }).length == 0
 
-        if (suicide) {
+        if (suicide && setting.get('game.show_suicide_warning')) {
             if (showMessageBox(
                 ['You are about to play a suicide move.',
                 'This is invalid in some rulesets.'].join('\n'),
@@ -528,14 +528,7 @@ function makeMove(vertex, sendCommand) {
         for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
         li.addClass('shift_' + direction)
         readjustShifts(vertex)
-
-        // Play sounds
-        if (capture || suicide) setTimeout(function() {
-            sound.playCapture()
-        }, 300 + Math.floor(Math.random() * 200))
-
-        sound.playPachi()
-    } else sound.playPass()
+    }
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
@@ -585,6 +578,17 @@ function makeMove(vertex, sendCommand) {
             sgf.addBoard(newtree, newtree.nodes.length - 1)
             setCurrentTreePosition(newtree, 0)
         }
+    }
+
+    // Play sounds
+    if (getBoard().hasVertex(vertex)) {
+        if (capture || suicide) setTimeout(function() {
+            sound.playCapture()
+        }, 300 + Math.floor(Math.random() * 200))
+
+        sound.playPachi()
+    } else {
+        sound.playPass()
     }
 
     if (sendCommand) {
