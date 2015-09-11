@@ -475,14 +475,6 @@ function makeMove(vertex, sendCommand) {
     var color = getCurrentPlayer() > 0 ? 'B' : 'W'
     var sign = color == 'B' ? 1 : -1
 
-    if (sendCommand) {
-        sendGTPCommand(
-            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
-            true
-        )
-        setTimeout(generateMove, setting.get('gtp.move_delay'))
-    }
-        
     if (getBoard().hasVertex(vertex)) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
@@ -548,6 +540,8 @@ function makeMove(vertex, sendCommand) {
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
+        var create = true
+
         if (index != tree.nodes.length - 1) {
             // Search for next move
             var nextNode = tree.nodes[index + 1]
@@ -556,7 +550,7 @@ function makeMove(vertex, sendCommand) {
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
-                return
+                create = false
             }
         } else {
             // Search for variation
@@ -568,22 +562,32 @@ function makeMove(vertex, sendCommand) {
 
             if (variations.length > 0) {
                 setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
-                return
+                create = false
             }
         }
 
-        // Create variation
-        var splitted = gametree.splitTree(tree, index)
-        var node = {}; node[color] = [sgf.vertex2point(vertex)]
-        var newtree = gametree.new()
-        newtree.nodes = [node]
-        newtree.parent = splitted
+        if (create) {
+            // Create variation
+            var splitted = gametree.splitTree(tree, index)
+            var node = {}; node[color] = [sgf.vertex2point(vertex)]
+            var newtree = gametree.new()
+            newtree.nodes = [node]
+            newtree.parent = splitted
 
-        splitted.subtrees.push(newtree)
-        splitted.current = splitted.subtrees.length - 1
+            splitted.subtrees.push(newtree)
+            splitted.current = splitted.subtrees.length - 1
 
-        sgf.addBoard(newtree, newtree.nodes.length - 1)
-        setCurrentTreePosition(newtree, 0)
+            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            setCurrentTreePosition(newtree, 0)
+        }
+    }
+
+    if (sendCommand) {
+        sendGTPCommand(
+            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+            true
+        )
+        setTimeout(generateMove, setting.get('gtp.move_delay'))
     }
 }
 
