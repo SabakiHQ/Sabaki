@@ -144,6 +144,26 @@ Board.prototype = {
         return score
     },
 
+    isValid: function() {
+        var liberties = {}
+
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                var vertex = new Tuple(x, y)
+                if (vertex in liberties) continue
+
+                var l = this.getLiberties(vertex)
+                if (l == 0 && this.arrangement(vertex) != 0) return false
+
+                this.getChain(vertex).each(function(v) {
+                    liberties[vertex] = l
+                })
+            }
+        }
+
+        return true
+    }
+
     makeMove: function(sign, vertex) {
         var move = new Board(this.size, this.arrangement, this.captures)
 
