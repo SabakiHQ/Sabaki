@@ -32,6 +32,8 @@ exports.parseResponse = function(input) {
 }
 
 exports.vertex2point = function(v, size) {
+    if (v[0] < 0 || v[1] < 0 || v[0] >= size || v[1] >= size)
+        return 'pass'
     return alpha[v[0]] + (size - v[1])
 }
 
