@@ -916,16 +916,10 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     container.grab(pre).grab(form)
 
     // Cleanup
-    var pres = $$('#console .inner pre')
-    var clean = pres.length - setting.get('console.max_history_count')
-
-    if (clean > 0) {
-        var forms = $$('#console .inner form')
-
-        for (var i = 0; i < clean; i++) {
-            pres[i].dispose()
-            forms[i].dispose()
-        }
+    var forms = $$('#console .inner form')
+    if (forms.length > setting.get('console.max_history_count')) {
+        forms[0].getNext('pre').dispose()
+        forms[0].dispose()
     }
 
     var listener = function(response, c) {
