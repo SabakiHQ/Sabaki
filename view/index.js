@@ -410,6 +410,36 @@ function detachEngine() {
     $('console').store('controller', null)
 }
 
+function syncEngine() {
+    if (!getIsEngineAttached()) return
+    if (!getBoard().isValid()) {
+        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        return
+    }
+
+    setIsBusy(true)
+
+    var board = getBoard()
+    sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
+    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.size]), true)
+    sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
+
+    // Replay
+    for (var i = 0; i < board.size; i++) {
+        for (var j = 0; j < board.size; j++) {
+            var v = new Tuple(i, j)
+            var sign = board.arrangement[v]
+            if (sign == 0) continue
+            var color = sign > 0 ? 'B' : 'W'
+            var point = gtp.vertex2point(v, board.size)
+
+            sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
+        }
+    }
+
+    setIsBusy(false)
+}
+
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
