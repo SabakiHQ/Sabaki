@@ -407,7 +407,9 @@ function attachEngine(exec, args) {
 function detachEngine() {
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
     clearConsole()
+    
     $('console').store('controller', null)
+        .store('boardhash', null)
 }
 
 function syncEngine() {
@@ -591,6 +593,7 @@ function makeMove(vertex, sendCommand) {
         sound.playPass()
     }
 
+    // Handle GTP engine
     if (sendCommand) {
         sendGTPCommand(
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
