@@ -23,22 +23,27 @@ exports.find = function(needle, haystack) {
 
 function generateVector(needle, hay) {
     // Create a list of the form:
-    // [compactness, difference of indices, position, hay]
+    // [-number of consecutive matches, compactness, position, hay length, hay]
 
     if (needle == '') return null
-    var v = [-1]
-    var last = -1
+    needle = needle.toLowerCase()
+    hay = hay.toLowerCase()
+
+    var indices = [-1]
+    var v = [0, 0, 0, hay.length, hay]
 
     for (var i = 0; i < needle.length; i++) {
+        var last = indices[indices.length - 1]
         var index = hay.indexOf(needle[i], last + 1)
         if (index == -1) return null
-        v.push(index - last)
-        last = index
+        if (index - last == 1) v[0]--
+
+        indices.push(index)
     }
 
-    v.push(v[1] - 1)
-    v.splice(0, 2, last - v[1] + 1)
-    v.push(hay)
+    v[1] = indices[indices.length - 1] - indices[1]
+    v[2] = indices[1]
+
     return v
 }
 

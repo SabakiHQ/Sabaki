@@ -369,6 +369,7 @@ function prepareConsole() {
                 selection -= tokens[i++].length + 1
 
             var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
+            console.log(fuzzyfinder.filter(tokens[i], $('console').retrieve('commands')))
             if (!result) return
             tokens[i] = result
 
