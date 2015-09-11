@@ -389,17 +389,19 @@ function prepareConsole() {
 
 function attachEngine(exec, args) {
     detachEngine()
+    setIsBusy(true)
 
-    var controller = new gtp.Controller(exec, args)
-    controller.on('quit', function() { $('console').store('controller', null) })
-    $('console').store('controller', controller)
+    setTimeout(function() {
+        var controller = new gtp.Controller(exec, args)
+        controller.on('quit', function() { $('console').store('controller', null) })
+        $('console').store('controller', controller)
 
-    sendGTPCommand(new gtp.Command(null, 'name'))
-    sendGTPCommand(new gtp.Command(null, 'version'))
-    sendGTPCommand(new gtp.Command(null, 'protocol_version'))
-    sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
-        $('console').store('commands', response.content.split('\n'))
-    })
+        sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
+            $('console').store('commands', response.content.split('\n'))
+        })
+
+        syncEngine()
+    }, setting.get('gtp.attach_delay'))
 }
 
 function detachEngine() {
