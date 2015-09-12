@@ -396,6 +396,9 @@ function attachEngine(exec, args) {
         controller.on('quit', function() { $('console').store('controller', null) })
         $('console').store('controller', controller)
 
+        sendGTPCommand(new gtp.Command(null, 'name'))
+        sendGTPCommand(new gtp.Command(null, 'version'))
+        sendGTPCommand(new gtp.Command(null, 'protocol_version'))
         sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
             $('console').store('commands', response.content.split('\n'))
         })
@@ -963,7 +966,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()
     container.grab(pre).grab(form)
-    form.getElement('input').focus()
+    if (getShowConsole()) form.getElement('input').focus()
 
     // Cleanup
     var forms = $$('#console .inner form')
