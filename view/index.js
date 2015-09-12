@@ -1013,10 +1013,14 @@ function generateMove() {
     syncEngine()
     setIsBusy(true)
 
-    sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), true, function(r) {
+    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+    var opponent = getCurrentPlayer() > 0 ? 'W' : 'B'
+
+    sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, function(r) {
         setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
             showMessageBox(getEngineName() + ' has resigned.')
+            getRootTree().nodes[0].RE = [opponent + '+Resign']
             return
         }
 
