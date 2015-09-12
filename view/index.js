@@ -225,6 +225,10 @@ function getEngineController() {
     return $('console').retrieve('controller')
 }
 
+function getEngineCommands() {
+    return $('console').retrieve('commands')
+}
+
 /**
  * Methods
  */
@@ -365,7 +369,7 @@ function prepareConsole() {
         } else if (e.code == 9) {
             // Tab
             var tokens = this.value.split(' ')
-            var commands = $('console').retrieve('commands')
+            var commands = getEngineCommands()
             if (!commands) return
 
             var i = 0
@@ -373,7 +377,7 @@ function prepareConsole() {
             while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
                 selection -= tokens[i++].length + 1
 
-            var result = fuzzyfinder.find(tokens[i], $('console').retrieve('commands'))
+            var result = fuzzyfinder.find(tokens[i], getEngineCommands())
             if (!result) return
             tokens[i] = result
 
@@ -1012,7 +1016,7 @@ function generateMove() {
             v = gtp.point2vertex(r.content, getBoard().size)
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
-        makeMove(new Tuple(v[0], v[1]), false)
+        makeMove(v, false)
     })
 }
 
