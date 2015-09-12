@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Add GTP engines support
 
+**Fixed**
+* Window has an icon in Linux
+
 **Changed**
 * Update to Electron v0.32.1
 
