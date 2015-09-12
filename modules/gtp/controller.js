@@ -39,6 +39,8 @@ var Controller = function(exec, args) {
             start = self._buffer.indexOf('\n\n')
         }
     })
+
+    self.process.stderr.on('data', function(data) {})
 }
 
 require('util').inherits(Controller, events.EventEmitter)

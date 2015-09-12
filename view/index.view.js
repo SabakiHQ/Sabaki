@@ -609,7 +609,7 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&Attach',
-                    click: function() { attachEngine("gnugo/gnugo.exe", ['--mode', 'gtp']) }
+                    click: function() { attachEngine('pachi/pachi.exe') }
                 },
                 {
                     label: '&Detach',
