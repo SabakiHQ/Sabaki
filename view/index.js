@@ -221,6 +221,10 @@ function getKomi() {
     return 'KM' in rootNode ? rootNode.KM[0].toFloat() : 0
 }
 
+function getEngineName() {
+    return $('console').retrieve('enginename')
+}
+
 function getEngineController() {
     return $('console').retrieve('controller')
 }
@@ -400,7 +404,9 @@ function attachEngine(exec, args) {
         controller.on('quit', function() { $('console').store('controller', null) })
         $('console').store('controller', controller)
 
-        sendGTPCommand(new gtp.Command(null, 'name'))
+        sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
+            $('console').store('enginename', response.content)
+        })
         sendGTPCommand(new gtp.Command(null, 'version'))
         sendGTPCommand(new gtp.Command(null, 'protocol_version'))
         sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
@@ -1009,7 +1015,10 @@ function generateMove() {
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [getCurrentPlayer() > 0 ? 'B' : 'W']), true, function(r) {
         setIsBusy(false)
-        if (r.content.toLowerCase() == 'resign') return
+        if (r.content.toLowerCase() == 'resign') {
+            showMessageBox(getEngineName() + ' has resigned.')
+            return
+        }
 
         var v = new Tuple(-1, -1)
         if (r.content.toLowerCase() != 'pass')
