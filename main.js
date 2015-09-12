@@ -1,4 +1,5 @@
 var app = require('app')
+var process = require('process')
 var setting = require('./modules/setting')
 var BrowserWindow = require('browser-window')
 
@@ -12,7 +13,7 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     window = new BrowserWindow({
-        'icon': 'logo.png',
+        'icon': process.platform == 'linux' ? __dirname + '/logo.png' : null,
         'width': setting.get('window.width'),
         'height': setting.get('window.height'),
         'min-width': setting.get('window.minwidth'),
