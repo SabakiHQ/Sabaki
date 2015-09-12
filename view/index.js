@@ -963,6 +963,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()
     container.grab(pre).grab(form)
+    form.getElement('input').focus()
 
     // Cleanup
     var forms = $$('#console .inner form')
@@ -982,7 +983,6 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
         var scrollbar = $('console').retrieve('scrollbar')
 
         view.scrollTo(0, view.getScrollSize().y)
-        $$('#console form:last-child input')[0].focus()
         if (scrollbar) scrollbar.update()
     }
 
