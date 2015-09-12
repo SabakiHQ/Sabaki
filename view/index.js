@@ -221,8 +221,8 @@ function getKomi() {
     return 'KM' in rootNode ? rootNode.KM[0].toFloat() : 0
 }
 
-function getIsEngineAttached() {
-    return $('console').retrieve('controller') ? true : false
+function getEngineController() {
+    return $('console').retrieve('controller')
 }
 
 /**
@@ -415,7 +415,7 @@ function detachEngine() {
 function syncEngine() {
     var board = getBoard()
 
-    if (!getIsEngineAttached()
+    if (!getEngineController()
         || $('console').retrieve('boardhash') == board.getHash()) return
     if (!board.isValid()) {
         showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
@@ -471,7 +471,7 @@ function checkForUpdates(callback) {
 }
 
 function makeMove(vertex, sendCommand) {
-    if (sendCommand == null) sendCommand = getIsEngineAttached()
+    if (sendCommand == null) sendCommand = getEngineController() != null
     if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
         return
 
@@ -949,12 +949,12 @@ function commitScore() {
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
-    if (!getIsEngineAttached()) {
+    if (!getEngineController()) {
         $$('#console form:last-child input')[0].value = ''
         return
     }
 
-    var controller = $('console').retrieve('controller')
+    var controller = getEngineController()
     var container = $$('#console .inner')[0]
     var oldform = container.getElement('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
@@ -995,7 +995,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 }
 
 function generateMove() {
-    if (!getIsEngineAttached() || getIsBusy()) return
+    if (!getEngineController() || getIsBusy()) return
 
     syncEngine()
     setIsBusy(true)
