@@ -669,6 +669,8 @@ function buildMenu() {
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
+                        win.setMenuBarVisibility(!win.isFullScreen())
+                        win.setAutoHideMenuBar(win.isFullScreen())
                     }
                 }
             ]
