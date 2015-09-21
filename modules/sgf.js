@@ -17,7 +17,7 @@ exports.tokenize = function(input) {
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
         prop_ident: /^[A-Za-z]+/,
-        c_value_type: /^\[(\]|[^]*?[^\\]\])/
+        c_value_type: /^\[(\]|[^]*?[^\\]\]|[^]*\\\\\])/
     }
 
     while (input.length > 0) {
