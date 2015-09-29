@@ -2,16 +2,21 @@ var fs = require('fs')
 var path = require('path')
 var app = require('app')
 
-var filename = path.join(app.getPath('userData'), 'settings.json')
+var settingspath = path.join(app.getPath('userData'), 'settings.json')
+var enginespath = path.join(app.getPath('userData'), 'engines.json')
+
 var settings = {}
+var engines = {}
 
 exports.load = function() {
-    settings = JSON.parse(fs.readFileSync(filename, { encoding: 'utf8' }))
+    settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+    engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
     return exports
 }
 
 exports.save = function() {
-    fs.writeFileSync(filename, JSON.stringify(settings, null, '    '))
+    fs.writeFileSync(settingspath, JSON.stringify(settings, null, '    '))
+    fs.writeFileSync(enginespath, JSON.stringify(engines, null, '    '))
     return exports
 }
 
@@ -29,7 +34,13 @@ exports.default = function(key, value) {
     return exports
 }
 
-try { fs.accessSync(filename, fs.F_OK) } catch(err) { exports.save() }
+try {
+    fs.accessSync(settingspath, fs.F_OK)
+    fs.accessSync(enginespath, fs.F_OK)
+} catch(err) {
+    exports.save()
+}
+
 exports.load()
 
 // Generate default settings
