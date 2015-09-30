@@ -34,6 +34,15 @@ exports.default = function(key, value) {
     return exports
 }
 
+exports.addEngine = function(name, path, args) {
+    engines.push({
+        name: name,
+        path: path,
+        args: args
+    })
+    exports.save()
+}
+
 try {
     fs.accessSync(settingspath, fs.F_OK)
     fs.accessSync(enginespath, fs.F_OK)
