@@ -6,7 +6,7 @@ var settingspath = path.join(app.getPath('userData'), 'settings.json')
 var enginespath = path.join(app.getPath('userData'), 'engines.json')
 
 var settings = {}
-var engines = {}
+var engines = []
 
 exports.load = function() {
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))

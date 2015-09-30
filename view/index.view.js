@@ -609,7 +609,11 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&Attach',
-                    click: function() { attachEngine('pachi/pachi.exe') }
+                    submenu: [
+                        {
+                            label: '&Manage Engines…'
+                        }
+                    ]
                 },
                 {
                     label: '&Detach',
