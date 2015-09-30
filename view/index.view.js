@@ -711,8 +711,26 @@ function buildMenu() {
             ]
         }
     ]
-    var menu = Menu.buildFromTemplate(template)
 
+    // Add engines
+    var enginesMenu = template[3].submenu[0].submenu
+
+    setting.getEngines().forEach(function(engine) {
+        console.log(engine.name)
+        enginesMenu.splice(enginesMenu.length - 1, 0, {
+            label: engine.name,
+            click: function() { attachEngine(engine.path, engine.args) }
+        })
+    })
+
+    if (setting.getEngines().length != 0) {
+        enginesMenu.splice(enginesMenu.length - 1, 0, {
+            type: 'separator'
+        })
+    }
+
+    // Build menu
+    var menu = Menu.buildFromTemplate(template)
     document.body.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
 }

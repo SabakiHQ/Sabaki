@@ -43,6 +43,10 @@ exports.addEngine = function(name, path, args) {
     exports.save()
 }
 
+exports.getEngines = function() {
+    return engines.slice(0)
+}
+
 try {
     fs.accessSync(settingspath, fs.F_OK)
     fs.accessSync(enginespath, fs.F_OK)
