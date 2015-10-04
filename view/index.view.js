@@ -783,6 +783,7 @@ function openNodeMenu(tree, index) {
 function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
     $$('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('console').retrieve('scrollbar').update()
 }
 
 /**
