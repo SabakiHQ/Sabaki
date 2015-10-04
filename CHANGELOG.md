@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
+
+**Added**
+* Add GTP engines support
+
+**Fixed**
+* Window has an icon in Linux
+
+**Changed**
+* Update to Electron v0.33.4
+
 ## [Sabaki v0.6.0][v0.6.0]
 
 **Added**

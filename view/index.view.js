@@ -32,7 +32,6 @@ function setShowVariations(show) {
     else $('goban').removeClass('variations')
 
     setting.set('view.show_variations', show)
-    getMainMenu().items[3].submenu.items[2].checked = show
 }
 
 function getFuzzyStonePlacement() {
@@ -44,7 +43,6 @@ function setFuzzyStonePlacement(fuzzy) {
     else $('goban').removeClass('fuzzy')
 
     setting.set('view.fuzzy_stone_placement', fuzzy)
-    getMainMenu().items[3].submenu.items[0].checked = fuzzy
 }
 
 function getShowCoordinates() {
@@ -56,7 +54,6 @@ function setShowCoordinates(show) {
     else $('goban').removeClass('coordinates')
 
     setting.set('view.show_coordinates', show)
-    getMainMenu().items[3].submenu.items[1].checked = show
 }
 
 function getShowConsole() {
@@ -77,7 +74,21 @@ function setShowConsole(show) {
 
     if (!win.isMaximized())
         win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.console_width'), size[1])
+
     resizeBoard()
+    setting.set('view.show_console', show)
+
+    // Update scrollbars
+    var view = $$('#console .gm-scroll-view')[0]
+    view.scrollTo(0, view.getScrollSize().y)
+    view.getElement('form:last-child input').focus()
+    $('console').retrieve('scrollbar').update()
+}
+
+function setConsoleWidth(width) {
+    if (!getShowConsole()) return
+    $('console').setStyle('width', width)
+    $('main').setStyle('left', width)
 }
 
 function getShowSidebar() {
@@ -133,11 +144,6 @@ function setSidebarArrangement(graph, comment, updateLayout) {
         setShowSidebar(true)
     }
 
-    if (getMainMenu()) {
-        getMainMenu().items[3].submenu.items[4].checked = graph
-        getMainMenu().items[3].submenu.items[5].checked = comment
-    }
-
     setting.set('view.show_graph', graph)
     setting.set('view.show_comments', comment)
 }
@@ -155,6 +161,7 @@ function getSidebarWidth() {
 }
 
 function setSidebarWidth(width) {
+    if (!getShowSidebar()) return
     $('sidebar').setStyle('width', width)
     $$('.sidebar #main').setStyle('right', width)
 }
@@ -205,45 +212,12 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = '<p>' + text.trim()
-        .split('\n')
-        .map(function(s) {
-            if (s.trim() == '') return ''
-
-            if (s.trim().split('').every(function(x) {
-                return x == '-' || x == '='
-            })) return '</p><hr><p>'
-
-            return s.replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&rt;')
-                .replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
-                    return '<a href="' + url + '">' + url + '</a>'
-                })
-                .replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-                    return '<a href="mailto:' + email + '">' + email + '</a>'
-                })
-                .replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
-                    return '<span class="coord">' + coord + '</span>'
-                })
-        })
-        .join('<br>')
-        .replace(/<br><br>/g, '</p><p>')
-        .replace(/(<br>)*<p>(<br>)*/g, '<p>')
-        .replace(/(<br>)*<\/p>(<br>)*/g, '</p>') + '</p>'
+    var html = helper.htmlify(text, true, true, true, true)
+    var container = $$('#properties .inner')[0]
 
     $$('#properties textarea').set('value', text)
-    $$('#properties .inner')[0].set('html', html)
-        .getElements('a').addEvent('click', function() {
-            shell.openExternal(this.href)
-            return false
-        })
-
-    $$('#properties .coord').addEvent('mouseenter', function() {
-        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
-    }).addEvent('mouseleave', function() {
-        hideIndicator()
-    })
+    container.set('html', html)
+    helper.wireLinks(container)
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)
@@ -305,7 +279,7 @@ function setScoringMode(scoringMode) {
         document.body.addClass('scoring')
 
         var deadstones = getBoard().guessDeadStones()
-        deadstones.each(function(v) {
+        deadstones.forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
         })
 
@@ -436,7 +410,7 @@ function buildBoard() {
 
     // Readjust shifts
 
-    $$('#goban .row li:not(.shift_0)').each(function(li) {
+    $$('#goban .row li:not(.shift_0)').forEach(function(li) {
         readjustShifts(li.retrieve('tuple'))
     })
 }
@@ -503,11 +477,6 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+O',
                     click: function() { loadGame() }
                 },
-                // { type: 'separator' },
-                // {
-                //     label: '&Save',
-                //     accelerator: 'CmdOrCtrl+S'
-                // },
                 {
                     label: 'Save &As…',
                     accelerator: 'CmdOrCtrl+S',
@@ -636,54 +605,76 @@ function buildMenu() {
             ]
         },
         {
+            label: 'Eng&ine',
+            submenu: [
+                {
+                    label: '&Attach',
+                    submenu: [
+                        {
+                            label: '&Manage Engines…'
+                        }
+                    ]
+                },
+                {
+                    label: '&Detach',
+                    click: detachEngine
+                },
+                { type: 'separator' },
+                {
+                    label: 'Generate &Move',
+                    accelerator: 'F10',
+                    click: generateMove
+                },
+                { type: 'separator' },
+                {
+                    label: 'Toggle &GTP Console',
+                    accelerator: 'F12',
+                    click: function() { setShowConsole(!getShowConsole()) }
+                },
+                {
+                    label: '&Clear Console',
+                    click: clearConsole
+                }
+            ]
+        },
+        {
             label: '&View',
             submenu: [
                 {
-                    label: '&Fuzzy Stone Placement',
-                    type: 'checkbox',
-                    checked: getFuzzyStonePlacement(),
+                    label: 'Toggle &Fuzzy Stone Placement',
                     click: function() { setFuzzyStonePlacement(!getFuzzyStonePlacement()) }
                 },
                 {
-                    label: '&Coordinates',
-                    type: 'checkbox',
-                    checked: getShowCoordinates(),
+                    label: 'Toggle &Coordinates',
                     click: function() {
                         setShowCoordinates(!getShowCoordinates())
                         resizeBoard()
                     }
                 },
                 {
-                    label: '&Variations',
-                    type: 'checkbox',
-                    checked: getShowVariations(),
+                    label: 'Toggle &Variations',
                     click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Game &Graph',
+                    label: 'Toggle Game &Graph',
                     accelerator: 'CmdOrCtrl+G',
-                    type: 'checkbox',
-                    checked: getShowGraph(),
                     click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
                 },
                 {
-                    label: 'Co&mments',
+                    label: 'Toggle Co&mments',
                     accelerator: 'CmdOrCtrl+H',
-                    type: 'checkbox',
-                    checked: getShowComment(),
                     click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Full&screen',
+                    label: 'Toggle Full&screen',
                     accelerator: 'F11',
-                    type: 'checkbox',
-                    checked: remote.getCurrentWindow().isFullScreen(),
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
-                        this.checked = win.isFullScreen()
+                        win.setMenuBarVisibility(!win.isFullScreen())
+                        win.setAutoHideMenuBar(win.isFullScreen())
                     }
                 }
             ]
@@ -720,8 +711,25 @@ function buildMenu() {
             ]
         }
     ]
-    var menu = Menu.buildFromTemplate(template)
 
+    // Add engines
+    var enginesMenu = template[3].submenu[0].submenu
+
+    setting.getEngines().forEach(function(engine) {
+        enginesMenu.splice(enginesMenu.length - 1, 0, {
+            label: engine.name,
+            click: function() { attachEngine(engine.path, engine.args) }
+        })
+    })
+
+    if (setting.getEngines().length != 0) {
+        enginesMenu.splice(enginesMenu.length - 1, 0, {
+            type: 'separator'
+        })
+    }
+
+    // Build menu
+    var menu = Menu.buildFromTemplate(template)
     document.body.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
 }
@@ -772,6 +780,12 @@ function openNodeMenu(tree, index) {
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
+function clearConsole() {
+    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
+    $$('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('console').retrieve('scrollbar').update()
+}
+
 /**
  * Drawers
  */
@@ -820,7 +834,7 @@ function showScore() {
         tds[0].set('text', score['area_' + sign])
         tds[1].set('text', score['territory_' + sign])
         tds[2].set('text', score['captures_' + sign])
-        if (sign < 0) tds[3].set('text', ('KM' in rootNode ? rootNode.KM[0] : '0').toFloat())
+        if (sign < 0) tds[3].set('text', getKomi())
         tds[4].set('text', 0)
 
         setScoringMethod(setting.get('scoring.method'))
@@ -864,12 +878,15 @@ document.addEvent('domready', function() {
 
     // Properties scrollbar
 
-    var scrollbar = new Scrollbar({
+    $('properties').store('scrollbar', new Scrollbar({
         element: $('properties'),
         createElements: false
-    }).create()
+    }).create())
 
-    $('properties').store('scrollbar', scrollbar)
+    $('console').store('scrollbar', new Scrollbar({
+        element: $('console'),
+        createElements: false
+    }).create())
 
     // Resize sidebar
 

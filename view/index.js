@@ -2,6 +2,7 @@ var remote = require('remote')
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../modules/sgf')
+var fuzzyfinder = require('../modules/fuzzyfinder')
 var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
 var helper = require('../modules/helper')
@@ -164,7 +165,7 @@ function setBoard(board) {
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
                 'cross', 'square', 'label', 'point']
 
-            types.each(function(x) {
+            types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
             li.set('title', '')
@@ -215,6 +216,23 @@ function setScoringMethod(method) {
     }
 }
 
+function getKomi() {
+    var rootNode = getRootTree().nodes[0]
+    return 'KM' in rootNode ? rootNode.KM[0].toFloat() : 0
+}
+
+function getEngineName() {
+    return $('console').retrieve('enginename')
+}
+
+function getEngineController() {
+    return $('console').retrieve('controller')
+}
+
+function getEngineCommands() {
+    return $('console').retrieve('commands')
+}
+
 /**
  * Methods
  */
@@ -226,6 +244,10 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
+    if (setting.get('view.show_console')) {
+        document.body.addClass('console')
+        setConsoleWidth(setting.get('view.console_width'))
+    }
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         document.body.addClass('sidebar')
         setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
@@ -317,20 +339,135 @@ function prepareDragDropFiles() {
     })
 }
 
+function prepareConsole() {
+    $$('#console form').addEvent('submit', function(e) {
+        e.preventDefault()
+
+        var input = this.getElement('input')
+        if (input.value.trim() == '') return
+        input.blur()
+
+        var command = gtp.parseCommand(input.value)
+        sendGTPCommand(command)
+    })
+
+    $$('#console form input').addEvent('keydown', function(e) {
+        if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
+        var inputs = $$('#console form input')
+
+        if (this.retrieve('index') == null) this.store('index', inputs.indexOf(this))
+        var i = this.retrieve('index')
+        var length = inputs.length
+
+        if ([38, 40].indexOf(e.code) != -1) {
+            if (e.code == 38) {
+                // Up
+                i = Math.max(i - 1, 0)
+            } else if (e.code == 40) {
+                // Down
+                i = Math.min(i + 1, length - 1)
+            }
+
+            this.value = i == length - 1 ? '' : inputs[i].value
+            this.store('index', i)
+        } else if (e.code == 9) {
+            // Tab
+            var tokens = this.value.split(' ')
+            var commands = getEngineCommands()
+            if (!commands) return
+
+            var i = 0
+            var selection = this.selectionStart
+            while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
+                selection -= tokens[i++].length + 1
+
+            var result = fuzzyfinder.find(tokens[i], getEngineCommands())
+            if (!result) return
+            tokens[i] = result
+
+            this.value = tokens.join(' ')
+            this.selectionStart = this.selectionEnd = (function() {
+                var sum = 0
+                while (i >= 0) sum += tokens[i--].length + 1
+                return sum - 1
+            })()
+        }
+    })
+}
+
+function attachEngine(exec, args) {
+    detachEngine()
+    setIsBusy(true)
+
+    setTimeout(function() {
+        var controller = new gtp.Controller(exec, args)
+        controller.on('quit', function() { $('console').store('controller', null) })
+        $('console').store('controller', controller)
+
+        sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
+            $('console').store('enginename', response.content)
+        })
+        sendGTPCommand(new gtp.Command(null, 'version'))
+        sendGTPCommand(new gtp.Command(null, 'protocol_version'))
+        sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
+            $('console').store('commands', response.content.split('\n'))
+        })
+
+        syncEngine()
+    }, setting.get('gtp.attach_delay'))
+}
+
+function detachEngine() {
+    sendGTPCommand(new gtp.Command(null, 'quit'), true)
+    clearConsole()
+
+    $('console').store('controller', null)
+        .store('boardhash', null)
+}
+
+function syncEngine() {
+    var board = getBoard()
+
+    if (!getEngineController()
+        || $('console').retrieve('boardhash') == board.getHash()) return
+    if (!board.isValid()) {
+        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        return
+    }
+
+    setIsBusy(true)
+
+    sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
+    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.size]), true)
+    sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
+
+    // Replay
+    for (var i = 0; i < board.size; i++) {
+        for (var j = 0; j < board.size; j++) {
+            var v = new Tuple(i, j)
+            var sign = board.arrangement[v]
+            if (sign == 0) continue
+            var color = sign > 0 ? 'B' : 'W'
+            var point = gtp.vertex2point(v, board.size)
+
+            sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
+        }
+    }
+
+    $('console').store('boardhash', board.getHash())
+    setIsBusy(false)
+}
+
 function checkForUpdates(callback) {
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
-    var cancel = false
 
     // Check internet connection first
     remote.require('dns').lookup('github.com', function(err) {
         if (err) return
 
         remote.require('https').get(url, function(response) {
-            response.on('data', function(chunk) {
-                if (cancel) return
-                cancel = true
-
+            response.once('data', function(chunk) {
                 chunk = '' + chunk
                 var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
 
@@ -346,14 +483,18 @@ function checkForUpdates(callback) {
     })
 }
 
-function makeMove(vertex) {
+function makeMove(vertex, sendCommand) {
+    if (sendCommand == null) sendCommand = getEngineController() != null
     if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
         return
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
-    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-    var sign = color == 'B' ? 1 : -1
+    var sign = getCurrentPlayer()
+    var color = sign > 0 ? 'B' : 'W'
+    var capture = false, suicide = false
+
+    if (sendCommand) syncEngine()
 
     if (getBoard().hasVertex(vertex)) {
         // Check for ko
@@ -374,12 +515,11 @@ function makeMove(vertex) {
         }
 
         // Check for suicide
-        var capture = getBoard().getNeighborhood(vertex).some(function(v) {
+        capture = getBoard().getNeighborhood(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
         })
 
-        var suicide = setting.get('game.show_suicide_warning')
-        suicide = suicide && !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
+        suicide = !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
             return getBoard().arrangement[v] == sign
         }).every(function(v) {
             return getBoard().getLiberties(v).length == 1
@@ -387,7 +527,7 @@ function makeMove(vertex) {
             return getBoard().arrangement[v] == 0
         }).length == 0
 
-        if (suicide) {
+        if (suicide && setting.get('game.show_suicide_warning')) {
             if (showMessageBox(
                 ['You are about to play a suicide move.',
                 'This is invalid in some rulesets.'].join('\n'),
@@ -403,14 +543,7 @@ function makeMove(vertex) {
         for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
         li.addClass('shift_' + direction)
         readjustShifts(vertex)
-
-        // Play sounds
-        if (capture || suicide) setTimeout(function() {
-            sound.playCapture()
-        }, 300 + Math.floor(Math.random() * 200))
-
-        sound.playPachi()
-    } else sound.playPass()
+    }
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
@@ -420,6 +553,8 @@ function makeMove(vertex) {
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
+        var create = true
+
         if (index != tree.nodes.length - 1) {
             // Search for next move
             var nextNode = tree.nodes[index + 1]
@@ -428,7 +563,7 @@ function makeMove(vertex) {
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
-                return
+                create = false
             }
         } else {
             // Search for variation
@@ -440,22 +575,45 @@ function makeMove(vertex) {
 
             if (variations.length > 0) {
                 setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
-                return
+                create = false
             }
         }
 
-        // Create variation
-        var splitted = gametree.splitTree(tree, index)
-        var node = {}; node[color] = [sgf.vertex2point(vertex)]
-        var newtree = gametree.new()
-        newtree.nodes = [node]
-        newtree.parent = splitted
+        if (create) {
+            // Create variation
+            var splitted = gametree.splitTree(tree, index)
+            var node = {}; node[color] = [sgf.vertex2point(vertex)]
+            var newtree = gametree.new()
+            newtree.nodes = [node]
+            newtree.parent = splitted
 
-        splitted.subtrees.push(newtree)
-        splitted.current = splitted.subtrees.length - 1
+            splitted.subtrees.push(newtree)
+            splitted.current = splitted.subtrees.length - 1
 
-        sgf.addBoard(newtree, newtree.nodes.length - 1)
-        setCurrentTreePosition(newtree, 0)
+            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            setCurrentTreePosition(newtree, 0)
+        }
+    }
+
+    // Play sounds
+    if (getBoard().hasVertex(vertex)) {
+        if (capture || suicide) setTimeout(function() {
+            sound.playCapture()
+        }, 300 + Math.floor(Math.random() * 200))
+
+        sound.playPachi()
+    } else {
+        sound.playPass()
+    }
+
+    // Handle GTP engine
+    if (sendCommand) {
+        sendGTPCommand(
+            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+            true
+        )
+        $('console').store('boardhash', getBoard().getHash())
+        setTimeout(generateMove, setting.get('gtp.move_delay'))
     }
 }
 
@@ -579,7 +737,7 @@ function useTool(vertex) {
 
             // Update SGF
 
-            $$('#goban .row li').each(function(li) {
+            $$('#goban .row li').forEach(function(li) {
                 var v = li.retrieve('tuple')
                 if (!(v in board.overlays)) return
 
@@ -644,7 +802,7 @@ function vertexClicked(vertex) {
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
-        getBoard().getRelatedChains(vertex).each(function(v) {
+        getBoard().getRelatedChains(vertex).forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
         })
 
@@ -716,7 +874,7 @@ function updateCommentText() {
 function updateAreaMap() {
     var board = getBoard().makeMove(0)
 
-    $$('#goban .row li.dead').each(function(li) {
+    $$('#goban .row li.dead').forEach(function(li) {
         if (li.hasClass('sign_1')) board.captures['-1']++
         else if (li.hasClass('sign_-1')) board.captures['1']++
 
@@ -725,7 +883,7 @@ function updateAreaMap() {
 
     var map = board.getAreaMap()
 
-    $$('#goban .row li').each(function(li) {
+    $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
             .addClass('area_' + map[li.retrieve('tuple')])
     })
@@ -801,6 +959,78 @@ function commitScore() {
 
     rootNode.RE = [result]
     showGameInfo()
+}
+
+function sendGTPCommand(command, ignoreBlocked, callback) {
+    if (!getEngineController()) {
+        $$('#console form:last-child input')[0].value = ''
+        return
+    }
+
+    var controller = getEngineController()
+    var container = $$('#console .inner')[0]
+    var oldform = container.getElement('form:last-child')
+    var form = oldform.clone().cloneEvents(oldform)
+    var pre = new Element('pre', { text: ' ' })
+
+    form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
+    oldform.addClass('waiting').getElement('input').value = command.toString()
+    container.grab(pre).grab(form)
+    if (getShowConsole()) form.getElement('input').focus()
+
+    // Cleanup
+    var forms = $$('#console .inner form')
+    if (forms.length > setting.get('console.max_history_count')) {
+        forms[0].getNext('pre').dispose()
+        forms[0].dispose()
+    }
+
+    var listener = function(response, c) {
+        pre.set('html', response.toHtml())
+        helper.wireLinks(pre)
+        oldform.removeClass('waiting')
+        if (callback) callback(response)
+
+        // Update scrollbars
+        var view = $$('#console .gm-scroll-view')[0]
+        var scrollbar = $('console').retrieve('scrollbar')
+
+        view.scrollTo(0, view.getScrollSize().y)
+        if (scrollbar) scrollbar.update()
+    }
+
+    if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
+        listener(new gtp.Response(null, 'blocked command', true, true), command)
+    } else {
+        controller.once('response-' + command.internalId, listener)
+        controller.sendCommand(command)
+    }
+}
+
+function generateMove() {
+    if (!getEngineController() || getIsBusy()) return
+
+    syncEngine()
+    setIsBusy(true)
+
+    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+    var opponent = getCurrentPlayer() > 0 ? 'W' : 'B'
+
+    sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, function(r) {
+        setIsBusy(false)
+        if (r.content.toLowerCase() == 'resign') {
+            showMessageBox(getEngineName() + ' has resigned.')
+            getRootTree().nodes[0].RE = [opponent + '+Resign']
+            return
+        }
+
+        var v = new Tuple(-1, -1)
+        if (r.content.toLowerCase() != 'pass')
+            v = gtp.point2vertex(r.content, getBoard().size)
+
+        $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
+        makeMove(v, false)
+    })
 }
 
 function centerGraphCameraAt(node) {
@@ -927,7 +1157,7 @@ function clearAllOverlays() {
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        overlayIds.each(function(id) {
+        overlayIds.forEach(function(id) {
             delete tree.nodes[index][id]
         })
 
@@ -1038,13 +1268,7 @@ function removeNode(tree, index) {
  */
 
 document.addEvent('keydown', function(e) {
-    if (e.code == 123) {
-        // F12
-        remote.getCurrentWindow().toggleDevTools()
-    } else if (e.code == 116) {
-        // F5
-        location.reload()
-    } else if (e.code == 27) {
+    if (e.code == 27) {
         // Escape key
         closeDrawers()
     }
@@ -1054,6 +1278,7 @@ document.addEvent('keydown', function(e) {
     prepareEditTools()
     prepareGameGraph()
     prepareSlider()
+    prepareConsole()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()

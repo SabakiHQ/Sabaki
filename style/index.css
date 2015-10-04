@@ -163,13 +163,63 @@ header, #edit, #scoring, #find, #progress {
         bottom: 0;
         left: 0;
         width: 400px;
-        background: #111;
+        overflow: scroll;
+        background: #181818;
     }
     .console #console {
         display: block;
     }
     .console #main {
         left: 400px;
+    }
+    #console, #console pre, #console input {
+        color: #d0d0d0;
+        font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    }
+    #console pre {
+        margin: 15px;
+    }
+    #console .internal { opacity: .5; }
+    #console .success { color: #FFCC66; }
+    #console .error { color: #F25C3D; }
+    #console .id { color: #CC99CC; }
+    #console .inner form {
+        position: relative;
+        height: 1.3em;
+        margin: .7em 0;
+        background: #222;
+    }
+    #console .inner form label::after {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        height: 1.3em;
+        width: 30px;
+        background: #393939 url('../img/ui/consoleinput.png') right no-repeat;
+        transition: .5s background-color;
+    }
+    #console .inner form.waiting label::after { background-color: #FBF593; }
+    #console .inner form:last-child label::after { background-color: #F25C3D; }
+    #console .inner form input {
+        box-sizing: border-box;
+        position: absolute;
+        border: none;
+        top: 0;
+        width: 100%;
+        bottom: 0;
+        padding: 0 10px 0 40px;
+        background: transparent;
+}
+
+.coord {
+        padding: 0 5px;
+        background: #101010;
+        color: white;
+        border-radius: 3px;
+    }
+    .coord:hover {
+        background: #0082F0;
 }
 
 #sidebar {
@@ -311,41 +361,9 @@ header, #edit, #scoring, #find, #progress {
         height: 2px;
         background: #393939;
     }
-    #properties .coord {
-        padding: 0 5px;
-        background: #101010;
-        color: white;
-        border-radius: 3px;
-    }
-    #properties .coord:hover {
-        background: #0082F0;
-    }
     #properties .inner {
         margin: 15px;
         word-wrap: break-word;
-    }
-    #properties .gm-scrollbar {
-        bottom: 0;
-        right: 0;
-    }
-    #properties .gm-scrollbar.-vertical {
-        width: 8px;
-        top: 0;
-    }
-    #properties .gm-scrollbar.-horizontal {
-        height: 8px;
-        left: 0;
-    }
-    #properties .thumb {
-        background: #393939;
-        border-radius: 0;
-        transition: .2s background, .5s height, .5s width, .2s transform;
-    }
-    #properties .thumb:hover, #properties .thumb:active {
-        background: #494949;
-    }
-    #properties .thumb:active {
-        transition: none;
 }
 
 #indicator {
