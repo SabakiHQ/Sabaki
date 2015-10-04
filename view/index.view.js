@@ -716,7 +716,6 @@ function buildMenu() {
     var enginesMenu = template[3].submenu[0].submenu
 
     setting.getEngines().forEach(function(engine) {
-        console.log(engine.name)
         enginesMenu.splice(enginesMenu.length - 1, 0, {
             label: engine.name,
             click: function() { attachEngine(engine.path, engine.args) }
