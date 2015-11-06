@@ -8,10 +8,11 @@ All notable changes to this project will be documented in this file.
 * Add GTP engines support
 
 **Fixed**
+* Fix duplicate Taskbar icon in Windows
 * Window has an icon in Linux
 
 **Changed**
-* Update to Electron v0.33.4
+* Update to Electron v0.34.3
 
 ## [Sabaki v0.6.0][v0.6.0]
 

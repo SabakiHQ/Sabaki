@@ -19,6 +19,6 @@
     "tuple-w": "^1.1.1"
   },
   "scripts": {
-    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.33.4 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.7.0\" --version-string.ProductVersion=\"0.7.0\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\""
+    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.34.3 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.7.0\" --version-string.ProductVersion=\"0.7.0\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\""
   }
 }
