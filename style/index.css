@@ -53,10 +53,14 @@ header, #edit, #scoring, #find, #progress {
     }
     #headermenu {
         left: auto;
-        right: 5px;
+        right: 0px;
         width: 32px;
         height: 32px;
-        margin-top: -16px;
+        padding: 5px;
+        margin-top: -21px;
+    }
+    #headermenu:hover {
+        background: #222;
 }
 
 #bar {
