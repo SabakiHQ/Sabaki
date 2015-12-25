@@ -191,12 +191,12 @@ function setBoard(board) {
 }
 
 function getScoringMethod() {
-    return $$('#score .method .territory')[0].hasClass('current') ? 'territory' : 'area'
+    return $$('#score .tabs .territory')[0].hasClass('current') ? 'territory' : 'area'
 }
 
 function setScoringMethod(method) {
-    $$('#score .method li').removeClass('current')
-    $$('#score .method .' + method).addClass('current')
+    $$('#score .tabs li').removeClass('current')
+    $$('#score .tabs .' + method).addClass('current')
     $$('#score tr > *').addClass('disabled')
     $$('#score table .' + method).removeClass('disabled')
 

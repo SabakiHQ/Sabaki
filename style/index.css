@@ -436,36 +436,43 @@ header, #edit, #scoring, #find, #progress {
         text-align: right;
 }
 
+.tabs {
+        list-style: none;
+        text-align: center;
+    }
+    .tabs li {
+        display: inline-block;
+    }
+    .tabs li a {
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, .2);
+        padding: 2px 10px;
+        color: #333;
+        text-decoration: none;
+        transition: .2s background, .2s border-color;
+    }
+    .tabs li:first-child a {
+        border-right: none !important;
+    }
+    .tabs li.current a {
+        border: 1px solid transparent;
+        background: rgba(0, 0, 0, .2);
+    }
+    .tabs li:not(.current) a:hover {
+        border: 1px solid transparent;
+        background: rgba(0, 0, 0, .1);
+}
+
 #score {
         background: #FBF593;
         color: #333;
     }
-    #score .method {
+    #score .tabs {
         position: absolute;
         top: 27px;
         left: 96px;
         right: 20px;
-        list-style: none;
-    }
-    #score .method li:not(.current) a:hover {
-        border: 1px solid transparent;
-        background: rgba(0, 0, 0, .1);
-    }
-    #score .method li.current a {
-        border: 1px solid transparent;
-        background: rgba(0, 0, 0, .2);
-    }
-    #score .method li:first-child a {
-        border-right: none !important;
-    }
-    #score .method li a {
-        display: block;
-        border: 1px solid rgba(0, 0, 0, .2);
-        padding: 2px 10px;
-        float: left;
-        color: #333;
-        text-decoration: none;
-        transition: .2s background, .2s border-color;
+        text-align: left;
     }
     #score table {
         margin: 1em auto;
