@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Add GTP engines support
+* Add preferences panel
 
 **Fixed**
 * Fix duplicate Taskbar icon in Windows

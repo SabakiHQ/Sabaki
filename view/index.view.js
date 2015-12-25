@@ -494,7 +494,7 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: '&Preferences',
+                    label: '&Preferences…',
                     accelerator: 'CmdOrCtrl+,',
                     click: showPreferences
                 }
