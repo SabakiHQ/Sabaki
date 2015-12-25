@@ -863,7 +863,6 @@ function showScore() {
         setScoringMethod(setting.get('scoring.method'))
     }
 
-    closeDrawers()
     $('score').addClass('show')
 }
 
