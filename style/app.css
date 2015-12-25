@@ -85,6 +85,11 @@ form p, form ul li {
     input[type="text"] {
         width: 125px;
     }
+    input[type="checkbox"] {
+        position: relative;
+        bottom: -2px;
+        margin-right: 5px;
+    }
     input, button, select, textarea {
         border: 0;
         padding: 5px 10px;

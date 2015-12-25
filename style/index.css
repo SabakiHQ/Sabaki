@@ -394,11 +394,6 @@ header, #edit, #scoring, #find, #progress {
         transition: bottom .5s;
         z-index: 15;
     }
-    #preferences {
-        box-sizing: border-box;
-        bottom: -100%;
-        height: 100%;
-    }
     #info.show, #score.show, #preferences.show {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
@@ -493,6 +488,20 @@ header, #edit, #scoring, #find, #progress {
     }
     #score button:focus, #score button:hover {
         background: rgba(0, 0, 0, .2);
+}
+
+#preferences {
+        box-sizing: border-box;
+        bottom: -100%;
+        height: 100%;
+    }
+    #preferences form ul {
+        margin: 2em 0;
+    }
+    #preferences form p:last-child {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
 }
 
 .tabs {
