@@ -856,6 +856,10 @@ function closeScore() {
 }
 
 function showPreferences() {
+    $$('#preferences input[type="checkbox"]').forEach(function(el) {
+        el.checked = !!setting.get(el.name)
+    })
+
     closeDrawers()
     $('preferences').addClass('show')
 }

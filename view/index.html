@@ -217,22 +217,23 @@
     </ul>
 
     <form>
-        <ul>
-            <li><label><input type="checkbox" name="app.startup_check_updates" />
-                Check for updates at startup</label></li>
-            <li><label><input type="checkbox" name="sound.enable" />
-                Enable sounds</label></li>
-            <li><label><input type="checkbox" name="game.goto_end_after_loading" />
-                Jump to end after loading a game</label></li>
-        </ul>
-        
-        <ul>
-            <li><label><input type="checkbox" name="game.show_ko_warning" />
-                Show Ko warning</label></li>
-            <li><label><input type="checkbox" name="game.show_suicide_warning" />
-                Show suicide warning</label></li>
-        </ul>
+        <div class="general">
+            <ul>
+                <li><label><input type="checkbox" name="app.startup_check_updates" />
+                    Check for updates at startup</label></li>
+                <li><label><input type="checkbox" name="sound.enable" />
+                    Enable sounds</label></li>
+                <li><label><input type="checkbox" name="game.goto_end_after_loading" />
+                    Jump to end after loading a game</label></li>
+            </ul>
 
+            <ul>
+                <li><label><input type="checkbox" name="game.show_ko_warning" />
+                    Show ko warning</label></li>
+                <li><label><input type="checkbox" name="game.show_suicide_warning" />
+                    Show suicide warning</label></li>
+            </ul>
+        </div>
         <p>
             <button type="submit" onclick="commitPreferences(); closePreferences(); return false">Save</button>
             <button type="reset" onclick="closePreferences(); return false">Cancel</button>

@@ -962,7 +962,15 @@ function commitScore() {
 }
 
 function commitPreferences() {
-    // TODO
+    // Save general preferences
+
+    $$('#preferences input[type="checkbox"]').forEach(function(el) {
+        setting.set(el.name, el.checked)
+    })
+
+    remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
+
+    // TODO: Save engines preferences
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
