@@ -122,7 +122,7 @@ form p, form ul li {
         background: #393939;
         border-radius: 0;
         cursor: default;
-        transition: .2s background, .5s height, .5s width, .2s transform;
+        transition: background .2s, height .5s, width .5s, transform .2s;
     }
     .gm-scrollbar .thumb:hover, .gm-scrollbar .thumb:active {
         background: #494949;
