@@ -504,6 +504,13 @@ header, #edit, #scoring, #find, #progress {
         position: absolute;
         right: 20px;
         bottom: 20px;
+    }
+    #preferences form div {
+        display: none;
+    }
+    #preferences form.general div.general,
+    #preferences form.engines div.engines {
+        display: block;
 }
 
 .tabs {

@@ -294,6 +294,19 @@ function getIndicatorVertex() {
     return $('indicator').retrieve('vertex')
 }
 
+function setPreferencesTab(tab) {
+    $$('#preferences .tabs')[0]
+        .getElement('.current')
+        .removeClass('current')
+        .getParent()
+        .getElement('.' + tab)
+        .getParent()
+        .addClass('current')
+
+    var form = $$('#preferences form')[0]
+    form.className = tab
+}
+
 /**
  * Methods
  */
@@ -894,6 +907,13 @@ document.addEvent('domready', function() {
     $$('#find button').addEvent('click', function() {
         $$('#find button').removeClass('selected')
         this.addClass('selected')
+    })
+
+    // Preferences tabs
+
+    $$('#preferences .tabs a').addEvent('click', function() {
+        setPreferencesTab(this.className)
+        return false
     })
 
     // Properties scrollbar
