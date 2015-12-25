@@ -445,9 +445,9 @@ header, #edit, #scoring, #find, #progress {
     }
     .tabs li a {
         display: inline-block;
-        border: 1px solid rgba(0, 0, 0, .2);
+        border: 1px solid #1a1a1a;
         padding: 2px 10px;
-        color: #333;
+        color: #eee;
         text-decoration: none;
         transition: .2s background, .2s border-color;
     }
@@ -456,11 +456,11 @@ header, #edit, #scoring, #find, #progress {
     }
     .tabs li.current a {
         border: 1px solid transparent;
-        background: rgba(0, 0, 0, .2);
+        background: #111;
     }
     .tabs li:not(.current) a:hover {
         border: 1px solid transparent;
-        background: rgba(0, 0, 0, .1);
+        background: #1a1a1a;
 }
 
 #score {
@@ -473,6 +473,16 @@ header, #edit, #scoring, #find, #progress {
         left: 96px;
         right: 20px;
         text-align: left;
+    }
+    #score .tabs li a {
+        border: 1px solid rgba(0, 0, 0, .2);
+        color: #333;
+    }
+    #score .tabs li.current a {
+        background: rgba(0, 0, 0, .2);
+    }
+    #score .tabs li:not(.current) a:hover {
+        background: rgba(0, 0, 0, .1);
     }
     #score table {
         margin: 1em auto;

@@ -961,6 +961,10 @@ function commitScore() {
     showGameInfo()
 }
 
+function commitPreferences() {
+    // TODO
+}
+
 function sendGTPCommand(command, ignoreBlocked, callback) {
     if (!getEngineController()) {
         $$('#console form:last-child input')[0].value = ''

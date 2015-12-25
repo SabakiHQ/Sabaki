@@ -208,7 +208,20 @@
 </section>
 
 <section id="preferences">
+    <ul class="tabs">
+        <li class="current">
+            <a href="#">General</a>
+        </li><li>
+            <a href="#">Engines</a>
+        </li>
+    </ul>
 
+    <form>
+        <p>
+            <button type="submit" onclick="commitPreferences(); closePreferences(); return false">Save</button>
+            <button type="reset" onclick="closePreferences(); return false">Cancel</button>
+        </p>
+    </form>
 </section>
 
 <section id="busy"></section>
