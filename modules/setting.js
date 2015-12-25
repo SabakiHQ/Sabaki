@@ -70,7 +70,7 @@ exports
 .default('console.max_history_count', 30)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
-.default('game.show_end_after_loading', false)
+.default('game.goto_end_after_loading', false)
 .default('game.show_ko_warning', true)
 .default('game.show_suicide_warning', true)
 .default('graph.collapse_min_depth', 1)
