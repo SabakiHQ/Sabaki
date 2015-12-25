@@ -630,7 +630,11 @@ function buildMenu() {
                     label: '&Attach',
                     submenu: [
                         {
-                            label: '&Manage Engines…'
+                            label: '&Manage Engines…',
+                            click: function() {
+                                showPreferences()
+                                setPreferencesTab('engines')
+                            }
                         }
                     ]
                 },
@@ -873,6 +877,7 @@ function showPreferences() {
         el.checked = !!setting.get(el.name)
     })
 
+    setPreferencesTab('general')
     closeDrawers()
     $('preferences').addClass('show')
 }
