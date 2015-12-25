@@ -82,7 +82,7 @@ form p, form ul li {
     form ul {
         list-style: none;
     }
-    input {
+    input[type="text"] {
         width: 125px;
     }
     input, button, select, textarea {
