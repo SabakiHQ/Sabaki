@@ -491,6 +491,12 @@ function buildMenu() {
                     label: '&Info',
                     accelerator: 'CmdOrCtrl+I',
                     click: showGameInfo
+                },
+                { type: 'separator' },
+                {
+                    label: '&Preferences',
+                    accelerator: 'CmdOrCtrl+,',
+                    click: showPreferences
                 }
             ]
         },
@@ -791,7 +797,7 @@ function clearConsole() {
  */
 
 function showGameInfo() {
-    closeScore()
+    closeDrawers()
 
     var tree = getRootTree()
     var rootNode = tree.nodes[0]
@@ -840,7 +846,7 @@ function showScore() {
         setScoringMethod(setting.get('scoring.method'))
     }
 
-    closeGameInfo()
+    closeDrawers()
     $('score').addClass('show')
 }
 
@@ -849,9 +855,19 @@ function closeScore() {
     setScoringMode(false)
 }
 
+function showPreferences() {
+    closeDrawers()
+    $('preferences').addClass('show')
+}
+
+function closePreferences() {
+    $('preferences').removeClass('show')
+}
+
 function closeDrawers() {
     closeGameInfo()
     closeScore()
+    closePreferences()
     setEditMode(false)
     setScoringMode(false)
     setFindMode(false)

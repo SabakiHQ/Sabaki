@@ -377,7 +377,7 @@ header, #edit, #scoring, #find, #progress {
     border-radius: 5px;
 }
 
-#info, #score {
+#info, #score, #preferences {
         position: fixed;
         left: 0;
         right: 0;
@@ -390,15 +390,22 @@ header, #edit, #scoring, #find, #progress {
         transition: .5s bottom;
         z-index: 15;
     }
-    #info.show, #score.show {
+    #preferences {
+        box-sizing: border-box;
+        bottom: -100%;
+        height: 100%;
+    }
+    #info.show, #score.show, #preferences.show {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
-    #info input, #info select, button {
+    #info input, #info select, button,
+    #preferences input, #preferences select {
         background: #111;
         color: #eee;
     }
-    #info input:focus, #info select:focus, button:hover, button:focus {
+    #info input:focus, #info select:focus, button:hover, button:focus,
+    #preferences input:focus, #preferences select:focus  {
         background: #1a1a1a;
     }
     button:active {
