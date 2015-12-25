@@ -814,9 +814,9 @@ function vertexClicked(vertex) {
         findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
     } else {
         // Playing mode
-
         if (event.button != 0) return
         makeMove(vertex)
+        closeDrawers()
     }
 }
 
