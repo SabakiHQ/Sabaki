@@ -528,7 +528,7 @@ header, #edit, #scoring, #find, #progress {
         border-color: transparent;
         background: #111;
     }
-    .tabs li:not(.current) a:hover {
+    .tabs li:not(.current) a:hover, .tabs li:not(.current) a:focus {
         border-color: transparent;
         background: #1a1a1a;
 }
