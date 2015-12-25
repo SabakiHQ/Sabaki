@@ -523,13 +523,14 @@ header, #edit, #scoring, #find, #progress {
     .tabs li a {
         display: inline-block;
         border: 1px solid #1a1a1a;
+        border-left: none;
         padding: 2px 10px;
         color: #eee;
         text-decoration: none;
         transition: background .2s, border-color .2s;
     }
     .tabs li:first-child a {
-        border-right: none !important;
+        border-left: 1px solid #1a1a1a;
     }
     .tabs li.current a {
         border-color: transparent;
