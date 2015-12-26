@@ -388,7 +388,7 @@ header, #edit, #scoring, #find, #progress {
         height: 235px;
         overflow: hidden;
         padding: 20px;
-        background: #26292C;
+        background: rgba(38, 41, 44, .97);
         color: #eee;
         transition: bottom .5s;
         z-index: 15;
@@ -435,7 +435,7 @@ header, #edit, #scoring, #find, #progress {
 }
 
 #score {
-        background: #FBF593;
+        background: rgba(251, 245, 147, .9);
         color: #333;
     }
     #score .tabs {
