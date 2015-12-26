@@ -44,7 +44,9 @@ exports.addEngine = function(name, path, args) {
 }
 
 exports.getEngines = function() {
-    return engines.slice(0)
+    var list = engines.slice(0)
+    list.sort(function(x, y) { return x.name >= y.name })
+    return list
 }
 
 try {
