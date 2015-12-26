@@ -41,11 +41,16 @@ exports.addEngine = function(name, path, args) {
         path: path,
         args: args
     })
-    exports.save()
+    return exports
 }
 
 exports.getEngines = function() {
-    return engines
+    return engines.slice(0)
+}
+
+exports.clearEngines = function() {
+    engines.length = 0
+    return exports
 }
 
 try {

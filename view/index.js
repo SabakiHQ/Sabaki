@@ -971,7 +971,19 @@ function commitPreferences() {
 
     remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
 
-    // TODO: Save engines preferences
+    // Save engines
+
+    setting.clearEngines()
+
+    $$('#preferences .engines-list li').forEach(function(li) {
+        setting.addEngine(
+            li.getElement('h3 input').value,
+            li.getElement('h3 + p').innerText,
+            li.getElement('p input').value
+        )
+    })
+
+    setting.save()
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
