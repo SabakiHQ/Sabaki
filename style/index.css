@@ -544,7 +544,7 @@ header, #edit, #scoring, #find, #progress {
         height: 21em;
         margin: 1.5em 0;
         background: #1a1a1a;
-        overflow-y: auto;
+        overflow: auto;
     }
     .engines-list ul {
         margin: 0 !important;
@@ -555,12 +555,22 @@ header, #edit, #scoring, #find, #progress {
         margin: 0;
         padding: 10px;
     }
-    .engines-list li h3 {
-        color: white;
-        font-size: 1.2em;
+    .engines-list input {
+        border: none;
+        padding: 0;
+        width: 100%;
+        background: transparent !important;
+    }
+    .engines-list li p input {
+        font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    }
+    .engines-list li h3 input {
+        font-size: 1.1em;
         font-weight: normal;
     }
-    .engines-list li h3 + p { opacity: .5; }
+    .engines-list li h3 + p {
+        opacity: .5;
+    }
     .engines-list li > * {
         margin: 0;
 }
