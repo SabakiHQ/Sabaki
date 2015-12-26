@@ -103,7 +103,7 @@ form p, form ul li {
     input:disabled, select:disabled, button:disabled, textarea:disabled {
         opacity: .5;
     }
-    form p:last-child {
+    form > p:last-child {
         text-align: right;
 }
 

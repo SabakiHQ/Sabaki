@@ -500,10 +500,10 @@ header, #edit, #scoring, #find, #progress {
     #preferences form ul {
         margin: 1.5em 0;
     }
-    #preferences form p:last-child {
+    #preferences form > p:last-child {
         position: absolute;
         right: 20px;
-        bottom: 20px;
+        bottom: 15px;
     }
     #preferences form div {
         display: none;
