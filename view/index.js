@@ -400,7 +400,8 @@ function attachEngine(exec, args) {
     setIsBusy(true)
 
     setTimeout(function() {
-        var controller = new gtp.Controller(exec, args)
+        var split = require('argv-split')
+        var controller = new gtp.Controller(exec, split(args))
         controller.on('quit', function() { $('console').store('controller', null) })
         $('console').store('controller', controller)
 
