@@ -667,10 +667,6 @@ function buildMenu() {
             label: '&View',
             submenu: [
                 {
-                    label: 'Toggle &Fuzzy Stone Placement',
-                    click: function() { setFuzzyStonePlacement(!getFuzzyStonePlacement()) }
-                },
-                {
                     label: 'Toggle &Coordinates',
                     click: function() {
                         setShowCoordinates(!getShowCoordinates())
