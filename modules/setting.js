@@ -11,6 +11,7 @@ var engines = []
 exports.load = function() {
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
     engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
+    engines.sort(function(x, y) { return x.name >= y.name })
     return exports
 }
 
@@ -44,9 +45,7 @@ exports.addEngine = function(name, path, args) {
 }
 
 exports.getEngines = function() {
-    var list = engines.slice(0)
-    list.sort(function(x, y) { return x.name >= y.name })
-    return list
+    return engines
 }
 
 try {
