@@ -503,11 +503,11 @@ header, #edit, #scoring, #find, #progress {
         right: 20px;
         bottom: 15px;
     }
-    #preferences form div {
+    #preferences form > div {
         display: none;
     }
-    #preferences form.general div.general,
-    #preferences form.engines div.engines {
+    #preferences form.general > div.general,
+    #preferences form.engines > div.engines {
         display: block;
 }
 
@@ -542,9 +542,12 @@ header, #edit, #scoring, #find, #progress {
 .engines-list {
         border: 1px solid #111;
         height: 21em;
-        list-style: none;
         background: #1a1a1a;
         overflow-y: auto;
+    }
+    .engines-list ul {
+        margin: 0 !important;
+        list-style: none;
     }
     .engines-list li {
         border-bottom: 1px solid #111;

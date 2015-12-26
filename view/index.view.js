@@ -932,6 +932,18 @@ document.addEvent('domready', function() {
         createElements: false
     }).create())
 
+    // Engines list scrollbar
+
+    var enginesList = $$('#preferences .engines-list')[0]
+    var enginesPane = $$('#preferences form > div.engines')[0]
+
+    enginesPane.setStyle('display', 'block')
+    enginesList.store('scrollbar', new Scrollbar({
+        element: enginesList,
+        createElements: false
+    }).create())
+    enginesPane.setStyle('display', '')
+
     // Resize sidebar
 
     $$('.verticalresizer').addEvent('mousedown', function() {
