@@ -2,14 +2,6 @@ var child_process = require('child_process')
 var events = require('events')
 var gtp = require('./index')
 
-/**
- * Attention! The GTP 2.0 draft specifies that the engine
- * has to respond to the commands in the same order as they
- * come in. Unfortunately, due to the asynchronous nature of
- * node.js, the `response` event could be handled *not*
- * in the given order.
- */
-
 var Controller = function(exec, args) {
     var self = this
     events.EventEmitter.call(self)
