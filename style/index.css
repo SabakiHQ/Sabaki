@@ -493,9 +493,8 @@ header, #edit, #scoring, #find, #progress {
 }
 
 #preferences {
-        box-sizing: border-box;
-        bottom: -100%;
-        height: 70%;
+        bottom: -440px;
+        height: 400px;
     }
     #preferences form ul {
         margin: 1.5em 0;
