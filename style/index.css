@@ -542,6 +542,7 @@ header, #edit, #scoring, #find, #progress {
 .engines-list {
         border: 1px solid #111;
         height: 21em;
+        margin: 1.5em 0;
         background: #1a1a1a;
         overflow-y: auto;
     }

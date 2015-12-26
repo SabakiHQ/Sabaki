@@ -305,6 +305,9 @@ function setPreferencesTab(tab) {
 
     var form = $$('#preferences form')[0]
     form.className = tab
+
+    if (tab == 'engines')
+        $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
 }
 
 /**
@@ -935,14 +938,10 @@ document.addEvent('domready', function() {
     // Engines list scrollbar
 
     var enginesList = $$('#preferences .engines-list')[0]
-    var enginesPane = $$('#preferences form > div.engines')[0]
-
-    enginesPane.setStyle('display', 'block')
     enginesList.store('scrollbar', new Scrollbar({
         element: enginesList,
         createElements: false
     }).create())
-    enginesPane.setStyle('display', '')
 
     // Resize sidebar
 
