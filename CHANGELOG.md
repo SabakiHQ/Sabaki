@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.7.0][v0.7.0] (2015-12-27)
 
 **Added**
 * Add GTP engines support
@@ -185,7 +185,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.6.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.0...master
+[v0.7.0]: https://github.com/yishn/Sabaki/compare/v0.6.0...v0.7.0
 [v0.6.0]: https://github.com/yishn/Sabaki/compare/v0.5.0...v0.6.0
 [v0.5.0]: https://github.com/yishn/Sabaki/compare/v0.4.3...v0.5.0
 [v0.4.3]: https://github.com/yishn/Sabaki/compare/v0.4.2...v0.4.3

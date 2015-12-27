@@ -12,11 +12,12 @@ An elegant virtual Go board for a more civilized age. [Download the latest relea
 - Read and save SGF files
 - Supports nested variations
 - Fuzzy stone placement
-- SGF editing tools
-- Display formatted SGF comments
-- Scoring tool
 - Game graph
 - Find move
+- Scoring tool
+- GTP engines support
+- SGF editing tools
+- Display formatted SGF comments
 
 ## Third Party Libraries
 
@@ -28,5 +29,7 @@ An elegant virtual Go board for a more civilized age. [Download the latest relea
   ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
 * [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
+* [argv-split](https://github.com/kaelzhang/node-argv-split)
+  ([MIT License](https://github.com/kaelzhang/node-argv-split/blob/master/LICENSE-MIT))
 * [tuple](https://github.com/Wolfy87/tuple)
   ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
