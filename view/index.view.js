@@ -758,8 +758,6 @@ function buildMenu() {
         }
     ]
 
-    // Build menu
-
     var menu = Menu.buildFromTemplate(template)
     document.body.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
