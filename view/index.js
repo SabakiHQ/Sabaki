@@ -1198,25 +1198,28 @@ function loadGame(filename) {
     }
 
     if (filename) {
-        var win = remote.getCurrentWindow()
+        setTimeout(function() {
+            var win = remote.getCurrentWindow()
 
-        try {
-            var tree = sgf.parseFile(filename, function(progress) {
-                setProgressIndicator(progress, win)
-            }).subtrees[0]
+            try {
+                var tree = sgf.parseFile(filename, function(progress) {
+                    setProgressIndicator(progress, win)
+                }).subtrees[0]
 
-            setRootTree(tree)
-        } catch(e) {
-            showMessageBox('This file is unreadable.', 'warning')
-        }
+                setRootTree(tree)
+            } catch(e) {
+                showMessageBox('This file is unreadable.', 'warning')
+            }
 
-        setProgressIndicator(0, win)
-        closeDrawers()
+            setProgressIndicator(0, win)
+            closeDrawers()
 
-        if (setting.get('game.goto_end_after_loading')) goToEnd()
+            if (setting.get('game.goto_end_after_loading')) goToEnd()
+            setIsBusy(false)
+        }, setting.get('app.loadgame_delay'))
+    } else {
+        setIsBusy(false)
     }
-
-    setIsBusy(false)
 }
 
 function saveGame() {
@@ -1376,10 +1379,7 @@ document.addEvent('keydown', function(e) {
 window.addEvent('load', function() {
     newGame()
 
-    setTimeout(function() {
-        if (process.argv.length >= 2) loadGame(process.argv[1])
-    }, setting.get('app.startup_loadgame_delay'))
-
+    if (process.argv.length >= 2) loadGame(process.argv[1])
     if (!setting.get('app.startup_check_updates')) return
 
     setTimeout(function() {

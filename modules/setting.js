@@ -67,7 +67,7 @@ exports.load()
 exports
 .default('app.startup_check_updates', true)
 .default('app.startup_check_updates_delay', 100)
-.default('app.startup_loadgame_delay', 100)
+.default('app.loadgame_delay', 100)
 .default('console.blocked_commands', [
     'boardsize', 'clear_board', 'play',
     'genmove', 'undo', 'fixed_handicap',
