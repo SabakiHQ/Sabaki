@@ -663,15 +663,7 @@ function buildMenu() {
             submenu: [
                 {
                     label: '&Attach',
-                    submenu: [
-                        {
-                            label: '&Manage Engines…',
-                            click: function() {
-                                showPreferences()
-                                setPreferencesTab('engines')
-                            }
-                        }
-                    ]
+                    submenu: []
                 },
                 {
                     label: '&Detach',
@@ -766,23 +758,8 @@ function buildMenu() {
         }
     ]
 
-    // Add engines
-    var enginesMenu = template[3].submenu[0].submenu
-
-    setting.getEngines().forEach(function(engine) {
-        enginesMenu.splice(enginesMenu.length - 1, 0, {
-            label: engine.name,
-            click: function() { attachEngine(engine.path, engine.args) }
-        })
-    })
-
-    if (setting.getEngines().length != 0) {
-        enginesMenu.splice(enginesMenu.length - 1, 0, {
-            type: 'separator'
-        })
-    }
-
     // Build menu
+
     var menu = Menu.buildFromTemplate(template)
     document.body.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
@@ -934,8 +911,7 @@ function closeDrawers() {
  */
 
 document.addEvent('domready', function() {
-    document.title = app.getName();
-    buildMenu()
+    document.title = app.getName()
 
     document.body.addEvent('mouseup', function() {
         $('goban').store('mousedown', false)

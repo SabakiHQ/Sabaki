@@ -16,6 +16,7 @@ var Tuple = require('tuple-w')
 var Board = require('../modules/board')
 var Scrollbar = require('gemini-scrollbar')
 var Menu = remote.require('menu')
+var MenuItem = remote.require('menu-item')
 
 var updateSidebarLambda
 
@@ -396,7 +397,33 @@ function prepareConsole() {
 }
 
 function loadEngines() {
-    // TODO: Load menu items
+    // Load menu items
+
+    var menu = document.body.retrieve('mainmenu')
+    var attachMenu = menu.items[3].submenu.items[0].submenu
+
+    attachMenu.clear()
+
+    setting.getEngines().forEach(function(engine) {
+        attachMenu.append(new MenuItem({
+            label: engine.name,
+            click: function() { attachEngine(engine.path, engine.args) }
+        }))
+    })
+
+    if (setting.getEngines().length != 0) {
+        attachMenu.append(new MenuItem({
+            type: 'separator'
+        }))
+    }
+
+    attachMenu.append(new MenuItem({
+        label: '&Manage Engines…',
+        click: function() {
+            showPreferences()
+            setPreferencesTab('engines')
+        }
+    }))
 
     // Load engines list
 
@@ -1331,6 +1358,7 @@ document.addEvent('keydown', function(e) {
         closeDrawers()
     }
 }).addEvent('domready', function() {
+    buildMenu()
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
