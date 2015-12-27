@@ -160,7 +160,7 @@ header, #edit, #scoring, #find, #progress {
         margin-top: -10px;
 }
 
-#console {
+#leftsidebar {
         display: none;
         position: absolute;
         top: 0;
@@ -168,14 +168,25 @@ header, #edit, #scoring, #find, #progress {
         left: 0;
         width: 400px;
         background: #181818;
+        z-index: 10;
     }
-    .console #console {
+    #leftsidebar .verticalresizer {
+        position: absolute;
+        top: 0;
+        right: -5px;
+        bottom: 0;
+        width: 5px;
+        cursor: ew-resize;
+        z-index: 10;
+    }
+    .leftsidebar #leftsidebar {
         display: block;
     }
-    .console #main {
+    .leftsidebar #main {
         left: 400px;
-    }
-    #console, #console pre, #console input {
+}
+
+#console, #console pre, #console input {
         color: #d0d0d0;
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
@@ -232,8 +243,8 @@ header, #edit, #scoring, #find, #progress {
         bottom: 0;
         right: 0;
         width: 200px;
-        /*overflow: hidden;*/
         background: #111;
+        z-index: 10;
     }
     #sidebar .verticalresizer {
         position: absolute;

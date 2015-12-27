@@ -56,24 +56,24 @@ function setShowCoordinates(show) {
     setting.set('view.show_coordinates', show)
 }
 
-function getShowConsole() {
-    return document.body.hasClass('console')
+function getShowLeftSidebar() {
+    return document.body.hasClass('leftsidebar')
 }
 
-function setShowConsole(show) {
-    if (getShowConsole() == show) return
-    if (show) document.body.addClass('console')
-    else document.body.removeClass('console')
+function setShowLeftSidebar(show) {
+    if (getShowLeftSidebar() == show) return
+    if (show) document.body.addClass('leftsidebar')
+    else document.body.removeClass('leftsidebar')
 
-    $('console').setStyle('width', setting.get('view.console_width'))
-    $('main').setStyle('left', show ? setting.get('view.console_width') : 0)
+    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
+    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     // Resize window
     var win = remote.getCurrentWindow()
     var size = win.getContentSize()
 
     if (!win.isMaximized())
-        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.console_width'), size[1])
+        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
 
     resizeBoard()
     setting.set('view.show_console', show)
@@ -85,9 +85,9 @@ function setShowConsole(show) {
     $('console').retrieve('scrollbar').update()
 }
 
-function setConsoleWidth(width) {
-    if (!getShowConsole()) return
-    $('console').setStyle('width', width)
+function setLeftSidebarWidth(width) {
+    if (!getShowLeftSidebar()) return
+    $('leftsidebar').setStyle('width', width)
     $('main').setStyle('left', width)
 }
 
@@ -679,7 +679,7 @@ function buildMenu() {
                 {
                     label: 'Toggle &GTP Console',
                     accelerator: 'F12',
-                    click: function() { setShowConsole(!getShowConsole()) }
+                    click: function() { setShowLeftSidebar(!getShowLeftSidebar()) }
                 },
                 {
                     label: '&Clear Console',

@@ -18,16 +18,6 @@
 </head>
 <body>
 
-<section id="console">
-    <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
-    <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
-    <div class="gm-scroll-view">
-        <div class="inner">
-            <form><label><input type="text" /></label></form>
-        </div>
-    </div>
-</section>
-
 <section id="main">
     <section id="goban" class="goban">
         <div></div>
@@ -180,6 +170,20 @@
                 <button type="submit" onclick="closeScore(); return false">Cancel</button>
             </p>
         </form>
+    </section>
+</section>
+
+<section id="leftsidebar">
+    <div class="verticalresizer"></div>
+    
+    <section id="console">
+        <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
+        <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
+        <div class="gm-scroll-view">
+            <div class="inner">
+                <form><label><input type="text" /></label></form>
+            </div>
+        </div>
     </section>
 </section>
 

@@ -246,8 +246,8 @@ function loadSettings() {
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
     if (setting.get('view.show_console')) {
-        document.body.addClass('console')
-        setConsoleWidth(setting.get('view.console_width'))
+        document.body.addClass('leftsidebar')
+        setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         document.body.addClass('sidebar')
@@ -1060,7 +1060,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()
     container.grab(pre).grab(form)
-    if (getShowConsole()) form.getElement('input').focus()
+    if (getShowLeftSidebar()) form.getElement('input').focus()
 
     // Cleanup
     var forms = $$('#console .inner form')
