@@ -501,7 +501,7 @@ header, #edit, #scoring, #find, #progress {
     #preferences form > p:last-child {
         position: absolute;
         right: 20px;
-        bottom: 15px;
+        bottom: 14px;
     }
     #preferences form > div {
         display: none;
