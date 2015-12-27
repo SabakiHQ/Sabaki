@@ -1,6 +1,6 @@
 var fs = require('fs')
 var path = require('path')
-var app = require('app')
+var app = require('electron').app
 
 var settingspath = path.join(app.getPath('userData'), 'settings.json')
 var enginespath = path.join(app.getPath('userData'), 'engines.json')

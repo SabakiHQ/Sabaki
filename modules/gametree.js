@@ -3,7 +3,7 @@ var Tuple = require('tuple-w')
 
 var sgf = require('./sgf')
 var helper = require('./helper')
-var setting = require('remote').require('./modules/setting')
+var setting = require('electron').remote.require('./modules/setting')
 
 exports.new = function() {
     return {

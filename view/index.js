@@ -1,4 +1,4 @@
-var remote = require('remote')
+var remote = require('electron').remote
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../modules/sgf')
@@ -7,16 +7,16 @@ var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
 var helper = require('../modules/helper')
 var process = remote.require('process')
-var app = remote.require('app')
-var dialog = remote.require('dialog')
+var app = remote.app
+var dialog = remote.dialog
 var gtp = remote.require('./modules/gtp')
 var setting = remote.require('./modules/setting')
 
 var Tuple = require('tuple-w')
 var Board = require('../modules/board')
 var Scrollbar = require('gemini-scrollbar')
-var Menu = remote.require('menu')
-var MenuItem = remote.require('menu-item')
+var Menu = remote.Menu
+var MenuItem = remote.MenuItem
 
 var updateSidebarLambda
 
