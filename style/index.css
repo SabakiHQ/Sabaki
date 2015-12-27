@@ -552,10 +552,12 @@ header, #edit, #scoring, #find, #progress {
     }
     .engines-list li {
         position: relative;
-        border-bottom: 1px solid #111;
         margin: 0;
         padding: 10px;
         padding-left: 35px;
+    }
+    .engines-list li:nth-child(2n) {
+        background: #1e1e1e;
     }
     .engines-list input {
         border: none;
