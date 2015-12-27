@@ -897,6 +897,15 @@ function showPreferences() {
                 placeholder: 'No arguments',
                 value: engine.args
             }))
+        ).grab(
+            new Element('img', {
+                src: '../img/ui/close_invert.png',
+                width: 10,
+                height: 10,
+                events: {
+                    click: function() { this.getParent().dispose() }
+                }
+            })
         ))
     })
 

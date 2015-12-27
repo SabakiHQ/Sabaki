@@ -551,9 +551,11 @@ header, #edit, #scoring, #find, #progress {
         list-style: none;
     }
     .engines-list li {
+        position: relative;
         border-bottom: 1px solid #111;
         margin: 0;
         padding: 10px;
+        padding-left: 35px;
     }
     .engines-list input {
         border: none;
@@ -573,4 +575,18 @@ header, #edit, #scoring, #find, #progress {
     }
     .engines-list li > * {
         margin: 0;
+    }
+    .engines-list li img {
+        display: block;
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        padding: 2px;
+        margin-top: -6px;
+    }
+    .engines-list li img:hover {
+        background: #E81123;
+    }
+    .engines-list li img:active {
+        background: #C60001;
 }
