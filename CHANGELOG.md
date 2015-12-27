@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+* Fix engines not loading in preferences when removed but not saved
+
 ## [Sabaki v0.7.0][v0.7.0] (2015-12-27)
 
 **Added**
