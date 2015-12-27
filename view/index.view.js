@@ -890,7 +890,7 @@ function showPreferences() {
 
     loadEngines()
 
-    // Show Preferences
+    // Show preferences
 
     setPreferencesTab('general')
     closeDrawers()
