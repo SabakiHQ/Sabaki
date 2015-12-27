@@ -395,6 +395,34 @@ function prepareConsole() {
     })
 }
 
+function loadEngines() {
+    // TODO: Load menu items
+
+    // Load engines list
+
+    var ul = $$('#preferences .engines-list ul')[0]
+    ul.empty()
+
+    setting.getEngines().forEach(function(engine) {
+        addEngineItem(engine.name, engine.path, engine.args)
+    })
+}
+
+function chooseEngine() {
+    setIsBusy(true)
+
+    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        filters: [{ name: 'Executables', extensions: ['exe'] }, { name: 'All Files', extensions: ['*'] }]
+    })
+
+    if (result) {
+        addEngineItem('', result[0], '')
+        $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+    }
+
+    setIsBusy(false)
+}
+
 function attachEngine(exec, args) {
     detachEngine()
     setIsBusy(true)
@@ -977,14 +1005,17 @@ function commitPreferences() {
     setting.clearEngines()
 
     $$('#preferences .engines-list li').forEach(function(li) {
+        var nameinput = li.getElement('h3 input')
+
         setting.addEngine(
-            li.getElement('h3 input').value,
+            nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
             li.getElement('h3 + p').innerText,
             li.getElement('p input').value
         )
     })
 
     setting.save()
+    loadEngines()
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
@@ -1154,9 +1185,10 @@ function loadGame(filename) {
 
         setProgressIndicator(0, win)
         closeDrawers()
+
+        if (setting.get('game.goto_end_after_loading')) goToEnd()
     }
 
-    if (setting.get('game.goto_end_after_loading')) goToEnd()
     setIsBusy(false)
 }
 
@@ -1300,6 +1332,7 @@ document.addEvent('keydown', function(e) {
     }
 }).addEvent('domready', function() {
     loadSettings()
+    loadEngines()
     prepareDragDropFiles()
     prepareEditTools()
     prepareGameGraph()

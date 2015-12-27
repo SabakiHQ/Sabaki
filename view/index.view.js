@@ -314,6 +314,38 @@ function setPreferencesTab(tab) {
  * Methods
  */
 
+function addEngineItem(name, path, args) {
+    var ul = $$('#preferences .engines-list ul')[0]
+
+    ul.grab(new Element('li').grab(new Element('h3').grab(
+        new Element('input', {
+            type: 'text',
+            placeholder: '(Unnamed engine)',
+            value: name
+        })
+    )).grab(
+        new Element('p', { text: path })
+    ).grab(
+        new Element('p').grab(new Element('input', {
+            type: 'text',
+            placeholder: 'No arguments',
+            value: args
+        }))
+    ).grab(
+        new Element('img', {
+            src: '../img/ui/close_invert.png',
+            width: 10,
+            height: 10,
+            events: {
+                click: function() {
+                    this.getParent().dispose()
+                    $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+                }
+            }
+        })
+    ))
+}
+
 function showMessageBox(message, type, buttons, cancelId) {
     setIsBusy(true)
 
@@ -875,38 +907,6 @@ function showPreferences() {
 
     $$('#preferences input[type="checkbox"]').forEach(function(el) {
         el.checked = !!setting.get(el.name)
-    })
-
-    // Load engines
-
-    var ul = $$('#preferences .engines-list ul')[0]
-    ul.empty()
-
-    setting.getEngines().forEach(function(engine) {
-        ul.grab(new Element('li').grab(new Element('h3').grab(
-            new Element('input', {
-                type: 'text',
-                placeholder: '(Unnamed engine)',
-                value: engine.name
-            })
-        )).grab(
-            new Element('p', { text: engine.path })
-        ).grab(
-            new Element('p').grab(new Element('input', {
-                type: 'text',
-                placeholder: 'No arguments',
-                value: engine.args
-            }))
-        ).grab(
-            new Element('img', {
-                src: '../img/ui/close_invert.png',
-                width: 10,
-                height: 10,
-                events: {
-                    click: function() { this.getParent().dispose() }
-                }
-            })
-        ))
     })
 
     // Show Preferences

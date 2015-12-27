@@ -41,6 +41,7 @@ exports.addEngine = function(name, path, args) {
         path: path,
         args: args
     })
+    engines.sort(function(x, y) { return x.name >= y.name })
     return exports
 }
 
