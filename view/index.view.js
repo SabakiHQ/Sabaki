@@ -76,7 +76,7 @@ function setShowLeftSidebar(show) {
         win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
 
     resizeBoard()
-    setting.set('view.show_console', show)
+    setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
     var view = $$('#console .gm-scroll-view')[0]

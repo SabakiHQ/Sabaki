@@ -245,7 +245,7 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_variations'))
         $('goban').addClass('variations')
-    if (setting.get('view.show_console')) {
+    if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
         setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
