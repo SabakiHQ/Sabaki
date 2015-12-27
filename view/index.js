@@ -416,7 +416,7 @@ function chooseEngine() {
     })
 
     if (result) {
-        addEngineItem('', result[0], '')
+        addEngineItem(require('path').basename(result[0]), result[0], '')
         $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
     }
 
