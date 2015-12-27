@@ -91,6 +91,10 @@ function setLeftSidebarWidth(width) {
     $('main').setStyle('left', width)
 }
 
+function getShowLeftSidebarWidth() {
+    return $('leftsidebar').getStyle('width').toInt()
+}
+
 function getShowSidebar() {
     return document.body.hasClass('sidebar')
 }
