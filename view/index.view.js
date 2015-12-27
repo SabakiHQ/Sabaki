@@ -91,7 +91,7 @@ function setLeftSidebarWidth(width) {
     $('main').setStyle('left', width)
 }
 
-function getShowLeftSidebarWidth() {
+function getLeftSidebarWidth() {
     return $('leftsidebar').getStyle('width').toInt()
 }
 
@@ -957,8 +957,9 @@ document.addEvent('domready', function() {
 
     $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        this.getParent().store('initposx', new Tuple(event.x, getSidebarWidth()))
+        this.getParent().store('initposx', new Tuple(event.x, this.getParent().getStyle('width').toInt()))
     })
+
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
         $('sidebar').store('initposy', new Tuple(event.y, getCommentHeight()))
@@ -966,13 +967,19 @@ document.addEvent('domready', function() {
     })
 
     document.body.addEvent('mouseup', function() {
-        var initPosX = $('sidebar').retrieve('initposx')
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
         var initPosY = $('sidebar').retrieve('initposy')
-        if (!initPosX && !initPosY) return
 
-        if (initPosX) {
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
             $('sidebar').store('initposx', null)
             setting.set('view.sidebar_width', getSidebarWidth())
+        } else if (leftSidebarInitPosX) {
+            $('leftsidebar').store('initposx', null)
+            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
+            return
         } else if (initPosY) {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '')
@@ -983,16 +990,27 @@ document.addEvent('domready', function() {
         if ($('graph').retrieve('sigma'))
             $('graph').retrieve('sigma').renderers[0].resize().render()
     }).addEvent('mousemove', function() {
-        var initPosX = $('sidebar').retrieve('initposx')
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
         var initPosY = $('sidebar').retrieve('initposy')
-        if (!initPosX && !initPosY) return
 
-        if (initPosX) {
-            initPosX.unpack(function(initX, initWidth) {
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
+            sidebarInitPosX.unpack(function(initX, initWidth) {
                 var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
                 setSidebarWidth(newwidth)
                 resizeBoard()
             })
+        } else if (leftSidebarInitPosX) {
+            leftSidebarInitPosX.unpack(function(initX, initWidth) {
+                var newwidth = Math.max(initWidth + event.x - initX, setting.get('view.leftsidebar_minwidth'))
+                setLeftSidebarWidth(newwidth)
+                resizeBoard()
+            })
+
+            $('console').retrieve('scrollbar').update()
+            return
         } else if (initPosY) {
             initPosY.unpack(function(initY, initHeight) {
                 var newheight = Math.min(Math.max(
