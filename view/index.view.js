@@ -882,11 +882,13 @@ function closeScore() {
 }
 
 function showPreferences() {
-    // Load general settings
+    // Load preferences
 
     $$('#preferences input[type="checkbox"]').forEach(function(el) {
         el.checked = !!setting.get(el.name)
     })
+
+    loadEngines()
 
     // Show Preferences
 

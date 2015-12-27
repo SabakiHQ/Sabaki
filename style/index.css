@@ -562,7 +562,7 @@ header, #edit, #scoring, #find, #progress {
         position: relative;
         margin: 0;
         padding: 10px;
-        padding-left: 35px;
+        padding-left: 36px;
     }
     .engines-list li:nth-child(2n) {
         background: #1e1e1e;
@@ -591,8 +591,9 @@ header, #edit, #scoring, #find, #progress {
         position: absolute;
         left: 10px;
         top: 50%;
-        padding: 2px;
-        margin-top: -6px;
+        border-radius: 8px;
+        padding: 3px;
+        margin-top: -8px;
     }
     .engines-list li img:hover {
         background: #E81123;
