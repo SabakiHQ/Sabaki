@@ -16,6 +16,29 @@ exports.new = function() {
     }
 }
 
+exports.clone = function(tree, parent) {
+    if (!parent) parent = null
+
+    var c = {
+        id: tree.id,
+        nodes: [],
+        subtrees: [],
+        current: tree.current,
+        parent: parent,
+        collapsed: tree.collapsed
+    }
+
+    tree.nodes.forEach(function(node) {
+        c.nodes.push(Object.clone(node))
+    })
+
+    tree.subtrees.forEach(function(subtree) {
+        c.subtrees.push(exports.clone(subtree), c)
+    })
+
+    return c
+}
+
 exports.getRoot = function(tree) {
     while (tree.parent != null) tree = tree.parent
     return tree
