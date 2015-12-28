@@ -1123,6 +1123,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 function generateMove() {
     if (!getEngineController() || getIsBusy()) return
 
+    closeDrawers()
     syncEngine()
     setIsBusy(true)
 
@@ -1204,10 +1205,10 @@ function newGame(playSound) {
     buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
+    closeDrawers()
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree)
 
-    closeDrawers()
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
         showGameInfo()
@@ -1271,6 +1272,7 @@ function saveGame() {
 }
 
 function clearAllOverlays() {
+    closeDrawers()
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     getCurrentTreePosition().unpack(function(tree, index) {
@@ -1360,6 +1362,7 @@ function removeNode(tree, index) {
         ['Remove Node', 'Cancel'], 1
     ) == 1) return
 
+    closeDrawers()
     var prev = gametree.navigate(tree, index, -1)
 
     if (index != 0) {
