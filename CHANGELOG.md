@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 * More responsive game graph
+* Touch-friendly slider
 
 **Fixed**
 * Fix engines not showing in preferences when removed but not saved
