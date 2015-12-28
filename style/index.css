@@ -309,7 +309,7 @@ header, #edit, #scoring, #find, #progress {
         opacity: 0;
         box-shadow: 0 0 10px #111;
         z-index: 1;
-        transition: opacity´.2s, top .5s;
+        transition: opacity .2s, top .5s;
     }
     #graph .slider:hover span, #graph .slider.active span {
         opacity: 1;
