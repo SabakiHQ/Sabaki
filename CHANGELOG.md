@@ -79,40 +79,30 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Resizable comment view
-
-**Changed**
-* Change name to Sabaki
-
-## [Goban v0.4.0][v0.4.0] (2015-08-24)
-
-**Added**
 * Comment view
 
 **Fixed**
 * Fix a bug where saving games with comments could lead to unescaped characters
 
 **Changed**
+* Change name to Sabaki
 * Update to Electron v0.31.0
 
 ## [Goban v0.3.7][v0.3.7] (2015-08-16)
+
+**Added**
+* Highlight current game track in graph
 
 **Fixed**
 * Fix wrong cross symbol on Windows 10
 * Fix a bug where current game track is not correctly highlighted in the graph
 * Fix a bug where stone sounds are not played immediately
 * Fix graph performance issues
+* Fix uncaught exception when playing in pruned subgraphs again
+* Faster click response when playing in large graphs
 
 **Changed**
 * Update to Electron v0.30.4
-
-## [Goban v0.3.6][v0.3.6] (2015-08-07)
-
-**Added**
-* Highlight current game track in graph
-
-**Fixed**
-* Fix uncaught exception when playing in pruned subgraphs again
-* Faster click response when playing in large graphs
 
 ## [Goban v0.3.5][v0.3.5] (2015-08-04)
 
