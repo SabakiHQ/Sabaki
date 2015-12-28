@@ -77,6 +77,7 @@ exports
 .default('console.max_history_count', 30)
 .default('edit.click_currentvertex_to_remove', true)
 .default('edit.show_removenode_warning', true)
+.default('edit.undo_delay', 100)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
 .default('game.goto_end_after_loading', false)
