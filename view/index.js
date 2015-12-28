@@ -1335,7 +1335,7 @@ function removeNode(tree, index) {
         return
     }
 
-    if (showMessageBox(
+    if (setting.get('edit.show_removenode_warning') && showMessageBox(
         'Do you really want to remove this node permanently?',
         'warning',
         ['Remove Node', 'Cancel'], 1

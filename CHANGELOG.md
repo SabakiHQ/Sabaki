@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 * Click current stone to remove node
+* Ability to turn off remove node warning
 
 **Changed**
 * More responsive game graph
