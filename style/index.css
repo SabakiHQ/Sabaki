@@ -61,11 +61,12 @@ header, #edit, #scoring, #find, #progress {
         margin-top: -21px;
     }
     header .undo {
-        display: none;
         right: auto;
         left: 0;
+        top: 53px;
+        transition: top .2s;
     }
-    .undoable header .undo { display: inline-block; }
+    .undoable header .undo { top: 50%; }
     #headermenu:hover, header .undo:hover {
         background: #222;
 }
