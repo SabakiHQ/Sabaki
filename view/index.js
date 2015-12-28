@@ -669,7 +669,12 @@ function makeMove(vertex, sendCommand) {
             true
         )
         $('console').store('boardhash', getBoard().getHash())
-        setTimeout(generateMove, setting.get('gtp.move_delay'))
+
+        setIsBusy(true)
+        setTimeout(function() {
+            setIsBusy(false)
+            generateMove()
+        }, setting.get('gtp.move_delay'))
     }
 }
 
