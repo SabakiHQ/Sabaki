@@ -15,7 +15,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Fix engines not showing in preferences when removed but not saved
-* Fix doing certain actions failing in scoring mode
+* Fix certain actions failing in scoring mode
 
 ## [Sabaki v0.7.0][v0.7.0] (2015-12-27)
 
