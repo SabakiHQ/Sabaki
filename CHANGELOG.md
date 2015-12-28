@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased][unreleased]
 
 **Added**
+* Undo 'Remove Node' and 'Clear All Overlays'
 * Click current stone to remove node
 * Ability to turn off remove node warning
 
