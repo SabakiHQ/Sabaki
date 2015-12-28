@@ -1362,6 +1362,12 @@ function removeNode(tree, index) {
         ['Remove Node', 'Cancel'], 1
     ) == 1) return
 
+    // Save undo information
+
+    setUndoable(true, gametree.clone(getRootTree()), getCurrentTreePosition().unpack(gametree.getLevel))
+
+    // Remove node
+
     closeDrawers()
     var prev = gametree.navigate(tree, index, -1)
 
@@ -1381,6 +1387,16 @@ function removeNode(tree, index) {
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     if (getCurrentGraphNode()) prev = getCurrentTreePosition()
     setCurrentTreePosition(prev[0], prev[1])
+}
+
+function undoRemoveNode() {
+    if (document.body.retrieve('undodata-root') == null
+    || document.body.retrieve('undodata-pos') == null)
+        return
+
+    setRootTree(document.body.retrieve('undodata-root'))
+    var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
+    pos.unpack(setCurrentTreePosition)
 }
 
 /**
