@@ -234,6 +234,23 @@ function getEngineCommands() {
     return $('console').retrieve('commands')
 }
 
+function setUndoable(undoable) {
+    if (undoable) {
+        var rootTree = gametree.clone(getRootTree())
+        var position = getCurrentTreePosition().unpack(gametree.getLevel)
+
+        document.body
+            .addClass('undoable')
+            .store('undodata-root', rootTree)
+            .store('undodata-pos', position)
+    } else {
+        document.body
+            .removeClass('undoable')
+            .store('undodata-root', null)
+            .store('undodata-pos', null)
+    }
+}
+
 /**
  * Methods
  */
@@ -676,6 +693,9 @@ function makeMove(vertex, sendCommand) {
         sound.playPass()
     }
 
+    // Remove undo information
+    setUndoable(false)
+
     // Handle GTP engine
     if (sendCommand) {
         sendGTPCommand(
@@ -825,6 +845,7 @@ function useTool(vertex) {
             })
         }
 
+        setUndoable(false)
         setCurrentTreePosition(tree, index)
     })
 }
@@ -1275,6 +1296,9 @@ function clearAllOverlays() {
     closeDrawers()
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
+    // Save undo information
+    setUndoable(true)
+
     getCurrentTreePosition().unpack(function(tree, index) {
         overlayIds.forEach(function(id) {
             delete tree.nodes[index][id]
@@ -1364,7 +1388,7 @@ function removeNode(tree, index) {
 
     // Save undo information
 
-    setUndoable(true, gametree.clone(getRootTree()), getCurrentTreePosition().unpack(gametree.getLevel))
+    setUndoable(true)
 
     // Remove node
 
@@ -1401,6 +1425,7 @@ function undoRemoveNode() {
         var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
         pos.unpack(setCurrentTreePosition)
 
+        setUndoable(false)
         setIsBusy(false)
     }, setting.get('edit.undo_delay'))
 }
