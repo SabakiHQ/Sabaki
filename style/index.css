@@ -51,15 +51,22 @@ header, #edit, #scoring, #find, #progress {
         margin-left: -17px;
         margin-top: -11px;
     }
-    #headermenu {
+    #headermenu, header .undo {
         left: auto;
-        right: 0px;
+        right: 0;
         width: 32px;
         height: 32px;
         padding: 5px;
+        margin-left: 0;
         margin-top: -21px;
     }
-    #headermenu:hover {
+    header .undo {
+        display: none;
+        right: auto;
+        left: 0;
+    }
+    .undoable header .undo { display: inline-block; }
+    #headermenu:hover, header .undo:hover {
         background: #222;
 }
 
