@@ -1206,13 +1206,13 @@ function loadGame(filename) {
                     setProgressIndicator(progress, win)
                 }).subtrees[0]
 
+                closeDrawers()
                 setRootTree(tree)
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
 
             setProgressIndicator(0, win)
-            closeDrawers()
 
             if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
