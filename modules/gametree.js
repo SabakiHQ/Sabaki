@@ -35,7 +35,7 @@ exports.clone = function(tree, parent) {
     })
 
     tree.subtrees.forEach(function(subtree) {
-        c.subtrees.push(exports.clone(subtree), c)
+        c.subtrees.push(exports.clone(subtree, c))
     })
 
     return c
