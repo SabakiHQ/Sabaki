@@ -105,14 +105,14 @@ function setCurrentTreePosition(tree, index, now) {
 
     // Determine current player
 
-    setCurrentPlayer(1)
+    var currentplayer = 1
 
-    if ('B' in tree.nodes[index]) setCurrentPlayer(-1)
-    else if ('W' in tree.nodes[index]) setCurrentPlayer(1)
-    else if ('PL' in tree.nodes[index])
-        setCurrentPlayer(tree.nodes[index].PL[0] == 'W' ? -1 : 1)
-    else if ('HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
-        setCurrentPlayer(-1)
+    if ('B' in tree.nodes[index]
+    || 'PL' in tree.nodes[index] && tree.nodes[index].PL[0] == 'W'
+    || 'HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
+        currentplayer = -1
+
+    setCurrentPlayer(currentplayer)
 }
 
 function getCurrentGraphNode() {
