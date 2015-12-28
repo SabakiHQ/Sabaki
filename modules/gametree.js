@@ -29,7 +29,9 @@ exports.clone = function(tree, parent) {
     }
 
     tree.nodes.forEach(function(node) {
-        c.nodes.push(Object.clone(node))
+        var cn = Object.clone(node)
+        delete cn.board
+        c.nodes.push(cn)
     })
 
     tree.subtrees.forEach(function(subtree) {
