@@ -4,8 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+* More responsive game graph
+
 **Fixed**
 * Fix engines not showing in preferences when removed but not saved
+* Fix loading games failing in scoring mode
 
 ## [Sabaki v0.7.0][v0.7.0] (2015-12-27)
 

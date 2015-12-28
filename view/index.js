@@ -34,7 +34,7 @@ function setRootTree(tree) {
 
     tree.parent = null
     document.body.store('treehash', gametree.getHash(tree))
-    setCurrentTreePosition(sgf.addBoard(tree), 0)
+    setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
     if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
@@ -70,7 +70,7 @@ function getCurrentTreePosition() {
     return $('goban').retrieve('position')
 }
 
-function setCurrentTreePosition(tree, index) {
+function setCurrentTreePosition(tree, index, now) {
     if (!tree || getScoringMode()) return
 
     // Remove old graph node color
@@ -99,7 +99,7 @@ function setCurrentTreePosition(tree, index) {
 
     // Update graph, slider and comment text
 
-    updateSidebar(redraw)
+    updateSidebar(redraw, now)
     sgf.addBoard(tree, index)
     if (tree.nodes[index].board) setBoard(tree.nodes[index].board)
 
@@ -288,7 +288,7 @@ function prepareGameGraph() {
 
     s.bind('clickNode', function(e) {
         e.data.node.data.unpack(function(tree, index) {
-            setCurrentTreePosition(tree, index)
+            setCurrentTreePosition(tree, index, true)
         })
     }).bind('rightClickNode', function(e) {
         e.data.node.data.unpack(function(tree, index) {
@@ -876,7 +876,7 @@ function vertexClicked(vertex) {
     }
 }
 
-function updateSidebar(redraw) {
+function updateSidebar(redraw, now) {
     if (updateSidebarLambda) clearTimeout(updateSidebarLambda)
 
     getCurrentTreePosition().unpack(function(tree, index) {
@@ -898,7 +898,7 @@ function updateSidebar(redraw) {
             updateCommentText()
             if (redraw) updateGraph()
             centerGraphCameraAt(getCurrentGraphNode())
-        }, setting.get('graph.delay'))
+        }, now ? 0 : setting.get('graph.delay'))
     })
 }
 
