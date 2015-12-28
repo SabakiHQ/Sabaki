@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+* Click current stone to remove node
+
 **Changed**
 * More responsive game graph
 

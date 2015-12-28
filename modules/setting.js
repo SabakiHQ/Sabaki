@@ -75,6 +75,7 @@ exports
     'loadsgf'
 ])
 .default('console.max_history_count', 30)
+.default('edit.click_currentvertex_to_remove', true)
 .default('game.default_board_size', 19)
 .default('game.default_komi', 6.5)
 .default('game.goto_end_after_loading', false)

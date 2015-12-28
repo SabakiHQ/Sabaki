@@ -870,8 +870,18 @@ function vertexClicked(vertex) {
         findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
     } else {
         // Playing mode
+
         if (event.button != 0) return
-        makeMove(vertex)
+        var board = getBoard()
+
+        if (board.arrangement[vertex] == 0) {
+            makeMove(vertex)
+        } else if (vertex in board.overlays
+        && board.overlays[vertex][0] == 'point'
+        && setting.get('edit.click_currentvertex_to_remove')) {
+            getCurrentTreePosition().unpack(removeNode)
+        }
+
         closeDrawers()
     }
 }
