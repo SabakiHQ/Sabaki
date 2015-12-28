@@ -314,6 +314,20 @@ function setPreferencesTab(tab) {
         $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
 }
 
+function setUndoable(undoable, rootTree, position) {
+    if (undoable) {
+        document.body
+            .addClass('undoable')
+            .store('undodata-root', rootTree)
+            .store('undodata-pos', position)
+    } else {
+        document.body
+            .removeClass('undoable')
+            .store('undodata-root', null)
+            .store('undodata-pos', null)
+    }
+}
+
 /**
  * Methods
  */
