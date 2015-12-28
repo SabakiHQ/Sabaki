@@ -1007,6 +1007,7 @@ function commitCommentText() {
 
     updateCommentText()
     updateSidebar(true)
+    setUndoable(false)
 }
 
 function commitGameInfo() {
@@ -1054,6 +1055,8 @@ function commitGameInfo() {
 
         setCurrentTreePosition(getRootTree(), 0)
     }
+
+    setUndoable(false)
 }
 
 function commitScore() {
@@ -1064,7 +1067,9 @@ function commitScore() {
     if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
+    
     showGameInfo()
+    setUndoable(false)
 }
 
 function commitPreferences() {
