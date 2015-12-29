@@ -1418,7 +1418,7 @@ function removeNode(tree, index) {
     setCurrentTreePosition(prev[0], prev[1])
 }
 
-function undoRemoveNode() {
+function undoBoard() {
     if (document.body.retrieve('undodata-root') == null
     || document.body.retrieve('undodata-pos') == null)
         return
