@@ -29,11 +29,11 @@ function getRootTree() {
     return gametree.getRoot(getCurrentTreePosition()[0])
 }
 
-function setRootTree(tree) {
+function setRootTree(tree, updateHash) {
     if (tree.nodes.length == 0) return
 
     tree.parent = null
-    document.body.store('treehash', gametree.getHash(tree))
+    if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
     if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
@@ -1067,7 +1067,7 @@ function commitScore() {
     if (diff != 0) result = result + Math.abs(diff)
 
     rootNode.RE = [result]
-    
+
     showGameInfo()
     setUndoable(false)
 }
@@ -1233,7 +1233,7 @@ function newGame(playSound) {
 
     closeDrawers()
     var tree = sgf.parse(sgf.tokenize(buffer))
-    setRootTree(tree)
+    setRootTree(tree, true)
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
@@ -1263,7 +1263,7 @@ function loadGame(filename) {
                 }).subtrees[0]
 
                 closeDrawers()
-                setRootTree(tree)
+                setRootTree(tree, true)
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
