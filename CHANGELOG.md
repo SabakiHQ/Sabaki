@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 * Undo 'Remove Node' and 'Clear All Overlays'
 * Click current stone to remove node
-* Ability to turn off remove node warning
+* Ability to turn off 'Remove Node' warning
 
 **Changed**
 * More responsive game graph
