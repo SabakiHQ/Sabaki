@@ -1239,12 +1239,15 @@ function startAutoScroll(direction, delay) {
     if (delay == null) delay = 200
     delay = Math.max(50, delay)
 
+    var slider = $$('#sidebar .slider')[0]
+    clearTimeout(slider.retrieve('autoscrollid'))
+
     if (direction > 0) goForward()
     else goBack()
 
-    setTimeout(function() {
-        startAutoScroll(direction, delay - 10)
-    }, delay)
+    slider.store('autoscrollid', setTimeout(function() {
+        startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
+    }, delay))
 }
 
 /**
