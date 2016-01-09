@@ -271,7 +271,7 @@ header, #edit, #scoring, #find, #progress {
 #graph {
         position: absolute;
         top: 0;
-        right: 0;
+        right: 25px;
         left: 0;
         height: 100%;
         z-index: 1;
@@ -279,48 +279,57 @@ header, #edit, #scoring, #find, #progress {
     #graph .slider {
         position: absolute;
         top: 0;
-        right: 0;
+        right: -25px;
         bottom: 0;
-        width: 8px;
+        width: 25px;
+        background: #111;
+        box-shadow: 0 0 10px #111;
         z-index: 10;
-        transition: background .2s;
     }
-    #graph .slider.active, #graph .slider:hover {
-        background: #181818;
-    }
-    #graph .slider div {
+    #graph .slider a {
         position: absolute;
         top: 0;
-        right: 0;
         left: 0;
-        height: 0%;
-        z-index: 2;
-        background: #393939;
-        box-shadow: 0 0 10px #111;
-        transition: height .5s, background .2s;
-    }
-    #graph .slider.active div, #graph .slider:hover div {
-        background: #494949;
-    }
-    #graph .slider.active div, #graph .slider.active span { transition: none; }
-    #graph .slider span {
-        position: absolute;
-        right: 8px;
-        top: 25px;
-        width: 20px;
-        border-right: 3px solid #111;
-        padding: 2px 9px 2px 5px;
-        background: #494949 url('../img/ui/sliderlabelarrow.png') no-repeat right;
-        color: #ccc;
+        height: 25px;
+        width: 25px;
+        color: #666;
         font-size: .8em;
+        line-height: 25px;
         text-align: center;
-        opacity: 0;
-        box-shadow: 0 0 10px #111;
-        z-index: 1;
-        transition: opacity .2s, top .5s;
+        text-decoration: none;
+        transition: color .2s;
     }
-    #graph .slider:hover span, #graph .slider.active span {
-        opacity: 1;
+    #graph .slider a:active { color: #eee; }
+    #graph .slider a.next {
+        top: auto;
+        bottom: 0;
+    }
+    #graph .slider .inner {
+        position: absolute;
+        top: 35px;
+        left: 0;
+        right: 0;
+        bottom: 35px;
+    }
+    #graph .slider .inner span {
+        position: absolute;
+        top: 0%;
+        left: 0;
+        right: 0;
+        height: 20px;
+        margin-top: -10px;
+        background: #393939;
+        color: #ccc;
+        font-size: .7em;
+        line-height: 20px;
+        text-align: center;
+        transition: top .2s, background .2s;
+    }
+    #graph .slider .inner.active span {
+        transition: none;
+    }
+    #graph .slider .inner.active span, #graph .slider .inner span:hover {
+        background: #494949;
 }
 
 #properties {

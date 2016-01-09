@@ -317,13 +317,14 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    var slider = $$('#sidebar .slider')[0]
+    var slider = $$('#sidebar .slider .inner')[0]
     Element.NativeEvents.touchstart = 2
     Element.NativeEvents.touchmove = 2
     Element.NativeEvents.touchend = 2
 
     var changeSlider = function(percentage) {
-        var height = Math.round((gametree.getCurrentHeight(getRootTree()) - 1) * percentage)
+        percentage = Math.min(1, Math.max(0, percentage))
+        var height = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
         if (pos.equals(getCurrentTreePosition())) return
@@ -339,7 +340,7 @@ function prepareSlider() {
     }).addEvent('touchstart', function() {
         this.addClass('active')
     }).addEvent('touchmove', function(e) {
-        var percentage = e.client.y / slider.getSize().y
+        var percentage = (e.client.y - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
     }).addEvent('touchend', function() {
         this.removeClass('active')
@@ -352,8 +353,19 @@ function prepareSlider() {
         if (event.buttons != 1 || !slider.retrieve('mousedown'))
             return
 
-        var percentage = event.clientY / slider.getSize().y
+        var percentage = (event.clientY - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
+    })
+
+    // Prepare previous/next buttons
+
+    $$('#sidebar .slider a').addEvent('mousedown', function() {
+        this.store('mousedown', true)
+        startAutoScroll(this.hasClass('next') ? 1 : -1)
+    })
+
+    document.addEvent('mouseup', function() {
+        $$('#sidebar .slider a').store('mousedown', false)
     })
 }
 
@@ -963,7 +975,7 @@ function updateSlider() {
     if (!getShowSidebar()) return
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        var total = gametree.getCurrentHeight(getRootTree()) - 1
+        var total = gametree.getHeight(getRootTree()) - 1
         var relative = gametree.getLevel(tree, index)
 
         setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
@@ -1218,6 +1230,25 @@ function askForSave() {
     }
 
     return true
+}
+
+function startAutoScroll(direction, delay) {
+    if (direction > 0 && !$$('#sidebar .slider a.next')[0].retrieve('mousedown')
+    || direction < 0 && !$$('#sidebar .slider a.prev')[0].retrieve('mousedown')) return
+
+    if (delay == null) delay = setting.get('autoscroll.max_interval')
+    delay = Math.max(setting.get('autoscroll.min_interval'), delay)
+
+    var slider = $$('#sidebar .slider')[0]
+    clearTimeout(slider.retrieve('autoscrollid'))
+
+    if (direction > 0) goForward()
+    else goBack()
+    updateSlider()
+
+    slider.store('autoscrollid', setTimeout(function() {
+        startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
+    }, delay))
 }
 
 /**

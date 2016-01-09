@@ -229,21 +229,15 @@ function setCommentText(text) {
 }
 
 function getSliderValue() {
-    var value = $$('#sidebar .slider div')[0].getStyle('height').toInt()
-    var label = $$('#sidebar .slider span')[0].get('text')
+    var span = $$('#sidebar .slider .inner span')[0]
+    var value = span.getStyle('top').toInt()
+    var label = span.get('text')
 
     return new Tuple(value, label)
 }
 
 function setSliderValue(value, label) {
-    var handle = $$('#sidebar .slider div')[0]
-    var labelel = $$('#sidebar .slider span')[0]
-
-    var top = value * $('graph').getSize().y / 100 - labelel.getSize().y / 2
-    top = Math.min(Math.max(top, 10), $('graph').getSize().y - 10 - labelel.getSize().y)
-
-    handle.setStyle('height', value + '%')
-    labelel.set('text', label).setStyle('top', top)
+    $$('#sidebar .slider .inner span').setStyle('top', value + '%').set('text', label)
 }
 
 function getFindMode() {
