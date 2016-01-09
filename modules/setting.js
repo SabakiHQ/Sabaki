@@ -8,7 +8,7 @@ var enginespath = path.join(app.getPath('userData'), 'engines.json')
 var settings = {}
 var engines = []
 
-var defaultsettings = {
+var defaults = {
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 100,
     'app.loadgame_delay': 100,
@@ -69,9 +69,9 @@ exports.load = function() {
 
     // Load default settings
 
-    for (var key in defaultsettings) {
+    for (var key in defaults) {
         if (key in settings) continue
-        settings[key] = defaultsettings[key]
+        settings[key] = defaults[key]
     }
 
     return exports
@@ -85,7 +85,7 @@ exports.save = function() {
 
 exports.get = function(key) {
     if (key in settings) return settings[key]
-    if (key in defaultsettings) return defaultsettings[key]
+    if (key in defaults) return defaults[key]
     return null
 }
 
