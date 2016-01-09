@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Autoscroll games
+
 **Changed**
 
+* New slider design
 * Update to Electron v0.36.3
 
 ## [Sabaki v0.7.1][v0.7.1] (2015-12-31)
