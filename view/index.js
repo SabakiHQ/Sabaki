@@ -356,6 +356,17 @@ function prepareSlider() {
         var percentage = (event.clientY - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
     })
+
+    // Prepare previous/next buttons
+
+    $$('#sidebar .slider a').addEvent('mousedown', function() {
+        this.store('mousedown', true)
+        startAutoScroll(this.hasClass('next') ? 1 : -1)
+    })
+
+    document.addEvent('mouseup', function() {
+        $$('#sidebar .slider a').store('mousedown', false)
+    })
 }
 
 function prepareDragDropFiles() {
@@ -1219,6 +1230,21 @@ function askForSave() {
     }
 
     return true
+}
+
+function startAutoScroll(direction, delay) {
+    if (direction > 0 && !$$('#sidebar .slider a.next')[0].retrieve('mousedown')
+    || direction < 0 && !$$('#sidebar .slider a.prev')[0].retrieve('mousedown')) return
+
+    if (delay == null) delay = 200
+    delay = Math.max(50, delay)
+
+    if (direction > 0) goForward()
+    else goBack()
+
+    setTimeout(function() {
+        startAutoScroll(direction, delay - 10)
+    }, delay)
 }
 
 /**
