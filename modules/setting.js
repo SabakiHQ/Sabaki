@@ -63,6 +63,14 @@ exports.load = function() {
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
     engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
     engines.sort(function(x, y) { return x.name >= y.name })
+
+    // Load default settings
+
+    for (var key in defaultsettings) {
+        if (key in settings) continue
+        settings[key] = defaultsettings[key]
+    }
+
     return exports
 }
 
