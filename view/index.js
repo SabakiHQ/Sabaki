@@ -1236,8 +1236,8 @@ function startAutoScroll(direction, delay) {
     if (direction > 0 && !$$('#sidebar .slider a.next')[0].retrieve('mousedown')
     || direction < 0 && !$$('#sidebar .slider a.prev')[0].retrieve('mousedown')) return
 
-    if (delay == null) delay = 200
-    delay = Math.max(50, delay)
+    if (delay == null) delay = setting.get('autoscroll.max_interval')
+    delay = Math.max(setting.get('autoscroll.min_interval'), delay)
 
     var slider = $$('#sidebar .slider')[0]
     clearTimeout(slider.retrieve('autoscrollid'))
