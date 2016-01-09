@@ -271,7 +271,7 @@ header, #edit, #scoring, #find, #progress {
 #graph {
         position: absolute;
         top: 0;
-        right: 0;
+        right: 25px;
         left: 0;
         height: 100%;
         z-index: 1;
@@ -279,7 +279,7 @@ header, #edit, #scoring, #find, #progress {
     #graph .slider {
         position: absolute;
         top: 0;
-        right: 0;
+        right: -25px;
         bottom: 0;
         width: 25px;
         background: #111;
