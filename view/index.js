@@ -324,7 +324,7 @@ function prepareSlider() {
 
     var changeSlider = function(percentage) {
         percentage = Math.min(1, Math.max(0, percentage))
-        var height = Math.round((gametree.getCurrentHeight(getRootTree()) - 1) * percentage)
+        var height = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
         if (pos.equals(getCurrentTreePosition())) return
@@ -964,7 +964,7 @@ function updateSlider() {
     if (!getShowSidebar()) return
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        var total = gametree.getCurrentHeight(getRootTree()) - 1
+        var total = gametree.getHeight(getRootTree()) - 1
         var relative = gametree.getLevel(tree, index)
 
         setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
