@@ -297,6 +297,7 @@ header, #edit, #scoring, #find, #progress {
         line-height: 25px;
         text-align: center;
         text-decoration: none;
+        transition: color .2s;
     }
     #graph .slider a:active { color: #eee; }
     #graph .slider a.next {
