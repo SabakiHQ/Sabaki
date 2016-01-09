@@ -229,6 +229,8 @@ function setCommentText(text) {
 }
 
 function getSliderValue() {
+    return new Tuple(0, "0")
+
     var value = $$('#sidebar .slider div')[0].getStyle('height').toInt()
     var label = $$('#sidebar .slider span')[0].get('text')
 
@@ -236,6 +238,8 @@ function getSliderValue() {
 }
 
 function setSliderValue(value, label) {
+    return
+    
     var handle = $$('#sidebar .slider div')[0]
     var labelel = $$('#sidebar .slider span')[0]
 
