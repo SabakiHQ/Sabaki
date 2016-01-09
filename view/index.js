@@ -317,44 +317,45 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    var slider = $$('#sidebar .slider')[0]
+    var slider = $$('#sidebar .slider .inner')[0]
     Element.NativeEvents.touchstart = 2
     Element.NativeEvents.touchmove = 2
     Element.NativeEvents.touchend = 2
 
-    // var changeSlider = function(percentage) {
-    //     var height = Math.round((gametree.getCurrentHeight(getRootTree()) - 1) * percentage)
-    //     var pos = gametree.navigate(getRootTree(), 0, height)
-    //
-    //     if (pos.equals(getCurrentTreePosition())) return
-    //     pos.unpack(setCurrentTreePosition)
-    //     updateSlider()
-    // }
-    //
-    // slider.addEvent('mousedown', function() {
-    //     if (event.buttons != 1) return
-    //
-    //     this.store('mousedown', true).addClass('active')
-    //     document.fireEvent('mousemove')
-    // }).addEvent('touchstart', function() {
-    //     this.addClass('active')
-    // }).addEvent('touchmove', function(e) {
-    //     var percentage = e.client.y / slider.getSize().y
-    //     changeSlider(percentage)
-    // }).addEvent('touchend', function() {
-    //     this.removeClass('active')
-    // })
-    //
-    // document.addEvent('mouseup', function() {
-    //     slider.store('mousedown', false)
-    //         .removeClass('active')
-    // }).addEvent('mousemove', function() {
-    //     if (event.buttons != 1 || !slider.retrieve('mousedown'))
-    //         return
-    //
-    //     var percentage = event.clientY / slider.getSize().y
-    //     changeSlider(percentage)
-    // })
+    var changeSlider = function(percentage) {
+        percentage = Math.min(1, Math.max(0, percentage))
+        var height = Math.round((gametree.getCurrentHeight(getRootTree()) - 1) * percentage)
+        var pos = gametree.navigate(getRootTree(), 0, height)
+
+        if (pos.equals(getCurrentTreePosition())) return
+        pos.unpack(setCurrentTreePosition)
+        updateSlider()
+    }
+
+    slider.addEvent('mousedown', function() {
+        if (event.buttons != 1) return
+
+        this.store('mousedown', true).addClass('active')
+        document.fireEvent('mousemove')
+    }).addEvent('touchstart', function() {
+        this.addClass('active')
+    }).addEvent('touchmove', function(e) {
+        var percentage = (e.client.y - slider.getPosition().y) / slider.getSize().y
+        changeSlider(percentage)
+    }).addEvent('touchend', function() {
+        this.removeClass('active')
+    })
+
+    document.addEvent('mouseup', function() {
+        slider.store('mousedown', false)
+            .removeClass('active')
+    }).addEvent('mousemove', function() {
+        if (event.buttons != 1 || !slider.retrieve('mousedown'))
+            return
+
+        var percentage = (event.clientY - slider.getPosition().y) / slider.getSize().y
+        changeSlider(percentage)
+    })
 }
 
 function prepareDragDropFiles() {

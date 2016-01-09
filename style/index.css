@@ -310,7 +310,7 @@ header, #edit, #scoring, #find, #progress {
         right: 0;
         bottom: 35px;
     }
-    #graph .slider span {
+    #graph .slider .inner span {
         position: absolute;
         top: 0%;
         left: 0;
@@ -324,6 +324,9 @@ header, #edit, #scoring, #find, #progress {
         text-align: center;
         transition: top .2s;
     }
+    #graph .slider .inner.active span {
+        transition: none;
+}
 
 #properties {
         position: absolute;
