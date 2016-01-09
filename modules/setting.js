@@ -8,6 +8,57 @@ var enginespath = path.join(app.getPath('userData'), 'engines.json')
 var settings = {}
 var engines = []
 
+var defaultsettings = {
+    'app.startup_check_updates': true,
+    'app.startup_check_updates_delay': 100,
+    'app.loadgame_delay': 100,
+    'console.blocked_commands': [
+        'boardsize', 'clear_board', 'play',
+        'genmove', 'undo', 'fixed_handicap',
+        'place_free_handicap', 'set_free_handicap',
+        'loadsgf'
+    ],
+    'console.max_history_count': 30,
+    'edit.click_currentvertex_to_remove': true,
+    'edit.show_removenode_warning': true,
+    'edit.undo_delay': 100,
+    'game.default_board_size': 19,
+    'game.default_komi': 6.5,
+    'game.goto_end_after_loading': false,
+    'game.show_ko_warning': true,
+    'game.show_suicide_warning': true,
+    'graph.collapse_min_depth': 1,
+    'graph.collapse_tokens_count': 100000,
+    'graph.delay': 300,
+    'graph.grid_size': 25,
+    'graph.node_active_color': '#f76047',
+    'graph.node_collapsed_color': '#333',
+    'graph.node_inactive_color': '#777',
+    'graph.node_color': '#eee',
+    'graph.node_comment_color': '#6bb1ff',
+    'graph.node_size': 4,
+    'gtp.attach_delay': 300,
+    'gtp.move_delay': 300,
+    'scoring.method': 'territory',
+    'sound.enable': true,
+    'view.comments_height': 50,
+    'view.comments_minheight': 20,
+    'view.fuzzy_stone_placement': true,
+    'view.show_leftsidebar': false,
+    'view.show_comments': false,
+    'view.show_coordinates': false,
+    'view.show_variations': true,
+    'view.show_graph': false,
+    'view.leftsidebar_width': 250,
+    'view.leftsidebar_minwidth': 100,
+    'view.sidebar_width': 200,
+    'view.sidebar_minwidth': 100,
+    'window.height': 648,
+    'window.minheight': 590,
+    'window.minwidth': 550,
+    'window.width': 608,
+}
+
 exports.load = function() {
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
     engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
@@ -22,17 +73,14 @@ exports.save = function() {
 }
 
 exports.get = function(key) {
-    return settings[key]
+    if (key in settings) return settings[key]
+    if (key in defaultsettings) return defaultsettings[key]
+    return null
 }
 
 exports.set = function(key, value) {
     settings[key] = value
     return exports.save()
-}
-
-exports.default = function(key, value) {
-    if (exports.get(key) == null) exports.set(key, value)
-    return exports
 }
 
 exports.addEngine = function(name, path, args) {
@@ -62,54 +110,3 @@ try {
 }
 
 exports.load()
-
-// Generate default settings
-exports
-.default('app.startup_check_updates', true)
-.default('app.startup_check_updates_delay', 100)
-.default('app.loadgame_delay', 100)
-.default('console.blocked_commands', [
-    'boardsize', 'clear_board', 'play',
-    'genmove', 'undo', 'fixed_handicap',
-    'place_free_handicap', 'set_free_handicap',
-    'loadsgf'
-])
-.default('console.max_history_count', 30)
-.default('edit.click_currentvertex_to_remove', true)
-.default('edit.show_removenode_warning', true)
-.default('edit.undo_delay', 100)
-.default('game.default_board_size', 19)
-.default('game.default_komi', 6.5)
-.default('game.goto_end_after_loading', false)
-.default('game.show_ko_warning', true)
-.default('game.show_suicide_warning', true)
-.default('graph.collapse_min_depth', 1)
-.default('graph.collapse_tokens_count', 100000)
-.default('graph.delay', 300)
-.default('graph.grid_size', 25)
-.default('graph.node_active_color', '#f76047')
-.default('graph.node_collapsed_color', '#333')
-.default('graph.node_inactive_color', '#777')
-.default('graph.node_color', '#eee')
-.default('graph.node_comment_color', '#6bb1ff')
-.default('graph.node_size', 4)
-.default('gtp.attach_delay', 300)
-.default('gtp.move_delay', 300)
-.default('scoring.method', 'territory')
-.default('sound.enable', true)
-.default('view.comments_height', 50)
-.default('view.comments_minheight', 20)
-.default('view.fuzzy_stone_placement', true)
-.default('view.show_leftsidebar', false)
-.default('view.show_comments', false)
-.default('view.show_coordinates', false)
-.default('view.show_variations', true)
-.default('view.show_graph', false)
-.default('view.leftsidebar_width', 250)
-.default('view.leftsidebar_minwidth', 100)
-.default('view.sidebar_width', 200)
-.default('view.sidebar_minwidth', 100)
-.default('window.height', 648)
-.default('window.minheight', 590)
-.default('window.minwidth', 550)
-.default('window.width', 608)
