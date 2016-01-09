@@ -281,11 +281,48 @@ header, #edit, #scoring, #find, #progress {
         top: 0;
         right: 0;
         bottom: 0;
-        width: 20px;
-        background: #181818;
+        width: 25px;
         box-shadow: 10px 0 10px #111;
         z-index: 10;
-}
+    }
+    #graph .slider a {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        color: #666;
+        font-size: .8em;
+        line-height: 25px;
+        text-align: center;
+        text-decoration: none;
+    }
+    #graph .slider a:active { color: #eee; }
+    #graph .slider a.next {
+        top: auto;
+        bottom: 0;
+    }
+    #graph .slider .inner {
+        position: absolute;
+        top: 35px;
+        left: 0;
+        right: 0;
+        bottom: 35px;
+    }
+    #graph .slider span {
+        position: absolute;
+        top: 0%;
+        left: 0;
+        right: 0;
+        height: 20px;
+        margin-top: -10px;
+        background: #393939;
+        color: #ccc;
+        font-size: .7em;
+        line-height: 20px;
+        text-align: center;
+        transition: top .2s;
+    }
 
 #properties {
         position: absolute;
