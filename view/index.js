@@ -1244,6 +1244,7 @@ function startAutoScroll(direction, delay) {
 
     if (direction > 0) goForward()
     else goBack()
+    updateSlider()
 
     slider.store('autoscrollid', setTimeout(function() {
         startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
