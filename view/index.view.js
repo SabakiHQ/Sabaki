@@ -230,7 +230,7 @@ function setCommentText(text) {
 
 function getSliderValue() {
     var span = $$('#sidebar .slider .inner span')[0]
-    var value = span.getStyle('height').toInt()
+    var value = span.getStyle('top').toInt()
     var label = span.get('text')
 
     return new Tuple(value, label)

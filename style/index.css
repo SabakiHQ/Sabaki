@@ -282,7 +282,8 @@ header, #edit, #scoring, #find, #progress {
         right: 0;
         bottom: 0;
         width: 25px;
-        box-shadow: 10px 0 10px #111;
+        background: #111;
+        box-shadow: 0 0 10px #111;
         z-index: 10;
     }
     #graph .slider a {
