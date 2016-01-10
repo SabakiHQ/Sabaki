@@ -18,8 +18,6 @@ var Scrollbar = require('gemini-scrollbar')
 var Menu = remote.Menu
 var MenuItem = remote.MenuItem
 
-var updateSidebarLambda
-
 /**
  * Getter & setter
  */
@@ -939,10 +937,10 @@ function vertexClicked(vertex) {
 }
 
 function updateSidebar(redraw, now) {
-    if (updateSidebarLambda) clearTimeout(updateSidebarLambda)
+    clearTimeout($('sidebar').retrieve('updatesidebarid'))
 
     getCurrentTreePosition().unpack(function(tree, index) {
-        updateSidebarLambda = setTimeout(function() {
+        $('sidebar').store('updatesidebarid', setTimeout(function() {
             if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
                 return
 
@@ -960,7 +958,7 @@ function updateSidebar(redraw, now) {
             updateCommentText()
             if (redraw) updateGraph()
             centerGraphCameraAt(getCurrentGraphNode())
-        }, now ? 0 : setting.get('graph.delay'))
+        }, now ? 0 : setting.get('graph.delay')))
     })
 }
 
