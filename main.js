@@ -1,7 +1,7 @@
 var app = require('app')
 var process = require('process')
+var BrowserWindow = require('electron').BrowserWindow
 var setting = require('./modules/setting')
-var BrowserWindow = require('browser-window')
 
 var window = null
 
@@ -25,7 +25,7 @@ app.on('ready', function() {
         }
     })
 
-    // window.toggleDevTools()
+    window.toggleDevTools()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
