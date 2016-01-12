@@ -1,7 +1,7 @@
 var app = require('app')
 var process = require('process')
-var BrowserWindow = require('electron').BrowserWindow
 var setting = require('./modules/setting')
+var BrowserWindow = require('electron').BrowserWindow
 
 var window = null
 
