@@ -34,8 +34,8 @@ function setRootTree(tree, updateHash) {
     if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
-    if ('PB' in tree.nodes[0]) setPlayerName(1, tree.nodes[0].PB[0])
-    if ('PW' in tree.nodes[0]) setPlayerName(-1, tree.nodes[0].PW[0])
+    setPlayerName(1, 'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black')
+    setPlayerName(-1, 'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White')
 }
 
 function getGraphMatrixDict() {
