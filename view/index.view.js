@@ -551,7 +551,6 @@ function buildMenu() {
             submenu: [
                 {
                     label: 'Toggle &Edit Mode',
-                    type: 'checkbox',
                     accelerator: 'CmdOrCtrl+E',
                     click: function() { setEditMode(!getEditMode()) }
                 },
