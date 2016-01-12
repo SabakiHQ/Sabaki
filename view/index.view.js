@@ -551,6 +551,7 @@ function buildMenu() {
             submenu: [
                 {
                     label: 'Toggle &Edit Mode',
+                    type: 'checkbox',
                     accelerator: 'CmdOrCtrl+E',
                     click: function() { setEditMode(!getEditMode()) }
                 },
@@ -676,6 +677,8 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Toggle &GTP Console',
+                    type: 'checkbox',
+                    checked: getShowLeftSidebar(),
                     accelerator: 'F12',
                     click: function() { setShowLeftSidebar(!getShowLeftSidebar()) }
                 },
