@@ -440,7 +440,7 @@ function prepareConsole() {
 function loadEngines() {
     // Load menu items
 
-    var menu = document.body.retrieve('mainmenu')
+    var menu = getMainMenu()
     var attachMenu = menu.items[3].submenu.items[0].submenu
 
     attachMenu.clear()
