@@ -1474,8 +1474,8 @@ document.addEvent('keydown', function(e) {
         closeDrawers()
     }
 }).addEvent('domready', function() {
-    buildMenu()
     loadSettings()
+    buildMenu()
     loadEngines()
     prepareDragDropFiles()
     prepareEditTools()

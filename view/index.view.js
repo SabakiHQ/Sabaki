@@ -690,6 +690,8 @@ function buildMenu() {
             submenu: [
                 {
                     label: 'Toggle &Coordinates',
+                    type: 'checkbox',
+                    checked: getShowCoordinates(),
                     click: function() {
                         setShowCoordinates(!getShowCoordinates())
                         resizeBoard()
@@ -697,22 +699,30 @@ function buildMenu() {
                 },
                 {
                     label: 'Toggle &Variations',
+                    type: 'checkbox',
+                    checked: getShowVariations(),
                     click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
                     label: 'Toggle Game &Graph',
+                    type: 'checkbox',
+                    checked: getShowGraph(),
                     accelerator: 'CmdOrCtrl+G',
                     click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
                 },
                 {
                     label: 'Toggle Co&mments',
+                    type: 'checkbox',
+                    checked: getShowComment(),
                     accelerator: 'CmdOrCtrl+H',
                     click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
                 },
                 { type: 'separator' },
                 {
                     label: 'Toggle Full&screen',
+                    type: 'checkbox',
+                    checked: remote.getCurrentWindow().isFullScreen(),
                     accelerator: 'F11',
                     click: function() {
                         var win = remote.getCurrentWindow()
