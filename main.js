@@ -34,5 +34,5 @@ app.on('ready', function() {
 
     window.on('closed', function() { window = null })
 
-    window.loadUrl('file://' + __dirname + '/view/index.html')
+    window.loadURL('file://' + __dirname + '/view/index.html')
 })
