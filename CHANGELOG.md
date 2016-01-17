@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.7.3][v0.7.3] (2016-01-18)
 
 **Fixed**
 
 * Fix loading games with no player names not replacing old names
+
+**Changed**
+
+* Update to Electron v0.36.4
 
 ## [Sabaki v0.7.2][v0.7.2] (2016-01-12)
 
@@ -211,7 +215,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.3...master
+[v0.7.2]: https://github.com/yishn/Sabaki/compare/v0.7.2...v0.7.3
 [v0.7.2]: https://github.com/yishn/Sabaki/compare/v0.7.1...v0.7.2
 [v0.7.1]: https://github.com/yishn/Sabaki/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/yishn/Sabaki/compare/v0.6.0...v0.7.0
