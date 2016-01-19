@@ -1501,7 +1501,13 @@ window.addEvent('load', function() {
 }).addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
-    if (!askForSave()) e.event.returnValue = 'false'
+    if (!askForSave()) {
+        e.event.returnValue = 'false'
+        return
+    }
+
+    detachEngine()
+
     var win = remote.getCurrentWindow()
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
