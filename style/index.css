@@ -594,7 +594,7 @@ header, #edit, #scoring, #find, #progress {
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
     .engines-list li h3 input {
-        font-size: 1.1em;
+        font-size: 1em;
         font-weight: normal;
     }
     .engines-list li h3 + p {
@@ -610,7 +610,7 @@ header, #edit, #scoring, #find, #progress {
         top: 50%;
         border-radius: 8px;
         padding: 3px;
-        margin-top: -8px;
+        margin-top: -6px;
     }
     .engines-list li img:hover {
         background: #E81123;
