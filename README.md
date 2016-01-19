@@ -33,3 +33,5 @@ An elegant Go editor for a more civilized age. [Download the latest release](htt
   ([MIT License](https://github.com/kaelzhang/node-argv-split/blob/master/LICENSE-MIT))
 * [tuple](https://github.com/Wolfy87/tuple)
   ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
+* [Octicons](https://octicons.github.com/)
+  ([License](https://github.com/github/octicons/blob/master/LICENSE.txt)
