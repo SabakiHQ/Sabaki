@@ -34,4 +34,4 @@ An elegant Go editor for a more civilized age. [Download the latest release](htt
 * [tuple](https://github.com/Wolfy87/tuple)
   ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
 * [Octicons](https://octicons.github.com/)
-  ([License](https://github.com/github/octicons/blob/master/LICENSE.txt)
+  ([License](https://github.com/github/octicons/blob/master/LICENSE.txt))
