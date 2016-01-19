@@ -127,11 +127,12 @@ header, #edit, #scoring, #find, #progress {
         top: 0;
         height: 40px;
         width: 35px;
-        background: no-repeat url('../img/ui/close.png') center;
+        background: no-repeat url('../node_modules/octicons/svg/x.svg') center;
+        background-size: 21px 21px;
         opacity: .5;
     }
     #scoring a.close, #find a.close {
-        background: no-repeat url('../img/ui/close_invert.png') center;
+        -webkit-filter: invert(100%);
     }
     #edit a.close:active, #scoring a.close:active, #find a.close:active {
         opacity: .7;
