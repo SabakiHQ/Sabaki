@@ -337,17 +337,18 @@ function addEngineItem(name, path, args) {
             value: args
         }))
     ).grab(
-        new Element('img', {
-            src: '../img/ui/close_invert.png',
-            width: 10,
-            height: 10,
+        new Element('a.remove', {
             events: {
                 click: function() {
-                    this.getParent().dispose()
+                    this.getParent('li').dispose()
                     $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
                 }
             }
-        })
+        }).grab(new Element('img', {
+            src: '../node_modules/octicons/svg/x.svg',
+            width: 14,
+            height: 14
+        }))
     )
 
     ul.grab(li)

@@ -603,18 +603,25 @@ header, #edit, #scoring, #find, #progress {
     .engines-list li > * {
         margin: 0;
     }
-    .engines-list li img {
+    .engines-list li a.remove {
         display: block;
         position: absolute;
+        width: 16px;
+        height: 16px;
         left: 10px;
         top: 50%;
         border-radius: 8px;
-        padding: 3px;
         margin-top: -6px;
     }
-    .engines-list li img:hover {
+    .engines-list li a.remove img {
+        display: block;
+        margin-top: 1px;
+        margin-left: 1px;
+        -webkit-filter: invert(100%);
+    }
+    .engines-list li a.remove:hover {
         background: #E81123;
     }
-    .engines-list li img:active {
+    .engines-list li a.remove:active {
         background: #C60001;
 }
