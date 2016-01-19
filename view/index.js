@@ -480,7 +480,7 @@ function chooseEngine() {
     setIsBusy(true)
 
     var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-        filters: [{ name: 'Executables', extensions: ['exe'] }, { name: 'All Files', extensions: ['*'] }]
+        filters: [{ name: 'All Files', extensions: ['*'] }]
     })
 
     if (result) {
