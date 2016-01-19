@@ -104,6 +104,7 @@ header, #edit, #scoring, #find, #progress {
         padding-right: 7px;
         background: #002090;
     }
+    #find button img { -webkit-filter: invert(100%); }
     #find button:first-child img { transform: scaleY(-1); }
     #find button:not(:first-child) { left: 44px; }
     #find button:hover, #find button.selected {
