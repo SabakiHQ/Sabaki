@@ -675,7 +675,7 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Toggle &GTP Console',
+                    label: 'Show &GTP Console',
                     type: 'checkbox',
                     checked: getShowLeftSidebar(),
                     accelerator: 'F12',
@@ -691,7 +691,7 @@ function buildMenu() {
             label: '&View',
             submenu: [
                 {
-                    label: 'Toggle &Coordinates',
+                    label: 'Show &Coordinates',
                     type: 'checkbox',
                     checked: getShowCoordinates(),
                     click: function() {
@@ -700,21 +700,21 @@ function buildMenu() {
                     }
                 },
                 {
-                    label: 'Toggle &Variations',
+                    label: 'Show &Variations',
                     type: 'checkbox',
                     checked: getShowVariations(),
                     click: function() { setShowVariations(!getShowVariations()) }
                 },
                 { type: 'separator' },
                 {
-                    label: 'Toggle Game &Graph',
+                    label: 'Show Game &Graph',
                     type: 'checkbox',
                     checked: getShowGraph(),
                     accelerator: 'CmdOrCtrl+G',
                     click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
                 },
                 {
-                    label: 'Toggle Co&mments',
+                    label: 'Show Co&mments',
                     type: 'checkbox',
                     checked: getShowComment(),
                     accelerator: 'CmdOrCtrl+H',
@@ -722,7 +722,7 @@ function buildMenu() {
                 },
                 { type: 'separator' },
                 {
-                    label: 'Toggle Full&screen',
+                    label: 'Toggle Full &Screen',
                     type: 'checkbox',
                     checked: remote.getCurrentWindow().isFullScreen(),
                     accelerator: 'F11',
