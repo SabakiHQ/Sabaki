@@ -476,21 +476,6 @@ function loadEngines() {
     })
 }
 
-function chooseEngine() {
-    setIsBusy(true)
-
-    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-        filters: [{ name: 'All Files', extensions: ['*'] }]
-    })
-
-    if (result) {
-        addEngineItem(require('path').basename(result[0], '.exe'), result[0], '')
-        $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
-    }
-
-    setIsBusy(false)
-}
-
 function attachEngine(exec, args) {
     detachEngine()
     setIsBusy(true)
@@ -1101,7 +1086,7 @@ function commitPreferences() {
 
         setting.addEngine(
             nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
-            li.getElement('h3 + p').innerText,
+            li.getElement('h3 + p input').value,
             li.getElement('p input').value
         )
     })

@@ -313,16 +313,23 @@ function setPreferencesTab(tab) {
  */
 
 function addEngineItem(name, path, args) {
-    var ul = $$('#preferences .engines-list ul')[0]
+    if (!name) name = ''
+    if (!path) path = ''
+    if (!args) args = ''
 
-    ul.grab(new Element('li').grab(new Element('h3').grab(
+    var ul = $$('#preferences .engines-list ul')[0]
+    var li = new Element('li').grab(new Element('h3').grab(
         new Element('input', {
             type: 'text',
             placeholder: '(Unnamed engine)',
             value: name
         })
     )).grab(
-        new Element('p', { text: path })
+        new Element('p').grab(new Element('input', {
+            type: 'text',
+            placeholder: 'Path',
+            value: path
+        }))
     ).grab(
         new Element('p').grab(new Element('input', {
             type: 'text',
@@ -341,7 +348,13 @@ function addEngineItem(name, path, args) {
                 }
             }
         })
-    ))
+    )
+
+    ul.grab(li)
+    li.getElement('h3 input').focus()
+
+    var enginesScrollbar = $$('#preferences .engines-list')[0].retrieve('scrollbar')
+    if (enginesScrollbar) enginesScrollbar.update()
 }
 
 function showMessageBox(message, type, buttons, cancelId) {
