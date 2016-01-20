@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Ability to directly enter engine path when adding an engine
 * Detach engine before unloading
 
 ## [Sabaki v0.7.3][v0.7.3] (2016-01-18)
