@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Fixed**
+
+* Fix weird `box-shadow` on stone overlays
+
 **Changed**
 
 * Scale icons proportionally so they don't look weird
