@@ -329,7 +329,30 @@ function addEngineItem(name, path, args) {
             type: 'text',
             placeholder: 'Path',
             value: path
-        }))
+        })).grab(new Element('a.browse', {
+            events: {
+                click: function() {
+                    setIsBusy(true)
+
+                    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                        filters: [{ name: 'All Files', extensions: ['*'] }]
+                    })
+
+                    if (result) {
+                        this.getParent('li')
+                            .getElement('h3 + p input')
+                            .set('value', result[0])
+                            .focus()
+                    }
+
+                    setIsBusy(false)
+                }
+            }
+        }).grab(new Element('img', {
+            src: '../node_modules/octicons/svg/file-directory.svg',
+            width: 14,
+            height: 14
+        })))
     ).grab(
         new Element('p').grab(new Element('input', {
             type: 'text',

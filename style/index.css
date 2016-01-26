@@ -596,6 +596,7 @@ header, #edit, #scoring, #find, #progress {
         background: #1e1e1e;
     }
     .engines-list input {
+        box-sizing: border-box;
         border: none;
         padding: 0;
         width: 100%;
@@ -608,13 +609,12 @@ header, #edit, #scoring, #find, #progress {
         font-size: 1em;
         font-weight: normal;
     }
-    .engines-list li h3 + p {
+    .engines-list li h3 + p input {
+        padding-right: 25px;
         opacity: .5;
     }
-    .engines-list li > * {
-        margin: 0;
-    }
-    .engines-list li a.remove {
+    .engines-list li > * { margin: 0; }
+    .engines-list li a.remove, .engines-list li a.browse {
         display: block;
         position: absolute;
         width: 16px;
@@ -624,7 +624,13 @@ header, #edit, #scoring, #find, #progress {
         border-radius: 8px;
         margin-top: -6px;
     }
-    .engines-list li a.remove img {
+    .engines-list li a.browse {
+        left: auto;
+        right: 10px;
+        opacity: .5;
+        transition: opacity .2s;
+    }
+    .engines-list li a img {
         display: block;
         margin-top: 1px;
         margin-left: 1px;
@@ -635,4 +641,7 @@ header, #edit, #scoring, #find, #progress {
     }
     .engines-list li a.remove:active {
         background: #C60001;
+    }
+    .engines-list li a.browse:active {
+        opacity: 1;
 }
