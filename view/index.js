@@ -1087,7 +1087,7 @@ function commitPreferences() {
         setting.addEngine(
             nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
             li.getElement('h3 + p input').value,
-            li.getElement('p input').value
+            li.getElement('h3 + p + p input').value
         )
     })
 
