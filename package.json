@@ -2,7 +2,7 @@
   "name": "sabaki",
   "productName": "Sabaki",
   "version": "0.7.3",
-  "description": "An elegant Go editor for a more civilized age.",
+  "description": "An elegant Go board and editor for a more civilized age.",
   "author": "Yichuan Shen",
   "main": "main.js",
   "repository": {
