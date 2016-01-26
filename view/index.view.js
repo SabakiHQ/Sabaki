@@ -350,7 +350,6 @@ function addEngineItem(name, path, args) {
             }
         }).grab(new Element('img', {
             src: '../node_modules/octicons/svg/file-directory.svg',
-            width: 14,
             height: 14
         })))
     ).grab(
@@ -369,7 +368,6 @@ function addEngineItem(name, path, args) {
             }
         }).grab(new Element('img', {
             src: '../node_modules/octicons/svg/x.svg',
-            width: 14,
             height: 14
         }))
     )
