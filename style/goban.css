@@ -120,7 +120,7 @@
  */
 
 .goban .row li::after, .goban .row li::after {
-        content: ' ';
+        content: '';
         display: none;
         position: absolute;
         left: 50%;
@@ -148,7 +148,7 @@
         opacity: 1;
     }
     .goban .row li::before {
-        content: ' ';
+        content: '';
         display: none;
         position: absolute;
         left: 50%;
@@ -169,14 +169,14 @@
         background: transparent;
         border-color: white;
         color: white;
-        box-shadow: none;
+        box-shadow: none !important;
         text-shadow: none;
     }
     .goban .row li.sign_-1::before {
         background: transparent;
         border-color: black;
         color: black;
-        box-shadow: none;
+        box-shadow: none !important;
         text-shadow: none;
     }
     .goban .row li.circle::before {
