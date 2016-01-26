@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Scale icons proportionally so they don't look weird
+
 ## [Sabaki v0.7.4][v0.7.4] (2016-01-26)
 
 **Changed**
