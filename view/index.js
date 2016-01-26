@@ -279,8 +279,8 @@ function prepareEditTools() {
             this.getParent().addClass('selected')
         } else if (this.getParent().hasClass('stone-tool')) {
             var img = this.getElement('img')
-            var black = img.get('src') == '../img/edit/stone_1.png'
-            img.set('src', black ? '../img/edit/stone_-1.png' : '../img/edit/stone_1.png')
+            var black = img.get('src') == '../img/edit/stone_1.svg'
+            img.set('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         }
     })
 }

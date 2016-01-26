@@ -1,0 +1,4 @@
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+    <line x1="1" y1="1" x2="19" y2="19" stroke-width="2" stroke="black"/>
+    <line x1="1" y1="1" x2="19" y2="19" stroke-width="2" stroke="black" transform="rotate(90 10 10)"/>
+</svg>
