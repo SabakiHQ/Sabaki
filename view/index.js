@@ -1248,6 +1248,7 @@ function newGame(playSound) {
     closeDrawers()
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree, true)
+    setUndoable(false)
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
@@ -1278,6 +1279,7 @@ function loadGame(filename) {
 
                 closeDrawers()
                 setRootTree(tree, true)
+                setUndoable(false)
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
