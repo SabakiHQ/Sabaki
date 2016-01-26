@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Scale icons proportionally so they don't look weird
+* Styled checkboxes
 
 ## [Sabaki v0.7.4][v0.7.4] (2016-01-26)
 

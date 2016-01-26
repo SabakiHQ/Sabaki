@@ -140,7 +140,7 @@ header, #edit, #scoring, #find, #progress {
         height: 40px;
         width: 35px;
         background: no-repeat url('../node_modules/octicons/svg/x.svg') center;
-        background-size: 21px 21px;
+        background-size: auto 21px;
         opacity: .5;
     }
     #scoring a.close, #find a.close {
@@ -224,7 +224,7 @@ header, #edit, #scoring, #find, #progress {
         background: #222;
     }
     #console .inner form label::after {
-        content: ' ';
+        content: '';
         display: block;
         position: absolute;
         left: 0;
@@ -547,6 +547,9 @@ header, #edit, #scoring, #find, #progress {
     #preferences form.general > div.general,
     #preferences form.engines > div.engines {
         display: block;
+    }
+    #preferences input[type="checkbox"]::before {
+        -webkit-filter: invert(100%);
 }
 
 .tabs {

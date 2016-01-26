@@ -81,7 +81,7 @@ img {
 }
 
 form p, form ul li {
-        margin: 5px 0;
+        margin: 7px 0;
     }
     form ul {
         list-style: none;
@@ -90,9 +90,28 @@ form p, form ul li {
         width: 125px;
     }
     input[type="checkbox"] {
+        -webkit-appearance: none;
+        display: inline-block;
         position: relative;
-        bottom: -2px;
+        height: 20px;
+        width: 20px;
         margin-right: 5px;
+        vertical-align: top;
+    }
+    input[type="checkbox"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('../node_modules/octicons/svg/check.svg') center no-repeat;
+        background-size: auto 16px;
+        opacity: 0;
+        transition: opacity .2s;
+    }
+    input[type="checkbox"]:checked::before {
+        opacity: 1;
     }
     input, button, select, textarea {
         border: 0;
