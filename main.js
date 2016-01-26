@@ -25,7 +25,7 @@ app.on('ready', function() {
         }
     })
 
-    window.toggleDevTools()
+    // window.toggleDevTools()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
