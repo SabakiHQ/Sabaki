@@ -444,6 +444,9 @@ header, #edit, #scoring, #find, #progress {
     #preferences input:focus, #preferences select:focus  {
         background: #1a1a1a;
     }
+    #preferences input[type="checkbox"]:focus {
+        background: #111;
+    }
     button:active {
         position: relative;
         top: 2px;
