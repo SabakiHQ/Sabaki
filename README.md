@@ -2,7 +2,7 @@
 
 <img src="logo.png" width="100" height="100">
 
-An elegant Go board and editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
+An elegant Go board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
 ![Screenshot](screenshot.png)
 
