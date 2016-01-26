@@ -1160,8 +1160,10 @@ function generateMove() {
         }
 
         var v = new Tuple(-1, -1)
-        if (r.content.toLowerCase() != 'pass')
+        if (r.content.toLowerCase() != 'pass') {
             v = gtp.point2vertex(r.content, getBoard().size)
+            v = new Tuple(v[0], v[1])
+        }
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)

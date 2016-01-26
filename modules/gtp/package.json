@@ -1,8 +1,5 @@
 {
   "name": "gtp",
   "version": "0.1.0",
-  "main": "index.js",
-  "dependencies": {
-    "tuple-w": "^1.1.1"
-  }
+  "main": "index.js"
 }

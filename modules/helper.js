@@ -61,7 +61,8 @@ exports.wireLinks = function(container) {
         return false
     })
     container.getElements('.coord').addEvent('mouseenter', function() {
-        showIndicator(gtp.point2vertex(this.get('text'), getBoard().size))
+        var v = gtp.point2vertex(this.get('text'), getBoard().size)
+        showIndicator(new Tuple(v[0], v[1]))
     }).addEvent('mouseleave', function() {
         hideIndicator()
     })
