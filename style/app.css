@@ -93,8 +93,8 @@ form p, form ul li {
         -webkit-appearance: none;
         display: inline-block;
         position: relative;
-        height: 20px;
-        width: 20px;
+        height: 1.5em;
+        width: 1.5em;
         margin-right: 5px;
         vertical-align: top;
     }
