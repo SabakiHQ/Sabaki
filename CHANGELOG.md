@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 * Scale icons proportionally so they don't look weird
 * Styled checkboxes
+* Don't mark stones as dead in friendly territory
 
 ## [Sabaki v0.7.4][v0.7.4] (2016-01-26)
 
