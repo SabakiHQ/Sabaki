@@ -223,18 +223,34 @@ header, #edit, #scoring, #find, #progress {
         margin: .7em 0;
         background: #222;
     }
+    #console .inner form label::before {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 1.3em;
+        width: 20px;
+        background: #393939;
+        transition: background-color .5s;
+    }
     #console .inner form label::after {
         content: '';
         display: block;
         position: absolute;
-        left: 0;
-        height: 1.3em;
-        width: 30px;
-        background: #393939 url('../img/ui/consoleinput.png') right no-repeat;
-        transition: background-color .5s;
+        border-left: 10px #393939 solid;
+        border-top: .65em transparent solid;
+        border-bottom: .65em transparent solid;
+        top: 0;
+        left: 20px;
+        height: 0;
+        width: 0;
+        transition: border-left-color .5s;
     }
-    #console .inner form.waiting label::after { background-color: #FBF593; }
-    #console .inner form:last-child label::after { background-color: #F25C3D; }
+    #console .inner form.waiting label::before { background: #FBF593; }
+    #console .inner form.waiting label::after { border-left-color: #FBF593; }
+    #console .inner form:last-child label::before { background: #F25C3D; }
+    #console .inner form:last-child label::after { border-left-color: #F25C3D; }
     #console .inner form input {
         box-sizing: border-box;
         position: absolute;
