@@ -16,6 +16,10 @@ var Board = function(size, arrangement, captures) {
 }
 
 Board.prototype = {
+    clone: function() {
+        return this.makeMove(0)
+    },
+
     hasVertex: function(vertex) {
         var x = vertex[0], y = vertex[1]
         return 0 <= Math.min(x, y) && Math.max(x, y) < this.size

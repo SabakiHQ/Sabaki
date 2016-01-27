@@ -160,7 +160,7 @@ exports.addBoard = function(tree, index, baseboard) {
         vertex = exports.point2vertex(node.W[0])
         board = baseboard.makeMove(-1, vertex)
     } else {
-        board = baseboard.makeMove(0)
+        board = baseboard.clone()
     }
 
     var ids = ['AW', 'AE', 'AB']

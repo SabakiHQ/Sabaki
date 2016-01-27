@@ -973,7 +973,7 @@ function updateCommentText() {
 }
 
 function updateAreaMap() {
-    var board = getBoard().makeMove(0)
+    var board = getBoard().clone()
 
     $$('#goban .row li.dead').forEach(function(li) {
         if (li.hasClass('sign_1')) board.captures['-1']++
