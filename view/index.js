@@ -914,7 +914,7 @@ function vertexClicked(vertex) {
         } else if (vertex in board.overlays
         && board.overlays[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
-            getCurrentTreePosition().unpack(removeNode)
+            removeNode.apply(null, getCurrentTreePosition())
         }
 
         closeDrawers()
@@ -924,27 +924,28 @@ function vertexClicked(vertex) {
 function updateSidebar(redraw, now) {
     clearTimeout($('sidebar').retrieve('updatesidebarid'))
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        $('sidebar').store('updatesidebarid', setTimeout(function() {
-            if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
-                return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-            // Set current path
+    $('sidebar').store('updatesidebarid', setTimeout(function() {
+        if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
+            return
 
-            var t = tree
-            while (t.parent) {
-                t.parent.current = t.parent.subtrees.indexOf(t)
-                t = t.parent
-            }
+        // Set current path
 
-            // Update
+        var t = tree
+        while (t.parent) {
+            t.parent.current = t.parent.subtrees.indexOf(t)
+            t = t.parent
+        }
 
-            updateSlider()
-            updateCommentText()
-            if (redraw) updateGraph()
-            centerGraphCameraAt(getCurrentGraphNode())
-        }, now ? 0 : setting.get('graph.delay')))
-    })
+        // Update
+
+        updateSlider()
+        updateCommentText()
+        if (redraw) updateGraph()
+        centerGraphCameraAt(getCurrentGraphNode())
+    }, now ? 0 : setting.get('graph.delay')))
 }
 
 function updateGraph() {
@@ -957,19 +958,20 @@ function updateGraph() {
 function updateSlider() {
     if (!getShowSidebar()) return
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var total = gametree.getHeight(getRootTree()) - 1
-        var relative = gametree.getLevel(tree, index)
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var total = gametree.getHeight(getRootTree()) - 1
+    var relative = gametree.getLevel(tree, index)
 
-        setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
-    })
+    setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
 }
 
 function updateCommentText() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var node = tree.nodes[index]
-        setCommentText('C' in node ? node.C[0] : '')
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var node = tree.nodes[index]
+
+    setCommentText('C' in node ? node.C[0] : '')
 }
 
 function updateAreaMap() {
@@ -1001,11 +1003,12 @@ function updateAreaMap() {
 }
 
 function commitCommentText() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var comment = $$('#properties textarea').get('value')[0]
-        if (comment != '') tree.nodes[index].C = [comment]
-        else delete tree.nodes[index].C
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var comment = $$('#properties textarea').get('value')[0]
+
+    if (comment != '') tree.nodes[index].C = [comment]
+    else delete tree.nodes[index].C
 
     updateCommentText()
     updateSidebar(true)
@@ -1329,48 +1332,53 @@ function clearAllOverlays() {
     // Save undo information
     setUndoable(true)
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        overlayIds.forEach(function(id) {
-            delete tree.nodes[index][id]
-        })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        setCurrentTreePosition(tree, index)
+    overlayIds.forEach(function(id) {
+        delete tree.nodes[index][id]
     })
+
+    setCurrentTreePosition(tree, index)
 }
 
 function goBack() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        gametree.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
-            setCurrentTreePosition(prevTree, prevIndex)
-        })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
+        setCurrentTreePosition(prevTree, prevIndex)
     })
 }
 
 function goForward() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        gametree.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
-            setCurrentTreePosition(nextTree, nextIndex)
-        })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    gametree.navigate(tree, index, 1).unpack(function(nextTree, nextIndex) {
+        setCurrentTreePosition(nextTree, nextIndex)
     })
 }
 
 function goToNextFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (index != tree.nodes.length - 1)
-            setCurrentTreePosition(tree, tree.nodes.length - 1)
-        else if (tree.current != null) {
-            var subtree = tree.subtrees[tree.current]
-            setCurrentTreePosition(subtree, subtree.nodes.length - 1)
-        }
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    if (index != tree.nodes.length - 1)
+        setCurrentTreePosition(tree, tree.nodes.length - 1)
+    else if (tree.current != null) {
+        var subtree = tree.subtrees[tree.current]
+        setCurrentTreePosition(subtree, subtree.nodes.length - 1)
+    }
 }
 
 function goToPreviousFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (tree.parent == null || tree.parent.nodes.length == 0)
-            setCurrentTreePosition(tree, 0)
-        else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    if (tree.parent == null || tree.parent.nodes.length == 0)
+        setCurrentTreePosition(tree, 0)
+    else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
 }
 
 function goToBeginning() {
@@ -1385,23 +1393,27 @@ function goToEnd() {
 }
 
 function goToNextVariation() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (!tree.parent) return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        var mod = tree.parent.subtrees.length
-        var i = (tree.parent.current + 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[i], 0)
-    })
+    if (!tree.parent) return
+
+    var mod = tree.parent.subtrees.length
+    var i = (tree.parent.current + 1) % mod
+
+    setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function goToPreviousVariation() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (!tree.parent) return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        var mod = tree.parent.subtrees.length
-        var i = (tree.parent.current + mod - 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[i], 0)
-    })
+    if (!tree.parent) return
+
+    var mod = tree.parent.subtrees.length
+    var i = (tree.parent.current + mod - 1) % mod
+
+    setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function removeNode(tree, index) {
