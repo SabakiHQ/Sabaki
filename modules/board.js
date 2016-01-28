@@ -73,7 +73,7 @@ Board.prototype = {
 
         chain.forEach(function(c) {
             liberties.append(this.getNeighborhood(c).filter(function(n) {
-                return this.arrangement[n] == 0 && !liberties.some(function(v) { return v.equals(n) })
+                return this.arrangement[n] == 0 && !liberties.some(function(v) { return helper.equals(v, n) })
             }.bind(this)))
         }.bind(this))
 
@@ -181,7 +181,7 @@ Board.prototype = {
 
             var ll = this.getLiberties(n)
             if (ll.length != 1) return;
-            if (!ll[0].equals(vertex)) return;
+            if (!helper.equals(ll[0], vertex)) return;
 
             this.getChain(n).forEach(function(c) {
                 move.arrangement[c] = 0

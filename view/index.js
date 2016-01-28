@@ -325,7 +325,7 @@ function prepareSlider() {
         var height = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
-        if (pos.equals(getCurrentTreePosition())) return
+        if (helper.equals(pos, getCurrentTreePosition())) return
         setCurrentTreePosition.apply(null, pos)
         updateSlider()
     }
@@ -643,7 +643,7 @@ function makeMove(vertex, sendCommand) {
             // Search for next move
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && sgf.point2vertex(nextNode[color][0]).equals(vertex)
+                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex)
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
@@ -654,7 +654,7 @@ function makeMove(vertex, sendCommand) {
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
-                    && sgf.point2vertex(subtree.nodes[0][color][0]).equals(vertex)
+                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0], vertex)
             })
 
             if (variations.length > 0) {
@@ -874,7 +874,7 @@ function findMove(vertex, step) {
                 iterator = gametree.makeNodeIterator.apply(null, pos)
             }
 
-            if (pos.equals(getCurrentTreePosition()) || (function(tree, index) {
+            if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
                 var node = tree.nodes[index]
 
                 return ['B', 'W'].some(function(c) {
@@ -930,7 +930,7 @@ function updateSidebar(redraw, now) {
     var tree = tp[0], index = tp[1]
 
     $('sidebar').store('updatesidebarid', setTimeout(function() {
-        if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
+        if (!helper.equals(getCurrentTreePosition(), new Tuple(tree, index)))
             return
 
         // Set current path

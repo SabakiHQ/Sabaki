@@ -1,6 +1,7 @@
 var Tuple = require('tuple-w')
 
 var gametree = require('../modules/gametree')
+var helper = require('../modules/helper')
 var fs = require('fs')
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
@@ -53,8 +54,8 @@ exports.parse = function(tokens, callback, start, depth) {
         && depth >= setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
-        if (new Tuple('parenthesis', '(').equals(tokens[i])) break
-        if (new Tuple('parenthesis', ')').equals(tokens[i])) return tree
+        if (helper.equals(new Tuple('parenthesis', '('), tokens[i])) break
+        if (helper.equals(new Tuple('parenthesis', ')'), tokens[i])) return tree
 
         var type = tokens[i][0], value = tokens[i][1]
 
@@ -72,7 +73,7 @@ exports.parse = function(tokens, callback, start, depth) {
     }
 
     while (i < tokens.length) {
-        if (new Tuple('parenthesis', '(').equals(tokens[i])) {
+        if (helper.equals(new Tuple('parenthesis', '('), tokens[i])) {
             start[0] = i + 1
 
             t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
@@ -81,7 +82,7 @@ exports.parse = function(tokens, callback, start, depth) {
             tree.current = 0
 
             i = start[0]
-        } else if (new Tuple('parenthesis', ')').equals(tokens[i])) {
+        } else if (helper.equals(new Tuple('parenthesis', ')'), tokens[i])) {
             start[0] = i
             callback(i / tokens.length)
             break

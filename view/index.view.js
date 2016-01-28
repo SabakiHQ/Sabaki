@@ -455,7 +455,7 @@ function buildBoard() {
                 .addClass('shift_' + Math.floor(Math.random() * 9))
             var img = new Element('img', { src: '../img/goban/stone_0.png' })
 
-            if (hoshi.some(function(v) { return v.equals(vertex) }))
+            if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 li.addClass('hoshi')
 
             ol.adopt(li.adopt(img)
