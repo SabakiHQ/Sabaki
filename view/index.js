@@ -12,7 +12,6 @@ var dialog = remote.dialog
 var gtp = remote.require('./modules/gtp')
 var setting = remote.require('./modules/setting')
 
-var Tuple = require('tuple-w')
 var Board = require('../modules/board')
 var Scrollbar = require('gemini-scrollbar')
 var Menu = remote.Menu
@@ -82,7 +81,7 @@ function setCurrentTreePosition(tree, index, now) {
 
     // Store new position
 
-    $('goban').store('position', new Tuple(tree, index))
+    $('goban').store('position', [tree, index])
     var redraw = !node
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed && index == tree.nodes.length - 1
@@ -114,8 +113,9 @@ function setCurrentTreePosition(tree, index, now) {
 }
 
 function getCurrentGraphNode() {
-    if (!getCurrentTreePosition()) return null
-    return getCurrentTreePosition().unpack(getGraphNode)
+    var pos = getCurrentTreePosition()
+    if (!pos) return null
+    return getGraphNode(pos[0], pos[1])
 }
 
 function getGraphNode(tree, index) {
@@ -170,11 +170,12 @@ function setBoard(board) {
             li.set('title', '')
 
             if (li.retrieve('tuple') in board.overlays) {
-                board.overlays[li.retrieve('tuple')].unpack(function(type, ghost, label) {
-                    if (type != '') li.addClass(type)
-                    if (ghost != 0) li.addClass('ghost_' + ghost)
-                    if (label != '') li.set('title', label)
-                })
+                var overlay = board.overlays[li.retrieve('tuple')]
+                var type = overlay[0], ghost = overlay[1], label = overlay[2]
+
+                if (type != '') li.addClass(type)
+                if (ghost != 0) li.addClass('ghost_' + ghost)
+                if (label != '') li.set('title', label)
             }
 
             if (li.hasClass('sign_' + sign)) continue
@@ -235,7 +236,7 @@ function getEngineCommands() {
 function setUndoable(undoable) {
     if (undoable) {
         var rootTree = gametree.clone(getRootTree())
-        var position = getCurrentTreePosition().unpack(gametree.getLevel)
+        var position = gametree.getLevel.apply(null, getCurrentTreePosition())
 
         document.body
             .addClass('undoable')
@@ -301,14 +302,12 @@ function prepareGameGraph() {
         autoRescale: false
     })
 
+    var getTreePos = function(e) { return [e.data.node.data[0], e.data.node.data[1]] }
+
     s.bind('clickNode', function(e) {
-        e.data.node.data.unpack(function(tree, index) {
-            setCurrentTreePosition(tree, index, true)
-        })
+        setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        e.data.node.data.unpack(function(tree, index) {
-            openNodeMenu(tree, index)
-        })
+        openNodeMenu.apply(null, getTreePos(e))
     })
 
     container.store('sigma', s)
@@ -325,8 +324,8 @@ function prepareSlider() {
         var height = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, height)
 
-        if (pos.equals(getCurrentTreePosition())) return
-        pos.unpack(setCurrentTreePosition)
+        if (helper.equals(pos, getCurrentTreePosition())) return
+        setCurrentTreePosition.apply(null, pos)
         updateSlider()
     }
 
@@ -526,7 +525,7 @@ function syncEngine() {
     // Replay
     for (var i = 0; i < board.size; i++) {
         for (var j = 0; j < board.size; j++) {
-            var v = new Tuple(i, j)
+            var v = [i, j]
             var sign = board.arrangement[v]
             if (sign == 0) continue
             var color = sign > 0 ? 'B' : 'W'
@@ -581,12 +580,14 @@ function makeMove(vertex, sendCommand) {
     if (getBoard().hasVertex(vertex)) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
-            var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
-                if (!prevTree) return
+            var tp = gametree.navigate(tree, index, -1)
+            var prevTree = tp[0], prevIndex = tp[1]
+            var ko = false
 
+            if (prevTree) {
                 var hash = getBoard().makeMove(sign, vertex).getHash()
-                return prevTree.nodes[prevIndex].board.getHash() == hash
-            })
+                ko = prevTree.nodes[prevIndex].board.getHash() == hash
+            }
 
             if (ko && showMessageBox(
                 ['You are about to play a move which repeats a previous board position.',
@@ -641,7 +642,7 @@ function makeMove(vertex, sendCommand) {
             // Search for next move
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && sgf.point2vertex(nextNode[color][0]).equals(vertex)
+                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex))
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
@@ -652,7 +653,7 @@ function makeMove(vertex, sendCommand) {
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
-                    && sgf.point2vertex(subtree.nodes[0][color][0]).equals(vertex)
+                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0], vertex))
             })
 
             if (variations.length > 0) {
@@ -708,141 +709,141 @@ function makeMove(vertex, sendCommand) {
 }
 
 function useTool(vertex) {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var node = tree.nodes[index]
-        var tool = getSelectedTool()
-        var board = getBoard()
-        var dictionary = {
-            cross: 'MA',
-            triangle: 'TR',
-            circle: 'CR',
-            square: 'SQ',
-            number: 'LB',
-            label: 'LB'
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var node = tree.nodes[index]
+    var tool = getSelectedTool()
+    var board = getBoard()
+    var dictionary = {
+        cross: 'MA',
+        triangle: 'TR',
+        circle: 'CR',
+        square: 'SQ',
+        number: 'LB',
+        label: 'LB'
+    }
+
+    if (tool.indexOf('stone') != -1) {
+        if ('B' in node || 'W' in node) {
+            // New variation needed
+            var splitted = gametree.splitTree(tree, index)
+
+            if (splitted != tree || splitted.subtrees.length != 0) {
+                tree = gametree.new()
+                tree.parent = splitted
+                splitted.subtrees.push(tree)
+            }
+
+            node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
+            index = tree.nodes.length
+            tree.nodes.push(node)
         }
 
-        if (tool.indexOf('stone') != -1) {
-            if ('B' in node || 'W' in node) {
-                // New variation needed
-                var splitted = gametree.splitTree(tree, index)
+        var sign = tool.indexOf('_1') != -1 ? 1 : -1
+        if (event.button == 2) sign = -sign
 
-                if (splitted != tree || splitted.subtrees.length != 0) {
-                    tree = gametree.new()
-                    tree.parent = splitted
-                    splitted.subtrees.push(tree)
-                }
+        var oldSign = board.arrangement[vertex]
+        var ids = ['AW', 'AE', 'AB']
+        var id = ids[sign + 1]
+        var point = sgf.vertex2point(vertex)
 
-                node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
-                index = tree.nodes.length
-                tree.nodes.push(node)
-            }
+        for (var i = -1; i <= 1; i++) {
+            if (!(ids[i + 1] in node)) continue
 
-            var sign = tool.indexOf('_1') != -1 ? 1 : -1
-            if (event.button == 2) sign = -sign
+            k = node[ids[i + 1]].indexOf(point)
+            if (k >= 0) {
+                node[ids[i + 1]].splice(k, 1)
 
-            var oldSign = board.arrangement[vertex]
-            var ids = ['AW', 'AE', 'AB']
-            var id = ids[sign + 1]
-            var point = sgf.vertex2point(vertex)
-
-            for (var i = -1; i <= 1; i++) {
-                if (!(ids[i + 1] in node)) continue
-
-                k = node[ids[i + 1]].indexOf(point)
-                if (k >= 0) {
-                    node[ids[i + 1]].splice(k, 1)
-
-                    if (node[ids[i + 1]].length == 0) {
-                        delete node[ids[i + 1]]
-                    }
+                if (node[ids[i + 1]].length == 0) {
+                    delete node[ids[i + 1]]
                 }
             }
-
-            if (oldSign != sign) {
-                if (id in node) node[id].push(point)
-                else node[id] = [point]
-            } else if (oldSign == sign) {
-                if ('AE' in node) node.AE.push(point)
-                else node.AE = [point]
-            }
-        } else {
-            if (event.button != 0) return
-
-            if (tool != 'label' && tool != 'number') {
-                if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
-                    delete board.overlays[vertex]
-                } else {
-                    board.overlays[vertex] = new Tuple(tool, 0, '')
-                }
-            } else if (tool == 'number') {
-                if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                    delete board.overlays[vertex]
-                } else {
-                    var number = 1
-
-                    if ('LB' in node) {
-                        var list = node.LB.map(function(x) {
-                            return x.substr(3).toInt()
-                        }).filter(function(x) {
-                            return !isNaN(x)
-                        })
-                        list.sort(function(a, b) { return a - b })
-
-                        for (var i = 0; i <= list.length; i++) {
-                            if (i < list.length && i + 1 == list[i]) continue
-                            number = i + 1
-                            break
-                        }
-                    }
-
-                    board.overlays[vertex] = new Tuple(tool, 0, number.toString())
-                }
-            } else if (tool == 'label') {
-                if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                    delete board.overlays[vertex]
-                } else {
-                    var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                    var k = 0
-
-                    if ('LB' in node) {
-                        var list = node.LB.filter(function(x) {
-                            return x.length == 4
-                        }).map(function(x) {
-                            return alpha.indexOf(x[3])
-                        }).filter(function(x) { return x >= 0 })
-                        list.sort(function(a, b) { return a - b })
-
-                        for (var i = 0; i <= list.length; i++) {
-                            if (i < list.length && i == list[i]) continue
-                            k = Math.min(i, alpha.length - 1)
-                            break
-                        }
-                    }
-
-                    board.overlays[vertex] = new Tuple(tool, 0, alpha[k])
-                }
-            }
-
-            for (var id in dictionary) delete node[dictionary[id]]
-
-            // Update SGF
-
-            $$('#goban .row li').forEach(function(li) {
-                var v = li.retrieve('tuple')
-                if (!(v in board.overlays)) return
-
-                var id = dictionary[board.overlays[v][0]]
-                var pt = sgf.vertex2point(v)
-                if (id == 'LB') pt += ':' + board.overlays[v][2]
-
-                if (id in node) node[id].push(pt)
-                else node[id] = [pt]
-            })
         }
 
-        setUndoable(false)
-        setCurrentTreePosition(tree, index)
-    })
+        if (oldSign != sign) {
+            if (id in node) node[id].push(point)
+            else node[id] = [point]
+        } else if (oldSign == sign) {
+            if ('AE' in node) node.AE.push(point)
+            else node.AE = [point]
+        }
+    } else {
+        if (event.button != 0) return
+
+        if (tool != 'label' && tool != 'number') {
+            if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
+                delete board.overlays[vertex]
+            } else {
+                board.overlays[vertex] = [tool, 0, '']
+            }
+        } else if (tool == 'number') {
+            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
+                delete board.overlays[vertex]
+            } else {
+                var number = 1
+
+                if ('LB' in node) {
+                    var list = node.LB.map(function(x) {
+                        return x.substr(3).toInt()
+                    }).filter(function(x) {
+                        return !isNaN(x)
+                    })
+                    list.sort(function(a, b) { return a - b })
+
+                    for (var i = 0; i <= list.length; i++) {
+                        if (i < list.length && i + 1 == list[i]) continue
+                        number = i + 1
+                        break
+                    }
+                }
+
+                board.overlays[vertex] = [tool, 0, number.toString()]
+            }
+        } else if (tool == 'label') {
+            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
+                delete board.overlays[vertex]
+            } else {
+                var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                var k = 0
+
+                if ('LB' in node) {
+                    var list = node.LB.filter(function(x) {
+                        return x.length == 4
+                    }).map(function(x) {
+                        return alpha.indexOf(x[3])
+                    }).filter(function(x) { return x >= 0 })
+                    list.sort(function(a, b) { return a - b })
+
+                    for (var i = 0; i <= list.length; i++) {
+                        if (i < list.length && i == list[i]) continue
+                        k = Math.min(i, alpha.length - 1)
+                        break
+                    }
+                }
+
+                board.overlays[vertex] = [tool, 0, alpha[k]]
+            }
+        }
+
+        for (var id in dictionary) delete node[dictionary[id]]
+
+        // Update SGF
+
+        $$('#goban .row li').forEach(function(li) {
+            var v = li.retrieve('tuple')
+            if (!(v in board.overlays)) return
+
+            var id = dictionary[board.overlays[v][0]]
+            var pt = sgf.vertex2point(v)
+            if (id == 'LB') pt += ':' + board.overlays[v][2]
+
+            if (id in node) node[id].push(pt)
+            else node[id] = [pt]
+        })
+    }
+
+    setUndoable(false)
+    setCurrentTreePosition(tree, index)
 }
 
 function findMove(vertex, step) {
@@ -863,7 +864,7 @@ function findMove(vertex, step) {
 
             if (!pos) {
                 if (step == 1) {
-                    pos = new Tuple(root, 0)
+                    pos = [root, 0]
                 } else {
                     var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
                     pos = sections[sections.length - 1]
@@ -872,13 +873,13 @@ function findMove(vertex, step) {
                 iterator = gametree.makeNodeIterator.apply(null, pos)
             }
 
-            if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
+            if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
                 var node = tree.nodes[index]
 
                 return ['B', 'W'].some(function(c) {
                     return c in node && node[c][0].toLowerCase() == point
                 })
-            })) break
+            }).apply(null, pos)) break
         }
 
         setCurrentTreePosition.apply(null, pos)
@@ -914,7 +915,7 @@ function vertexClicked(vertex) {
         } else if (vertex in board.overlays
         && board.overlays[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
-            getCurrentTreePosition().unpack(removeNode)
+            removeNode.apply(null, getCurrentTreePosition())
         }
 
         closeDrawers()
@@ -924,27 +925,28 @@ function vertexClicked(vertex) {
 function updateSidebar(redraw, now) {
     clearTimeout($('sidebar').retrieve('updatesidebarid'))
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        $('sidebar').store('updatesidebarid', setTimeout(function() {
-            if (!getCurrentTreePosition().equals(new Tuple(tree, index)))
-                return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-            // Set current path
+    $('sidebar').store('updatesidebarid', setTimeout(function() {
+        if (!helper.equals(getCurrentTreePosition(), [tree, index]))
+            return
 
-            var t = tree
-            while (t.parent) {
-                t.parent.current = t.parent.subtrees.indexOf(t)
-                t = t.parent
-            }
+        // Set current path
 
-            // Update
+        var t = tree
+        while (t.parent) {
+            t.parent.current = t.parent.subtrees.indexOf(t)
+            t = t.parent
+        }
 
-            updateSlider()
-            updateCommentText()
-            if (redraw) updateGraph()
-            centerGraphCameraAt(getCurrentGraphNode())
-        }, now ? 0 : setting.get('graph.delay')))
-    })
+        // Update
+
+        updateSlider()
+        updateCommentText()
+        if (redraw) updateGraph()
+        centerGraphCameraAt(getCurrentGraphNode())
+    }, now ? 0 : setting.get('graph.delay')))
 }
 
 function updateGraph() {
@@ -957,19 +959,20 @@ function updateGraph() {
 function updateSlider() {
     if (!getShowSidebar()) return
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var total = gametree.getHeight(getRootTree()) - 1
-        var relative = gametree.getLevel(tree, index)
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var total = gametree.getHeight(getRootTree()) - 1
+    var relative = gametree.getLevel(tree, index)
 
-        setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
-    })
+    setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
 }
 
 function updateCommentText() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var node = tree.nodes[index]
-        setCommentText('C' in node ? node.C[0] : '')
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var node = tree.nodes[index]
+
+    setCommentText('C' in node ? node.C[0] : '')
 }
 
 function updateAreaMap() {
@@ -1001,11 +1004,12 @@ function updateAreaMap() {
 }
 
 function commitCommentText() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        var comment = $$('#properties textarea').get('value')[0]
-        if (comment != '') tree.nodes[index].C = [comment]
-        else delete tree.nodes[index].C
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    var comment = $$('#properties textarea').get('value')[0]
+
+    if (comment != '') tree.nodes[index].C = [comment]
+    else delete tree.nodes[index].C
 
     updateCommentText()
     updateSidebar(true)
@@ -1166,11 +1170,9 @@ function generateMove() {
             return
         }
 
-        var v = new Tuple(-1, -1)
-        if (r.content.toLowerCase() != 'pass') {
+        var v = [-1, -1]
+        if (r.content.toLowerCase() != 'pass')
             v = gtp.point2vertex(r.content, getBoard().size)
-            v = new Tuple(v[0], v[1])
-        }
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)
@@ -1186,24 +1188,24 @@ function centerGraphCameraAt(node) {
     var matrixdict = getGraphMatrixDict()
     var y = matrixdict[1][node.id][1]
 
-    gametree.getWidth(y, matrixdict[0]).unpack(function(width, padding) {
-        var x = matrixdict[1][node.id][0] - padding
-        var relX = width == 1 ? 0 : x / (width - 1)
-        var diff = (width - 1) * setting.get('graph.grid_size') / 2
-        diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
+    var wp = gametree.getWidth(y, matrixdict[0])
+    var width = wp[0], padding = wp[1]
+    var x = matrixdict[1][node.id][0] - padding
+    var relX = width == 1 ? 0 : x / (width - 1)
+    var diff = (width - 1) * setting.get('graph.grid_size') / 2
+    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
-        node.color = setting.get('graph.node_active_color')
-        s.refresh()
+    node.color = setting.get('graph.node_active_color')
+    s.refresh()
 
-        sigma.misc.animation.camera(
-            s.camera,
-            {
-                x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
-                y: node[s.camera.readPrefix + 'y']
-            },
-            { duration: setting.get('graph.delay') }
-        )
-    })
+    sigma.misc.animation.camera(
+        s.camera,
+        {
+            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
+            y: node[s.camera.readPrefix + 'y']
+        },
+        { duration: setting.get('graph.delay') }
+    )
 }
 
 function askForSave() {
@@ -1329,48 +1331,47 @@ function clearAllOverlays() {
     // Save undo information
     setUndoable(true)
 
-    getCurrentTreePosition().unpack(function(tree, index) {
-        overlayIds.forEach(function(id) {
-            delete tree.nodes[index][id]
-        })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        setCurrentTreePosition(tree, index)
+    overlayIds.forEach(function(id) {
+        delete tree.nodes[index][id]
     })
+
+    setCurrentTreePosition(tree, index)
 }
 
 function goBack() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        gametree.navigate(tree, position, -1).unpack(function(prevTree, prevIndex) {
-            setCurrentTreePosition(prevTree, prevIndex)
-        })
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, -1))
 }
 
 function goForward() {
-    getCurrentTreePosition().unpack(function(tree, position) {
-        gametree.navigate(tree, position, 1).unpack(function(nextTree, nextIndex) {
-            setCurrentTreePosition(nextTree, nextIndex)
-        })
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, 1))
 }
 
 function goToNextFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (index != tree.nodes.length - 1)
-            setCurrentTreePosition(tree, tree.nodes.length - 1)
-        else if (tree.current != null) {
-            var subtree = tree.subtrees[tree.current]
-            setCurrentTreePosition(subtree, subtree.nodes.length - 1)
-        }
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    if (index != tree.nodes.length - 1)
+        setCurrentTreePosition(tree, tree.nodes.length - 1)
+    else if (tree.current != null) {
+        var subtree = tree.subtrees[tree.current]
+        setCurrentTreePosition(subtree, subtree.nodes.length - 1)
+    }
 }
 
 function goToPreviousFork() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (tree.parent == null || tree.parent.nodes.length == 0)
-            setCurrentTreePosition(tree, 0)
-        else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
-    })
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
+
+    if (tree.parent == null || tree.parent.nodes.length == 0)
+        setCurrentTreePosition(tree, 0)
+    else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
 }
 
 function goToBeginning() {
@@ -1381,27 +1382,31 @@ function goToBeginning() {
 
 function goToEnd() {
     var tree = getCurrentTreePosition()[0]
-    gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1).unpack(setCurrentTreePosition)
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
 }
 
 function goToNextVariation() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (!tree.parent) return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        var mod = tree.parent.subtrees.length
-        var i = (tree.parent.current + 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[i], 0)
-    })
+    if (!tree.parent) return
+
+    var mod = tree.parent.subtrees.length
+    var i = (tree.parent.current + 1) % mod
+
+    setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function goToPreviousVariation() {
-    getCurrentTreePosition().unpack(function(tree, index) {
-        if (!tree.parent) return
+    var tp = getCurrentTreePosition()
+    var tree = tp[0], index = tp[1]
 
-        var mod = tree.parent.subtrees.length
-        var i = (tree.parent.current + mod - 1) % mod
-        setCurrentTreePosition(tree.parent.subtrees[i], 0)
-    })
+    if (!tree.parent) return
+
+    var mod = tree.parent.subtrees.length
+    var i = (tree.parent.current + mod - 1) % mod
+
+    setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function removeNode(tree, index) {
@@ -1452,10 +1457,11 @@ function undoBoard() {
 
     setTimeout(function() {
         setRootTree(document.body.retrieve('undodata-root'))
-        var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
-        pos.unpack(setCurrentTreePosition)
-        updateSidebar(true, true)
 
+        var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
+        setCurrentTreePosition.apply(null, pos)
+
+        updateSidebar(true, true)
         setUndoable(false)
         setIsBusy(false)
     }, setting.get('edit.undo_delay'))

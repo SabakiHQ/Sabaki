@@ -1,4 +1,3 @@
-var Tuple = require('tuple-w')
 var helper = require('./helper')
 
 var Board = function(size, arrangement, captures) {
@@ -10,7 +9,7 @@ var Board = function(size, arrangement, captures) {
     // Initialize arrangement
     for (var x = 0; x < this.size; x++) {
         for (var y = 0; y < this.size; y++) {
-            this.arrangement[new Tuple(x, y)] = arrangement ? arrangement[new Tuple(x, y)] : 0
+            this.arrangement[[x, y]] = arrangement ? arrangement[[x, y]] : 0
         }
     }
 }
@@ -28,7 +27,7 @@ Board.prototype = {
     clear: function() {
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
-                this.arrangement[new Tuple(x, y)] = 0
+                this.arrangement[[x, y]] = 0
             }
         }
     },
@@ -39,7 +38,7 @@ Board.prototype = {
         var x = vertex[0], y = vertex[1]
 
         return [
-            new Tuple(x - 1, y), new Tuple(x + 1, y), new Tuple(x, y - 1), new Tuple(x, y + 1)
+            [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
         ].filter(function(item) {
             return self.hasVertex(item)
         })
@@ -52,7 +51,7 @@ Board.prototype = {
         // Recursive depth-first search
         this.getNeighborhood(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
-            if (result.some(function(w) { return w.equals(v) })) return
+            if (result.some(function(w) { return helper.equals(w, v) })) return
 
             result.push(v)
             this.getConnectedComponent(v, colors, result)
@@ -73,7 +72,7 @@ Board.prototype = {
 
         chain.forEach(function(c) {
             liberties.append(this.getNeighborhood(c).filter(function(n) {
-                return this.arrangement[n] == 0 && !liberties.some(function(v) { return v.equals(n) })
+                return this.arrangement[n] == 0 && !liberties.some(function(v) { return helper.equals(v, n) })
             }.bind(this)))
         }.bind(this))
 
@@ -94,7 +93,7 @@ Board.prototype = {
 
         for (var i = 0; i < this.size; i++) {
             for (var j = 0; j < this.size; j++) {
-                var vertex = new Tuple(i, j)
+                var vertex = [i, j]
                 if (vertex in map) continue
                 if (this.arrangement[vertex] != 0) {
                     map[vertex] = this.arrangement[vertex]
@@ -151,7 +150,7 @@ Board.prototype = {
 
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
-                var vertex = new Tuple(x, y)
+                var vertex = [x, y]
                 if (vertex in liberties || this.arrangement[vertex] == 0) continue
 
                 var l = this.getLiberties(vertex).length
@@ -181,7 +180,7 @@ Board.prototype = {
 
             var ll = this.getLiberties(n)
             if (ll.length != 1) return;
-            if (!ll[0].equals(vertex)) return;
+            if (!helper.equals(ll[0], vertex)) return;
 
             this.getChain(n).forEach(function(c) {
                 move.arrangement[c] = 0
@@ -214,14 +213,14 @@ Board.prototype = {
         var near = this.size >= 13 ? 3 : 2
         var far = this.size - near - 1
 
-        var result = [new Tuple(near, near), new Tuple(far, far), new Tuple(near, far), new Tuple(far, near)]
+        var result = [[near, near], [far, far], [near, far], [far, near]]
 
         if (this.size % 2 != 0) {
             var middle = (this.size - 1) / 2
-            if (count == 5) result.push(new Tuple(middle, middle))
-            result.append([new Tuple(near, middle), new Tuple(far, middle)])
-            if (count == 7) result.push(new Tuple(middle, middle))
-            result.append([new Tuple(middle, near), new Tuple(middle, far), new Tuple(middle, middle)])
+            if (count == 5) result.push([middle, middle])
+            result.append([[near, middle], [far, middle]])
+            if (count == 7) result.push([middle, middle])
+            result.append([[middle, near], [middle, far], [middle, middle]])
         }
 
         return result.slice(0, count)
@@ -235,7 +234,7 @@ Board.prototype = {
 
         for (var i = 0; i < this.size; i++) {
             for (var j = 0; j < this.size; j++) {
-                var vertex = new Tuple(i, j)
+                var vertex = [i, j]
                 if (map[vertex] != 0 || vertex in done) continue
 
                 var posArea = board.getConnectedComponent(vertex, [0, -1])
@@ -248,13 +247,13 @@ Board.prototype = {
                 var actualDead = []
 
                 var negDiff = negArea.filter(function(y) {
-                    return !negDead.some(function(x) { return x.equals(y) })
-                        && !posArea.some(function(x) { return x.equals(y) })
+                    return !negDead.some(function(x) { return helper.equals(x, y) })
+                        && !posArea.some(function(x) { return helper.equals(x, y) })
                 })
 
                 var posDiff = posArea.filter(function(y) {
-                    return !posDead.some(function(x) { return x.equals(y) })
-                        && !negArea.some(function(x) { return x.equals(y) })
+                    return !posDead.some(function(x) { return helper.equals(x, y) })
+                        && !negArea.some(function(x) { return helper.equals(x, y) })
                 })
 
                 if (negDiff.length <= 1 && negDead.length <= posDead.length) {

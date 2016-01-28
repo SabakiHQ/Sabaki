@@ -131,10 +131,10 @@ function setShowSidebar(show) {
 }
 
 function getSidebarArrangement() {
-    return new Tuple(
+    return [
         getShowSidebar() && getCommentHeight() != 100,
         getShowSidebar() && getCommentHeight() != 0
-    )
+    ]
 }
 
 function setSidebarArrangement(graph, comment, updateLayout) {
@@ -177,7 +177,7 @@ function getCommentHeight() {
 function setCommentHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
-    getSliderValue().unpack(setSliderValue)
+    setSliderValue.apply(null, getSliderValue())
 }
 
 function getPlayerName(sign) {
@@ -233,7 +233,7 @@ function getSliderValue() {
     var value = span.getStyle('top').toInt()
     var label = span.get('text')
 
-    return new Tuple(value, label)
+    return [value, label]
 }
 
 function setSliderValue(value, label) {
@@ -449,13 +449,13 @@ function buildBoard() {
         var ol = new Element('ol.row')
 
         for (var x = 0; x < board.size; x++) {
-            var vertex = new Tuple(x, y)
+            var vertex = [x, y]
             var li = new Element('li.pos_' + x + '-' + y)
                 .store('tuple', vertex)
                 .addClass('shift_' + Math.floor(Math.random() * 9))
             var img = new Element('img', { src: '../img/goban/stone_0.png' })
 
-            if (hoshi.some(function(v) { return v.equals(vertex) }))
+            if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 li.addClass('hoshi')
 
             ol.adopt(li.adopt(img)
@@ -519,22 +519,22 @@ function resizeBoard() {
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
 
-    getSliderValue().unpack(setSliderValue)
+    setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
 }
 
 function showIndicator(vertex) {
-    vertex.unpack(function(x, y) {
-        var li = $$('#goban .pos_' + x + '-' + y)
-        if (li.length == 0) return
-        li = li[0]
+    var x = vertex[0], y = vertex[1]
+    var li = $$('#goban .pos_' + x + '-' + y)
 
-        $('indicator').setStyle('top', li.getPosition().y)
-            .setStyle('left', li.getPosition().x)
-            .setStyle('height', li.getSize().y)
-            .setStyle('width', li.getSize().x)
-            .store('vertex', vertex)
-    })
+    if (li.length == 0) return
+    li = li[0]
+
+    $('indicator').setStyle('top', li.getPosition().y)
+        .setStyle('left', li.getPosition().x)
+        .setStyle('height', li.getSize().y)
+        .setStyle('width', li.getSize().x)
+        .store('vertex', vertex)
 }
 
 function hideIndicator() {
@@ -633,7 +633,7 @@ function buildMenu() {
                 {
                     label: '&Remove Node',
                     accelerator: 'CmdOrCtrl+Delete',
-                    click: function() { getCurrentTreePosition().unpack(removeNode) }
+                    click: function() { removeNode.apply(null, getCurrentTreePosition()) }
                 }
             ]
         },
@@ -812,7 +812,7 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Pass',
-            click: function() { makeMove(new Tuple(-1, -1)) }
+            click: function() { makeMove([-1, -1]) }
         },
         {
             label: '&Score',
@@ -1000,12 +1000,12 @@ document.addEvent('domready', function() {
 
     $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        this.getParent().store('initposx', new Tuple(event.x, this.getParent().getStyle('width').toInt()))
+        this.getParent().store('initposx', [event.x, this.getParent().getStyle('width').toInt()])
     })
 
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposy', new Tuple(event.y, getCommentHeight()))
+        $('sidebar').store('initposy', [event.y, getCommentHeight()])
         $('properties').setStyle('transition', 'none')
     })
 
@@ -1040,29 +1040,28 @@ document.addEvent('domready', function() {
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
         if (sidebarInitPosX) {
-            sidebarInitPosX.unpack(function(initX, initWidth) {
-                var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
-                setSidebarWidth(newwidth)
-                resizeBoard()
-            })
+            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
+            var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
+
+            setSidebarWidth(newwidth)
+            resizeBoard()
         } else if (leftSidebarInitPosX) {
-            leftSidebarInitPosX.unpack(function(initX, initWidth) {
-                var newwidth = Math.max(initWidth + event.x - initX, setting.get('view.leftsidebar_minwidth'))
-                setLeftSidebarWidth(newwidth)
-                resizeBoard()
-            })
+            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
+            var newwidth = Math.max(initWidth + event.x - initX, setting.get('view.leftsidebar_minwidth'))
+
+            setLeftSidebarWidth(newwidth)
+            resizeBoard()
 
             $('console').retrieve('scrollbar').update()
             return
         } else if (initPosY) {
-            initPosY.unpack(function(initY, initHeight) {
-                var newheight = Math.min(Math.max(
-                    initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
-                    setting.get('view.comments_minheight')
-                ), 100 - setting.get('view.comments_minheight'))
+            var initY = initPosY[0], initHeight = initPosY[1]
+            var newheight = Math.min(Math.max(
+                initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
+                setting.get('view.comments_minheight')
+            ), 100 - setting.get('view.comments_minheight'))
 
-                setCommentHeight(newheight)
-            })
+            setCommentHeight(newheight)
         }
 
         $('properties').retrieve('scrollbar').update()

@@ -17,8 +17,7 @@
     "argv-split": "^1.0.0",
     "gemini-scrollbar": "^1.2.9",
     "octicons": "^3.3.0",
-    "sigma": "^1.0.3",
-    "tuple-w": "^1.1.1"
+    "sigma": "^1.0.3"
   },
   "scripts": {
     "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.36.5 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.7.4\" --version-string.ProductVersion=\"0.7.4\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\""

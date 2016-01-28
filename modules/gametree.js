@@ -1,5 +1,4 @@
 var Board = require('./board')
-var Tuple = require('tuple-w')
 
 var sgf = require('./sgf')
 var helper = require('./helper')
@@ -48,7 +47,7 @@ exports.getRoot = function(tree) {
 
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
-        return new Tuple(tree, index + step)
+        return [tree, index + step]
     } else if (index + step < 0 && tree.parent) {
         if (tree.parent != null) {
             var prev = tree.parent
@@ -57,7 +56,7 @@ exports.navigate = function(tree, index, step) {
             return exports.navigate(prev, prev.nodes.length - 1, newstep)
         }
 
-        return new Tuple(tree, 0)
+        return [tree, 0]
     } else if (index + step >= tree.nodes.length) {
         if (tree.current != null) {
             var next = tree.subtrees[tree.current]
@@ -66,10 +65,10 @@ exports.navigate = function(tree, index, step) {
             return exports.navigate(next, 0, newstep)
         }
 
-        return new Tuple(tree, tree.nodes.length - 1)
+        return [tree, tree.nodes.length - 1]
     }
 
-    return new Tuple(null, 0)
+    return [null, 0]
 }
 
 exports.makeNodeIterator = function(tree, index) {
@@ -166,7 +165,7 @@ exports.getLevel = function(tree, index) {
 
 exports.getSections = function(tree, level) {
     if (level < 0) return []
-    if (level < tree.nodes.length) return [new Tuple(tree, level)]
+    if (level < tree.nodes.length) return [[tree, level]]
 
     var sections = []
 
@@ -189,7 +188,7 @@ exports.getWidth = function(y, matrix) {
         return matrix[i].length
     })) - padding
 
-    return new Tuple(width, padding)
+    return [width, padding]
 }
 
 exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
@@ -216,8 +215,8 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
             matrix[yshift + y].push(null)
         }
 
-        matrix[yshift + y][xshift] = new Tuple(tree, y)
-        dict[tree.id + '-' + y] = new Tuple(xshift, yshift + y)
+        matrix[yshift + y][xshift] = [tree, y]
+        dict[tree.id + '-' + y] = [xshift, yshift + y]
     }
 
     if (!tree.collapsed) {
@@ -227,7 +226,7 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
         }
     }
 
-    return new Tuple(matrix, dict)
+    return [matrix, dict]
 }
 
 exports.onCurrentTrack = function(tree) {
@@ -243,8 +242,8 @@ exports.matrixdict2graph = function(matrixdict) {
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
     var gridSize = setting.get('graph.grid_size')
 
-    for (y = 0; y < matrix.length; y++) {
-        for (x = 0; x < width; x++) {
+    for (var y = 0; y < matrix.length; y++) {
+        for (var x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
             var tree = matrix[y][x][0]
