@@ -22,15 +22,15 @@ exports.store = function(key, value) {
     return exports
 }
 
+exports.retrieve = function(key, value) {
+    if (key in storage) return storage[key]
+    return null
+}
+
 exports.li2vertex = function(li) {
     return [].filter.call(li.classList, function(x) {
         return x.indexOf('pos') == 0
     })[0].replace('pos_', '').split('-').map(function(x) { return +x })
-}
-
-exports.retrieve = function(key, value) {
-    if (key in storage) return storage[key]
-    return null
 }
 
 exports.equals = function(a, b) {
