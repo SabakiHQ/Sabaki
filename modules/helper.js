@@ -19,11 +19,11 @@ exports.roundEven = function(float) {
 }
 
 exports.store = function(key, value) {
-    storage.key = value
+    storage[key] = value
 }
 
 exports.retrieve = function(key, value) {
-    if (key in storage) return storage.key
+    if (key in storage) return storage[key]
     return null
 }
 
