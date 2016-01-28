@@ -460,12 +460,12 @@ function buildBoard() {
 
             ol.adopt(li.adopt(img)
                 .addEvent('mouseup', function() {
-                    if (!$('goban').retrieve('mousedown')) return
-                    $('goban').store('mousedown', false)
+                    if (!helper.retrieve('goban-mousedown')) return
+                    helper.store('goban-mousedown', false)
                     vertexClicked(this)
                 }.bind(vertex))
                 .addEvent('mousedown', function() {
-                    $('goban').store('mousedown', true)
+                    helper.store('goban-mousedown', true)
                 })
                 .grab(new Element('div', { class: 'area' }))
             )
@@ -959,7 +959,7 @@ document.addEvent('domready', function() {
     document.title = app.getName()
 
     document.body.addEvent('mouseup', function() {
-        $('goban').store('mousedown', false)
+        helper.store('goban-mousedown', false)
     })
 
     // Find bar buttons

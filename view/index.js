@@ -332,22 +332,23 @@ function prepareSlider() {
     slider.addEvent('mousedown', function() {
         if (event.buttons != 1) return
 
-        this.store('mousedown', true).addClass('active')
+        helper.store('slider-mousedown', true)
+        slider.addClass('active')
         document.fireEvent('mousemove')
     }).addEvent('touchstart', function() {
-        this.addClass('active')
+        slider.addClass('active')
     }).addEvent('touchmove', function(e) {
         var percentage = (e.client.y - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
     }).addEvent('touchend', function() {
-        this.removeClass('active')
+        slider.removeClass('active')
     })
 
     document.addEvent('mouseup', function() {
-        slider.store('mousedown', false)
-            .removeClass('active')
+        helper.store('slider-mousedown', false)
+        slider.removeClass('active')
     }).addEvent('mousemove', function() {
-        if (event.buttons != 1 || !slider.retrieve('mousedown'))
+        if (event.buttons != 1 || !helper.retrieve('slider-mousedown'))
             return
 
         var percentage = (event.clientY - slider.getPosition().y) / slider.getSize().y
@@ -357,12 +358,13 @@ function prepareSlider() {
     // Prepare previous/next buttons
 
     $$('#sidebar .slider a').addEvent('mousedown', function() {
-        this.store('mousedown', true)
+        helper.store((this.hasClass('next') ? 'next' : 'prev') + 'button-mousedown', true)
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
     document.addEvent('mouseup', function() {
-        $$('#sidebar .slider a').store('mousedown', false)
+        helper.store('prevbutton-mousedown', false)
+            .store('nextbutton-mousedown', false)
     })
 }
 
@@ -1230,8 +1232,8 @@ function askForSave() {
 }
 
 function startAutoScroll(direction, delay) {
-    if (direction > 0 && !$$('#sidebar .slider a.next')[0].retrieve('mousedown')
-    || direction < 0 && !$$('#sidebar .slider a.prev')[0].retrieve('mousedown')) return
+    if (direction > 0 && !helper.retrieve('nextbutton-mousedown')
+    || direction < 0 && !helper.retrieve('prevbutton-mousedown')) return
 
     if (delay == null) delay = setting.get('autoscroll.max_interval')
     delay = Math.max(setting.get('autoscroll.min_interval'), delay)
