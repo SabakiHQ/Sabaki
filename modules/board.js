@@ -151,7 +151,7 @@ Board.prototype = {
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
                 var vertex = [x, y]
-                if (vertex in liberties || this.arrangement[vertex] != 0) continue
+                if (vertex in liberties || this.arrangement[vertex] == 0) continue
 
                 var l = this.getLiberties(vertex).length
                 if (l == 0) return false
