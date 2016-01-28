@@ -20,6 +20,7 @@ exports.roundEven = function(float) {
 
 exports.store = function(key, value) {
     storage[key] = value
+    return exports
 }
 
 exports.retrieve = function(key, value) {
