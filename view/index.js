@@ -643,7 +643,7 @@ function makeMove(vertex, sendCommand) {
             // Search for next move
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex)
+                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex))
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
@@ -654,7 +654,7 @@ function makeMove(vertex, sendCommand) {
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
-                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0], vertex)
+                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0], vertex))
             })
 
             if (variations.length > 0) {
