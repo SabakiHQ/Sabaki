@@ -43,6 +43,8 @@ var defaults = {
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
     'scoring.method': 'territory',
+    'sound.captureDelayMax': 500,
+    'sound.captureDelayMin': 300,
     'sound.enable': true,
     'view.comments_height': 50,
     'view.comments_minheight': 20,

@@ -680,9 +680,12 @@ function makeMove(vertex, sendCommand) {
 
     // Play sounds
     if (getBoard().hasVertex(vertex)) {
+        var delay = setting.get('sound.captureDelayMin')
+        delay += Math.floor(Math.random() * (setting.get('sound.captureDelayMax') - delay))
+
         if (capture || suicide) setTimeout(function() {
             sound.playCapture()
-        }, 300 + Math.floor(Math.random() * 200))
+        }, delay)
 
         sound.playPachi()
     } else {
