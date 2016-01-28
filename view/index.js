@@ -30,7 +30,7 @@ function setRootTree(tree, updateHash) {
     if (tree.nodes.length == 0) return
 
     tree.parent = null
-    if (updateHash) document.body.store('treehash', gametree.getHash(tree))
+    if (updateHash) helper.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
     setPlayerName(1, 'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black')
@@ -38,7 +38,7 @@ function setRootTree(tree, updateHash) {
 }
 
 function getGraphMatrixDict() {
-    return $('graph').retrieve('graphmatrixdict')
+    return helper.retrieve('graphmatrixdict')
 }
 
 function setGraphMatrixDict(matrixdict) {
@@ -47,7 +47,7 @@ function setGraphMatrixDict(matrixdict) {
     var s, graph
 
     try {
-        s = $('graph').retrieve('sigma')
+        s = helper.retrieve('sigma')
         graph = gametree.matrixdict2graph(matrixdict)
     } catch(e) { }
 
@@ -60,11 +60,11 @@ function setGraphMatrixDict(matrixdict) {
         setGraphMatrixDict(matrixdict)
     }
 
-    $('graph').store('graphmatrixdict', matrixdict)
+    helper.store('graphmatrixdict', matrixdict)
 }
 
 function getCurrentTreePosition() {
-    return $('goban').retrieve('position')
+    return helper.retrieve('treeposition')
 }
 
 function setCurrentTreePosition(tree, index, now) {
@@ -81,7 +81,7 @@ function setCurrentTreePosition(tree, index, now) {
 
     // Store new position
 
-    $('goban').store('position', [tree, index])
+    helper.store('treeposition', [tree, index])
     var redraw = !node
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed && index == tree.nodes.length - 1
@@ -120,7 +120,7 @@ function getCurrentGraphNode() {
 
 function getGraphNode(tree, index) {
     var id = typeof tree === 'object' ? tree.id + '-' + index : tree
-    var s = $('graph').retrieve('sigma')
+    var s = helper.retrieve('sigma')
     return s.graph.nodes(id)
 }
 
@@ -145,16 +145,16 @@ function setSelectedTool(tool) {
 }
 
 function getBoard() {
-    return $('goban').retrieve('board')
+    return helper.retrieve('currentboard')
 }
 
 function setBoard(board) {
     if (!getBoard() || getBoard().size != board.size) {
-        $('goban').store('board', board)
+        helper.store('currentboard', board)
         buildBoard()
     }
 
-    $('goban').store('board', board)
+    helper.store('currentboard', board)
     setCaptures(board.captures)
 
     for (var x = 0; x < board.size; x++) {
@@ -240,12 +240,12 @@ function setUndoable(undoable) {
 
         document.body
             .addClass('undoable')
-            .store('undodata-root', rootTree)
+        helper.store('undodata-root', rootTree)
             .store('undodata-pos', position)
     } else {
         document.body
             .removeClass('undoable')
-            .store('undodata-root', null)
+        helper.store('undodata-root', null)
             .store('undodata-pos', null)
     }
 }
@@ -310,7 +310,7 @@ function prepareGameGraph() {
         openNodeMenu.apply(null, getTreePos(e))
     })
 
-    container.store('sigma', s)
+    helper.store('sigma', s)
 }
 
 function prepareSlider() {
@@ -1185,7 +1185,7 @@ function generateMove() {
 function centerGraphCameraAt(node) {
     if (!getShowSidebar() || !node) return
 
-    var s = $('graph').retrieve('sigma')
+    var s = helper.retrieve('sigma')
     s.renderers[0].resize().render()
 
     var matrixdict = getGraphMatrixDict()
@@ -1215,7 +1215,7 @@ function askForSave() {
     if (!getRootTree()) return true
     var hash = gametree.getHash(getRootTree())
 
-    if (hash != document.body.retrieve('treehash')) {
+    if (hash != helper.retrieve('treehash')) {
         var answer = showMessageBox(
             'Your changes will be lost if you close this game without saving.',
             'warning',
@@ -1321,7 +1321,7 @@ function saveGame() {
         var text = sgf.tree2string(tree)
 
         fs.writeFile(result, '(' + text + ')')
-        document.body.store('treehash', helper.md5(text))
+        helper.store('treehash', helper.md5(text))
     }
 
     setIsBusy(false)
@@ -1452,16 +1452,16 @@ function removeNode(tree, index) {
 }
 
 function undoBoard() {
-    if (document.body.retrieve('undodata-root') == null
-    || document.body.retrieve('undodata-pos') == null)
+    if (helper.retrieve('undodata-root') == null
+    || helper.retrieve('undodata-pos') == null)
         return
 
     setIsBusy(true)
 
     setTimeout(function() {
-        setRootTree(document.body.retrieve('undodata-root'))
+        setRootTree(helper.retrieve('undodata-root'))
 
-        var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
+        var pos = gametree.navigate(getRootTree(), 0, helper.retrieve('undodata-pos'))
         setCurrentTreePosition.apply(null, pos)
 
         updateSidebar(true, true)

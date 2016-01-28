@@ -113,7 +113,7 @@ function setShowSidebar(show) {
         updateCommentText();
     } else {
         // Clear game graph
-        var s = $('graph').retrieve('sigma')
+        var s = helper.retrieve('sigma')
 
         if (s) {
             s.graph.clear()
@@ -434,7 +434,7 @@ function updateSidebarLayout() {
     container.fade('hide')
 
     setTimeout(function() {
-        $('graph').retrieve('sigma').renderers[0].resize().render()
+        helper.retrieve('sigma').renderers[0].resize().render()
         $('properties').retrieve('scrollbar').update()
         container.set('tween', { duration: 200 }).fade('in')
     }, 300)
@@ -1030,8 +1030,8 @@ document.addEvent('domready', function() {
             setSidebarArrangement(true, true, false)
         }
 
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
+        if (helper.retrieve('sigma'))
+            helper.retrieve('sigma').renderers[0].resize().render()
     }).addEvent('mousemove', function() {
         var sidebarInitPosX = $('sidebar').retrieve('initposx')
         var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
