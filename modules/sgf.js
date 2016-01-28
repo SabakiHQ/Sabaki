@@ -56,17 +56,17 @@ exports.parse = function(tokens, callback, start, depth) {
         if (new Tuple('parenthesis', '(').equals(tokens[i])) break
         if (new Tuple('parenthesis', ')').equals(tokens[i])) return tree
 
-        tokens[i].unpack(function(type, value) {
-            if (type == 'semicolon') {
-                node = {}
-                tree.nodes.push(node)
-            } else if (type == 'prop_ident') {
-                node[value] = []
-                property = node[value]
-            } else if (type == 'c_value_type') {
-                property.push(exports.unescapeString(value.substr(1, value.length - 2)))
-            }
-        })
+        var type = tokens[i][0], value = tokens[i][1]
+
+        if (type == 'semicolon') {
+            node = {}
+            tree.nodes.push(node)
+        } else if (type == 'prop_ident') {
+            node[value] = []
+            property = node[value]
+        } else if (type == 'c_value_type') {
+            property.push(exports.unescapeString(value.substr(1, value.length - 2)))
+        }
 
         start[0] = ++i
     }
@@ -217,7 +217,7 @@ exports.addBoard = function(tree, index, baseboard) {
     node.board = board
 
     if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
-        // Add variations
+        // Add variation overlays
 
         tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
@@ -234,10 +234,7 @@ exports.addBoard = function(tree, index, baseboard) {
                 return
             }
 
-            if (v in board.overlays)
-                board.overlays[v] = board.overlays[v].unpack(function(a, b, c) {
-                     return new Tuple(a, sign, c)
-                })
+            if (v in board.overlays) board.overlays[v][1] = sign
             else board.overlays[v] = new Tuple('', sign, '')
         })
     }

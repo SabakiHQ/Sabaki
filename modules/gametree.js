@@ -243,8 +243,8 @@ exports.matrixdict2graph = function(matrixdict) {
     var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
     var gridSize = setting.get('graph.grid_size')
 
-    for (y = 0; y < matrix.length; y++) {
-        for (x = 0; x < width; x++) {
+    for (var y = 0; y < matrix.length; y++) {
+        for (var x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
             var tree = matrix[y][x][0]
