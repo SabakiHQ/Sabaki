@@ -3,6 +3,7 @@ var crypto = require('crypto')
 var shell = require('shell')
 
 var id = 0
+var storage = {}
 
 exports.getId = function() {
     return ++id
@@ -15,6 +16,15 @@ exports.md5 = function(str) {
 exports.roundEven = function(float) {
     var value = Math.round(float)
     return value % 2 == 0 ? value : value - 1
+}
+
+exports.store = function(key, value) {
+    storage.key = value
+}
+
+exports.retrieve = function(key, value) {
+    if (key in storage) return storage.key
+    return null
 }
 
 exports.equals = function(a, b) {
