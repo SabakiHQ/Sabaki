@@ -1,5 +1,3 @@
-var Tuple = require('tuple-w')
-
 var gametree = require('../modules/gametree')
 var helper = require('../modules/helper')
 var fs = require('fs')
@@ -31,7 +29,7 @@ exports.tokenize = function(input) {
 
             var value = matches[0]
             length = value.length
-            token = new Tuple(type, value)
+            token = [type, value]
 
             break
         }
@@ -54,8 +52,8 @@ exports.parse = function(tokens, callback, start, depth) {
         && depth >= setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
-        if (helper.equals(new Tuple('parenthesis', '('), tokens[i])) break
-        if (helper.equals(new Tuple('parenthesis', ')'), tokens[i])) return tree
+        if (helper.equals(['parenthesis', '('], tokens[i])) break
+        if (helper.equals(['parenthesis', ')'], tokens[i])) return tree
 
         var type = tokens[i][0], value = tokens[i][1]
 
@@ -73,7 +71,7 @@ exports.parse = function(tokens, callback, start, depth) {
     }
 
     while (i < tokens.length) {
-        if (helper.equals(new Tuple('parenthesis', '('), tokens[i])) {
+        if (helper.equals(['parenthesis', '('], tokens[i])) {
             start[0] = i + 1
 
             t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
@@ -82,7 +80,7 @@ exports.parse = function(tokens, callback, start, depth) {
             tree.current = 0
 
             i = start[0]
-        } else if (helper.equals(new Tuple('parenthesis', ')'), tokens[i])) {
+        } else if (helper.equals(['parenthesis', ')'], tokens[i])) {
             start[0] = i
             callback(i / tokens.length)
             break
@@ -102,10 +100,10 @@ exports.parseFile = function(filename, callback) {
 }
 
 exports.point2vertex = function(point) {
-    if (point.length != 2) return new Tuple(-1, -1)
+    if (point.length != 2) return [-1, -1]
 
     point = point.toLowerCase()
-    return new Tuple(alpha.indexOf(point[0]), alpha.indexOf(point[1]))
+    return [alpha.indexOf(point[0]), alpha.indexOf(point[1])]
 }
 
 exports.vertex2point = function(vertex) {
@@ -124,7 +122,7 @@ exports.compressed2list = function(compressed) {
 
     for (var i = v1[0]; i <= v2[0]; i++) {
         for (var j = v1[1]; j <= v2[1]; j++) {
-            list.push(new Tuple(i, j))
+            list.push([i, j])
         }
     }
 
@@ -184,7 +182,7 @@ exports.addBoard = function(tree, index, baseboard) {
     }
 
     if (vertex != null) {
-        board.overlays[vertex] = new Tuple('point', 0, '')
+        board.overlays[vertex] = ['point', 0, '']
     }
 
     var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -196,11 +194,11 @@ exports.addBoard = function(tree, index, baseboard) {
         node[ids[i]].forEach(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
-                board.overlays[exports.point2vertex(value)] = new Tuple(classes[i], 0, '')
+                board.overlays[exports.point2vertex(value)] = [classes[i], 0, '']
             } else {
                 // Compressed point list
                 exports.compressed2list(value).forEach(function(vertex) {
-                    board.overlays[vertex] = new Tuple(classes[i], 0, '')
+                    board.overlays[vertex] = [classes[i], 0, '']
                 })
             }
         })
@@ -211,7 +209,7 @@ exports.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.overlays[exports.point2vertex(point)] = new Tuple('label', 0, label)
+            board.overlays[exports.point2vertex(point)] = ['label', 0, label]
         })
     }
 
@@ -236,7 +234,7 @@ exports.addBoard = function(tree, index, baseboard) {
             }
 
             if (v in board.overlays) board.overlays[v][1] = sign
-            else board.overlays[v] = new Tuple('', sign, '')
+            else board.overlays[v] = ['', sign, '']
         })
     }
 

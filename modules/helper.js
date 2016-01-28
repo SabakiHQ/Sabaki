@@ -91,7 +91,7 @@ exports.wireLinks = function(container) {
     })
     container.getElements('.coord').addEvent('mouseenter', function() {
         var v = gtp.point2vertex(this.get('text'), getBoard().size)
-        showIndicator(new Tuple(v[0], v[1]))
+        showIndicator(v)
     }).addEvent('mouseleave', function() {
         hideIndicator()
     })

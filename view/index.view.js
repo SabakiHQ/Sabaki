@@ -131,10 +131,10 @@ function setShowSidebar(show) {
 }
 
 function getSidebarArrangement() {
-    return new Tuple(
+    return [
         getShowSidebar() && getCommentHeight() != 100,
         getShowSidebar() && getCommentHeight() != 0
-    )
+    ]
 }
 
 function setSidebarArrangement(graph, comment, updateLayout) {
@@ -233,7 +233,7 @@ function getSliderValue() {
     var value = span.getStyle('top').toInt()
     var label = span.get('text')
 
-    return new Tuple(value, label)
+    return [value, label]
 }
 
 function setSliderValue(value, label) {
@@ -449,7 +449,7 @@ function buildBoard() {
         var ol = new Element('ol.row')
 
         for (var x = 0; x < board.size; x++) {
-            var vertex = new Tuple(x, y)
+            var vertex = [x, y]
             var li = new Element('li.pos_' + x + '-' + y)
                 .store('tuple', vertex)
                 .addClass('shift_' + Math.floor(Math.random() * 9))
@@ -812,7 +812,7 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Pass',
-            click: function() { makeMove(new Tuple(-1, -1)) }
+            click: function() { makeMove([-1, -1]) }
         },
         {
             label: '&Score',
@@ -1000,12 +1000,12 @@ document.addEvent('domready', function() {
 
     $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        this.getParent().store('initposx', new Tuple(event.x, this.getParent().getStyle('width').toInt()))
+        this.getParent().store('initposx', [event.x, this.getParent().getStyle('width').toInt()])
     })
 
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposy', new Tuple(event.y, getCommentHeight()))
+        $('sidebar').store('initposy', [event.y, getCommentHeight()])
         $('properties').setStyle('transition', 'none')
     })
 

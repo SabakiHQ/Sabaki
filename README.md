@@ -31,7 +31,5 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
 * [argv-split](https://github.com/kaelzhang/node-argv-split)
   ([MIT License](https://github.com/kaelzhang/node-argv-split/blob/master/LICENSE-MIT))
-* [tuple](https://github.com/Wolfy87/tuple)
-  ([MIT License](https://github.com/Wolfy87/tuple#license-mit))
 * [Octicons](https://octicons.github.com/)
   ([License](https://github.com/github/octicons/blob/master/LICENSE.txt))

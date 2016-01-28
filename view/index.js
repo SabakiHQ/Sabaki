@@ -12,7 +12,6 @@ var dialog = remote.dialog
 var gtp = remote.require('./modules/gtp')
 var setting = remote.require('./modules/setting')
 
-var Tuple = require('tuple-w')
 var Board = require('../modules/board')
 var Scrollbar = require('gemini-scrollbar')
 var Menu = remote.Menu
@@ -82,7 +81,7 @@ function setCurrentTreePosition(tree, index, now) {
 
     // Store new position
 
-    $('goban').store('position', new Tuple(tree, index))
+    $('goban').store('position', [tree, index])
     var redraw = !node
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed && index == tree.nodes.length - 1
@@ -526,7 +525,7 @@ function syncEngine() {
     // Replay
     for (var i = 0; i < board.size; i++) {
         for (var j = 0; j < board.size; j++) {
-            var v = new Tuple(i, j)
+            var v = [i, j]
             var sign = board.arrangement[v]
             if (sign == 0) continue
             var color = sign > 0 ? 'B' : 'W'
@@ -775,7 +774,7 @@ function useTool(vertex) {
             if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
                 delete board.overlays[vertex]
             } else {
-                board.overlays[vertex] = new Tuple(tool, 0, '')
+                board.overlays[vertex] = [tool, 0, '']
             }
         } else if (tool == 'number') {
             if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
@@ -798,7 +797,7 @@ function useTool(vertex) {
                     }
                 }
 
-                board.overlays[vertex] = new Tuple(tool, 0, number.toString())
+                board.overlays[vertex] = [tool, 0, number.toString()]
             }
         } else if (tool == 'label') {
             if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
@@ -822,7 +821,7 @@ function useTool(vertex) {
                     }
                 }
 
-                board.overlays[vertex] = new Tuple(tool, 0, alpha[k])
+                board.overlays[vertex] = [tool, 0, alpha[k]]
             }
         }
 
@@ -865,7 +864,7 @@ function findMove(vertex, step) {
 
             if (!pos) {
                 if (step == 1) {
-                    pos = new Tuple(root, 0)
+                    pos = [root, 0]
                 } else {
                     var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
                     pos = sections[sections.length - 1]
@@ -930,7 +929,7 @@ function updateSidebar(redraw, now) {
     var tree = tp[0], index = tp[1]
 
     $('sidebar').store('updatesidebarid', setTimeout(function() {
-        if (!helper.equals(getCurrentTreePosition(), new Tuple(tree, index)))
+        if (!helper.equals(getCurrentTreePosition(), [tree, index]))
             return
 
         // Set current path
@@ -1171,11 +1170,9 @@ function generateMove() {
             return
         }
 
-        var v = new Tuple(-1, -1)
-        if (r.content.toLowerCase() != 'pass') {
+        var v = [-1, -1]
+        if (r.content.toLowerCase() != 'pass')
             v = gtp.point2vertex(r.content, getBoard().size)
-            v = new Tuple(v[0], v[1])
-        }
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)
