@@ -141,7 +141,7 @@ exports.addBoard = function(tree, index, baseboard) {
         var prev = gametree.navigate(tree, index, -1)
 
         if (!prev[0]) {
-            var size = 'SZ' in node ? node.SZ[0].toInt() : 19
+            var size = 'SZ' in node ? +node.SZ[0] : 19
             baseboard = new Board(size)
         } else {
             var prevNode = prev[0].nodes[prev[1]]

@@ -178,7 +178,7 @@ exports.getSections = function(tree, level) {
 
 exports.getWidth = function(y, matrix) {
     var keys = Object.keys(new Int8Array(10)).map(function(i) {
-        return parseFloat(i) + y - 4
+        return +i + y - 4
     }).filter(function(i) { return i >= 0 && i < matrix.length })
 
     var padding = Math.min.apply(null, keys.map(function(i) {

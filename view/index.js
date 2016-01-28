@@ -106,7 +106,7 @@ function setCurrentTreePosition(tree, index, now) {
 
     if ('B' in tree.nodes[index]
     || 'PL' in tree.nodes[index] && tree.nodes[index].PL[0] == 'W'
-    || 'HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
+    || 'HA' in tree.nodes[index] && +tree.nodes[index].HA[0] >= 1)
         currentplayer = -1
 
     setCurrentPlayer(currentplayer)
@@ -789,7 +789,7 @@ function useTool(vertex) {
 
                 if ('LB' in node) {
                     var list = node.LB.map(function(x) {
-                        return x.substr(3).toInt()
+                        return +x.substr(3)
                     }).filter(function(x) {
                         return !isNaN(x)
                     })
@@ -1045,7 +1045,7 @@ function commitGameInfo() {
     if (handicap == 0) delete rootNode.HA
     else rootNode.HA = [String.from(handicap + 1)]
 
-    var size = info.getElement('input[name="size"]').get('value').toInt()
+    var size = +info.getElement('input[name="size"]').value
     rootNode.SZ = [String.from(Math.max(Math.min(size, 26), 9))]
     if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
@@ -1056,7 +1056,7 @@ function commitGameInfo() {
             delete rootNode.AB
         } else {
             var board = getBoard()
-            var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
+            var stones = board.getHandicapPlacement(+rootNode.HA[0])
             rootNode.AB = []
 
             for (var i = 0; i < stones.length; i++) {
