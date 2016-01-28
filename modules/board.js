@@ -52,7 +52,7 @@ Board.prototype = {
         // Recursive depth-first search
         this.getNeighborhood(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
-            if (result.some(function(w) { return w.equals(v) })) return
+            if (result.some(function(w) { return helper.equals(w, v) })) return
 
             result.push(v)
             this.getConnectedComponent(v, colors, result)
@@ -248,13 +248,13 @@ Board.prototype = {
                 var actualDead = []
 
                 var negDiff = negArea.filter(function(y) {
-                    return !negDead.some(function(x) { return x.equals(y) })
-                        && !posArea.some(function(x) { return x.equals(y) })
+                    return !negDead.some(function(x) { return helper.equals(x, y) })
+                        && !posArea.some(function(x) { return helper.equals(x, y) })
                 })
 
                 var posDiff = posArea.filter(function(y) {
-                    return !posDead.some(function(x) { return x.equals(y) })
-                        && !negArea.some(function(x) { return x.equals(y) })
+                    return !posDead.some(function(x) { return helper.equals(x, y) })
+                        && !negArea.some(function(x) { return helper.equals(x, y) })
                 })
 
                 if (negDiff.length <= 1 && negDead.length <= posDead.length) {
