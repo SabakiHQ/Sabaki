@@ -191,8 +191,8 @@ function setPlayerName(sign, name) {
 
 function getCaptures() {
     return {
-        '-1': $$('#player_-1 .captures')[0].get('text').toInt(),
-        '1': $$('#player_1 .captures')[0].get('text').toInt()
+        '-1': +$$('#player_-1 .captures')[0].get('text'),
+        '1': +$$('#player_1 .captures')[0].get('text')
     }
 }
 
@@ -404,7 +404,7 @@ function readjustShifts(vertex) {
     var direction = li.get('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
-        return x.replace('shift_', '').toInt()
+        return +x.replace('shift_', '')
     })
 
     if (direction.length == 0) return
@@ -885,7 +885,7 @@ function showGameInfo() {
     size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
 
     var handicap = info.getElement('select[name="handicap"]')
-    if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
+    if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
     else handicap.selectedIndex = 0
 
     var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
