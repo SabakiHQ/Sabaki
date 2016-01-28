@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.7.5][v0.7.5] (2016-01-28)
 
 **Fixed**
 
 * Fix weird `box-shadow` on stone overlays
-* Fix not updating game graph sometimes when undoing 
+* Fix not updating game graph sometimes when undoing
 
 **Changed**
 
@@ -237,7 +237,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.4...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.5...master
+[v0.7.5]: https://github.com/yishn/Sabaki/compare/v0.7.4...v0.7.5
 [v0.7.4]: https://github.com/yishn/Sabaki/compare/v0.7.3...v0.7.4
 [v0.7.3]: https://github.com/yishn/Sabaki/compare/v0.7.2...v0.7.3
 [v0.7.2]: https://github.com/yishn/Sabaki/compare/v0.7.1...v0.7.2
