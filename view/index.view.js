@@ -3,7 +3,7 @@
  */
 
 function getMainMenu() {
-    return document.body.retrieve('mainmenu')
+    return helper.retrieve('mainmenu')
 }
 
 function getIsBusy() {
@@ -82,7 +82,7 @@ function setShowLeftSidebar(show) {
     var view = $$('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
     view.getElement('form:last-child input').focus()
-    $('console').retrieve('scrollbar').update()
+    helper.retrieve('console-scrollbar').update()
 }
 
 function setLeftSidebarWidth(width) {
@@ -225,7 +225,7 @@ function setCommentText(text) {
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)
-    $('properties').retrieve('scrollbar').update()
+    helper.retrieve('properties-scrollbar').update()
 }
 
 function getSliderValue() {
@@ -305,7 +305,7 @@ function setPreferencesTab(tab) {
     form.className = tab
 
     if (tab == 'engines')
-        $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+        helper.retrieve('engineslist-scrollbar').update()
 }
 
 /**
@@ -363,7 +363,7 @@ function addEngineItem(name, path, args) {
             events: {
                 click: function() {
                     this.getParent('li').dispose()
-                    $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+                    helper.retrieve('engineslist-scrollbar').update()
                 }
             }
         }).grab(new Element('img', {
@@ -375,7 +375,7 @@ function addEngineItem(name, path, args) {
     ul.grab(li)
     li.getElement('h3 input').focus()
 
-    var enginesScrollbar = $$('#preferences .engines-list')[0].retrieve('scrollbar')
+    var enginesScrollbar = helper.retrieve('engineslist-scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
@@ -435,7 +435,7 @@ function updateSidebarLayout() {
 
     setTimeout(function() {
         helper.retrieve('sigma').renderers[0].resize().render()
-        $('properties').retrieve('scrollbar').update()
+        helper.retrieve('properties-scrollbar').update()
         container.set('tween', { duration: 200 }).fade('in')
     }, 300)
 }
@@ -534,13 +534,15 @@ function showIndicator(vertex) {
         .setStyle('left', li.getPosition().x)
         .setStyle('height', li.getSize().y)
         .setStyle('width', li.getSize().x)
-        .store('vertex', vertex)
+
+    helper.store('indicator-vertex', vertex)
 }
 
 function hideIndicator() {
     $('indicator').setStyle('top', '')
         .setStyle('left', '')
-        .store('vertex', null)
+
+    helper.store('indicator-vertex', null)
 }
 
 function buildMenu() {
@@ -804,7 +806,7 @@ function buildMenu() {
     ]
 
     var menu = Menu.buildFromTemplate(template)
-    document.body.store('mainmenu', menu)
+    helper.store('mainmenu', menu)
     Menu.setApplicationMenu(menu)
 }
 
@@ -857,7 +859,7 @@ function openNodeMenu(tree, index) {
 function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
     $$('#console .inner form:last-child input')[0].set('value', '').focus()
-    $('console').retrieve('scrollbar').update()
+    helper.retrieve('console-scrollbar').update()
 }
 
 /**
@@ -897,8 +899,8 @@ function closeGameInfo() {
 }
 
 function showScore() {
-    var board = $('goban').retrieve('finalboard')
-    var score = board.getScore($('goban').retrieve('areamap'))
+    var board = helper.retrieve('goban-finalboard')
+    var score = board.getScore(helper.retrieve('goban-areamap'))
     var rootNode = getRootTree().nodes[0]
 
     for (var sign = -1; sign <= 1; sign += 2) {
@@ -978,12 +980,12 @@ document.addEvent('domready', function() {
 
     // Properties scrollbar
 
-    $('properties').store('scrollbar', new Scrollbar({
+    helper.store('properties-scrollbar', new Scrollbar({
         element: $('properties'),
         createElements: false
     }).create())
 
-    $('console').store('scrollbar', new Scrollbar({
+    helper.store('console-scrollbar', new Scrollbar({
         element: $('console'),
         createElements: false
     }).create())
@@ -991,7 +993,7 @@ document.addEvent('domready', function() {
     // Engines list scrollbar
 
     var enginesList = $$('#preferences .engines-list')[0]
-    enginesList.store('scrollbar', new Scrollbar({
+    helper.store('engineslist-scrollbar', new Scrollbar({
         element: enginesList,
         createElements: false
     }).create())
@@ -1052,7 +1054,7 @@ document.addEvent('domready', function() {
             setLeftSidebarWidth(newwidth)
             resizeBoard()
 
-            $('console').retrieve('scrollbar').update()
+            helper.retrieve('console-scrollbar').update()
             return
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
@@ -1064,6 +1066,6 @@ document.addEvent('domready', function() {
             setCommentHeight(newheight)
         }
 
-        $('properties').retrieve('scrollbar').update()
+        helper.retrieve('properties-scrollbar').update()
     })
 })

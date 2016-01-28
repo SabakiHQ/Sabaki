@@ -222,15 +222,15 @@ function getKomi() {
 }
 
 function getEngineName() {
-    return $('console').retrieve('enginename')
+    return helper.retrieve('gtp-enginename')
 }
 
 function getEngineController() {
-    return $('console').retrieve('controller')
+    return helper.retrieve('gtp-controller')
 }
 
 function getEngineCommands() {
-    return $('console').retrieve('commands')
+    return helper.retrieve('gtp-commands')
 }
 
 function setUndoable(undoable) {
@@ -484,16 +484,16 @@ function attachEngine(exec, args) {
     setTimeout(function() {
         var split = require('argv-split')
         var controller = new gtp.Controller(exec, split(args))
-        controller.on('quit', function() { $('console').store('controller', null) })
-        $('console').store('controller', controller)
+        controller.on('quit', function() { helper.store('gtp-controller', null) })
+        helper.store('gtp-controller', controller)
 
         sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
-            $('console').store('enginename', response.content)
+            helper.store('gtp-enginename', response.content)
         })
         sendGTPCommand(new gtp.Command(null, 'version'))
         sendGTPCommand(new gtp.Command(null, 'protocol_version'))
         sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
-            $('console').store('commands', response.content.split('\n'))
+            helper.store('gtp-commands', response.content.split('\n'))
         })
 
         syncEngine()
@@ -504,15 +504,15 @@ function detachEngine() {
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
     clearConsole()
 
-    $('console').store('controller', null)
-        .store('boardhash', null)
+    helper.store('gtp-controller', null)
+        .store('gtp-boardhash', null)
 }
 
 function syncEngine() {
     var board = getBoard()
 
     if (!getEngineController()
-        || $('console').retrieve('boardhash') == board.getHash()) return
+        || helper.retrieve('gtp-boardhash') == board.getHash()) return
     if (!board.isValid()) {
         showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
         return
@@ -537,7 +537,7 @@ function syncEngine() {
         }
     }
 
-    $('console').store('boardhash', board.getHash())
+    helper.store('gtp-boardhash', board.getHash())
     setIsBusy(false)
 }
 
@@ -703,7 +703,7 @@ function makeMove(vertex, sendCommand) {
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
             true
         )
-        $('console').store('boardhash', getBoard().getHash())
+        helper.store('gtp-boardhash', getBoard().getHash())
 
         setIsBusy(true)
         setTimeout(function() {
@@ -928,12 +928,12 @@ function vertexClicked(vertex) {
 }
 
 function updateSidebar(redraw, now) {
-    clearTimeout($('sidebar').retrieve('updatesidebarid'))
+    clearTimeout(helper.retrieve('updatesidebar-id'))
 
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    $('sidebar').store('updatesidebarid', setTimeout(function() {
+    helper.store('updatesidebar-id', setTimeout(function() {
         if (!helper.equals(getCurrentTreePosition(), [tree, index]))
             return
 
@@ -1004,8 +1004,8 @@ function updateAreaMap() {
         return updateAreaMap()
     }
 
-    $('goban').store('areamap', map)
-        .store('finalboard', board)
+    helper.store('goban-areamap', map)
+        .store('goban-finalboard', board)
 }
 
 function commitCommentText() {
@@ -1143,7 +1143,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 
         // Update scrollbars
         var view = $$('#console .gm-scroll-view')[0]
-        var scrollbar = $('console').retrieve('scrollbar')
+        var scrollbar = helper.retrieve('console-scrollbar')
 
         view.scrollTo(0, view.getScrollSize().y)
         if (scrollbar) scrollbar.update()
@@ -1179,7 +1179,7 @@ function generateMove() {
         if (r.content.toLowerCase() != 'pass')
             v = gtp.point2vertex(r.content, getBoard().size)
 
-        $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
+        helper.store('gtp-boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)
     })
 }
@@ -1239,13 +1239,13 @@ function startAutoScroll(direction, delay) {
     delay = Math.max(setting.get('autoscroll.min_interval'), delay)
 
     var slider = $$('#sidebar .slider')[0]
-    clearTimeout(slider.retrieve('autoscrollid'))
+    clearTimeout(helper.retrieve('autoscroll-id'))
 
     if (direction > 0) goForward()
     else goBack()
     updateSlider()
 
-    slider.store('autoscrollid', setTimeout(function() {
+    helper.store('autoscroll-id', setTimeout(function() {
         startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
     }, delay))
 }
