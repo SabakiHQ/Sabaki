@@ -1,4 +1,3 @@
-var gtp = require('./gtp')
 var crypto = require('crypto')
 var shell = require('shell')
 
@@ -21,6 +20,12 @@ exports.roundEven = function(float) {
 exports.store = function(key, value) {
     storage[key] = value
     return exports
+}
+
+exports.li2vertex = function(li) {
+    return [].filter.call(li.classList, function(x) {
+        return x.indexOf('pos') == 0
+    })[0].replace('pos_', '').split('-').map(function(x) { return +x })
 }
 
 exports.retrieve = function(key, value) {
@@ -101,7 +106,7 @@ exports.wireLinks = function(container) {
         return false
     })
     container.getElements('.coord').addEvent('mouseenter', function() {
-        var v = gtp.point2vertex(this.get('text'), getBoard().size)
+        var v = require('./gtp').point2vertex(this.get('text'), getBoard().size)
         showIndicator(v)
     }).addEvent('mouseleave', function() {
         hideIndicator()

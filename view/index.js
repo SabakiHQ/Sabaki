@@ -160,7 +160,7 @@ function setBoard(board) {
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[li.retrieve('tuple')]
+            var sign = board.arrangement[helper.li2vertex(li)]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
                 'cross', 'square', 'label', 'point']
 
@@ -169,8 +169,8 @@ function setBoard(board) {
             })
             li.set('title', '')
 
-            if (li.retrieve('tuple') in board.overlays) {
-                var overlay = board.overlays[li.retrieve('tuple')]
+            if (helper.li2vertex(li) in board.overlays) {
+                var overlay = board.overlays[helper.li2vertex(li)]
                 var type = overlay[0], ghost = overlay[1], label = overlay[2]
 
                 if (type != '') li.addClass(type)
@@ -835,7 +835,7 @@ function useTool(vertex) {
         // Update SGF
 
         $$('#goban .row li').forEach(function(li) {
-            var v = li.retrieve('tuple')
+            var v = helper.li2vertex(li)
             if (!(v in board.overlays)) return
 
             var id = dictionary[board.overlays[v][0]]
@@ -987,14 +987,14 @@ function updateAreaMap() {
         if (li.hasClass('sign_1')) board.captures['-1']++
         else if (li.hasClass('sign_-1')) board.captures['1']++
 
-        board.arrangement[li.retrieve('tuple')] = 0
+        board.arrangement[helper.li2vertex(li)] = 0
     })
 
     var map = board.getAreaMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[li.retrieve('tuple')])
+            .addClass('area_' + map[helper.li2vertex(li)])
     })
 
     var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
