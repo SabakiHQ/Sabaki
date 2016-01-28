@@ -40,8 +40,8 @@ exports.equals = function(a, b) {
     var t = Object.prototype.toString.call(a)
     if (t !== Object.prototype.toString.call(b)) return false
 
-    var aa = t === "[object Array]"
-    var ao = t === "[object Object]"
+    var aa = t === '[object Array]'
+    var ao = t === '[object Object]'
 
     if (aa) {
         if (a.length !== b.length) return false
