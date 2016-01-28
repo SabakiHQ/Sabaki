@@ -581,12 +581,14 @@ function makeMove(vertex, sendCommand) {
     if (getBoard().hasVertex(vertex)) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
-            var ko = gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
-                if (!prevTree) return
+            var tp = gametree.navigate(tree, index, -1)
+            var prevTree = tp[0], prevIndex = tp[1]
+            var ko = false
 
+            if (prevTree) {
                 var hash = getBoard().makeMove(sign, vertex).getHash()
-                return prevTree.nodes[prevIndex].board.getHash() == hash
-            })
+                ko = prevTree.nodes[prevIndex].board.getHash() == hash
+            }
 
             if (ko && showMessageBox(
                 ['You are about to play a move which repeats a previous board position.',
@@ -872,13 +874,13 @@ function findMove(vertex, step) {
                 iterator = gametree.makeNodeIterator.apply(null, pos)
             }
 
-            if (pos.equals(getCurrentTreePosition()) || pos.unpack(function(tree, index) {
+            if (pos.equals(getCurrentTreePosition()) || (function(tree, index) {
                 var node = tree.nodes[index]
 
                 return ['B', 'W'].some(function(c) {
                     return c in node && node[c][0].toLowerCase() == point
                 })
-            })) break
+            }).apply(null, pos)) break
         }
 
         setCurrentTreePosition.apply(null, pos)
@@ -1189,24 +1191,24 @@ function centerGraphCameraAt(node) {
     var matrixdict = getGraphMatrixDict()
     var y = matrixdict[1][node.id][1]
 
-    gametree.getWidth(y, matrixdict[0]).unpack(function(width, padding) {
-        var x = matrixdict[1][node.id][0] - padding
-        var relX = width == 1 ? 0 : x / (width - 1)
-        var diff = (width - 1) * setting.get('graph.grid_size') / 2
-        diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
+    var wp = gametree.getWidth(y, matrixdict[0])
+    var width = wp[0], padding = wp[1]
+    var x = matrixdict[1][node.id][0] - padding
+    var relX = width == 1 ? 0 : x / (width - 1)
+    var diff = (width - 1) * setting.get('graph.grid_size') / 2
+    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
-        node.color = setting.get('graph.node_active_color')
-        s.refresh()
+    node.color = setting.get('graph.node_active_color')
+    s.refresh()
 
-        sigma.misc.animation.camera(
-            s.camera,
-            {
-                x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
-                y: node[s.camera.readPrefix + 'y']
-            },
-            { duration: setting.get('graph.delay') }
-        )
-    })
+    sigma.misc.animation.camera(
+        s.camera,
+        {
+            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
+            y: node[s.camera.readPrefix + 'y']
+        },
+        { duration: setting.get('graph.delay') }
+    )
 }
 
 function askForSave() {
@@ -1345,19 +1347,13 @@ function clearAllOverlays() {
 function goBack() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
-
-    gametree.navigate(tree, index, -1).unpack(function(prevTree, prevIndex) {
-        setCurrentTreePosition(prevTree, prevIndex)
-    })
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, -1))
 }
 
 function goForward() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
-
-    gametree.navigate(tree, index, 1).unpack(function(nextTree, nextIndex) {
-        setCurrentTreePosition(nextTree, nextIndex)
-    })
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, 1))
 }
 
 function goToNextFork() {
@@ -1389,7 +1385,7 @@ function goToBeginning() {
 
 function goToEnd() {
     var tree = getCurrentTreePosition()[0]
-    gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1).unpack(setCurrentTreePosition)
+    setCurrentTreePosition.apply(null, gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
 }
 
 function goToNextVariation() {
@@ -1465,7 +1461,7 @@ function undoBoard() {
     setTimeout(function() {
         setRootTree(document.body.retrieve('undodata-root'))
         var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
-        pos.unpack(setCurrentTreePosition)
+        setCurrentTreePosition.apply(null, pos)
 
         setUndoable(false)
         setIsBusy(false)
