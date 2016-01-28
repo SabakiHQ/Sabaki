@@ -1001,31 +1001,34 @@ document.addEvent('domready', function() {
 
     $$('.verticalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        this.getParent().store('initposx', [event.x, this.getParent().getStyle('width').toInt()])
+        helper.store(
+            this.getParent().id + '-initposx', 
+            [event.x, this.getParent().getStyle('width').toInt()]
+        )
     })
 
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
         if (event.button != 0) return
-        $('sidebar').store('initposy', [event.y, getCommentHeight()])
+        helper.store('sidebar-initposy', [event.y, getCommentHeight()])
         $('properties').setStyle('transition', 'none')
     })
 
     document.body.addEvent('mouseup', function() {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
+        var sidebarInitPosX = helper.retrieve('sidebar-initposx')
+        var sidebarInitPosY = helper.retrieve('sidebar-initposy')
+        var leftSidebarInitPosX = helper.retrieve('leftsidebar-initposx')
 
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !sidebarInitPosY) return
 
         if (sidebarInitPosX) {
-            $('sidebar').store('initposx', null)
+            helper.store('sidebar-initposx', null)
             setting.set('view.sidebar_width', getSidebarWidth())
         } else if (leftSidebarInitPosX) {
-            $('leftsidebar').store('initposx', null)
+            helper.store('leftsidebar-initposx', null)
             setting.set('view.leftsidebar_width', getLeftSidebarWidth())
             return
-        } else if (initPosY) {
-            $('sidebar').store('initposy', null)
+        } else if (sidebarInitPosY) {
+            helper.store('sidebar-initposy', null)
             $('properties').setStyle('transition', '')
             setting.set('view.comments_height', getCommentHeight())
             setSidebarArrangement(true, true, false)
@@ -1034,11 +1037,11 @@ document.addEvent('domready', function() {
         if (helper.retrieve('sigma'))
             helper.retrieve('sigma').renderers[0].resize().render()
     }).addEvent('mousemove', function() {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
+        var sidebarInitPosX = helper.retrieve('sidebar-initposx')
+        var sidebarInitPosY = helper.retrieve('sidebar-initposy')
+        var leftSidebarInitPosX = helper.retrieve('leftsidebar-initposx')
 
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !sidebarInitPosY) return
 
         if (sidebarInitPosX) {
             var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
@@ -1055,8 +1058,8 @@ document.addEvent('domready', function() {
 
             helper.retrieve('console-scrollbar').update()
             return
-        } else if (initPosY) {
-            var initY = initPosY[0], initHeight = initPosY[1]
+        } else if (sidebarInitPosY) {
+            var initY = sidebarInitPosY[0], initHeight = sidebarInitPosY[1]
             var newheight = Math.min(Math.max(
                 initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
                 setting.get('view.comments_minheight')
