@@ -17,6 +17,35 @@ exports.roundEven = function(float) {
     return value % 2 == 0 ? value : value - 1
 }
 
+exports.equals = function(a, b) {
+    if (a === b) return true
+    if (a == null || b == null) return a == b
+
+    var t = Object.prototype.toString.call(a)
+    if (t !== Object.prototype.toString.call(b)) return false
+
+    var aa = t === "[object Array]"
+    var ao = t === "[object Object]"
+
+    if (aa) {
+        if (a.length !== b.length) return false
+        for (var i = 0; i < a.length; i++)
+            if (!exports.equals(a[i], b[i])) return false
+        return true
+    } else if (ao) {
+        var kk = Object.keys(a)
+        if (kk.length !== Object.keys(b).length) return false
+        for (var i = 0; i < kk.length; i++) {
+            k = kk[i]
+            if (!(k in b)) return false
+            if (!exports.equals(a[k], b[k])) return false
+        }
+        return true
+    }
+
+    return false
+}
+
 exports.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
     input = input.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
