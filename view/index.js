@@ -1454,6 +1454,7 @@ function undoBoard() {
         setRootTree(document.body.retrieve('undodata-root'))
         var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
         pos.unpack(setCurrentTreePosition)
+        updateSidebar(true, true)
 
         setUndoable(false)
         setIsBusy(false)

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix weird `box-shadow` on stone overlays
+* Fix not updating game graph when undoing sometimes
 
 **Changed**
 
