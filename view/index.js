@@ -398,8 +398,8 @@ function prepareConsole() {
         if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
         var inputs = $$('#console form input')
 
-        if (this.retrieve('index') == null) this.store('index', inputs.indexOf(this))
-        var i = this.retrieve('index')
+        if (this.className == '') this.className = 'index_' + inputs.indexOf(this)
+        var i = +this.className.replace('index_', '')
         var length = inputs.length
 
         if ([38, 40].indexOf(e.code) != -1) {
@@ -412,7 +412,7 @@ function prepareConsole() {
             }
 
             this.value = i == length - 1 ? '' : inputs[i].value
-            this.store('index', i)
+            this.className = 'index_' + i
         } else if (e.code == 9) {
             // Tab
             var tokens = this.value.split(' ')
