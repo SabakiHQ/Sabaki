@@ -71,7 +71,7 @@ Board.prototype = {
         var liberties = []
 
         chain.forEach(function(c) {
-            liberties.append(this.getNeighborhood(c).filter(function(n) {
+            liberties = liberties.concat(this.getNeighborhood(c).filter(function(n) {
                 return this.arrangement[n] == 0 && !liberties.some(function(v) { return helper.equals(v, n) })
             }.bind(this)))
         }.bind(this))
@@ -218,9 +218,9 @@ Board.prototype = {
         if (this.size % 2 != 0) {
             var middle = (this.size - 1) / 2
             if (count == 5) result.push([middle, middle])
-            result.append([[near, middle], [far, middle]])
+            result.push([near, middle], [far, middle])
             if (count == 7) result.push([middle, middle])
-            result.append([[middle, near], [middle, far], [middle, middle]])
+            result.push([middle, near], [middle, far], [middle, middle])
         }
 
         return result.slice(0, count)
