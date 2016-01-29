@@ -1,5 +1,5 @@
-var app = require('app')
 var process = require('process')
+var app = require('electron').app
 var setting = require('./modules/setting')
 var BrowserWindow = require('electron').BrowserWindow
 
@@ -13,15 +13,15 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     window = new BrowserWindow({
-        'icon': process.platform == 'linux' ? __dirname + '/logo.png' : null,
-        'width': setting.get('window.width'),
-        'height': setting.get('window.height'),
-        'min-width': setting.get('window.minwidth'),
-        'min-height': setting.get('window.minheight'),
-        'use-content-size': true,
-        'show': false,
-        'web-preferences': {
-            'text-areas-are-resizable': false
+        icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
+        width: setting.get('window.width'),
+        height: setting.get('window.height'),
+        minWidth: setting.get('window.minwidth'),
+        minHeight: setting.get('window.minheight'),
+        useContentSize: true,
+        show: false,
+        webPreferences: {
+            textAreasAreResizable: false
         }
     })
 
