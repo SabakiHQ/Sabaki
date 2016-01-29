@@ -431,12 +431,12 @@ function readjustShifts(vertex) {
 
 function updateSidebarLayout() {
     var container = $$('#properties .gm-scroll-view')[0]
-    container.fade('hide')
+    container.setStyle('opacity', 0)
 
     setTimeout(function() {
         $('graph').retrieve('sigma').renderers[0].resize().render()
         $('properties').retrieve('scrollbar').update()
-        container.set('tween', { duration: 200 }).fade('in')
+        container.setStyle('opacity', 1)
     }, 300)
 }
 
