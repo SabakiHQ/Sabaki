@@ -1,4 +1,4 @@
-var remote = null
+var remote = { getCurrentWindow: function() {} }
 var fs = null
 var shell = null
 var sgf = window.sgf
@@ -7,7 +7,7 @@ var gametree = window.gametree
 var sound = window.sound
 var helper = window.helper
 var process = { argv: { length: -1 } }
-var app = window.app
+var app = { getName: function() { return '' }, getVersion: function() { return '' } }
 var dialog = window.dialog
 var gtp = null
 var setting = window.setting
@@ -1342,7 +1342,7 @@ function saveGame() {
         var text = sgf.tree2string(tree)
 
         fs.writeFile(result, '(' + text + ')')
-        document.body.store('treehash', helper.md5(text))
+        document.body.store('treehash', helper.hash(text))
     }
 
     setIsBusy(false)

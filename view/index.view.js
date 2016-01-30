@@ -68,9 +68,9 @@ function setShowLeftSidebar(show) {
     $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
     $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
-    if (remote) {
-        // Resize window
-        var win = remote.getCurrentWindow()
+    // Resize window
+    var win = remote.getCurrentWindow()
+    if (win) {
         var size = win.getContentSize()
 
         if (!win.isMaximized())
@@ -123,9 +123,9 @@ function setShowSidebar(show) {
         }
     }
 
-    if (remote) {
-        // Resize window
-        var win = remote.getCurrentWindow()
+    // Resize window
+    var win = remote.getCurrentWindow()
+    if (win) {
         var size = win.getContentSize()
 
         if (!win.isMaximized())

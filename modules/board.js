@@ -291,7 +291,7 @@ Board.prototype = {
     },
 
     getHash: function() {
-        return helper.md5(JSON.stringify(this.arrangement))
+        return helper.hash(JSON.stringify(this.arrangement))
     }
 }
 

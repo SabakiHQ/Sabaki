@@ -1,8 +1,8 @@
 (function(root) {
 
 var gtp = null
-var crypto = root.crypto
-var shell = root.shell
+var crypto = null
+var shell = null
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
@@ -19,8 +19,19 @@ context.getId = function() {
     return ++id
 }
 
-context.md5 = function(str) {
-    return crypto.createHash('md5').update(str).digest('hex')
+context.hash = function(str) {
+    if (crypto) return crypto.createHash('md5').update(str).digest('hex')
+
+    var hash = 0, chr
+    if (str.length == 0) return hash
+
+    for (var i = 0; i < str.length; i++) {
+        chr = str.charCodeAt(i)
+        hash = ((hash << 5) - hash) + chr
+        hash = hash & hash
+    }
+
+    return hash
 }
 
 context.roundEven = function(float) {
@@ -97,6 +108,7 @@ context.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagr
 
 context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
+        if (!shell) return true
         shell.openExternal(this.href)
         return false
     })

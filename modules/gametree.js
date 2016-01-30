@@ -328,7 +328,7 @@ context.matrixdict2graph = function(matrixdict) {
 }
 
 context.getHash = function(tree) {
-    return helper.md5(sgf.tree2string(tree))
+    return helper.hash(sgf.tree2string(tree))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
