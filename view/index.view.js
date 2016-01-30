@@ -1005,12 +1005,12 @@ document.addEvent('domready', function() {
 
     $$('.verticalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        this.getParent().store('initposx', [e.event.x, this.getParent().getStyle('width').toInt()])
+        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
     })
 
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        $('sidebar').store('initposy', [e.event.y, getCommentHeight()])
+        $('sidebar').store('initposy', [e.event.screenY, getCommentHeight()])
         $('properties').setStyle('transition', 'none')
     })
 
@@ -1046,13 +1046,13 @@ document.addEvent('domready', function() {
 
         if (sidebarInitPosX) {
             var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - e.event.x + initX, setting.get('view.sidebar_minwidth'))
+            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
             var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + e.event.x - initX, setting.get('view.leftsidebar_minwidth'))
+            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
             resizeBoard()
@@ -1062,7 +1062,7 @@ document.addEvent('domready', function() {
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.y) * 100 / $('sidebar').getSize().y,
+                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
                 setting.get('view.comments_minheight')
             ), 100 - setting.get('view.comments_minheight'))
 
