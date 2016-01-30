@@ -1,4 +1,9 @@
-exports.filter = function(needle, haystack) {
+(function(root) {
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.fuzzyfinder = {}
+
+context.filter = function(needle, haystack) {
     var result = []
 
     for (var i = 0; i < haystack.length; i++) {
@@ -10,7 +15,7 @@ exports.filter = function(needle, haystack) {
     return result.map(function(x) { return x[x.length - 1] })
 }
 
-exports.find = function(needle, haystack) {
+context.find = function(needle, haystack) {
     var min = null
 
     for (var i = 0; i < haystack.length; i++) {
@@ -51,3 +56,5 @@ function lexicalSort(a, b) {
     if (!a.length || !b.length) return a.length - b.length
     return a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : lexicalSort(a.slice(1), b.slice(1)))
 }
+
+}).call(null, typeof module != 'undefined' ? module : window)

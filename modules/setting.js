@@ -1,6 +1,17 @@
-var fs = require('fs')
-var path = require('path')
-var app = require('electron').app
+(function(root) {
+
+var fs = root.fs
+var path = root.path
+var app = root.app
+
+if (typeof require != 'undefined') {
+    fs = require('fs')
+    path = require('path')
+    app = require('electron').app
+}
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.setting = {}
 
 var settingspath = path.join(app.getPath('userData'), 'settings.json')
 var enginespath = path.join(app.getPath('userData'), 'engines.json')
@@ -64,7 +75,7 @@ var defaults = {
     'window.width': 608,
 }
 
-exports.load = function() {
+context.load = function() {
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
     engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
     engines.sort(function(x, y) { return x.name >= y.name })
@@ -76,50 +87,52 @@ exports.load = function() {
         settings[key] = defaults[key]
     }
 
-    return exports
+    return context
 }
 
-exports.save = function() {
+context.save = function() {
     fs.writeFileSync(settingspath, JSON.stringify(settings, null, '    '))
     fs.writeFileSync(enginespath, JSON.stringify(engines, null, '    '))
-    return exports
+    return context
 }
 
-exports.get = function(key) {
+context.get = function(key) {
     if (key in settings) return settings[key]
     if (key in defaults) return defaults[key]
     return null
 }
 
-exports.set = function(key, value) {
+context.set = function(key, value) {
     settings[key] = value
-    return exports.save()
+    return context.save()
 }
 
-exports.addEngine = function(name, path, args) {
+context.addEngine = function(name, path, args) {
     engines.push({
         name: name,
         path: path,
         args: args
     })
     engines.sort(function(x, y) { return x.name >= y.name })
-    return exports
+    return context
 }
 
-exports.getEngines = function() {
+context.getEngines = function() {
     return engines.slice(0)
 }
 
-exports.clearEngines = function() {
+context.clearEngines = function() {
     engines.length = 0
-    return exports
+    return context
 }
 
 try {
     fs.accessSync(settingspath, fs.F_OK)
     fs.accessSync(enginespath, fs.F_OK)
 } catch(err) {
-    exports.save()
+    context.save()
 }
 
-exports.load()
+context.load()
+
+}).call(null, typeof module != 'undefined' ? module : window)

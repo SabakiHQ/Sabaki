@@ -1,23 +1,34 @@
-var gtp = require('./gtp')
-var crypto = require('crypto')
-var shell = require('shell')
+(function(root) {
+
+var gtp = null
+var crypto = root.crypto
+var shell = root.shell
+
+if (typeof require != 'undefined') {
+    gtp = require('./gtp')
+    crypto = require('crypto')
+    shell = require('shell')
+}
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.helper = {}
 
 var id = 0
 
-exports.getId = function() {
+context.getId = function() {
     return ++id
 }
 
-exports.md5 = function(str) {
+context.md5 = function(str) {
     return crypto.createHash('md5').update(str).digest('hex')
 }
 
-exports.roundEven = function(float) {
+context.roundEven = function(float) {
     var value = Math.round(float)
     return value % 2 == 0 ? value : value - 1
 }
 
-exports.equals = function(a, b) {
+context.equals = function(a, b) {
     if (a === b) return true
     if (a == null || b == null) return a == b
 
@@ -30,7 +41,7 @@ exports.equals = function(a, b) {
     if (aa) {
         if (a.length !== b.length) return false
         for (var i = 0; i < a.length; i++)
-            if (!exports.equals(a[i], b[i])) return false
+            if (!context.equals(a[i], b[i])) return false
         return true
     } else if (ao) {
         var kk = Object.keys(a)
@@ -38,7 +49,7 @@ exports.equals = function(a, b) {
         for (var i = 0; i < kk.length; i++) {
             k = kk[i]
             if (!(k in b)) return false
-            if (!exports.equals(a[k], b[k])) return false
+            if (!context.equals(a[k], b[k])) return false
         }
         return true
     }
@@ -46,7 +57,7 @@ exports.equals = function(a, b) {
     return false
 }
 
-exports.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
+context.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
     input = input.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&rt;')
@@ -84,7 +95,7 @@ exports.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagr
     return input
 }
 
-exports.wireLinks = function(container) {
+context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
         shell.openExternal(this.href)
         return false
@@ -96,3 +107,5 @@ exports.wireLinks = function(container) {
         hideIndicator()
     })
 }
+
+}).call(null, typeof module != 'undefined' ? module : window)

@@ -1,3 +1,8 @@
+(function(root) {
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.sound = {}
+
 var captureSounds = Object.keys(new Int8Array(5)).map(function(x) {
     return new Audio('../sound/capture' + x + '.wav')
 })
@@ -9,13 +14,15 @@ var pachiSounds = Object.keys(new Int8Array(5)).map(function(x) {
 var newGameSound = new Audio('../sound/newgame.wav')
 var passSound = new Audio('../sound/pass.wav')
 
-exports.playCapture = function() {
+context.playCapture = function() {
     captureSounds[Math.floor(Math.random() * captureSounds.length)].play()
 }
 
-exports.playPachi = function() {
+context.playPachi = function() {
     pachiSounds[Math.floor(Math.random() * pachiSounds.length)].play()
 }
 
-exports.playNewGame = function() { newGameSound.play() }
-exports.playPass = function() { passSound.play() }
+context.playNewGame = function() { newGameSound.play() }
+context.playPass = function() { passSound.play() }
+
+}).call(null, typeof module != 'undefined' ? module : window)

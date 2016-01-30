@@ -1,4 +1,10 @@
-var helper = require('./helper')
+(function(root) {
+
+var helper = root.helper
+
+if (typeof require != 'undefined') {
+    helper = require('./helper')
+}
 
 var Board = function(size, arrangement, captures) {
     this.size = !isNaN(size) ? size : 19
@@ -289,4 +295,6 @@ Board.prototype = {
     }
 }
 
-module.exports = Board
+root.exports = Board
+
+}).call(null, typeof module != 'undefined' ? module : window)

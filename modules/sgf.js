@@ -1,15 +1,26 @@
-var gametree = require('../modules/gametree')
-var helper = require('../modules/helper')
-var fs = require('fs')
+(function(root) {
+
+var gametree = root.gametree
+var helper = root.helper
+var fs = root.fs
+
+if (typeof require != 'undefined') {
+    gametree = require('../modules/gametree')
+    helper = require('../modules/helper')
+    fs = require('fs')
+}
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.sgf = {}
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
 
-exports.meta = {
+context.meta = {
     name: 'Smart Game Format',
     extensions: ['sgf']
 }
 
-exports.tokenize = function(input) {
+context.tokenize = function(input) {
     var tokens = []
     var rules = {
         ignore: /^\s+/,
@@ -41,7 +52,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, callback, start, depth) {
+context.parse = function(tokens, callback, start, depth) {
     if (!callback) callback = function(progress) {}
     if (!start) start = [0]
     if (isNaN(depth)) depth = 0
@@ -64,7 +75,7 @@ exports.parse = function(tokens, callback, start, depth) {
             node[value] = []
             property = node[value]
         } else if (type == 'c_value_type') {
-            property.push(exports.unescapeString(value.substr(1, value.length - 2)))
+            property.push(context.unescapeString(value.substr(1, value.length - 2)))
         }
 
         start[0] = ++i
@@ -74,7 +85,7 @@ exports.parse = function(tokens, callback, start, depth) {
         if (helper.equals(['parenthesis', '('], tokens[i])) {
             start[0] = i + 1
 
-            t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
+            t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
             t.parent = tree
             tree.subtrees.push(t)
             tree.current = 0
@@ -92,32 +103,32 @@ exports.parse = function(tokens, callback, start, depth) {
     return tree
 }
 
-exports.parseFile = function(filename, callback) {
+context.parseFile = function(filename, callback) {
     var input = fs.readFileSync(filename, { encoding: 'utf8' })
-    var tokens = exports.tokenize(input)
+    var tokens = context.tokenize(input)
 
-    return exports.parse(tokens, callback)
+    return context.parse(tokens, callback)
 }
 
-exports.point2vertex = function(point) {
+context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
 
     point = point.toLowerCase()
     return [alpha.indexOf(point[0]), alpha.indexOf(point[1])]
 }
 
-exports.vertex2point = function(vertex) {
+context.vertex2point = function(vertex) {
     var x = vertex[0], y = vertex[1]
     if (x < 0 || y < 0) return ''
     return alpha[x] + alpha[y]
 }
 
-exports.compressed2list = function(compressed) {
+context.compressed2list = function(compressed) {
     var colon = compressed.indexOf(':')
-    if (colon < 0) return [exports.point2vertex(compressed)]
+    if (colon < 0) return [context.point2vertex(compressed)]
 
-    var v1 = exports.point2vertex(compressed.slice(0, colon))
-    var v2 = exports.point2vertex(compressed.slice(colon + 1))
+    var v1 = context.point2vertex(compressed.slice(0, colon))
+    var v2 = context.point2vertex(compressed.slice(colon + 1))
     var list = []
 
     for (var i = v1[0]; i <= v2[0]; i++) {
@@ -129,7 +140,7 @@ exports.compressed2list = function(compressed) {
     return list
 }
 
-exports.addBoard = function(tree, index, baseboard) {
+context.addBoard = function(tree, index, baseboard) {
     if (isNaN(index)) index = 0
     if (index >= tree.nodes.length) return tree
 
@@ -146,17 +157,17 @@ exports.addBoard = function(tree, index, baseboard) {
         } else {
             var prevNode = prev[0].nodes[prev[1]]
 
-            if (!prevNode.board) exports.addBoard(prev[0], prev[1])
+            if (!prevNode.board) context.addBoard(prev[0], prev[1])
             baseboard = prevNode.board
         }
     }
 
     if (!baseboard) return tree
     if ('B' in node) {
-        vertex = exports.point2vertex(node.B[0])
+        vertex = context.point2vertex(node.B[0])
         board = baseboard.makeMove(1, vertex)
     } else if ('W' in node) {
-        vertex = exports.point2vertex(node.W[0])
+        vertex = context.point2vertex(node.W[0])
         board = baseboard.makeMove(-1, vertex)
     } else {
         board = baseboard.clone()
@@ -171,10 +182,10 @@ exports.addBoard = function(tree, index, baseboard) {
         node[ids[i]].forEach(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
-                board.arrangement[exports.point2vertex(value)] = i - 1
+                board.arrangement[context.point2vertex(value)] = i - 1
             } else {
                 // Compressed point list
-                exports.compressed2list(value).forEach(function(vertex) {
+                context.compressed2list(value).forEach(function(vertex) {
                     board.arrangement[vertex] = i - 1
                 })
             }
@@ -194,10 +205,10 @@ exports.addBoard = function(tree, index, baseboard) {
         node[ids[i]].forEach(function(value) {
             if (value.indexOf(':') < 0) {
                 // Single point
-                board.overlays[exports.point2vertex(value)] = [classes[i], 0, '']
+                board.overlays[context.point2vertex(value)] = [classes[i], 0, '']
             } else {
                 // Compressed point list
-                exports.compressed2list(value).forEach(function(vertex) {
+                context.compressed2list(value).forEach(function(vertex) {
                     board.overlays[vertex] = [classes[i], 0, '']
                 })
             }
@@ -209,7 +220,7 @@ exports.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.overlays[exports.point2vertex(point)] = ['label', 0, label]
+            board.overlays[context.point2vertex(point)] = ['label', 0, label]
         })
     }
 
@@ -241,7 +252,7 @@ exports.addBoard = function(tree, index, baseboard) {
     return tree
 }
 
-exports.tree2string = function(tree) {
+context.tree2string = function(tree) {
     var output = ''
 
     tree.nodes.forEach(function(node) {
@@ -252,7 +263,7 @@ exports.tree2string = function(tree) {
             output += id
 
             node[id].forEach(function(value) {
-                output += '[' + exports.escapeString(value.toString()) + ']'
+                output += '[' + context.escapeString(value.toString()) + ']'
             })
         }
 
@@ -260,20 +271,22 @@ exports.tree2string = function(tree) {
     })
 
     if (tree.current != null)
-        output += '(' + exports.tree2string(tree.subtrees[tree.current]) + ')'
+        output += '(' + context.tree2string(tree.subtrees[tree.current]) + ')'
 
     for (var i = 0; i < tree.subtrees.length; i++) {
         if (i == tree.current) continue
-        output += '(' + exports.tree2string(tree.subtrees[i]) + ')'
+        output += '(' + context.tree2string(tree.subtrees[i]) + ')'
     }
 
     return output
 }
 
-exports.escapeString = function(input) {
+context.escapeString = function(input) {
     return input.replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
 }
 
-exports.unescapeString = function(input) {
+context.unescapeString = function(input) {
     return input.replace(/\\(\r\n|\n\r|\n|\r)/g, '').replace(/\\(.)/g, function(m, p) { return p })
 }
+
+}).call(null, typeof module != 'undefined' ? module : window)

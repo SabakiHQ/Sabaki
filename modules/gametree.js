@@ -1,10 +1,23 @@
-var Board = require('./board')
+(function(root) {
 
-var sgf = require('./sgf')
-var helper = require('./helper')
-var setting = require('electron').remote.require('./modules/setting')
+var Board = root.Board
 
-exports.new = function() {
+var sgf = root.sgf
+var helper = root.helper
+var setting = root.setting
+
+if (typeof require != 'undefined') {
+    Board = require('./board')
+
+    sgf = require('./sgf')
+    helper = require('./helper')
+    setting = require('electron').remote.require('./modules/setting')
+}
+
+var context = module.exports
+if (typeof module == 'undefined') context = window.gametree = {}
+
+context.new = function() {
     return {
         id: helper.getId(),
         nodes: [],
@@ -15,7 +28,7 @@ exports.new = function() {
     }
 }
 
-exports.clone = function(tree, parent) {
+context.clone = function(tree, parent) {
     if (!parent) parent = null
 
     var c = {
@@ -34,18 +47,18 @@ exports.clone = function(tree, parent) {
     })
 
     tree.subtrees.forEach(function(subtree) {
-        c.subtrees.push(exports.clone(subtree, c))
+        c.subtrees.push(context.clone(subtree, c))
     })
 
     return c
 }
 
-exports.getRoot = function(tree) {
+context.getRoot = function(tree) {
     while (tree.parent != null) tree = tree.parent
     return tree
 }
 
-exports.navigate = function(tree, index, step) {
+context.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
     } else if (index + step < 0 && tree.parent) {
@@ -53,7 +66,7 @@ exports.navigate = function(tree, index, step) {
             var prev = tree.parent
             var newstep = index + step + 1
 
-            return exports.navigate(prev, prev.nodes.length - 1, newstep)
+            return context.navigate(prev, prev.nodes.length - 1, newstep)
         }
 
         return [tree, 0]
@@ -62,7 +75,7 @@ exports.navigate = function(tree, index, step) {
             var next = tree.subtrees[tree.current]
             var newstep = index + step - tree.nodes.length
 
-            return exports.navigate(next, 0, newstep)
+            return context.navigate(next, 0, newstep)
         }
 
         return [tree, tree.nodes.length - 1]
@@ -71,10 +84,10 @@ exports.navigate = function(tree, index, step) {
     return [null, 0]
 }
 
-exports.makeNodeIterator = function(tree, index) {
-    var root = exports.getRoot(tree)
-    var level = exports.getLevel(tree, index, root)
-    var sections = exports.getSections(root, level)
+context.makeNodeIterator = function(tree, index) {
+    var root = context.getRoot(tree)
+    var level = context.getLevel(tree, index, root)
+    var sections = context.getSections(root, level)
     var j = sections.map(function(x) { return x[0] }).indexOf(tree)
 
     return {
@@ -83,12 +96,12 @@ exports.makeNodeIterator = function(tree, index) {
                 j = j + step
             } else if (j + step >= sections.length) {
                 step = j + step - sections.length
-                sections = exports.getSections(root, ++level)
+                sections = context.getSections(root, ++level)
                 j = 0
                 if (sections.length != 0) this.navigate(step)
             } else if (j + step < 0) {
                 step = j + step + 1
-                sections = exports.getSections(root, --level)
+                sections = context.getSections(root, --level)
                 j = sections.length - 1
                 if (sections.length != 0) this.navigate(step)
             }
@@ -107,13 +120,13 @@ exports.makeNodeIterator = function(tree, index) {
     }
 }
 
-exports.splitTree = function(tree, index) {
+context.splitTree = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return tree
 
     var newnodes = tree.nodes.slice(0, index + 1)
     tree.nodes = tree.nodes.slice(index + 1)
 
-    var newtree = exports.new()
+    var newtree = context.new()
     newtree.nodes = newnodes
     newtree.subtrees = [tree]
     newtree.parent = tree.parent
@@ -126,7 +139,7 @@ exports.splitTree = function(tree, index) {
     return newtree
 }
 
-exports.reduceTree = function(tree) {
+context.reduceTree = function(tree) {
     if (tree.subtrees.length != 1) return tree
 
     tree.nodes = tree.nodes.concat(tree.subtrees[0].nodes)
@@ -140,43 +153,43 @@ exports.reduceTree = function(tree) {
     return tree
 }
 
-exports.getHeight = function(tree) {
+context.getHeight = function(tree) {
     var height = 0
 
     tree.subtrees.forEach(function(subtree) {
-        height = Math.max(exports.getHeight(subtree), height)
+        height = Math.max(context.getHeight(subtree), height)
     })
 
     return height + tree.nodes.length
 }
 
-exports.getCurrentHeight = function(tree) {
+context.getCurrentHeight = function(tree) {
     var height = tree.nodes.length
 
     if (tree.current != null)
-        height += exports.getCurrentHeight(tree.subtrees[tree.current])
+        height += context.getCurrentHeight(tree.subtrees[tree.current])
 
     return height
 }
 
-exports.getLevel = function(tree, index) {
-    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
+context.getLevel = function(tree, index) {
+    return index + (tree.parent ? context.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
 
-exports.getSections = function(tree, level) {
+context.getSections = function(tree, level) {
     if (level < 0) return []
     if (level < tree.nodes.length) return [[tree, level]]
 
     var sections = []
 
     tree.subtrees.forEach(function(subtree) {
-        sections = sections.concat(exports.getSections(subtree, level - tree.nodes.length))
+        sections = sections.concat(context.getSections(subtree, level - tree.nodes.length))
     })
 
     return sections
 }
 
-exports.getWidth = function(y, matrix) {
+context.getWidth = function(y, matrix) {
     var keys = Object.keys(new Int8Array(10)).map(function(i) {
         return parseFloat(i) + y - 4
     }).filter(function(i) { return i >= 0 && i < matrix.length })
@@ -191,8 +204,8 @@ exports.getWidth = function(y, matrix) {
     return [width, padding]
 }
 
-exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
-    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(function() { return [] });
+context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
+    if (!matrix) matrix = Array.apply(null, new Array(context.getHeight(tree))).map(function() { return [] });
     if (!dict) dict = {}
     if (!xshift) xshift = 0
     if (!yshift) yshift = 0
@@ -222,18 +235,18 @@ exports.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     if (!tree.collapsed) {
         for (var k = 0; k < tree.subtrees.length; k++) {
             var subtree = tree.subtrees[k]
-            exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+            context.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
         }
     }
 
     return [matrix, dict]
 }
 
-exports.onCurrentTrack = function(tree) {
-    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && exports.onCurrentTrack(tree.parent)
+context.onCurrentTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && context.onCurrentTrack(tree.parent)
 }
 
-exports.matrixdict2graph = function(matrixdict) {
+context.matrixdict2graph = function(matrixdict) {
     var matrix = matrixdict[0]
     var dict = matrixdict[1]
     var graph = { nodes: [], edges: [] }
@@ -264,7 +277,7 @@ exports.matrixdict2graph = function(matrixdict) {
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
             } else if (notCurrentTrack.indexOf(tree.id) == -1) {
-                if (exports.onCurrentTrack(tree)) {
+                if (context.onCurrentTrack(tree)) {
                     currentTrack.push(tree.id)
                     node.color = node.originalColor
                 } else {
@@ -277,7 +290,7 @@ exports.matrixdict2graph = function(matrixdict) {
 
             graph.nodes.push(node)
 
-            var prev = exports.navigate(tree, index, -1)
+            var prev = context.navigate(tree, index, -1)
             if (!prev[0]) continue
             var prevId = prev[0].id + '-' + prev[1]
             var prevPos = dict[prevId]
@@ -314,6 +327,8 @@ exports.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
-exports.getHash = function(tree) {
+context.getHash = function(tree) {
     return helper.md5(sgf.tree2string(tree))
 }
+
+}).call(null, typeof module != 'undefined' ? module : window)
