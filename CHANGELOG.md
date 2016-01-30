@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Update to Electron v0.36.6
+* Update to Electron v0.36.7
 * Update to Mootools v1.6.0
 
 ## [Sabaki v0.7.5][v0.7.5] (2016-01-28)
