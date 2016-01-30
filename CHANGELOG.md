@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.7.6][v0.7.6] (2016-01-30)
 
 **Fixed**
 
