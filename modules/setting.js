@@ -71,7 +71,7 @@ var defaults = {
     'view.show_graph': true,
     'view.leftsidebar_width': 250,
     'view.leftsidebar_minwidth': 100,
-    'view.sidebar_width': 200,
+    'view.sidebar_width': 222,
     'view.sidebar_minwidth': 100,
     'window.height': 648,
     'window.minheight': 590,
