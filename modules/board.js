@@ -1,4 +1,4 @@
-(function(root) {
+c(function(root) {
 
 var helper = root.helper
 
@@ -295,6 +295,7 @@ Board.prototype = {
     }
 }
 
-root.exports = Board
+if (typeof module != 'undefined') module.exports = Board
+else window.Board = Board
 
 }).call(null, typeof module != 'undefined' ? module : window)

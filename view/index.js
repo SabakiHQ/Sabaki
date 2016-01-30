@@ -1533,8 +1533,6 @@ window.addEvent('load', function() {
         return
     }
 
-    if (!remote) return
-
     detachEngine()
 
     var win = remote.getCurrentWindow()
