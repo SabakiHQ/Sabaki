@@ -11,7 +11,7 @@
     padding: 0;
 }
 
-body { overflow: hidden; }
+html, body { overflow: hidden; height: 100%; }
 
 body, input, button, select, option, textarea {
     font: menu;
