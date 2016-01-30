@@ -10,8 +10,7 @@ if (typeof require != 'undefined') {
     app = require('electron').app
 }
 
-var context = module.exports
-if (typeof module == 'undefined') context = window.setting = {}
+var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
 
 var settingspath = ''
 var enginespath = ''

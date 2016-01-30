@@ -1,7 +1,6 @@
 (function(root) {
 
-var context = module.exports
-if (typeof module == 'undefined') context = window.fuzzyfinder = {}
+var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
 
 context.filter = function(needle, haystack) {
     var result = []
