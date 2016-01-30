@@ -549,6 +549,7 @@ function hideIndicator() {
 }
 
 function buildMenu() {
+    return
     var template = [
         {
             label: '&Game',
@@ -814,6 +815,7 @@ function buildMenu() {
 }
 
 function openHeaderMenu() {
+    return
     var template = [
         {
             label: '&Pass',
@@ -844,6 +846,7 @@ function openHeaderMenu() {
 }
 
 function openNodeMenu(tree, index) {
+    return
     if (getScoringMode()) return
 
     var template = [

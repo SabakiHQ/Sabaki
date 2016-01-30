@@ -402,6 +402,8 @@ function prepareDragDropFiles() {
 }
 
 function prepareConsole() {
+    return
+
     $$('#console form').addEvent('submit', function(e) {
         e.preventDefault()
 
@@ -458,6 +460,7 @@ function prepareConsole() {
 }
 
 function loadEngines() {
+    return
     // Load menu items
 
     var menu = getMainMenu()
@@ -497,6 +500,7 @@ function loadEngines() {
 }
 
 function attachEngine(exec, args) {
+    return
     detachEngine()
     setIsBusy(true)
 
@@ -520,6 +524,7 @@ function attachEngine(exec, args) {
 }
 
 function detachEngine() {
+    return
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
     clearConsole()
 
@@ -528,6 +533,7 @@ function detachEngine() {
 }
 
 function syncEngine() {
+    return
     var board = getBoard()
 
     if (!getEngineController()
@@ -561,6 +567,7 @@ function syncEngine() {
 }
 
 function checkForUpdates(callback) {
+    return
     if (!callback) callback = function(hasUpdates) {}
     var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
 
@@ -1177,6 +1184,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 }
 
 function generateMove() {
+    return
     if (!getEngineController() || getIsBusy()) return
 
     closeDrawers()
@@ -1533,6 +1541,7 @@ window.addEvent('load', function() {
         return
     }
 
+    return
     detachEngine()
 
     var win = remote.getCurrentWindow()
