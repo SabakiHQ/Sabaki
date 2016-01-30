@@ -143,8 +143,7 @@ header, #edit, #scoring, #find, #progress {
         top: 0;
         height: 40px;
         width: 35px;
-        background: no-repeat url('../node_modules/octicons/svg/x.svg') center;
-        background-size: auto 21px;
+        background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
     #scoring a.close, #find a.close {
