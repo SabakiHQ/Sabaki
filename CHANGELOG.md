@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Fixed**
+
+* Fix regression where new variations are created when variations already exist
+
 **Changed**
 
 * Update to Electron v0.36.7

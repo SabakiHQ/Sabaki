@@ -653,7 +653,7 @@ function makeMove(vertex, sendCommand) {
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
-                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0], vertex))
+                    && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
             })
 
             if (variations.length > 0) {
