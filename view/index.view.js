@@ -978,12 +978,12 @@ document.addEvent('domready', function() {
 
     // Properties scrollbar
 
-    $('properties').store('scrollbar', new Scrollbar({
+    $('properties').store('scrollbar', new GeminiScrollbar({
         element: $('properties'),
         createElements: false
     }).create())
 
-    $('console').store('scrollbar', new Scrollbar({
+    $('console').store('scrollbar', new GeminiScrollbar({
         element: $('console'),
         createElements: false
     }).create())
@@ -991,7 +991,7 @@ document.addEvent('domready', function() {
     // Engines list scrollbar
 
     var enginesList = $$('#preferences .engines-list')[0]
-    enginesList.store('scrollbar', new Scrollbar({
+    enginesList.store('scrollbar', new GeminiScrollbar({
         element: enginesList,
         createElements: false
     }).create())
