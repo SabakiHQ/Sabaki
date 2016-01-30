@@ -1,6 +1,6 @@
 (function(root) {
 
-var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
+var context = typeof module != 'undefined' ? module.exports : (window.sound = {})
 
 var captureSounds = Object.keys(new Int8Array(5)).map(function(x) {
     return new Audio('../sound/capture' + x + '.wav')
