@@ -8,7 +8,7 @@ var sound = window.sound
 var helper = window.helper
 var process = { argv: { length: -1 } }
 var app = { getName: function() { return '' }, getVersion: function() { return '' } }
-var dialog = window.dialog
+var dialog = { showMessageBox: function() {} }
 var gtp = null
 var setting = window.setting
 
