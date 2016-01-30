@@ -5,6 +5,6 @@
             <circle cx="11" cy="11" r="10" />
         </mask>
     </defs>
-    <circle cx="24" cy="11" r="10" stroke="black" stroke-width="1.5" mask="url(#hole)" />
-    <circle cx="11" cy="11" r="10" stroke="black" stroke-width="1.5" fill="transparent" />
+    <circle cx="24" cy="11" r="10" stroke="white" stroke-width="1.5" fill="white" mask="url(#hole)" />
+    <circle cx="11" cy="11" r="10" stroke="white" stroke-width="1.5" fill="transparent" />
 </svg>
