@@ -350,8 +350,8 @@ function prepareSlider() {
         updateSlider()
     }
 
-    slider.addEvent('mousedown', function() {
-        if (event.buttons != 1) return
+    slider.addEvent('mousedown', function(e) {
+        if (e.event.buttons != 1) return
 
         this.store('mousedown', true).addClass('active')
         document.fireEvent('mousemove')
@@ -364,14 +364,14 @@ function prepareSlider() {
         this.removeClass('active')
     })
 
-    document.addEvent('mouseup', function() {
+    document.body.addEvent('mouseup', function() {
         slider.store('mousedown', false)
             .removeClass('active')
-    }).addEvent('mousemove', function() {
-        if (event.buttons != 1 || !slider.retrieve('mousedown'))
+    }).addEvent('mousemove', function(e) {
+        if (e.event.buttons != 1 || !slider.retrieve('mousedown'))
             return
 
-        var percentage = (event.clientY - slider.getPosition().y) / slider.getSize().y
+        var percentage = (e.event.clientY - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
     })
 
@@ -382,7 +382,7 @@ function prepareSlider() {
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
-    document.addEvent('mouseup', function() {
+    document.body.addEvent('mouseup', function() {
         $$('#sidebar .slider a').store('mousedown', false)
     })
 }
@@ -739,7 +739,7 @@ function makeMove(vertex, sendCommand) {
     }
 }
 
-function useTool(vertex) {
+function useTool(vertex, event) {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
     var node = tree.nodes[index]
@@ -918,7 +918,7 @@ function findMove(vertex, step) {
     }, 0)
 }
 
-function vertexClicked(vertex) {
+function vertexClicked(vertex, event) {
     closeGameInfo()
 
     if (getScoringMode()) {
@@ -931,7 +931,7 @@ function vertexClicked(vertex) {
 
         updateAreaMap()
     } else if (getEditMode()) {
-        useTool(vertex)
+        useTool(vertex, event)
     } else if (getFindMode()) {
         if (event.button != 0) return
         findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
