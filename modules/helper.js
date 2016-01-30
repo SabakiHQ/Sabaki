@@ -1,12 +1,10 @@
 (function(root) {
 
 var gtp = null
-var crypto = null
 var shell = null
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
-    crypto = require('crypto')
     shell = require('shell')
 }
 
@@ -20,8 +18,6 @@ context.getId = function() {
 }
 
 context.hash = function(str) {
-    if (crypto) return crypto.createHash('md5').update(str).digest('hex')
-
     var hash = 0, chr
     if (str.length == 0) return hash
 
