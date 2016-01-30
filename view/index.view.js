@@ -464,10 +464,10 @@ function buildBoard() {
                 li.addClass('hoshi')
 
             ol.adopt(li.adopt(img)
-                .addEvent('mouseup', function() {
+                .addEvent('mouseup', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
                     $('goban').store('mousedown', false)
-                    vertexClicked(this)
+                    vertexClicked(this, e.event)
                 }.bind(vertex))
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
@@ -1003,14 +1003,14 @@ document.addEvent('domready', function() {
 
     // Resize sidebar
 
-    $$('.verticalresizer').addEvent('mousedown', function() {
-        if (event.button != 0) return
-        this.getParent().store('initposx', [event.x, this.getParent().getStyle('width').toInt()])
+    $$('.verticalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        this.getParent().store('initposx', [e.event.x, this.getParent().getStyle('width').toInt()])
     })
 
-    $$('#sidebar .horizontalresizer').addEvent('mousedown', function() {
-        if (event.button != 0) return
-        $('sidebar').store('initposy', [event.y, getCommentHeight()])
+    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        $('sidebar').store('initposy', [e.event.y, getCommentHeight()])
         $('properties').setStyle('transition', 'none')
     })
 
@@ -1037,7 +1037,7 @@ document.addEvent('domready', function() {
 
         if ($('graph').retrieve('sigma'))
             $('graph').retrieve('sigma').renderers[0].resize().render()
-    }).addEvent('mousemove', function() {
+    }).addEvent('mousemove', function(e) {
         var sidebarInitPosX = $('sidebar').retrieve('initposx')
         var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
         var initPosY = $('sidebar').retrieve('initposy')
@@ -1046,13 +1046,13 @@ document.addEvent('domready', function() {
 
         if (sidebarInitPosX) {
             var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - event.x + initX, setting.get('view.sidebar_minwidth'))
+            var newwidth = Math.max(initWidth - e.event.x + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
             var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + event.x - initX, setting.get('view.leftsidebar_minwidth'))
+            var newwidth = Math.max(initWidth + e.event.x - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
             resizeBoard()
@@ -1062,7 +1062,7 @@ document.addEvent('domready', function() {
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - event.y) * 100 / $('sidebar').getSize().y,
+                initHeight + (initY - e.event.y) * 100 / $('sidebar').getSize().y,
                 setting.get('view.comments_minheight')
             ), 100 - setting.get('view.comments_minheight'))
 
