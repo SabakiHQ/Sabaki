@@ -42,10 +42,6 @@ header, #edit, #scoring, #find, #progress {
         font-size: .8em;
         transition: opacity .2s;
     }
-    .currentplayer {
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
-    }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
