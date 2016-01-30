@@ -1,4 +1,4 @@
-c(function(root) {
+(function(root) {
 
 var helper = root.helper
 
