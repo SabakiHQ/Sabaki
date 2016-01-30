@@ -2,14 +2,12 @@
 
 var Board = root.Board
 
-var sgf = root.sgf
 var helper = root.helper
 var setting = root.setting
 
 if (typeof require != 'undefined') {
     Board = require('./board')
 
-    sgf = require('./sgf')
     helper = require('./helper')
     setting = require('electron').remote.require('./modules/setting')
 }
@@ -328,7 +326,11 @@ context.matrixdict2graph = function(matrixdict) {
 }
 
 context.getHash = function(tree) {
-    return helper.hash(sgf.tree2string(tree))
+    return helper.hash(JSON.stringify(tree, function(name, val) {
+        if (['id', 'board', 'parent', 'collapsed'].indexOf(name) >= 0)
+            return undefined
+        return val
+    }))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
