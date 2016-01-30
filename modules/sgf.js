@@ -2,7 +2,7 @@
 
 var gametree = root.gametree
 var helper = root.helper
-var fs = root.fs
+var fs = null
 
 if (typeof require != 'undefined') {
     gametree = require('../modules/gametree')
@@ -104,6 +104,8 @@ context.parse = function(tokens, callback, start, depth) {
 }
 
 context.parseFile = function(filename, callback) {
+    if (!fs) return null
+
     var input = fs.readFileSync(filename, { encoding: 'utf8' })
     var tokens = context.tokenize(input)
 

@@ -1,8 +1,8 @@
 (function(root) {
 
-var fs = root.fs
-var path = root.path
-var app = root.app
+var fs = null
+var path = null
+var app = null
 
 if (typeof require != 'undefined') {
     fs = require('fs')
@@ -13,8 +13,13 @@ if (typeof require != 'undefined') {
 var context = module.exports
 if (typeof module == 'undefined') context = window.setting = {}
 
-var settingspath = path.join(app.getPath('userData'), 'settings.json')
-var enginespath = path.join(app.getPath('userData'), 'engines.json')
+var settingspath = ''
+var enginespath = ''
+
+if (path && app) {
+    settingspath = path.join(app.getPath('userData'), 'settings.json')
+    enginespath = path.join(app.getPath('userData'), 'engines.json')
+}
 
 var settings = {}
 var engines = []
@@ -76,6 +81,8 @@ var defaults = {
 }
 
 context.load = function() {
+    if (!fs) return settings = defaults
+
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
     engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
     engines.sort(function(x, y) { return x.name >= y.name })
@@ -91,8 +98,11 @@ context.load = function() {
 }
 
 context.save = function() {
-    fs.writeFileSync(settingspath, JSON.stringify(settings, null, '    '))
-    fs.writeFileSync(enginespath, JSON.stringify(engines, null, '    '))
+    if (fs) {
+        fs.writeFileSync(settingspath, JSON.stringify(settings, null, '    '))
+        fs.writeFileSync(enginespath, JSON.stringify(engines, null, '    '))
+    }
+
     return context
 }
 

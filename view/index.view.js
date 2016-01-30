@@ -68,12 +68,14 @@ function setShowLeftSidebar(show) {
     $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
     $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
-    // Resize window
-    var win = remote.getCurrentWindow()
-    var size = win.getContentSize()
+    if (remote) {
+        // Resize window
+        var win = remote.getCurrentWindow()
+        var size = win.getContentSize()
 
-    if (!win.isMaximized())
-        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
+        if (!win.isMaximized())
+            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
+    }
 
     resizeBoard()
     setting.set('view.show_leftsidebar', show)
@@ -121,12 +123,15 @@ function setShowSidebar(show) {
         }
     }
 
-    // Resize window
-    var win = remote.getCurrentWindow()
-    var size = win.getContentSize()
+    if (remote) {
+        // Resize window
+        var win = remote.getCurrentWindow()
+        var size = win.getContentSize()
 
-    if (!win.isMaximized())
-        win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+        if (!win.isMaximized())
+            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+    }
+
     resizeBoard()
 }
 
