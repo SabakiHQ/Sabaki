@@ -10,8 +10,7 @@ if (typeof require != 'undefined') {
     fs = require('fs')
 }
 
-var context = module.exports
-if (typeof module == 'undefined') context = window.sgf = {}
+var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
 
 var alpha = 'abcdefghijklmnopqrstuvwxyz'
 
