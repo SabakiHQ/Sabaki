@@ -8,7 +8,7 @@ if (typeof require != 'undefined') {
     shell = require('shell')
 }
 
-var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
+var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
 
 var id = 0
 

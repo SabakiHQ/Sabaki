@@ -12,7 +12,7 @@ if (typeof require != 'undefined') {
     setting = require('electron').remote.require('./modules/setting')
 }
 
-var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
+var context = typeof module != 'undefined' ? module.exports : (window.gametree = {})
 
 context.new = function() {
     return {
