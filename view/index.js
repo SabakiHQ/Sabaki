@@ -1,42 +1,21 @@
-var remote = { getCurrentWindow: function() {} }
-var fs = null
-var shell = null
-var sgf = window.sgf
-var fuzzyfinder = window.fuzzyfinder
-var gametree = window.gametree
-var sound = window.sound
-var helper = window.helper
-var process = { argv: { length: -1 } }
-var app = { getName: function() { return '' }, getVersion: function() { return '' } }
-var dialog = { showMessageBox: function() {} }
-var gtp = null
-var setting = window.setting
+var remote = require('electron').remote
+var fs = require('fs')
+var shell = require('shell')
+var sgf = require('../modules/sgf')
+var fuzzyfinder = require('../modules/fuzzyfinder')
+var gametree = require('../modules/gametree')
+var sound = require('../modules/sound')
+var helper = require('../modules/helper')
+var process = remote.require('process')
+var app = remote.app
+var dialog = remote.dialog
+var gtp = remote.require('./modules/gtp')
+var setting = remote.require('./modules/setting')
 
-var GeminiScrollbar = window.GeminiScrollbar
-var Board = window.Board
-var Menu = null
-var MenuItem = null
-
-if (typeof require != 'undefined') {
-    remote = require('electron').remote
-    fs = require('fs')
-    shell = require('shell')
-    sgf = require('../modules/sgf')
-    fuzzyfinder = require('../modules/fuzzyfinder')
-    gametree = require('../modules/gametree')
-    sound = require('../modules/sound')
-    helper = require('../modules/helper')
-    process = remote.require('process')
-    app = remote.app
-    dialog = remote.dialog
-    gtp = remote.require('./modules/gtp')
-    setting = remote.require('./modules/setting')
-
-    GeminiScrollbar = require('gemini-scrollbar')
-    Board = require('../modules/board')
-    Menu = remote.Menu
-    MenuItem = remote.MenuItem
-}
+var GeminiScrollbar = require('gemini-scrollbar')
+var Board = require('../modules/board')
+var Menu = remote.Menu
+var MenuItem = remote.MenuItem
 
 /**
  * Getter & setter
