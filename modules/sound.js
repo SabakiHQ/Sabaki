@@ -3,15 +3,15 @@
 var context = typeof module != 'undefined' ? module.exports : (window.sound = {})
 
 var captureSounds = Object.keys(new Int8Array(5)).map(function(x) {
-    return new Audio('../sound/capture' + x + '.wav')
+    return new Audio('../sound/capture' + x + '.mp3')
 })
 
 var pachiSounds = Object.keys(new Int8Array(5)).map(function(x) {
-    return new Audio('../sound/' + x + '.wav')
+    return new Audio('../sound/' + x + '.mp3')
 })
 
-var newGameSound = new Audio('../sound/newgame.wav')
-var passSound = new Audio('../sound/pass.wav')
+var newGameSound = new Audio('../sound/newgame.mp3')
+var passSound = new Audio('../sound/pass.mp3')
 
 context.playCapture = function() {
     captureSounds[Math.floor(Math.random() * captureSounds.length)].play()
