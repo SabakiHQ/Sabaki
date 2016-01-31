@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Enter scoring mode after two consecutive passes are created
+
+**Fixed**
+
+* Fix regression where a new variation is created when move already exists
+
 ## [Sabaki v0.7.6][v0.7.6] (2016-01-30)
 
 **Fixed**
 
-* Fix regression where new variations are created when variations already exist
+* Fix regression where a new variation is created when variation already exists
 
 **Changed**
 

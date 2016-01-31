@@ -17,27 +17,6 @@ var Board = window.Board
 var Menu = null
 var MenuItem = null
 
-if (typeof require != 'undefined') {
-    remote = require('electron').remote
-    fs = require('fs')
-    shell = require('shell')
-    sgf = require('../modules/sgf')
-    fuzzyfinder = require('../modules/fuzzyfinder')
-    gametree = require('../modules/gametree')
-    sound = require('../modules/sound')
-    helper = require('../modules/helper')
-    process = remote.require('process')
-    app = remote.app
-    dialog = remote.dialog
-    gtp = remote.require('./modules/gtp')
-    setting = remote.require('./modules/setting')
-
-    GeminiScrollbar = require('gemini-scrollbar')
-    Board = require('../modules/board')
-    Menu = remote.Menu
-    MenuItem = remote.MenuItem
-}
-
 /**
  * Getter & setter
  */
@@ -594,18 +573,20 @@ function checkForUpdates(callback) {
 
 function makeMove(vertex, sendCommand) {
     if (sendCommand == null) sendCommand = getEngineController() != null
-    if (getBoard().hasVertex(vertex) && getBoard().arrangement[vertex] != 0)
-        return
+
+    var pass = !getBoard().hasVertex(vertex)
+    if (!pass && getBoard().arrangement[vertex] != 0) return
 
     var position = getCurrentTreePosition()
     var tree = position[0], index = position[1]
     var sign = getCurrentPlayer()
     var color = sign > 0 ? 'B' : 'W'
     var capture = false, suicide = false
+    var createNode = true
 
     if (sendCommand) syncEngine()
 
-    if (getBoard().hasVertex(vertex)) {
+    if (!pass) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
             var tp = gametree.navigate(tree, index, -1)
@@ -664,20 +645,20 @@ function makeMove(vertex, sendCommand) {
 
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     } else {
-        var create = true
-
         if (index != tree.nodes.length - 1) {
             // Search for next move
+
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex))
+                && helper.equals(sgf.point2vertex(nextNode[color][0]), vertex)
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
-                create = false
+                createNode = false
             }
         } else {
             // Search for variation
+
             var variations = tree.subtrees.filter(function(subtree) {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
@@ -686,12 +667,13 @@ function makeMove(vertex, sendCommand) {
 
             if (variations.length > 0) {
                 setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
-                create = false
+                createNode = false
             }
         }
 
-        if (create) {
+        if (createNode) {
             // Create variation
+
             var splitted = gametree.splitTree(tree, index)
             var node = {}; node[color] = [sgf.vertex2point(vertex)]
             var newtree = gametree.new()
@@ -707,7 +689,8 @@ function makeMove(vertex, sendCommand) {
     }
 
     // Play sounds
-    if (getBoard().hasVertex(vertex)) {
+
+    if (!pass) {
         var delay = setting.get('sound.captureDelayMin')
         delay += Math.floor(Math.random() * (setting.get('sound.captureDelayMax') - delay))
 
@@ -721,9 +704,23 @@ function makeMove(vertex, sendCommand) {
     }
 
     // Remove undo information
+
     setUndoable(false)
 
+    // Enter scoring mode when two consecutive passes
+
+    if (pass && createNode) {
+        var prevNode = tree.nodes[index]
+        var prevPass = 'B' in prevNode && prevNode.B[0] == ''
+            || 'W' in prevNode && prevNode.W[0] == ''
+
+        if (prevPass) {
+            setScoringMode(true)
+        }
+    }
+
     // Handle GTP engine
+
     if (sendCommand) {
         sendGTPCommand(
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
