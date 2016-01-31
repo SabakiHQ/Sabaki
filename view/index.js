@@ -1019,7 +1019,7 @@ function updateAreaMap() {
     var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
     if (falsedead.length > 0) {
-        falsedead.forEach(function(li) { li.removeClass('dead') })
+        falsedead.removeClass('dead')
         return updateAreaMap()
     }
 
