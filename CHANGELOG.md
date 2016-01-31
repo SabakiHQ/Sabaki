@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Enter scoring mode after two consecutive passes are created
+
 **Fixed**
 
 * Fix regression where a new variation is created when move already exists
