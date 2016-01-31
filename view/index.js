@@ -664,7 +664,7 @@ function makeMove(vertex, sendCommand) {
 
             var nextNode = tree.nodes[index + 1]
             var moveExists = color in nextNode
-                && helper.equals(sgf.point2vertex(nextNode[color][0], vertex))
+                && helper.equals(sgf.point2vertex(nextNode[color][0]), vertex)
 
             if (moveExists) {
                 setCurrentTreePosition(tree, index + 1)
