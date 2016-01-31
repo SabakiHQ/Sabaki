@@ -278,15 +278,20 @@ function getScoringMode() {
 
 function setScoringMode(scoringMode) {
     if (scoringMode) {
+        // Clean board
+        $$('#goban .row li').removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+
         closeDrawers()
         document.body.addClass('scoring')
 
-        var deadstones = getBoard().guessDeadStones()
-        deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-        })
+        setTimeout(function() {
+            var deadstones = getBoard().guessDeadStones()
+            deadstones.forEach(function(v) {
+                $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+            })
 
-        updateAreaMap()
+            updateAreaMap()
+        }, 200)
     } else {
         document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
@@ -984,7 +989,7 @@ document.addEvent('domready', function() {
         return false
     })
 
-    // Properties scrollbar
+    // Scrollbars
 
     $('properties').store('scrollbar', new GeminiScrollbar({
         element: $('properties'),
@@ -995,8 +1000,6 @@ document.addEvent('domready', function() {
         element: $('console'),
         createElements: false
     }).create())
-
-    // Engines list scrollbar
 
     var enginesList = $$('#preferences .engines-list')[0]
     enginesList.store('scrollbar', new GeminiScrollbar({

@@ -78,12 +78,14 @@
 
         <header>
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
-            <img class="currentplayer" src="../img/ui/blacktoplay.svg" height="22" />
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
+
+            <img class="currentplayer" src="../img/ui/blacktoplay.svg" height="22" onclick="makeMove([-1, -1])" />
 
             <a class="undo" onclick="undoBoard()" title="Undo">
                 <img src="../node_modules/octicons/svg/mail-reply.svg" height="21" />
             </a>
+
             <a id="headermenu" onclick="openHeaderMenu()">
                 <img src="../node_modules/octicons/svg/three-bars.svg" height="21" />
             </a>

@@ -709,19 +709,22 @@ function makeMove(vertex, sendCommand) {
 
     // Enter scoring mode when two consecutive passes
 
+    var enterScoring = false
+
     if (pass && createNode) {
         var prevNode = tree.nodes[index]
-        var prevPass = 'B' in prevNode && prevNode.B[0] == ''
-            || 'W' in prevNode && prevNode.W[0] == ''
+        var prevColor = sign > 0 ? 'W' : 'B'
+        var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
         if (prevPass) {
+            enterScoring = true
             setScoringMode(true)
         }
     }
 
     // Handle GTP engine
 
-    if (sendCommand) {
+    if (sendCommand && !enterScoring) {
         sendGTPCommand(
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
             true
@@ -1023,7 +1026,7 @@ function updateAreaMap() {
     var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
     if (falsedead.length > 0) {
-        falsedead.forEach(function(li) { li.removeClass('dead') })
+        falsedead.removeClass('dead')
         return updateAreaMap()
     }
 
