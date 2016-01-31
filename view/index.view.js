@@ -278,14 +278,20 @@ function getScoringMode() {
 
 function setScoringMode(scoringMode) {
     if (scoringMode) {
-        var deadstones = getBoard().guessDeadStones()
-        deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-        })
+        // Clean board
+        $$('#goban .row li').removeClass('area_-1').removeClass('area_0').removeClass('area_1')
 
-        updateAreaMap()
         closeDrawers()
         document.body.addClass('scoring')
+
+        setTimeout(function() {
+            var deadstones = getBoard().guessDeadStones()
+            deadstones.forEach(function(v) {
+                $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+            })
+
+            updateAreaMap()
+        }, 200)
     } else {
         document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
