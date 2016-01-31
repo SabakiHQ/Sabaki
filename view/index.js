@@ -871,6 +871,8 @@ function useTool(vertex, event) {
 }
 
 function findMove(vertex, step) {
+    if (vertex == null) return
+
     showIndicator(vertex)
     setIsBusy(true)
 
@@ -927,7 +929,7 @@ function vertexClicked(vertex, event) {
         useTool(vertex, event)
     } else if (getFindMode()) {
         if (event.button != 0) return
-        findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
+        findMove(vertex, 1)
     } else {
         // Playing mode
 
