@@ -260,7 +260,7 @@ All notable changes to this project will be documented in this file.
 First release
 
 [unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.6...master
-[v0.7.5]: https://github.com/yishn/Sabaki/compare/v0.7.5...v0.7.6
+[v0.7.6]: https://github.com/yishn/Sabaki/compare/v0.7.5...v0.7.6
 [v0.7.5]: https://github.com/yishn/Sabaki/compare/v0.7.4...v0.7.5
 [v0.7.4]: https://github.com/yishn/Sabaki/compare/v0.7.3...v0.7.4
 [v0.7.3]: https://github.com/yishn/Sabaki/compare/v0.7.2...v0.7.3
