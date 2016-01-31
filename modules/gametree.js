@@ -192,8 +192,11 @@ context.getWidth = function(y, matrix) {
     }).filter(function(i) { return i >= 0 && i < matrix.length })
 
     var padding = Math.min.apply(null, keys.map(function(i) {
-        return matrix[i].indexOf(matrix[i].pick())
+        for (var j = 0; j < matrix[i].length; j++)
+            if (matrix[i][j] != null) return j
+        return 0
     }))
+    
     var width = Math.max.apply(null, keys.map(function(i) {
         return matrix[i].length
     })) - padding
