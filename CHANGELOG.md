@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Clicking on the player indicator results in a pass
 * Enter scoring mode after two consecutive passes are created
+* Change behavior of find buttons
 
 **Fixed**
 
