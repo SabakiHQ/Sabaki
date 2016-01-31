@@ -980,7 +980,7 @@ document.addEvent('domready', function() {
         return false
     })
 
-    // Properties scrollbar
+    // Scrollbars
 
     $('properties').store('scrollbar', new GeminiScrollbar({
         element: $('properties'),
@@ -991,8 +991,6 @@ document.addEvent('domready', function() {
         element: $('console'),
         createElements: false
     }).create())
-
-    // Engines list scrollbar
 
     var enginesList = $$('#preferences .engines-list')[0]
     enginesList.store('scrollbar', new GeminiScrollbar({
