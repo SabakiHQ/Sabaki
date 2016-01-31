@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix regression where a new variation is created when move already exists
+* Fix regression where the slider doesn't jump when clicked
 
 ## [Sabaki v0.7.6][v0.7.6] (2016-01-30)
 
