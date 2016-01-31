@@ -40,7 +40,7 @@ context.clone = function(tree, parent) {
     tree.nodes.forEach(function(node) {
         var cn = {}
 
-        for (key in node) cn[key] = node[key]
+        for (var key in node) cn[key] = node[key]
         delete cn.board
 
         c.nodes.push(cn)
