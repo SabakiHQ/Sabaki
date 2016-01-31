@@ -702,19 +702,22 @@ function makeMove(vertex, sendCommand) {
 
     // Enter scoring mode when two consecutive passes
 
+    var enterScoring = false
+
     if (pass && createNode) {
         var prevNode = tree.nodes[index]
-        var prevPass = 'B' in prevNode && prevNode.B[0] == ''
-            || 'W' in prevNode && prevNode.W[0] == ''
+        var prevColor = sign > 0 ? 'W' : 'B'
+        var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
         if (prevPass) {
+            enterScoring = true
             setScoringMode(true)
         }
     }
 
     // Handle GTP engine
 
-    if (sendCommand) {
+    if (sendCommand && !enterScoring) {
         sendGTPCommand(
             new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
             true
