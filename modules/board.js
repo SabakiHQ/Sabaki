@@ -77,7 +77,7 @@ Board.prototype = {
         var liberties = []
 
         chain.forEach(function(c) {
-            liberties = liberties.concat(this.getNeighborhood(c).filter(function(n) {
+            liberties.push.apply(liberties, this.getNeighborhood(c).filter(function(n) {
                 return this.arrangement[n] == 0 && !liberties.some(function(v) { return helper.equals(v, n) })
             }.bind(this)))
         }.bind(this))
@@ -249,8 +249,7 @@ Board.prototype = {
                 var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
 
                 var sign = 0
-                var actualArea = []
-                var actualDead = []
+                var actualArea, actualDead
 
                 var negDiff = negArea.filter(function(y) {
                     return !negDead.some(function(x) { return helper.equals(x, y) })
@@ -283,7 +282,7 @@ Board.prototype = {
                     done[v] = 1
                 })
 
-                result.combine(actualDead)
+                result.push.apply(result, actualDead)
             }
         }
 
