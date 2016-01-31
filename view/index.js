@@ -333,7 +333,7 @@ function prepareSlider() {
         if (e.event.buttons != 1) return
 
         this.store('mousedown', true).addClass('active')
-        document.fireEvent('mousemove')
+        document.body.fireEvent('mousemove', e)
     }).addEvent('touchstart', function() {
         this.addClass('active')
     }).addEvent('touchmove', function(e) {
