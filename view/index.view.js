@@ -278,15 +278,14 @@ function getScoringMode() {
 
 function setScoringMode(scoringMode) {
     if (scoringMode) {
-        closeDrawers()
-        document.body.addClass('scoring')
-
         var deadstones = getBoard().guessDeadStones()
         deadstones.forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
         })
 
         updateAreaMap()
+        closeDrawers()
+        document.body.addClass('scoring')
     } else {
         document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
