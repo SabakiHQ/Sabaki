@@ -38,8 +38,11 @@ context.clone = function(tree, parent) {
     }
 
     tree.nodes.forEach(function(node) {
-        var cn = Object.clone(node)
+        var cn = {}
+
+        for (var key in node) cn[key] = node[key]
         delete cn.board
+
         c.nodes.push(cn)
     })
 
@@ -196,7 +199,7 @@ context.getWidth = function(y, matrix) {
             if (matrix[i][j] != null) return j
         return 0
     }))
-    
+
     var width = Math.max.apply(null, keys.map(function(i) {
         return matrix[i].length
     })) - padding
