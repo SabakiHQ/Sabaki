@@ -137,7 +137,7 @@ header, #edit, #scoring, #find, #progress {
 }
 
 #edit a.close, #scoring a.close, #find a.close {
-        display: block;
+        display: none;
         position: absolute;
         right: 4px;
         top: 0;
