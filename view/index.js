@@ -870,20 +870,20 @@ function useTool(vertex, event) {
     setCurrentTreePosition(tree, index)
 }
 
-function findMove(vertex, step) {
-    if (vertex == null) return
+function findMove(vertex, text, step) {
+    if (vertex == null && text == null) return
+    if (vertex) showIndicator(vertex)
 
-    showIndicator(vertex)
     setIsBusy(true)
 
     setTimeout(function() {
         if (isNaN(step)) step = 1
-        step = step >= 0 ? 1 : -1
+        else step = step >= 0 ? 1 : -1
 
         var root = getRootTree()
         var pos = getCurrentTreePosition()
-        var point = sgf.vertex2point(vertex)
         var iterator = gametree.makeNodeIterator.apply(null, pos)
+        var point = vertex ? sgf.vertex2point(vertex) : null
 
         while (true) {
             pos = step >= 0 ? iterator.next() : iterator.prev()
@@ -901,10 +901,12 @@ function findMove(vertex, step) {
 
             if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
                 var node = tree.nodes[index]
+                var cond = function(prop, value) {
+                    return prop in node && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
+                }
 
-                return ['B', 'W'].some(function(c) {
-                    return c in node && node[c][0].toLowerCase() == point
-                })
+                return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
+                    && (!text || cond('C', text))
             }).apply(null, pos)) break
         }
 
@@ -929,7 +931,7 @@ function vertexClicked(vertex, event) {
         useTool(vertex, event)
     } else if (getFindMode()) {
         if (event.button != 0) return
-        findMove(vertex, 1)
+        findMove(vertex, null, 1)
     } else {
         // Playing mode
 
