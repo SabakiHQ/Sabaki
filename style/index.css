@@ -374,34 +374,45 @@ header, #edit, #scoring, #find, #progress {
         right: 0;
         left: 0;
         height: 0;
-        z-index: 2;
+        overflow: hidden;
         color: #d0d0d0;
         background: #181818;
         box-shadow: 10px 0 10px #111;
         transition: height .2s, color .2s, background .2s;
+        z-index: 2;
     }
-    #properties textarea {
-        box-sizing: border-box;
+    #properties > textarea, #properties > .advanced {
         display: none;
+        box-sizing: border-box;
         position: absolute;
         left: 0;
         top: 0;
         height: 100%;
         width: 100%;
+        transition: color .2s, left .2s;
+        z-index: 2;
+    }
+    #properties > textarea {
         padding: 15px;
         background: transparent;
         color: #d0d0d0;
-        transition: color .2s;
-        z-index: 2;
+    }
+    #properties > .advanced {
+        display: block;
+        background: #E6DF86;
+        color: #222;
+        left: 100%;
     }
     .edit #properties {
         background: #E6DF86;
         color: #222;
     }
-    .edit #properties textarea {
+    .edit #properties > textarea {
         display: block;
         color: #222;
     }
+    .edit.advanced #properties > .advanced { left: 0; }
+    .edit.advanced #properties > textarea { left: -100%; }
     .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
