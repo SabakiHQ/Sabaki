@@ -58,13 +58,17 @@
         </section>
 
         <section id="find">
-            <button onclick="findMove(getIndicatorVertex(), null, -1)">
-                <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Up" />
-            </button>
-            <button onclick="findMove(getIndicatorVertex(), null, 1)">
-                <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Down" />
-            </button>
-            Select an intersection to find a move.
+            <form>
+                <input type="search" placeholder="Find" />
+
+                <button onclick="findMove(getIndicatorVertex(), getFindText(), 1); return false" type="submit">
+                    <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Down" />
+                </button>
+                <button onclick="findMove(getIndicatorVertex(), getFindText(), -1); return false">
+                    <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Up" />
+                </button>
+            </form>
+
             <a class="close" href="#" onclick="setFindMode(false)"></a>
         </section>
 

@@ -872,7 +872,6 @@ function useTool(vertex, event) {
 
 function findMove(vertex, text, step) {
     if (vertex == null && text == null) return
-    if (vertex) showIndicator(vertex)
 
     setIsBusy(true)
 
@@ -931,7 +930,13 @@ function vertexClicked(vertex, event) {
         useTool(vertex, event)
     } else if (getFindMode()) {
         if (event.button != 0) return
-        findMove(vertex, null, 1)
+
+        if (helper.equals(getIndicatorVertex(), vertex)) {
+            hideIndicator()
+        } else {
+            setIndicatorVertex(vertex)
+            findMove(getIndicatorVertex(), getFindText(), 1)
+        }
     } else {
         // Playing mode
 

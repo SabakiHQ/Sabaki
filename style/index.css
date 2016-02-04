@@ -109,20 +109,24 @@ header, #edit, #scoring, #find, #progress {
     #scoring button:hover, #scoring button:focus { background: #600000; }
     #scoring button:active, #find button:active { transform: translateY(-46%); }
     #find button {
+        left: 178px;
         padding-left: 7px;
         padding-right: 7px;
-        background: #002090;
         width: 34px;
-        text-align: center;
     }
+    #find button { background: #002090; }
+    #find button:hover { background: #001080; }
     #find button img {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #find button:first-child img { transform: scaleY(-1); }
-    #find button:not(:first-child) { left: 44px; }
-    #find button:hover {
-        background: #001080;
+    #find button:nth-child(3) img { transform: scaleY(-1); }
+    #find button:nth-child(2) { left: 212px; }
+    #find input {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
     }
     #progress {
         display: none;
