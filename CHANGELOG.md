@@ -4,9 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Find comments
+
+## [Sabaki v0.7.7][v0.7.7] (2016-01-31)
+
 **Changed**
 
+* Clicking on the player indicator results in a pass
 * Enter scoring mode after two consecutive passes are created
+* Change behavior of find buttons
 
 **Fixed**
 
@@ -259,7 +267,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.5...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.7.7...master
+[v0.7.7]: https://github.com/yishn/Sabaki/compare/v0.7.6...v0.7.7
+[v0.7.6]: https://github.com/yishn/Sabaki/compare/v0.7.5...v0.7.6
 [v0.7.5]: https://github.com/yishn/Sabaki/compare/v0.7.4...v0.7.5
 [v0.7.4]: https://github.com/yishn/Sabaki/compare/v0.7.3...v0.7.4
 [v0.7.3]: https://github.com/yishn/Sabaki/compare/v0.7.2...v0.7.3

@@ -877,18 +877,19 @@ function useTool(vertex, event) {
     setCurrentTreePosition(tree, index)
 }
 
-function findMove(vertex, step) {
-    showIndicator(vertex)
+function findMove(vertex, text, step) {
+    if (vertex == null && text == null) return
+
     setIsBusy(true)
 
     setTimeout(function() {
         if (isNaN(step)) step = 1
-        step = step >= 0 ? 1 : -1
+        else step = step >= 0 ? 1 : -1
 
         var root = getRootTree()
         var pos = getCurrentTreePosition()
-        var point = sgf.vertex2point(vertex)
         var iterator = gametree.makeNodeIterator.apply(null, pos)
+        var point = vertex ? sgf.vertex2point(vertex) : null
 
         while (true) {
             pos = step >= 0 ? iterator.next() : iterator.prev()
@@ -906,10 +907,12 @@ function findMove(vertex, step) {
 
             if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
                 var node = tree.nodes[index]
+                var cond = function(prop, value) {
+                    return prop in node && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
+                }
 
-                return ['B', 'W'].some(function(c) {
-                    return c in node && node[c][0].toLowerCase() == point
-                })
+                return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
+                    && (!text || cond('C', text))
             }).apply(null, pos)) break
         }
 
@@ -934,7 +937,13 @@ function vertexClicked(vertex, event) {
         useTool(vertex, event)
     } else if (getFindMode()) {
         if (event.button != 0) return
-        findMove(vertex, $$('#find button')[0].hasClass('selected') ? -1 : 1)
+
+        if (helper.equals(getIndicatorVertex(), vertex)) {
+            hideIndicator()
+        } else {
+            setIndicatorVertex(vertex)
+            findMove(getIndicatorVertex(), getFindText(), 1)
+        }
     } else {
         // Playing mode
 
@@ -975,6 +984,7 @@ function updateSidebar(redraw, now) {
 
         updateSlider()
         updateCommentText()
+        updateSgfProperties()
         if (redraw) updateGraph()
         centerGraphCameraAt(getCurrentGraphNode())
     }, now ? 0 : setting.get('graph.delay')))
@@ -1000,10 +1010,16 @@ function updateSlider() {
 
 function updateCommentText() {
     var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-    var node = tree.nodes[index]
+    var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
+}
+
+function updateSgfProperties() {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    // TODO
 }
 
 function updateAreaMap() {

@@ -253,10 +253,20 @@ function setFindMode(pickMode) {
     if (pickMode) {
         closeDrawers()
         document.body.addClass('find')
+        $('find').getElement('input').focus()
     } else {
-        document.body.removeClass('find')
         hideIndicator()
+        document.body.removeClass('find')
+        setFindText('')
     }
+}
+
+function getFindText() {
+    return $('find').getElement('input').value
+}
+
+function setFindText(text) {
+    $('find').getElement('input').value = text
 }
 
 function getEditMode() {
@@ -300,6 +310,11 @@ function setScoringMode(scoringMode) {
 
 function getIndicatorVertex() {
     return $('indicator').retrieve('vertex')
+}
+
+function setIndicatorVertex(vertex) {
+    if (vertex) showIndicator(vertex)
+    else hideIndicator()
 }
 
 function setPreferencesTab(tab) {
@@ -975,12 +990,6 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
-    // Find bar buttons
-
-    $$('#find button').addEvent('click', function() {
-        $$('#find button').removeClass('selected')
-        this.addClass('selected')
-    })
 
     // Preferences tabs
 
