@@ -977,6 +977,7 @@ function updateSidebar(redraw, now) {
 
         updateSlider()
         updateCommentText()
+        updateSgfProperties()
         if (redraw) updateGraph()
         centerGraphCameraAt(getCurrentGraphNode())
     }, now ? 0 : setting.get('graph.delay')))
@@ -1002,10 +1003,16 @@ function updateSlider() {
 
 function updateCommentText() {
     var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-    var node = tree.nodes[index]
+    var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
+}
+
+function updateSgfProperties() {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    // TODO
 }
 
 function updateAreaMap() {
