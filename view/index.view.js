@@ -404,6 +404,20 @@ function addEngineItem(name, path, args) {
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
+function addNodeProperty(key, values) {
+    var list = $$('#properties .advanced dl')[0]
+
+    list.adopt(new Element('dt', {
+        text: key
+    }))
+
+    for (var i = 0; i < values.length; i++) {
+        list.adopt(new Element('dd', {
+            text: values[i]
+        }))
+    }
+}
+
 function showMessageBox(message, type, buttons, cancelId) {
     setIsBusy(true)
 
@@ -455,13 +469,14 @@ function readjustShifts(vertex) {
 }
 
 function updateSidebarLayout() {
-    var container = $$('#properties .gm-scroll-view')[0]
-    container.setStyle('opacity', 0)
+    var containers = $$('#properties .gm-scroll-view')
+    containers.setStyle('opacity', 0)
 
     setTimeout(function() {
         $('graph').retrieve('sigma').renderers[0].resize().render()
         $('properties').retrieve('scrollbar').update()
-        container.setStyle('opacity', 1)
+        $$('#properties .advanced')[0].retrieve('scrollbar').update()
+        containers.setStyle('opacity', 1)
     }, 300)
 }
 
@@ -1013,6 +1028,12 @@ document.addEvent('domready', function() {
         createElements: false
     }).create())
 
+    var propertiesList = $$('#properties .advanced')[0]
+    propertiesList.store('scrollbar', new GeminiScrollbar({
+        element: propertiesList,
+        createElements: false
+    }).create())
+
     // Resize sidebar
 
     $$('.verticalresizer').addEvent('mousedown', function(e) {
@@ -1082,5 +1103,6 @@ document.addEvent('domready', function() {
         }
 
         $('properties').retrieve('scrollbar').update()
+        $$('#properties .advanced')[0].retrieve('scrollbar').update()
     })
 })

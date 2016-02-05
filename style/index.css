@@ -399,9 +399,16 @@ header, #edit, #scoring, #find, #progress {
     }
     #properties > .advanced {
         display: block;
+        left: 100%;
+        overflow: auto;
         background: #E6DF86;
         color: #222;
-        left: 100%;
+    }
+    #properties > .advanced > .gm-scrollbar .thumb {
+        background: #A29B42;
+    }
+    #properties > .advanced .gm-scrollbar .thumb:hover, #properties > .advanced .gm-scrollbar .thumb:active {
+        background: #807920;
     }
     .edit #properties {
         background: #E6DF86;
@@ -413,7 +420,7 @@ header, #edit, #scoring, #find, #progress {
     }
     .edit.advanced #properties > .advanced { left: 0; }
     .edit.advanced #properties > textarea { left: -100%; }
-    .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
+    .edit #properties .inner, .edit #properties > .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
         top: 0;
