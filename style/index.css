@@ -397,6 +397,10 @@ header, #edit, #scoring, #find, #progress {
         background: transparent;
         color: #d0d0d0;
     }
+    #properties > textarea::-webkit-input-placeholder {
+        color: #222;
+        opacity: .5;
+    }
     #properties > .advanced {
         display: block;
         left: 100%;
