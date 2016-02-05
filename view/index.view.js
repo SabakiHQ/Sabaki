@@ -276,7 +276,7 @@ function getEditMode() {
 function setEditMode(editMode) {
     if (editMode) {
         closeDrawers()
-        document.body.addClass('edit').addClass('advanced')
+        document.body.addClass('edit')
     } else {
         document.body.removeClass('edit').removeClass('advanced')
     }
