@@ -405,10 +405,31 @@ header, #edit, #scoring, #find, #progress {
         color: #222;
     }
     #properties > .advanced > .gm-scrollbar .thumb {
-        background: #A29B42;
+        background: #C4BD64;
     }
     #properties > .advanced .gm-scrollbar .thumb:hover, #properties > .advanced .gm-scrollbar .thumb:active {
-        background: #807920;
+        background: #A29B42;
+    }
+    #properties > .advanced dt {
+        box-sizing: border-box;
+        width: 33%;
+        float: left;
+        padding: 3px 5px;
+        overflow: hidden;
+        font-size: .8em;
+        font-weight: bold;
+        line-height: 1.875em;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #properties > .advanced dd {
+        height: 1.5em;
+        margin-left: 33%;
+        padding: 3px 8px 3px 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .edit #properties {
         background: #E6DF86;

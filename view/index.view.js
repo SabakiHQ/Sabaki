@@ -276,7 +276,7 @@ function getEditMode() {
 function setEditMode(editMode) {
     if (editMode) {
         closeDrawers()
-        document.body.addClass('edit')
+        document.body.addClass('edit').addClass('advanced')
     } else {
         document.body.removeClass('edit').removeClass('advanced')
     }
@@ -407,14 +407,10 @@ function addEngineItem(name, path, args) {
 function addNodeProperty(key, values) {
     var list = $$('#properties .advanced dl')[0]
 
-    list.adopt(new Element('dt', {
-        text: key
-    }))
+    list.adopt(new Element('dt', { text: key }))
 
-    for (var i = 0; i < values.length; i++) {
-        list.adopt(new Element('dd', {
-            text: values[i]
-        }))
+    for (var i = 0; i < Math.max(values.length, 1); i++) {
+        list.adopt(new Element('dd', { text: values.length == 0 ? ' ' : values[i] }))
     }
 }
 
