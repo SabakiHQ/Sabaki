@@ -1019,8 +1019,6 @@ function updateNodeProperties() {
 
         addNodeProperty(key, node[key])
     }
-
-    $$('#properties .advanced')[0].retrieve('scrollbar').update()
 }
 
 function updateAreaMap() {
