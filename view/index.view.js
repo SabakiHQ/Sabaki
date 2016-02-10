@@ -663,6 +663,27 @@ function buildMenu() {
             ]
         },
         {
+            label: '&Find',
+            submenu: [
+                {
+                    label: 'Toggle &Find Mode',
+                    accelerator: 'CmdOrCtrl+F',
+                    click: function() { setFindMode(!getFindMode()) }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Find &Next',
+                    accelerator: 'F3',
+                    click: function() { findMove(getIndicatorVertex(), getFindText(), 1) }
+                },
+                {
+                    label: 'Find &Previous',
+                    accelerator: 'Shift+F3',
+                    click: function() { findMove(getIndicatorVertex(), getFindText(), -1) }
+                }
+            ]
+        },
+        {
             label: '&Navigation',
             submenu: [
                 {
@@ -707,12 +728,6 @@ function buildMenu() {
                     label: 'Go To Previous &Variation',
                     accelerator: 'Left',
                     click: goToPreviousVariation
-                },
-                { type: 'separator' },
-                {
-                    label: 'Find &Move',
-                    accelerator: 'CmdOrCtrl+F',
-                    click: function() { setFindMode(true) }
                 }
             ]
         },

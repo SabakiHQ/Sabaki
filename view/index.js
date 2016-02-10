@@ -440,7 +440,7 @@ function loadEngines() {
     // Load menu items
 
     var menu = getMainMenu()
-    var attachMenu = menu.items[3].submenu.items[0].submenu
+    var attachMenu = menu.items[4].submenu.items[0].submenu
 
     attachMenu.clear()
 

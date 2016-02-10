@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Find comments
+* Find menu
+* Ability to find in comments
 
 ## [Sabaki v0.7.7][v0.7.7] (2016-01-31)
 
