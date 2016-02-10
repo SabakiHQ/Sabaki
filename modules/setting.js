@@ -77,7 +77,7 @@ var defaults = {
     'window.height': 648,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 608,
+    'window.width': 608
 }
 
 context.load = function() {
