@@ -911,7 +911,7 @@ function findMove(vertex, text, step) {
 
         setCurrentTreePosition.apply(null, pos)
         setIsBusy(false)
-    }, 0)
+    }, setting.get('find.delay'))
 }
 
 function vertexClicked(vertex, event) {

@@ -40,6 +40,7 @@ var defaults = {
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.undo_delay': 100,
+    'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
     'game.goto_end_after_loading': false,
