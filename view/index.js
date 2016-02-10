@@ -871,7 +871,7 @@ function useTool(vertex, event) {
 }
 
 function findMove(vertex, text, step) {
-    if (vertex == null && text == null) return
+    if (vertex == null && text.trim() == '') return
 
     setIsBusy(true)
 
