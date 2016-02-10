@@ -891,7 +891,7 @@ function findMove(vertex, text, step) {
                 if (step == 1) {
                     pos = [root, 0]
                 } else {
-                    var sections = gametree.getSections(root, gametree.getHeight(root) - 1)
+                    var sections = gametree.getSection(root, gametree.getHeight(root) - 1)
                     pos = sections[sections.length - 1]
                 }
 
