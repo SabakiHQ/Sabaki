@@ -443,7 +443,7 @@ function loadEngines() {
     // Load menu items
 
     var menu = getMainMenu()
-    var attachMenu = menu.items[3].submenu.items[0].submenu
+    var attachMenu = menu.items[4].submenu.items[0].submenu
 
     attachMenu.clear()
 
@@ -878,7 +878,7 @@ function useTool(vertex, event) {
 }
 
 function findMove(vertex, text, step) {
-    if (vertex == null && text == null) return
+    if (vertex == null && text.trim() == '') return
 
     setIsBusy(true)
 

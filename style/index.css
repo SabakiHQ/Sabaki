@@ -398,6 +398,10 @@ header, #edit, #scoring, #find, #progress {
         background: transparent;
         color: #d0d0d0;
     }
+    #properties > textarea::-webkit-input-placeholder {
+        color: #222;
+        opacity: .5;
+    }
     #properties > .advanced {
         display: block;
         background: #E6DF86;
@@ -451,6 +455,7 @@ header, #edit, #scoring, #find, #progress {
     background: rgba(0, 130, 240, .2);
     border: 2px solid #0082F0;
     border-radius: 5px;
+    z-index: 3;
 }
 
 #info, #score, #preferences {

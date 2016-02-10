@@ -137,8 +137,8 @@ function setShowSidebar(show) {
 
 function getSidebarArrangement() {
     return [
-        getShowSidebar() && getCommentHeight() != 100,
-        getShowSidebar() && getCommentHeight() != 0
+        getShowSidebar() && getPropertiesHeight() != 100,
+        getShowSidebar() && getPropertiesHeight() != 0
     ]
 }
 
@@ -147,9 +147,9 @@ function setSidebarArrangement(graph, comment, updateLayout) {
 
     if (!graph && !comment) setShowSidebar(false)
     else {
-        if (!graph && comment) setCommentHeight(100)
-        else if (comment) setCommentHeight(setting.get('view.comments_height'))
-        else if (!comment) setCommentHeight(0)
+        if (!graph && comment) setPropertiesHeight(100)
+        else if (comment) setPropertiesHeight(setting.get('view.properties_height'))
+        else if (!comment) setPropertiesHeight(0)
         setShowSidebar(true)
     }
 
@@ -175,11 +175,11 @@ function setSidebarWidth(width) {
     $$('.sidebar #main').setStyle('right', width)
 }
 
-function getCommentHeight() {
+function getPropertiesHeight() {
     return $('properties').getSize().y * 100 / $('sidebar').getSize().y
 }
 
-function setCommentHeight(height) {
+function setPropertiesHeight(height) {
     $('graph').setStyle('height', (100 - height) + '%')
     $('properties').setStyle('height', height + '%')
     setSliderValue.apply(null, getSliderValue())
@@ -278,7 +278,7 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
     } else {
-        document.body.removeClass('edit')
+        document.body.removeClass('edit').removeClass('advanced')
     }
 }
 
@@ -664,6 +664,27 @@ function buildMenu() {
             ]
         },
         {
+            label: '&Find',
+            submenu: [
+                {
+                    label: 'Toggle &Find Mode',
+                    accelerator: 'CmdOrCtrl+F',
+                    click: function() { setFindMode(!getFindMode()) }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Find &Next',
+                    accelerator: 'F3',
+                    click: function() { findMove(getIndicatorVertex(), getFindText(), 1) }
+                },
+                {
+                    label: 'Find &Previous',
+                    accelerator: 'Shift+F3',
+                    click: function() { findMove(getIndicatorVertex(), getFindText(), -1) }
+                }
+            ]
+        },
+        {
             label: '&Navigation',
             submenu: [
                 {
@@ -708,12 +729,6 @@ function buildMenu() {
                     label: 'Go To Previous &Variation',
                     accelerator: 'Left',
                     click: goToPreviousVariation
-                },
-                { type: 'separator' },
-                {
-                    label: 'Find &Move',
-                    accelerator: 'CmdOrCtrl+F',
-                    click: function() { setFindMode(true) }
                 }
             ]
         },
@@ -1025,7 +1040,7 @@ document.addEvent('domready', function() {
 
     $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        $('sidebar').store('initposy', [e.event.screenY, getCommentHeight()])
+        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
         $('properties').setStyle('transition', 'none')
     })
 
@@ -1046,7 +1061,7 @@ document.addEvent('domready', function() {
         } else if (initPosY) {
             $('sidebar').store('initposy', null)
             $('properties').setStyle('transition', '')
-            setting.set('view.comments_height', getCommentHeight())
+            setting.set('view.properties_height', getPropertiesHeight())
             setSidebarArrangement(true, true, false)
         }
 
@@ -1078,10 +1093,10 @@ document.addEvent('domready', function() {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
                 initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
-                setting.get('view.comments_minheight')
-            ), 100 - setting.get('view.comments_minheight'))
+                setting.get('view.properties_minheight')
+            ), 100 - setting.get('view.properties_minheight'))
 
-            setCommentHeight(newheight)
+            setPropertiesHeight(newheight)
         }
 
         $('properties').retrieve('scrollbar').update()
