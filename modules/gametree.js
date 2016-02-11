@@ -21,8 +21,7 @@ context.new = function() {
         subtrees: [],
         current: null,
         parent: null,
-        collapsed: false,
-        bookmark: false
+        collapsed: false
     }
 }
 
@@ -35,8 +34,7 @@ context.clone = function(tree, parent) {
         subtrees: [],
         current: tree.current,
         parent: parent,
-        collapsed: tree.collapsed,
-        bookmark: tree.bookmark
+        collapsed: tree.collapsed
     }
 
     tree.nodes.forEach(function(node) {
@@ -345,8 +343,8 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getHash = function(tree) {
     return helper.hash(JSON.stringify(tree, function(name, val) {
-        if (['id', 'board', 'parent', 'collapsed', 'bookmark'].indexOf(name) >= 0)
-            return
+        if (['id', 'board', 'parent', 'collapsed'].indexOf(name) >= 0)
+            return undefined
         return val
     }))
 }
