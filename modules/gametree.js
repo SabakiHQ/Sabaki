@@ -343,9 +343,8 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getHash = function(tree) {
     return helper.hash(JSON.stringify(tree, function(name, val) {
-        if (['id', 'board', 'parent', 'collapsed'].indexOf(name) >= 0)
-            return undefined
-        return val
+        var list = ['id', 'board', 'parent', 'collapsed', 'bookmark']
+        return list.indexOf(name) >= 0 ? undefined : val
     }))
 }
 
