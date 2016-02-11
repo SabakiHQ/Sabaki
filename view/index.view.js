@@ -683,15 +683,18 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Toggle &Bookmark',
-                    accelerator: 'CmdOrCtrl+B'
+                    accelerator: 'CmdOrCtrl+B',
+                    click: function() { setBookmark(!getBookmark()) }
                 },
                 {
                     label: 'Jump To Ne&xt Bookmark',
-                    accelerator: 'F2'
+                    accelerator: 'F2',
+                    click: function() { findBookmark(1) }
                 },
                 {
                     label: 'Jump To Pre&vious Bookmark',
-                    accelerator: 'Shift+F2'
+                    accelerator: 'Shift+F2',
+                    click: function() { findBookmark(-1) }
                 }
             ]
         },

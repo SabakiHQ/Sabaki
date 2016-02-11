@@ -250,6 +250,20 @@ function setUndoable(undoable) {
     }
 }
 
+function getBookmark() {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    return 'bookmark' in node ? node.bookmark : false
+}
+
+function setBookmark(bookmark) {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    node.bookmark = bookmark
+}
+
 /**
  * Methods
  */
@@ -870,16 +884,51 @@ function useTool(vertex, event) {
     setCurrentTreePosition(tree, index)
 }
 
-function findMove(vertex, text, step) {
-    if (vertex == null && text.trim() == '') return
+function findBookmark(step) {
+    if (isNaN(step)) step = 1
+    else step = step >= 0 ? 1 : -1
 
     setIsBusy(true)
 
     setTimeout(function() {
-        if (isNaN(step)) step = 1
-        else step = step >= 0 ? 1 : -1
+        var pos = getCurrentTreePosition()
+        var iterator = gametree.makeNodeIterator.apply(null, pos)
 
-        var root = getRootTree()
+        while (true) {
+            pos = step >= 0 ? iterator.next() : iterator.prev()
+
+            if (!pos) {
+                var root = getRootTree()
+
+                if (step == 1) {
+                    pos = [root, 0]
+                } else {
+                    var sections = gametree.getSection(root, gametree.getHeight(root) - 1)
+                    pos = sections[sections.length - 1]
+                }
+
+                iterator = gametree.makeNodeIterator.apply(null, pos)
+            }
+
+            if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
+                var node = tree.nodes[index]
+                return 'bookmark' in node && node.bookmark
+            }).apply(null, pos)) break
+        }
+
+        setCurrentTreePosition.apply(null, pos)
+        setIsBusy(false)
+    }, setting.get('find.delay'))
+}
+
+function findMove(vertex, text, step) {
+    if (vertex == null && text.trim() == '') return
+    if (isNaN(step)) step = 1
+    else step = step >= 0 ? 1 : -1
+
+    setIsBusy(true)
+
+    setTimeout(function() {
         var pos = getCurrentTreePosition()
         var iterator = gametree.makeNodeIterator.apply(null, pos)
         var point = vertex ? sgf.vertex2point(vertex) : null
@@ -888,6 +937,8 @@ function findMove(vertex, text, step) {
             pos = step >= 0 ? iterator.next() : iterator.prev()
 
             if (!pos) {
+                var root = getRootTree()
+
                 if (step == 1) {
                     pos = [root, 0]
                 } else {
