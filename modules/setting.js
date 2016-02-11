@@ -51,6 +51,7 @@ var defaults = {
     'graph.delay': 300,
     'graph.grid_size': 25,
     'graph.node_active_color': '#f76047',
+    'graph.node_bookmark_color': '#cb884b',
     'graph.node_collapsed_color': '#333',
     'graph.node_inactive_color': '#777',
     'graph.node_color': '#eee',

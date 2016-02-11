@@ -287,6 +287,8 @@ context.matrixdict2graph = function(matrixdict) {
 
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
+            if (tree.nodes[index].bookmark)
+                node.originalColor = setting.get('graph.node_bookmark_color')
 
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor

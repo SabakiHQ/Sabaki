@@ -262,6 +262,7 @@ function setBookmark(bookmark) {
     var node = tp[0].nodes[tp[1]]
 
     node.bookmark = bookmark
+    updateGraph()
 }
 
 /**
