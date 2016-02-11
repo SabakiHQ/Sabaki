@@ -40,6 +40,7 @@ var defaults = {
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.undo_delay': 100,
+    'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
     'game.goto_end_after_loading': false,
@@ -50,6 +51,7 @@ var defaults = {
     'graph.delay': 300,
     'graph.grid_size': 25,
     'graph.node_active_color': '#f76047',
+    'graph.node_bookmark_color': '#c678dd',
     'graph.node_collapsed_color': '#333',
     'graph.node_inactive_color': '#777',
     'graph.node_color': '#eee',
@@ -76,7 +78,7 @@ var defaults = {
     'window.height': 648,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 608,
+    'window.width': 608
 }
 
 context.load = function() {

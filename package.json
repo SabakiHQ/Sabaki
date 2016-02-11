@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "description": "An elegant Go board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen",
   "main": "main.js",
@@ -20,6 +20,6 @@
     "sigma": "^1.0.3"
   },
   "scripts": {
-    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.36.7 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.7.7\" --version-string.ProductVersion=\"0.7.7\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\""
+    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.36.7 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.8.0\" --version-string.ProductVersion=\"0.8.0\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\""
   }
 }

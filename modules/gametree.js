@@ -98,7 +98,7 @@ context.navigate = function(tree, index, step) {
 context.makeNodeIterator = function(tree, index) {
     var root = context.getRoot(tree)
     var level = context.getLevel(tree, index, root)
-    var sections = context.getSections(root, level)
+    var sections = context.getSection(root, level)
     var j = sections.map(function(x) { return x[0] }).indexOf(tree)
 
     return {
@@ -107,12 +107,12 @@ context.makeNodeIterator = function(tree, index) {
                 j = j + step
             } else if (j + step >= sections.length) {
                 step = j + step - sections.length
-                sections = context.getSections(root, ++level)
+                sections = context.getSection(root, ++level)
                 j = 0
                 if (sections.length != 0) this.navigate(step)
             } else if (j + step < 0) {
                 step = j + step + 1
-                sections = context.getSections(root, --level)
+                sections = context.getSection(root, --level)
                 j = sections.length - 1
                 if (sections.length != 0) this.navigate(step)
             }
@@ -187,14 +187,14 @@ context.getLevel = function(tree, index) {
     return index + (tree.parent ? context.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
 
-context.getSections = function(tree, level) {
+context.getSection = function(tree, level) {
     if (level < 0) return []
     if (level < tree.nodes.length) return [[tree, level]]
 
     var sections = []
 
     tree.subtrees.forEach(function(subtree) {
-        sections = sections.concat(context.getSections(subtree, level - tree.nodes.length))
+        sections = sections.concat(context.getSection(subtree, level - tree.nodes.length))
     })
 
     return sections
@@ -287,6 +287,8 @@ context.matrixdict2graph = function(matrixdict) {
 
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
+            if (tree.nodes[index].bookmark)
+                node.originalColor = setting.get('graph.node_bookmark_color')
 
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
@@ -343,9 +345,8 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getHash = function(tree) {
     return helper.hash(JSON.stringify(tree, function(name, val) {
-        if (['id', 'board', 'parent', 'collapsed'].indexOf(name) >= 0)
-            return undefined
-        return val
+        var list = ['id', 'board', 'parent', 'collapsed', 'bookmark']
+        return list.indexOf(name) >= 0 ? undefined : val
     }))
 }
 

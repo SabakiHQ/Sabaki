@@ -671,7 +671,6 @@ function buildMenu() {
                     accelerator: 'CmdOrCtrl+F',
                     click: function() { setFindMode(!getFindMode()) }
                 },
-                { type: 'separator' },
                 {
                     label: 'Find &Next',
                     accelerator: 'F3',
@@ -681,6 +680,22 @@ function buildMenu() {
                     label: 'Find &Previous',
                     accelerator: 'Shift+F3',
                     click: function() { findMove(getIndicatorVertex(), getFindText(), -1) }
+                },
+                { type: 'separator' },
+                {
+                    label: 'Toggle &Bookmark',
+                    accelerator: 'CmdOrCtrl+B',
+                    click: function() { setBookmark(!getBookmark()) }
+                },
+                {
+                    label: 'Jump To Ne&xt Bookmark',
+                    accelerator: 'F2',
+                    click: function() { findBookmark(1) }
+                },
+                {
+                    label: 'Jump To Pre&vious Bookmark',
+                    accelerator: 'Shift+F2',
+                    click: function() { findBookmark(-1) }
                 }
             ]
         },
