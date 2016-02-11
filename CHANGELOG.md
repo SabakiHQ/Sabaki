@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Find menu
 * Ability to find in comments
+* Create temporary bookmarks and jump to them
 
 ## [Sabaki v0.7.7][v0.7.7] (2016-01-31)
 
