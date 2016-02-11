@@ -884,7 +884,7 @@ function useTool(vertex, event) {
     setCurrentTreePosition(tree, index)
 }
 
-function findBookmark(step) {
+function findPosition(step, condition) {
     if (isNaN(step)) step = 1
     else step = step >= 0 ? 1 : -1
 
@@ -910,10 +910,7 @@ function findBookmark(step) {
                 iterator = gametree.makeNodeIterator.apply(null, pos)
             }
 
-            if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
-                var node = tree.nodes[index]
-                return 'bookmark' in node && node.bookmark
-            }).apply(null, pos)) break
+            if (helper.equals(pos, getCurrentTreePosition()) || condition.apply(null, pos)) break
         }
 
         setCurrentTreePosition.apply(null, pos)
@@ -921,48 +918,26 @@ function findBookmark(step) {
     }, setting.get('find.delay'))
 }
 
+function findBookmark(step) {
+    findPosition(step, function(tree, index) {
+        var node = tree.nodes[index]
+        return 'bookmark' in node && node.bookmark
+    })
+}
+
 function findMove(vertex, text, step) {
     if (vertex == null && text.trim() == '') return
-    if (isNaN(step)) step = 1
-    else step = step >= 0 ? 1 : -1
+    var point = vertex ? sgf.vertex2point(vertex) : null
 
-    setIsBusy(true)
-
-    setTimeout(function() {
-        var pos = getCurrentTreePosition()
-        var iterator = gametree.makeNodeIterator.apply(null, pos)
-        var point = vertex ? sgf.vertex2point(vertex) : null
-
-        while (true) {
-            pos = step >= 0 ? iterator.next() : iterator.prev()
-
-            if (!pos) {
-                var root = getRootTree()
-
-                if (step == 1) {
-                    pos = [root, 0]
-                } else {
-                    var sections = gametree.getSection(root, gametree.getHeight(root) - 1)
-                    pos = sections[sections.length - 1]
-                }
-
-                iterator = gametree.makeNodeIterator.apply(null, pos)
-            }
-
-            if (helper.equals(pos, getCurrentTreePosition()) || (function(tree, index) {
-                var node = tree.nodes[index]
-                var cond = function(prop, value) {
-                    return prop in node && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
-                }
-
-                return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
-                    && (!text || cond('C', text))
-            }).apply(null, pos)) break
+    findPosition(step, function(tree, index) {
+        var node = tree.nodes[index]
+        var cond = function(prop, value) {
+            return prop in node && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
         }
 
-        setCurrentTreePosition.apply(null, pos)
-        setIsBusy(false)
-    }, setting.get('find.delay'))
+        return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
+            && (!text || cond('C', text))
+    })
 }
 
 function vertexClicked(vertex, event) {
