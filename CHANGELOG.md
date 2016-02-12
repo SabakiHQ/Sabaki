@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Bookmarks are being saved
+
+**Fixed**
+
+* Saving a game does not trigger 'File changed' flag
+
 ## [Sabaki v0.8.0][v0.8.0] (2016-02-11)
 
 **Added**
