@@ -254,14 +254,16 @@ function getBookmark() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    return 'bookmark' in node ? node.bookmark : false
+    return 'SBKBM' in node
 }
 
 function setBookmark(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    node.bookmark = bookmark
+    if (bookmark) node.SBKBM = [1]
+    else delete node.SBKBM
+
     updateGraph()
 }
 
@@ -922,7 +924,7 @@ function findPosition(step, condition) {
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
         var node = tree.nodes[index]
-        return 'bookmark' in node && node.bookmark
+        return 'SBKBM' in node
     })
 }
 
@@ -1385,7 +1387,7 @@ function saveGame() {
         var text = sgf.tree2string(tree)
 
         fs.writeFile(result, '(' + text + ')')
-        document.body.store('treehash', helper.hash(text))
+        document.body.store('treehash', gametree.getHash(tree))
     }
 
     setIsBusy(false)
