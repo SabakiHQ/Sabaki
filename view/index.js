@@ -1364,7 +1364,7 @@ function loadGame(filename) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
 
-            setProgressIndicator(0, win)
+            setProgressIndicator(-1, win)
 
             if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
