@@ -1,6 +1,6 @@
 # Sabaki
 
-<img src="logo.png" width="100" height="100">
+<img src="logo.png" width="156" height="156">
 
 An elegant Go board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
