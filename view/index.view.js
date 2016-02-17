@@ -412,12 +412,12 @@ function showMessageBox(message, type, buttons, cancelId) {
     if (isNaN(cancelId)) cancelId = 0
 
     var result = dialog.showMessageBox(remote.getCurrentWindow(), {
-        'type': type,
-        'buttons': buttons,
-        'title': app.getName(),
-        'message': message,
-        'cancelId': cancelId,
-        'noLink': true
+        type: type,
+        buttons: buttons,
+        title: app.getName(),
+        message: message,
+        cancelId: cancelId,
+        noLink: true
     })
 
     setIsBusy(false)
