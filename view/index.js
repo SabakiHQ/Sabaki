@@ -497,27 +497,28 @@ function attachEngine(exec, args) {
     setIsBusy(true)
 
     setTimeout(function() {
-        try {
-            var split = require('argv-split')
-            var controller = new gtp.Controller(exec, split(args))
+        var split = require('argv-split')
+        var controller = new gtp.Controller(exec, split(args))
 
-            controller.on('quit', function() { $('console').store('controller', null) })
-            $('console').store('controller', controller)
-
-            sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
-                $('console').store('enginename', response.content)
-            })
-            sendGTPCommand(new gtp.Command(null, 'version'))
-            sendGTPCommand(new gtp.Command(null, 'protocol_version'))
-            sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
-                $('console').store('commands', response.content.split('\n'))
-            })
-
-            syncEngine()
-        } catch(e) {
+        if (controller.error) {
             showMessageBox('There was an error attaching the engine.', 'error')
+            setIsBusy(false)
+            return
         }
 
+        controller.on('quit', function() { $('console').store('controller', null) })
+        $('console').store('controller', controller)
+
+        sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
+            $('console').store('enginename', response.content)
+        })
+        sendGTPCommand(new gtp.Command(null, 'version'))
+        sendGTPCommand(new gtp.Command(null, 'protocol_version'))
+        sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
+            $('console').store('commands', response.content.split('\n'))
+        })
+
+        syncEngine()
         setIsBusy(false)
     }, setting.get('gtp.attach_delay'))
 }

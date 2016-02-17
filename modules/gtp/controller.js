@@ -7,8 +7,13 @@ var Controller = function(exec, args) {
     events.EventEmitter.call(self)
 
     self._buffer = ''
-    self.process = child_process.spawn(exec, args)
     self.commands = []
+    self.error = false
+    self.process = child_process.spawn(exec, args)
+
+    self.process.on('error', function() {
+        self.error = true
+    })
 
     self.process.on('exit', function(signal) {
         self.emit('quit', signal)
