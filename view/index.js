@@ -482,6 +482,8 @@ function loadEngines() {
         }
     }))
 
+    Menu.setApplicationMenu(menu)
+
     // Load engines list
 
     var ul = $$('#preferences .engines-list ul')[0]
