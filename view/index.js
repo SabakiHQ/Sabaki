@@ -469,9 +469,7 @@ function loadEngines() {
     })
 
     if (setting.getEngines().length != 0) {
-        attachMenu.append(new MenuItem({
-            type: 'separator'
-        }))
+        attachMenu.append(new MenuItem({ type: 'separator' }))
     }
 
     attachMenu.append(new MenuItem({
