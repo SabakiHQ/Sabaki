@@ -813,8 +813,6 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Toggle Full &Screen',
-                    type: 'checkbox',
-                    checked: remote.getCurrentWindow().isFullScreen(),
                     accelerator: 'CmdOrCtrl+Shift+F',
                     click: function() {
                         var win = remote.getCurrentWindow()
