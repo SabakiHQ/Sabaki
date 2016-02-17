@@ -457,7 +457,8 @@ function loadEngines() {
     // Load menu items
 
     var menu = getMainMenu()
-    var attachMenu = menu.items[4].submenu.items[0].submenu
+    var engineMenu = menu.items.filter(function(item) { return item.label.replace('&', '') == 'Engine' })[0]
+    var attachMenu = engineMenu.submenu.items[0].submenu
 
     attachMenu.clear()
 

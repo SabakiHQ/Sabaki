@@ -807,7 +807,7 @@ function buildMenu() {
                     label: 'Show Co&mments',
                     type: 'checkbox',
                     checked: getShowComment(),
-                    accelerator: 'CmdOrCtrl+H',
+                    accelerator: 'CmdOrCtrl+Shift+G',
                     click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
                 },
                 { type: 'separator' },
@@ -857,6 +857,45 @@ function buildMenu() {
             ]
         }
     ]
+
+    if (process.platform == 'darwin') {
+        template.unshift({
+            label: app.getName(),
+            submenu: [
+                {
+                    label: 'About ' + app.getName(),
+                    role: 'about'
+                },
+                { type: 'separator' },
+                {
+                    label: '&Preferences…',
+                    accelerator: 'CmdOrCtrl+,',
+                    click: showPreferences
+                },
+                { type: 'separator' },
+                {
+                    label: 'Services',
+                    role: 'services'
+                },
+                { type: 'separator' },
+                {
+                    label: 'Hide ' + app.getName(),
+                    accelerator: 'CmdOrCtrl+H',
+                    role: 'hide'
+                },
+                {
+                    label: 'Hide Others',
+                    accelerator: 'CmdOrCtrl+Alt+H',
+                    role: 'hideothers'
+                }
+            ]
+        })
+
+        // Remove original 'Preferences' menu item
+
+        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
+        gameMenu.submenu.length = gameMenu.submenu.length - 2
+    }
 
     var menu = Menu.buildFromTemplate(template)
     document.body.store('mainmenu', menu)
