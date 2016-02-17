@@ -815,7 +815,7 @@ function buildMenu() {
                     label: 'Toggle Full &Screen',
                     type: 'checkbox',
                     checked: remote.getCurrentWindow().isFullScreen(),
-                    accelerator: 'F11',
+                    accelerator: 'CmdOrCtrl+Shift+F',
                     click: function() {
                         var win = remote.getCurrentWindow()
                         win.setFullScreen(!win.isFullScreen())
