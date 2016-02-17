@@ -856,15 +856,26 @@ function buildMenu() {
         }
     ]
 
-    if (process.platform == 'darwin') {
-        template.unshift({
+    if (true || process.platform == 'darwin') {
+        // Remove original 'Preferences' menu item
+
+        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
+        gameMenu.submenu.length = gameMenu.submenu.length - 2
+
+        // Remove original 'Check for Updates' menu item
+
+        var helpMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Help' })[0]
+        var items = helpMenu.submenu.splice(0, 3)
+
+        // Create app menu
+
+        var appMenu = {
             label: app.getName(),
             submenu: [
                 {
                     label: 'About ' + app.getName(),
                     role: 'about'
                 },
-                { type: 'separator' },
                 {
                     label: '&Preferences…',
                     accelerator: 'CmdOrCtrl+,',
@@ -894,12 +905,10 @@ function buildMenu() {
                     click: function() { app.quit() }
                 }
             ]
-        })
+        }
 
-        // Remove original 'Preferences' menu item
-
-        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
-        gameMenu.submenu.length = gameMenu.submenu.length - 2
+        ;[].splice.apply(appMenu.submenu, [1, 0].concat(items))
+        template.unshift(appMenu)
     }
 
     var menu = Menu.buildFromTemplate(template)
