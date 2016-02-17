@@ -875,6 +875,7 @@ function buildMenu() {
                 { type: 'separator' },
                 {
                     label: 'Services',
+                    submenu: [],
                     role: 'services'
                 },
                 { type: 'separator' },
