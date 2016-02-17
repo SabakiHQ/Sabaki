@@ -888,6 +888,12 @@ function buildMenu() {
                     label: 'Hide Others',
                     accelerator: 'CmdOrCtrl+Alt+H',
                     role: 'hideothers'
+                },
+                { type: 'separator' },
+                {
+                    label: 'Quit',
+                    accelerator: 'CmdOrCtrl+Q',
+                    click: function() { app.quit() }
                 }
             ]
         })
