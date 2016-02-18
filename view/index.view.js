@@ -856,7 +856,7 @@ function buildMenu() {
         }
     ]
 
-    if (true || process.platform == 'darwin') {
+    if (process.platform == 'darwin') {
         // Remove original 'Preferences' menu item
 
         var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
