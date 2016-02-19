@@ -213,5 +213,10 @@ app.on('activate', function(e, hasVisibleWindows) {
 
 app.on('open-file', function(e, path) {
     e.preventDefault()
-    openfile = path
+
+    if (BrowserWindow.getAllWindows().length == 0) {
+        openfile = path
+    } else {
+        newWindow(path)
+    }
 })
