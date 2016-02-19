@@ -912,11 +912,11 @@ function buildMenu() {
 
         // Add 'Window' menu
 
-        template.splice(template.length - 1, 0, [
+        template.splice(template.length - 1, 0, {
             label: 'Window',
             submenu: [],
             role: 'window'
-        ])
+        })
     }
 
     var menu = Menu.buildFromTemplate(template)
