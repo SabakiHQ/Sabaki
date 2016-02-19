@@ -188,9 +188,7 @@ ipcMain.on('new-window', newWindow)
 
 app.on('window-all-closed', function() {
     // Quit when all windows are closed.
-
-    if (process.platform != 'darwin')
-        app.quit()
+    app.quit()
 })
 
 app.on('ready', function() {
