@@ -9,7 +9,7 @@ var Menu = require('electron').Menu
 var windows = []
 var openfile = null
 
-function newWindow() {
+function newWindow(path) {
     var window = new BrowserWindow({
         icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
         width: setting.get('window.width'),
@@ -29,7 +29,10 @@ function newWindow() {
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
-        .on('did-finish-load', function() { window.show() })
+        .on('did-finish-load', function() {
+            window.show()
+            if (path) window.webContents.send('load-game', path)
+        })
         .on('new-window', function(e) { e.preventDefault() })
 
     window.on('closed', function() { window = null })
@@ -129,7 +132,7 @@ function buildMenu() {
                 var window = BrowserWindow.getFocusedWindow()
                 if (!window) return
 
-                window.webContents.send('menu-attachengine', engine.path, engine.args)
+                window.webContents.send('attach-engine', engine.path, engine.args)
             }
         })
     })
@@ -145,8 +148,8 @@ function buildMenu() {
 
     // Handle clicks
 
-    template.forEach(function(menu) {
-        menu.submenu.forEach(function(item) {
+    var handleClicks = function(items) {
+        items.forEach(function(item) {
             if ('label' in item) {
                 item.label = item.label
                 .replace('{name}', app.getName())
@@ -160,13 +163,19 @@ function buildMenu() {
                     var window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
-                    window.webContents.send('menu-' + action)
+                    window.webContents.send('menu-click', action)
                 }
 
                 delete item.action
             }
+
+            if ('submenu' in item) {
+                handleClicks(item.submenu)
+            }
         })
-    })
+    }
+
+    handleClicks(template)
 
     // Build
 
@@ -184,12 +193,10 @@ app.on('window-all-closed', function() {
 })
 
 app.on('ready', function() {
-    var window = newWindow()
-
     if (!openfile && process.argv.length >= 2)
         openfile = process.argv[1]
-    if (openfile)
-        window.webContents.send('menu-loadgame', openfile)
+
+    newWindow(openfile)
 })
 
 app.on('activate', function(e, hasVisibleWindows) {

@@ -31,6 +31,10 @@ var data = {
     "gotoend": goToEnd,
     "gotonextvariation": goToNextVariation,
     "gotopreviousvariation": goToPreviousVariation,
+    "manageengines": function() {
+        showPreferences()
+        setPreferencesTab('engines')
+    },
     "detachengine": detachEngine,
     "generatemove": generateMove,
     "gtpconsole": function() { setShowLeftSidebar(!getShowLeftSidebar()) },
@@ -58,8 +62,8 @@ var data = {
     "reportissue": function() { shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues') }
 }
 
-for (var key in data) {
-    ipcRenderer.on('menu-' + key, data[key])
-}
+ipcRenderer.on('menu-click', function(e, action) { data[action]() })
+ipcRenderer.on('load-game', function(e, path) { loadGame(path) })
+ipcRenderer.on('attach-engine', function(e, path, args) { attachEngine(path, args) })
 
 })()
