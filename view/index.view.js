@@ -68,11 +68,6 @@ function getShowLeftSidebar() {
 
 function setShowLeftSidebar(show) {
     if (getShowLeftSidebar() == show) return
-    if (show) document.body.addClass('leftsidebar')
-    else document.body.removeClass('leftsidebar')
-
-    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
-    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     // Resize window
     var win = remote.getCurrentWindow()
@@ -82,6 +77,12 @@ function setShowLeftSidebar(show) {
         if (!win.isMaximized())
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
     }
+
+    if (show) document.body.addClass('leftsidebar')
+    else document.body.removeClass('leftsidebar')
+
+    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
+    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     resizeBoard()
     setting.set('view.show_leftsidebar', show)
@@ -109,6 +110,16 @@ function getShowSidebar() {
 
 function setShowSidebar(show) {
     if (getShowSidebar() == show) return
+
+    // Resize window
+    var win = remote.getCurrentWindow()
+    if (win) {
+        var size = win.getContentSize()
+
+        if (!win.isMaximized())
+            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+    }
+
     if (show) document.body.addClass('sidebar')
     else document.body.removeClass('sidebar')
 
@@ -127,15 +138,6 @@ function setShowSidebar(show) {
             s.graph.clear()
             s.refresh()
         }
-    }
-
-    // Resize window
-    var win = remote.getCurrentWindow()
-    if (win) {
-        var size = win.getContentSize()
-
-        if (!win.isMaximized())
-            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
     }
 
     resizeBoard()
