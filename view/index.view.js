@@ -909,6 +909,14 @@ function buildMenu() {
 
         ;[].splice.apply(appMenu.submenu, [1, 0].concat(items))
         template.unshift(appMenu)
+
+        // Add 'Window' menu
+
+        template.splice(template.length - 1, 0, [
+            label: 'Window',
+            submenu: [],
+            role: 'window'
+        ])
     }
 
     var menu = Menu.buildFromTemplate(template)
