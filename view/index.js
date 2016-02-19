@@ -1544,7 +1544,6 @@ document.addEvent('keydown', function(e) {
 window.addEvent('load', function() {
     newGame()
 
-    if (process.argv.length >= 2) loadGame(process.argv[1])
     if (!setting.get('app.startup_check_updates')) return
 
     setTimeout(function() {

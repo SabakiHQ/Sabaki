@@ -7,6 +7,7 @@ var BrowserWindow = require('electron').BrowserWindow
 var Menu = require('electron').Menu
 
 var windows = []
+var openfile = null
 
 function newWindow() {
     var window = new BrowserWindow({
@@ -181,7 +182,12 @@ app.on('window-all-closed', function() {
 })
 
 app.on('ready', function() {
-    newWindow()
+    var window = newWindow()
+
+    if (!openfile && process.argv.length >= 2)
+        openfile = process.argv[1]
+    if (openfile)
+        window.webContents.send('menu-loadgame', openfile)
 })
 
 app.on('activate', function(e, hasVisibleWindows) {
@@ -190,9 +196,5 @@ app.on('activate', function(e, hasVisibleWindows) {
 
 app.on('open-file', function(e, path) {
     e.preventDefault()
-
-    var window = BrowserWindow.getFocusedWindow()
-    if (!window) window = newWindow()
-    
-    window.webContents.send('menu-loadgame', path)
+    openfile = path
 })
