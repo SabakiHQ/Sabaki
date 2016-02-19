@@ -42,3 +42,7 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
     newWindow()
 })
+
+app.on('activate', function(e, hasVisibleWindows) {
+    if (!hasVisibleWindows) newWindow()
+})
