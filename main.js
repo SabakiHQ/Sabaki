@@ -1,7 +1,6 @@
 var process = require('process')
 var app = require('electron').app
 var ipcMain = require('electron').ipcMain
-var fs = require('fs')
 var setting = require('./modules/setting')
 
 var BrowserWindow = require('electron').BrowserWindow
