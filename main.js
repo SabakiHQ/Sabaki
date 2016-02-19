@@ -25,8 +25,6 @@ function newWindow(path) {
 
     windows.push(window)
 
-    // window.toggleDevTools()
-
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
         .on('did-finish-load', function() {
@@ -36,8 +34,8 @@ function newWindow(path) {
         .on('new-window', function(e) { e.preventDefault() })
 
     window.on('closed', function() { window = null })
-
     window.loadURL('file://' + __dirname + '/view/index.html')
+    // window.toggleDevTools()
 
     return window
 }

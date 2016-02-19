@@ -1268,7 +1268,7 @@ function askForSave() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveGame()
+        if (answer == 0) saveGame(getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -1356,21 +1356,23 @@ function loadGame(filename) {
     }
 }
 
-function saveGame() {
+function saveGame(filename) {
     if (getIsBusy()) return
     setIsBusy(true)
 
-    var result = dialog.showSaveDialog(remote.getCurrentWindow(), {
-        filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
-    })
+    if (!filename) {
+        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
+            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+        })
+    }
 
-    if (result) {
+    if (filename) {
         var tree = getRootTree()
         var text = sgf.tree2string(tree)
 
-        fs.writeFile(result, '(' + text + ')')
+        fs.writeFile(filename, '(' + text + ')')
         document.body.store('treehash', gametree.getHash(tree))
-        setRepresentedFilename(result)
+        setRepresentedFilename(filename)
     }
 
     setIsBusy(false)

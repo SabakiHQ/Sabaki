@@ -3,6 +3,7 @@
 var data = {
     "newgame": function() { newGame(true) },
     "loadgame": loadGame,
+    "savegame": function() { saveGame(getRepresentedFilename()) },
     "saveas": saveGame,
     "score": function() { setScoringMode(true) },
     "gameinfo": showGameInfo,

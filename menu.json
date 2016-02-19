@@ -13,13 +13,18 @@
                 "action": "loadgame"
             },
             {
-                "label": "Save &As…",
+                "label": "&Save",
                 "accelerator": "CmdOrCtrl+S",
+                "action": "savegame"
+            },
+            {
+                "label": "Save &As…",
+                "accelerator": "CmdOrCtrl+Shift+S",
                 "action": "saveas"
             },
             { "type": "separator" },
             {
-                "label": "&Score",
+                "label": "S&core",
                 "action": "score"
             },
             {
