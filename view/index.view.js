@@ -342,10 +342,12 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
+    var path = require('path')
+
     document.body.store('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
 
-    if (filename) document.title = app.getName() + ' — ' + filename
+    if (filename) document.title = app.getName() + ' — ' + path.basename(filename)
     else document.title = app.getName()
 }
 
