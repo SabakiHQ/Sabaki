@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix not being able to hide the indicator in find mode
+* Clicking when busy does not have an effect
 
 **Changed**
 

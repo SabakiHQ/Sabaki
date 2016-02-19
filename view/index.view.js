@@ -11,8 +11,14 @@ function getIsBusy() {
 }
 
 function setIsBusy(busy) {
-    if (busy) document.body.addClass('busy')
-    else document.body.removeClass('busy')
+    if (busy) {
+        document.body.addClass('busy')
+        return
+    }
+
+    setTimeout(function() {
+        document.body.removeClass('busy')
+    }, setting.get('app.hide_busy_delay'))
 }
 
 function setProgressIndicator(progress, win) {
