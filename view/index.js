@@ -969,12 +969,8 @@ function vertexClicked(vertex, event) {
     } else if (getFindMode()) {
         if (event.button != 0) return
 
-        if (helper.equals(getIndicatorVertex(), vertex)) {
-            hideIndicator()
-        } else {
-            setIndicatorVertex(vertex)
-            findMove(getIndicatorVertex(), getFindText(), 1)
-        }
+        setIndicatorVertex(vertex)
+        findMove(getIndicatorVertex(), getFindText(), 1)
     } else {
         // Playing mode
 
