@@ -867,12 +867,10 @@ function buildMenu() {
     if (process.platform == 'darwin') {
         // Create app menu
 
-        var appMenu = [
-            {
-                label: 'About ' + app.getName(),
-                role: 'about'
-            }
-        ]
+        var appMenu = [{
+            label: 'About ' + app.getName(),
+            role: 'about'
+        }]
 
         // Remove original 'Check for Updates' menu item
 
