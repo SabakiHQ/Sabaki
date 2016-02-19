@@ -9,7 +9,7 @@ var Controller = function(exec, args) {
     self._buffer = ''
     self.commands = []
     self.error = false
-    self.process = child_process.spawn(exec, args)
+    self.process = child_process.execFile(exec, args)
 
     self.process.on('error', function() {
         self.error = true
