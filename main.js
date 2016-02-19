@@ -155,7 +155,7 @@ function buildMenu() {
 
             if ('action' in item) {
                 var action = item.action
-                
+
                 item.click = function() {
                     var window = BrowserWindow.getFocusedWindow()
                     if (!window) return
