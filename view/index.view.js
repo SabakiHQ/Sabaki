@@ -975,14 +975,10 @@ function openHeaderMenu() {
 function openNodeMenu(tree, index) {
     if (getScoringMode()) return
 
-    var template = [
-        {
-            label: '&Remove',
-            click: function() {
-                removeNode(tree, index)
-            }
-        }
-    ]
+    var template = [{
+        label: '&Remove',
+        click: function() { removeNode(tree, index) }
+    }]
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
