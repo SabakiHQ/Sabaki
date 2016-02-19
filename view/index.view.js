@@ -343,7 +343,7 @@ function getRepresentedFilename() {
 
 function setRepresentedFilename(filename) {
     document.body.store('representedfilename', filename)
-    remote.getCurrentWindow().setRepresentedFilename(filename)
+    remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
 
     if (filename) document.title = app.getName() + ' — ' + filename
     else document.title = app.getName()
