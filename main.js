@@ -181,6 +181,15 @@ function buildMenu() {
     // Build
 
     Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+
+    // Create dock menu
+
+    if (process.platform == 'darwin') {
+        app.dock.setMenu(Menu.buildFromTemplate([{
+            label: 'New Window',
+            click: function() { newWindow() }
+        }]))
+    }
 }
 
 ipcMain.on('build-menu', buildMenu)
