@@ -13,12 +13,9 @@ if (typeof require != 'undefined') {
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
 
 var settingspath = ''
-var enginespath = ''
 
-if (path && app) {
+if (path && app)
     settingspath = path.join(app.getPath('userData'), 'settings.json')
-    enginespath = path.join(app.getPath('userData'), 'engines.json')
-}
 
 var settings = {}
 var engines = []
@@ -41,6 +38,7 @@ var defaults = {
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.undo_delay': 100,
+    'engines.list': engines,
     'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
@@ -86,8 +84,6 @@ context.load = function() {
     if (!fs) return settings = defaults
 
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
-    engines = JSON.parse(fs.readFileSync(enginespath, { encoding: 'utf8' }))
-    engines.sort(function(x, y) { return x.name >= y.name })
 
     // Load default settings
 
@@ -96,15 +92,16 @@ context.load = function() {
         settings[key] = defaults[key]
     }
 
+    engines = settings['engines.list']
+    engines.sort(function(x, y) { return x.name >= y.name })
+
     return context
 }
 
 context.save = function() {
-    if (fs) {
-        fs.writeFileSync(settingspath, JSON.stringify(settings, null, '    '))
-        fs.writeFileSync(enginespath, JSON.stringify(engines, null, '    '))
-    }
+    if (!fs) return context
 
+    fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
     return context
 }
 
@@ -140,7 +137,6 @@ context.clearEngines = function() {
 
 try {
     fs.accessSync(settingspath, fs.F_OK)
-    fs.accessSync(enginespath, fs.F_OK)
 } catch(err) {
     context.save()
 }
