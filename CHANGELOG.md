@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Changed some menu shortcuts
-* Bump Electron v0.36.8
+* Bump electron@v0.36.8
 * Bump gemini-scrollbar@v1.3.2
 * Bump octicons@v3.5.0
 * Bump sigma@v1.1.0
