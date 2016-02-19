@@ -865,58 +865,59 @@ function buildMenu() {
     ]
 
     if (process.platform == 'darwin') {
-        // Remove original 'Preferences' menu item
+        // Create app menu
 
-        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
-        gameMenu.submenu.length = gameMenu.submenu.length - 2
+        var appMenu = [
+            {
+                label: 'About ' + app.getName(),
+                role: 'about'
+            }
+        ]
 
         // Remove original 'Check for Updates' menu item
 
         var helpMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Help' })[0]
         var items = helpMenu.submenu.splice(0, 3)
 
-        // Create app menu
+        appMenu.push.apply(appMenu, items.slice(0, 2))
 
-        var appMenu = {
+        // Remove original 'Preferences' menu item
+
+        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
+        items = gameMenu.submenu.splice(gameMenu.submenu.length - 2, 2)
+
+        appMenu.push.apply(appMenu, [
+            { type: 'separator' },
+            items[1],
+            { type: 'separator' },
+            {
+                label: 'Services',
+                submenu: [],
+                role: 'services'
+            },
+            { type: 'separator' },
+            {
+                label: 'Hide ' + app.getName(),
+                accelerator: 'CmdOrCtrl+H',
+                role: 'hide'
+            },
+            {
+                label: 'Hide Others',
+                accelerator: 'CmdOrCtrl+Alt+H',
+                role: 'hideothers'
+            },
+            { type: 'separator' },
+            {
+                label: 'Quit',
+                accelerator: 'CmdOrCtrl+Q',
+                click: function() { app.quit() }
+            }
+        ])
+
+        template.unshift({
             label: app.getName(),
-            submenu: [
-                {
-                    label: 'About ' + app.getName(),
-                    role: 'about'
-                },
-                {
-                    label: '&Preferences…',
-                    accelerator: 'CmdOrCtrl+,',
-                    click: showPreferences
-                },
-                { type: 'separator' },
-                {
-                    label: 'Services',
-                    submenu: [],
-                    role: 'services'
-                },
-                { type: 'separator' },
-                {
-                    label: 'Hide ' + app.getName(),
-                    accelerator: 'CmdOrCtrl+H',
-                    role: 'hide'
-                },
-                {
-                    label: 'Hide Others',
-                    accelerator: 'CmdOrCtrl+Alt+H',
-                    role: 'hideothers'
-                },
-                { type: 'separator' },
-                {
-                    label: 'Quit',
-                    accelerator: 'CmdOrCtrl+Q',
-                    click: function() { app.quit() }
-                }
-            ]
-        }
-
-        ;[].splice.apply(appMenu.submenu, [1, 0].concat(items))
-        template.unshift(appMenu)
+            submenu: appMenu
+        })
 
         // Add 'Window' menu
 
