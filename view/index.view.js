@@ -337,6 +337,18 @@ function setPreferencesTab(tab) {
         $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
 }
 
+function getRepresentedFilename() {
+    return document.body.retrieve('representedfilename')
+}
+
+function setRepresentedFilename(filename) {
+    document.body.store('representedfilename', filename)
+    remote.getCurrentWindow().setRepresentedFilename(filename)
+
+    if (filename) document.title = app.getName() + ' — ' + filename
+    else document.title = app.getName()
+}
+
 /**
  * Methods
  */

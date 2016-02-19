@@ -1309,7 +1309,7 @@ function newGame(playSound) {
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree, true)
     setUndoable(false)
-    remote.getCurrentWindow().setRepresentedFilename('')
+    setRepresentedFilename(null)
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
@@ -1346,7 +1346,7 @@ function loadGame(filename) {
             }
 
             setProgressIndicator(-1, win)
-            remote.getCurrentWindow().setRepresentedFilename(filename)
+            setRepresentedFilename(filename)
 
             if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
@@ -1370,7 +1370,7 @@ function saveGame() {
 
         fs.writeFile(result, '(' + text + ')')
         document.body.store('treehash', gametree.getHash(tree))
-        remote.getCurrentWindow().setRepresentedFilename(result)
+        setRepresentedFilename(result)
     }
 
     setIsBusy(false)
