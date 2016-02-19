@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Add Mac OS X release
+
+**Fixed**
+
+* Fix not being able to hide the indicator in find mode
+
+**Changed**
+
+* Changed some menu shortcuts
+* Bump Electron v0.36.8
+* Bump gemini-scrollbar@v1.3.2
+* Bump octicons@v3.5.0
+* Bump sigma@v1.1.0
+
 ## [Sabaki v0.8.1][v0.8.1] (2016-02-12)
 
 **Changed**
