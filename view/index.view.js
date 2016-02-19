@@ -922,7 +922,18 @@ function buildMenu() {
 
         template.splice(template.length - 1, 0, {
             label: 'Window',
-            submenu: [],
+            submenu: [
+                {
+                    label: 'Minimize',
+                    role: 'minimize',
+                    accelerator: 'CmdOrCtrl+M'
+                },
+                { type: 'separator' },
+                {
+                    label: 'Bring All to Front',
+                    role: 'front'
+                }
+            ],
             role: 'window'
         })
     }
