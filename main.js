@@ -3,16 +3,10 @@ var app = require('electron').app
 var setting = require('./modules/setting')
 var BrowserWindow = require('electron').BrowserWindow
 
-var window = null
+var windows = []
 
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-    if (process.platform != 'darwin')
-        app.quit()
-})
-
-app.on('ready', function() {
-    window = new BrowserWindow({
+function newWindow() {
+    var window = new BrowserWindow({
         icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
         width: setting.get('window.width'),
         height: setting.get('window.height'),
@@ -25,6 +19,8 @@ app.on('ready', function() {
         }
     })
 
+    windows.push(window)
+
     // window.toggleDevTools()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
@@ -35,4 +31,14 @@ app.on('ready', function() {
     window.on('closed', function() { window = null })
 
     window.loadURL('file://' + __dirname + '/view/index.html')
+}
+
+// Quit when all windows are closed.
+app.on('window-all-closed', function() {
+    if (process.platform != 'darwin')
+        app.quit()
+})
+
+app.on('ready', function() {
+    newWindow()
 })
