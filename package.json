@@ -20,7 +20,7 @@
     "sigma": "^1.0.3"
   },
   "scripts": {
-    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.36.7 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.8.1\" --version-string.ProductVersion=\"0.8.1\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
-    "build-osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --version=0.36.7 --out=../ --icon=./icon.icns --overwrite --app-version=0.8.1"
+    "build": "electron-packager ./ sabaki --platform=win32,linux --arch=all --version=0.36.8 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.8.1\" --version-string.ProductVersion=\"0.8.1\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
+    "build-osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --version=0.36.8 --out=../ --icon=./icon.icns --overwrite --app-version=0.8.1"
   }
 }
