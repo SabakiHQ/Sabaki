@@ -49,7 +49,7 @@ function buildMenu() {
 
     if (process.platform == 'darwin') {
         var appMenu = [{
-            label: 'About ' + app.getName(),
+            label: 'About {name}',
             role: 'about'
         }]
 
@@ -76,7 +76,7 @@ function buildMenu() {
             },
             { type: 'separator' },
             {
-                label: 'Hide ' + app.getName(),
+                label: 'Hide {name}',
                 accelerator: 'CmdOrCtrl+H',
                 role: 'hide'
             },
@@ -94,7 +94,7 @@ function buildMenu() {
         ])
 
         template.unshift({
-            label: app.getName(),
+            label: '{name}',
             submenu: appMenu
         })
 
