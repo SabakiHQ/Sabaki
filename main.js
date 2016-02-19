@@ -34,6 +34,8 @@ function newWindow() {
     window.on('closed', function() { window = null })
 
     window.loadURL('file://' + __dirname + '/view/index.html')
+
+    return window
 }
 
 function buildMenu() {
@@ -184,4 +186,13 @@ app.on('ready', function() {
 
 app.on('activate', function(e, hasVisibleWindows) {
     if (!hasVisibleWindows) newWindow()
+})
+
+app.on('open-file', function(e, path) {
+    e.preventDefault()
+
+    var window = BrowserWindow.getFocusedWindow()
+    if (!window) window = newWindow()
+    
+    window.webContents.send('menu-loadgame', path)
 })
