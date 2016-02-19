@@ -728,8 +728,7 @@ function makeMove(vertex, sendCommand) {
 
         setIsBusy(true)
         setTimeout(function() {
-            setIsBusy(false)
-            generateMove()
+            generateMove(true)
         }, setting.get('gtp.move_delay'))
     }
 }
@@ -1202,8 +1201,8 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 }
 
-function generateMove() {
-    if (!getEngineController() || getIsBusy()) return
+function generateMove(ignoreBusy) {
+    if (!getEngineController() || !ignoreBusy && getIsBusy()) return
 
     closeDrawers()
     syncEngine()
