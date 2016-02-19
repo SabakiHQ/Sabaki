@@ -1,6 +1,7 @@
 var process = require('process')
 var app = require('electron').app
 var ipcMain = require('electron').ipcMain
+var fs = require('fs')
 var setting = require('./modules/setting')
 
 var BrowserWindow = require('electron').BrowserWindow
@@ -43,7 +44,7 @@ function newWindow(path) {
 }
 
 function buildMenu() {
-    var template = require('./menu.json')
+    var template = JSON.parse(JSON.stringify(require('./menu.json')))
 
     // Create app menu for OS X
 
