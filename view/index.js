@@ -1,4 +1,5 @@
 var remote = require('electron').remote
+var ipcRenderer = require('electron').ipcRenderer
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../modules/sgf')
@@ -456,32 +457,7 @@ function prepareConsole() {
 function loadEngines() {
     // Load menu items
 
-    var menu = getMainMenu()
-    var engineMenu = menu.items.filter(function(item) { return item.label.replace('&', '') == 'Engine' })[0]
-    var attachMenu = engineMenu.submenu.items[0].submenu
-
-    attachMenu.clear()
-
-    setting.getEngines().forEach(function(engine) {
-        attachMenu.append(new MenuItem({
-            label: engine.name,
-            click: function() { attachEngine(engine.path, engine.args) }
-        }))
-    })
-
-    if (setting.getEngines().length != 0) {
-        attachMenu.append(new MenuItem({ type: 'separator' }))
-    }
-
-    attachMenu.append(new MenuItem({
-        label: '&Manage Engines…',
-        click: function() {
-            showPreferences()
-            setPreferencesTab('engines')
-        }
-    }))
-
-    Menu.setApplicationMenu(menu)
+    ipcRenderer.send('build-menu')
 
     // Load engines list
 
@@ -1552,7 +1528,6 @@ document.addEvent('keydown', function(e) {
     }
 }).addEvent('domready', function() {
     loadSettings()
-    buildMenu()
     loadEngines()
     prepareDragDropFiles()
     prepareEditTools()

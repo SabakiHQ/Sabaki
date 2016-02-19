@@ -1,0 +1,259 @@
+[
+    {
+        "label": "&Game",
+        "submenu": [
+            {
+                "label": "&New",
+                "accelerator": "CmdOrCtrl+N",
+                "action": "newgame"
+            },
+            {
+                "label": "&Load…",
+                "accelerator": "CmdOrCtrl+O",
+                "action": "loadgame"
+            },
+            {
+                "label": "Save &As…",
+                "accelerator": "CmdOrCtrl+S",
+                "action": "saveas"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Score",
+                "action": "score"
+            },
+            {
+                "label": "&Info",
+                "accelerator": "CmdOrCtrl+I",
+                "action": "info"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Preferences…",
+                "accelerator": "CmdOrCtrl+,",
+                "action": "preferences"
+            }
+        ]
+    },
+    {
+        "label": "&Edit",
+        "submenu": [
+            {
+                "label": "Toggle &Edit Mode",
+                "accelerator": "CmdOrCtrl+E",
+                "action": "editmode"
+            },
+            {
+                "label": "Clear &All Overlays",
+                "action": "clearalloverlays"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Stone Tool",
+                "accelerator": "CmdOrCtrl+1",
+                "action": "stonetool"
+            },
+            {
+                "label": "&Cross Tool",
+                "accelerator": "CmdOrCtrl+2",
+                "action": "crosstool"
+            },
+            {
+                "label": "&Triangle Tool",
+                "accelerator": "CmdOrCtrl+3",
+                "action": "triangletool"
+            },
+            {
+                "label": "S&quare Tool",
+                "accelerator": "CmdOrCtrl+4",
+                "action": "squaretool"
+            },
+            {
+                "label": "C&ircle Tool",
+                "accelerator": "CmdOrCtrl+5",
+                "action": "circletool"
+            },
+            {
+                "label": "&Label Tool",
+                "accelerator": "CmdOrCtrl+6",
+                "action": "labeltool"
+            },
+            {
+                "label": "&Number Tool",
+                "accelerator": "CmdOrCtrl+7",
+                "action": "numbertool"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Remove Node",
+                "accelerator": "CmdOrCtrl+Delete",
+                "action": "removenode"
+            }
+        ]
+    },
+    {
+        "label": "&Find",
+        "submenu": [
+            {
+                "label": "Toggle &Find Mode",
+                "accelerator": "CmdOrCtrl+F",
+                "action": "findmode"
+            },
+            {
+                "label": "Find &Next",
+                "accelerator": "F3",
+                "action": "findnext"
+            },
+            {
+                "label": "Find &Previous",
+                "accelerator": "Shift+F3",
+                "action": "findprevious"
+            },
+            { "type": "separator" },
+            {
+                "label": "Toggle &Bookmark",
+                "accelerator": "CmdOrCtrl+B",
+                "action": "togglebookmark"
+            },
+            {
+                "label": "Jump To Ne&xt Bookmark",
+                "accelerator": "F2",
+                "action": "nextbookmark"
+            },
+            {
+                "label": "Jump To Pre&vious Bookmark",
+                "accelerator": "Shift+F2",
+                "action": "previousbookmark"
+            }
+        ]
+    },
+    {
+        "label": "&Navigation",
+        "submenu": [
+            {
+                "label": "&Back",
+                "accelerator": "Up",
+                "action": "goback"
+            },
+            {
+                "label": "&Forward",
+                "accelerator": "Down",
+                "action": "goforward"
+            },
+            { "type": "separator" },
+            {
+                "label": "Go To &Previous Fork",
+                "accelerator": "CmdOrCtrl+Up",
+                "action": "gotopreviousfork"
+            },
+            {
+                "label": "Go To &Next Fork",
+                "accelerator": "CmdOrCtrl+Down",
+                "action": "gotonextfork"
+            },
+            { "type": "separator" },
+            {
+                "label": "Go To Be&ginning",
+                "accelerator": "CmdOrCtrl+Home",
+                "action": "gotobeginning"
+            },
+            {
+                "label": "Go To &End",
+                "accelerator": "CmdOrCtrl+End",
+                "action": "gotoend"
+            },
+            { "type": "separator" },
+            {
+                "label": "Go To Next Va&riation",
+                "accelerator": "Right",
+                "action": "gotonextvariation"
+            },
+            {
+                "label": "Go To Previous &Variation",
+                "accelerator": "Left",
+                "action": "gotopreviousvariation"
+            }
+        ]
+    },
+    {
+        "label": "Eng&ine",
+        "submenu": [
+            {
+                "label": "&Attach",
+                "submenu": []
+            },
+            {
+                "label": "&Detach",
+                "action": "detachengine"
+            },
+            { "type": "separator" },
+            {
+                "label": "Generate &Move",
+                "accelerator": "F10",
+                "action": "generatemove"
+            },
+            { "type": "separator" },
+            {
+                "label": "Toggle &GTP Console",
+                "accelerator": "F12",
+                "action": "gtpconsole"
+            },
+            {
+                "label": "&Clear Console",
+                "action": "clearconsole"
+            }
+        ]
+    },
+    {
+        "label": "&View",
+        "submenu": [
+            {
+                "label": "Toggle &Coordinates",
+                "action": "togglecoordinates"
+            },
+            {
+                "label": "Toggle &Variations",
+                "action": "togglevariations"
+            },
+            { "type": "separator" },
+            {
+                "label": "Toggle Game &Graph",
+                "accelerator": "CmdOrCtrl+G",
+                "action": "togglegamegraph"
+            },
+            {
+                "label": "Toggle Co&mments",
+                "accelerator": "CmdOrCtrl+Shift+G",
+                "action": "togglecomments"
+            },
+            { "type": "separator" },
+            {
+                "label": "Toggle Full &Screen",
+                "accelerator": "CmdOrCtrl+Shift+F",
+                "action": "togglefullscreen"
+            }
+        ]
+    },
+    {
+        "label": "&Help",
+        "submenu": [
+            {
+                "label": "{name} v{version}",
+                "enabled": false
+            },
+            {
+                "label": "Check For &Updates",
+                "action": "checkforupdates"
+            },
+            { "type": "separator" },
+            {
+                "label": "GitHub &Respository",
+                "action": "github"
+            },
+            {
+                "label": "Report &Issue",
+                "action": "reportissue"
+            }
+        ]
+    }
+]
