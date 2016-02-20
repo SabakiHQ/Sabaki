@@ -99,7 +99,7 @@ function setCurrentTreePosition(tree, index, now) {
 
     updateSidebar(redraw, now)
     sgf.addBoard(tree, index)
-    if (tree.nodes[index].board) setBoard(tree.nodes[index].board)
+    setBoard(tree.nodes[index].board)
 
     // Determine current player
 
