@@ -198,6 +198,15 @@ function setPlayerName(sign, name) {
     $$('#player_' + sign + ' .name')[0].set('text', name)
 }
 
+function getShowBookmark() {
+    return document.body.hasClass('bookmark')
+}
+
+function setShowBookmark(bookmark) {
+    if (bookmark) document.body.addClass('bookmark')
+    else document.body.removeClass('bookmark')
+}
+
 function getCaptures() {
     return {
         '-1': $$('#player_-1 .captures')[0].get('text').toInt(),

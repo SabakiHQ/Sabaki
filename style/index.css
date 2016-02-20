@@ -42,6 +42,30 @@ header, #edit, #scoring, #find, #progress {
         font-size: .8em;
         transition: opacity .2s;
     }
+    header .bookmark {
+        position: absolute;
+        left: -32px;
+        top: 0;
+        width: 12px;
+        height: 20px;
+        background: #a456bb;
+        transition: left .2s;
+    }
+    header .bookmark::before, header .bookmark::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        border-top: 6px solid #a456bb;
+        border-right: 6px solid transparent;
+    }
+    header .bookmark::after {
+        left: 6px;
+        border-right: none;
+        border-left: 6px solid transparent;
+    }
+    .bookmark header .bookmark { left: 10px; }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
@@ -65,7 +89,7 @@ header, #edit, #scoring, #find, #progress {
         right: auto;
         left: 0;
         top: 53px;
-        transition: top .2s;
+        transition: top .2s, left .2s;
     }
     header .undo img, #headermenu img {
         position: absolute;
@@ -76,6 +100,7 @@ header, #edit, #scoring, #find, #progress {
         -webkit-filter: invert(100%);
     }
     .undoable header .undo { top: 50%; }
+    .bookmark header .undo { left: 32px; }
     #headermenu:hover, header .undo:hover {
         background: #222;
 }

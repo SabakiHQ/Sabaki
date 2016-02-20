@@ -95,9 +95,10 @@ function setCurrentTreePosition(tree, index, now) {
         t = t.parent
     }
 
-    // Update graph, slider and comment text
+    // Update bookmark, graph, slider and comment text
 
     updateSidebar(redraw, now)
+    setShowBookmark('SBKBM' in tree.nodes[index])
     sgf.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
@@ -266,6 +267,7 @@ function setBookmark(bookmark) {
     else delete node.SBKBM
 
     updateGraph()
+    setShowBookmark(bookmark)
 }
 
 /**
