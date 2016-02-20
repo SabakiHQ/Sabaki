@@ -1,6 +1,6 @@
 (function() {
 
-var data = {
+var menudata = {
     "newgame": function() { newGame(true) },
     "loadgame": loadGame,
     "savegame": function() { saveGame(getRepresentedFilename()) },
@@ -57,7 +57,7 @@ var data = {
     "reportissue": function() { shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues') }
 }
 
-ipcRenderer.on('menu-click', function(e, action) { data[action]() })
+ipcRenderer.on('menu-click', function(e, action) { menudata[action]() })
 ipcRenderer.on('load-game', function(e, path) { loadGame(path) })
 ipcRenderer.on('attach-engine', function(e, path, args) { attachEngine(path, args) })
 
