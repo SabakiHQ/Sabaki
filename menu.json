@@ -200,7 +200,7 @@
             { "type": "separator" },
             {
                 "label": "Toggle &GTP Console",
-                "accelerator": "F12",
+                "accelerator": "CmdOrCtrl+Alt+C",
                 "action": "gtpconsole"
             },
             {
