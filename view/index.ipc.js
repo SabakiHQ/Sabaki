@@ -32,18 +32,12 @@ var data = {
     "gotoend": goToEnd,
     "gotonextvariation": goToNextVariation,
     "gotopreviousvariation": goToPreviousVariation,
-    "manageengines": function() {
-        showPreferences()
-        setPreferencesTab('engines')
-    },
+    "manageengines": function() { showPreferences(); setPreferencesTab('engines') },
     "detachengine": detachEngine,
     "generatemove": generateMove,
     "gtpconsole": function() { setShowLeftSidebar(!getShowLeftSidebar()) },
     "clearconsole": clearConsole,
-    "togglecoordinates": function() {
-        setShowCoordinates(!getShowCoordinates())
-        resizeBoard()
-    },
+    "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()); resizeBoard() },
     "togglevariations": function() { setShowVariations(!getShowVariations()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
     "togglecomments": function() { setSidebarArrangement(getShowGraph(), !getShowComment()) },
