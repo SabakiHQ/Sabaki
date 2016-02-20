@@ -351,6 +351,7 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
+    return
     var path = require('path')
 
     document.body.store('representedfilename', filename)
