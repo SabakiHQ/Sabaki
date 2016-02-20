@@ -287,7 +287,7 @@ context.matrixdict2graph = function(matrixdict) {
 
             if ('C' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_comment_color')
-            if (tree.nodes[index].bookmark)
+            if ('SBKBM' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
 
             if (currentTrack.indexOf(tree.id) != -1) {
@@ -345,7 +345,7 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getHash = function(tree) {
     return helper.hash(JSON.stringify(tree, function(name, val) {
-        var list = ['id', 'board', 'parent', 'collapsed', 'bookmark']
+        var list = ['id', 'board', 'parent', 'collapsed']
         return list.indexOf(name) >= 0 ? undefined : val
     }))
 }

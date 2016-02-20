@@ -1,4 +1,5 @@
 var remote = { getCurrentWindow: function() {} }
+var ipcRenderer = null
 var fs = null
 var shell = null
 var sgf = window.sgf
@@ -94,11 +95,12 @@ function setCurrentTreePosition(tree, index, now) {
         t = t.parent
     }
 
-    // Update graph, slider and comment text
+    // Update bookmark, graph, slider and comment text
 
     updateSidebar(redraw, now)
+    setShowBookmark('SBKBM' in tree.nodes[index])
     sgf.addBoard(tree, index)
-    if (tree.nodes[index].board) setBoard(tree.nodes[index].board)
+    setBoard(tree.nodes[index].board)
 
     // Determine current player
 
@@ -254,15 +256,18 @@ function getBookmark() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    return 'bookmark' in node ? node.bookmark : false
+    return 'SBKBM' in node
 }
 
 function setBookmark(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    node.bookmark = bookmark
+    if (bookmark) node.SBKBM = [1]
+    else delete node.SBKBM
+
     updateGraph()
+    setShowBookmark(bookmark)
 }
 
 /**
@@ -457,31 +462,7 @@ function loadEngines() {
     return
     // Load menu items
 
-    var menu = getMainMenu()
-    var attachMenu = menu.items[4].submenu.items[0].submenu
-
-    attachMenu.clear()
-
-    setting.getEngines().forEach(function(engine) {
-        attachMenu.append(new MenuItem({
-            label: engine.name,
-            click: function() { attachEngine(engine.path, engine.args) }
-        }))
-    })
-
-    if (setting.getEngines().length != 0) {
-        attachMenu.append(new MenuItem({
-            type: 'separator'
-        }))
-    }
-
-    attachMenu.append(new MenuItem({
-        label: '&Manage Engines…',
-        click: function() {
-            showPreferences()
-            setPreferencesTab('engines')
-        }
-    }))
+    ipcRenderer.send('build-menu')
 
     // Load engines list
 
@@ -501,6 +482,13 @@ function attachEngine(exec, args) {
     setTimeout(function() {
         var split = require('argv-split')
         var controller = new gtp.Controller(exec, split(args))
+
+        if (controller.error) {
+            showMessageBox('There was an error attaching the engine.', 'error')
+            setIsBusy(false)
+            return
+        }
+
         controller.on('quit', function() { $('console').store('controller', null) })
         $('console').store('controller', controller)
 
@@ -514,6 +502,7 @@ function attachEngine(exec, args) {
         })
 
         syncEngine()
+        setIsBusy(false)
     }, setting.get('gtp.attach_delay'))
 }
 
@@ -748,8 +737,7 @@ function makeMove(vertex, sendCommand) {
 
         setIsBusy(true)
         setTimeout(function() {
-            setIsBusy(false)
-            generateMove()
+            generateMove(true)
         }, setting.get('gtp.move_delay'))
     }
 }
@@ -929,7 +917,7 @@ function findPosition(step, condition) {
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
         var node = tree.nodes[index]
-        return 'bookmark' in node && node.bookmark
+        return 'SBKBM' in node
     })
 }
 
@@ -965,12 +953,8 @@ function vertexClicked(vertex, event) {
     } else if (getFindMode()) {
         if (event.button != 0) return
 
-        if (helper.equals(getIndicatorVertex(), vertex)) {
-            hideIndicator()
-        } else {
-            setIndicatorVertex(vertex)
-            findMove(getIndicatorVertex(), getFindText(), 1)
-        }
+        setIndicatorVertex(vertex)
+        findMove(getIndicatorVertex(), getFindText(), 1)
     } else {
         // Playing mode
 
@@ -1226,9 +1210,9 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 }
 
-function generateMove() {
+function generateMove(ignoreBusy) {
     return
-    if (!getEngineController() || getIsBusy()) return
+    if (!getEngineController() || !ignoreBusy && getIsBusy()) return
 
     closeDrawers()
     syncEngine()
@@ -1294,7 +1278,7 @@ function askForSave() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveGame()
+        if (answer == 0) saveGame(getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -1335,6 +1319,7 @@ function newGame(playSound) {
     var tree = sgf.parse(sgf.tokenize(buffer))
     setRootTree(tree, true)
     setUndoable(false)
+    setRepresentedFilename(null)
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
@@ -1370,7 +1355,8 @@ function loadGame(filename) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
 
-            setProgressIndicator(0, win)
+            setProgressIndicator(-1, win)
+            setRepresentedFilename(filename)
 
             if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
@@ -1380,20 +1366,23 @@ function loadGame(filename) {
     }
 }
 
-function saveGame() {
+function saveGame(filename) {
     if (getIsBusy()) return
     setIsBusy(true)
 
-    var result = dialog.showSaveDialog(remote.getCurrentWindow(), {
-        filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
-    })
+    if (!filename) {
+        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
+            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+        })
+    }
 
-    if (result) {
+    if (filename) {
         var tree = getRootTree()
         var text = sgf.tree2string(tree)
 
-        fs.writeFile(result, '(' + text + ')')
-        document.body.store('treehash', helper.hash(text))
+        fs.writeFile(filename, '(' + text + ')')
+        document.body.store('treehash', gametree.getHash(tree))
+        setRepresentedFilename(filename)
     }
 
     setIsBusy(false)
@@ -1553,7 +1542,6 @@ document.addEvent('keydown', function(e) {
     }
 }).addEvent('domready', function() {
     loadSettings()
-    buildMenu()
     loadEngines()
     prepareDragDropFiles()
     prepareEditTools()
@@ -1570,7 +1558,6 @@ document.addEvent('keydown', function(e) {
 window.addEvent('load', function() {
     newGame(true)
 
-    if (process.argv.length >= 2) loadGame(process.argv[1])
     if (!setting.get('app.startup_check_updates')) return
 
     setTimeout(function() {

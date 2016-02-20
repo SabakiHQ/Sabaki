@@ -1,6 +1,6 @@
 # Sabaki
 
-<img src="logo.png" width="100" height="100">
+<img src="logo.png" width="156" height="156">
 
 An elegant Go board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
@@ -9,15 +9,15 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
 ## Features
 
 - Resizable game board
-- Read and save SGF files
-- Supports nested variations
 - Fuzzy stone placement
-- Game graph
-- Find move
-- Scoring tool
-- GTP engines support
-- SGF editing tools
+- Read and save SGF files
 - Display formatted SGF comments
+- SGF editing tools
+- Game graph
+- Scoring tool
+- Find move
+- Bookmarks
+- GTP engines support
 
 ## Third Party Libraries
 

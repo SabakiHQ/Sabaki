@@ -2,21 +2,23 @@
  * Getter & setter
  */
 
-function getMainMenu() {
-    return document.body.retrieve('mainmenu')
-}
-
 function getIsBusy() {
     return document.body.hasClass('busy')
 }
 
 function setIsBusy(busy) {
-    if (busy) document.body.addClass('busy')
-    else document.body.removeClass('busy')
+    if (busy) {
+        document.body.addClass('busy')
+        return
+    }
+
+    setTimeout(function() {
+        document.body.removeClass('busy')
+    }, setting.get('app.hide_busy_delay'))
 }
 
 function setProgressIndicator(progress, win) {
-    if (progress == 0) document.body.removeClass('progress')
+    if (progress <= 0) document.body.removeClass('progress')
     else document.body.addClass('progress')
 
     $$('#progress div').setStyle('width', (progress * 100) + '%')
@@ -62,11 +64,6 @@ function getShowLeftSidebar() {
 
 function setShowLeftSidebar(show) {
     if (getShowLeftSidebar() == show) return
-    if (show) document.body.addClass('leftsidebar')
-    else document.body.removeClass('leftsidebar')
-
-    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
-    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     // Resize window
     var win = remote.getCurrentWindow()
@@ -76,6 +73,12 @@ function setShowLeftSidebar(show) {
         if (!win.isMaximized())
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
     }
+
+    if (show) document.body.addClass('leftsidebar')
+    else document.body.removeClass('leftsidebar')
+
+    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
+    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     resizeBoard()
     setting.set('view.show_leftsidebar', show)
@@ -103,6 +106,16 @@ function getShowSidebar() {
 
 function setShowSidebar(show) {
     if (getShowSidebar() == show) return
+
+    // Resize window
+    var win = remote.getCurrentWindow()
+    if (win) {
+        var size = win.getContentSize()
+
+        if (!win.isMaximized())
+            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+    }
+
     if (show) document.body.addClass('sidebar')
     else document.body.removeClass('sidebar')
 
@@ -121,15 +134,6 @@ function setShowSidebar(show) {
             s.graph.clear()
             s.refresh()
         }
-    }
-
-    // Resize window
-    var win = remote.getCurrentWindow()
-    if (win) {
-        var size = win.getContentSize()
-
-        if (!win.isMaximized())
-            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
     }
 
     resizeBoard()
@@ -192,6 +196,15 @@ function getPlayerName(sign) {
 function setPlayerName(sign, name) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
     $$('#player_' + sign + ' .name')[0].set('text', name)
+}
+
+function getShowBookmark() {
+    return document.body.hasClass('bookmark')
+}
+
+function setShowBookmark(bookmark) {
+    if (bookmark) document.body.addClass('bookmark')
+    else document.body.removeClass('bookmark')
 }
 
 function getCaptures() {
@@ -333,6 +346,25 @@ function setPreferencesTab(tab) {
         $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
 }
 
+function getRepresentedFilename() {
+    return document.body.retrieve('representedfilename')
+}
+
+function setRepresentedFilename(filename) {
+    var path = require('path')
+
+    document.body.store('representedfilename', filename)
+    remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
+
+    if (filename && process.platform != 'darwin') {
+        document.title = path.basename(filename) + ' — ' + app.getName()
+    } else if (filename && process.platform == 'darwin') {
+        document.title = path.basename(filename)
+    } else {
+        document.title = app.getName()
+    }
+}
+
 /**
  * Methods
  */
@@ -412,12 +444,12 @@ function showMessageBox(message, type, buttons, cancelId) {
     if (isNaN(cancelId)) cancelId = 0
 
     var result = dialog.showMessageBox(remote.getCurrentWindow(), {
-        'type': type,
-        'buttons': buttons,
-        'title': app.getName(),
-        'message': message,
-        'cancelId': cancelId,
-        'noLink': true
+        type: type,
+        buttons: buttons,
+        title: app.getName(),
+        message: message,
+        cancelId: cancelId,
+        noLink: true
     })
 
     setIsBusy(false)
@@ -568,302 +600,6 @@ function hideIndicator() {
         .store('vertex', null)
 }
 
-function buildMenu() {
-    return
-    var template = [
-        {
-            label: '&Game',
-            submenu: [
-                {
-                    label: '&New',
-                    accelerator: 'CmdOrCtrl+N',
-                    click: function() { newGame(true) }
-                },
-                {
-                    label: '&Load…',
-                    accelerator: 'CmdOrCtrl+O',
-                    click: function() { loadGame() }
-                },
-                {
-                    label: 'Save &As…',
-                    accelerator: 'CmdOrCtrl+S',
-                    click: function() { saveGame() }
-                },
-                { type: 'separator' },
-                {
-                    label: '&Score',
-                    click: function() { setScoringMode(true) }
-                },
-                {
-                    label: '&Info',
-                    accelerator: 'CmdOrCtrl+I',
-                    click: showGameInfo
-                },
-                { type: 'separator' },
-                {
-                    label: '&Preferences…',
-                    accelerator: 'CmdOrCtrl+,',
-                    click: showPreferences
-                }
-            ]
-        },
-        {
-            label: '&Edit',
-            submenu: [
-                {
-                    label: 'Toggle &Edit Mode',
-                    accelerator: 'CmdOrCtrl+E',
-                    click: function() { setEditMode(!getEditMode()) }
-                },
-                {
-                    label: 'Clear &All Overlays',
-                    click: clearAllOverlays
-                },
-                { type: 'separator' },
-                {
-                    label: '&Stone Tool',
-                    accelerator: 'CmdOrCtrl+1',
-                    click: function() { setSelectedTool('stone') }
-                },
-                {
-                    label: '&Cross Tool',
-                    accelerator: 'CmdOrCtrl+2',
-                    click: function() { setSelectedTool('cross') }
-                },
-                {
-                    label: '&Triangle Tool',
-                    accelerator: 'CmdOrCtrl+3',
-                    click: function() { setSelectedTool('triangle') }
-                },
-                {
-                    label: 'S&quare Tool',
-                    accelerator: 'CmdOrCtrl+4',
-                    click: function() { setSelectedTool('square') }
-                },
-                {
-                    label: 'C&ircle Tool',
-                    accelerator: 'CmdOrCtrl+5',
-                    click: function() { setSelectedTool('circle') }
-                },
-                {
-                    label: '&Label Tool',
-                    accelerator: 'CmdOrCtrl+6',
-                    click: function() { setSelectedTool('label') }
-                },
-                {
-                    label: '&Number Tool',
-                    accelerator: 'CmdOrCtrl+7',
-                    click: function() { setSelectedTool('number') }
-                },
-                { type: 'separator' },
-                {
-                    label: '&Remove Node',
-                    accelerator: 'CmdOrCtrl+Delete',
-                    click: function() { removeNode.apply(null, getCurrentTreePosition()) }
-                }
-            ]
-        },
-        {
-            label: '&Find',
-            submenu: [
-                {
-                    label: 'Toggle &Find Mode',
-                    accelerator: 'CmdOrCtrl+F',
-                    click: function() { setFindMode(!getFindMode()) }
-                },
-                {
-                    label: 'Find &Next',
-                    accelerator: 'F3',
-                    click: function() { findMove(getIndicatorVertex(), getFindText(), 1) }
-                },
-                {
-                    label: 'Find &Previous',
-                    accelerator: 'Shift+F3',
-                    click: function() { findMove(getIndicatorVertex(), getFindText(), -1) }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Toggle &Bookmark',
-                    accelerator: 'CmdOrCtrl+B',
-                    click: function() { setBookmark(!getBookmark()) }
-                },
-                {
-                    label: 'Jump To Ne&xt Bookmark',
-                    accelerator: 'F2',
-                    click: function() { findBookmark(1) }
-                },
-                {
-                    label: 'Jump To Pre&vious Bookmark',
-                    accelerator: 'Shift+F2',
-                    click: function() { findBookmark(-1) }
-                }
-            ]
-        },
-        {
-            label: '&Navigation',
-            submenu: [
-                {
-                    label: '&Back',
-                    accelerator: 'Up',
-                    click: goBack
-                },
-                {
-                    label: '&Forward',
-                    accelerator: 'Down',
-                    click: goForward
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To &Previous Fork',
-                    accelerator: 'CmdOrCtrl+Up',
-                    click: goToPreviousFork
-                },
-                {
-                    label: 'Go To &Next Fork',
-                    accelerator: 'CmdOrCtrl+Down',
-                    click: goToNextFork
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To Be&ginning',
-                    accelerator: 'CmdOrCtrl+Home',
-                    click: goToBeginning
-                },
-                {
-                    label: 'Go To &End',
-                    accelerator: 'CmdOrCtrl+End',
-                    click: goToEnd
-                },
-                { type: 'separator' },
-                {
-                    label: 'Go To Next Va&riation',
-                    accelerator: 'Right',
-                    click: goToNextVariation
-                },
-                {
-                    label: 'Go To Previous &Variation',
-                    accelerator: 'Left',
-                    click: goToPreviousVariation
-                }
-            ]
-        },
-        {
-            label: 'Eng&ine',
-            submenu: [
-                {
-                    label: '&Attach',
-                    submenu: []
-                },
-                {
-                    label: '&Detach',
-                    click: detachEngine
-                },
-                { type: 'separator' },
-                {
-                    label: 'Generate &Move',
-                    accelerator: 'F10',
-                    click: generateMove
-                },
-                { type: 'separator' },
-                {
-                    label: 'Show &GTP Console',
-                    type: 'checkbox',
-                    checked: getShowLeftSidebar(),
-                    accelerator: 'F12',
-                    click: function() { setShowLeftSidebar(!getShowLeftSidebar()) }
-                },
-                {
-                    label: '&Clear Console',
-                    click: clearConsole
-                }
-            ]
-        },
-        {
-            label: '&View',
-            submenu: [
-                {
-                    label: 'Show &Coordinates',
-                    type: 'checkbox',
-                    checked: getShowCoordinates(),
-                    click: function() {
-                        setShowCoordinates(!getShowCoordinates())
-                        resizeBoard()
-                    }
-                },
-                {
-                    label: 'Show &Variations',
-                    type: 'checkbox',
-                    checked: getShowVariations(),
-                    click: function() { setShowVariations(!getShowVariations()) }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Show Game &Graph',
-                    type: 'checkbox',
-                    checked: getShowGraph(),
-                    accelerator: 'CmdOrCtrl+G',
-                    click: function() { setSidebarArrangement(!getShowGraph(), getShowComment()) }
-                },
-                {
-                    label: 'Show Co&mments',
-                    type: 'checkbox',
-                    checked: getShowComment(),
-                    accelerator: 'CmdOrCtrl+H',
-                    click: function() { setSidebarArrangement(getShowGraph(), !getShowComment()) }
-                },
-                { type: 'separator' },
-                {
-                    label: 'Toggle Full &Screen',
-                    type: 'checkbox',
-                    checked: remote.getCurrentWindow().isFullScreen(),
-                    accelerator: 'F11',
-                    click: function() {
-                        var win = remote.getCurrentWindow()
-                        win.setFullScreen(!win.isFullScreen())
-                        win.setMenuBarVisibility(!win.isFullScreen())
-                        win.setAutoHideMenuBar(win.isFullScreen())
-                    }
-                }
-            ]
-        },
-        {
-            label: '&Help',
-            submenu: [
-                {
-                    label: app.getName() + ' v' + app.getVersion(),
-                    enabled: false
-                },
-                {
-                    label: 'Check For &Updates',
-                    click: function() {
-                        checkForUpdates(function(hasUpdates) {
-                            if (hasUpdates) return
-                            showMessageBox('There are no updates available.')
-                        })
-                    }
-                },
-                { type: 'separator' },
-                {
-                    label: 'GitHub &Respository',
-                    click: function() {
-                        shell.openExternal('https://github.com/yishn/' + app.getName())
-                    }
-                },
-                {
-                    label: 'Report &Issue',
-                    click: function() {
-                        shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
-                    }
-                }
-            ]
-        }
-    ]
-
-    var menu = Menu.buildFromTemplate(template)
-    document.body.store('mainmenu', menu)
-    Menu.setApplicationMenu(menu)
-}
-
 function openHeaderMenu() {
     return
     var template = [
@@ -899,14 +635,10 @@ function openNodeMenu(tree, index) {
     return
     if (getScoringMode()) return
 
-    var template = [
-        {
-            label: '&Remove',
-            click: function() {
-                removeNode(tree, index)
-            }
-        }
-    ]
+    var template = [{
+        label: '&Remove',
+        click: function() { removeNode(tree, index) }
+    }]
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)

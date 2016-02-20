@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.9.0][v0.9.0] (2016-02-20)
+
+**Added**
+
+* Add Mac OS X release
+* Add bookmark indicator
+* Ability to save into existing file
+
+**Fixed**
+
+* Fix not being able to hide the indicator in find mode
+* Clicking when busy does not have an effect now
+
+**Changed**
+
+* Changed some menu shortcuts
+* Bump electron@v0.36.8
+* Bump gemini-scrollbar@v1.3.2
+* Bump octicons@v3.5.0
+* Bump sigma@v1.1.0
+
+## [Sabaki v0.8.1][v0.8.1] (2016-02-12)
+
+**Changed**
+
+* Bookmarks are being saved
+
+**Fixed**
+
+* Saving a game does not trigger 'File changed' flag
+
 ## [Sabaki v0.8.0][v0.8.0] (2016-02-11)
 
 **Added**
@@ -269,7 +300,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.8.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.9.0...master
+[v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.8.1...v0.9.0
+[v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/yishn/Sabaki/compare/v0.7.7...v0.8.0
 [v0.7.7]: https://github.com/yishn/Sabaki/compare/v0.7.6...v0.7.7
 [v0.7.6]: https://github.com/yishn/Sabaki/compare/v0.7.5...v0.7.6
