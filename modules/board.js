@@ -57,7 +57,7 @@ Board.prototype = {
         // Recursive depth-first search
         this.getNeighborhood(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
-            if (result.some(function(w) { return helper.equals(w, v) })) return
+            if (result.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
             result.push(v)
             this.getConnectedComponent(v, colors, result)
@@ -78,7 +78,7 @@ Board.prototype = {
 
         chain.forEach(function(c) {
             liberties.push.apply(liberties, this.getNeighborhood(c).filter(function(n) {
-                return this.arrangement[n] == 0 && !liberties.some(function(v) { return helper.equals(v, n) })
+                return this.arrangement[n] == 0 && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
             }.bind(this)))
         }.bind(this))
 
@@ -182,11 +182,13 @@ Board.prototype = {
 
         // Remove captured stones
         this.getNeighborhood(vertex).forEach(function(n) {
-            if (move.arrangement[n] != -sign) return;
+            if (move.arrangement[n] != -sign) return
 
             var ll = this.getLiberties(n)
-            if (ll.length != 1) return;
-            if (!helper.equals(ll[0], vertex)) return;
+            if (ll.length != 1) return
+
+            var l = ll[0]
+            if (l[0] != vertex[0] || l[1] != vertex[1]) return
 
             this.getChain(n).forEach(function(c) {
                 move.arrangement[c] = 0
@@ -252,13 +254,13 @@ Board.prototype = {
                 var actualArea, actualDead
 
                 var negDiff = negArea.filter(function(y) {
-                    return !negDead.some(function(x) { return helper.equals(x, y) })
-                        && !posArea.some(function(x) { return helper.equals(x, y) })
+                    return !negDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                        && !posArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
                 })
 
                 var posDiff = posArea.filter(function(y) {
-                    return !posDead.some(function(x) { return helper.equals(x, y) })
-                        && !negArea.some(function(x) { return helper.equals(x, y) })
+                    return !posDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                        && !negArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
                 })
 
                 if (negDiff.length <= 1 && negDead.length <= posDead.length) {
