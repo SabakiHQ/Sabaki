@@ -18,10 +18,6 @@ function setIsBusy(busy) {
 }
 
 function setProgressIndicator(progress, win) {
-    if (progress <= 0) document.body.removeClass('progress')
-    else document.body.addClass('progress')
-
-    $$('#progress div').setStyle('width', (progress * 100) + '%')
     if (win) win.setProgressBar(progress)
 }
 

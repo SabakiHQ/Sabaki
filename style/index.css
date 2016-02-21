@@ -1,4 +1,4 @@
-header, #edit, #scoring, #find, #progress {
+header, #edit, #scoring, #find {
         position: absolute;
         left: 0;
         right: 0;
@@ -151,16 +151,6 @@ header, #edit, #scoring, #find, #progress {
         left: 10px;
         top: 50%;
         transform: translateY(-50%);
-    }
-    #progress {
-        display: none;
-        background: #181818;
-    }
-    .progress #progress { display: block; }
-    #progress div {
-        height: 40px;
-        width: 0;
-        background: #26292C;
 }
 
 #edit a.close, #scoring a.close, #find a.close {
