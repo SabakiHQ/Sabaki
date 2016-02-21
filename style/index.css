@@ -49,7 +49,8 @@ header, #edit, #scoring, #find {
         width: 12px;
         height: 20px;
         background: #a456bb;
-        transition: top .2s;
+        opacity: 0;
+        transition: top .2s, opacity .2s;
     }
     header .bookmark::before, header .bookmark::after {
         content: '';
@@ -65,7 +66,10 @@ header, #edit, #scoring, #find {
         border-right: none;
         border-left: 6px solid transparent;
     }
-    .bookmark header .bookmark { top: 0; }
+    .bookmark header .bookmark {
+        top: 0;
+        opacity: 1;
+    }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
