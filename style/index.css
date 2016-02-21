@@ -145,7 +145,6 @@ header, #edit, #scoring, #find, #progress {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #find button:nth-child(3) img { transform: scaleY(-1); }
     #find button:nth-child(2) { left: 212px; }
     #find input {
         position: absolute;
