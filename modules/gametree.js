@@ -343,11 +343,15 @@ context.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
-context.getHash = function(tree) {
-    return helper.hash(JSON.stringify(tree, function(name, val) {
+context.getJson = function(tree) {
+    return JSON.stringify(tree, function(name, val) {
         var list = ['id', 'board', 'parent', 'collapsed']
         return list.indexOf(name) >= 0 ? undefined : val
-    }))
+    })
+}
+
+context.getHash = function(tree) {
+    return helper.hash(context.getJson(tree))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
