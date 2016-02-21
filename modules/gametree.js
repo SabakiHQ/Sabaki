@@ -347,7 +347,7 @@ context.getJson = function(tree) {
     return JSON.stringify(tree, function(name, val) {
         var list = ['id', 'board', 'parent', 'collapsed']
         return list.indexOf(name) >= 0 ? undefined : val
-    }, '  ')
+    })
 }
 
 context.getHash = function(tree) {
