@@ -49,8 +49,8 @@
                 "action": "editmode"
             },
             {
-                "label": "Clear &All Overlays",
-                "action": "clearalloverlays"
+                "label": "Clear &Overlays",
+                "action": "clearoverlays"
             },
             { "type": "separator" },
             {

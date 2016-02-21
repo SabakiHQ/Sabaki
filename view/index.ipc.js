@@ -9,7 +9,7 @@ var menudata = {
     "gameinfo": showGameInfo,
     "preferences": showPreferences,
     "editmode": function() { setEditMode(!getEditMode()) },
-    "clearalloverlays": clearAllOverlays,
+    "clearoverlays": clearOverlays,
     "stonetool": function() { setSelectedTool('stone') },
     "crosstool": function() { setSelectedTool('cross') },
     "triangletool": function() { setSelectedTool('triangle') },

@@ -1380,7 +1380,7 @@ function saveGame(filename) {
     setIsBusy(false)
 }
 
-function clearAllOverlays() {
+function clearOverlays() {
     closeDrawers()
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
