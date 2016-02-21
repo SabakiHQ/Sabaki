@@ -11,7 +11,7 @@ var openfile = null
 
 function newWindow(path) {
     var window = new BrowserWindow({
-        icon: process.platform == 'linux' ? __dirname + '/icon.png' : null,
+        icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
         width: setting.get('window.width'),
         height: setting.get('window.height'),
         minWidth: setting.get('window.minwidth'),
