@@ -212,6 +212,7 @@
         margin-top: -11px;
         border: none;
         font-size: 25px;
+        font-weight: normal;
         line-height: 13px
     }
     .goban .row li.label::before {
