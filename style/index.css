@@ -44,12 +44,12 @@ header, #edit, #scoring, #find, #progress {
     }
     header .bookmark {
         position: absolute;
-        left: -32px;
-        top: 0;
+        left: 10px;
+        top: -42px;
         width: 12px;
         height: 20px;
         background: #a456bb;
-        transition: left .2s;
+        transition: top .2s;
     }
     header .bookmark::before, header .bookmark::after {
         content: '';
@@ -65,7 +65,7 @@ header, #edit, #scoring, #find, #progress {
         border-right: none;
         border-left: 6px solid transparent;
     }
-    .bookmark header .bookmark { left: 10px; }
+    .bookmark header .bookmark { top: 0; }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
