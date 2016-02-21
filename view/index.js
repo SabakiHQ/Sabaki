@@ -1334,10 +1334,14 @@ function loadGame(filename) {
     if (filename) {
         setTimeout(function() {
             var win = remote.getCurrentWindow()
+            var lastprogress = -1
 
             try {
                 var tree = sgf.parseFile(filename, function(progress) {
+                    if (progress - lastprogress < 0.05) return
+
                     setProgressIndicator(progress, win)
+                    lastprogress = progress
                 }).subtrees[0]
 
                 closeDrawers()
