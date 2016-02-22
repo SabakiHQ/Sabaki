@@ -45,9 +45,7 @@ Board.prototype = {
 
         return [
             [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(function(item) {
-            return self.hasVertex(item)
-        })
+        ].filter(self.hasVertex.bind(self))
     },
 
     getConnectedComponent: function(vertex, colors, result) {
@@ -78,7 +76,8 @@ Board.prototype = {
 
         chain.forEach(function(c) {
             liberties.push.apply(liberties, this.getNeighborhood(c).filter(function(n) {
-                return this.arrangement[n] == 0 && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
+                return this.arrangement[n] == 0
+                && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
             }.bind(this)))
         }.bind(this))
 
@@ -95,31 +94,33 @@ Board.prototype = {
     },
 
     getAreaMap: function() {
+        var self = this
         var map = {}
 
-        for (var i = 0; i < this.size; i++) {
-            for (var j = 0; j < this.size; j++) {
+        for (var i = 0; i < self.size; i++) {
+            for (var j = 0; j < self.size; j++) {
                 var vertex = [i, j]
+
                 if (vertex in map) continue
-                if (this.arrangement[vertex] != 0) {
-                    map[vertex] = this.arrangement[vertex]
+                if (self.arrangement[vertex] != 0) {
+                    map[vertex] = self.arrangement[vertex]
                     continue
                 }
 
-                var chain = this.getChain(vertex)
+                var chain = self.getChain(vertex)
                 var sign = 0
                 var indicator = 1
 
                 chain.forEach(function(c) {
                     if (indicator == 0) return
 
-                    this.getNeighborhood(c).forEach(function(n) {
-                        if (this.arrangement[n] == 0 || indicator == 0) return
+                    self.getNeighborhood(c).forEach(function(n) {
+                        if (self.arrangement[n] == 0 || indicator == 0) return
 
-                        if (sign == 0) sign = map[n] = this.arrangement[n]
-                        else if (sign != this.arrangement[n]) indicator = 0
-                    }.bind(this))
-                }.bind(this))
+                        if (sign == 0) sign = map[n] = self.arrangement[n]
+                        else if (sign != self.arrangement[n]) indicator = 0
+                    })
+                })
 
                 chain.forEach(function(c) {
                     map[c] = sign * indicator
@@ -235,8 +236,8 @@ Board.prototype = {
     },
 
     guessDeadStones: function() {
-        var board = this
-        var map = board.getAreaMap()
+        var self = this
+        var map = self.getAreaMap()
         var done = {}
         var result = []
 
@@ -245,10 +246,10 @@ Board.prototype = {
                 var vertex = [i, j]
                 if (map[vertex] != 0 || vertex in done) continue
 
-                var posArea = board.getConnectedComponent(vertex, [0, -1])
-                var negArea = board.getConnectedComponent(vertex, [0, 1])
-                var posDead = posArea.filter(function(v) { return board.arrangement[v] == -1 })
-                var negDead = negArea.filter(function(v) { return board.arrangement[v] == 1 })
+                var posArea = self.getConnectedComponent(vertex, [0, -1])
+                var negArea = self.getConnectedComponent(vertex, [0, 1])
+                var posDead = posArea.filter(function(v) { return self.arrangement[v] == -1 })
+                var negDead = negArea.filter(function(v) { return self.arrangement[v] == 1 })
 
                 var sign = 0
                 var actualArea, actualDead
@@ -276,7 +277,7 @@ Board.prototype = {
                 }
 
                 if (sign == 0) {
-                    actualArea = board.getChain(vertex)
+                    actualArea = self.getChain(vertex)
                     actualDead = []
                 }
 
