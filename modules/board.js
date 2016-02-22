@@ -320,13 +320,19 @@ Board.prototype = {
         // Get nearest non-blocked friendly stone
 
         var euclidean = function(v, w) { return Math.pow(v[0] - w[0], 2) + Math.pow(v[1] - w[1], 2) }
+        var compare = function(v, w) {
+            if (self.getDistance(v, vertex) == self.getDistance(w, vertex))
+                return euclidean(v, vertex) - euclidean(w, vertex)
+            return self.getDistance(v, vertex) - self.getDistance(w, vertex)
+        }
+
         var minvertex = null
         var result = null
 
         for (var x = 0; x < self.size; x++) {
             for (var y = 0; y < self.size; y++) {
                 if (self.arrangement[[x, y]] != sign) continue
-                if (minvertex && euclidean(minvertex, vertex) < euclidean([x, y], vertex)) continue
+                if (minvertex && compare(minvertex, [x, y]) < 0) continue
 
                 var distance = self.getDistance([x, y], vertex)
                 var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
