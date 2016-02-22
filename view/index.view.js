@@ -307,14 +307,12 @@ function setScoringMode(scoringMode) {
         closeDrawers()
         document.body.addClass('scoring')
 
-        setTimeout(function() {
-            var deadstones = getBoard().guessDeadStones()
-            deadstones.forEach(function(v) {
-                $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-            })
+        var deadstones = getBoard().guessDeadStones()
+        deadstones.forEach(function(v) {
+            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+        })
 
-            updateAreaMap()
-        }, 200)
+        updateAreaMap()
     } else {
         document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
