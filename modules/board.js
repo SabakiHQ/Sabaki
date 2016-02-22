@@ -382,8 +382,8 @@ Board.prototype = {
                     if (enemies(blocking) >= 2) continue
                     else result = 'Diagonal jump'
                 } else if (Math.max.apply(null, diff) >= 2 && Math.min.apply(null, diff) == 1) {
-                    // + + + o +     or   + + + + o +
-                    // + o + + +          + o + + + +
+                    // + + + o +    or   + + + + o +
+                    // + o + + +         + o + + + +
 
                     blocking = blocking.filter(function(v) {
                         return (v[0] != x || v[1] != vertex[1])
