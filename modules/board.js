@@ -42,6 +42,10 @@ Board.prototype = {
         return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
     },
 
+    getDistanceToGround: function(vertex) {
+        return Math.min(vertex[0] + 1, self.size - vertex[0], vertex[1] + 1, self.size - vertex[1])
+    },
+
     getNeighborhood: function(vertex) {
         var self = this
         if (!self.hasVertex(vertex)) return []
@@ -419,8 +423,10 @@ Board.prototype = {
                     result = 'Attach'
                 } else if (diff[0] == 1 && diff[1] == 1) {
                     result = 'Shoulder hit'
-                } else {
+                } else if (self.getDistanceToGround(vertex) <= 5) {
                     result = 'Approach'
+                } else {
+                    continue
                 }
 
                 minvertex = [x, y]
