@@ -308,18 +308,22 @@ function prepareEditTools() {
 
 function prepareGameGraph() {
     var container = $('graph')
-    var s = new sigma(container)
-
-    s.settings({
-        defaultNodeColor: setting.get('graph.node_inactive_color'),
-        defaultEdgeColor: setting.get('graph.node_color'),
-        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
-        edgeColor: 'default',
-        borderSize: 2,
-        zoomMax: 1,
-        zoomMin: 1,
-        autoResize: false,
-        autoRescale: false
+    var s = new sigma({
+        renderer: {
+            container: container,
+            type: 'canvas'
+        },
+        settings: {
+            defaultNodeColor: setting.get('graph.node_inactive_color'),
+            defaultEdgeColor: setting.get('graph.node_color'),
+            defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+            edgeColor: 'default',
+            borderSize: 2,
+            zoomMax: 1,
+            zoomMin: 1,
+            autoResize: false,
+            autoRescale: false
+        }
     })
 
     var getTreePos = function(e) { return [e.data.node.data[0], e.data.node.data[1]] }

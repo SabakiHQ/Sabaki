@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Speed up SGF parsing
 * Speed up scoring
+* Show passes as squares in game graph
 
 **Fixed**
 

@@ -290,6 +290,13 @@ context.matrixdict2graph = function(matrixdict) {
             if ('SBKBM' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
 
+            // Show passes as squares
+            if ('B' in tree.nodes[index] && tree.nodes[index].B[0] == ''
+            || 'W' in tree.nodes[index] && tree.nodes[index].W[0] == '') {
+                node.type = 'square'
+                node.size++
+            }
+
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
             } else if (notCurrentTrack.indexOf(tree.id) == -1) {
