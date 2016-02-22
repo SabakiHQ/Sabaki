@@ -362,12 +362,14 @@ function setRepresentedFilename(filename) {
 }
 
 function getCurrentMoveInterpretation() {
-    for (var x = 0; x < getBoard().size; x++) {
-        for (var y = 0; y < getBoard().size; y++) {
+    var board = getBoard()
+
+    for (var x = 0; x < board.size; x++) {
+        for (var y = 0; y < board.size; y++) {
             var vertex = [x, y]
 
-            if (vertex in getBoard().overlays && getBoard().overlays[vertex][0] == 'point')
-                return getBoard().interpretVertex(vertex)
+            if (vertex in board.overlays && board.overlays[vertex][0] == 'point')
+                return board.interpretVertex(vertex)
         }
     }
 

@@ -709,7 +709,8 @@ function makeMove(vertex, sendCommand) {
     var enterScoring = false
 
     if (pass && createNode) {
-        var prevNode = tree.nodes[index]
+        var tp = getCurrentTreePosition(), ptp = gametree.navigate(tp[0], tp[1], -1)
+        var prevNode = ptp[0].nodes[ptp[1]]
         var prevColor = sign > 0 ? 'W' : 'B'
         var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
