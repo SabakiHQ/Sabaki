@@ -232,10 +232,14 @@ function getCommentText() {
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
     var container = $$('#properties .inner')[0]
+    var usestandard = text.trim() == ''
 
     $$('#properties textarea').set('value', text)
-    container.set('html', text.trim() == '' ? getCurrentMoveInterpretation() : html)
+    container.set('html', usestandard ? getCurrentMoveInterpretation() : html)
     helper.wireLinks(container)
+
+    if (usestandard) $('properties').addClass('standard')
+    else $('properties').removeClass('standard')
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)

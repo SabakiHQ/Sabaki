@@ -458,6 +458,9 @@ header, #edit, #scoring, #find {
     #properties .inner {
         margin: 15px;
         word-wrap: break-word;
+    }
+    #properties.standard .inner {
+        color: #999;
 }
 
 #indicator {
