@@ -313,28 +313,28 @@ context.matrixdict2graph = function(matrixdict) {
 
             if (prevPos[0] != x) {
                 graph.nodes.push({
-                    'id': id + '-h',
-                    'x': (x - 1) * gridSize,
-                    'y': (y - 1) * gridSize,
-                    'size': 0
+                    id: id + '-h',
+                    x: (x - 1) * gridSize,
+                    y: (y - 1) * gridSize,
+                    size: 0
                 })
 
                 graph.edges.push({
-                    'id': id + '-e1',
-                    'source': id,
-                    'target': id + '-h'
+                    id: id + '-e1',
+                    source: id,
+                    target: id + '-h'
                 })
 
                 graph.edges.push({
-                    'id': id + '-e2',
-                    'source': id + '-h',
-                    'target': prevId
+                    id: id + '-e2',
+                    source: id + '-h',
+                    target: prevId
                 })
             } else {
                 graph.edges.push({
-                    'id': id + '-e1',
-                    'source': id,
-                    'target': prevId
+                    id: id + '-e1',
+                    source: id,
+                    target: prevId
                 })
             }
         }
