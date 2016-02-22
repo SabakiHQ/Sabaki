@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Speed up SGF parsing
+* Speed up scoring
+
 **Fixed**
 
 * Fix regression when passing results in a uncatched exception
