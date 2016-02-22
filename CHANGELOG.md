@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Show basic move interpretation when no comment is provided
+
 **Changed**
 
 * Speed up SGF parsing
