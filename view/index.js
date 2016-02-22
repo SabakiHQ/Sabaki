@@ -995,7 +995,7 @@ function updateSidebar(redraw, now) {
         updateCommentText()
         updateSgfProperties()
         if (redraw) updateGraph()
-        centerGraphCameraAt(getCurrentGraphNode())
+        else centerGraphCameraAt(getCurrentGraphNode())
     }, now ? 0 : setting.get('graph.delay')))
 }
 
