@@ -75,15 +75,16 @@ Board.prototype = {
     getLiberties: function(vertex) {
         if (this.arrangement[vertex] == 0) return []
 
-        var chain = this.getChain(vertex)
+        var self = this
+        var chain = self.getChain(vertex)
         var liberties = []
 
         chain.forEach(function(c) {
-            liberties.push.apply(liberties, this.getNeighborhood(c).filter(function(n) {
-                return this.arrangement[n] == 0
+            liberties.push.apply(liberties, self.getNeighborhood(c).filter(function(n) {
+                return self.arrangement[n] == 0
                 && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
-            }.bind(this)))
-        }.bind(this))
+            }))
+        })
 
         return liberties
     },
@@ -301,9 +302,16 @@ Board.prototype = {
         var sign = self.arrangement[vertex]
         if (sign == 0) return null
 
+        var neighbors = self.getNeighborhood(vertex)
+
+        // Check atari
+
+        if (neighbors.some(function(v) {
+            return self.arrangement[v] == -sign && self.getLiberties(v).length == 1
+        })) return 'Atari'
+
         // Check connection
 
-        var neighbors = self.getNeighborhood(vertex)
         var friendly = neighbors.filter(function(v) { return self.arrangement[v] == sign})
         if (friendly.length == neighbors.length) return 'Fill'
         if (friendly.length >= 2) return 'Connect'
