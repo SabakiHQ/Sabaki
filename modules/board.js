@@ -440,15 +440,15 @@ Board.prototype = {
         if (vertex[0] == (self.size - 1) / 2 && vertex[1] == vertex[0])
             return 'Tengen'
 
-        if (self.getHandicapPlacement().some(function(v) {
-            return v[0] == vertex[0] && v[1] == vertex[1]
-        })) return 'Hoshi'
-
         var diff = [
             Math.min(vertex[0] + 1, self.size - vertex[0]),
             Math.min(vertex[1] + 1, self.size - vertex[1])
         ]
         diff.sort(function(x, y) { return x - y })
+
+        if ((diff[0] != 4 || diff[1] != 4) && self.getHandicapPlacement(9).some(function(v) {
+            return v[0] == vertex[0] && v[1] == vertex[1]
+        })) return 'Hoshi'
 
         if (diff[1] <= 6) return diff.join('-') + ' point'
 
