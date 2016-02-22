@@ -43,7 +43,7 @@ Board.prototype = {
     },
 
     getDistanceToGround: function(vertex) {
-        return Math.min(vertex[0] + 1, self.size - vertex[0], vertex[1] + 1, self.size - vertex[1])
+        return Math.min(vertex[0] + 1, this.size - vertex[0], vertex[1] + 1, this.size - vertex[1])
     },
 
     getNeighborhood: function(vertex) {
