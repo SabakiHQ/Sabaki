@@ -38,6 +38,10 @@ Board.prototype = {
         }
     },
 
+    getDistance: function(v, w) {
+        return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
+    },
+
     getNeighborhood: function(vertex) {
         var self = this
         if (!self.hasVertex(vertex)) return []
