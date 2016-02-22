@@ -398,7 +398,36 @@ Board.prototype = {
             }
         }
 
-        if (minvertex != null) return result
+        if (minvertex) return result
+
+        // Get nearest enemy stone
+
+        minvertex = null
+        result = null
+
+        for (var x = 0; x < self.size; x++) {
+            for (var y = 0; y < self.size; y++) {
+                if (self.arrangement[[x, y]] != -sign) continue
+                if (minvertex && compare(minvertex, [x, y]) < 0) continue
+
+                var distance = self.getDistance([x, y], vertex)
+                var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
+
+                if (distance > 3 || distance == 3 && Math.min.apply(null, diff) == 0) continue
+
+                if (distance == 1) {
+                    result = 'Attach'
+                } else if (diff[0] == 1 && diff[1] == 1) {
+                    result = 'Shoulder hit'
+                } else {
+                    result = 'Approach'
+                }
+
+                minvertex = [x, y]
+            }
+        }
+
+        if (minvertex) return result
 
         // Determine position to edges
 
