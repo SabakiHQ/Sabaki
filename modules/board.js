@@ -296,6 +296,116 @@ Board.prototype = {
         return result
     },
 
+    interpretVertex: function(vertex) {
+        var self = this
+        var sign = self.arrangement[vertex]
+        if (sign == 0) return null
+
+        // Check connection
+
+        var neighbors = self.getNeighborhood(vertex)
+        var friendly = neighbors.filter(function(v) { return self.arrangement[v] == sign})
+        if (friendly.length == neighbors.length) return 'Fill'
+        if (friendly.length >= 2) return 'Connect'
+        if (friendly.length == 1) return 'Stretch'
+
+        // Get nearest non-blocked friendly stone
+
+        var euclidean = function(v, w) { return Math.pow(v[0] - w[0], 2) + Math.pow(v[1] - w[1], 2) }
+        var minvertex = null
+        var result = null
+
+        for (var x = 0; x < self.size; x++) {
+            for (var y = 0; y < self.size; y++) {
+                if (self.arrangement[[x, y]] != sign) continue
+                if (minvertex && euclidean(minvertex, vertex) < euclidean([x, y], vertex)) continue
+
+                var distance = self.getDistance([x, y], vertex)
+                var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
+
+                if (distance == 0 || distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
+
+                var blocking = []
+                for (var i = Math.min(vertex[0], x); i <= Math.max(vertex[0], x); i++)
+                    for (var j = Math.min(vertex[1], y); j <= Math.max(vertex[1], y); j++)
+                        blocking.push([i, j])
+
+                var enemies = function(x) {
+                    return x.map(function(v) { return self.arrangement[v] })
+                        .filter(function(s) { return s == -sign }).length
+                }
+
+                if (diff[0] == 1 && diff[1] == 1) {
+                    // + + o +
+                    // + o + +
+
+                    if (enemies(blocking) >= 2) result = 'Cut'
+                    else if (enemies(blocking) == 1) result = 'Hane'
+                    else if (enemies(blocking) == 0) result = 'Diagonal'
+                } else if (Math.min.apply(null, diff) == 0 && distance == 2) {
+                    // + o + o +
+
+                    if (enemies(blocking) > 0) continue
+                    else result = 'One-point jump'
+                } else if (Math.min.apply(null, diff) == 0 && distance == 3) {
+                    // + o + + o +
+
+                    if (enemies(blocking) > 0) continue
+                    else result = 'Two-point jump'
+                } else if (diff[0] == 2 && diff[1] == 2) {
+                    // + + + o +
+                    // + + + + +
+                    // + o + + +
+
+                    var m = [(x + vertex[0]) / 2, (y + vertex[1]) / 2]
+                    if (self.arrangement[m] == -sign) continue
+
+                    blocking = blocking.filter(function(v) {
+                        return (v[0] != x || v[1] != vertex[1])
+                            && (v[0] != vertex[0] || v[1] != y)
+                    })
+
+                    if (enemies(blocking) >= 2) continue
+                    else result = 'Diagonal jump'
+                } else if (Math.max.apply(null, diff) >= 2 && Math.min.apply(null, diff) == 1) {
+                    // + + + o +     or   + + + + o +
+                    // + o + + +          + o + + + +
+
+                    blocking = blocking.filter(function(v) {
+                        return (v[0] != x || v[1] != vertex[1])
+                            && (v[0] != vertex[0] || v[1] != y)
+                    })
+
+                    if (enemies(blocking) > 0) continue
+                    else result = distance == 3 ? 'Small knight' : 'Large knight'
+                }
+
+                minvertex = [x, y]
+            }
+        }
+
+        if (minvertex != null) return result
+
+        // Determine position to edges
+
+        if (vertex[0] == (self.size - 1) / 2 && vertex[1] == vertex[0])
+            return 'Tengen'
+
+        if (self.getHandicapPlacement().some(function(v) {
+            return v[0] == vertex[0] && v[1] == vertex[1]
+        })) return 'Hoshi'
+
+        var diff = [
+            Math.min(vertex[0] + 1, self.size - vertex[0]),
+            Math.min(vertex[1] + 1, self.size - vertex[1])
+        ]
+        diff.sort(function(x, y) { return x - y })
+
+        if (diff[1] <= 6) return diff.join('-') + ' point'
+
+        return null
+    },
+
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }

@@ -234,7 +234,7 @@ function setCommentText(text) {
     var container = $$('#properties .inner')[0]
 
     $$('#properties textarea').set('value', text)
-    container.set('html', html)
+    container.set('html', text.trim() == '' ? getCurrentMoveInterpretation() : html)
     helper.wireLinks(container)
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
@@ -287,7 +287,7 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
     } else {
-        document.body.removeClass('edit').removeClass('advanced')
+        document.body.removeClass('edit')
     }
 }
 
@@ -359,6 +359,19 @@ function setRepresentedFilename(filename) {
     } else {
         document.title = app.getName()
     }
+}
+
+function getCurrentMoveInterpretation() {
+    for (var x = 0; x < getBoard().size; x++) {
+        for (var y = 0; y < getBoard().size; y++) {
+            var vertex = [x, y]
+
+            if (vertex in getBoard().overlays && getBoard().overlays[vertex][0] == 'point')
+                return getBoard().interpretVertex(vertex)
+        }
+    }
+
+    return ''
 }
 
 /**
