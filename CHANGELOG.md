@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-* Fix regression when passing results in an uncatched exception
+* Fix regression when passing results in an uncatched exception sometimes
 
 ## [Sabaki v0.9.0][v0.9.0] (2016-02-20)
 
