@@ -924,7 +924,6 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
-
     // Preferences tabs
 
     $$('#preferences .tabs a').addEvent('click', function() {
