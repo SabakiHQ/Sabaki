@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "An elegant Go board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen",
   "main": "main.js",
@@ -20,8 +20,8 @@
     "sigma": "^1.0.3"
   },
   "scripts": {
-    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.9.0 --version=0.36.8 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.9.0\" --version-string.ProductVersion=\"0.9.0\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
-    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.9.0 --version=0.36.8 --out=../ --overwrite --ignore=.*\\.icns$",
-    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.9.0 --version=0.36.8 --out=../ --overwrite --icon=./icon.icns"
+    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.9.1 --version=0.36.8 --out=../../releases --icon=./icon.ico --overwrite --ignore=.*\\.icns$ --version-string.CompanyName=\"Yichuan Shen\" --version-string.LegalCopyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.FileVersion=\"0.9.1\" --version-string.ProductVersion=\"0.9.1\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
+    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.9.1 --version=0.36.8 --out=../ --overwrite --ignore=.*\\.icns$",
+    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.9.1 --version=0.36.8 --out=../ --overwrite --icon=./icon.icns"
   }
 }
