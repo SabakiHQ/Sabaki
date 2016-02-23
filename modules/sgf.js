@@ -62,8 +62,8 @@ context.parse = function(tokens, callback, start, depth) {
         && depth >= setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
-        if (helper.equals(['parenthesis', '('], tokens[i])) break
-        if (helper.equals(['parenthesis', ')'], tokens[i])) return tree
+        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
+        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == ')') return tree
 
         var type = tokens[i][0], value = tokens[i][1]
 
@@ -81,7 +81,7 @@ context.parse = function(tokens, callback, start, depth) {
     }
 
     while (i < tokens.length) {
-        if (helper.equals(['parenthesis', '('], tokens[i])) {
+        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') {
             start[0] = i + 1
 
             t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
@@ -90,7 +90,7 @@ context.parse = function(tokens, callback, start, depth) {
             tree.current = 0
 
             i = start[0]
-        } else if (helper.equals(['parenthesis', ')'], tokens[i])) {
+        } else if (tokens[i][0] == 'parenthesis' && tokens[i][1] == ')') {
             start[0] = i
             callback(i / tokens.length)
             break

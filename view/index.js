@@ -308,18 +308,22 @@ function prepareEditTools() {
 
 function prepareGameGraph() {
     var container = $('graph')
-    var s = new sigma(container)
-
-    s.settings({
-        defaultNodeColor: setting.get('graph.node_inactive_color'),
-        defaultEdgeColor: setting.get('graph.node_color'),
-        defaultNodeBorderColor: 'rgba(255,255,255,.2)',
-        edgeColor: 'default',
-        borderSize: 2,
-        zoomMax: 1,
-        zoomMin: 1,
-        autoResize: false,
-        autoRescale: false
+    var s = new sigma({
+        renderer: {
+            container: container,
+            type: 'canvas'
+        },
+        settings: {
+            defaultNodeColor: setting.get('graph.node_inactive_color'),
+            defaultEdgeColor: setting.get('graph.node_color'),
+            defaultNodeBorderColor: 'rgba(255,255,255,.2)',
+            edgeColor: 'default',
+            borderSize: 2,
+            zoomMax: 1,
+            zoomMin: 1,
+            autoResize: false,
+            autoRescale: false
+        }
     })
 
     var getTreePos = function(e) { return [e.data.node.data[0], e.data.node.data[1]] }
@@ -716,7 +720,8 @@ function makeMove(vertex, sendCommand) {
     var enterScoring = false
 
     if (pass && createNode) {
-        var prevNode = tree.nodes[index]
+        var tp = getCurrentTreePosition(), ptp = gametree.navigate(tp[0], tp[1], -1)
+        var prevNode = ptp[0].nodes[ptp[1]]
         var prevColor = sign > 0 ? 'W' : 'B'
         var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
@@ -997,7 +1002,7 @@ function updateSidebar(redraw, now) {
         updateCommentText()
         updateSgfProperties()
         if (redraw) updateGraph()
-        centerGraphCameraAt(getCurrentGraphNode())
+        else centerGraphCameraAt(getCurrentGraphNode())
     }, now ? 0 : setting.get('graph.delay')))
 }
 
@@ -1342,10 +1347,14 @@ function loadGame(filename) {
     if (filename) {
         setTimeout(function() {
             var win = remote.getCurrentWindow()
+            var lastprogress = -1
 
             try {
                 var tree = sgf.parseFile(filename, function(progress) {
+                    if (progress - lastprogress < 0.05) return
+
                     setProgressIndicator(progress, win)
+                    lastprogress = progress
                 }).subtrees[0]
 
                 closeDrawers()
@@ -1388,7 +1397,7 @@ function saveGame(filename) {
     setIsBusy(false)
 }
 
-function clearAllOverlays() {
+function clearOverlays() {
     closeDrawers()
     var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 

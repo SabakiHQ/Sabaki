@@ -290,6 +290,13 @@ context.matrixdict2graph = function(matrixdict) {
             if ('SBKBM' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
 
+            // Show passes as squares
+            if ('B' in tree.nodes[index] && tree.nodes[index].B[0] == ''
+            || 'W' in tree.nodes[index] && tree.nodes[index].W[0] == '') {
+                node.type = 'square'
+                node.size++
+            }
+
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
             } else if (notCurrentTrack.indexOf(tree.id) == -1) {
@@ -313,28 +320,28 @@ context.matrixdict2graph = function(matrixdict) {
 
             if (prevPos[0] != x) {
                 graph.nodes.push({
-                    'id': id + '-h',
-                    'x': (x - 1) * gridSize,
-                    'y': (y - 1) * gridSize,
-                    'size': 0
+                    id: id + '-h',
+                    x: (x - 1) * gridSize,
+                    y: (y - 1) * gridSize,
+                    size: 0
                 })
 
                 graph.edges.push({
-                    'id': id + '-e1',
-                    'source': id,
-                    'target': id + '-h'
+                    id: id + '-e1',
+                    source: id,
+                    target: id + '-h'
                 })
 
                 graph.edges.push({
-                    'id': id + '-e2',
-                    'source': id + '-h',
-                    'target': prevId
+                    id: id + '-e2',
+                    source: id + '-h',
+                    target: prevId
                 })
             } else {
                 graph.edges.push({
-                    'id': id + '-e1',
-                    'source': id,
-                    'target': prevId
+                    id: id + '-e1',
+                    source: id,
+                    target: prevId
                 })
             }
         }
@@ -343,11 +350,15 @@ context.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
-context.getHash = function(tree) {
-    return helper.hash(JSON.stringify(tree, function(name, val) {
+context.getJson = function(tree) {
+    return JSON.stringify(tree, function(name, val) {
         var list = ['id', 'board', 'parent', 'collapsed']
         return list.indexOf(name) >= 0 ? undefined : val
-    }))
+    })
+}
+
+context.getHash = function(tree) {
+    return helper.hash(context.getJson(tree))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)

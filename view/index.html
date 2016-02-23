@@ -11,8 +11,9 @@
 <link rel="stylesheet" type="text/css" href="../style/goban.css" />
 <link rel="stylesheet" type="text/css" href="../style/index.css" />
 
-<script src="../node_modules/sigma/build/sigma.min.js"></script>
 <script src="../node_modules/gemini-scrollbar/index.js"></script>
+<script src="../node_modules/sigma/build/sigma.min.js"></script>
+<script src="../node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"></script>
 <script src="mootools.js"></script>
 <script src="../modules/helper.js"></script>
 <script src="../modules/sound.js"></script>
@@ -74,7 +75,7 @@
                     <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Down" />
                 </button>
                 <button onclick="findMove(getIndicatorVertex(), getFindText(), -1); return false">
-                    <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Up" />
+                    <img src="../node_modules/octicons/svg/chevron-up.svg" height="20" alt="Up" />
                 </button>
             </form>
 
@@ -97,10 +98,6 @@
                 <img src="../node_modules/octicons/svg/three-bars.svg" height="21" />
             </a>
         </header>
-
-        <section id="progress">
-            <div></div>
-        </section>
     </section>
 
     <section id="info">
@@ -238,12 +235,11 @@
         <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
         <div class="gm-scroll-view">
             <div class="inner">
+                <div class="comment"></div>
             </div>
         </div>
 
         <textarea oninput="commitCommentText()" placeholder="Comment"></textarea>
-
-        <div class="advanced"></div>
     </section>
 </section>
 

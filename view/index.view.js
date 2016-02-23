@@ -18,10 +18,6 @@ function setIsBusy(busy) {
 }
 
 function setProgressIndicator(progress, win) {
-    if (progress <= 0) document.body.removeClass('progress')
-    else document.body.addClass('progress')
-
-    $$('#progress div').setStyle('width', (progress * 100) + '%')
     if (win) win.setProgressBar(progress)
 }
 
@@ -235,11 +231,15 @@ function getCommentText() {
 
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
-    var container = $$('#properties .inner')[0]
+    var container = $$('#properties .inner .comment')[0]
+    var usestandard = text.trim() == ''
 
     $$('#properties textarea').set('value', text)
-    container.set('html', html)
+    container.set('html', usestandard ? getCurrentMoveInterpretation() : html)
     helper.wireLinks(container)
+
+    if (usestandard) $('properties').addClass('standard')
+    else $('properties').removeClass('standard')
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)
@@ -291,7 +291,7 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
     } else {
-        document.body.removeClass('edit').removeClass('advanced')
+        document.body.removeClass('edit')
     }
 }
 
@@ -307,14 +307,12 @@ function setScoringMode(scoringMode) {
         closeDrawers()
         document.body.addClass('scoring')
 
-        setTimeout(function() {
-            var deadstones = getBoard().guessDeadStones()
-            deadstones.forEach(function(v) {
-                $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-            })
+        var deadstones = getBoard().guessDeadStones()
+        deadstones.forEach(function(v) {
+            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+        })
 
-            updateAreaMap()
-        }, 200)
+        updateAreaMap()
     } else {
         document.body.removeClass('scoring')
         $$('.dead').removeClass('dead')
@@ -357,13 +355,26 @@ function setRepresentedFilename(filename) {
     document.body.store('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
 
-    if (filename && process.platform != 'darwin') {
-        document.title = path.basename(filename) + ' — ' + app.getName()
-    } else if (filename && process.platform == 'darwin') {
-        document.title = path.basename(filename)
-    } else {
-        document.title = app.getName()
+    var title = app.getName()
+    if (filename) title = path.basename(filename)
+    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
+
+    document.title = title
+}
+
+function getCurrentMoveInterpretation() {
+    var board = getBoard()
+
+    for (var x = 0; x < board.size; x++) {
+        for (var y = 0; y < board.size; y++) {
+            var vertex = [x, y]
+
+            if (vertex in board.overlays && board.overlays[vertex][0] == 'point')
+                return board.interpretVertex(vertex)
+        }
     }
+
+    return ''
 }
 
 /**

@@ -1,9 +1,10 @@
-header, #edit, #scoring, #find, #progress {
+header, #edit, #scoring, #find {
         position: absolute;
         left: 0;
         right: 0;
         top: 0;
         height: 40px;
+        overflow: hidden;
         transition: top .2s;
     }
     header > span {
@@ -44,12 +45,12 @@ header, #edit, #scoring, #find, #progress {
     }
     header .bookmark {
         position: absolute;
-        left: -32px;
-        top: 0;
+        left: 10px;
+        top: -42px;
         width: 12px;
         height: 20px;
         background: #a456bb;
-        transition: left .2s;
+        transition: top .2s;
     }
     header .bookmark::before, header .bookmark::after {
         content: '';
@@ -65,7 +66,7 @@ header, #edit, #scoring, #find, #progress {
         border-right: none;
         border-left: 6px solid transparent;
     }
-    .bookmark header .bookmark { left: 10px; }
+    .bookmark header .bookmark { top: 0; }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
@@ -146,23 +147,12 @@ header, #edit, #scoring, #find, #progress {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #find button:nth-child(3) img { transform: scaleY(-1); }
     #find button:nth-child(2) { left: 212px; }
     #find input {
         position: absolute;
         left: 10px;
         top: 50%;
         transform: translateY(-50%);
-    }
-    #progress {
-        display: none;
-        background: #181818;
-    }
-    .progress #progress { display: block; }
-    #progress div {
-        height: 40px;
-        width: 0;
-        background: #26292C;
 }
 
 #edit a.close, #scoring a.close, #find a.close {
@@ -469,6 +459,9 @@ header, #edit, #scoring, #find, #progress {
     #properties .inner {
         margin: 15px;
         word-wrap: break-word;
+    }
+    #properties.standard .inner {
+        color: #999;
 }
 
 #indicator {
