@@ -365,9 +365,10 @@ function getCurrentMoveInterpretation() {
     var board = getBoard()
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
-    var ptp = gametree.navigate.apply(null, tp.concat([-1]))
 
     // Determine capture
+    
+    var ptp = gametree.navigate.apply(null, tp.concat([-1]))
 
     if (ptp[0]) {
         var prevBoard = ptp[0].nodes[ptp[1]].board
@@ -379,17 +380,17 @@ function getCurrentMoveInterpretation() {
     // Get current vertex
 
     var vertex
+
     if ('B' in node && node.B[0] != '')
         vertex = sgf.point2vertex(node.B[0])
     else if ('W' in node && node.W[0] != '')
         vertex = sgf.point2vertex(node.W[0])
-    if (!vertex)
+    else if ('W' in node || 'B' in node)
+        return 'Pass'
+    else
         return ''
 
-    var board = getBoard()
     var sign = board.arrangement[vertex]
-    if (sign == 0) return ''
-
     var neighbors = board.getNeighborhood(vertex)
 
     // Check atari
