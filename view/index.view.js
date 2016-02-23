@@ -363,6 +363,15 @@ function setRepresentedFilename(filename) {
 
 function getCurrentMoveInterpretation() {
     var board = getBoard()
+    var tp = getCurrentTreePosition()
+    var ptp = gametree.navigate.apply(null, tp.concat([-1]))
+
+    if (ptp[0]) {
+        var prevBoard = ptp[0].nodes[ptp[1]].board
+
+        if (!helper.equals(prevBoard.captures, board.captures))
+            return 'Take'
+    }
 
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
