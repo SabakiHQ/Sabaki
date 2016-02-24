@@ -471,6 +471,9 @@ header, #edit, #scoring, #find {
         top: 5px;
         margin-left: -17px;
     }
+    #properties .inner .header:not(.positionstatus) img:nth-child(2) {
+        transform: scale(1.5);
+    }
     #properties .inner .header.positionstatus img:nth-child(1),
     #properties .inner .header.movestatus img:nth-child(2) {
         display: inline;

@@ -1023,21 +1023,19 @@ function updateCommentText() {
     setCommentText('C' in node ? node.C[0] : '')
     setCommentHeader('N' in node ? node.N[0] : getCurrentMoveInterpretation())
 
-    setPositionStatusComment.apply(null, (function() {
+    setStatusComment.apply(null, (function() {
         if ('UC' in node) return [-2, node.UC[0]]
         if ('GW' in node) return [-1, node.GW[0]]
         if ('DM' in node) return [0, node.DM[0]]
         if ('GB' in node) return [1, node.GB[0]]
-        return null
-    })())
-
-    setMoveStatusComment.apply(null, (function() {
+        return [null, null]
+    })().concat((function() {
         if ('BM' in node) return [-1, node.BM[0]]
         if ('TE' in node) return [2, node.TE[0]]
         if ('DO' in node) return [0, 1]
         if ('IT' in node) return [1, 1]
-        return null
-    })())
+        return [null, null]
+    })()))
 }
 
 function updateAreaMap() {

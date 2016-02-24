@@ -250,51 +250,52 @@ function setCommentHeader(text) {
     $$('#properties .header span')[0].set('text', text)
 }
 
-function setPositionStatusComment(status, value) {
-    var header = $$('#properties .header')[0]
-    var img = header.getElement('img:nth-child(1)')
-
-    if (status == null) header.removeClass('positionstatus')
-    else header.addClass('positionstatus')
-
-    if (status == -1)
-        img.set('src', '../img/ui/goodforwhite.svg')
-            .set('alt', 'Good for white')
-    else if (status == 0)
-        img.set('src', '../img/ui/evenposition.svg')
-            .set('alt', 'Even position')
-    else if (status == 1)
-        img.set('src', '../img/ui/goodforblack.svg')
-            .set('alt', 'Good for black')
-    else
-        img.set('src', '../img/ui/unclearposition.svg')
-            .set('alt', 'Unclear position')
-
-    if (value != 1) img.alt = 'Very ' + img.alt.toLowerCase()
-    img.title = img.alt
-}
-
-function setMoveStatusComment(status, value) {
+function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
     var header = $$('#properties .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
-    if (status == null) header.removeClass('movestatus')
+    // Set move status
+
+    if (movestatus == null) header.removeClass('movestatus')
     else header.addClass('movestatus')
 
-    if (status == -1)
+    if (movestatus == -1)
         img.set('src', '../img/ui/badmove.svg')
             .set('alt', 'Bad move')
-    else if (status == 0)
+    else if (movestatus == 0)
         img.set('src', '../img/ui/doubtfulmove.svg')
             .set('alt', 'Doubtful move')
-    else if (status == 1)
+    else if (movestatus == 1)
         img.set('src', '../img/ui/interestingmove.svg')
             .set('alt', 'Interesting move')
-    else if (status == 2)
+    else if (movestatus == 2)
         img.set('src', '../img/ui/goodmove.svg')
             .set('alt', 'Good move')
 
-    if (value != 1) img.alt = 'Very ' + img.alt.toLowerCase()
+    if (movevalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
+    img.title = img.alt
+
+    // Set positional status
+
+    img = header.getElement('img:nth-child(1)')
+
+    if (posstatus == null) header.removeClass('positionstatus')
+    else header.addClass('positionstatus')
+
+    if (posstatus == -1)
+        img.set('src', '../img/ui/goodforwhite.svg')
+            .set('alt', 'Good for white')
+    else if (posstatus == 0)
+        img.set('src', '../img/ui/evenposition.svg')
+            .set('alt', 'Even position')
+    else if (posstatus == 1)
+        img.set('src', '../img/ui/goodforblack.svg')
+            .set('alt', 'Good for black')
+    else if (posstatus == -2)
+        img.set('src', '../img/ui/unclearposition.svg')
+            .set('alt', 'Unclear position')
+
+    if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
     img.title = img.alt
 }
 
