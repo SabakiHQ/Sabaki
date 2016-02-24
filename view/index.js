@@ -263,7 +263,7 @@ function setBookmark(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    if (bookmark) node.SBKBM = [1]
+    if (bookmark) node.SBKBM = ['']
     else delete node.SBKBM
 
     updateGraph()
