@@ -274,6 +274,30 @@ function setPositionStatusComment(status, value) {
     img.title = img.alt
 }
 
+function setMoveStatusComment(status, value) {
+    var header = $$('#properties .header')[0]
+    var img = header.getElement('img:nth-child(2)')
+
+    if (status == null) header.removeClass('movestatus')
+    else header.addClass('movestatus')
+
+    if (status == -1)
+        img.set('src', '../img/ui/badmove.svg')
+            .set('alt', 'Bad move')
+    else if (status == 0)
+        img.set('src', '../img/ui/doubtfulmove.svg')
+            .set('alt', 'Doubtful move')
+    else if (status == 1)
+        img.set('src', '../img/ui/interestingmove.svg')
+            .set('alt', 'Interesting move')
+    else if (status == 2)
+        img.set('src', '../img/ui/goodmove.svg')
+            .set('alt', 'Good move')
+
+    if (value != 1) img.alt = 'Very ' + img.alt.toLowerCase()
+    img.title = img.alt
+}
+
 function getSliderValue() {
     var span = $$('#sidebar .slider .inner span')[0]
     var value = span.getStyle('top').toInt()

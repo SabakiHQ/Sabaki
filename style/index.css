@@ -462,9 +462,14 @@ header, #edit, #scoring, #find {
     #properties .inner .header { color: #999; }
     #properties .inner .header img {
         display: none;
-        margin-right: 5px;
+        margin-right: 3px;
         padding: 2px;
-        opacity: .7;
+    }
+    #properties .inner .header.positionstatus img:nth-child(1) { opacity: .7; }
+    #properties .inner .header.positionstatus img:nth-child(2) {
+        position: relative;
+        top: 5px;
+        margin-left: -17px;
     }
     #properties .inner .header.positionstatus img:nth-child(1),
     #properties .inner .header.movestatus img:nth-child(2) {
