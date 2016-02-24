@@ -250,6 +250,30 @@ function setCommentHeader(text) {
     $$('#properties .header span')[0].set('text', text)
 }
 
+function setPositionStatusComment(status, value) {
+    var header = $$('#properties .header')[0]
+    var img = header.getElement('img:nth-child(1)')
+
+    if (status == null) header.removeClass('positionstatus')
+    else header.addClass('positionstatus')
+
+    if (status == -1)
+        img.set('src', '../img/ui/goodforwhite.svg')
+            .set('alt', 'Good for white')
+    else if (status == 0)
+        img.set('src', '../img/ui/evenposition.svg')
+            .set('alt', 'Even position')
+    else if (status == 1)
+        img.set('src', '../img/ui/goodforblack.svg')
+            .set('alt', 'Good for black')
+    else
+        img.set('src', '../img/ui/unclearposition.svg')
+            .set('alt', 'Unclear position')
+
+    if (value != 1) img.alt = 'Very ' + img.alt.toLowerCase()
+    img.title = img.alt
+}
+
 function getSliderValue() {
     var span = $$('#sidebar .slider .inner span')[0]
     var value = span.getStyle('top').toInt()

@@ -459,8 +459,16 @@ header, #edit, #scoring, #find {
         margin: 15px;
         word-wrap: break-word;
     }
-    #properties .inner .header {
-        color: #999;
+    #properties .inner .header { color: #999; }
+    #properties .inner .header img {
+        display: none;
+        margin-right: 5px;
+        padding: 2px;
+        opacity: .7;
+    }
+    #properties .inner .header.positionstatus img:nth-child(1),
+    #properties .inner .header.movestatus img:nth-child(2) {
+        display: inline;
 }
 
 #indicator {
