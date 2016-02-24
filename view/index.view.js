@@ -250,7 +250,7 @@ function setCommentHeader(text) {
     $$('#properties .header span')[0].set('text', text)
 }
 
-function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
+function setStatusComment(posstatus, posvalue, movestatus, movevalue, hotspot) {
     var header = $$('#properties .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
@@ -297,6 +297,11 @@ function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
 
     if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
     img.title = img.alt
+
+    // Set hotspot
+
+    if (!hotspot) header.removeClass('hotspot')
+    else header.addClass('hotspot')
 }
 
 function getSliderValue() {

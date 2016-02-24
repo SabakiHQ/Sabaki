@@ -474,8 +474,15 @@ header, #edit, #scoring, #find {
     #properties .inner .header:not(.positionstatus) img:nth-child(2) {
         transform: scale(1.5);
     }
+    #properties .inner .header img:last-child {
+        margin-left: 3px;
+        margin-right: 0;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+    }
     #properties .inner .header.positionstatus img:nth-child(1),
-    #properties .inner .header.movestatus img:nth-child(2) {
+    #properties .inner .header.movestatus img:nth-child(2),
+    #properties .inner .header.hotspot img:last-child {
         display: inline;
 }
 

@@ -1035,7 +1035,7 @@ function updateCommentText() {
         if ('DO' in node) return [0, 1]
         if ('IT' in node) return [1, 1]
         return [null, null]
-    })()))
+    })()).concat(['HO' in node]))
 }
 
 function updateAreaMap() {
