@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Show SGF node name (`N` property) if available
+
 ## [Sabaki v0.9.1][v0.9.1] (2016-02-24)
 
 **Added**

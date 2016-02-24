@@ -232,18 +232,22 @@ function getCommentText() {
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
     var container = $$('#properties .inner .comment')[0]
-    var usestandard = text.trim() == ''
 
     $$('#properties textarea').set('value', text)
-    container.set('html', usestandard ? getCurrentMoveInterpretation() : html)
+    container.set('html', html)
     helper.wireLinks(container)
-
-    if (usestandard) $('properties').addClass('standard')
-    else $('properties').removeClass('standard')
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
+}
+
+function getCommentHeader() {
+    $$('#properties .header span')[0].get('text', text)
+}
+
+function setCommentHeader(text) {
+    $$('#properties .header span')[0].set('text', text)
 }
 
 function getSliderValue() {
@@ -367,7 +371,7 @@ function getCurrentMoveInterpretation() {
     var node = tp[0].nodes[tp[1]]
 
     // Determine capture
-    
+
     var ptp = gametree.navigate.apply(null, tp.concat([-1]))
 
     if (ptp[0]) {

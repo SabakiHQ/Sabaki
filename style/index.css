@@ -459,7 +459,7 @@ header, #edit, #scoring, #find {
         margin: 15px;
         word-wrap: break-word;
     }
-    #properties.standard .inner {
+    #properties .inner .header {
         color: #999;
 }
 

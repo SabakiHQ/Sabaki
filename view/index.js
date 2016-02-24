@@ -1022,6 +1022,7 @@ function updateCommentText() {
     var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
+    setCommentHeader('N' in node ? node.N[0] : getCurrentMoveInterpretation())
 }
 
 function updateSgfProperties() {
