@@ -66,7 +66,7 @@ context.equals = function(a, b) {
 context.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
     input = input.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&rt;')
+        .replace(/>/g, '&gt;')
 
     if (renderUrl)
         input = input.replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
