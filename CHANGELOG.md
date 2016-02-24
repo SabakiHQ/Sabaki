@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Change 'Bookmark' to 'Hotspot'
+* 'Show Variations' shows next move as well
 
 **Fixed**
 
