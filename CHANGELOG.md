@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Show SGF node name (`N` property) if available
 * Show node & move annotations
 
+**Changed**
+
+* Change 'Bookmark' to 'Hotspot'
+
 **Fixed**
 
 * Fix incorrectly escaped `>` character in comment
