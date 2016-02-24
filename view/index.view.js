@@ -194,11 +194,11 @@ function setPlayerName(sign, name) {
     $$('#player_' + sign + ' .name')[0].set('text', name)
 }
 
-function getShowBookmark() {
+function getShowHotspot() {
     return document.body.hasClass('bookmark')
 }
 
-function setShowBookmark(bookmark) {
+function setShowHotspot(bookmark) {
     if (bookmark) document.body.addClass('bookmark')
     else document.body.removeClass('bookmark')
 }
@@ -250,7 +250,7 @@ function setCommentHeader(text) {
     $$('#properties .header span')[0].set('text', text)
 }
 
-function setStatusComment(posstatus, posvalue, movestatus, movevalue, hotspot) {
+function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
     var header = $$('#properties .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
@@ -297,11 +297,6 @@ function setStatusComment(posstatus, posvalue, movestatus, movevalue, hotspot) {
 
     if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
     img.title = img.alt
-
-    // Set hotspot
-
-    if (!hotspot) header.removeClass('hotspot')
-    else header.addClass('hotspot')
 }
 
 function getSliderValue() {

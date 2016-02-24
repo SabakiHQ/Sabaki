@@ -288,7 +288,7 @@ context.matrixdict2graph = function(matrixdict) {
 
             if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
                 node.originalColor = setting.get('graph.node_comment_color')
-            if ('SBKBM' in tree.nodes[index])
+            if ('HO' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
 
             // Show passes as squares

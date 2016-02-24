@@ -116,19 +116,19 @@
             },
             { "type": "separator" },
             {
-                "label": "Toggle &Bookmark",
+                "label": "Toggle &Hotspot",
                 "accelerator": "CmdOrCtrl+B",
-                "action": "togglebookmark"
+                "action": "togglehotspot"
             },
             {
-                "label": "Jump To Ne&xt Bookmark",
+                "label": "Jump To Ne&xt Hotspot",
                 "accelerator": "F2",
-                "action": "nextbookmark"
+                "action": "nexthotspot"
             },
             {
-                "label": "Jump To Pre&vious Bookmark",
+                "label": "Jump To Pre&vious Hotspot",
                 "accelerator": "Shift+F2",
-                "action": "previousbookmark"
+                "action": "previoushotspot"
             }
         ]
     },

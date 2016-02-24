@@ -98,7 +98,7 @@ function setCurrentTreePosition(tree, index, now) {
     // Update bookmark, graph, slider and comment text
 
     updateSidebar(redraw, now)
-    setShowBookmark('SBKBM' in tree.nodes[index])
+    setShowHotspot('HO' in tree.nodes[index])
     sgf.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
@@ -252,22 +252,22 @@ function setUndoable(undoable) {
     }
 }
 
-function getBookmark() {
+function getHotspot() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    return 'SBKBM' in node
+    return 'HO' in node
 }
 
-function setBookmark(bookmark) {
+function setHotspot(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    if (bookmark) node.SBKBM = ['']
-    else delete node.SBKBM
+    if (bookmark) node.HO = ['']
+    else delete node.HO
 
     updateGraph()
-    setShowBookmark(bookmark)
+    setShowHotspot(bookmark)
 }
 
 /**
@@ -915,7 +915,7 @@ function findPosition(step, condition) {
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
         var node = tree.nodes[index]
-        return 'SBKBM' in node
+        return 'HO' in node
     })
 }
 
@@ -1035,7 +1035,7 @@ function updateCommentText() {
         if ('DO' in node) return [0, 1]
         if ('IT' in node) return [1, 1]
         return [null, null]
-    })()).concat(['HO' in node]))
+    })()))
 }
 
 function updateAreaMap() {
