@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Show SGF node name (`N` property) if available
+* Show node & move annotations
+
+**Fixed**
+
+* Fix incorrectly escaped `>` character in comment
 
 ## [Sabaki v0.9.1][v0.9.1] (2016-02-24)
 
