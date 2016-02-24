@@ -284,8 +284,9 @@ context.matrixdict2graph = function(matrixdict) {
                 data: matrix[y][x],
                 originalColor: setting.get('graph.node_color')
             }
+            var commentproperties = ['C', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT']
 
-            if ('C' in tree.nodes[index])
+            if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
                 node.originalColor = setting.get('graph.node_comment_color')
             if ('SBKBM' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
