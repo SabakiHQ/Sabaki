@@ -21,15 +21,15 @@ function setProgressIndicator(progress, win) {
     if (win) win.setProgressBar(progress)
 }
 
-function getShowVariations() {
+function getShowNextMoves() {
     return $('goban').hasClass('variations')
 }
 
-function setShowVariations(show) {
+function setShowNextMoves(show) {
     if (show) $('goban').addClass('variations')
     else $('goban').removeClass('variations')
 
-    setting.set('view.show_variations', show)
+    setting.set('view.show_next_moves', show)
 }
 
 function getFuzzyStonePlacement() {

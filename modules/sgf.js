@@ -225,27 +225,32 @@ context.addBoard = function(tree, index, baseboard) {
 
     node.board = board
 
-    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
-        // Add variation overlays
+    // Add variation overlays
 
+    var addOverlay = function(node) {
+        var v, sign
+
+        if ('B' in node) {
+            v = sgf.point2vertex(node.B[0])
+            sign = 1
+        } else if ('W' in node) {
+            v = sgf.point2vertex(node.W[0])
+            sign = -1
+        } else {
+            return
+        }
+
+        if (v in board.overlays) board.overlays[v][1] = sign
+        else board.overlays[v] = ['', sign, '']
+    }
+
+    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
         tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
-
-            var v, sign
-
-            if ('B' in subtree.nodes[0]) {
-                v = sgf.point2vertex(subtree.nodes[0].B[0])
-                sign = 1
-            } else if ('W' in subtree.nodes[0]) {
-                v = sgf.point2vertex(subtree.nodes[0].W[0])
-                sign = -1
-            } else {
-                return
-            }
-
-            if (v in board.overlays) board.overlays[v][1] = sign
-            else board.overlays[v] = ['', sign, '']
+            addOverlay(subtree.nodes[0])
         })
+    } else if (index < tree.nodes.length - 1) {
+        addOverlay(tree.nodes[index + 1])
     }
 
     return tree

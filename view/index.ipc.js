@@ -38,7 +38,7 @@ var menudata = {
     "gtpconsole": function() { setShowLeftSidebar(!getShowLeftSidebar()) },
     "clearconsole": clearConsole,
     "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()); resizeBoard() },
-    "togglevariations": function() { setShowVariations(!getShowVariations()) },
+    "toggleshownextmoves": function() { setShowNextMoves(!getShowNextMoves()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
     "togglecomments": function() { setSidebarArrangement(getShowGraph(), !getShowComment()) },
     "togglefullscreen": function() {

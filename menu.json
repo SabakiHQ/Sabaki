@@ -217,8 +217,8 @@
                 "action": "togglecoordinates"
             },
             {
-                "label": "Toggle &Variations",
-                "action": "togglevariations"
+                "label": "Toggle Show &Next Moves",
+                "action": "toggleshownextmoves"
             },
             { "type": "separator" },
             {
