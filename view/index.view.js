@@ -872,7 +872,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosStatus()
                 clearMoveStatus()
-                updateCommentText()
+                commitCommentText()
             }
         },
         { type: 'separator' },
@@ -883,7 +883,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosStatus()
                 node.GB = [1]
-                updateCommentText()
+                commitCommentText()
             }
         },
         {
@@ -893,7 +893,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosStatus()
                 node.UC = [1]
-                updateCommentText()
+                commitCommentText()
             }
         },
         {
@@ -903,7 +903,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosStatus()
                 node.DM = [1]
-                updateCommentText()
+                commitCommentText()
             }
         },
         {
@@ -913,7 +913,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosStatus()
                 node.GW = [1]
-                updateCommentText()
+                commitCommentText()
             }
         }
     ]
@@ -928,7 +928,7 @@ function openCommentMenu() {
                 click: function() {
                     clearMoveStatus()
                     node.TE = [1]
-                    updateCommentText()
+                    commitCommentText()
                 }
             },
             {
@@ -938,7 +938,7 @@ function openCommentMenu() {
                 click: function() {
                     clearMoveStatus()
                     node.IT = [1]
-                    updateCommentText()
+                    commitCommentText()
                 }
             },
             {
@@ -948,7 +948,7 @@ function openCommentMenu() {
                 click: function() {
                     clearMoveStatus()
                     node.DO = [1]
-                    updateCommentText()
+                    commitCommentText()
                 }
             },
             {
@@ -958,7 +958,7 @@ function openCommentMenu() {
                 click: function() {
                     clearMoveStatus()
                     node.BM = [1]
-                    updateCommentText()
+                    commitCommentText()
                 }
             }
         ])
