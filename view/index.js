@@ -1490,6 +1490,25 @@ function goToPreviousVariation() {
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
+function makeMainTrack() {
+    setUndoable(true)
+    closeDrawers()
+
+    var root = tree = getRootTree()
+    var level = gametree.getLevel.apply(null, getCurrentTreePosition())
+
+    while (tree.current != null) {
+        var subtree = tree.subtrees.splice(tree.current, 1)[0]
+        tree.subtrees.unshift(subtree)
+        tree.current = 0
+
+        tree = subtree
+    }
+
+    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level))
+    updateGraph()
+}
+
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
         showMessageBox('The root node cannot be removed.', 'warning')

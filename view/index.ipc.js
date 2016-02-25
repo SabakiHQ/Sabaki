@@ -8,6 +8,7 @@ var menudata = {
     "score": function() { setScoringMode(true) },
     "gameinfo": showGameInfo,
     "preferences": showPreferences,
+
     "editmode": function() { setEditMode(!getEditMode()) },
     "clearoverlays": clearOverlays,
     "stonetool": function() { setSelectedTool('stone') },
@@ -18,12 +19,15 @@ var menudata = {
     "labeltool": function() { setSelectedTool('label') },
     "numbertool": function() { setSelectedTool('number') },
     "removenode": function() { removeNode.apply(null, getCurrentTreePosition()) },
+    "makemaintrack": makeMainTrack,
+
     "findmode": function() { setFindMode(!getFindMode()) },
     "findnext": function() { findMove(getIndicatorVertex(), getFindText(), 1) },
     "findprevious": function() { findMove(getIndicatorVertex(), getFindText(), -1) },
     "togglehotspot": function() { setHotspot(!getHotspot()) },
     "nexthotspot": function() { findBookmark(1) },
     "previoushotspot": function() { findBookmark(-1) },
+
     "goback": goBack,
     "goforward": goForward,
     "gotopreviousfork": goToPreviousFork,
@@ -32,11 +36,13 @@ var menudata = {
     "gotoend": goToEnd,
     "gotonextvariation": goToNextVariation,
     "gotopreviousvariation": goToPreviousVariation,
+
     "manageengines": function() { showPreferences(); setPreferencesTab('engines') },
     "detachengine": detachEngine,
     "generatemove": generateMove,
     "gtpconsole": function() { setShowLeftSidebar(!getShowLeftSidebar()) },
     "clearconsole": clearConsole,
+
     "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()); resizeBoard() },
     "toggleshownextmoves": function() { setShowNextMoves(!getShowNextMoves()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
@@ -47,6 +53,7 @@ var menudata = {
         win.setMenuBarVisibility(!win.isFullScreen())
         win.setAutoHideMenuBar(win.isFullScreen())
     },
+
     "checkforupdates": function() {
         checkForUpdates(function(hasUpdates) {
             if (hasUpdates) return

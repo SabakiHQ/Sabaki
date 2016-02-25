@@ -90,6 +90,10 @@
             },
             { "type": "separator" },
             {
+                "label": "&Make Main Track",
+                "action": "makemaintrack"
+            },
+            {
                 "label": "&Remove Node",
                 "accelerator": "CmdOrCtrl+Delete",
                 "action": "removenode"
