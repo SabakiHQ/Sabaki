@@ -88,7 +88,7 @@
 
             <img class="currentplayer" src="../img/ui/blacktoplay.svg" height="22" onclick="makeMove([-1, -1])" />
 
-            <div class="bookmark"></div>
+            <div class="bookmark" title="Hotspot"></div>
 
             <a class="undo" onclick="undoBoard()" title="Undo">
                 <img src="../node_modules/octicons/svg/mail-reply.svg" height="21" />
@@ -235,6 +235,11 @@
         <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
         <div class="gm-scroll-view">
             <div class="inner">
+                <p class="header">
+                    <img width="16" height="16" />
+                    <img width="16" height="16" />
+                    <span></span>
+                </p>
                 <div class="comment"></div>
             </div>
         </div>

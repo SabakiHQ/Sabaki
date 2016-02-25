@@ -1,0 +1,11 @@
+<svg height="16" width="6" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <mask id="mask">
+            <rect width="100%" height="100%" fill="white"/>
+            <path transform="translate(0 -1.5)" d="M4 7V5H2v2H0l3 4 3-4H4z" />
+        </mask>
+    </defs>
+
+    <path transform="translate(0 2)" d="M4 7V5H2v2H0l3 4 3-4H4z" fill="#f76047" mask="url(#mask)" />
+    <path d="M4 7V5H2v2H0l3 4 3-4H4z" fill="#f76047" />
+</svg>

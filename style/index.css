@@ -460,8 +460,24 @@ header, #edit, #scoring, #find {
         margin: 15px;
         word-wrap: break-word;
     }
-    #properties.standard .inner {
-        color: #999;
+    #properties .inner .header { color: #999; }
+    #properties .inner .header img {
+        display: none;
+        margin-right: 3px;
+        padding: 2px;
+    }
+    #properties .inner .header.positionstatus img:nth-child(1) { opacity: .7; }
+    #properties .inner .header.positionstatus img:nth-child(2) {
+        position: relative;
+        top: 5px;
+        margin-left: -17px;
+    }
+    #properties .inner .header:not(.positionstatus) img:nth-child(2) {
+        transform: scale(1.5);
+    }
+    #properties .inner .header.positionstatus img:nth-child(1),
+    #properties .inner .header.movestatus img:nth-child(2) {
+        display: inline;
 }
 
 #indicator {

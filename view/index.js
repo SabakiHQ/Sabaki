@@ -98,7 +98,7 @@ function setCurrentTreePosition(tree, index, now) {
     // Update bookmark, graph, slider and comment text
 
     updateSidebar(redraw, now)
-    setShowBookmark('SBKBM' in tree.nodes[index])
+    setShowHotspot('HO' in tree.nodes[index])
     sgf.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
@@ -252,22 +252,22 @@ function setUndoable(undoable) {
     }
 }
 
-function getBookmark() {
+function getHotspot() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    return 'SBKBM' in node
+    return 'HO' in node
 }
 
-function setBookmark(bookmark) {
+function setHotspot(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    if (bookmark) node.SBKBM = [1]
-    else delete node.SBKBM
+    if (bookmark) node.HO = [1]
+    else delete node.HO
 
     updateGraph()
-    setShowBookmark(bookmark)
+    setShowHotspot(bookmark)
 }
 
 /**
@@ -922,7 +922,7 @@ function findPosition(step, condition) {
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
         var node = tree.nodes[index]
-        return 'SBKBM' in node
+        return 'HO' in node
     })
 }
 
@@ -1000,7 +1000,6 @@ function updateSidebar(redraw, now) {
 
         updateSlider()
         updateCommentText()
-        updateSgfProperties()
         if (redraw) updateGraph()
         else centerGraphCameraAt(getCurrentGraphNode())
     }, now ? 0 : setting.get('graph.delay')))
@@ -1029,13 +1028,21 @@ function updateCommentText() {
     var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
-}
+    setCommentHeader('N' in node ? node.N[0] : getCurrentMoveInterpretation())
 
-function updateSgfProperties() {
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
-
-    // TODO
+    setStatusComment.apply(null, (function() {
+        if ('UC' in node) return [-2, node.UC[0]]
+        if ('GW' in node) return [-1, node.GW[0]]
+        if ('DM' in node) return [0, node.DM[0]]
+        if ('GB' in node) return [1, node.GB[0]]
+        return [null, null]
+    })().concat((function() {
+        if ('BM' in node) return [-1, node.BM[0]]
+        if ('TE' in node) return [2, node.TE[0]]
+        if ('DO' in node) return [0, 1]
+        if ('IT' in node) return [1, 1]
+        return [null, null]
+    })()))
 }
 
 function updateAreaMap() {

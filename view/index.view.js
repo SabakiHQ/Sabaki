@@ -21,15 +21,15 @@ function setProgressIndicator(progress, win) {
     if (win) win.setProgressBar(progress)
 }
 
-function getShowVariations() {
+function getShowNextMoves() {
     return $('goban').hasClass('variations')
 }
 
-function setShowVariations(show) {
+function setShowNextMoves(show) {
     if (show) $('goban').addClass('variations')
     else $('goban').removeClass('variations')
 
-    setting.set('view.show_variations', show)
+    setting.set('view.show_next_moves', show)
 }
 
 function getFuzzyStonePlacement() {
@@ -194,11 +194,11 @@ function setPlayerName(sign, name) {
     $$('#player_' + sign + ' .name')[0].set('text', name)
 }
 
-function getShowBookmark() {
+function getShowHotspot() {
     return document.body.hasClass('bookmark')
 }
 
-function setShowBookmark(bookmark) {
+function setShowHotspot(bookmark) {
     if (bookmark) document.body.addClass('bookmark')
     else document.body.removeClass('bookmark')
 }
@@ -232,18 +232,71 @@ function getCommentText() {
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
     var container = $$('#properties .inner .comment')[0]
-    var usestandard = text.trim() == ''
 
     $$('#properties textarea').set('value', text)
-    container.set('html', usestandard ? getCurrentMoveInterpretation() : html)
+    container.set('html', html)
     helper.wireLinks(container)
-
-    if (usestandard) $('properties').addClass('standard')
-    else $('properties').removeClass('standard')
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
     $$('#properties textarea')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
+}
+
+function getCommentHeader() {
+    $$('#properties .header span')[0].get('text', text)
+}
+
+function setCommentHeader(text) {
+    $$('#properties .header span')[0].set('text', text)
+}
+
+function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
+    var header = $$('#properties .header')[0]
+    var img = header.getElement('img:nth-child(2)')
+
+    // Set move status
+
+    if (movestatus == null) header.removeClass('movestatus')
+    else header.addClass('movestatus')
+
+    if (movestatus == -1)
+        img.set('src', '../img/ui/badmove.svg')
+            .set('alt', 'Bad move')
+    else if (movestatus == 0)
+        img.set('src', '../img/ui/doubtfulmove.svg')
+            .set('alt', 'Doubtful move')
+    else if (movestatus == 1)
+        img.set('src', '../img/ui/interestingmove.svg')
+            .set('alt', 'Interesting move')
+    else if (movestatus == 2)
+        img.set('src', '../img/ui/goodmove.svg')
+            .set('alt', 'Good move')
+
+    if (movevalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
+    img.title = img.alt
+
+    // Set positional status
+
+    img = header.getElement('img:nth-child(1)')
+
+    if (posstatus == null) header.removeClass('positionstatus')
+    else header.addClass('positionstatus')
+
+    if (posstatus == -1)
+        img.set('src', '../img/ui/goodforwhite.svg')
+            .set('alt', 'Good for white')
+    else if (posstatus == 0)
+        img.set('src', '../img/ui/evenposition.svg')
+            .set('alt', 'Even position')
+    else if (posstatus == 1)
+        img.set('src', '../img/ui/goodforblack.svg')
+            .set('alt', 'Good for black')
+    else if (posstatus == -2)
+        img.set('src', '../img/ui/unclearposition.svg')
+            .set('alt', 'Unclear position')
+
+    if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
+    img.title = img.alt
 }
 
 function getSliderValue() {
@@ -364,15 +417,179 @@ function setRepresentedFilename(filename) {
 
 function getCurrentMoveInterpretation() {
     var board = getBoard()
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    // Determine capture
+
+    var ptp = gametree.navigate.apply(null, tp.concat([-1]))
+
+    if (ptp[0]) {
+        var prevBoard = ptp[0].nodes[ptp[1]].board
+
+        if (!helper.equals(prevBoard.captures, board.captures))
+            return 'Take'
+    }
+
+    // Get current vertex
+
+    var vertex
+
+    if ('B' in node && node.B[0] != '')
+        vertex = sgf.point2vertex(node.B[0])
+    else if ('W' in node && node.W[0] != '')
+        vertex = sgf.point2vertex(node.W[0])
+    else if ('W' in node || 'B' in node)
+        return 'Pass'
+    else
+        return ''
+
+    var sign = board.arrangement[vertex]
+    var neighbors = board.getNeighborhood(vertex)
+
+    // Check atari
+
+    if (neighbors.some(function(v) {
+        return board.arrangement[v] == -sign && board.getLiberties(v).length == 1
+    })) return 'Atari'
+
+    // Check connection
+
+    var friendly = neighbors.filter(function(v) { return board.arrangement[v] == sign})
+    if (friendly.length == neighbors.length) return 'Fill'
+    if (friendly.length >= 2) return 'Connect'
+    if (friendly.length == 1) return 'Stretch'
+
+    // Get nearest non-blocked friendly stone
+
+    var euclidean = function(v, w) { return Math.pow(v[0] - w[0], 2) + Math.pow(v[1] - w[1], 2) }
+    var compare = function(v, w) {
+        if (board.getDistance(v, vertex) == board.getDistance(w, vertex))
+            return euclidean(v, vertex) - euclidean(w, vertex)
+        return board.getDistance(v, vertex) - board.getDistance(w, vertex)
+    }
+
+    var minvertex = null
+    var result = null
 
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
-            var vertex = [x, y]
+            if (board.arrangement[[x, y]] != sign) continue
+            if (minvertex && compare(minvertex, [x, y]) < 0) continue
 
-            if (vertex in board.overlays && board.overlays[vertex][0] == 'point')
-                return board.interpretVertex(vertex)
+            var distance = board.getDistance([x, y], vertex)
+            var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
+
+            if (distance == 0 || distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
+
+            var blocking = []
+            for (var i = Math.min(vertex[0], x); i <= Math.max(vertex[0], x); i++)
+                for (var j = Math.min(vertex[1], y); j <= Math.max(vertex[1], y); j++)
+                    blocking.push([i, j])
+
+            var enemies = function(x) {
+                return x.map(function(v) { return board.arrangement[v] })
+                    .filter(function(s) { return s == -sign }).length
+            }
+
+            if (diff[0] == 1 && diff[1] == 1) {
+                // + + o +
+                // + o + +
+
+                if (enemies(blocking) >= 2) result = 'Cut'
+                else if (enemies(blocking) == 1) result = 'Hane'
+                else if (enemies(blocking) == 0) result = 'Diagonal'
+            } else if (Math.min.apply(null, diff) == 0 && distance == 2) {
+                // + o + o +
+
+                if (enemies(blocking) > 0) continue
+                else result = 'One-point jump'
+            } else if (Math.min.apply(null, diff) == 0 && distance == 3) {
+                // + o + + o +
+
+                if (enemies(blocking) > 0) continue
+                else result = 'Two-point jump'
+            } else if (diff[0] == 2 && diff[1] == 2) {
+                // + + + o +
+                // + + + + +
+                // + o + + +
+
+                var m = [(x + vertex[0]) / 2, (y + vertex[1]) / 2]
+                if (board.arrangement[m] == -sign) continue
+
+                blocking = blocking.filter(function(v) {
+                    return (v[0] != x || v[1] != vertex[1])
+                        && (v[0] != vertex[0] || v[1] != y)
+                })
+
+                if (enemies(blocking) >= 2) continue
+                else result = 'Diagonal jump'
+            } else if (Math.max.apply(null, diff) >= 2 && Math.min.apply(null, diff) == 1) {
+                // + + + o +    or   + + + + o +
+                // + o + + +         + o + + + +
+
+                blocking = blocking.filter(function(v) {
+                    return (v[0] != x || v[1] != vertex[1])
+                        && (v[0] != vertex[0] || v[1] != y)
+                })
+
+                if (enemies(blocking) > 0) continue
+                else result = distance == 3 ? 'Small knight' : 'Large knight'
+            }
+
+            minvertex = [x, y]
         }
     }
+
+    if (minvertex) return result
+
+    // Get nearest enemy stone
+
+    minvertex = null
+    result = null
+
+    for (var x = 0; x < board.size; x++) {
+        for (var y = 0; y < board.size; y++) {
+            if (board.arrangement[[x, y]] != -sign) continue
+            if (minvertex && compare(minvertex, [x, y]) < 0) continue
+
+            var distance = board.getDistance([x, y], vertex)
+            var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
+
+            if (distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
+
+            if (distance == 1) {
+                result = 'Attach'
+            } else if (diff[0] == 1 && diff[1] == 1) {
+                result = 'Shoulder hit'
+            } else if (board.getDistanceToGround(vertex) <= 5 && board.getDistanceToGround([x, y]) <= 5) {
+                result = 'Approach'
+            } else {
+                continue
+            }
+
+            minvertex = [x, y]
+        }
+    }
+
+    if (minvertex) return result
+
+    // Determine position to edges
+
+    if (vertex[0] == (board.size - 1) / 2 && vertex[1] == vertex[0])
+        return 'Tengen'
+
+    var diff = [
+        Math.min(vertex[0] + 1, board.size - vertex[0]),
+        Math.min(vertex[1] + 1, board.size - vertex[1])
+    ]
+    diff.sort(function(x, y) { return x - y })
+
+    if ((diff[0] != 4 || diff[1] != 4) && board.getHandicapPlacement(9).some(function(v) {
+        return v[0] == vertex[0] && v[1] == vertex[1]
+    })) return 'Hoshi'
+
+    if (diff[1] <= 6) return diff.join('-') + ' point'
 
     return ''
 }
@@ -763,7 +980,6 @@ document.addEvent('domready', function() {
     document.body.addEvent('mouseup', function() {
         $('goban').store('mousedown', false)
     })
-
 
     // Preferences tabs
 
