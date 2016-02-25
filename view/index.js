@@ -914,8 +914,15 @@ function findPosition(step, condition) {
 
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
-        var node = tree.nodes[index]
-        return 'HO' in node
+        return 'HO' in tree.nodes[index]
+    })
+}
+
+function findComment(step) {
+    findPosition(step, function(tree, index) {
+        return setting.get('sgf.comment_properties').some(function(p) {
+            p in tree.nodes[index]
+        })
     })
 }
 

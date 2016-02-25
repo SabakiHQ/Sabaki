@@ -59,6 +59,7 @@ var defaults = {
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
     'scoring.method': 'territory',
+    'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,

@@ -276,7 +276,7 @@ context.matrixdict2graph = function(matrixdict) {
                 data: matrix[y][x],
                 originalColor: setting.get('graph.node_color')
             }
-            var commentproperties = ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT']
+            var commentproperties = setting.get('sgf.comment_properties')
 
             if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
                 node.originalColor = setting.get('graph.node_comment_color')
