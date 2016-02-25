@@ -279,7 +279,7 @@ function loadSettings() {
         $('goban').addClass('fuzzy')
     if (setting.get('view.show_coordinates'))
         $('goban').addClass('coordinates')
-    if (setting.get('view.show_variations'))
+    if (setting.get('view.show_next_moves'))
         $('goban').addClass('variations')
     if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
@@ -699,8 +699,8 @@ function makeMove(vertex, sendCommand) {
     // Play sounds
 
     if (!pass) {
-        var delay = setting.get('sound.captureDelayMin')
-        delay += Math.floor(Math.random() * (setting.get('sound.captureDelayMax') - delay))
+        var delay = setting.get('sound.capture_delay_min')
+        delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
 
         if (capture || suicide) setTimeout(function() {
             sound.playCapture()

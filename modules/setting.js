@@ -59,8 +59,8 @@ var defaults = {
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
     'scoring.method': 'territory',
-    'sound.captureDelayMax': 500,
-    'sound.captureDelayMin': 300,
+    'sound.capture_delay_max': 500,
+    'sound.capture_delay_min': 300,
     'sound.enable': true,
     'view.properties_height': 50,
     'view.properties_minheight': 20,
@@ -74,10 +74,10 @@ var defaults = {
     'view.leftsidebar_minwidth': 100,
     'view.sidebar_width': 222,
     'view.sidebar_minwidth': 100,
-    'window.height': 648,
+    'window.height': 622,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 608
+    'window.width': 577
 }
 
 context.load = function() {
