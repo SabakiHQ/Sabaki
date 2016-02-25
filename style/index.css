@@ -397,42 +397,72 @@ header, #edit, #scoring, #find {
         transition: height .2s, color .2s, background .2s;
         z-index: 2;
     }
-    #properties > textarea, #properties > .advanced {
+    #properties .edit {
         display: none;
-        box-sizing: border-box;
         position: absolute;
         left: 0;
         top: 0;
-        height: 100%;
-        width: 100%;
-        transition: color .2s, left .2s;
+        right: 0;
+        bottom: 0;
+        color: #d0d0d0;
         z-index: 2;
     }
-    #properties > textarea {
+    #properties .edit textarea, #properties .edit input {
+        box-sizing: border-box;
+        position: absolute;
         padding: 15px;
         background: transparent;
         color: #d0d0d0;
+        transition: color .2s;
     }
-    #properties > textarea::-webkit-input-placeholder {
+    #properties .edit textarea {
+        top: 51px;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding-top: 0;
+    }
+    #properties .edit .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 51px;
+        line-height: 51px;
+    }
+    #properties .edit .header img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 14px;
+        margin-left: 0;
+        padding: 3px;
+        opacity: .8;
+    }
+    #properties .edit .header img:hover { background: #B3AC53; }
+    #properties .edit .header input {
+        top: 0;
+        right: 36px;
+        bottom: 0;
+        left: 0;
+        width: auto;
+        padding-right: 10px;
+    }
+    #properties .edit textarea::-webkit-input-placeholder,
+    #properties .edit input::-webkit-input-placeholder {
         color: #222;
         opacity: .5;
-    }
-    #properties > .advanced {
-        display: block;
-        background: #E6DF86;
-        color: #222;
-        left: 100%;
     }
     .edit #properties {
         background: #E6DF86;
         color: #222;
     }
-    .edit #properties > textarea {
+    .edit #properties .edit,
+    .edit #properties .edit textarea {
         display: block;
         color: #222;
     }
-    .edit.advanced #properties > .advanced { left: 0; }
-    .edit.advanced #properties > textarea { left: -100%; }
+    .edit #properties .edit input { color: #555; }
     .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
@@ -482,8 +512,8 @@ header, #edit, #scoring, #find {
 
 #indicator {
     position: absolute;
-    top: 150%;
-    left: 150%;
+    top: -150%;
+    left: -150%;
     margin-top: -2px;
     margin-left: -2px;
     background: rgba(0, 130, 240, .2);

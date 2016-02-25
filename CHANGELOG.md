@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix incorrectly escaped `>` character in comment
+* Prevent user from sliding out of viewport by selecting text
 
 ## [Sabaki v0.9.1][v0.9.1] (2016-02-24)
 

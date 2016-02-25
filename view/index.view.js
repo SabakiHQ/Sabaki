@@ -236,22 +236,19 @@ function setCommentText(text) {
     $$('#properties textarea').set('value', text)
     container.set('html', html)
     helper.wireLinks(container)
-
-    $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
-    $$('#properties textarea')[0].scrollTo(0, 0)
-    $('properties').retrieve('scrollbar').update()
 }
 
-function getCommentHeader() {
-    $$('#properties .header span')[0].get('text', text)
+function getCommentTitle() {
+    return $$('#properties .edit .header input')[0].get('value')
 }
 
-function setCommentHeader(text) {
-    $$('#properties .header span')[0].set('text', text)
+function setCommentTitle(text) {
+    $$('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $$('#properties .edit .header input')[0].set('value', text)
 }
 
 function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
-    var header = $$('#properties .header')[0]
+    var header = $$('#properties .inner .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
     // Set move status
@@ -858,6 +855,121 @@ function openHeaderMenu() {
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
+}
+
+function openCommentMenu() {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    var clearPosStatus = function() {
+        ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
+    }
+    var clearMoveStatus = function() {
+        ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
+    }
+
+    var template = [
+        {
+            label: '&Clear Status',
+            click: function() {
+                clearPosStatus()
+                clearMoveStatus()
+                commitCommentText()
+            }
+        },
+        { type: 'separator' },
+        {
+            label: 'Good for &Black',
+            type: 'checkbox',
+            checked: 'GB' in node,
+            click: function() {
+                clearPosStatus()
+                node.GB = [1]
+                commitCommentText()
+            }
+        },
+        {
+            label: '&Unclear Position',
+            type: 'checkbox',
+            checked: 'UC' in node,
+            click: function() {
+                clearPosStatus()
+                node.UC = [1]
+                commitCommentText()
+            }
+        },
+        {
+            label: '&Even Position',
+            type: 'checkbox',
+            checked: 'DM' in node,
+            click: function() {
+                clearPosStatus()
+                node.DM = [1]
+                commitCommentText()
+            }
+        },
+        {
+            label: 'Good for &White',
+            type: 'checkbox',
+            checked: 'GW' in node,
+            click: function() {
+                clearPosStatus()
+                node.GW = [1]
+                commitCommentText()
+            }
+        }
+    ]
+
+    if ('B' in node || 'W' in node) {
+        template.push.apply(template, [
+            { type: 'separator' },
+            {
+                label: '&Good Move',
+                type: 'checkbox',
+                checked: 'TE' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.TE = [1]
+                    commitCommentText()
+                }
+            },
+            {
+                label: '&Interesting Move',
+                type: 'checkbox',
+                checked: 'IT' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.IT = [1]
+                    commitCommentText()
+                }
+            },
+            {
+                label: '&Doubtful Move',
+                type: 'checkbox',
+                checked: 'DO' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.DO = [1]
+                    commitCommentText()
+                }
+            },
+            {
+                label: 'B&ad Move',
+                type: 'checkbox',
+                checked: 'BM' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.BM = [1]
+                    commitCommentText()
+                }
+            }
+        ])
+    }
+
+    var coord = $$('#properties .edit .header img')[0].getCoordinates()
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
 }
 
 function openNodeMenu(tree, index) {

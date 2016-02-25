@@ -144,7 +144,18 @@
             </div>
         </div>
 
-        <textarea oninput="commitCommentText()" placeholder="Comment"></textarea>
+        <div class="edit">
+            <div class="header">
+                <img
+                    onclick="openCommentMenu()"
+                    src="../node_modules/octicons/svg/chevron-down.svg"
+                    width="16"
+                    height="16"
+                />
+                <input oninput="commitCommentText()" type="text" name="title" value="" placeholder="Title">
+            </div>
+            <textarea oninput="commitCommentText()" placeholder="Comment"></textarea>
+        </div>
     </section>
 </section>
 

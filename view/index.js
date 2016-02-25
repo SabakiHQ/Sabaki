@@ -763,7 +763,7 @@ function useTool(vertex, event) {
     }
 
     if (tool.indexOf('stone') != -1) {
-        if ('B' in node || 'W' in node) {
+        if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
             // New variation needed
             var splitted = gametree.splitTree(tree, index)
 
@@ -1029,7 +1029,7 @@ function updateCommentText() {
     var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
-    setCommentHeader('N' in node ? node.N[0] : getCurrentMoveInterpretation())
+    setCommentTitle('N' in node ? node.N[0] : '')
 
     setStatusComment.apply(null, (function() {
         if ('UC' in node) return [-2, node.UC[0]]
@@ -1044,6 +1044,10 @@ function updateCommentText() {
         if ('IT' in node) return [1, 1]
         return [null, null]
     })()))
+
+    $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
+    $$('#properties textarea')[0].scrollTo(0, 0)
+    $('properties').retrieve('scrollbar').update()
 }
 
 function updateAreaMap() {
@@ -1077,10 +1081,14 @@ function updateAreaMap() {
 function commitCommentText() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
-    var comment = $$('#properties textarea').get('value')[0]
+    var title = getCommentTitle()
+    var comment = getCommentText()
 
     if (comment != '') tree.nodes[index].C = [comment]
     else delete tree.nodes[index].C
+
+    if (title != '') tree.nodes[index].N = [title]
+    else delete tree.nodes[index].N
 
     updateCommentText()
     updateSidebar(true)
@@ -1462,7 +1470,7 @@ function goToBeginning() {
 }
 
 function goToEnd() {
-    var tree = getCurrentTreePosition()[0]
+    var tree = getRootTree()
     setCurrentTreePosition.apply(null, gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
 }
 
