@@ -35,7 +35,7 @@ function newWindow(path) {
 
     window.on('closed', function() { window = null })
     window.loadURL('file://' + __dirname + '/view/index.html')
-    // window.toggleDevTools()
+    window.toggleDevTools()
 
     return window
 }

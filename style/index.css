@@ -406,19 +406,37 @@ header, #edit, #scoring, #find {
         color: #d0d0d0;
         z-index: 2;
     }
-    #properties .edit textarea {
+    #properties .edit textarea, #properties .edit input {
         box-sizing: border-box;
         position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
         padding: 15px;
         background: transparent;
         color: #d0d0d0;
         transition: color .2s;
     }
-    #properties .edit textarea::-webkit-input-placeholder {
+    #properties .edit textarea {
+        top: 3em;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        padding-top: 0;
+    }
+    #properties .edit .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3em;
+        line-height: 3em;
+    }
+    #properties .edit .header input {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #properties .edit textarea::-webkit-input-placeholder,
+    #properties .edit input::-webkit-input-placeholder {
         color: #222;
         opacity: .5;
     }
@@ -426,7 +444,9 @@ header, #edit, #scoring, #find {
         background: #E6DF86;
         color: #222;
     }
-    .edit #properties .edit, .edit #properties .edit textarea {
+    .edit #properties .edit,
+    .edit #properties .edit textarea,
+    .edit #properties .edit input {
         display: block;
         color: #222;
     }
