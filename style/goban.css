@@ -93,14 +93,12 @@
  * Scoring
  */
 
-.scoring .goban .row li.dead img {
+.goban .row li.dead img {
     opacity: .5;
 }
 
-.goban .row li div.area { display: none; }
-
-.scoring .goban .row li div.area {
-        display: block;
+.goban .row li div.area {
+        display: none;
         position: absolute;
         width: 100%;
         height: 100%;
@@ -108,10 +106,12 @@
         transform: translate(-50%, -50%);
         z-index: 3;
     }
-    .scoring .goban .row li.area_1 div.area {
+    .goban .row li.area_1 div.area {
+        display: block;
         background-color: black;
     }
-    .scoring .goban .row li.area_-1 div.area {
+    .goban .row li.area_-1 div.area {
+        display: block;
         background-color: white;
 }
 

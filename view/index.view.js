@@ -364,8 +364,10 @@ function setScoringMode(scoringMode) {
 
         updateAreaMap()
     } else {
+        $$('#goban .area_1').removeClass('area_1')
+        $$('#goban .area_-1').removeClass('area_-1')
+        $$('#goban .dead').removeClass('dead')
         document.body.removeClass('scoring')
-        $$('.dead').removeClass('dead')
     }
 }
 
