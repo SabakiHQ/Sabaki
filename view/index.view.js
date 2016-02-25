@@ -884,42 +884,22 @@ function openCommentMenu() {
         {
             label: 'Good for &Black',
             type: 'checkbox',
-            checked: 'GB' in node,
-            click: function() {
-                clearPosAnnotations()
-                node.GB = [1]
-                commitCommentText()
-            }
+            data: ['GB', clearPosAnnotations, 1]
         },
         {
             label: '&Unclear Position',
             type: 'checkbox',
-            checked: 'UC' in node,
-            click: function() {
-                clearPosAnnotations()
-                node.UC = [1]
-                commitCommentText()
-            }
+            data: ['UC', clearPosAnnotations, 1]
         },
         {
             label: '&Even Position',
             type: 'checkbox',
-            checked: 'DM' in node,
-            click: function() {
-                clearPosAnnotations()
-                node.DM = [1]
-                commitCommentText()
-            }
+            data: ['DM', clearPosAnnotations, 1]
         },
         {
             label: 'Good for &White',
             type: 'checkbox',
-            checked: 'GW' in node,
-            click: function() {
-                clearPosAnnotations()
-                node.GW = [1]
-                commitCommentText()
-            }
+            data: ['GW', clearPosAnnotations, 1]
         }
     ]
 
@@ -929,45 +909,43 @@ function openCommentMenu() {
             {
                 label: '&Good Move',
                 type: 'checkbox',
-                checked: 'TE' in node,
-                click: function() {
-                    clearMoveAnnotations()
-                    node.TE = [1]
-                    commitCommentText()
-                }
+                data: ['TE', clearMoveAnnotations, 1]
             },
             {
                 label: '&Interesting Move',
                 type: 'checkbox',
-                checked: 'IT' in node,
-                click: function() {
-                    clearMoveAnnotations()
-                    node.IT = ['']
-                    commitCommentText()
-                }
+                data: ['IT', clearMoveAnnotations, '']
             },
             {
                 label: '&Doubtful Move',
                 type: 'checkbox',
-                checked: 'DO' in node,
-                click: function() {
-                    clearMoveAnnotations()
-                    node.DO = ['']
-                    commitCommentText()
-                }
+                data: ['DO', clearMoveAnnotations, '']
             },
             {
                 label: 'B&ad Move',
                 type: 'checkbox',
-                checked: 'BM' in node,
-                click: function() {
-                    clearMoveAnnotations()
-                    node.BM = [1]
-                    commitCommentText()
-                }
+                data: ['BM', clearMoveAnnotations, 1]
             }
         ])
     }
+
+    template.forEach(function(item) {
+        if (!('data' in item)) return
+
+        var p = item.data[0], clear = item.data[1], value = item.data[2]
+
+        delete item.data
+        item.checked = p in node
+        item.click = function() {
+            if (p in node) {
+                clear()
+            } else {
+                clear()
+                node[p] = [value]
+                commitCommentText()
+            }
+        }
+    })
 
     var coord = $$('#properties .edit .header img')[0].getCoordinates()
 
