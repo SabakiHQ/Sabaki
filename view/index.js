@@ -1037,6 +1037,10 @@ function updateCommentText() {
         if ('IT' in node) return [1, 1]
         return [null, null]
     })()))
+
+    $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
+    $$('#properties textarea')[0].scrollTo(0, 0)
+    $('properties').retrieve('scrollbar').update()
 }
 
 function updateAreaMap() {

@@ -236,10 +236,6 @@ function setCommentText(text) {
     $$('#properties textarea').set('value', text)
     container.set('html', html)
     helper.wireLinks(container)
-
-    $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
-    $$('#properties textarea')[0].scrollTo(0, 0)
-    $('properties').retrieve('scrollbar').update()
 }
 
 function getCommentTitle() {
