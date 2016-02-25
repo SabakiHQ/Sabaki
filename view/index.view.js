@@ -555,13 +555,13 @@ function getCurrentMoveInterpretation() {
             var distance = board.getDistance([x, y], vertex)
             var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
 
-            if (distance > 3 || distance == 3 && Math.min.apply(null, diff) == 0) continue
+            if (distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
 
             if (distance == 1) {
                 result = 'Attach'
             } else if (diff[0] == 1 && diff[1] == 1) {
                 result = 'Shoulder hit'
-            } else if (board.getDistanceToGround(vertex) <= 5) {
+            } else if (board.getDistanceToGround(vertex) <= 5 && board.getDistanceToGround([x, y]) <= 5) {
                 result = 'Approach'
             } else {
                 continue
