@@ -1458,7 +1458,7 @@ function goToBeginning() {
 }
 
 function goToEnd() {
-    var tree = getCurrentTreePosition()[0]
+    var tree = getRootTree()
     setCurrentTreePosition.apply(null, gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
 }
 
