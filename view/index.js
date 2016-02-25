@@ -692,8 +692,8 @@ function makeMove(vertex, sendCommand) {
     // Play sounds
 
     if (!pass) {
-        var delay = setting.get('sound.captureDelayMin')
-        delay += Math.floor(Math.random() * (setting.get('sound.captureDelayMax') - delay))
+        var delay = setting.get('sound.capture_delay_min')
+        delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
 
         if (capture || suicide) setTimeout(function() {
             sound.playCapture()
