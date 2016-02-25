@@ -512,6 +512,8 @@ function detachEngine() {
 
     $('console').store('controller', null)
         .store('boardhash', null)
+
+    setIsBusy(false)
 }
 
 function syncEngine() {
