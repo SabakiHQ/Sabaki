@@ -938,6 +938,7 @@ function vertexClicked(vertex, event) {
     closeGameInfo()
 
     if (getScoringMode()) {
+        if ($('score').hasClass('show')) return
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
