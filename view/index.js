@@ -756,7 +756,7 @@ function useTool(vertex, event) {
     }
 
     if (tool.indexOf('stone') != -1) {
-        if ('B' in node || 'W' in node) {
+        if (index < tree.nodes.length - 1 || tree.current) {
             // New variation needed
             var splitted = gametree.splitTree(tree, index)
 
