@@ -242,11 +242,11 @@ function setCommentText(text) {
     $('properties').retrieve('scrollbar').update()
 }
 
-function getCommentHeader() {
+function getCommentTitle() {
     $$('#properties .header span')[0].get('text', text)
 }
 
-function setCommentHeader(text) {
+function setCommentTitle(text) {
     $$('#properties .header span')[0].set('text', text)
 }
 
