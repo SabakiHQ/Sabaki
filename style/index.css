@@ -429,11 +429,23 @@ header, #edit, #scoring, #find {
         height: 51px;
         line-height: 51px;
     }
+    #properties .edit .header img {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 14px;
+        margin-left: 0;
+        padding: 3px;
+        opacity: .8;
+    }
+    #properties .edit .header img:hover { background: #B3AC53; }
     #properties .edit .header input {
         top: 0;
-        left: 0;
+        right: 36px;
         bottom: 0;
-        width: 100%;
+        left: 0;
+        width: auto;
+        padding-right: 10px;
     }
     #properties .edit textarea::-webkit-input-placeholder,
     #properties .edit input::-webkit-input-placeholder {

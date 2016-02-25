@@ -859,6 +859,41 @@ function openHeaderMenu() {
     menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
 }
 
+function openCommentMenu() {
+    var template = [
+        {
+            label: 'Good for &Black'
+        },
+        {
+            label: '&Unclear Position'
+        },
+        {
+            label: '&Even Position'
+        },
+        {
+            label: 'Good for &White'
+        },
+        { type: 'separator' },
+        {
+            label: '&Good Move'
+        },
+        {
+            label: '&Interesting Move'
+        },
+        {
+            label: '&Doubtful Move'
+        },
+        {
+            label: '&Bad Move'
+        }
+    ]
+
+    var coord = $$('#properties .edit .header img')[0].getCoordinates()
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+}
+
 function openNodeMenu(tree, index) {
     if (getScoringMode()) return
 
