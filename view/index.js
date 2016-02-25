@@ -1022,7 +1022,7 @@ function updateCommentText() {
     var node = tp[0].nodes[tp[1]]
 
     setCommentText('C' in node ? node.C[0] : '')
-    setCommentTitle('N' in node ? node.N[0] : getCurrentMoveInterpretation())
+    setCommentTitle('N' in node ? node.N[0] : '')
 
     setStatusComment.apply(null, (function() {
         if ('UC' in node) return [-2, node.UC[0]]
@@ -1070,10 +1070,14 @@ function updateAreaMap() {
 function commitCommentText() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
-    var comment = $$('#properties textarea').get('value')[0]
+    var title = getCommentTitle()
+    var comment = getCommentText()
 
     if (comment != '') tree.nodes[index].C = [comment]
     else delete tree.nodes[index].C
+
+    if (title != '') tree.nodes[index].N = [title]
+    else delete tree.nodes[index].N
 
     updateCommentText()
     updateSidebar(true)

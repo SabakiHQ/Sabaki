@@ -243,11 +243,12 @@ function setCommentText(text) {
 }
 
 function getCommentTitle() {
-    $$('#properties .header span')[0].get('text', text)
+    return $$('#properties .edit .header input')[0].get('value')
 }
 
 function setCommentTitle(text) {
-    $$('#properties .header span')[0].set('text', text)
+    $$('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $$('#properties .edit .header input')[0].set('value', text)
 }
 
 function setStatusComment(posstatus, posvalue, movestatus, movevalue) {

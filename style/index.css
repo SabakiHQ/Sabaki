@@ -401,8 +401,8 @@ header, #edit, #scoring, #find {
         position: absolute;
         left: 0;
         top: 0;
-        height: 100%;
-        width: 100%;
+        right: 0;
+        bottom: 0;
         color: #d0d0d0;
         z-index: 2;
     }
@@ -415,9 +415,9 @@ header, #edit, #scoring, #find {
         transition: color .2s;
     }
     #properties .edit textarea {
-        top: 3em;
+        top: 51px;
         left: 0;
-        height: 100%;
+        bottom: 0;
         width: 100%;
         padding-top: 0;
     }
@@ -425,15 +425,15 @@ header, #edit, #scoring, #find {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 3em;
-        line-height: 3em;
+        right: 0;
+        height: 51px;
+        line-height: 51px;
     }
     #properties .edit .header input {
         top: 0;
         left: 0;
+        bottom: 0;
         width: 100%;
-        height: 100%;
     }
     #properties .edit textarea::-webkit-input-placeholder,
     #properties .edit input::-webkit-input-placeholder {
@@ -445,11 +445,11 @@ header, #edit, #scoring, #find {
         color: #222;
     }
     .edit #properties .edit,
-    .edit #properties .edit textarea,
-    .edit #properties .edit input {
+    .edit #properties .edit textarea {
         display: block;
         color: #222;
     }
+    .edit #properties .edit input { color: #555; }
     .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
