@@ -263,7 +263,7 @@ function setHotspot(bookmark) {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    if (bookmark) node.HO = ['']
+    if (bookmark) node.HO = [1]
     else delete node.HO
 
     updateGraph()
