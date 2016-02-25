@@ -931,7 +931,7 @@ function findMove(vertex, text, step) {
         }
 
         return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
-            && (!text || cond('C', text))
+            && (!text || cond('C', text) || cond('N', text))
     })
 }
 
