@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Show SGF node name (`N` property) if available
 * Show node & move annotations
+* Add 'Go To Next/Previous Comment' menu items
 
 **Changed**
 

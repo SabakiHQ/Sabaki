@@ -32,6 +32,8 @@ var menudata = {
     "goforward": goForward,
     "gotopreviousfork": goToPreviousFork,
     "gotonextfork": goToNextFork,
+    "nextcomment": function() { goToComment(1) },
+    "previouscomment": function() { goToComment(-1) },
     "gotobeginning": goToBeginning,
     "gotoend": goToEnd,
     "gotonextvariation": goToNextVariation,

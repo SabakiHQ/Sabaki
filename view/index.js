@@ -918,14 +918,6 @@ function findBookmark(step) {
     })
 }
 
-function findComment(step) {
-    findPosition(step, function(tree, index) {
-        return setting.get('sgf.comment_properties').some(function(p) {
-            return p in tree.nodes[index]
-        })
-    })
-}
-
 function findMove(vertex, text, step) {
     if (vertex == null && text.trim() == '') return
     var point = vertex ? sgf.vertex2point(vertex) : null
@@ -1460,6 +1452,23 @@ function goToPreviousFork() {
     if (tree.parent == null || tree.parent.nodes.length == 0)
         setCurrentTreePosition(tree, 0)
     else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+}
+
+function goToComment(step) {
+    var tp = getCurrentTreePosition()
+
+    while (true) {
+        tp = gametree.navigate.apply(null, tp.concat([step]))
+        if (!tp[0]) break
+
+        var node = tp[0].nodes[tp[1]]
+
+        if (setting.get('sgf.comment_properties').some(function(p) {
+            return p in node
+        })) break
+    }
+
+    setCurrentTreePosition.apply(null, tp)
 }
 
 function goToBeginning() {

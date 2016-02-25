@@ -162,6 +162,17 @@
             },
             { "type": "separator" },
             {
+                "label": "Go To Previous Co&mment",
+                "accelerator": "CmdOrCtrl+Shift+Up",
+                "action": "previouscomment"
+            },
+            {
+                "label": "Go To Next &Comment",
+                "accelerator": "CmdOrCtrl+Shift+Down",
+                "action": "nextcomment"
+            },
+            { "type": "separator" },
+            {
                 "label": "Go To Be&ginning",
                 "accelerator": "CmdOrCtrl+Home",
                 "action": "gotobeginning"
