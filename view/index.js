@@ -921,7 +921,7 @@ function findBookmark(step) {
 function findComment(step) {
     findPosition(step, function(tree, index) {
         return setting.get('sgf.comment_properties').some(function(p) {
-            p in tree.nodes[index]
+            return p in tree.nodes[index]
         })
     })
 }
