@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 * Change 'Bookmark' to 'Hotspot'
 * 'Show Variations' shows next move as well
+* Don't make current track to main track when saving
 
 **Fixed**
 

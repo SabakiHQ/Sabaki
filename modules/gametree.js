@@ -345,7 +345,7 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getJson = function(tree) {
     return JSON.stringify(tree, function(name, val) {
-        var list = ['id', 'board', 'parent', 'collapsed']
+        var list = ['id', 'board', 'parent', 'collapsed', 'current']
         return list.indexOf(name) >= 0 ? undefined : val
     })
 }
