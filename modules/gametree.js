@@ -73,23 +73,15 @@ context.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
     } else if (index + step < 0 && tree.parent) {
-        if (tree.parent != null) {
-            var prev = tree.parent
-            var newstep = index + step + 1
+        var prev = tree.parent
+        var newstep = index + step + 1
 
-            return context.navigate(prev, prev.nodes.length - 1, newstep)
-        }
+        return context.navigate(prev, prev.nodes.length - 1, newstep)
+    } else if (index + step >= tree.nodes.length && tree.current) {
+        var next = tree.subtrees[tree.current]
+        var newstep = index + step - tree.nodes.length
 
-        return [tree, 0]
-    } else if (index + step >= tree.nodes.length) {
-        if (tree.current != null) {
-            var next = tree.subtrees[tree.current]
-            var newstep = index + step - tree.nodes.length
-
-            return context.navigate(next, 0, newstep)
-        }
-
-        return [tree, tree.nodes.length - 1]
+        return context.navigate(next, 0, newstep)
     }
 
     return [null, 0]
