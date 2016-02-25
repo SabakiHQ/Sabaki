@@ -1395,7 +1395,7 @@ function saveGame(filename) {
 
     if (filename) {
         var tree = getRootTree()
-        var text = sgf.tree2string(tree)
+        var text = sgf.fromTree(tree)
 
         fs.writeFile(filename, '(' + text + ')')
         document.body.store('treehash', gametree.getHash(tree))

@@ -256,7 +256,7 @@ context.addBoard = function(tree, index, baseboard) {
     return tree
 }
 
-context.tree2string = function(tree) {
+context.fromTree = function(tree) {
     var output = ''
 
     tree.nodes.forEach(function(node) {
