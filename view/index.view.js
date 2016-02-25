@@ -252,7 +252,7 @@ function setCommentTitle(text) {
 }
 
 function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
-    var header = $$('#properties .header')[0]
+    var header = $$('#properties .inner .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
     // Set move status
