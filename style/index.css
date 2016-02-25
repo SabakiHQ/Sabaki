@@ -499,8 +499,8 @@ header, #edit, #scoring, #find {
 
 #indicator {
     position: absolute;
-    top: 150%;
-    left: 150%;
+    top: -150%;
+    left: -150%;
     margin-top: -2px;
     margin-left: -2px;
     background: rgba(0, 130, 240, .2);
