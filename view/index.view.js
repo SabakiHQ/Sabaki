@@ -440,6 +440,8 @@ function getCurrentMoveInterpretation() {
     else
         return ''
 
+    if (!board.hasVertex(vertex)) return 'Pass'
+
     var sign = board.arrangement[vertex]
     var neighbors = board.getNeighborhood(vertex)
 
