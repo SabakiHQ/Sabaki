@@ -279,7 +279,7 @@ function loadSettings() {
         $('goban').addClass('fuzzy')
     if (setting.get('view.show_coordinates'))
         $('goban').addClass('coordinates')
-    if (setting.get('view.show_variations'))
+    if (setting.get('view.show_next_moves'))
         $('goban').addClass('variations')
     if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
