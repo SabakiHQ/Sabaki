@@ -942,7 +942,7 @@ function openCommentMenu() {
                 checked: 'IT' in node,
                 click: function() {
                     clearMoveAnnotations()
-                    node.IT = [1]
+                    node.IT = ['']
                     commitCommentText()
                 }
             },
@@ -952,7 +952,7 @@ function openCommentMenu() {
                 checked: 'DO' in node,
                 click: function() {
                     clearMoveAnnotations()
-                    node.DO = [1]
+                    node.DO = ['']
                     commitCommentText()
                 }
             },
