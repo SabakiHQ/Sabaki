@@ -856,33 +856,113 @@ function openHeaderMenu() {
 }
 
 function openCommentMenu() {
+    var tp = getCurrentTreePosition()
+    var node = tp[0].nodes[tp[1]]
+
+    var clearPosStatus = function() {
+        ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
+    }
+    var clearMoveStatus = function() {
+        ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
+    }
+
     var template = [
         {
-            label: 'Good for &Black'
-        },
-        {
-            label: '&Unclear Position'
-        },
-        {
-            label: '&Even Position'
-        },
-        {
-            label: 'Good for &White'
+            label: '&Clear Status',
+            click: function() {
+                clearPosStatus()
+                clearMoveStatus()
+                updateCommentText()
+            }
         },
         { type: 'separator' },
         {
-            label: '&Good Move'
+            label: 'Good for &Black',
+            type: 'checkbox',
+            checked: 'GB' in node,
+            click: function() {
+                clearPosStatus()
+                node.GB = [1]
+                updateCommentText()
+            }
         },
         {
-            label: '&Interesting Move'
+            label: '&Unclear Position',
+            type: 'checkbox',
+            checked: 'UC' in node,
+            click: function() {
+                clearPosStatus()
+                node.UC = [1]
+                updateCommentText()
+            }
         },
         {
-            label: '&Doubtful Move'
+            label: '&Even Position',
+            type: 'checkbox',
+            checked: 'DM' in node,
+            click: function() {
+                clearPosStatus()
+                node.DM = [1]
+                updateCommentText()
+            }
         },
         {
-            label: '&Bad Move'
+            label: 'Good for &White',
+            type: 'checkbox',
+            checked: 'GW' in node,
+            click: function() {
+                clearPosStatus()
+                node.GW = [1]
+                updateCommentText()
+            }
         }
     ]
+
+    if ('B' in node || 'W' in node) {
+        template.push.apply(template, [
+            { type: 'separator' },
+            {
+                label: '&Good Move',
+                type: 'checkbox',
+                checked: 'TE' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.TE = [1]
+                    updateCommentText()
+                }
+            },
+            {
+                label: '&Interesting Move',
+                type: 'checkbox',
+                checked: 'IT' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.IT = [1]
+                    updateCommentText()
+                }
+            },
+            {
+                label: '&Doubtful Move',
+                type: 'checkbox',
+                checked: 'DO' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.DO = [1]
+                    updateCommentText()
+                }
+            },
+            {
+                label: 'B&ad Move',
+                type: 'checkbox',
+                checked: 'BM' in node,
+                click: function() {
+                    clearMoveStatus()
+                    node.BM = [1]
+                    updateCommentText()
+                }
+            }
+        ])
+    }
 
     var coord = $$('#properties .edit .header img')[0].getCoordinates()
 
