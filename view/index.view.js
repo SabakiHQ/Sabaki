@@ -247,7 +247,7 @@ function setCommentTitle(text) {
     $$('#properties .edit .header input')[0].set('value', text)
 }
 
-function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
+function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     var header = $$('#properties .inner .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
@@ -864,19 +864,19 @@ function openCommentMenu() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    var clearPosStatus = function() {
+    var clearPosAnnotations = function() {
         ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
     }
-    var clearMoveStatus = function() {
+    var clearMoveAnnotations = function() {
         ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
     }
 
     var template = [
         {
-            label: '&Clear Status',
+            label: '&Clear Annotations',
             click: function() {
-                clearPosStatus()
-                clearMoveStatus()
+                clearPosAnnotations()
+                clearMoveAnnotations()
                 commitCommentText()
             }
         },
@@ -886,7 +886,7 @@ function openCommentMenu() {
             type: 'checkbox',
             checked: 'GB' in node,
             click: function() {
-                clearPosStatus()
+                clearPosAnnotations()
                 node.GB = [1]
                 commitCommentText()
             }
@@ -896,7 +896,7 @@ function openCommentMenu() {
             type: 'checkbox',
             checked: 'UC' in node,
             click: function() {
-                clearPosStatus()
+                clearPosAnnotations()
                 node.UC = [1]
                 commitCommentText()
             }
@@ -906,7 +906,7 @@ function openCommentMenu() {
             type: 'checkbox',
             checked: 'DM' in node,
             click: function() {
-                clearPosStatus()
+                clearPosAnnotations()
                 node.DM = [1]
                 commitCommentText()
             }
@@ -916,7 +916,7 @@ function openCommentMenu() {
             type: 'checkbox',
             checked: 'GW' in node,
             click: function() {
-                clearPosStatus()
+                clearPosAnnotations()
                 node.GW = [1]
                 commitCommentText()
             }
@@ -931,7 +931,7 @@ function openCommentMenu() {
                 type: 'checkbox',
                 checked: 'TE' in node,
                 click: function() {
-                    clearMoveStatus()
+                    clearMoveAnnotations()
                     node.TE = [1]
                     commitCommentText()
                 }
@@ -941,7 +941,7 @@ function openCommentMenu() {
                 type: 'checkbox',
                 checked: 'IT' in node,
                 click: function() {
-                    clearMoveStatus()
+                    clearMoveAnnotations()
                     node.IT = [1]
                     commitCommentText()
                 }
@@ -951,7 +951,7 @@ function openCommentMenu() {
                 type: 'checkbox',
                 checked: 'DO' in node,
                 click: function() {
-                    clearMoveStatus()
+                    clearMoveAnnotations()
                     node.DO = [1]
                     commitCommentText()
                 }
@@ -961,7 +961,7 @@ function openCommentMenu() {
                 type: 'checkbox',
                 checked: 'BM' in node,
                 click: function() {
-                    clearMoveStatus()
+                    clearMoveAnnotations()
                     node.BM = [1]
                     commitCommentText()
                 }
