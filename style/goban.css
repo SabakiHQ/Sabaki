@@ -93,11 +93,12 @@
  * Scoring
  */
 
-.goban .row li.dead img {
+.scoring .goban .row li.dead img,
+body:not(.scoring) .goban .row li.dimmed img {
     opacity: .5;
 }
 
-.goban .row li div.area {
+.goban .row li div.paint {
         display: none;
         position: absolute;
         width: 100%;
@@ -106,11 +107,13 @@
         transform: translate(-50%, -50%);
         z-index: 3;
     }
-    .goban .row li.area_1 div.area {
+    .scoring .goban .row li.area_1 div.paint,
+    body:not(.scoring) .goban .row li.paint_1 div.paint {
         display: block;
         background-color: black;
     }
-    .goban .row li.area_-1 div.area {
+    .scoring .goban .row li.area_-1 div.paint,
+    body:not(.scoring) .goban .row li.paint_-1 div.paint {
         display: block;
         background-color: white;
 }

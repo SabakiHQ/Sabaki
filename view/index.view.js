@@ -352,7 +352,11 @@ function getScoringMode() {
 function setScoringMode(scoringMode) {
     if (scoringMode) {
         // Clean board
-        $$('#goban .row li').removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+        $$('#goban .row li')
+        .removeClass('area_-1')
+        .removeClass('area_0')
+        .removeClass('area_1')
+        .removeClass('dead')
 
         closeDrawers()
         document.body.addClass('scoring')
@@ -364,9 +368,6 @@ function setScoringMode(scoringMode) {
 
         updateAreaMap()
     } else {
-        $$('#goban .area_1').removeClass('area_1')
-        $$('#goban .area_-1').removeClass('area_-1')
-        $$('#goban .dead').removeClass('dead')
         document.body.removeClass('scoring')
     }
 }
@@ -753,7 +754,7 @@ function buildBoard() {
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
-                .grab(new Element('div', { class: 'area' }))
+                .grab(new Element('div', { class: 'paint' }))
             )
         }
 
