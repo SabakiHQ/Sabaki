@@ -350,6 +350,26 @@ context.getJson = function(tree) {
     })
 }
 
+context.fromJson = function(json) {
+    var addInformation = function(tree) {
+        tree.id = helper.getId()
+        tree.collapsed = false
+
+        if (tree.subtrees.length > 0) tree.current = 0
+
+        for (var i = 0; i < tree.subtrees.length; i++) {
+            tree.subtrees[i].parent = tree
+            addInformation(tree.subtrees[i])
+        }
+
+        return tree
+    }
+
+    var tree = JSON.parse(json)
+    tree.parent = null
+    return addInformation(tree)
+}
+
 context.getHash = function(tree) {
     return helper.hash(context.getJson(tree))
 }
