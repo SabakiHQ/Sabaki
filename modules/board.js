@@ -73,7 +73,7 @@ Board.prototype = {
         return result
     },
 
-    getSurroundingStones: function(vertex) {
+    getNeighborhoodStones: function(vertex) {
         var self = this
         var surroundings = self.getNeighborhood(vertex)
         var stones = [vertex]
