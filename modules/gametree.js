@@ -276,7 +276,7 @@ context.matrixdict2graph = function(matrixdict) {
                 data: matrix[y][x],
                 originalColor: setting.get('graph.node_color')
             }
-            var commentproperties = ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT']
+            var commentproperties = setting.get('sgf.comment_properties')
 
             if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
                 node.originalColor = setting.get('graph.node_comment_color')
@@ -345,9 +345,29 @@ context.matrixdict2graph = function(matrixdict) {
 
 context.getJson = function(tree) {
     return JSON.stringify(tree, function(name, val) {
-        var list = ['id', 'board', 'parent', 'collapsed']
+        var list = ['id', 'board', 'parent', 'collapsed', 'current']
         return list.indexOf(name) >= 0 ? undefined : val
     })
+}
+
+context.fromJson = function(json) {
+    var addInformation = function(tree) {
+        tree.id = helper.getId()
+        tree.collapsed = false
+
+        if (tree.subtrees.length > 0) tree.current = 0
+
+        for (var i = 0; i < tree.subtrees.length; i++) {
+            tree.subtrees[i].parent = tree
+            addInformation(tree.subtrees[i])
+        }
+
+        return tree
+    }
+
+    var tree = JSON.parse(json)
+    tree.parent = null
+    return addInformation(tree)
 }
 
 context.getHash = function(tree) {

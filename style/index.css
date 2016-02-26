@@ -229,7 +229,10 @@ header, #edit, #scoring, #find {
         left: 400px;
 }
 
-#console, #console pre, #console input {
+#console {
+        overflow: auto;
+    }
+    #console, #console pre, #console input {
         color: #d0d0d0;
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
@@ -390,7 +393,7 @@ header, #edit, #scoring, #find {
         right: 0;
         left: 0;
         height: 0;
-        overflow: hidden;
+        overflow: auto;
         color: #d0d0d0;
         background: #181818;
         box-shadow: 10px 0 10px #111;
@@ -654,6 +657,9 @@ header, #edit, #scoring, #find {
     #preferences form.general > div.general,
     #preferences form.engines > div.engines {
         display: block;
+    }
+    #preferences .engines-list {
+        overflow: auto;
     }
     #preferences input[type="checkbox"]::before {
         filter: invert(100%);

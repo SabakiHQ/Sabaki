@@ -186,12 +186,13 @@ function setPropertiesHeight(height) {
 }
 
 function getPlayerName(sign) {
-    return $$('#player_' + sign + ' .name')[0].get('text')
+    var el = $$('#player_' + sign + ' .name')[0]
+    return [el.get('text'), el.get('title')]
 }
 
-function setPlayerName(sign, name) {
+function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $$('#player_' + sign + ' .name')[0].set('text', name)
+    $$('#player_' + sign + ' .name')[0].set('text', name).set('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -247,7 +248,7 @@ function setCommentTitle(text) {
     $$('#properties .edit .header input')[0].set('value', text)
 }
 
-function setStatusComment(posstatus, posvalue, movestatus, movevalue) {
+function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     var header = $$('#properties .inner .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
@@ -352,7 +353,11 @@ function getScoringMode() {
 function setScoringMode(scoringMode) {
     if (scoringMode) {
         // Clean board
-        $$('#goban .row li').removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+        $$('#goban .row li')
+        .removeClass('area_-1')
+        .removeClass('area_0')
+        .removeClass('area_1')
+        .removeClass('dead')
 
         closeDrawers()
         document.body.addClass('scoring')
@@ -365,7 +370,6 @@ function setScoringMode(scoringMode) {
         updateAreaMap()
     } else {
         document.body.removeClass('scoring')
-        $$('.dead').removeClass('dead')
     }
 }
 
@@ -440,6 +444,8 @@ function getCurrentMoveInterpretation() {
         return 'Pass'
     else
         return ''
+
+    if (!board.hasVertex(vertex)) return 'Pass'
 
     var sign = board.arrangement[vertex]
     var neighbors = board.getNeighborhood(vertex)
@@ -750,7 +756,7 @@ function buildBoard() {
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
-                .grab(new Element('div', { class: 'area' }))
+                .grab(new Element('div', { class: 'paint' }))
             )
         }
 
@@ -861,19 +867,19 @@ function openCommentMenu() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    var clearPosStatus = function() {
+    var clearPosAnnotations = function() {
         ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
     }
-    var clearMoveStatus = function() {
+    var clearMoveAnnotations = function() {
         ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
     }
 
     var template = [
         {
-            label: '&Clear Status',
+            label: '&Clear Annotations',
             click: function() {
-                clearPosStatus()
-                clearMoveStatus()
+                clearPosAnnotations()
+                clearMoveAnnotations()
                 commitCommentText()
             }
         },
@@ -881,42 +887,22 @@ function openCommentMenu() {
         {
             label: 'Good for &Black',
             type: 'checkbox',
-            checked: 'GB' in node,
-            click: function() {
-                clearPosStatus()
-                node.GB = [1]
-                commitCommentText()
-            }
+            data: ['GB', clearPosAnnotations, 1]
         },
         {
             label: '&Unclear Position',
             type: 'checkbox',
-            checked: 'UC' in node,
-            click: function() {
-                clearPosStatus()
-                node.UC = [1]
-                commitCommentText()
-            }
+            data: ['UC', clearPosAnnotations, 1]
         },
         {
             label: '&Even Position',
             type: 'checkbox',
-            checked: 'DM' in node,
-            click: function() {
-                clearPosStatus()
-                node.DM = [1]
-                commitCommentText()
-            }
+            data: ['DM', clearPosAnnotations, 1]
         },
         {
             label: 'Good for &White',
             type: 'checkbox',
-            checked: 'GW' in node,
-            click: function() {
-                clearPosStatus()
-                node.GW = [1]
-                commitCommentText()
-            }
+            data: ['GW', clearPosAnnotations, 1]
         }
     ]
 
@@ -926,45 +912,43 @@ function openCommentMenu() {
             {
                 label: '&Good Move',
                 type: 'checkbox',
-                checked: 'TE' in node,
-                click: function() {
-                    clearMoveStatus()
-                    node.TE = [1]
-                    commitCommentText()
-                }
+                data: ['TE', clearMoveAnnotations, 1]
             },
             {
                 label: '&Interesting Move',
                 type: 'checkbox',
-                checked: 'IT' in node,
-                click: function() {
-                    clearMoveStatus()
-                    node.IT = [1]
-                    commitCommentText()
-                }
+                data: ['IT', clearMoveAnnotations, '']
             },
             {
                 label: '&Doubtful Move',
                 type: 'checkbox',
-                checked: 'DO' in node,
-                click: function() {
-                    clearMoveStatus()
-                    node.DO = [1]
-                    commitCommentText()
-                }
+                data: ['DO', clearMoveAnnotations, '']
             },
             {
                 label: 'B&ad Move',
                 type: 'checkbox',
-                checked: 'BM' in node,
-                click: function() {
-                    clearMoveStatus()
-                    node.BM = [1]
-                    commitCommentText()
-                }
+                data: ['BM', clearMoveAnnotations, 1]
             }
         ])
     }
+
+    template.forEach(function(item) {
+        if (!('data' in item)) return
+
+        var p = item.data[0], clear = item.data[1], value = item.data[2]
+
+        delete item.data
+        item.checked = p in node
+        item.click = function() {
+            if (p in node) {
+                clear()
+            } else {
+                clear()
+                node[p] = [value]
+                commitCommentText()
+            }
+        }
+    })
 
     var coord = $$('#properties .edit .header img')[0].getCoordinates()
 
@@ -1004,8 +988,8 @@ function showGameInfo() {
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
-    info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
-    info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+    info.getElement('input[name="name_1"]').set('value', 'PB' in rootNode ? rootNode.PB[0] : '')
+    info.getElement('input[name="name_-1"]').set('value', 'PW' in rootNode ? rootNode.PW[0] : '')
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')

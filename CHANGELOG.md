@@ -8,11 +8,13 @@ All notable changes to this project will be documented in this file.
 
 * Show SGF node name (`N` property) if available
 * Show node & move annotations
+* Add 'Go To Next/Previous Comment' menu items
 
 **Changed**
 
 * Change 'Bookmark' to 'Hotspot'
 * 'Show Variations' shows next move as well
+* Don't make current track to main track when saving
 
 **Fixed**
 

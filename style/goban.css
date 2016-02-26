@@ -93,14 +93,13 @@
  * Scoring
  */
 
-.scoring .goban .row li.dead img {
+.scoring .goban .row li.dead img,
+body:not(.scoring) .goban .row li.dimmed img {
     opacity: .5;
 }
 
-.goban .row li div.area { display: none; }
-
-.scoring .goban .row li div.area {
-        display: block;
+.goban .row li div.paint {
+        display: none;
         position: absolute;
         width: 100%;
         height: 100%;
@@ -108,10 +107,14 @@
         transform: translate(-50%, -50%);
         z-index: 3;
     }
-    .scoring .goban .row li.area_1 div.area {
+    .scoring .goban .row li.area_1 div.paint,
+    body:not(.scoring) .goban .row li.paint_1 div.paint {
+        display: block;
         background-color: black;
     }
-    .scoring .goban .row li.area_-1 div.area {
+    .scoring .goban .row li.area_-1 div.paint,
+    body:not(.scoring) .goban .row li.paint_-1 div.paint {
+        display: block;
         background-color: white;
 }
 
@@ -238,11 +241,19 @@
     .goban.fuzzy .row li.point.shift_1::after {
         margin-left: -7px;
     }
+    .goban.fuzzy .row li.sign_1.shift_1::before,
+    .goban.fuzzy .row li.sign_-1.shift_1::before {
+        transform: translateX(-2px);
+    }
     .goban.fuzzy .row li.shift_2 img {
         top: -2px;
     }
     .goban.fuzzy .row li.point.shift_2::after {
         margin-top: -7px;
+    }
+    .goban.fuzzy .row li.sign_1.shift_2::before,
+    .goban.fuzzy .row li.sign_-1.shift_2::before {
+        transform: translateY(-2px);
     }
     .goban.fuzzy .row li.shift_3 img {
         left: 2px;
@@ -250,11 +261,19 @@
     .goban.fuzzy .row li.point.shift_3::after {
         margin-left: -3px;
     }
+    .goban.fuzzy .row li.sign_1.shift_3::before,
+    .goban.fuzzy .row li.sign_-1.shift_3::before {
+        transform: translateX(2px);
+    }
     .goban.fuzzy .row li.shift_4 img {
         top: 2px;
     }
     .goban.fuzzy .row li.point.shift_4::after {
         margin-top: -3px;
+    }
+    .goban.fuzzy .row li.sign_1.shift_4::before,
+    .goban.fuzzy .row li.sign_-1.shift_4::before {
+        transform: translateY(2px);
     }
     .goban.fuzzy .row li.shift_5 img {
         top: -1px;
@@ -264,6 +283,10 @@
         margin-top: -6px;
         margin-left: -6px;
     }
+    .goban.fuzzy .row li.sign_1.shift_5::before,
+    .goban.fuzzy .row li.sign_-1.shift_5::before {
+        transform: translate(-1px, -1px);
+    }
     .goban.fuzzy .row li.shift_6 img {
         top: -1px;
         left: 1px;
@@ -271,6 +294,10 @@
     .goban.fuzzy .row li.point.shift_6::after {
         margin-top: -6px;
         margin-left: -4px;
+    }
+    .goban.fuzzy .row li.sign_1.shift_6::before,
+    .goban.fuzzy .row li.sign_-1.shift_6::before {
+        transform: translate(1px, -1px);
     }
     .goban.fuzzy .row li.shift_7 img {
         top: 1px;
@@ -280,6 +307,10 @@
         margin-top: -4px;
         margin-left: -4px;
     }
+    .goban.fuzzy .row li.sign_1.shift_7::before,
+    .goban.fuzzy .row li.sign_-1.shift_7::before {
+        transform: translate(1px, 1px);
+    }
     .goban.fuzzy .row li.shift_8 img {
         top: 1px;
         left: -1px;
@@ -287,4 +318,8 @@
     .goban.fuzzy .row li.point.shift_8::after {
         margin-top: -4px;
         margin-left: -6px;
+    }
+    .goban.fuzzy .row li.sign_1.shift_8::before,
+    .goban.fuzzy .row li.sign_-1.shift_8::before {
+        transform: translate(-1px, 1px);
 }

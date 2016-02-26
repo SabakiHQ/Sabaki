@@ -34,8 +34,16 @@ function setRootTree(tree, updateHash) {
     if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
-    setPlayerName(1, 'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black')
-    setPlayerName(-1, 'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White')
+    setPlayerName(
+        1,
+        'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black',
+        'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+    )
+    setPlayerName(
+        -1,
+        'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White',
+        'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+    )
 }
 
 function getGraphMatrixDict() {
@@ -489,11 +497,14 @@ function attachEngine(exec, args) {
 
         if (controller.error) {
             showMessageBox('There was an error attaching the engine.', 'error')
-            setIsBusy(false)
             return
         }
 
-        controller.on('quit', function() { $('console').store('controller', null) })
+        controller.on('quit', function() {
+            $('console').store('controller', null)
+            setIsBusy(false)
+        })
+
         $('console').store('controller', controller)
 
         sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
@@ -517,6 +528,8 @@ function detachEngine() {
 
     $('console').store('controller', null)
         .store('boardhash', null)
+
+    setIsBusy(false)
 }
 
 function syncEngine() {
@@ -921,8 +934,7 @@ function findPosition(step, condition) {
 
 function findBookmark(step) {
     findPosition(step, function(tree, index) {
-        var node = tree.nodes[index]
-        return 'HO' in node
+        return 'HO' in tree.nodes[index]
     })
 }
 
@@ -937,7 +949,7 @@ function findMove(vertex, text, step) {
         }
 
         return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
-            && (!text || cond('C', text))
+            && (!text || cond('C', text) || cond('N', text))
     })
 }
 
@@ -1031,7 +1043,7 @@ function updateCommentText() {
     setCommentText('C' in node ? node.C[0] : '')
     setCommentTitle('N' in node ? node.N[0] : '')
 
-    setStatusComment.apply(null, (function() {
+    setAnnotations.apply(null, (function() {
         if ('UC' in node) return [-2, node.UC[0]]
         if ('GW' in node) return [-1, node.GW[0]]
         if ('DM' in node) return [0, node.DM[0]]
@@ -1104,8 +1116,8 @@ function commitGameInfo() {
     rootNode.PB = [info.getElement('input[name="name_1"]').get('value').trim()]
     rootNode.PW = [info.getElement('input[name="name_-1"]').get('value').trim()]
 
-    setPlayerName(1, rootNode.PB[0])
-    setPlayerName(-1, rootNode.PW[0])
+    setPlayerName(1, rootNode.PB[0], rootNode.BR[0])
+    setPlayerName(-1, rootNode.PW[0], rootNode.WR[0])
 
     var result = info.getElement('input[name="result"]').get('value').trim()
     rootNode.RE = [result]
@@ -1403,7 +1415,7 @@ function saveGame(filename) {
 
     if (filename) {
         var tree = getRootTree()
-        var text = sgf.tree2string(tree)
+        var text = sgf.fromTree(tree)
 
         fs.writeFile(filename, '(' + text + ')')
         document.body.store('treehash', gametree.getHash(tree))
@@ -1463,6 +1475,23 @@ function goToPreviousFork() {
     else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
 }
 
+function goToComment(step) {
+    var tp = getCurrentTreePosition()
+
+    while (true) {
+        tp = gametree.navigate.apply(null, tp.concat([step]))
+        if (!tp[0]) break
+
+        var node = tp[0].nodes[tp[1]]
+
+        if (setting.get('sgf.comment_properties').some(function(p) {
+            return p in node
+        })) break
+    }
+
+    setCurrentTreePosition.apply(null, tp)
+}
+
 function goToBeginning() {
     var tree = getRootTree()
     if (tree.nodes.length == 0) return
@@ -1496,6 +1525,25 @@ function goToPreviousVariation() {
     var i = (tree.parent.current + mod - 1) % mod
 
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
+}
+
+function makeMainTrack() {
+    setUndoable(true)
+    closeDrawers()
+
+    var root = tree = getRootTree()
+    var level = gametree.getLevel.apply(null, getCurrentTreePosition())
+
+    while (tree.current != null) {
+        var subtree = tree.subtrees.splice(tree.current, 1)[0]
+        tree.subtrees.unshift(subtree)
+        tree.current = 0
+
+        tree = subtree
+    }
+
+    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level))
+    updateGraph()
 }
 
 function removeNode(tree, index) {
