@@ -447,7 +447,7 @@ function getCurrentMoveInterpretation() {
     if (!board.hasVertex(vertex)) return 'Pass'
 
     var sign = board.arrangement[vertex]
-    var neighbors = board.getNeighborhood(vertex)
+    var neighbors = board.getNeighbors(vertex)
 
     // Check atari
 

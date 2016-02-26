@@ -46,7 +46,7 @@ Board.prototype = {
         return Math.min(vertex[0] + 1, this.size - vertex[0], vertex[1] + 1, this.size - vertex[1])
     },
 
-    getNeighborhood: function(vertex) {
+    getNeighbors: function(vertex) {
         var self = this
         if (!self.hasVertex(vertex)) return []
         var x = vertex[0], y = vertex[1]
@@ -61,7 +61,7 @@ Board.prototype = {
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighborhood(vertex).forEach(function(v) {
+        this.getNeighbors(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
             if (result.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
@@ -84,7 +84,7 @@ Board.prototype = {
         var liberties = []
 
         chain.forEach(function(c) {
-            liberties.push.apply(liberties, self.getNeighborhood(c).filter(function(n) {
+            liberties.push.apply(liberties, self.getNeighbors(c).filter(function(n) {
                 return self.arrangement[n] == 0
                 && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
             }))
@@ -123,7 +123,7 @@ Board.prototype = {
                 chain.forEach(function(c) {
                     if (indicator == 0) return
 
-                    self.getNeighborhood(c).forEach(function(n) {
+                    self.getNeighbors(c).forEach(function(n) {
                         if (self.arrangement[n] == 0 || indicator == 0) return
 
                         if (sign == 0) sign = map[n] = self.arrangement[n]
@@ -191,7 +191,7 @@ Board.prototype = {
         var suicide = true
 
         // Remove captured stones
-        this.getNeighborhood(vertex).forEach(function(n) {
+        this.getNeighbors(vertex).forEach(function(n) {
             if (move.arrangement[n] != -sign) return
 
             var ll = this.getLiberties(n)

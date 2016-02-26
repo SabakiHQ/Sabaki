@@ -621,15 +621,15 @@ function makeMove(vertex, sendCommand) {
         }
 
         // Check for suicide
-        capture = getBoard().getNeighborhood(vertex).some(function(v) {
+        capture = getBoard().getNeighbors(vertex).some(function(v) {
             return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
         })
 
-        suicide = !capture && getBoard().getNeighborhood(vertex).filter(function(v) {
+        suicide = !capture && getBoard().getNeighbors(vertex).filter(function(v) {
             return getBoard().arrangement[v] == sign
         }).every(function(v) {
             return getBoard().getLiberties(v).length == 1
-        }) && getBoard().getNeighborhood(vertex).filter(function(v) {
+        }) && getBoard().getNeighbors(vertex).filter(function(v) {
             return getBoard().arrangement[v] == 0
         }).length == 0
 
