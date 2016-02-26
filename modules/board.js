@@ -73,24 +73,25 @@ Board.prototype = {
         return result
     },
 
-    getNeighborhoodStones: function(vertex) {
+    getSurroundings: function(vertex) {
         var self = this
-        var surroundings = self.getNeighborhood(vertex)
+        var result = self.getNeighborhood(vertex)
         var stones = [vertex]
 
         while (true) {
-            var newstones = surroundings.filter(function(v) {
+            var newstones = result.filter(function(v) {
                 return self.arrangement[v] != 0
                     && !stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })
             })
 
-            if (newstones.length == 0) return stones
+            if (newstones.length == 0) return result
 
             newstones.forEach(function(v) {
                 if (stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
                 self.getNeighborhood(v).forEach(function(n) {
-                    surroundings.push(n)
+                    if (result.some(function(w) { return w[0] == n[0] && w[1] == n[1] })) return
+                    result.push(n)
                 })
 
                 stones.push(v)
