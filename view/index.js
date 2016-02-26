@@ -489,7 +489,11 @@ function attachEngine(exec, args) {
             return
         }
 
-        controller.on('quit', function() { $('console').store('controller', null) })
+        controller.on('quit', function() {
+            $('console').store('controller', null)
+            setIsBusy(false)
+        })
+
         $('console').store('controller', controller)
 
         sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
