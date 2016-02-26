@@ -56,6 +56,48 @@ Board.prototype = {
         ].filter(self.hasVertex.bind(self))
     },
 
+    getNeighborhood: function(vertex) {
+        var self = this
+        var result = []
+
+        if (!self.hasVertex(vertex)) return result
+
+        for (var x = vertex[0] - 3; x <= vertex[0] + 3; x++) {
+            for (var y = vertex[1] - 3; y <= vertex[1] + 3; y++) {
+                if (!self.hasVertex([x, y])) continue
+                var distance = Math.pow(vertex[0] - x, 2) + Math.pow(vertex[1] - y, 2)
+                if (distance <= 10) result.push([x, y])
+            }
+        }
+
+        return result
+    },
+
+    getSurroundingStones: function(vertex) {
+        var self = this
+        var surroundings = self.getNeighborhood(vertex)
+        var stones = [vertex]
+
+        while (true) {
+            var newstones = surroundings.filter(function(v) {
+                return self.arrangement[v] != 0
+                    && !stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })
+            })
+
+            if (newstones.length == 0) return stones
+
+            newstones.forEach(function(v) {
+                if (stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
+
+                self.getNeighborhood(v).forEach(function(n) {
+                    surroundings.push(n)
+                })
+
+                stones.push(v)
+            })
+        }
+    },
+
     getConnectedComponent: function(vertex, colors, result) {
         if (!this.hasVertex(vertex)) return []
         if (!result) result = [vertex]
