@@ -61,9 +61,14 @@ Board.prototype = {
 
     getSymmetries: function(vertex) {
         var self = this
+        var mod = self.size - 1
         if (!self.hasVertex(vertex)) return []
 
-        return helper.getSymmetries(vertex).map(function(x) { return x % (self.size - 1) })
+        return helper.getSymmetries(vertex).map(function(x) {
+            return x.map(function(y) {
+                return (y % m + m) % m
+            })
+        })
     },
 
     getNeighbors: function(vertex) {
@@ -371,7 +376,7 @@ Board.prototype = {
     }
 }
 
-Board.sideMatch = function(area, source, target) {
+Board.cornerMatch = function(area, source, target) {
     var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
     var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
 
