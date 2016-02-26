@@ -59,15 +59,16 @@ Board.prototype = {
         return v
     },
 
-    getRepresentatives: function(vertex) {
-        if (!this.hasVertex(vertex)) return []
+    getSymmetries: function(vertex) {
+        var self = this
+        if (!self.hasVertex(vertex)) return []
 
         var reversed = [vertex[1], vertex[0]]
         var sym = function(v) {
             return [
-                [this.size - v[0] - 1, v[1]],
-                [v[0], this.size - v[1] - 1],
-                [this.size - v[0] - 1, this.size - v[1] - 1]
+                [self.size - v[0] - 1, v[1]],
+                [v[0], self.size - v[1] - 1],
+                [self.size - v[0] - 1, self.size - v[1] - 1]
             ]
         }
 
@@ -379,8 +380,24 @@ Board.prototype = {
     }
 }
 
-Board.match = function(vertices, source, target) {
+Board.sideMatch = function(area, source, target) {
+    var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
+    var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
 
+    area.forEach(function(vertex) {
+        var sign = source.arrangement[vertex]
+        var representatives = target.getSymmetries(vertex)
+
+        for (var i = 0; i < 8; i++) {
+            if (target.arrangement[representatives[i]] != sign)
+                hypotheses[i] = false
+            if (target.arrangement[representatives[i]] != -sign)
+                hypothesesInvert[i] = false
+        }
+    })
+
+    var i = hypotheses.concat(hypothesesInvert).indexOf(true)
+    return i < 8 ? [i, false] : [i - 8, true]
 }
 
 if (typeof module != 'undefined') module.exports = Board
