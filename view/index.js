@@ -485,7 +485,6 @@ function attachEngine(exec, args) {
 
         if (controller.error) {
             showMessageBox('There was an error attaching the engine.', 'error')
-            setIsBusy(false)
             return
         }
 
