@@ -564,7 +564,7 @@ function getCurrentMoveInterpretation() {
                 result = 'Attach'
             } else if (diff[0] == 1 && diff[1] == 1) {
                 result = 'Shoulder hit'
-            } else if (board.getDistanceToGround(vertex) <= 5 && board.getDistanceToGround([x, y]) <= 5) {
+            } else if (board.getDistanceToGround(vertex) <= 4 && board.getDistanceToGround([x, y]) <= 4) {
                 result = 'Approach'
             } else {
                 continue
@@ -581,11 +581,7 @@ function getCurrentMoveInterpretation() {
     if (vertex[0] == (board.size - 1) / 2 && vertex[1] == vertex[0])
         return 'Tengen'
 
-    var diff = [
-        Math.min(vertex[0] + 1, board.size - vertex[0]),
-        Math.min(vertex[1] + 1, board.size - vertex[1])
-    ]
-    diff.sort(function(x, y) { return x - y })
+    var diff = board.getCanonicalVertex(vertex).map(function(x) { return x + 1 })
 
     if ((diff[0] != 4 || diff[1] != 4) && board.getHandicapPlacement(9).some(function(v) {
         return v[0] == vertex[0] && v[1] == vertex[1]

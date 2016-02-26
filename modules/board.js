@@ -43,7 +43,33 @@ Board.prototype = {
     },
 
     getDistanceToGround: function(vertex) {
-        return Math.min(vertex[0] + 1, this.size - vertex[0], vertex[1] + 1, this.size - vertex[1])
+        return this.getCanonicalVertex(vertex)[0]
+    },
+
+    getCanonicalVertex: function(vertex) {
+        if (!this.hasVertex(vertex)) return [-1, -1]
+
+        var v = [
+            Math.min(vertex[0], this.size - vertex[0] - 1),
+            Math.min(vertex[1], this.size - vertex[1] - 1)
+        ]
+
+        v.sort(function(x, y) { return x - y })
+
+        return v
+    },
+
+    getRepresentatives: function(canonical) {
+        var reversed = [canonical[1], canonical[0]]
+        var sym = function(v) {
+            return [
+                [this.size - v[0] - 1, v[1]]
+                [v[0], this.size - v[1] - 1]
+                [this.size - v[0] - 1, this.size - v[1] - 1]
+            ]
+        }
+
+        return [canonical, reversed].concat(sym(canonical)).concat(sym(reversed))
     },
 
     getNeighbors: function(vertex) {
@@ -347,6 +373,10 @@ Board.prototype = {
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }
+}
+
+Board.match = function(vertices, source, target) {
+
 }
 
 if (typeof module != 'undefined') module.exports = Board
