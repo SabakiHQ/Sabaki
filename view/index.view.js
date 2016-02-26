@@ -186,12 +186,13 @@ function setPropertiesHeight(height) {
 }
 
 function getPlayerName(sign) {
-    return $$('#player_' + sign + ' .name')[0].get('text')
+    var el = $$('#player_' + sign + ' .name')[0]
+    return [el.get('text'), el.get('title')]
 }
 
-function setPlayerName(sign, name) {
+function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $$('#player_' + sign + ' .name')[0].set('text', name)
+    $$('#player_' + sign + ' .name')[0].set('text', name).set('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -984,8 +985,8 @@ function showGameInfo() {
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
-    info.getElement('input[name="name_1"]').set('value', getPlayerName(1))
-    info.getElement('input[name="name_-1"]').set('value', getPlayerName(-1))
+    info.getElement('input[name="name_1"]').set('value', 'PB' in rootNode ? rootNode.PB[0] : '')
+    info.getElement('input[name="name_-1"]').set('value', 'PW' in rootNode ? rootNode.PW[0] : '')
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')

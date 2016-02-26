@@ -34,8 +34,16 @@ function setRootTree(tree, updateHash) {
     if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
-    setPlayerName(1, 'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black')
-    setPlayerName(-1, 'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White')
+    setPlayerName(
+        1,
+        'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black',
+        'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+    )
+    setPlayerName(
+        -1,
+        'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White',
+        'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+    )
 }
 
 function getGraphMatrixDict() {
@@ -1101,8 +1109,8 @@ function commitGameInfo() {
     rootNode.PB = [info.getElement('input[name="name_1"]').get('value').trim()]
     rootNode.PW = [info.getElement('input[name="name_-1"]').get('value').trim()]
 
-    setPlayerName(1, rootNode.PB[0])
-    setPlayerName(-1, rootNode.PW[0])
+    setPlayerName(1, rootNode.PB[0], rootNode.BR[0])
+    setPlayerName(-1, rootNode.PW[0], rootNode.WR[0])
 
     var result = info.getElement('input[name="result"]').get('value').trim()
     rootNode.RE = [result]
