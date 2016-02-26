@@ -59,10 +59,10 @@ Board.prototype = {
         return v
     },
 
-    getRepresentatives: function(canonical) {
-        if (!this.hasVertex(canonical)) return []
+    getRepresentatives: function(vertex) {
+        if (!this.hasVertex(vertex)) return []
 
-        var reversed = [canonical[1], canonical[0]]
+        var reversed = [vertex[1], vertex[0]]
         var sym = function(v) {
             return [
                 [this.size - v[0] - 1, v[1]]
@@ -71,7 +71,7 @@ Board.prototype = {
             ]
         }
 
-        return [canonical, reversed].concat(sym(canonical)).concat(sym(reversed))
+        return [vertex, reversed].concat(sym(vertex)).concat(sym(reversed))
     },
 
     getNeighbors: function(vertex) {
