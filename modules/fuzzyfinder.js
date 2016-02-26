@@ -53,7 +53,7 @@ function generateVector(needle, hay) {
 
 function lexicalSort(a, b) {
     if (!a.length || !b.length) return a.length - b.length
-    return a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : lexicalSort(a.slice(1), b.slice(1)))
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : lexicalSort(a.slice(1), b.slice(1))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)

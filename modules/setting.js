@@ -12,6 +12,7 @@ if (typeof require != 'undefined') {
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
 
+var namesort = function(x, y) { return x.name > y.name ? 1 : x.name == y.name ? 0 : -1 }
 var settingspath = ''
 
 if (path && app)
@@ -94,7 +95,7 @@ context.load = function() {
     }
 
     engines = settings['engines.list']
-    engines.sort(function(x, y) { return x.name >= y.name })
+    engines.sort(namesort)
 
     return context
 }
@@ -123,7 +124,7 @@ context.addEngine = function(name, path, args) {
         path: path,
         args: args
     })
-    engines.sort(function(x, y) { return x.name >= y.name })
+    engines.sort(namesort)
     return context
 }
 
