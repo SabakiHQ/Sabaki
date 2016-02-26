@@ -65,8 +65,8 @@ Board.prototype = {
         var reversed = [vertex[1], vertex[0]]
         var sym = function(v) {
             return [
-                [this.size - v[0] - 1, v[1]]
-                [v[0], this.size - v[1] - 1]
+                [this.size - v[0] - 1, v[1]],
+                [v[0], this.size - v[1] - 1],
                 [this.size - v[0] - 1, this.size - v[1] - 1]
             ]
         }
