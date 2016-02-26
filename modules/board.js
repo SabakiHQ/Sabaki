@@ -60,6 +60,8 @@ Board.prototype = {
     },
 
     getRepresentatives: function(canonical) {
+        if (!this.hasVertex(canonical)) return []
+
         var reversed = [canonical[1], canonical[0]]
         var sym = function(v) {
             return [
@@ -100,6 +102,8 @@ Board.prototype = {
     },
 
     getSurroundings: function(vertex) {
+        if (!this.hasVertex(vertex)) return []
+
         var self = this
         var result = self.getNeighborhood(vertex)
         var stones = [vertex]
@@ -146,7 +150,7 @@ Board.prototype = {
     },
 
     getLiberties: function(vertex) {
-        if (this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
 
         var self = this
         var chain = self.getChain(vertex)
@@ -163,7 +167,7 @@ Board.prototype = {
     },
 
     getRelatedChains: function(vertex) {
-        if (this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
 
         var area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
         return area.filter(function(v) {
