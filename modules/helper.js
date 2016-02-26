@@ -63,6 +63,19 @@ context.equals = function(a, b) {
     return false
 }
 
+context.getSymmetries = function(tuple) {
+    var reversed = [tuple[1], tuple[0]]
+    var s = function(v) {
+        return [
+            [-v[0], v[1]],
+            [v[0], -v[1]],
+            [-v[0], -v[1]]
+        ]
+    }
+
+    return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
+}
+
 context.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
     input = input.replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

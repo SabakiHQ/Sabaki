@@ -63,16 +63,7 @@ Board.prototype = {
         var self = this
         if (!self.hasVertex(vertex)) return []
 
-        var reversed = [vertex[1], vertex[0]]
-        var sym = function(v) {
-            return [
-                [self.size - v[0] - 1, v[1]],
-                [v[0], self.size - v[1] - 1],
-                [self.size - v[0] - 1, self.size - v[1] - 1]
-            ]
-        }
-
-        return [vertex, reversed].concat(sym(vertex)).concat(sym(reversed))
+        return helper.getSymmetries(vertex).map(function(x) { return x % (self.size - 1) })
     },
 
     getNeighbors: function(vertex) {
