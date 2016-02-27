@@ -275,7 +275,7 @@ context.fromTree = function(tree) {
     })
 
     for (var i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + context.tree2string(tree.subtrees[i]) + ')'
+        output += '(' + context.fromTree(tree.subtrees[i]) + ')'
     }
 
     return output
