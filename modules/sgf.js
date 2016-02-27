@@ -169,9 +169,9 @@ context.addBoard = function(tree, index, baseboard) {
     } else if ('W' in node) {
         vertex = context.point2vertex(node.W[0])
         board = baseboard.makeMove(-1, vertex)
-    } else {
-        board = baseboard.clone()
     }
+
+    if (!board) board = baseboard.clone()
 
     var ids = ['AW', 'AE', 'AB']
 
