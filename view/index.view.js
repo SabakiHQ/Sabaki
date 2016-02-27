@@ -474,7 +474,6 @@ function getCurrentMoveInterpretation() {
     var friendly = neighbors.filter(function(v) { return board.arrangement[v] == sign})
     if (friendly.length == neighbors.length) return 'Fill'
     if (friendly.length >= 2) return 'Connect'
-    if (friendly.length == 1) return 'Stretch'
 
     // Match shape
 
@@ -482,6 +481,8 @@ function getCurrentMoveInterpretation() {
         if (shapes.match(getShapes()[i], board, vertex))
             return getShapes()[i].name
     }
+
+    if (friendly.length == 1) return 'Stretch'
 
     // Determine position to edges
 
