@@ -418,6 +418,17 @@ function setRepresentedFilename(filename) {
     document.title = title
 }
 
+function getShapes() {
+    var ss = document.body.retrieve('shapes')
+
+    if (!ss) {
+        ss = shapes.parseFile(__dirname + '/../data/shapes.sgf')
+        document.body.store('shapes', ss)
+    }
+
+    return ss
+}
+
 function getCurrentMoveInterpretation() {
     var board = getBoard()
     var tp = getCurrentTreePosition()
