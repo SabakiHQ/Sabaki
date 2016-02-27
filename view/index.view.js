@@ -233,8 +233,9 @@ function getCommentText() {
 function setCommentText(text) {
     var html = helper.htmlify(text, true, true, true, true)
     var container = $$('#properties .inner .comment')[0]
+    var textarea = $$('#properties textarea')[0]
 
-    $$('#properties textarea').set('value', text)
+    if (textarea.get('value') != text) textarea.set('value', text)
     container.set('html', html)
     helper.wireLinks(container)
 }
@@ -244,8 +245,10 @@ function getCommentTitle() {
 }
 
 function setCommentTitle(text) {
+    var input = $$('#properties .edit .header input')[0]
+
     $$('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
-    $$('#properties .edit .header input')[0].set('value', text)
+    if (input.get('value') != text) input.set('value', text)
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {

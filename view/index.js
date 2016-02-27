@@ -1095,7 +1095,6 @@ function commitCommentText() {
     if (title != '') tree.nodes[index].N = [title]
     else delete tree.nodes[index].N
 
-    updateCommentText()
     updateSidebar(true)
     setUndoable(false)
 }
