@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.10.0][v0.10.0] (2016-02-27)
 
 **Added**
 
@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 * Change 'Bookmark' to 'Hotspot'
 * 'Show Variations' shows next move as well
 * Don't make current track to main track when saving
+* Update to Electron v0.36.9
 
 **Fixed**
 
@@ -335,7 +336,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.9.1...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.10.0...master
+[v0.10.0]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.0
 [v0.9.1]: https://github.com/yishn/Sabaki/compare/v0.9.0...v0.9.1
 [v0.9.0]: https://github.com/yishn/Sabaki/compare/v0.8.1...v0.9.0
 [v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.8.0...v0.8.1
