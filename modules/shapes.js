@@ -10,7 +10,7 @@ var context = typeof module != 'undefined' ? module.exports : (window.shapes = {
 
 context.parseFile = function(filename) {
     var tree = sgf.parseFile(filename).subtrees[0]
-    var result = {}
+    var result = []
 
     for (var i = 0; i < tree.subtrees.length; i++) {
         var node = sgf.addBoard(tree.subtrees[i], 0).nodes[0]
@@ -18,10 +18,11 @@ context.parseFile = function(filename) {
         var area = node.CR.map(function(x) { return sgf.point2vertex(x) })
         var board = node.board
 
-        result[name] = {
+        result.push({
+            name: name,
             area: area,
             board: board
-        }
+        })
     }
 
     return result
