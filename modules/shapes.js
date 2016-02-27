@@ -29,7 +29,9 @@ context.parseFile = function(filename) {
 }
 
 context.match = function(shape, board, vertex) {
+    if (!board.hasVertex(vertex)) return false
     var sign = board.arrangement[vertex]
+    if (sign == 0) return false
 
     for (var i = 0; i < shape.candidates.length; i++) {
         var anchor = shape.candidates[i]
@@ -52,7 +54,8 @@ context.match = function(shape, board, vertex) {
             if (hypotheses.indexOf(true) < 0) break
         }
 
-        if (hypotheses.indexOf(true) >= 0) return true
+        var symm = hypotheses.indexOf(true)
+        if (symm >= 0) return [symm, sign]
     }
 
     return false
