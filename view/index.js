@@ -3,6 +3,7 @@ var ipcRenderer = require('electron').ipcRenderer
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../modules/sgf')
+var shapes = require('../modules/shapes')
 var fuzzyfinder = require('../modules/fuzzyfinder')
 var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
