@@ -43,10 +43,35 @@ Board.prototype = {
     },
 
     getDistanceToGround: function(vertex) {
-        return Math.min(vertex[0] + 1, this.size - vertex[0], vertex[1] + 1, this.size - vertex[1])
+        return this.getCanonicalVertex(vertex)[0]
     },
 
-    getNeighborhood: function(vertex) {
+    getCanonicalVertex: function(vertex) {
+        if (!this.hasVertex(vertex)) return [-1, -1]
+
+        var v = [
+            Math.min(vertex[0], this.size - vertex[0] - 1),
+            Math.min(vertex[1], this.size - vertex[1] - 1)
+        ]
+
+        v.sort(function(x, y) { return x - y })
+
+        return v
+    },
+
+    getSymmetries: function(vertex) {
+        var self = this
+        var m = self.size - 1
+        if (!self.hasVertex(vertex)) return []
+
+        return helper.getSymmetries(vertex).map(function(x) {
+            return x.map(function(y) {
+                return (y % m + m) % m
+            })
+        })
+    },
+
+    getNeighbors: function(vertex) {
         var self = this
         if (!self.hasVertex(vertex)) return []
         var x = vertex[0], y = vertex[1]
@@ -56,12 +81,57 @@ Board.prototype = {
         ].filter(self.hasVertex.bind(self))
     },
 
+    getNeighborhood: function(vertex) {
+        var self = this
+        var result = []
+
+        if (!self.hasVertex(vertex)) return result
+
+        for (var x = vertex[0] - 3; x <= vertex[0] + 3; x++) {
+            for (var y = vertex[1] - 3; y <= vertex[1] + 3; y++) {
+                if (!self.hasVertex([x, y])) continue
+                var distance = Math.pow(vertex[0] - x, 2) + Math.pow(vertex[1] - y, 2)
+                if (distance <= 10) result.push([x, y])
+            }
+        }
+
+        return result
+    },
+
+    getSurroundings: function(vertex) {
+        if (!this.hasVertex(vertex)) return []
+
+        var self = this
+        var result = self.getNeighborhood(vertex)
+        var stones = [vertex]
+
+        while (true) {
+            var newstones = result.filter(function(v) {
+                return self.arrangement[v] != 0
+                    && !stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })
+            })
+
+            if (newstones.length == 0) return result
+
+            newstones.forEach(function(v) {
+                if (stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
+
+                self.getNeighborhood(v).forEach(function(n) {
+                    if (result.some(function(w) { return w[0] == n[0] && w[1] == n[1] })) return
+                    result.push(n)
+                })
+
+                stones.push(v)
+            })
+        }
+    },
+
     getConnectedComponent: function(vertex, colors, result) {
         if (!this.hasVertex(vertex)) return []
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighborhood(vertex).forEach(function(v) {
+        this.getNeighbors(vertex).forEach(function(v) {
             if (colors.indexOf(this.arrangement[v]) == -1) return
             if (result.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
@@ -77,14 +147,14 @@ Board.prototype = {
     },
 
     getLiberties: function(vertex) {
-        if (this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
 
         var self = this
         var chain = self.getChain(vertex)
         var liberties = []
 
         chain.forEach(function(c) {
-            liberties.push.apply(liberties, self.getNeighborhood(c).filter(function(n) {
+            liberties.push.apply(liberties, self.getNeighbors(c).filter(function(n) {
                 return self.arrangement[n] == 0
                 && !liberties.some(function(v) { return v[0] == n[0] && v[1] == n[1] })
             }))
@@ -94,7 +164,7 @@ Board.prototype = {
     },
 
     getRelatedChains: function(vertex) {
-        if (this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
 
         var area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
         return area.filter(function(v) {
@@ -123,7 +193,7 @@ Board.prototype = {
                 chain.forEach(function(c) {
                     if (indicator == 0) return
 
-                    self.getNeighborhood(c).forEach(function(n) {
+                    self.getNeighbors(c).forEach(function(n) {
                         if (self.arrangement[n] == 0 || indicator == 0) return
 
                         if (sign == 0) sign = map[n] = self.arrangement[n]
@@ -191,7 +261,7 @@ Board.prototype = {
         var suicide = true
 
         // Remove captured stones
-        this.getNeighborhood(vertex).forEach(function(n) {
+        this.getNeighbors(vertex).forEach(function(n) {
             if (move.arrangement[n] != -sign) return
 
             var ll = this.getLiberties(n)
@@ -304,6 +374,30 @@ Board.prototype = {
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }
+}
+
+Board.cornerMatch = function(area, source, target) {
+    var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
+    var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
+
+    for (var j = 0; j < area.length; j++) {
+        var vertex = area[j]
+        var sign = source.arrangement[vertex]
+        var representatives = target.getSymmetries(vertex)
+
+        for (var i = 0; i < hypotheses.length; i++) {
+            if (target.arrangement[representatives[i]] != sign)
+                hypotheses[i] = false
+            if (target.arrangement[representatives[i]] != -sign)
+                hypothesesInvert[i] = false
+        }
+
+        if (hypotheses.indexOf(true) < 0 && hypothesesInvert.indexOf(true) < 0)
+            return null
+    }
+
+    var i = hypotheses.concat(hypothesesInvert).indexOf(true)
+    return i < 8 ? [i, false] : [i - 8, true]
 }
 
 if (typeof module != 'undefined') module.exports = Board
