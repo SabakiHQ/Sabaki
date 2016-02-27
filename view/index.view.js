@@ -476,119 +476,12 @@ function getCurrentMoveInterpretation() {
     if (friendly.length >= 2) return 'Connect'
     if (friendly.length == 1) return 'Stretch'
 
-    // Get nearest non-blocked friendly stone
+    // Match shape
 
-    var euclidean = function(v, w) { return Math.pow(v[0] - w[0], 2) + Math.pow(v[1] - w[1], 2) }
-    var compare = function(v, w) {
-        if (board.getDistance(v, vertex) == board.getDistance(w, vertex))
-            return euclidean(v, vertex) - euclidean(w, vertex)
-        return board.getDistance(v, vertex) - board.getDistance(w, vertex)
+    for (var i = 0; i < getShapes().length; i++) {
+        if (shapes.match(getShapes()[i], board, vertex))
+            return getShapes()[i].name
     }
-
-    var minvertex = null
-    var result = null
-
-    for (var x = 0; x < board.size; x++) {
-        for (var y = 0; y < board.size; y++) {
-            if (board.arrangement[[x, y]] != sign) continue
-            if (minvertex && compare(minvertex, [x, y]) < 0) continue
-
-            var distance = board.getDistance([x, y], vertex)
-            var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
-
-            if (distance == 0 || distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
-
-            var blocking = []
-            for (var i = Math.min(vertex[0], x); i <= Math.max(vertex[0], x); i++)
-                for (var j = Math.min(vertex[1], y); j <= Math.max(vertex[1], y); j++)
-                    blocking.push([i, j])
-
-            var enemies = function(x) {
-                return x.map(function(v) { return board.arrangement[v] })
-                    .filter(function(s) { return s == -sign }).length
-            }
-
-            if (diff[0] == 1 && diff[1] == 1) {
-                // + + o +
-                // + o + +
-
-                if (enemies(blocking) >= 2) result = 'Cut'
-                else if (enemies(blocking) == 1) result = 'Hane'
-                else if (enemies(blocking) == 0) result = 'Diagonal'
-            } else if (Math.min.apply(null, diff) == 0 && distance == 2) {
-                // + o + o +
-
-                if (enemies(blocking) > 0) continue
-                else result = 'One-point jump'
-            } else if (Math.min.apply(null, diff) == 0 && distance == 3) {
-                // + o + + o +
-
-                if (enemies(blocking) > 0) continue
-                else result = 'Two-point jump'
-            } else if (diff[0] == 2 && diff[1] == 2) {
-                // + + + o +
-                // + + + + +
-                // + o + + +
-
-                var m = [(x + vertex[0]) / 2, (y + vertex[1]) / 2]
-                if (board.arrangement[m] == -sign) continue
-
-                blocking = blocking.filter(function(v) {
-                    return (v[0] != x || v[1] != vertex[1])
-                        && (v[0] != vertex[0] || v[1] != y)
-                })
-
-                if (enemies(blocking) >= 2) continue
-                else result = 'Diagonal jump'
-            } else if (Math.max.apply(null, diff) >= 2 && Math.min.apply(null, diff) == 1) {
-                // + + + o +    or   + + + + o +
-                // + o + + +         + o + + + +
-
-                blocking = blocking.filter(function(v) {
-                    return (v[0] != x || v[1] != vertex[1])
-                        && (v[0] != vertex[0] || v[1] != y)
-                })
-
-                if (enemies(blocking) > 0) continue
-                else result = distance == 3 ? 'Small knight' : 'Large knight'
-            }
-
-            minvertex = [x, y]
-        }
-    }
-
-    if (minvertex) return result
-
-    // Get nearest enemy stone
-
-    minvertex = null
-    result = null
-
-    for (var x = 0; x < board.size; x++) {
-        for (var y = 0; y < board.size; y++) {
-            if (board.arrangement[[x, y]] != -sign) continue
-            if (minvertex && compare(minvertex, [x, y]) < 0) continue
-
-            var distance = board.getDistance([x, y], vertex)
-            var diff = [Math.abs(vertex[0] - x), Math.abs(vertex[1] - y)]
-
-            if (distance > 4 || distance == 4 && Math.min.apply(null, diff) == 0) continue
-
-            if (distance == 1) {
-                result = 'Attach'
-            } else if (diff[0] == 1 && diff[1] == 1) {
-                result = 'Shoulder hit'
-            } else if (board.getDistanceToGround(vertex) <= 4 && board.getDistanceToGround([x, y]) <= 4) {
-                result = 'Approach'
-            } else {
-                continue
-            }
-
-            minvertex = [x, y]
-        }
-    }
-
-    if (minvertex) return result
 
     // Determine position to edges
 
