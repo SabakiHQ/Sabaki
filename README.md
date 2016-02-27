@@ -16,7 +16,7 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
 - Game graph
 - Scoring tool
 - Find move
-- Position & Move annotations
+- Position & move annotations
 - GTP engines support
 
 ## Third Party Libraries
