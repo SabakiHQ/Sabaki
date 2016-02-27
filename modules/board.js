@@ -352,6 +352,10 @@ Board.cornerMatch = function(area, source, target) {
     var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
     var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
 
+    area.sort(function(v, w) {
+        return Math.abs(source.arrangement[w]) - Math.abs(source.arrangement[v])
+    })
+
     for (var j = 0; j < area.length; j++) {
         var vertex = area[j]
         var sign = source.arrangement[vertex]
