@@ -61,7 +61,7 @@ Board.prototype = {
 
     getSymmetries: function(vertex) {
         var self = this
-        var mod = self.size - 1
+        var m = self.size - 1
         if (!self.hasVertex(vertex)) return []
 
         return helper.getSymmetries(vertex).map(function(x) {
