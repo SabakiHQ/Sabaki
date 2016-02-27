@@ -424,6 +424,13 @@ header, #edit, #scoring, #find {
         width: 100%;
         padding-top: 0;
     }
+    #properties .edit input {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        padding-right: 10px;
+    }
     #properties .edit .header {
         position: absolute;
         top: 0;
@@ -442,13 +449,12 @@ header, #edit, #scoring, #find {
         opacity: .8;
     }
     #properties .edit .header img:hover { background: #B3AC53; }
-    #properties .edit .header input {
+    #properties .edit .header div {
+        position: absolute;
         top: 0;
         right: 36px;
         bottom: 0;
         left: 0;
-        width: auto;
-        padding-right: 10px;
     }
     #properties .edit textarea::-webkit-input-placeholder,
     #properties .edit input::-webkit-input-placeholder {
