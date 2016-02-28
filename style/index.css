@@ -678,11 +678,39 @@ header, #edit, #scoring, #find {
         overflow: auto;
     }
     #gamechooser .inner {
-        list-style: none;
         margin: 20px;
+        margin-right: 0;
     }
-    #gamechooser .inner li {
+    #gamechooser h2 { margin-bottom: 30px; }
+    #gamechooser ol {
+        list-style: none;
+        overflow: hidden;
+    }
+    #gamechooser li {
         float: left;
+        margin-right: 20px;
+        margin-bottom: 30px;
+        width: 165px;
+    }
+    #gamechooser li:active { opacity: .5; }
+    #gamechooser li svg {
+        border: 5px solid #ca933a;
+        padding: 1px;
+        background: url('../img/goban/board.png') center #ECB55A;
+        background-size: 200%;
+    }
+    #gamechooser li span {
+        display: block;
+        margin-top: 5px;
+        padding-left: 26px;
+        padding-right: 5px;
+        overflow: hidden;
+        background: no-repeat url('../img/ui/black.svg') 5px center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #gamechooser li span.white {
+        background: no-repeat url('../img/ui/white.svg') 5px center;
 }
 
 .tabs {
