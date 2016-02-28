@@ -532,7 +532,7 @@ function prepareScrollbars() {
     window.addEvent('resize', function() {
         if (!$('gamechooser').hasClass('show')) return
 
-        var width = $$('#gamechooser .games-list')[0].getWidth()
+        var width = $$('#gamechooser .games-list')[0].getWidth() - 20
         var svgs = $$('#gamechooser svg')
 
         if (svgs.length == 0) return
