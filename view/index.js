@@ -408,12 +408,6 @@ function prepareDragDropFiles() {
         e.preventDefault()
     }).addEvent('drop', function(e) {
         e.preventDefault()
-    })
-
-    $('main').addEvent('dragover', function(e) {
-        e.preventDefault()
-    }).addEvent('drop', function(e) {
-        e.preventDefault()
 
         if (e.event.dataTransfer.files.length == 0) return
         loadGame(e.event.dataTransfer.files[0].path)
