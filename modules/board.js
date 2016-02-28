@@ -326,6 +326,31 @@ Board.prototype = {
         return result
     },
 
+    getSvg: function(pixelsize) {
+        var svg = new Element('svg', { width: pixelsize, height: pixelsize })
+        var tileSize = (pixelsize - 1) / this.size
+        var radius = tileSize / 2
+
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                if (this.arrangement[[x, y]] == 0) continue
+
+                var circle = new Element('circle', {
+                    cx: x * tileSize + radius + 1,
+                    cy: y * tileSize + radius + 1,
+                    r: radius
+                })
+
+                if (this.arrangement[[x, y]] == -1)
+                    circle.set('fill', 'white')
+
+                svg.grab(circle)
+            }
+        }
+
+        return svg
+    },
+
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }
