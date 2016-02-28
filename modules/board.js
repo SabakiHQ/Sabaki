@@ -327,7 +327,9 @@ Board.prototype = {
     },
 
     getSvg: function(pixelsize) {
-        var svg = new Element('svg', { width: pixelsize, height: pixelsize })
+        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        svg.setAttribute('width', pixelsize)
+        svg.setAttribute('height', pixelsize)
         var tileSize = (pixelsize - 1) / this.size
         var radius = tileSize / 2
 
@@ -335,16 +337,15 @@ Board.prototype = {
             for (var y = 0; y < this.size; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
 
-                var circle = new Element('circle', {
-                    cx: x * tileSize + radius + 1,
-                    cy: y * tileSize + radius + 1,
-                    r: radius
-                })
+                var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+                circle.setAttribute('cx', x * tileSize + radius + 1)
+                circle.setAttribute('cy', y * tileSize + radius + 1)
+                circle.setAttribute('r', radius)
 
                 if (this.arrangement[[x, y]] == -1)
-                    circle.set('fill', 'white')
+                    circle.setAttribute('fill', 'white')
 
-                svg.grab(circle)
+                svg.appendChild(circle)
             }
         }
 
