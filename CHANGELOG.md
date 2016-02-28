@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Opening shape data
+
 ## [Sabaki v0.10.1][v0.10.1] (2016-02-27)
 
 **Fixed**
