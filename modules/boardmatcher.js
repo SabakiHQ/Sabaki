@@ -53,11 +53,9 @@ context.cornerMatch = function(area, source, target) {
         var representatives = target.getSymmetries(vertex)
 
         for (var i = 0; i < hypotheses.length; i++) {
-            if (!hypotheses[i] && !hypothesesInvert[i])
-                continue
-            if (target.arrangement[representatives[i]] != sign)
+            if (hypotheses[i] && target.arrangement[representatives[i]] != sign)
                 hypotheses[i] = false
-            if (target.arrangement[representatives[i]] != -sign)
+            if (hypothesesInvert[i] && target.arrangement[representatives[i]] != -sign)
                 hypothesesInvert[i] = false
         }
 
