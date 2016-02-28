@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Opening shape data
+* Add opening data
+* Add 'Go To Main Variation' menu item
 
 ## [Sabaki v0.10.1][v0.10.1] (2016-02-27)
 
@@ -27,7 +28,7 @@ All notable changes to this project will be documented in this file.
 
 * Change 'Bookmark' to 'Hotspot'
 * 'Show Variations' shows next move as well
-* Don't make current track to main track when saving
+* Don't make current variation to main variation when saving
 * Update to Electron v0.36.9
 
 **Fixed**
