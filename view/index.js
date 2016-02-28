@@ -1382,12 +1382,13 @@ function loadGame(filename, index) {
                 }).subtrees
 
                 if (trees.length > 1) {
-                    setIsBusy(false)
                     showGameChooser(trees)
-                    return
+                } else if (trees.length == 1) {
+                    setRootTree(trees[0], true)
+                    if (setting.get('game.goto_end_after_loading')) goToEnd()
+                } else {
+                    throw true
                 }
-
-                setRootTree(trees[0], true)
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
@@ -1395,7 +1396,6 @@ function loadGame(filename, index) {
             setProgressIndicator(-1, win)
             setRepresentedFilename(filename)
 
-            if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
         }, setting.get('app.loadgame_delay'))
     } else {
