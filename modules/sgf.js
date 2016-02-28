@@ -132,8 +132,8 @@ context.compressed2list = function(compressed) {
     var v2 = context.point2vertex(compressed.slice(colon + 1))
     var list = []
 
-    for (var i = v1[0]; i <= v2[0]; i++) {
-        for (var j = v1[1]; j <= v2[1]; j++) {
+    for (var i = Math.min(v1[0], v2[0]); i <= Math.max(v1[0], v2[0]); i++) {
+        for (var j = Math.min(v1[1], v2[1]); j <= Math.max(v1[1], v2[1]); j++) {
             list.push([i, j])
         }
     }
