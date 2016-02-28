@@ -530,7 +530,7 @@ header, #edit, #scoring, #find {
     z-index: 3;
 }
 
-#info, #score, #preferences {
+#info, #score, #preferences, #gamechooser {
         position: fixed;
         left: 0;
         right: 0;
@@ -543,7 +543,7 @@ header, #edit, #scoring, #find {
         transition: bottom .5s;
         z-index: 15;
     }
-    #info.show, #score.show, #preferences.show {
+    #info.show, #score.show, #preferences.show, #gamechooser.show {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
@@ -644,7 +644,7 @@ header, #edit, #scoring, #find {
         background: rgba(0, 0, 0, .2);
 }
 
-#preferences {
+#preferences, #gamechooser {
         bottom: -440px;
         height: 400px;
     }
