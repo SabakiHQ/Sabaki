@@ -333,6 +333,16 @@ Board.prototype = {
         var tileSize = (pixelsize - 1) / this.size
         var radius = tileSize / 2
 
+        this.getHandicapPlacement(9).forEach(function(v) {
+            var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+            circle.setAttribute('cx', v[0] * tileSize + radius + 1)
+            circle.setAttribute('cy', v[1] * tileSize + radius + 1)
+            circle.setAttribute('r', 2)
+            circle.setAttribute('fill', '#5E2E0C')
+
+            svg.appendChild(circle)
+        })
+
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
