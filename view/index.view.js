@@ -506,6 +506,100 @@ function getCurrentMoveInterpretation() {
  * Methods
  */
 
+function prepareScrollbars() {
+    $('properties').store('scrollbar', new GeminiScrollbar({
+        element: $('properties'),
+        createElements: false
+    }).create())
+
+    $('console').store('scrollbar', new GeminiScrollbar({
+        element: $('console'),
+        createElements: false
+    }).create())
+
+    var enginesList = $$('#preferences .engines-list')[0]
+    enginesList.store('scrollbar', new GeminiScrollbar({
+        element: enginesList,
+        createElements: false
+    }).create())
+
+    $('gamechooser').store('scrollbar', new GeminiScrollbar({
+        element: $('gamechooser'),
+        createElements: false
+    }))
+}
+
+function prepareResizers() {
+    $$('.verticalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
+    })
+
+    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
+        $('properties').setStyle('transition', 'none')
+    })
+
+    document.body.addEvent('mouseup', function() {
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
+
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
+            $('sidebar').store('initposx', null)
+            setting.set('view.sidebar_width', getSidebarWidth())
+        } else if (leftSidebarInitPosX) {
+            $('leftsidebar').store('initposx', null)
+            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
+            return
+        } else if (initPosY) {
+            $('sidebar').store('initposy', null)
+            $('properties').setStyle('transition', '')
+            setting.set('view.properties_height', getPropertiesHeight())
+            setSidebarArrangement(true, true, false)
+        }
+
+        if ($('graph').retrieve('sigma'))
+            $('graph').retrieve('sigma').renderers[0].resize().render()
+    }).addEvent('mousemove', function(e) {
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
+
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
+            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
+            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
+
+            setSidebarWidth(newwidth)
+            resizeBoard()
+        } else if (leftSidebarInitPosX) {
+            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
+            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+
+            setLeftSidebarWidth(newwidth)
+            resizeBoard()
+
+            $('console').retrieve('scrollbar').update()
+            return
+        } else if (initPosY) {
+            var initY = initPosY[0], initHeight = initPosY[1]
+            var newheight = Math.min(Math.max(
+                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
+                setting.get('view.properties_minheight')
+            ), 100 - setting.get('view.properties_minheight'))
+
+            setPropertiesHeight(newheight)
+        }
+
+        $('properties').retrieve('scrollbar').update()
+    })
+}
+
 function addEngineItem(name, path, args) {
     if (!name) name = ''
     if (!path) path = ''
@@ -990,104 +1084,6 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
-    // Preferences tabs
-
-    $$('#preferences .tabs a').addEvent('click', function() {
-        setPreferencesTab(this.className)
-        return false
-    })
-
-    // Scrollbars
-
-    $('properties').store('scrollbar', new GeminiScrollbar({
-        element: $('properties'),
-        createElements: false
-    }).create())
-
-    $('console').store('scrollbar', new GeminiScrollbar({
-        element: $('console'),
-        createElements: false
-    }).create())
-
-    var enginesList = $$('#preferences .engines-list')[0]
-    enginesList.store('scrollbar', new GeminiScrollbar({
-        element: enginesList,
-        createElements: false
-    }).create())
-
-    $('gamechooser').store('scrollbar', new GeminiScrollbar({
-        element: $('gamechooser'),
-        createElements: false
-    }))
-
-    // Resize sidebar
-
-    $$('.verticalresizer').addEvent('mousedown', function(e) {
-        if (e.event.button != 0) return
-        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
-    })
-
-    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
-        if (e.event.button != 0) return
-        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
-        $('properties').setStyle('transition', 'none')
-    })
-
-    document.body.addEvent('mouseup', function() {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
-
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
-
-        if (sidebarInitPosX) {
-            $('sidebar').store('initposx', null)
-            setting.set('view.sidebar_width', getSidebarWidth())
-        } else if (leftSidebarInitPosX) {
-            $('leftsidebar').store('initposx', null)
-            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
-            return
-        } else if (initPosY) {
-            $('sidebar').store('initposy', null)
-            $('properties').setStyle('transition', '')
-            setting.set('view.properties_height', getPropertiesHeight())
-            setSidebarArrangement(true, true, false)
-        }
-
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
-    }).addEvent('mousemove', function(e) {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
-
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
-
-        if (sidebarInitPosX) {
-            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
-
-            setSidebarWidth(newwidth)
-            resizeBoard()
-        } else if (leftSidebarInitPosX) {
-            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
-
-            setLeftSidebarWidth(newwidth)
-            resizeBoard()
-
-            $('console').retrieve('scrollbar').update()
-            return
-        } else if (initPosY) {
-            var initY = initPosY[0], initHeight = initPosY[1]
-            var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
-                setting.get('view.properties_minheight')
-            ), 100 - setting.get('view.properties_minheight'))
-
-            setPropertiesHeight(newheight)
-        }
-
-        $('properties').retrieve('scrollbar').update()
-    })
+    prepareScrollbars()
+    prepareResizers()
 })
