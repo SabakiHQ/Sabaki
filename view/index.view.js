@@ -1103,8 +1103,11 @@ function showGameChooser(trees) {
         if ('WR' in node) white.set('title', node.WR[0])
 
         li.getElement('div').addEvent('click', function() {
-            setRootTree(tree, true)
             closeGameChooser()
+            setTimeout(function() {
+                setRootTree(tree, true)
+                if (setting.get('game.goto_end_after_loading')) goToEnd()
+            }, 500)
         })
     }
 
