@@ -1353,7 +1353,7 @@ function newGame(playSound) {
     }
 }
 
-function loadGame(filename) {
+function loadGame(filename, index) {
     if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
 
@@ -1371,12 +1371,14 @@ function loadGame(filename) {
             var lastprogress = -1
 
             try {
-                var tree = sgf.parseFile(filename, function(progress) {
+                var trees = sgf.parseFile(filename, function(progress) {
                     if (progress - lastprogress < 0.05) return
 
                     setProgressIndicator(progress, win)
                     lastprogress = progress
-                }).subtrees[0]
+                }).subtrees
+
+                var tree = trees[!isNaN(index) && index < trees.length ? index : 0]
 
                 closeDrawers()
                 setRootTree(tree, true)
