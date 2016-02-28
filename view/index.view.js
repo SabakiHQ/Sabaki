@@ -960,10 +960,20 @@ function closePreferences() {
     $('preferences').removeClass('show')
 }
 
+function showGameChooser(trees) {
+    closeDrawers()
+    $('gamechooser').addClass('show')
+}
+
+function closeGameChooser() {
+    $('gamechooser').removeClass('show')
+}
+
 function closeDrawers() {
     closeGameInfo()
     closeScore()
     closePreferences()
+    closeGameChooser()
     setEditMode(false)
     setScoringMode(false)
     setFindMode(false)
@@ -1004,6 +1014,11 @@ document.addEvent('domready', function() {
         element: enginesList,
         createElements: false
     }).create())
+
+    $('gamechooser').store('scrollbar', new GeminiScrollbar({
+        element: $('gamechooser'),
+        createElements: false
+    }))
 
     // Resize sidebar
 

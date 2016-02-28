@@ -644,7 +644,7 @@ header, #edit, #scoring, #find {
         background: rgba(0, 0, 0, .2);
 }
 
-#preferences, #gamechooser {
+#preferences {
         bottom: -440px;
         height: 400px;
     }
@@ -669,6 +669,20 @@ header, #edit, #scoring, #find {
     #preferences input[type="checkbox"]::before {
         filter: invert(100%);
         -webkit-filter: invert(100%);
+}
+
+#gamechooser {
+        height: 100%;
+        bottom: -100%;
+        padding: 0;
+        overflow: auto;
+    }
+    #gamechooser .inner {
+        list-style: none;
+        margin: 20px;
+    }
+    #gamechooser .inner li {
+        float: left;
 }
 
 .tabs {

@@ -1366,6 +1366,9 @@ function loadGame(filename, index) {
     }
 
     if (filename) {
+        closeDrawers()
+        setUndoable(false)
+
         setTimeout(function() {
             var win = remote.getCurrentWindow()
             var lastprogress = -1
@@ -1378,11 +1381,13 @@ function loadGame(filename, index) {
                     lastprogress = progress
                 }).subtrees
 
-                var tree = trees[!isNaN(index) && index < trees.length ? index : 0]
+                if (trees.length > 1) {
+                    setIsBusy(false)
+                    showGameChooser(trees)
+                    return
+                }
 
-                closeDrawers()
-                setRootTree(tree, true)
-                setUndoable(false)
+                setRootTree(trees[0], true)
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
