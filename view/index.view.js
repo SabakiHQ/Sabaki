@@ -1088,6 +1088,7 @@ function showGameChooser(trees) {
 
         $$('#gamechooser ol')[0].grab(li.grab(
             new Element('div')
+            .store('index', i)
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
@@ -1103,9 +1104,10 @@ function showGameChooser(trees) {
         if ('WR' in node) white.set('title', node.WR[0])
 
         li.getElement('div').addEvent('click', function() {
+            var link = this
             closeGameChooser()
             setTimeout(function() {
-                setRootTree(tree, true)
+                setRootTree(trees[link.retrieve('index')], true)
                 if (setting.get('game.goto_end_after_loading')) goToEnd()
             }, 500)
         })
