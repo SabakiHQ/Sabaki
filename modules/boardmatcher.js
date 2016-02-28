@@ -44,6 +44,8 @@ context.cornerMatch = function(area, source, target) {
         var representatives = target.getSymmetries(vertex)
 
         for (var i = 0; i < hypotheses.length; i++) {
+            if (!hypotheses[i])
+                continue
             if (target.arrangement[representatives[i]] != sign)
                 hypotheses[i] = false
             if (target.arrangement[representatives[i]] != -sign)
@@ -75,6 +77,7 @@ context.shapeMatch = function(shape, board, vertex) {
             var symm = helper.getSymmetries(diff)
 
             for (var k = 0; k < symm.length; k++) {
+                if (!hypotheses[k]) continue
                 var w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
                 if (board.arrangement[w] != s * sign)
