@@ -1077,7 +1077,8 @@ function showGameChooser(trees) {
 
     $$('#gamechooser ol')[0].empty()
 
-    trees.forEach(function(tree) {
+    for (var i = 0; i < trees.length; i++) {
+        var tree = trees[i]
         var li = new Element('li')
         var tp = gametree.navigate(tree, 0, 30)
         if (!tp[0]) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
@@ -1100,7 +1101,12 @@ function showGameChooser(trees) {
         if ('BR' in node) black.set('title', node.BR[0])
         if ('PW' in node) white.set('text', node.PW[0])
         if ('WR' in node) white.set('title', node.WR[0])
-    })
+
+        li.getElement('div').addEvent('click', function() {
+            setRootTree(tree, true)
+            closeGameChooser()
+        })
+    }
 
     $('gamechooser').addClass('show')
     window.fireEvent('resize')
