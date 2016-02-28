@@ -179,15 +179,9 @@ context.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].forEach(function(value) {
-            if (value.indexOf(':') < 0) {
-                // Single point
-                board.arrangement[context.point2vertex(value)] = i - 1
-            } else {
-                // Compressed point list
-                context.compressed2list(value).forEach(function(vertex) {
-                    board.arrangement[vertex] = i - 1
-                })
-            }
+            context.compressed2list(value).forEach(function(vertex) {
+                board.arrangement[vertex] = i - 1
+            })
         })
     }
 
@@ -202,15 +196,9 @@ context.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].forEach(function(value) {
-            if (value.indexOf(':') < 0) {
-                // Single point
-                board.overlays[context.point2vertex(value)] = [classes[i], 0, '']
-            } else {
-                // Compressed point list
-                context.compressed2list(value).forEach(function(vertex) {
-                    board.overlays[vertex] = [classes[i], 0, '']
-                })
-            }
+            context.compressed2list(value).forEach(function(vertex) {
+                board.overlays[vertex] = [classes[i], 0, '']
+            })
         })
     }
 
