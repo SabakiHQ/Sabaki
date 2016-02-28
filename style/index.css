@@ -675,24 +675,43 @@ header, #edit, #scoring, #find {
         height: 100%;
         bottom: -100%;
         padding: 0;
+    }
+    #gamechooser > p {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        text-align: right;
+    }
+    #gamechooser .games-list {
+        position: absolute;
+        top: 76px;
+        left: 0;
+        right: 0;
+        bottom: 70px;
+        width: auto;
+        height: auto;
         overflow: auto;
+        background: #1a1a1a;
     }
-    #gamechooser .inner {
-        margin: 20px;
-        margin-right: 0;
+    #gamechooser h2 {
+        padding: 20px;
     }
-    #gamechooser h2 { margin-bottom: 30px; }
     #gamechooser ol {
         list-style: none;
         overflow: hidden;
+        margin: 10px;
     }
     #gamechooser li {
         float: left;
-        margin-right: 20px;
-        margin-bottom: 30px;
+        margin: 10px 10px 20px 10px;
+    }
+    #gamechooser li div {
+        margin: 0 auto;
         width: 165px;
     }
-    #gamechooser li:active { opacity: .5; }
+    #gamechooser li div:active { opacity: .5; }
     #gamechooser li svg {
         border: 5px solid #ca933a;
         padding: 1px;

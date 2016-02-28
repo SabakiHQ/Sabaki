@@ -523,13 +523,25 @@ function prepareScrollbars() {
         createElements: false
     }).create())
 
-    $('gamechooser').store('scrollbar', new GeminiScrollbar({
-        element: $('gamechooser'),
+    var gamesList = $$('#gamechooser .games-list')[0]
+    gamesList.store('scrollbar', new GeminiScrollbar({
+        element: gamesList,
         createElements: false
     }).create())
 
     window.addEvent('resize', function() {
-        $('gamechooser').retrieve('scrollbar').update()
+        if (!$('gamechooser').hasClass('show')) return
+
+        var width = $$('#gamechooser .games-list')[0].getWidth() - 20
+        var svgs = $$('#gamechooser svg')
+
+        if (svgs.length == 0) return
+
+        var liwidth = svgs[0].getWidth() + 12 + 20
+        var count = Math.floor(width / liwidth)
+
+        $$('#gamechooser li').setStyle('width', Math.floor(width / count) - 20)
+        $$('#gamechooser .games-list')[0].retrieve('scrollbar').update()
     })
 }
 
@@ -1071,11 +1083,12 @@ function showGameChooser(trees) {
         var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(153)
 
-        $$('#gamechooser ol')[0].grab(
-            li.grab(svg)
+        $$('#gamechooser ol')[0].grab(li.grab(
+            new Element('div')
+            .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
-        )
+        ))
 
         var node = tree.nodes[0]
         var black = li.getElement('.black')
@@ -1087,7 +1100,8 @@ function showGameChooser(trees) {
         if ('WR' in node) white.set('title', node.WR[0])
     })
 
-    $('gamechooser').addClass('show').retrieve('scrollbar').update()
+    $('gamechooser').addClass('show')
+    window.fireEvent('resize')
 }
 
 function closeGameChooser() {
