@@ -327,14 +327,15 @@ Board.prototype = {
     },
 
     getSvg: function(pixelsize) {
-        var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        var ns = 'http://www.w3.org/2000/svg'
+        var svg = document.createElementNS(ns, 'svg')
         svg.setAttribute('width', pixelsize)
         svg.setAttribute('height', pixelsize)
         var tileSize = (pixelsize - 1) / this.size
         var radius = tileSize / 2
 
         this.getHandicapPlacement(9).forEach(function(v) {
-            var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+            var circle = document.createElementNS(ns, 'circle')
             circle.setAttribute('cx', v[0] * tileSize + radius + 1)
             circle.setAttribute('cy', v[1] * tileSize + radius + 1)
             circle.setAttribute('r', 2)
@@ -347,7 +348,7 @@ Board.prototype = {
             for (var y = 0; y < this.size; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
 
-                var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+                var circle = document.createElementNS(ns, 'circle')
                 circle.setAttribute('cx', x * tileSize + radius + 1)
                 circle.setAttribute('cy', y * tileSize + radius + 1)
                 circle.setAttribute('r', radius)
