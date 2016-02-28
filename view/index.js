@@ -1519,7 +1519,7 @@ function goToPreviousVariation() {
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
-function makeMainTrack() {
+function makeMainVariation() {
     setUndoable(true)
     closeDrawers()
 

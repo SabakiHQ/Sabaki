@@ -19,7 +19,7 @@ var menudata = {
     "labeltool": function() { setSelectedTool('label') },
     "numbertool": function() { setSelectedTool('number') },
     "removenode": function() { removeNode.apply(null, getCurrentTreePosition()) },
-    "makemaintrack": makeMainTrack,
+    "makemainvariation": makeMainVariation,
 
     "findmode": function() { setFindMode(!getFindMode()) },
     "findnext": function() { findMove(getIndicatorVertex(), getFindText(), 1) },

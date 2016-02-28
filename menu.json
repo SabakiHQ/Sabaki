@@ -90,8 +90,8 @@
             },
             { "type": "separator" },
             {
-                "label": "&Make Main Track",
-                "action": "makemaintrack"
+                "label": "&Make Main Variation",
+                "action": "makemainvariation"
             },
             {
                 "label": "&Remove Node",
