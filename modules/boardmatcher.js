@@ -10,6 +10,23 @@ if (typeof require != 'undefined') {
 
 var context = typeof module != 'undefined' ? module.exports : (window.shapes = {})
 
+context.readFuseki = function(filename) {
+    var tree = sgf.parseFile(filename).subtree[0]
+    var result = []
+
+    for (var i = 0; i < tree.subtrees.length; i++) {
+        var node = sgf.addBoard(tree.subtrees[i], 0).nodes[0]
+
+        result.push({
+            name: node.N[0],
+            area: sgf.compressed2list(node.CR[0]),
+            board: node.board
+        })
+    }
+
+    return result
+}
+
 context.readShapes = function(filename) {
     var tree = sgf.parseFile(filename).subtrees[0]
     var result = []
