@@ -1391,6 +1391,7 @@ function loadGame(filename, index) {
                     showGameChooser(trees)
                 } else if (trees.length == 1) {
                     setRootTree(trees[0], true)
+                    setRepresentedFilename(filename)
                     if (setting.get('game.goto_end_after_loading')) goToEnd()
                 } else {
                     throw true
@@ -1400,8 +1401,6 @@ function loadGame(filename, index) {
             }
 
             setProgressIndicator(-1, win)
-            setRepresentedFilename(filename)
-
             setIsBusy(false)
         }, setting.get('app.loadgame_delay'))
     } else {
