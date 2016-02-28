@@ -697,6 +697,7 @@ header, #edit, #scoring, #find {
     }
     #gamechooser h2 {
         padding: 20px;
+        font-weight: lighter;
     }
     #gamechooser ol {
         list-style: none;
