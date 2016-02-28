@@ -404,8 +404,14 @@ function prepareDragDropFiles() {
     Element.NativeEvents.dragover = 2
     Element.NativeEvents.drop = 2
 
-    document.body.addEvent('dragover', function() {
-        return false
+    document.body.addEvent('dragover', function(e) {
+        e.preventDefault()
+    }).addEvent('drop', function(e) {
+        e.preventDefault()
+    })
+
+    $('main').addEvent('dragover', function(e) {
+        e.preventDefault()
     }).addEvent('drop', function(e) {
         e.preventDefault()
 
