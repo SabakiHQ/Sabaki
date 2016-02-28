@@ -10,23 +10,6 @@ if (typeof require != 'undefined') {
 
 var context = typeof module != 'undefined' ? module.exports : (window.shapes = {})
 
-context.readFuseki = function(filename) {
-    var tree = sgf.parseFile(filename).subtrees[0]
-    var result = []
-
-    for (var i = 0; i < tree.subtrees.length; i++) {
-        var node = sgf.addBoard(tree.subtrees[i], 0).nodes[0]
-
-        result.push({
-            name: node.N[0],
-            area: sgf.compressed2list(node.CR[0]),
-            board: node.board
-        })
-    }
-
-    return result
-}
-
 context.readShapes = function(filename) {
     var tree = sgf.parseFile(filename).subtrees[0]
     var result = []
@@ -35,7 +18,16 @@ context.readShapes = function(filename) {
         var node = tree.subtrees[i].nodes[0]
         var points = ('AB' in node ? node.AB.map(function(x) { return sgf.point2vertex(x).concat([1]) }) : [])
             .concat('AW' in node ? node.AW.map(function(x) { return sgf.point2vertex(x).concat([-1]) }) : [])
-            .concat('CR' in node ? node.CR.map(function(x) { return sgf.point2vertex(x).concat([0]) }) : [])
+
+        if ('CR' in node) {
+            node.CR.forEach(function(value) {
+                var vs = sgf.compressed2list(value)
+                vs.forEach(function(v) {
+                    if (!points.some(function(w) { return w[0] == v[0] && w[1] == v[1] }))
+                        points.push(v.concat([0]))
+                })
+            })
+        }
 
         result.push({
             name: node.N[0],
