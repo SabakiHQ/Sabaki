@@ -3,10 +3,12 @@
  */
 
 function getIsBusy() {
-    return document.body.hasClass('busy')
+    return document.body.retrieve('busy')
 }
 
 function setIsBusy(busy) {
+    document.body.store('busy', busy)
+
     if (busy) {
         document.body.addClass('busy')
         return
