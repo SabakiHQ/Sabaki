@@ -11,7 +11,7 @@ if (typeof require != 'undefined') {
 var context = typeof module != 'undefined' ? module.exports : (window.shapes = {})
 
 context.readFuseki = function(filename) {
-    var tree = sgf.parseFile(filename).subtree[0]
+    var tree = sgf.parseFile(filename).subtrees[0]
     var result = []
 
     for (var i = 0; i < tree.subtrees.length; i++) {
@@ -61,7 +61,7 @@ context.cornerMatch = function(area, source, target) {
         var representatives = target.getSymmetries(vertex)
 
         for (var i = 0; i < hypotheses.length; i++) {
-            if (!hypotheses[i])
+            if (!hypotheses[i] && !hypothesesInvert[i])
                 continue
             if (target.arrangement[representatives[i]] != sign)
                 hypotheses[i] = false
