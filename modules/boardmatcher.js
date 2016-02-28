@@ -1,14 +1,16 @@
 (function(root) {
 
 var sgf = root.sgf
+var helper = root.helper
 
 if (typeof require != 'undefined') {
     sgf = require('./sgf')
+    helper = require('./helper')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.shapes = {})
 
-context.parseFile = function(filename) {
+context.readShapes = function(filename) {
     var tree = sgf.parseFile(filename).subtrees[0]
     var result = []
 
@@ -28,7 +30,35 @@ context.parseFile = function(filename) {
     return result
 }
 
-context.match = function(shape, board, vertex) {
+context.cornerMatch = function(area, source, target) {
+    var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
+    var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
+
+    area.sort(function(v, w) {
+        return Math.abs(source.arrangement[w]) - Math.abs(source.arrangement[v])
+    })
+
+    for (var j = 0; j < area.length; j++) {
+        var vertex = area[j]
+        var sign = source.arrangement[vertex]
+        var representatives = target.getSymmetries(vertex)
+
+        for (var i = 0; i < hypotheses.length; i++) {
+            if (target.arrangement[representatives[i]] != sign)
+                hypotheses[i] = false
+            if (target.arrangement[representatives[i]] != -sign)
+                hypothesesInvert[i] = false
+        }
+
+        if (hypotheses.indexOf(true) < 0 && hypothesesInvert.indexOf(true) < 0)
+            return null
+    }
+
+    var i = hypotheses.concat(hypothesesInvert).indexOf(true)
+    return i < 8 ? [i, false] : [i - 8, true]
+}
+
+context.shapeMatch = function(shape, board, vertex) {
     if (!board.hasVertex(vertex)) return false
     var sign = board.arrangement[vertex]
     if (sign == 0) return false

@@ -348,34 +348,6 @@ Board.prototype = {
     }
 }
 
-Board.cornerMatch = function(area, source, target) {
-    var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
-    var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
-
-    area.sort(function(v, w) {
-        return Math.abs(source.arrangement[w]) - Math.abs(source.arrangement[v])
-    })
-
-    for (var j = 0; j < area.length; j++) {
-        var vertex = area[j]
-        var sign = source.arrangement[vertex]
-        var representatives = target.getSymmetries(vertex)
-
-        for (var i = 0; i < hypotheses.length; i++) {
-            if (target.arrangement[representatives[i]] != sign)
-                hypotheses[i] = false
-            if (target.arrangement[representatives[i]] != -sign)
-                hypothesesInvert[i] = false
-        }
-
-        if (hypotheses.indexOf(true) < 0 && hypothesesInvert.indexOf(true) < 0)
-            return null
-    }
-
-    var i = hypotheses.concat(hypothesesInvert).indexOf(true)
-    return i < 8 ? [i, false] : [i - 8, true]
-}
-
 if (typeof module != 'undefined') module.exports = Board
 else window.Board = Board
 

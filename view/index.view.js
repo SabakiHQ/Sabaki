@@ -419,14 +419,14 @@ function setRepresentedFilename(filename) {
 }
 
 function getShapes() {
-    var ss = document.body.retrieve('shapes')
+    var shapes = document.body.retrieve('shapes')
 
-    if (!ss) {
-        ss = shapes.parseFile(__dirname + '/../data/shapes.sgf')
-        document.body.store('shapes', ss)
+    if (!shapes) {
+        shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
+        document.body.store('shapes', shapes)
     }
 
-    return ss
+    return shapes
 }
 
 function getCurrentMoveInterpretation() {
@@ -477,9 +477,11 @@ function getCurrentMoveInterpretation() {
 
     // Match shape
 
-    for (var i = 0; i < getShapes().length; i++) {
-        if (shapes.match(getShapes()[i], board, vertex))
-            return getShapes()[i].name
+    var shapes = getShapes()
+
+    for (var i = 0; i < shapes.length; i++) {
+        if (boardmatcher.shapeMatch(shapes[i], board, vertex))
+            return shapes[i].name
     }
 
     if (friendly.length == 1) return 'Stretch'
