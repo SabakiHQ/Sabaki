@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Add opening data
 * Add 'Go To Main Variation' menu item
 
+**Fixed**
+
+* Fix regression where saving SGF files does nothing
+
 ## [Sabaki v0.10.1][v0.10.1] (2016-02-27)
 
 **Fixed**
