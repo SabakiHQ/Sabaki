@@ -8,7 +8,7 @@ if (typeof require != 'undefined') {
     helper = require('./helper')
 }
 
-var context = typeof module != 'undefined' ? module.exports : (window.shapes = {})
+var context = typeof module != 'undefined' ? module.exports : (window.boardmatcher = {})
 
 context.readShapes = function(filename) {
     var tree = sgf.parseFile(filename).subtrees[0]
