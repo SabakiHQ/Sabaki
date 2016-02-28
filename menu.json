@@ -162,7 +162,7 @@
             },
             { "type": "separator" },
             {
-                "label": "Go To Previous Co&mment",
+                "label": "Go To Previous Commen&t",
                 "accelerator": "CmdOrCtrl+Shift+Up",
                 "action": "previouscomment"
             },
@@ -183,6 +183,11 @@
                 "action": "gotoend"
             },
             { "type": "separator" },
+            {
+                "label": "Go To &Main Variation",
+                "accelerator": "CmdOrCtrl+Left",
+                "action": "gotomainvariation"
+            },
             {
                 "label": "Go To Previous &Variation",
                 "accelerator": "Left",

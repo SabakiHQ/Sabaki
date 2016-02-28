@@ -252,6 +252,10 @@ context.onCurrentTrack = function(tree) {
     return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && context.onCurrentTrack(tree.parent)
 }
 
+context.onMainTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[0] == tree && context.onMainTrack(tree.parent)
+}
+
 context.matrixdict2graph = function(matrixdict) {
     var matrix = matrixdict[0]
     var dict = matrixdict[1]

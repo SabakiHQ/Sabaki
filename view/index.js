@@ -77,7 +77,7 @@ function getCurrentTreePosition() {
     return $('goban').retrieve('position')
 }
 
-function setCurrentTreePosition(tree, index, now) {
+function setCurrentTreePosition(tree, index, now, redraw) {
     if (!tree || getScoringMode()) return
 
     // Remove old graph node color
@@ -92,7 +92,8 @@ function setCurrentTreePosition(tree, index, now) {
     // Store new position
 
     $('goban').store('position', [tree, index])
-    var redraw = !node
+    redraw = !!redraw
+        || !node
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed && index == tree.nodes.length - 1
 
@@ -1509,7 +1510,7 @@ function goToNextVariation() {
 
 function goToPreviousVariation() {
     var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    var tree = tp[0]
 
     if (!tree.parent) return
 
@@ -1517,6 +1518,23 @@ function goToPreviousVariation() {
     var i = (tree.parent.current + mod - 1) % mod
 
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
+}
+
+function goToMainVariation() {
+    var tp = getCurrentTreePosition()
+    var tree = tp[0]
+    var root = getRootTree()
+
+    while (!gametree.onMainTrack(tree)) {
+        tree = tree.parent
+    }
+
+    while (root.current != null) {
+        root.current = 0
+        root = root.subtrees[0]
+    }
+
+    setCurrentTreePosition(tree, tree.nodes.length - 1, false, true)
 }
 
 function makeMainVariation() {
@@ -1534,8 +1552,7 @@ function makeMainVariation() {
         tree = subtree
     }
 
-    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level))
-    updateGraph()
+    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level).concat([false, true]))
 }
 
 function removeNode(tree, index) {

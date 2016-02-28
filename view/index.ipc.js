@@ -38,6 +38,7 @@ var menudata = {
     "gotoend": goToEnd,
     "gotonextvariation": goToNextVariation,
     "gotopreviousvariation": goToPreviousVariation,
+    "gotomainvariation": goToMainVariation,
 
     "manageengines": function() { showPreferences(); setPreferencesTab('engines') },
     "detachengine": detachEngine,
