@@ -98,34 +98,6 @@ Board.prototype = {
         return result
     },
 
-    getSurroundings: function(vertex) {
-        if (!this.hasVertex(vertex)) return []
-
-        var self = this
-        var result = self.getNeighborhood(vertex)
-        var stones = [vertex]
-
-        while (true) {
-            var newstones = result.filter(function(v) {
-                return self.arrangement[v] != 0
-                    && !stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })
-            })
-
-            if (newstones.length == 0) return result
-
-            newstones.forEach(function(v) {
-                if (stones.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
-
-                self.getNeighborhood(v).forEach(function(n) {
-                    if (result.some(function(w) { return w[0] == n[0] && w[1] == n[1] })) return
-                    result.push(n)
-                })
-
-                stones.push(v)
-            })
-        }
-    },
-
     getConnectedComponent: function(vertex, colors, result) {
         if (!this.hasVertex(vertex)) return []
         if (!result) result = [vertex]
@@ -237,7 +209,7 @@ Board.prototype = {
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
                 var vertex = [x, y]
-                if (vertex in liberties || this.arrangement[vertex] == 0) continue
+                if (this.arrangement[vertex] == 0 || vertex in liberties) continue
 
                 var l = this.getLiberties(vertex).length
                 if (l == 0) return false
@@ -374,30 +346,6 @@ Board.prototype = {
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }
-}
-
-Board.cornerMatch = function(area, source, target) {
-    var hypotheses = Array.apply(null, new Array(8)).map(function() { return true })
-    var hypothesesInvert = Array.apply(null, new Array(8)).map(function() { return true })
-
-    for (var j = 0; j < area.length; j++) {
-        var vertex = area[j]
-        var sign = source.arrangement[vertex]
-        var representatives = target.getSymmetries(vertex)
-
-        for (var i = 0; i < hypotheses.length; i++) {
-            if (target.arrangement[representatives[i]] != sign)
-                hypotheses[i] = false
-            if (target.arrangement[representatives[i]] != -sign)
-                hypothesesInvert[i] = false
-        }
-
-        if (hypotheses.indexOf(true) < 0 && hypothesesInvert.indexOf(true) < 0)
-            return null
-    }
-
-    var i = hypotheses.concat(hypothesesInvert).indexOf(true)
-    return i < 8 ? [i, false] : [i - 8, true]
 }
 
 if (typeof module != 'undefined') module.exports = Board

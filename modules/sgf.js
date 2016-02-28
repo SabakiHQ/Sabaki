@@ -132,8 +132,8 @@ context.compressed2list = function(compressed) {
     var v2 = context.point2vertex(compressed.slice(colon + 1))
     var list = []
 
-    for (var i = v1[0]; i <= v2[0]; i++) {
-        for (var j = v1[1]; j <= v2[1]; j++) {
+    for (var i = Math.min(v1[0], v2[0]); i <= Math.max(v1[0], v2[0]); i++) {
+        for (var j = Math.min(v1[1], v2[1]); j <= Math.max(v1[1], v2[1]); j++) {
             list.push([i, j])
         }
     }
@@ -179,15 +179,9 @@ context.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].forEach(function(value) {
-            if (value.indexOf(':') < 0) {
-                // Single point
-                board.arrangement[context.point2vertex(value)] = i - 1
-            } else {
-                // Compressed point list
-                context.compressed2list(value).forEach(function(vertex) {
-                    board.arrangement[vertex] = i - 1
-                })
-            }
+            context.compressed2list(value).forEach(function(vertex) {
+                board.arrangement[vertex] = i - 1
+            })
         })
     }
 
@@ -202,15 +196,9 @@ context.addBoard = function(tree, index, baseboard) {
         if (!(ids[i] in node)) continue
 
         node[ids[i]].forEach(function(value) {
-            if (value.indexOf(':') < 0) {
-                // Single point
-                board.overlays[context.point2vertex(value)] = [classes[i], 0, '']
-            } else {
-                // Compressed point list
-                context.compressed2list(value).forEach(function(vertex) {
-                    board.overlays[vertex] = [classes[i], 0, '']
-                })
-            }
+            context.compressed2list(value).forEach(function(vertex) {
+                board.overlays[vertex] = [classes[i], 0, '']
+            })
         })
     }
 
@@ -275,7 +263,7 @@ context.fromTree = function(tree) {
     })
 
     for (var i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + context.tree2string(tree.subtrees[i]) + ')'
+        output += '(' + context.fromTree(tree.subtrees[i]) + ')'
     }
 
     return output

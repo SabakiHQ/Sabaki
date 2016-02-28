@@ -3,6 +3,7 @@ var ipcRenderer = null
 var fs = null
 var shell = null
 var sgf = window.sgf
+var boardmatcher = window.boardmatcher
 var fuzzyfinder = window.fuzzyfinder
 var gametree = window.gametree
 var sound = window.sound
@@ -1102,7 +1103,6 @@ function commitCommentText() {
     if (title != '') tree.nodes[index].N = [title]
     else delete tree.nodes[index].N
 
-    updateCommentText()
     updateSidebar(true)
     setUndoable(false)
 }
