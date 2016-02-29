@@ -60,8 +60,8 @@ function buildMenu() {
 
         // Remove original 'Preferences' menu item
 
-        var gameMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Game' })[0]
-        items = gameMenu.submenu.splice(gameMenu.submenu.length - 2, 2)
+        var fileMenu = template.filter(function(x) { return x.label.replace('&', '') == 'File' })[0]
+        items = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)
 
         appMenu.push.apply(appMenu, [
             { type: 'separator' },

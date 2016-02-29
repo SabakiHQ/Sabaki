@@ -1,10 +1,10 @@
 (function() {
 
 var menudata = {
-    "newgame": function() { newGame(true) },
-    "loadgame": loadGame,
-    "savegame": function() { saveGame(getRepresentedFilename()) },
-    "saveas": saveGame,
+    "newfile": function() { newFile(true) },
+    "loadfile": loadFile,
+    "savefile": function() { saveFile(getRepresentedFilename()) },
+    "saveas": saveFile,
     "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
     "gameinfo": showGameInfo,
@@ -69,7 +69,7 @@ var menudata = {
 }
 
 ipcRenderer.on('menu-click', function(e, action) { menudata[action]() })
-ipcRenderer.on('load-game', function(e, path) { loadGame(path) })
+ipcRenderer.on('load-game', function(e, path) { loadFile(path) })
 ipcRenderer.on('attach-engine', function(e, path, args) { attachEngine(path, args) })
 
 })()

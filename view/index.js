@@ -457,7 +457,7 @@ function prepareDragDropFiles() {
         e.preventDefault()
 
         if (e.event.dataTransfer.files.length == 0) return
-        loadGame(e.event.dataTransfer.files[0].path)
+        loadFile(e.event.dataTransfer.files[0].path)
     })
 }
 
@@ -1351,7 +1351,7 @@ function askForSave() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveGame(getRepresentedFilename())
+        if (answer == 0) saveFile(getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -1381,10 +1381,11 @@ function startAutoScroll(direction, delay) {
  * Menu
  */
 
-function newGame(playSound) {
+function newFile(playSound) {
     if (getIsBusy() || !askForSave()) return
 
     closeDrawers()
+    setGameTrees(null)
     setRootTree(getEmptyGameTree())
     updateFileHash()
     setUndoable(false)
@@ -1406,7 +1407,7 @@ function loadGameFromIndex(index) {
     if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
-function loadGame(filename) {
+function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
 
@@ -1454,7 +1455,7 @@ function loadGame(filename) {
     }
 }
 
-function saveGame(filename) {
+function saveFile(filename) {
     if (getIsBusy()) return
     setIsBusy(true)
 
@@ -1705,7 +1706,7 @@ document.addEvent('keydown', function(e) {
 })
 
 window.addEvent('load', function() {
-    newGame()
+    newFile()
 
     if (!setting.get('app.startup_check_updates')) return
 

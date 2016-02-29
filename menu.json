@@ -5,17 +5,17 @@
             {
                 "label": "&New",
                 "accelerator": "CmdOrCtrl+N",
-                "action": "newgame"
+                "action": "newfile"
             },
             {
                 "label": "&Load…",
                 "accelerator": "CmdOrCtrl+O",
-                "action": "loadgame"
+                "action": "loadfile"
             },
             {
                 "label": "&Save",
                 "accelerator": "CmdOrCtrl+S",
-                "action": "savegame"
+                "action": "savefile"
             },
             {
                 "label": "Save &As…",
