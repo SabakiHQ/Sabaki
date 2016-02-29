@@ -693,7 +693,7 @@ header, #edit, #scoring, #find {
         width: auto;
         height: auto;
         overflow: auto;
-        background: rgba(0, 0, 0, .1);
+        background: rgba(0, 0, 0, .2);
     }
     #gamechooser h2 {
         padding: 20px;
