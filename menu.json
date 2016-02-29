@@ -24,6 +24,11 @@
             },
             { "type": "separator" },
             {
+                "label": "&Manage Games…",
+                "action": "managegames"
+            },
+            { "type": "separator" },
+            {
                 "label": "S&core",
                 "action": "score"
             },

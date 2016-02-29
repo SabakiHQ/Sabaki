@@ -5,6 +5,7 @@ var menudata = {
     "loadgame": loadGame,
     "savegame": function() { saveGame(getRepresentedFilename()) },
     "saveas": saveGame,
+    "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
     "gameinfo": showGameInfo,
     "preferences": showPreferences,

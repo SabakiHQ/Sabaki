@@ -996,6 +996,11 @@ function openGameMenu(element) {
     var template = [{
         label: '&Remove',
         click: function() {
+            if (getGameTrees().length == 1) {
+                showMessageBox('There should be at least one game.', 'warning')
+                return
+            }
+
             if (showMessageBox(
                 'Do you really want to remove this game permanently?',
                 'warning',
@@ -1008,6 +1013,7 @@ function openGameMenu(element) {
             getGameTrees().splice(index, 1)
             setGameIndex(0)
             setRootTree(getGameTrees()[0])
+            setRepresentedFilename(getRepresentedFilename())
 
             element.getParent().destroy()
             scrollbar.update()
@@ -1108,7 +1114,19 @@ function closePreferences() {
 
 function showGameChooser(callback) {
     var trees = getGameTrees()
-    if (trees.length == 1) return callback(0)
+
+    if (!callback) callback = function(index) {
+        if (index == trees.length) {
+            var tree = getEmptyGameTree()
+            closeDrawers()
+            setGameTrees(trees.concat([tree]))
+        }
+
+        setGameIndex(index)
+        setRepresentedFilename(getRepresentedFilename())
+        setRootTree(getGameTrees()[index])
+        if (setting.get('game.goto_end_after_loading')) goToEnd()
+    }
 
     closeDrawers()
 
@@ -1147,7 +1165,9 @@ function showGameChooser(callback) {
         li.getElement('div').addEvent('click', function() {
             var link = this
             closeGameChooser()
-            setTimeout(function() { callback(link.retrieve('index')) }, 500)
+            setTimeout(function() {
+                callback($$('#gamechooser ol li div').indexOf(link))
+            }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
             openGameMenu(this)

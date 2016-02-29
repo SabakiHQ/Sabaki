@@ -1427,20 +1427,10 @@ function loadGame(filename) {
                 setGameIndex(0)
                 setRootTree(trees[0])
                 setRepresentedFilename(filename)
+                if (setting.get('game.goto_end_after_loading')) goToEnd()
                 updateFileHash()
 
-                showGameChooser(function(index) {
-                    if (index == trees.length) {
-                        var tree = getEmptyGameTree()
-                        closeDrawers()
-                        setGameTrees(trees.concat([tree]))
-                    }
-
-                    setGameIndex(index)
-                    setRepresentedFilename(filename)
-                    if (index != 0) setRootTree(getGameTrees()[index])
-                    if (setting.get('game.goto_end_after_loading')) goToEnd()
-                })
+                if (trees.length > 1) showGameChooser()
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
