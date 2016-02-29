@@ -1359,8 +1359,7 @@ function newGame(playSound) {
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
     closeDrawers()
-    var tree = sgf.parse(sgf.tokenize(buffer))
-    setRootTree(tree, true)
+    setRootTree(sgf.parse(sgf.tokenize(buffer)), true)
     setUndoable(false)
     setRepresentedFilename(null)
 
@@ -1439,6 +1438,7 @@ function saveGame(filename) {
             var t = trees[i]
             if (i == getGameIndex()) t = tree
 
+            t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
             text += '(' + sgf.fromTree(t) + ')\n\n'
         }
 
