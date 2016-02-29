@@ -1086,7 +1086,12 @@ function showGameChooser(callback) {
 
     closeDrawers()
 
-    $$('#gamechooser ol')[0].empty()
+    $$('#gamechooser ol li:not(.add)').destroy()
+
+    $$('#gamechooser ol li.add')[0].removeEvents('click').addEvent('click', function() {
+        closeGameChooser()
+        callback(trees.length)
+    })
 
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
@@ -1097,13 +1102,13 @@ function showGameChooser(callback) {
         var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(153)
 
-        $$('#gamechooser ol')[0].grab(li.grab(
+        $$('#gamechooser ol li.add')[0].grab(li.grab(
             new Element('div')
             .store('index', i)
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
-        ))
+        ), 'before')
 
         var node = tree.nodes[0]
         var black = li.getElement('.black')

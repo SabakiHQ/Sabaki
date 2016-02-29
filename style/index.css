@@ -693,7 +693,7 @@ header, #edit, #scoring, #find {
         width: auto;
         height: auto;
         overflow: auto;
-        background: #1a1a1a;
+        background: rgba(0, 0, 0, .1);
     }
     #gamechooser h2 {
         padding: 20px;
@@ -719,18 +719,25 @@ header, #edit, #scoring, #find {
         background: url('../img/goban/board.png') center #ECB55A;
         background-size: 200%;
     }
+    #gamechooser li.add svg {
+        border-color: #393939;
+        background: transparent;
+    }
     #gamechooser li span {
         display: block;
         margin-top: 5px;
-        padding-left: 26px;
+        padding-left: 5px;
         padding-right: 5px;
         overflow: hidden;
-        background: no-repeat url('../img/ui/black.svg') 5px center;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    #gamechooser li span.black, #gamechooser li span.white {
+        padding-left: 26px;
+        background: no-repeat url('../img/ui/black.svg') 5px center;
+    }
     #gamechooser li span.white {
-        background: no-repeat url('../img/ui/white.svg') 5px center;
+        background-image: url('../img/ui/white.svg');
 }
 
 .tabs {

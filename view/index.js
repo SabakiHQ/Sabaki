@@ -316,6 +316,14 @@ function setHotspot(bookmark) {
     setShowHotspot(bookmark)
 }
 
+function getEmptyGameTree() {
+    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
+        + ']SZ[' + setting.get('game.default_board_size') + ']'
+
+    return sgf.parse(sgf.tokenize(buffer))
+}
+
 /**
  * Methods
  */
@@ -1373,12 +1381,8 @@ function startAutoScroll(direction, delay) {
 function newGame(playSound) {
     if (getIsBusy() || !askForSave()) return
 
-    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
-        + ']SZ[' + setting.get('game.default_board_size') + ']'
-
     closeDrawers()
-    setRootTree(sgf.parse(sgf.tokenize(buffer)))
+    setRootTree(getEmptyGameTree())
     updateFileHash()
     setUndoable(false)
     setRepresentedFilename(null)
@@ -1422,10 +1426,15 @@ function loadGame(filename) {
                 updateFileHash()
 
                 showGameChooser(function(index) {
+                    if (index == trees.length) {
+                        var tree = getEmptyGameTree()
+                        closeDrawers()
+                        setGameTrees(trees.concat([tree]))
+                    }
+
                     setGameIndex(index)
                     setRepresentedFilename(filename)
-                    setRootTree(trees[index])
-                    updateFileHash()
+                    setRootTree(getGameTrees()[index])
                     if (setting.get('game.goto_end_after_loading')) goToEnd()
                 })
             } catch(e) {

@@ -309,14 +309,26 @@
 </section>
 
 <section id="gamechooser">
-    <h2>Load Game</h2>
+    <h2>Manage Games</h2>
+
     <div class="games-list">
         <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
         <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
         <div class="gm-scroll-view">
-            <ol></ol>
+            <ol>
+                <li class="add">
+                    <div>
+                        <svg width="153" height="153">
+                            <line x1="76.5" y1="38" x2="76.5" y2="115" stroke="#393939" stroke-width="5" />
+                            <line y1="76.5" x1="38" y2="76.5" x2="115" stroke="#393939" stroke-width="5" />
+                        </svg>
+                        <span>Add Game</span>
+                    </div>
+                </li>
+            </ol>
         </div>
     </div>
+
     <p>
         <button type="button" onclick="closeGameChooser()">Close</button>
     </p>
