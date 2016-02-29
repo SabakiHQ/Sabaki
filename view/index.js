@@ -1422,7 +1422,11 @@ function loadGame(filename) {
                 }).subtrees
 
                 if (trees.length == 0) throw true
+
                 setGameTrees(trees)
+                setGameIndex(0)
+                setRootTree(trees[0])
+                setRepresentedFilename(filename)
                 updateFileHash()
 
                 showGameChooser(function(index) {
@@ -1434,7 +1438,7 @@ function loadGame(filename) {
 
                     setGameIndex(index)
                     setRepresentedFilename(filename)
-                    setRootTree(getGameTrees()[index])
+                    if (index != 0) setRootTree(getGameTrees()[index])
                     if (setting.get('game.goto_end_after_loading')) goToEnd()
                 })
             } catch(e) {

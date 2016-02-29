@@ -992,6 +992,32 @@ function openNodeMenu(tree, index) {
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
+function openGameMenu(element) {
+    var template = [{
+        label: '&Remove',
+        click: function() {
+            if (showMessageBox(
+                'Do you really want to remove this game permanently?',
+                'warning',
+                ['Remove Game', 'Cancel'], 1
+            ) == 1) return
+
+            var index = element.getParent('ol').getElements('li div').indexOf(element)
+            var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
+
+            getGameTrees().splice(index, 1)
+            setGameIndex(0)
+            setRootTree(getGameTrees()[0])
+
+            element.getParent().destroy()
+            scrollbar.update()
+        }
+    }]
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+}
+
 function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
     $$('#console .inner form:last-child input')[0].set('value', '').focus()
@@ -1104,7 +1130,6 @@ function showGameChooser(callback) {
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
             new Element('div')
-            .store('index', i)
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
@@ -1123,6 +1148,9 @@ function showGameChooser(callback) {
             var link = this
             closeGameChooser()
             setTimeout(function() { callback(link.retrieve('index')) }, 500)
+        }).addEvent('mouseup', function(e) {
+            if (e.event.button != 2) return
+            openGameMenu(this)
         })
     }
 
