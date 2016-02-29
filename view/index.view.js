@@ -1088,7 +1088,7 @@ function showGameChooser(callback) {
 
     $$('#gamechooser ol li:not(.add)').destroy()
 
-    $$('#gamechooser ol li.add')[0].removeEvents('click').addEvent('click', function() {
+    $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
         closeGameChooser()
         callback(trees.length)
     })
