@@ -1404,6 +1404,7 @@ function loadGameFromIndex(index) {
     setGameIndex(index)
     setRootTree(trees[index])
     setRepresentedFilename(getRepresentedFilename())
+    setUndoable(false)
     if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
@@ -1421,7 +1422,6 @@ function loadFile(filename) {
 
     if (filename) {
         closeDrawers()
-        setUndoable(false)
 
         setTimeout(function() {
             var win = remote.getCurrentWindow()
