@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Add opening data
 * Add 'Go To Main Variation' menu item
+* Supports SGF collections
 
 **Fixed**
 
