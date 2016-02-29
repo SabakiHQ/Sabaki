@@ -344,6 +344,24 @@ Board.prototype = {
             svg.appendChild(circle)
         })
 
+        // Draw shadows
+
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                if (this.arrangement[[x, y]] == 0) continue
+
+                var circle = document.createElementNS(ns, 'circle')
+                circle.setAttribute('cx', x * tileSize + radius + 1)
+                circle.setAttribute('cy', y * tileSize + radius + 2)
+                circle.setAttribute('r', radius)
+                circle.setAttribute('fill', 'rgba(0, 0, 0, .5)')
+
+                svg.appendChild(circle)
+            }
+        }
+
+        // Draw stones
+
         for (var x = 0; x < this.size; x++) {
             for (var y = 0; y < this.size; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
