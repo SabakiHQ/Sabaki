@@ -981,6 +981,13 @@ function openNodeMenu(tree, index) {
         click: function() { removeNode(tree, index) }
     }]
 
+    if (gametree.onCurrentTrack(tree)) {
+        template.push({
+            label: 'Make &Main Variation',
+            click: function() { makeMainVariation() }
+        })
+    }
+
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
