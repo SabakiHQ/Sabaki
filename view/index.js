@@ -1387,11 +1387,9 @@ function newFile(playSound) {
     if (getIsBusy() || !askForSave()) return
 
     closeDrawers()
-    setGameTrees(null)
-    setRootTree(getEmptyGameTree())
+    setGameTrees([getEmptyGameTree()])
+    loadGameFromIndex(0)
     updateFileHash()
-    setUndoable(false)
-    setRepresentedFilename(null)
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
