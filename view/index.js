@@ -48,6 +48,10 @@ function getRootTree() {
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
 
+    var trees = getGameTrees()
+    trees[getGameIndex()] = tree
+    setGameTrees(trees)
+
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
@@ -72,8 +76,7 @@ function generateFileHash() {
     var hash = ''
 
     for (var i = 0; i < trees.length; i++) {
-        var tree = i == getGameIndex() ? getRootTree() : trees[i]
-        hash += gametree.getHash(tree)
+        hash += gametree.getHash(trees[i])
     }
 
     return hash
@@ -1670,7 +1673,7 @@ function undoBoard() {
         setRootTree(document.body.retrieve('undodata-root'))
 
         var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
-        setCurrentTreePosition.apply(null, pos.concat([true, false]))
+        setCurrentTreePosition.apply(null, pos.concat([true, true]))
 
         setUndoable(false)
         setIsBusy(false)
