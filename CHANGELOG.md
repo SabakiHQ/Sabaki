@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 * Add 'Go To Main Variation' menu item
 * Supports SGF collections
 
+**Changed**
+
+* Smaller font size for larger board labels
+
 **Fixed**
 
 * Fix regression where saving SGF files does nothing

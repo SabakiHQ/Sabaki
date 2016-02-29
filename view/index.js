@@ -227,6 +227,8 @@ function setBoard(board) {
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
                 if (label != '') li.set('title', label)
+                if (label.length >= 3) li.addClass('smalllabel')
+                else li.removeClass('smalllabel')
             }
 
             if (li.hasClass('sign_' + sign)) continue
