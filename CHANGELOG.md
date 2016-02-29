@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix regression where saving SGF files does nothing
+* Fix graph not updating when undoing
 
 ## [Sabaki v0.10.1][v0.10.1] (2016-02-27)
 
