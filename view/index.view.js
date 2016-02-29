@@ -996,7 +996,9 @@ function openGameMenu(element) {
     var template = [{
         label: '&Remove',
         click: function() {
-            if (getGameTrees().length == 1) {
+            var trees = getGameTrees()
+
+            if (trees.length == 1) {
                 showMessageBox('There should be at least one game.', 'warning')
                 return
             }
@@ -1010,10 +1012,9 @@ function openGameMenu(element) {
             var index = element.getParent('ol').getElements('li div').indexOf(element)
             var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
 
-            getGameTrees().splice(index, 1)
-            setGameIndex(0)
-            setRootTree(getGameTrees()[0])
-            setRepresentedFilename(getRepresentedFilename())
+            trees.splice(index, 1)
+            setGameTrees(trees)
+            loadGameFromIndex(0)
 
             element.getParent().destroy()
             scrollbar.update()
@@ -1113,19 +1114,14 @@ function closePreferences() {
 }
 
 function showGameChooser(callback) {
-    var trees = getGameTrees()
-
     if (!callback) callback = function(index) {
-        if (index == trees.length) {
+        if (index == getGameTrees().length) {
             var tree = getEmptyGameTree()
             closeDrawers()
-            setGameTrees(trees.concat([tree]))
+            setGameTrees(getGameTrees().concat([tree]))
         }
 
-        setGameIndex(index)
-        setRepresentedFilename(getRepresentedFilename())
-        setRootTree(getGameTrees()[index])
-        if (setting.get('game.goto_end_after_loading')) goToEnd()
+        loadGameFromIndex(index)
     }
 
     closeDrawers()
@@ -1134,9 +1130,10 @@ function showGameChooser(callback) {
 
     $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
         closeGameChooser()
-        callback(trees.length)
+        callback(getGameTrees().length)
     })
 
+    var trees = getGameTrees()
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
         var li = new Element('li')

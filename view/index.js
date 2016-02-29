@@ -1393,6 +1393,16 @@ function newGame(playSound) {
     }
 }
 
+function loadGameFromIndex(index) {
+    var trees = getGameTrees()
+
+    setGameTrees(trees)
+    setGameIndex(index)
+    setRootTree(trees[index])
+    setRepresentedFilename(getRepresentedFilename())
+    if (setting.get('game.goto_end_after_loading')) goToEnd()
+}
+
 function loadGame(filename) {
     if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
@@ -1424,10 +1434,8 @@ function loadGame(filename) {
                 if (trees.length == 0) throw true
 
                 setGameTrees(trees)
-                setGameIndex(0)
-                setRootTree(trees[0])
                 setRepresentedFilename(filename)
-                if (setting.get('game.goto_end_after_loading')) goToEnd()
+                loadGameFromIndex(0)
                 updateFileHash()
 
                 if (trees.length > 1) showGameChooser()
