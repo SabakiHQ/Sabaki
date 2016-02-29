@@ -23,6 +23,23 @@ var MenuItem = remote.MenuItem
  * Getter & setter
  */
 
+function getGameTrees() {
+    var trees = document.body.retrieve('gametrees')
+    return trees ? trees : [getRootTree()]
+}
+
+function setGameTrees(trees) {
+    document.body.store('gametrees', trees)
+}
+
+function getGameIndex() {
+    return getGameTrees().length == 1 ? 0 : document.body.retrieve('gameindex')
+}
+
+function setGameIndex(index) {
+    document.body.store('gameindex', index)
+}
+
 function getRootTree() {
     if (!getCurrentTreePosition()) return null
     return gametree.getRoot(getCurrentTreePosition()[0])
@@ -1353,7 +1370,7 @@ function newGame(playSound) {
     }
 }
 
-function loadGame(filename, index) {
+function loadGame(filename) {
     if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
 
@@ -1381,15 +1398,15 @@ function loadGame(filename, index) {
                     lastprogress = progress
                 }).subtrees
 
-                if (trees.length > 1) {
-                    showGameChooser(trees)
-                } else if (trees.length == 1) {
-                    setRootTree(trees[0], true)
+                if (trees.length == 0) throw true
+                setGameTrees(trees)
+
+                showGameChooser(function(index) {
+                    document.body.store('gameindex', index)
                     setRepresentedFilename(filename)
+                    setRootTree(trees[index], true)
                     if (setting.get('game.goto_end_after_loading')) goToEnd()
-                } else {
-                    throw true
-                }
+                })
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
@@ -1413,10 +1430,19 @@ function saveGame(filename) {
     }
 
     if (filename) {
+        var trees = getGameTrees()
         var tree = getRootTree()
-        var text = sgf.fromTree(tree)
 
-        fs.writeFile(filename, '(' + text + ')')
+        var text = ''
+
+        for (var i = 0; i < trees.length; i++) {
+            var t = trees[i]
+            if (i == getGameIndex()) t = tree
+
+            text += '(' + sgf.fromTree(t) + ')\n\n'
+        }
+
+        fs.writeFile(filename, text)
         document.body.store('treehash', gametree.getHash(tree))
         setRepresentedFilename(filename)
     }

@@ -408,13 +408,14 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
-    var path = require('path')
+    var basename = require('path').basename
 
     document.body.store('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
 
     var title = app.getName()
-    if (filename) title = path.basename(filename)
+    if (filename) title = basename(filename)
+    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
     if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
 
     document.title = title
@@ -1072,7 +1073,10 @@ function closePreferences() {
     $('preferences').removeClass('show')
 }
 
-function showGameChooser(trees) {
+function showGameChooser(callback) {
+    var trees = getGameTrees()
+    if (trees.length == 1) return callback(0)
+
     closeDrawers()
 
     $$('#gamechooser ol')[0].empty()
@@ -1106,10 +1110,7 @@ function showGameChooser(trees) {
         li.getElement('div').addEvent('click', function() {
             var link = this
             closeGameChooser()
-            setTimeout(function() {
-                setRootTree(trees[link.retrieve('index')], true)
-                if (setting.get('game.goto_end_after_loading')) goToEnd()
-            }, 500)
+            setTimeout(function() { callback(link.retrieve('index')) }, 500)
         })
     }
 
