@@ -1126,8 +1126,10 @@ function showGameChooser(callback) {
         })
     }
 
-    $('gamechooser').addClass('show')
-    window.fireEvent('resize')
+    setTimeout(function() {
+        $('gamechooser').addClass('show')
+        window.fireEvent('resize')
+    }, setting.get('gamechooser.show_delay'))
 }
 
 function closeGameChooser() {
