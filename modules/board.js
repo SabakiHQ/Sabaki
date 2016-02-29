@@ -334,6 +334,8 @@ Board.prototype = {
         var tileSize = (pixelsize - 1) / this.size
         var radius = tileSize / 2
 
+        // Draw hoshi
+
         this.getHandicapPlacement(9).forEach(function(v) {
             var circle = document.createElementNS(ns, 'circle')
             circle.setAttribute('cx', v[0] * tileSize + radius + 1)

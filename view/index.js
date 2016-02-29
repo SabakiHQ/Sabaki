@@ -45,11 +45,10 @@ function getRootTree() {
     return gametree.getRoot(getCurrentTreePosition()[0])
 }
 
-function setRootTree(tree, updateHash) {
+function setRootTree(tree) {
     if (tree.nodes.length == 0) return
 
     tree.parent = null
-    if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
     setPlayerName(
@@ -62,6 +61,26 @@ function setRootTree(tree, updateHash) {
         'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White',
         'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
+}
+
+function getFileHash() {
+    return document.body.retrieve('filehash')
+}
+
+function generateFileHash() {
+    var trees = getGameTrees()
+    var hash = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        var tree = i == getGameIndex() ? getRootTree() : trees[i]
+        hash += gametree.getHash(tree)
+    }
+
+    return hash
+}
+
+function updateFileHash() {
+    document.body.store('filehash', generateFileHash())
 }
 
 function getGraphMatrixDict() {
@@ -1312,9 +1331,9 @@ function centerGraphCameraAt(node) {
 
 function askForSave() {
     if (!getRootTree()) return true
-    var hash = gametree.getHash(getRootTree())
+    var hash = generateFileHash()
 
-    if (hash != document.body.retrieve('treehash')) {
+    if (hash != getFileHash()) {
         var answer = showMessageBox(
             'Your changes will be lost if you close this game without saving.',
             'warning',
@@ -1359,7 +1378,8 @@ function newGame(playSound) {
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
     closeDrawers()
-    setRootTree(sgf.parse(sgf.tokenize(buffer)), true)
+    setRootTree(sgf.parse(sgf.tokenize(buffer)))
+    updateFileHash()
     setUndoable(false)
     setRepresentedFilename(null)
 
@@ -1403,7 +1423,8 @@ function loadGame(filename) {
                 showGameChooser(function(index) {
                     document.body.store('gameindex', index)
                     setRepresentedFilename(filename)
-                    setRootTree(trees[index], true)
+                    setRootTree(trees[index])
+                    updateFileHash()
                     if (setting.get('game.goto_end_after_loading')) goToEnd()
                 })
             } catch(e) {
@@ -1443,7 +1464,7 @@ function saveGame(filename) {
         }
 
         fs.writeFile(filename, text)
-        document.body.store('treehash', gametree.getHash(tree))
+        updateFileHash()
         setRepresentedFilename(filename)
     }
 
