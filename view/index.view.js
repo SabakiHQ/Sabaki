@@ -1174,6 +1174,7 @@ function showGameChooser(callback) {
     setTimeout(function() {
         $('gamechooser').addClass('show')
         window.fireEvent('resize')
+        $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
     }, setting.get('gamechooser.show_delay'))
 }
 
