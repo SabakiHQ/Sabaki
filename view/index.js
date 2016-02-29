@@ -1335,7 +1335,7 @@ function askForSave() {
 
     if (hash != getFileHash()) {
         var answer = showMessageBox(
-            'Your changes will be lost if you close this game without saving.',
+            'Your changes will be lost if you close this file without saving.',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
         )

@@ -1,6 +1,6 @@
 [
     {
-        "label": "&Game",
+        "label": "&File",
         "submenu": [
             {
                 "label": "&New",
@@ -101,7 +101,7 @@
         ]
     },
     {
-        "label": "&Find",
+        "label": "Fin&d",
         "submenu": [
             {
                 "label": "Toggle &Find Mode",
