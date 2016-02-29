@@ -1419,9 +1419,10 @@ function loadGame(filename) {
 
                 if (trees.length == 0) throw true
                 setGameTrees(trees)
+                updateFileHash()
 
                 showGameChooser(function(index) {
-                    document.body.store('gameindex', index)
+                    setGameIndex(index)
                     setRepresentedFilename(filename)
                     setRootTree(trees[index])
                     updateFileHash()
