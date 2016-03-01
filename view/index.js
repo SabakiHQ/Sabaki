@@ -1413,7 +1413,7 @@ function loadGameFromIndex(index) {
     setGameTrees(trees)
     setGameIndex(index)
     setRootTree(trees[index])
-    setRepresentedFilename(getRepresentedFilename())
+    updateTitle()
     setUndoable(false)
     if (setting.get('game.goto_end_after_loading')) goToEnd()
 }

@@ -408,17 +408,9 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
-    var basename = require('path').basename
-
     document.body.store('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
-
-    var title = app.getName()
-    if (filename) title = basename(filename)
-    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
-    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
-
-    document.title = title
+    updateTitle()
 }
 
 function getShapes() {
@@ -617,6 +609,18 @@ function prepareResizers() {
 
         $('properties').retrieve('scrollbar').update()
     })
+}
+
+function updateTitle() {
+    var basename = require('path').basename
+    var title = app.getName()
+    var filename = getRepresentedFilename()
+
+    if (filename) title = basename(filename)
+    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
+    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
+
+    document.title = title
 }
 
 function addEngineItem(name, path, args) {
@@ -1199,7 +1203,7 @@ function showGameChooser(callback) {
 
         var newindex = getGameTrees().indexOf(currentTree)
         setGameIndex(newindex)
-        setRepresentedFilename(getRepresentedFilename())
+        updateTitle()
     })
 
     setTimeout(function() {
