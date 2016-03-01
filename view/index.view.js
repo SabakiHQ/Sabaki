@@ -1048,8 +1048,8 @@ function showGameInfo() {
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
-    info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, rootNode, ''))
-    info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, rootNode, ''))
+    info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, tree, ''))
+    info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
