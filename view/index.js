@@ -451,6 +451,9 @@ function prepareSlider() {
 
 function prepareDragDropFiles() {
     Element.NativeEvents.dragover = 2
+    Element.NativeEvents.dragenter = 2
+    Element.NativeEvents.dragleave = 2
+    Element.NativeEvents.dragstart = 2
     Element.NativeEvents.drop = 2
 
     document.body.addEvent('dragover', function(e) {

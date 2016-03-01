@@ -1144,7 +1144,7 @@ function showGameChooser(callback) {
         var svg = board.getSvg(153)
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
-            new Element('div')
+            new Element('div', { draggable: true })
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
@@ -1168,8 +1168,31 @@ function showGameChooser(callback) {
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
             openGameMenu(this)
+        }).addEvent('dragstart', function(e) {
+            $('gamechooser').store('dragging', this.getParent('li'))
         })
     }
+
+    $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
+        e.preventDefault()
+    }).removeEvents('dragenter').addEvent('dragenter', function() {
+        $$('#gamechooser ol li').removeClass('insertleft')
+        this.addClass('insertleft')
+    })
+
+    $('gamechooser').removeEvents('drop').addEvent('drop', function(e) {
+        var dragged = this.retrieve('dragging')
+        this.store('dragging', null)
+
+        var lis = $$('#gamechooser ol li')
+        var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
+        lis.removeClass('insertleft')
+
+        if (!dragged || !afterli) return
+
+        afterli.grab(dragged, 'before')
+        // TODO
+    })
 
     setTimeout(function() {
         $('gamechooser').addClass('show')
