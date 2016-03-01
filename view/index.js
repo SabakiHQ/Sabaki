@@ -29,6 +29,7 @@ function getGameTrees() {
 }
 
 function setGameTrees(trees) {
+    trees.forEach(function(tree) { tree.parent = null })
     document.body.store('gametrees', trees)
 }
 
