@@ -1388,6 +1388,7 @@ function newFile(playSound) {
 
     closeDrawers()
     setGameTrees([getEmptyGameTree()])
+    setRepresentedFilename(null)
     loadGameFromIndex(0)
     updateFileHash()
 
