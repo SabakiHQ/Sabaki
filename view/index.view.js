@@ -1134,6 +1134,8 @@ function showGameChooser(callback) {
     })
 
     var trees = getGameTrees()
+    var currentTree = getRootTree()
+
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
         var li = new Element('li')
@@ -1159,7 +1161,7 @@ function showGameChooser(callback) {
         if ('PW' in node) white.set('text', node.PW[0])
         if ('WR' in node) white.set('title', node.WR[0])
 
-        li.getElement('div').addEvent('click', function() {
+        li.store('gametree', tree).getElement('div').addEvent('click', function() {
             var link = this
             closeGameChooser()
             setTimeout(function() {
@@ -1191,7 +1193,13 @@ function showGameChooser(callback) {
         if (!dragged || !afterli) return
 
         afterli.grab(dragged, 'before')
-        // TODO
+        setGameTrees($$('#gamechooser ol li:not(.add)').map(function(x) {
+            return x.retrieve('gametree')
+        }))
+
+        var newindex = getGameTrees().indexOf(currentTree)
+        setGameIndex(newindex)
+        setRepresentedFilename(getRepresentedFilename())
     })
 
     setTimeout(function() {
