@@ -1048,8 +1048,8 @@ function showGameInfo() {
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
-    info.getElement('input[name="name_1"]').set('value', 'PB' in rootNode ? rootNode.PB[0] : '')
-    info.getElement('input[name="name_-1"]').set('value', 'PW' in rootNode ? rootNode.PW[0] : '')
+    info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, rootNode, ''))
+    info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, rootNode, ''))
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
@@ -1157,12 +1157,9 @@ function showGameChooser(callback) {
         ), 'before')
 
         var node = tree.nodes[0]
-        var black = li.getElement('.black')
-        var white = li.getElement('.white')
-
-        if ('PB' in node) black.set('text', node.PB[0])
+        var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
+        var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
         if ('BR' in node) black.set('title', node.BR[0])
-        if ('PW' in node) white.set('text', node.PW[0])
         if ('WR' in node) white.set('title', node.WR[0])
 
         li.store('gametree', tree).getElement('div').addEvent('click', function() {
