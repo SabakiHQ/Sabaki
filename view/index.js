@@ -42,7 +42,7 @@ function setGameIndex(index) {
 
 function getRootTree() {
     if (!getCurrentTreePosition()) return null
-    return gametree.getRoot(getCurrentTreePosition()[0])
+    return getGameTrees()[getGameIndex()]
 }
 
 function setRootTree(tree) {
@@ -739,6 +739,7 @@ function makeMove(vertex, sendCommand) {
         if (createNode) {
             // Create variation
 
+            var updateRoot = tree == getRootTree()
             var splitted = gametree.splitTree(tree, index)
             var node = {}; node[color] = [sgf.vertex2point(vertex)]
             var newtree = gametree.new()
@@ -749,6 +750,7 @@ function makeMove(vertex, sendCommand) {
             splitted.current = splitted.subtrees.length - 1
 
             sgf.addBoard(newtree, newtree.nodes.length - 1)
+            if (updateRoot) setRootTree(splitted)
             setCurrentTreePosition(newtree, 0)
         }
     }
@@ -822,6 +824,8 @@ function useTool(vertex, event) {
     if (tool.indexOf('stone') != -1) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
             // New variation needed
+
+            var updateRoot = tree == getRootTree()
             var splitted = gametree.splitTree(tree, index)
 
             if (splitted != tree || splitted.subtrees.length != 0) {
@@ -833,6 +837,8 @@ function useTool(vertex, event) {
             node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
             index = tree.nodes.length
             tree.nodes.push(node)
+
+            if (updateRoot) setRootTree(splitted)
         }
 
         var sign = tool.indexOf('_1') != -1 ? 1 : -1
