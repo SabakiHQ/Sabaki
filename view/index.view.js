@@ -1002,11 +1002,6 @@ function openGameMenu(element) {
         click: function() {
             var trees = getGameTrees()
 
-            if (trees.length == 1) {
-                showMessageBox('There should be at least one game.', 'warning')
-                return
-            }
-
             if (showMessageBox(
                 'Do you really want to remove this game permanently?',
                 'warning',
@@ -1017,6 +1012,11 @@ function openGameMenu(element) {
             var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
 
             trees.splice(index, 1)
+            if (trees.length == 0) {
+                trees.push(getEmptyGameTree())
+                closeGameChooser()
+            }
+
             setGameTrees(trees)
             loadGameFromIndex(0)
 
