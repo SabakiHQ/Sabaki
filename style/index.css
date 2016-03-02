@@ -701,7 +701,6 @@ header, #edit, #scoring, #find {
     }
     #gamechooser ol {
         list-style: none;
-        overflow: hidden;
         margin: 10px;
     }
     #gamechooser li {
@@ -709,11 +708,15 @@ header, #edit, #scoring, #find {
         margin: 10px 10px 20px 10px;
     }
     #gamechooser li.insertleft {
+        margin-left: -3px;
         border-left: 3px solid #0050C0;
-        margin-left: 7px;
+        padding-left: 10px;
     }
-    #gamechooser li.insertright { border-right: 3px solid #0050C0; }
-    #gamechooser li.insertright + li { margin-left: 7px; }
+    #gamechooser li.insertright {
+        margin-right: 0;
+        border-right: 3px solid #0050C0;
+        padding-right: 7px;
+    }
     #gamechooser li div {
         margin: 0 auto;
         width: 165px;

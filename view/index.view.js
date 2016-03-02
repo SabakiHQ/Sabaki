@@ -1177,9 +1177,17 @@ function showGameChooser(callback) {
 
     $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()
-    }).removeEvents('dragenter').addEvent('dragenter', function() {
-        $$('#gamechooser ol li').removeClass('insertleft')
-        this.addClass('insertleft')
+
+        var x = e.event.clientX
+        var middle = this.getPosition().x + this.getSize().x / 2
+
+        if (x <= middle - 10 && !this.hasClass('insertleft')) {
+            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            this.addClass('insertleft')
+        } else if (x > middle + 10 && !this.hasClass('insertright') && !this.hasClass('add')) {
+            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            this.addClass('insertright')
+        }
     })
 
     $('gamechooser').removeEvents('drop').addEvent('drop', function(e) {
@@ -1188,11 +1196,14 @@ function showGameChooser(callback) {
 
         var lis = $$('#gamechooser ol li')
         var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
-        lis.removeClass('insertleft')
+        var beforeli = lis.filter(function(x) { return x.hasClass('insertright') })[0]
+        lis.removeClass('insertleft').removeClass('insertright')
 
-        if (!dragged || !afterli) return
+        if (!dragged || !afterli && !beforeli) return
 
-        afterli.grab(dragged, 'before')
+        if (afterli) afterli.grab(dragged, 'before')
+        if (beforeli) beforeli.grab(dragged, 'after')
+
         setGameTrees($$('#gamechooser ol li:not(.add)').map(function(x) {
             return x.retrieve('gametree')
         }))
