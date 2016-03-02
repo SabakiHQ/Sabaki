@@ -1177,6 +1177,7 @@ function showGameChooser(callback) {
 
     $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()
+        if (!$('gamechooser').retrieve('dragging')) return
 
         var x = e.event.clientX
         var middle = this.getPosition().x + this.getSize().x / 2
