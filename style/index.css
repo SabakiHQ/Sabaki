@@ -712,6 +712,8 @@ header, #edit, #scoring, #find {
         border-left: 3px solid #0050C0;
         margin-left: 7px;
     }
+    #gamechooser li.insertright { border-right: 3px solid #0050C0; }
+    #gamechooser li.insertright + li { margin-left: 7px; }
     #gamechooser li div {
         margin: 0 auto;
         width: 165px;

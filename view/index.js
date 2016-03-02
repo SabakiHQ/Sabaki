@@ -238,8 +238,8 @@ function setBoard(board) {
                 if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
             }
 
-            li.addClass('sign_' + sign)
-                .getElement('img').set('src', '../img/goban/stone_' + sign + '.png')
+            li.addClass('sign_' + sign).getElement('img')
+                .set('src', '../img/goban/stone_' + sign + '.png')
         }
     }
 }
