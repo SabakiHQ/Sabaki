@@ -417,7 +417,7 @@ function prepareSlider() {
         if (e.event.buttons != 1) return
 
         this.store('mousedown', true).addClass('active')
-        document.body.fireEvent('mousemove', e)
+        document.fireEvent('mousemove', e)
     }).addEvent('touchstart', function() {
         this.addClass('active')
     }).addEvent('touchmove', function(e) {
@@ -427,15 +427,17 @@ function prepareSlider() {
         this.removeClass('active')
     })
 
-    document.body.addEvent('mouseup', function() {
+    document.addEvent('mouseup', function() {
         slider.store('mousedown', false)
             .removeClass('active')
+        document.onselectstart = null
     }).addEvent('mousemove', function(e) {
         if (e.event.buttons != 1 || !slider.retrieve('mousedown'))
             return
 
         var percentage = (e.event.clientY - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
+        document.onselectstart = function() { return false }
     })
 
     // Prepare previous/next buttons
@@ -445,7 +447,7 @@ function prepareSlider() {
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
-    document.body.addEvent('mouseup', function() {
+    document.addEvent('mouseup', function() {
         $$('#sidebar .slider a').store('mousedown', false)
     })
 }
