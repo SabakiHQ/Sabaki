@@ -724,6 +724,7 @@ header, #edit, #scoring, #find {
     #gamechooser li div:active { opacity: .5; }
     #gamechooser li svg {
         border: 5px solid #ca933a;
+        margin-top: 5px;
         padding: 1px;
         background: url('../img/goban/board.png') center #ECB55A;
         background-size: 200%;
@@ -734,13 +735,13 @@ header, #edit, #scoring, #find {
     }
     #gamechooser li span {
         display: block;
-        margin-top: 5px;
-        padding-left: 5px;
-        padding-right: 5px;
+        margin: 3px 0;
+        padding: 0 5px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    #gamechooser li span::after { content: '\00A0'; }
     #gamechooser li span.black, #gamechooser li span.white {
         padding-left: 26px;
         background: no-repeat url('../img/ui/black.svg') 5px center;

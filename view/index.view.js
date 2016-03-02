@@ -1147,15 +1147,16 @@ function showGameChooser(callback) {
 
         var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(153)
+        var node = tree.nodes[0]
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
             new Element('div', { draggable: true })
+            .grab(new Element('span', { text: 'GN' in node ? node.GN[0] : '' }))
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
         ), 'before')
 
-        var node = tree.nodes[0]
         var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
         var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
         if ('BR' in node) black.set('title', node.BR[0])
