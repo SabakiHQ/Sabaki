@@ -608,15 +608,7 @@ function prepareResizers() {
 }
 
 function updateTitle() {
-    var basename = require('path').basename
-    var title = app.getName()
-    var filename = getRepresentedFilename()
-
-    if (filename) title = basename(filename)
-    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
-    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
-
-    document.title = title
+    document.title = app.getName()
 }
 
 function addEngineItem(name, path, args) {
