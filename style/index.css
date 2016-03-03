@@ -531,7 +531,7 @@ header, #edit, #scoring, #find {
     z-index: 3;
 }
 
-#info, #score, #preferences {
+#info, #score, #preferences, #gamechooser {
         position: fixed;
         left: 0;
         right: 0;
@@ -544,7 +544,7 @@ header, #edit, #scoring, #find {
         transition: bottom .5s;
         z-index: 15;
     }
-    #info.show, #score.show, #preferences.show {
+    #info.show, #score.show, #preferences.show, #gamechooser.show {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
@@ -670,6 +670,85 @@ header, #edit, #scoring, #find {
     #preferences input[type="checkbox"]::before {
         filter: invert(100%);
         -webkit-filter: invert(100%);
+}
+
+#gamechooser {
+        height: 100%;
+        bottom: -100%;
+        padding: 0;
+    }
+    #gamechooser > p {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px;
+        text-align: right;
+    }
+    #gamechooser .games-list {
+        position: absolute;
+        top: 76px;
+        left: 0;
+        right: 0;
+        bottom: 70px;
+        width: auto;
+        height: auto;
+        overflow: auto;
+        background: rgba(0, 0, 0, .2);
+    }
+    #gamechooser h2 {
+        padding: 20px;
+        font-weight: lighter;
+    }
+    #gamechooser ol {
+        list-style: none;
+        margin: 10px;
+    }
+    #gamechooser li {
+        float: left;
+        margin: 10px 10px 20px 10px;
+    }
+    #gamechooser li.insertleft {
+        margin-left: -3px;
+        border-left: 3px solid #0050C0;
+        padding-left: 10px;
+    }
+    #gamechooser li.insertright {
+        margin-right: 0;
+        border-right: 3px solid #0050C0;
+        padding-right: 7px;
+    }
+    #gamechooser li div {
+        margin: 0 auto;
+        width: 165px;
+    }
+    #gamechooser li div:active { opacity: .5; }
+    #gamechooser li svg {
+        border: 5px solid #ca933a;
+        margin-top: 5px;
+        padding: 1px;
+        background: url('../img/goban/board.png') center #ECB55A;
+        background-size: 200%;
+    }
+    #gamechooser li.add svg {
+        border-color: #393939;
+        background: transparent;
+    }
+    #gamechooser li span {
+        display: block;
+        margin: 3px 0;
+        padding: 0 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #gamechooser li span::after { content: '\00A0'; }
+    #gamechooser li span.black, #gamechooser li span.white {
+        padding-left: 26px;
+        background: no-repeat url('../img/ui/black.svg') 5px center;
+    }
+    #gamechooser li span.white {
+        background-image: url('../img/ui/white.svg');
 }
 
 .tabs {

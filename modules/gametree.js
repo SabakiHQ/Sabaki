@@ -69,6 +69,17 @@ context.getRoot = function(tree) {
     return tree
 }
 
+context.getPlayerName = function(sign, tree, fallback) {
+    tree = context.getRoot(tree)
+    var color = sign > 0 ? 'B' : 'W'
+
+    if (tree.nodes.length == 0) return fallback
+    if (('P' + color) in tree.nodes[0]) return tree.nodes[0]['P' + color][0]
+    if ((color + 'T') in tree.nodes[0]) return tree.nodes[0][color + 'T'][0]
+
+    return fallback
+}
+
 context.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
@@ -250,6 +261,10 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
 
 context.onCurrentTrack = function(tree) {
     return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && context.onCurrentTrack(tree.parent)
+}
+
+context.onMainTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[0] == tree && context.onMainTrack(tree.parent)
 }
 
 context.matrixdict2graph = function(matrixdict) {

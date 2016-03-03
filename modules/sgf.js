@@ -12,7 +12,7 @@ if (typeof require != 'undefined') {
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
 
-var alpha = 'abcdefghijklmnopqrstuvwxyz'
+var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 context.meta = {
     name: 'Smart Game Format',
@@ -113,8 +113,6 @@ context.parseFile = function(filename, callback) {
 
 context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
-
-    point = point.toLowerCase()
     return [alpha.indexOf(point[0]), alpha.indexOf(point[1])]
 }
 

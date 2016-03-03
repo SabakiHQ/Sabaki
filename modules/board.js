@@ -81,23 +81,6 @@ Board.prototype = {
         ].filter(self.hasVertex.bind(self))
     },
 
-    getNeighborhood: function(vertex) {
-        var self = this
-        var result = []
-
-        if (!self.hasVertex(vertex)) return result
-
-        for (var x = vertex[0] - 3; x <= vertex[0] + 3; x++) {
-            for (var y = vertex[1] - 3; y <= vertex[1] + 3; y++) {
-                if (!self.hasVertex([x, y])) continue
-                var distance = Math.pow(vertex[0] - x, 2) + Math.pow(vertex[1] - y, 2)
-                if (distance <= 10) result.push([x, y])
-            }
-        }
-
-        return result
-    },
-
     getConnectedComponent: function(vertex, colors, result) {
         if (!this.hasVertex(vertex)) return []
         if (!result) result = [vertex]
@@ -341,6 +324,63 @@ Board.prototype = {
         }
 
         return result
+    },
+
+    getSvg: function(pixelsize) {
+        var ns = 'http://www.w3.org/2000/svg'
+        var svg = document.createElementNS(ns, 'svg')
+        svg.setAttribute('width', pixelsize)
+        svg.setAttribute('height', pixelsize)
+        var tileSize = (pixelsize - 1) / this.size
+        var radius = tileSize / 2
+
+        // Draw hoshi
+
+        this.getHandicapPlacement(9).forEach(function(v) {
+            var circle = document.createElementNS(ns, 'circle')
+            circle.setAttribute('cx', v[0] * tileSize + radius + 1)
+            circle.setAttribute('cy', v[1] * tileSize + radius + 1)
+            circle.setAttribute('r', 2)
+            circle.setAttribute('fill', '#5E2E0C')
+
+            svg.appendChild(circle)
+        })
+
+        // Draw shadows
+
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                if (this.arrangement[[x, y]] == 0) continue
+
+                var circle = document.createElementNS(ns, 'circle')
+                circle.setAttribute('cx', x * tileSize + radius + 1)
+                circle.setAttribute('cy', y * tileSize + radius + 2)
+                circle.setAttribute('r', radius)
+                circle.setAttribute('fill', 'rgba(0, 0, 0, .5)')
+
+                svg.appendChild(circle)
+            }
+        }
+
+        // Draw stones
+
+        for (var x = 0; x < this.size; x++) {
+            for (var y = 0; y < this.size; y++) {
+                if (this.arrangement[[x, y]] == 0) continue
+
+                var circle = document.createElementNS(ns, 'circle')
+                circle.setAttribute('cx', x * tileSize + radius + 1)
+                circle.setAttribute('cy', y * tileSize + radius + 1)
+                circle.setAttribute('r', radius)
+
+                if (this.arrangement[[x, y]] == -1)
+                    circle.setAttribute('fill', 'white')
+
+                svg.appendChild(circle)
+            }
+        }
+
+        return svg
     },
 
     getHash: function() {

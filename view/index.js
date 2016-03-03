@@ -23,28 +23,68 @@ var MenuItem = null
  * Getter & setter
  */
 
-function getRootTree() {
-    if (!getCurrentTreePosition()) return null
-    return gametree.getRoot(getCurrentTreePosition()[0])
+function getGameTrees() {
+    var trees = document.body.retrieve('gametrees')
+    return trees ? trees : [getRootTree()]
 }
 
-function setRootTree(tree, updateHash) {
+function setGameTrees(trees) {
+    trees.forEach(function(tree) { tree.parent = null })
+    document.body.store('gametrees', trees)
+}
+
+function getGameIndex() {
+    return getGameTrees().length == 1 ? 0 : document.body.retrieve('gameindex')
+}
+
+function setGameIndex(index) {
+    document.body.store('gameindex', index)
+}
+
+function getRootTree() {
+    if (!getCurrentTreePosition()) return null
+    return getGameTrees()[getGameIndex()]
+}
+
+function setRootTree(tree) {
     if (tree.nodes.length == 0) return
 
+    var trees = getGameTrees()
+    trees[getGameIndex()] = tree
+    setGameTrees(trees)
+
     tree.parent = null
-    if (updateHash) document.body.store('treehash', gametree.getHash(tree))
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
     setPlayerName(
         1,
-        'PB' in tree.nodes[0] ? tree.nodes[0].PB[0] : 'Black',
+        gametree.getPlayerName(1, tree, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
     setPlayerName(
         -1,
-        'PW' in tree.nodes[0] ? tree.nodes[0].PW[0] : 'White',
+        gametree.getPlayerName(-1, tree, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
+}
+
+function getFileHash() {
+    return document.body.retrieve('filehash')
+}
+
+function generateFileHash() {
+    var trees = getGameTrees()
+    var hash = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        hash += gametree.getHash(trees[i])
+    }
+
+    return hash
+}
+
+function updateFileHash() {
+    document.body.store('filehash', generateFileHash())
 }
 
 function getGraphMatrixDict() {
@@ -77,7 +117,7 @@ function getCurrentTreePosition() {
     return $('goban').retrieve('position')
 }
 
-function setCurrentTreePosition(tree, index, now) {
+function setCurrentTreePosition(tree, index, now, redraw) {
     if (!tree || getScoringMode()) return
 
     // Remove old graph node color
@@ -92,7 +132,8 @@ function setCurrentTreePosition(tree, index, now) {
     // Store new position
 
     $('goban').store('position', [tree, index])
-    var redraw = !node
+    redraw = !!redraw
+        || !node
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed && index == tree.nodes.length - 1
 
@@ -187,6 +228,8 @@ function setBoard(board) {
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
                 if (label != '') li.set('title', label)
+                if (label.length >= 3) li.addClass('smalllabel')
+                else li.removeClass('smalllabel')
             }
 
             if (li.hasClass('sign_' + sign)) continue
@@ -195,8 +238,8 @@ function setBoard(board) {
                 if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
             }
 
-            li.addClass('sign_' + sign)
-                .getElement('img').set('src', '../img/goban/stone_' + sign + '.png')
+            li.addClass('sign_' + sign).getElement('img')
+                .set('src', '../img/goban/stone_' + sign + '.png')
         }
     }
 }
@@ -277,6 +320,14 @@ function setHotspot(bookmark) {
 
     updateGraph()
     setShowHotspot(bookmark)
+}
+
+function getEmptyGameTree() {
+    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+    buffer += 'CA[UTF-8]KM[' + setting.get('game.default_komi')
+        + ']SZ[' + setting.get('game.default_board_size') + ']'
+
+    return sgf.parse(sgf.tokenize(buffer))
 }
 
 /**
@@ -366,7 +417,7 @@ function prepareSlider() {
         if (e.event.buttons != 1) return
 
         this.store('mousedown', true).addClass('active')
-        document.body.fireEvent('mousemove', e)
+        document.fireEvent('mousemove', e)
     }).addEvent('touchstart', function() {
         this.addClass('active')
     }).addEvent('touchmove', function(e) {
@@ -376,15 +427,17 @@ function prepareSlider() {
         this.removeClass('active')
     })
 
-    document.body.addEvent('mouseup', function() {
+    document.addEvent('mouseup', function() {
         slider.store('mousedown', false)
             .removeClass('active')
+        document.onselectstart = null
     }).addEvent('mousemove', function(e) {
         if (e.event.buttons != 1 || !slider.retrieve('mousedown'))
             return
 
         var percentage = (e.event.clientY - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
+        document.onselectstart = function() { return false }
     })
 
     // Prepare previous/next buttons
@@ -394,22 +447,25 @@ function prepareSlider() {
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
-    document.body.addEvent('mouseup', function() {
+    document.addEvent('mouseup', function() {
         $$('#sidebar .slider a').store('mousedown', false)
     })
 }
 
 function prepareDragDropFiles() {
     Element.NativeEvents.dragover = 2
+    Element.NativeEvents.dragenter = 2
+    Element.NativeEvents.dragleave = 2
+    Element.NativeEvents.dragstart = 2
     Element.NativeEvents.drop = 2
 
-    document.body.addEvent('dragover', function() {
-        return false
+    document.body.addEvent('dragover', function(e) {
+        e.preventDefault()
     }).addEvent('drop', function(e) {
         e.preventDefault()
 
         if (e.event.dataTransfer.files.length == 0) return
-        loadGame(e.event.dataTransfer.files[0].path)
+        loadFile(e.event.dataTransfer.files[0].path)
     })
 }
 
@@ -696,6 +752,7 @@ function makeMove(vertex, sendCommand) {
         if (createNode) {
             // Create variation
 
+            var updateRoot = tree == getRootTree()
             var splitted = gametree.splitTree(tree, index)
             var node = {}; node[color] = [sgf.vertex2point(vertex)]
             var newtree = gametree.new()
@@ -706,6 +763,7 @@ function makeMove(vertex, sendCommand) {
             splitted.current = splitted.subtrees.length - 1
 
             sgf.addBoard(newtree, newtree.nodes.length - 1)
+            if (updateRoot) setRootTree(splitted)
             setCurrentTreePosition(newtree, 0)
         }
     }
@@ -779,6 +837,8 @@ function useTool(vertex, event) {
     if (tool.indexOf('stone') != -1) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
             // New variation needed
+
+            var updateRoot = tree == getRootTree()
             var splitted = gametree.splitTree(tree, index)
 
             if (splitted != tree || splitted.subtrees.length != 0) {
@@ -790,6 +850,8 @@ function useTool(vertex, event) {
             node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
             index = tree.nodes.length
             tree.nodes.push(node)
+
+            if (updateRoot) setRootTree(splitted)
         }
 
         var sign = tool.indexOf('_1') != -1 ? 1 : -1
@@ -1302,16 +1364,16 @@ function centerGraphCameraAt(node) {
 
 function askForSave() {
     if (!getRootTree()) return true
-    var hash = gametree.getHash(getRootTree())
+    var hash = generateFileHash()
 
-    if (hash != document.body.retrieve('treehash')) {
+    if (hash != getFileHash()) {
         var answer = showMessageBox(
-            'Your changes will be lost if you close this game without saving.',
+            'Your changes will be lost if you close this file without saving.',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveGame(getRepresentedFilename())
+        if (answer == 0) saveFile(getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -1341,18 +1403,14 @@ function startAutoScroll(direction, delay) {
  * Menu
  */
 
-function newGame(playSound) {
+function newFile(playSound) {
     if (getIsBusy() || !askForSave()) return
 
-    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]PB[Black]PW[White]KM[' + setting.get('game.default_komi')
-        + ']SZ[' + setting.get('game.default_board_size') + ']'
-
     closeDrawers()
-    var tree = sgf.parse(sgf.tokenize(buffer))
-    setRootTree(tree, true)
-    setUndoable(false)
+    setGameTrees([getEmptyGameTree()])
     setRepresentedFilename(null)
+    loadGameFromIndex(0)
+    updateFileHash()
 
     if (arguments.length >= 1 && playSound) {
         sound.playNewGame()
@@ -1360,7 +1418,18 @@ function newGame(playSound) {
     }
 }
 
-function loadGame(filename) {
+function loadGameFromIndex(index) {
+    var trees = getGameTrees()
+
+    setGameTrees(trees)
+    setGameIndex(index)
+    setRootTree(trees[index])
+    updateTitle()
+    setUndoable(false)
+    if (setting.get('game.goto_end_after_loading')) goToEnd()
+}
+
+function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
     setIsBusy(true)
 
@@ -1373,29 +1442,33 @@ function loadGame(filename) {
     }
 
     if (filename) {
+        closeDrawers()
+
         setTimeout(function() {
             var win = remote.getCurrentWindow()
             var lastprogress = -1
 
             try {
-                var tree = sgf.parseFile(filename, function(progress) {
+                var trees = sgf.parseFile(filename, function(progress) {
                     if (progress - lastprogress < 0.05) return
 
                     setProgressIndicator(progress, win)
                     lastprogress = progress
-                }).subtrees[0]
+                }).subtrees
 
-                closeDrawers()
-                setRootTree(tree, true)
-                setUndoable(false)
+                if (trees.length == 0) throw true
+
+                setGameTrees(trees)
+                setRepresentedFilename(filename)
+                loadGameFromIndex(0)
+                updateFileHash()
+
+                if (trees.length > 1) showGameChooser()
             } catch(e) {
                 showMessageBox('This file is unreadable.', 'warning')
             }
 
             setProgressIndicator(-1, win)
-            setRepresentedFilename(filename)
-
-            if (setting.get('game.goto_end_after_loading')) goToEnd()
             setIsBusy(false)
         }, setting.get('app.loadgame_delay'))
     } else {
@@ -1403,7 +1476,7 @@ function loadGame(filename) {
     }
 }
 
-function saveGame(filename) {
+function saveFile(filename) {
     if (getIsBusy()) return
     setIsBusy(true)
 
@@ -1414,11 +1487,21 @@ function saveGame(filename) {
     }
 
     if (filename) {
+        var trees = getGameTrees()
         var tree = getRootTree()
-        var text = sgf.fromTree(tree)
 
-        fs.writeFile(filename, '(' + text + ')')
-        document.body.store('treehash', gametree.getHash(tree))
+        var text = ''
+
+        for (var i = 0; i < trees.length; i++) {
+            var t = trees[i]
+            if (i == getGameIndex()) t = tree
+
+            t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
+            text += '(' + sgf.fromTree(t) + ')\n\n'
+        }
+
+        fs.writeFile(filename, text)
+        updateFileHash()
         setRepresentedFilename(filename)
     }
 
@@ -1517,7 +1600,7 @@ function goToNextVariation() {
 
 function goToPreviousVariation() {
     var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    var tree = tp[0]
 
     if (!tree.parent) return
 
@@ -1527,7 +1610,24 @@ function goToPreviousVariation() {
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
-function makeMainTrack() {
+function goToMainVariation() {
+    var tp = getCurrentTreePosition()
+    var tree = tp[0]
+    var root = getRootTree()
+
+    while (!gametree.onMainTrack(tree)) {
+        tree = tree.parent
+    }
+
+    while (root.current != null) {
+        root.current = 0
+        root = root.subtrees[0]
+    }
+
+    setCurrentTreePosition(tree, tree.nodes.length - 1, false, true)
+}
+
+function makeMainVariation() {
     setUndoable(true)
     closeDrawers()
 
@@ -1542,8 +1642,7 @@ function makeMainTrack() {
         tree = subtree
     }
 
-    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level))
-    updateGraph()
+    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level).concat([false, true]))
 }
 
 function removeNode(tree, index) {
@@ -1553,7 +1652,7 @@ function removeNode(tree, index) {
     }
 
     if (setting.get('edit.show_removenode_warning') && showMessageBox(
-        'Do you really want to remove this node permanently?',
+        'Do you really want to remove this node?',
         'warning',
         ['Remove Node', 'Cancel'], 1
     ) == 1) return
@@ -1596,9 +1695,8 @@ function undoBoard() {
         setRootTree(document.body.retrieve('undodata-root'))
 
         var pos = gametree.navigate(getRootTree(), 0, document.body.retrieve('undodata-pos'))
-        setCurrentTreePosition.apply(null, pos)
+        setCurrentTreePosition.apply(null, pos.concat([true, true]))
 
-        updateSidebar(true, true)
         setUndoable(false)
         setIsBusy(false)
     }, setting.get('edit.undo_delay'))
@@ -1629,7 +1727,7 @@ document.addEvent('keydown', function(e) {
 })
 
 window.addEvent('load', function() {
-    newGame(true)
+    newFile(true)
 
     if (!setting.get('app.startup_check_updates')) return
 

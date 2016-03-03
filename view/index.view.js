@@ -3,10 +3,12 @@
  */
 
 function getIsBusy() {
-    return document.body.hasClass('busy')
+    return document.body.retrieve('busy')
 }
 
 function setIsBusy(busy) {
+    document.body.store('busy', busy)
+
     if (busy) {
         document.body.addClass('busy')
         return
@@ -284,16 +286,16 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     else header.addClass('positionstatus')
 
     if (posstatus == -1)
-        img.set('src', '../img/ui/goodforwhite.svg')
+        img.set('src', '../img/ui/white.svg')
             .set('alt', 'Good for white')
     else if (posstatus == 0)
-        img.set('src', '../img/ui/evenposition.svg')
+        img.set('src', '../img/ui/balance.svg')
             .set('alt', 'Even position')
     else if (posstatus == 1)
-        img.set('src', '../img/ui/goodforblack.svg')
+        img.set('src', '../img/ui/black.svg')
             .set('alt', 'Good for black')
     else if (posstatus == -2)
-        img.set('src', '../img/ui/unclearposition.svg')
+        img.set('src', '../img/ui/unclear.svg')
             .set('alt', 'Unclear position')
 
     if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
@@ -411,12 +413,7 @@ function setRepresentedFilename(filename) {
 
     document.body.store('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
-
-    var title = app.getName()
-    if (filename) title = path.basename(filename)
-    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
-
-    document.title = title
+    updateTitle()
 }
 
 function getShapes() {
@@ -499,6 +496,128 @@ function getCurrentMoveInterpretation() {
 /**
  * Methods
  */
+
+function prepareScrollbars() {
+    $('properties').store('scrollbar', new GeminiScrollbar({
+        element: $('properties'),
+        createElements: false
+    }).create())
+
+    $('console').store('scrollbar', new GeminiScrollbar({
+        element: $('console'),
+        createElements: false
+    }).create())
+
+    var enginesList = $$('#preferences .engines-list')[0]
+    enginesList.store('scrollbar', new GeminiScrollbar({
+        element: enginesList,
+        createElements: false
+    }).create())
+
+    var gamesList = $$('#gamechooser .games-list')[0]
+    gamesList.store('scrollbar', new GeminiScrollbar({
+        element: gamesList,
+        createElements: false
+    }).create())
+
+    window.addEvent('resize', function() {
+        if (!$('gamechooser').hasClass('show')) return
+
+        var width = $$('#gamechooser .games-list')[0].getWidth() - 20
+        var svgs = $$('#gamechooser svg')
+
+        if (svgs.length == 0) return
+
+        var liwidth = svgs[0].getWidth() + 12 + 20
+        var count = Math.floor(width / liwidth)
+
+        $$('#gamechooser li').setStyle('width', Math.floor(width / count) - 20)
+        $$('#gamechooser .games-list')[0].retrieve('scrollbar').update()
+    })
+}
+
+function prepareResizers() {
+    $$('.verticalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
+    })
+
+    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
+        if (e.event.button != 0) return
+        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
+        $('properties').setStyle('transition', 'none')
+    })
+
+    document.body.addEvent('mouseup', function() {
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
+
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
+            $('sidebar').store('initposx', null)
+            setting.set('view.sidebar_width', getSidebarWidth())
+        } else if (leftSidebarInitPosX) {
+            $('leftsidebar').store('initposx', null)
+            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
+            return
+        } else if (initPosY) {
+            $('sidebar').store('initposy', null)
+            $('properties').setStyle('transition', '')
+            setting.set('view.properties_height', getPropertiesHeight())
+            setSidebarArrangement(true, true, false)
+        }
+
+        if ($('graph').retrieve('sigma'))
+            $('graph').retrieve('sigma').renderers[0].resize().render()
+    }).addEvent('mousemove', function(e) {
+        var sidebarInitPosX = $('sidebar').retrieve('initposx')
+        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
+        var initPosY = $('sidebar').retrieve('initposy')
+
+        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
+
+        if (sidebarInitPosX) {
+            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
+            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
+
+            setSidebarWidth(newwidth)
+            resizeBoard()
+        } else if (leftSidebarInitPosX) {
+            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
+            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+
+            setLeftSidebarWidth(newwidth)
+            resizeBoard()
+
+            $('console').retrieve('scrollbar').update()
+            return
+        } else if (initPosY) {
+            var initY = initPosY[0], initHeight = initPosY[1]
+            var newheight = Math.min(Math.max(
+                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
+                setting.get('view.properties_minheight')
+            ), 100 - setting.get('view.properties_minheight'))
+
+            setPropertiesHeight(newheight)
+        }
+
+        $('properties').retrieve('scrollbar').update()
+    })
+}
+
+function updateTitle() {
+    var basename = require('path').basename
+    var title = app.getName()
+    var filename = getRepresentedFilename()
+
+    if (filename) title = basename(filename)
+    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
+    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
+
+    document.title = title
+}
 
 function addEngineItem(name, path, args) {
     if (!name) name = ''
@@ -864,6 +983,46 @@ function openNodeMenu(tree, index) {
         click: function() { removeNode(tree, index) }
     }]
 
+    if (gametree.onCurrentTrack(tree)) {
+        template.push({
+            label: 'Make &Main Variation',
+            click: function() { makeMainVariation() }
+        })
+    }
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+}
+
+function openGameMenu(element) {
+    var template = [{
+        label: '&Remove',
+        click: function() {
+            var trees = getGameTrees()
+
+            if (showMessageBox(
+                'Do you really want to remove this game permanently?',
+                'warning',
+                ['Remove Game', 'Cancel'], 1
+            ) == 1) return
+
+            var index = element.getParent('ol').getElements('li div').indexOf(element)
+            var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
+
+            trees.splice(index, 1)
+            if (trees.length == 0) {
+                trees.push(getEmptyGameTree())
+                closeGameChooser()
+            }
+
+            setGameTrees(trees)
+            loadGameFromIndex(0)
+
+            element.getParent().destroy()
+            scrollbar.update()
+        }
+    }]
+
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
@@ -887,8 +1046,8 @@ function showGameInfo() {
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
-    info.getElement('input[name="name_1"]').set('value', 'PB' in rootNode ? rootNode.PB[0] : '')
-    info.getElement('input[name="name_-1"]').set('value', 'PW' in rootNode ? rootNode.PW[0] : '')
+    info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, tree, ''))
+    info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
@@ -956,10 +1115,120 @@ function closePreferences() {
     $('preferences').removeClass('show')
 }
 
+function showGameChooser(callback) {
+    if (!callback) callback = function(index) {
+        if (index == getGameTrees().length) {
+            var tree = getEmptyGameTree()
+            closeDrawers()
+            setGameTrees(getGameTrees().concat([tree]))
+        }
+
+        loadGameFromIndex(index)
+    }
+
+    closeDrawers()
+
+    $$('#gamechooser ol li:not(.add)').destroy()
+    $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
+        closeGameChooser()
+        callback(getGameTrees().length)
+    })
+
+    var trees = getGameTrees()
+    var currentTree = getRootTree()
+
+    for (var i = 0; i < trees.length; i++) {
+        var tree = trees[i]
+        var li = new Element('li')
+        var tp = gametree.navigate(tree, 0, 30)
+        if (!tp[0]) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+
+        var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
+        var svg = board.getSvg(153)
+        var node = tree.nodes[0]
+
+        $$('#gamechooser ol li.add')[0].grab(li.grab(
+            new Element('div', { draggable: true })
+            .grab(new Element('span', { text: 'GN' in node ? node.GN[0] : '' }))
+            .grab(svg)
+            .grab(new Element('span.black', { text: 'Black' }))
+            .grab(new Element('span.white', { text: 'White' }))
+        ), 'before')
+
+        var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
+        var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
+        if ('BR' in node) black.set('title', node.BR[0])
+        if ('WR' in node) white.set('title', node.WR[0])
+
+        li.store('gametree', tree).getElement('div').addEvent('click', function() {
+            var link = this
+            closeGameChooser()
+            setTimeout(function() {
+                callback($$('#gamechooser ol li div').indexOf(link))
+            }, 500)
+        }).addEvent('mouseup', function(e) {
+            if (e.event.button != 2) return
+            openGameMenu(this)
+        }).addEvent('dragstart', function(e) {
+            $('gamechooser').store('dragging', this.getParent('li'))
+        })
+    }
+
+    $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
+        e.preventDefault()
+        if (!$('gamechooser').retrieve('dragging')) return
+
+        var x = e.event.clientX
+        var middle = this.getPosition().x + this.getSize().x / 2
+
+        if (x <= middle - 10 && !this.hasClass('insertleft')) {
+            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            this.addClass('insertleft')
+        } else if (x > middle + 10 && !this.hasClass('insertright') && !this.hasClass('add')) {
+            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            this.addClass('insertright')
+        }
+    })
+
+    $('gamechooser').removeEvents('drop').addEvent('drop', function(e) {
+        var dragged = this.retrieve('dragging')
+        this.store('dragging', null)
+
+        var lis = $$('#gamechooser ol li')
+        var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
+        var beforeli = lis.filter(function(x) { return x.hasClass('insertright') })[0]
+        lis.removeClass('insertleft').removeClass('insertright')
+
+        if (!dragged || !afterli && !beforeli) return
+
+        if (afterli) afterli.grab(dragged, 'before')
+        if (beforeli) beforeli.grab(dragged, 'after')
+
+        setGameTrees($$('#gamechooser ol li:not(.add)').map(function(x) {
+            return x.retrieve('gametree')
+        }))
+
+        var newindex = getGameTrees().indexOf(currentTree)
+        setGameIndex(newindex)
+        updateTitle()
+    })
+
+    setTimeout(function() {
+        $('gamechooser').addClass('show')
+        window.fireEvent('resize')
+        $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
+    }, setting.get('gamechooser.show_delay'))
+}
+
+function closeGameChooser() {
+    $('gamechooser').removeClass('show')
+}
+
 function closeDrawers() {
     closeGameInfo()
     closeScore()
     closePreferences()
+    closeGameChooser()
     setEditMode(false)
     setScoringMode(false)
     setFindMode(false)
@@ -976,99 +1245,6 @@ document.addEvent('domready', function() {
         $('goban').store('mousedown', false)
     })
 
-    // Preferences tabs
-
-    $$('#preferences .tabs a').addEvent('click', function() {
-        setPreferencesTab(this.className)
-        return false
-    })
-
-    // Scrollbars
-
-    $('properties').store('scrollbar', new GeminiScrollbar({
-        element: $('properties'),
-        createElements: false
-    }).create())
-
-    $('console').store('scrollbar', new GeminiScrollbar({
-        element: $('console'),
-        createElements: false
-    }).create())
-
-    var enginesList = $$('#preferences .engines-list')[0]
-    enginesList.store('scrollbar', new GeminiScrollbar({
-        element: enginesList,
-        createElements: false
-    }).create())
-
-    // Resize sidebar
-
-    $$('.verticalresizer').addEvent('mousedown', function(e) {
-        if (e.event.button != 0) return
-        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
-    })
-
-    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
-        if (e.event.button != 0) return
-        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
-        $('properties').setStyle('transition', 'none')
-    })
-
-    document.body.addEvent('mouseup', function() {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
-
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
-
-        if (sidebarInitPosX) {
-            $('sidebar').store('initposx', null)
-            setting.set('view.sidebar_width', getSidebarWidth())
-        } else if (leftSidebarInitPosX) {
-            $('leftsidebar').store('initposx', null)
-            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
-            return
-        } else if (initPosY) {
-            $('sidebar').store('initposy', null)
-            $('properties').setStyle('transition', '')
-            setting.set('view.properties_height', getPropertiesHeight())
-            setSidebarArrangement(true, true, false)
-        }
-
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
-    }).addEvent('mousemove', function(e) {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
-
-        if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
-
-        if (sidebarInitPosX) {
-            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
-
-            setSidebarWidth(newwidth)
-            resizeBoard()
-        } else if (leftSidebarInitPosX) {
-            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
-
-            setLeftSidebarWidth(newwidth)
-            resizeBoard()
-
-            $('console').retrieve('scrollbar').update()
-            return
-        } else if (initPosY) {
-            var initY = initPosY[0], initHeight = initPosY[1]
-            var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
-                setting.get('view.properties_minheight')
-            ), 100 - setting.get('view.properties_minheight'))
-
-            setPropertiesHeight(newheight)
-        }
-
-        $('properties').retrieve('scrollbar').update()
-    })
+    prepareScrollbars()
+    prepareResizers()
 })

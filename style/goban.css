@@ -238,6 +238,9 @@ body:not(.scoring) .goban .row li.dimmed img {
         text-overflow: ellipsis;
         font-weight: normal;
         font-size: 16px;
+    }
+    .goban .row li.smalllabel::before {
+        font-size: 10px;
 }
 
 /**
