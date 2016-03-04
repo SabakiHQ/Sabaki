@@ -74,10 +74,12 @@ context.getPlayerName = function(sign, tree, fallback) {
     var color = sign > 0 ? 'B' : 'W'
 
     if (tree.nodes.length == 0) return fallback
-    if (('P' + color) in tree.nodes[0]) return tree.nodes[0]['P' + color][0]
-    if ((color + 'T') in tree.nodes[0]) return tree.nodes[0][color + 'T'][0]
 
-    return fallback
+    var result = ''
+    if (('P' + color) in tree.nodes[0]) result = tree.nodes[0]['P' + color][0]
+    else if ((color + 'T') in tree.nodes[0]) result = tree.nodes[0][color + 'T'][0]
+
+    return result.trim() == '' ? fallback : result
 }
 
 context.navigate = function(tree, index, step) {
