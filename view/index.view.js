@@ -611,6 +611,19 @@ function prepareResizers() {
     })
 }
 
+function prepareGameChooser() {
+    $$('#gamechooser > input').addEvent('input', function() {
+        var value = this.value
+
+        $$('#gamechooser .games-list li:not(.add)').forEach(function(li) {
+            if (li.getElements('span').some(function(span) {
+                return span.get('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
+            })) li.removeClass('hide')
+            else li.addClass('hide')
+        })
+    })
+}
+
 function updateTitle() {
     var basename = require('path').basename
     var title = app.getName()
@@ -1130,6 +1143,7 @@ function showGameChooser(callback) {
 
     closeDrawers()
 
+    $$('#gamechooser > input')[0].set('value', '').focus()
     $$('#gamechooser ol li:not(.add)').destroy()
     $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
         closeGameChooser()
@@ -1249,4 +1263,5 @@ document.addEvent('domready', function() {
 
     prepareScrollbars()
     prepareResizers()
+    prepareGameChooser()
 })

@@ -548,12 +548,14 @@ header, #edit, #scoring, #find {
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
     #info input, #info select, button,
-    #preferences input, #preferences select {
+    #preferences input, #preferences select,
+    #gamechooser input {
         background: #111;
         color: #eee;
     }
     #info input:focus, #info select:focus, button:hover, button:focus,
-    #preferences input:focus, #preferences select:focus  {
+    #preferences input:focus, #preferences select:focus,
+    #gamechooser input:focus {
         background: #1a1a1a;
     }
     #preferences input[type="checkbox"]:focus {
@@ -676,6 +678,12 @@ header, #edit, #scoring, #find {
         bottom: -100%;
         padding: 0;
     }
+    #gamechooser > input {
+        position: absolute;
+        top: 23px;
+        right: 20px;
+        width: 15em;
+    }
     #gamechooser > p {
         position: absolute;
         bottom: 0;
@@ -717,6 +725,7 @@ header, #edit, #scoring, #find {
         border-right: 3px solid #0050C0;
         padding-right: 7px;
     }
+    #gamechooser li.hide { display: none; }
     #gamechooser li div {
         margin: 0 auto;
         width: 165px;
