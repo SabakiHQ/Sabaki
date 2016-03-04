@@ -1167,16 +1167,20 @@ function showGameChooser(callback) {
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
             new Element('div', { draggable: true })
-            .grab(new Element('span', { text: 'GN' in node ? node.GN[0] : '' }))
+            .grab(new Element('span'))
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
         ), 'before')
 
+        var gamename = li.getElement('span')
         var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
         var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
+
         if ('BR' in node) black.set('title', node.BR[0])
         if ('WR' in node) white.set('title', node.WR[0])
+        if ('GN' in node) gamename.set('text', node.GN[0]).set('title', node.GN[0])
+        else if ('EV' in node) gamename.set('text', node.EV[0]).set('title', node.EV[0])
 
         li.store('gametree', tree).getElement('div').addEvent('click', function() {
             var link = this
