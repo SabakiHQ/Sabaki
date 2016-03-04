@@ -820,6 +820,28 @@ function buildBoard() {
     })
 }
 
+function updateBoardLines() {
+    $$('#goban .line, #goban .arrow').forEach(function(line) {
+        var v1 = line.retrieve('v1'), v2 = line.retrieve('v2')
+        var li1 = $('goban').getElement('.pos_' + v1[0] + '-' + v1[1])
+        var li2 = $('goban').getElement('.pos_' + v2[0] + '-' + v2[1])
+        var pos1 = li1.getPosition($('goban'))
+        var pos2 = li2.getPosition($('goban'))
+        var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
+
+        var angle = Math.atan(dy / dx) * 180 / Math.PI
+        var length = Math.sqrt(dx * dx + dy * dy)
+
+        line.setStyles({
+            top: (pos1.y + li1.getSize().y / 2 + pos2.y + li2.getSize().y / 2) / 2 - 2,
+            left: (pos1.x + li1.getSize().x / 2 + pos2.x + li2.getSize().x / 2) / 2 - 2,
+            marginLeft: -length / 2,
+            width: length,
+            transform: 'rotate(' + angle + 'deg)'
+        })
+    })
+}
+
 function resizeBoard() {
     var board = getBoard()
     if (!board) return
@@ -845,6 +867,8 @@ function resizeBoard() {
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
+
+    updateBoardLines()
 }
 
 function showIndicator(vertex) {

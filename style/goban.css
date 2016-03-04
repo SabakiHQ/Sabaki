@@ -244,6 +244,33 @@ body:not(.scoring) .goban .row li.dimmed img {
 }
 
 /**
+ * Lines & Arrows
+ */
+
+.goban .line, .goban .arrow,
+.goban .arrow::before, .goban .arrow::after {
+    position: absolute;
+    border: none;
+    height: 3px;
+    background: #e65036;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.goban .arrow::before, .goban .arrow::after {
+        content: '';
+        width: 10px;
+        right: 0;
+        top: -2px;
+        transform: rotate(30deg);
+    }
+    .goban .arrow::after {
+        top: auto;
+        bottom: -2px;
+        transform: rotate(-30deg);
+}
+
+/**
  * Fuzzy stone placement
  */
 

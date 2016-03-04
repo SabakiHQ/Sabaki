@@ -240,6 +240,20 @@ function setBoard(board) {
                 .set('src', '../img/goban/stone_' + sign + '.png')
         }
     }
+
+    // Add lines
+
+    $$('#goban .line, #goban .arrow').destroy()
+
+    board.lines.forEach(function(line) {
+        $('goban').grab(
+            new Element('hr', { class: line[2] ? 'arrow' : 'line' })
+            .store('v1', line[0])
+            .store('v2', line[1])
+        )
+    })
+
+    updateBoardLines()
 }
 
 function getScoringMethod() {
