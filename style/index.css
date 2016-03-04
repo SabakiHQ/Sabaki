@@ -765,7 +765,7 @@ header, #edit, #scoring, #find {
     }
     #gamechooser li span::after { content: '\00A0'; }
     #gamechooser li span.black, #gamechooser li span.white {
-        padding-left: 26px;
+        padding-left: 28px;
         background: no-repeat url('../img/ui/black.svg') 5px center;
     }
     #gamechooser li span.white {
