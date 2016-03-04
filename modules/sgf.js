@@ -209,6 +209,24 @@ context.addBoard = function(tree, index, baseboard) {
         })
     }
 
+    if ('LN' in node) {
+        node.LN.forEach(function(composed) {
+            var sep = composed.indexOf(':')
+            var p1 = composed.slice(0, sep)
+            var p2 = composed.slice(sep + 1)
+            board.lines.push([context.point2vertex(p1), context.point2vertex(p2), false])
+        })
+    }
+
+    if ('AR' in node) {
+        node.AR.forEach(function(composed) {
+            var sep = composed.indexOf(':')
+            var p1 = composed.slice(0, sep)
+            var p2 = composed.slice(sep + 1)
+            board.lines.push([context.point2vertex(p1), context.point2vertex(p2), true])
+        })
+    }
+
     node.board = board
 
     // Add variation overlays

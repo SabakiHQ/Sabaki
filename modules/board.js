@@ -11,6 +11,7 @@ var Board = function(size, arrangement, captures) {
     this.captures = captures ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
     this.arrangement = {}
     this.markups = {}
+    this.lines = []
 
     // Initialize arrangement
     for (var x = 0; x < this.size; x++) {
