@@ -1178,6 +1178,14 @@ function commitGameInfo() {
     rootNode.RE = [result]
     if (result == '') delete rootNode.RE
 
+    var name = info.getElement('input[name="name"]').get('value').trim()
+    rootNode.GN = [name]
+    if (name == '') delete rootNode.GN
+
+    var ev = info.getElement('input[name="event"]').get('value').trim()
+    rootNode.EV = [ev]
+    if (ev == '') delete rootNode.EV
+
     var komi = info.getElement('input[name="komi"]').get('value').toFloat()
     rootNode.KM = [String.from(komi)]
     if (isNaN(komi)) rootNode.KM = ['0']

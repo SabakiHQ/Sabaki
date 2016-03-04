@@ -1065,6 +1065,8 @@ function showGameInfo() {
     info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+    info.getElement('input[name="name"]').set('value', 'GN' in rootNode ? rootNode.GN[0] : '')
+    info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
 
