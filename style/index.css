@@ -579,6 +579,19 @@ header, #edit, #scoring, #find {
     #info section input[name^="rank"] {
         width: 40px;
     }
+    #info ul {
+        height: 152px;
+        column-count: 2;
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+    }
+    #info ul li { margin: 0 0 7px 0; }
+    #info form p {
+        position: absolute;
+        right: 20px;
+        bottom: 20px;
+        margin: 0;
+    }
     #info input[name="komi"], #info input[name="size"] {
         width: 40px;
     }
