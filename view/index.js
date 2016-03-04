@@ -56,13 +56,11 @@ function setRootTree(tree) {
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
-    setPlayerName(
-        1,
+    setPlayerName(1,
         gametree.getPlayerName(1, tree, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
-    setPlayerName(
-        -1,
+    setPlayerName(-1,
         gametree.getPlayerName(-1, tree, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
@@ -1166,25 +1164,30 @@ function commitGameInfo() {
     var rootNode = getRootTree().nodes[0]
     var info = $('info')
 
-    rootNode.BR = [info.getElement('input[name="rank_1"]').get('value').trim()]
-    rootNode.WR = [info.getElement('input[name="rank_-1"]').get('value').trim()]
-    rootNode.PB = [info.getElement('input[name="name_1"]').get('value').trim()]
-    rootNode.PW = [info.getElement('input[name="name_-1"]').get('value').trim()]
+    var data = {
+        'rank_1': 'BR',
+        'rank_-1': 'WR',
+        'name_1': 'PB',
+        'name_-1': 'PW',
+        'result': 'RE',
+        'name': 'GN',
+        'event': 'EV'
+    }
 
-    setPlayerName(1, rootNode.PB[0], rootNode.BR[0])
-    setPlayerName(-1, rootNode.PW[0], rootNode.WR[0])
+    for (var name in data) {
+        var value = info.getElement('input[name="' + name + '"]').get('value').trim()
+        rootNode[data[name]] = [value]
+        if (value == '') delete rootNode[data[name]]
+    }
 
-    var result = info.getElement('input[name="result"]').get('value').trim()
-    rootNode.RE = [result]
-    if (result == '') delete rootNode.RE
-
-    var name = info.getElement('input[name="name"]').get('value').trim()
-    rootNode.GN = [name]
-    if (name == '') delete rootNode.GN
-
-    var ev = info.getElement('input[name="event"]').get('value').trim()
-    rootNode.EV = [ev]
-    if (ev == '') delete rootNode.EV
+    setPlayerName(1,
+        gametree.getPlayerName(1, getRootTree(), 'Black'),
+        'BR' in rootNode ? rootNode.BR[0] : ''
+    )
+    setPlayerName(-1,
+        gametree.getPlayerName(-1, getRootTree(), 'White'),
+        'WR' in rootNode ? rootNode.WR[0] : ''
+    )
 
     var komi = info.getElement('input[name="komi"]').get('value').toFloat()
     rootNode.KM = [String.from(komi)]
