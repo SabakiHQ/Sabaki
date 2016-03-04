@@ -119,7 +119,7 @@ body:not(.scoring) .goban .row li.dimmed img {
 }
 
 /**
- * Overlays
+ * Markups
  */
 
 .goban .row li::after, .goban .row li::after {

@@ -184,7 +184,7 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (vertex != null) {
-        board.overlays[vertex] = ['point', 0, '']
+        board.markups[vertex] = ['point', 0, '']
     }
 
     var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -195,7 +195,7 @@ context.addBoard = function(tree, index, baseboard) {
 
         node[ids[i]].forEach(function(value) {
             context.compressed2list(value).forEach(function(vertex) {
-                board.overlays[vertex] = [classes[i], 0, '']
+                board.markups[vertex] = [classes[i], 0, '']
             })
         })
     }
@@ -205,7 +205,7 @@ context.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.overlays[context.point2vertex(point)] = ['label', 0, label]
+            board.markups[context.point2vertex(point)] = ['label', 0, label]
         })
     }
 
@@ -226,8 +226,8 @@ context.addBoard = function(tree, index, baseboard) {
             return
         }
 
-        if (v in board.overlays) board.overlays[v][1] = sign
-        else board.overlays[v] = ['', sign, '']
+        if (v in board.markups) board.markups[v][1] = sign
+        else board.markups[v] = ['', sign, '']
     }
 
     if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {

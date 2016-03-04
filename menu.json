@@ -54,8 +54,8 @@
                 "action": "editmode"
             },
             {
-                "label": "Clear &Overlays",
-                "action": "clearoverlays"
+                "label": "Clear &Markups",
+                "action": "clearmarkups"
             },
             { "type": "separator" },
             {
@@ -95,7 +95,7 @@
             },
             { "type": "separator" },
             {
-                "label": "&Make Main Variation",
+                "label": "Make Main &Variation",
                 "action": "makemainvariation"
             },
             {

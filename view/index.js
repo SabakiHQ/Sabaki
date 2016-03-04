@@ -219,9 +219,9 @@ function setBoard(board) {
             })
             li.set('title', '')
 
-            if (li.retrieve('tuple') in board.overlays) {
-                var overlay = board.overlays[li.retrieve('tuple')]
-                var type = overlay[0], ghost = overlay[1], label = overlay[2]
+            if (li.retrieve('tuple') in board.markups) {
+                var markup = board.markups[li.retrieve('tuple')]
+                var type = markup[0], ghost = markup[1], label = markup[2]
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
@@ -877,14 +877,14 @@ function useTool(vertex, event) {
         if (event.button != 0) return
 
         if (tool != 'label' && tool != 'number') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == tool) {
+                delete board.markups[vertex]
             } else {
-                board.overlays[vertex] = [tool, 0, '']
+                board.markups[vertex] = [tool, 0, '']
             }
         } else if (tool == 'number') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == 'label') {
+                delete board.markups[vertex]
             } else {
                 var number = 1
 
@@ -903,11 +903,11 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.overlays[vertex] = [tool, 0, number.toString()]
+                board.markups[vertex] = [tool, 0, number.toString()]
             }
         } else if (tool == 'label') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == 'label') {
+                delete board.markups[vertex]
             } else {
                 var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                 var k = 0
@@ -927,7 +927,7 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.overlays[vertex] = [tool, 0, alpha[k]]
+                board.markups[vertex] = [tool, 0, alpha[k]]
             }
         }
 
@@ -937,11 +937,11 @@ function useTool(vertex, event) {
 
         $$('#goban .row li').forEach(function(li) {
             var v = li.retrieve('tuple')
-            if (!(v in board.overlays)) return
+            if (!(v in board.markups)) return
 
-            var id = dictionary[board.overlays[v][0]]
+            var id = dictionary[board.markups[v][0]]
             var pt = sgf.vertex2point(v)
-            if (id == 'LB') pt += ':' + board.overlays[v][2]
+            if (id == 'LB') pt += ':' + board.markups[v][2]
 
             if (id in node) node[id].push(pt)
             else node[id] = [pt]
@@ -1035,8 +1035,8 @@ function vertexClicked(vertex, event) {
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
-        } else if (vertex in board.overlays
-        && board.overlays[vertex][0] == 'point'
+        } else if (vertex in board.markups
+        && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
             removeNode.apply(null, getCurrentTreePosition())
         }
@@ -1511,9 +1511,9 @@ function saveFile(filename) {
     setIsBusy(false)
 }
 
-function clearOverlays() {
+function clearMarkups() {
     closeDrawers()
-    var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
+    var markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
     setUndoable(true)
@@ -1521,7 +1521,7 @@ function clearOverlays() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    overlayIds.forEach(function(id) {
+    markupIds.forEach(function(id) {
         delete tree.nodes[index][id]
     })
 
