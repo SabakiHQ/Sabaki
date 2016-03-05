@@ -252,7 +252,7 @@ body:not(.scoring) .goban .row li.dimmed img {
     position: absolute;
     border: none;
     height: 3px;
-    background: #e65036;
+    background: #7F4F2E;
     pointer-events: none;
     z-index: 3;
 }
