@@ -823,6 +823,7 @@ function buildBoard() {
 function updateBoardLines() {
     $$('#goban hr').forEach(function(line) {
         var v1 = line.retrieve('v1'), v2 = line.retrieve('v2')
+        var mirrored = v2[0] < v1[0]
         var li1 = $('goban').getElement('.pos_' + v1[0] + '-' + v1[1])
         var li2 = $('goban').getElement('.pos_' + v2[0] + '-' + v2[1])
         var pos1 = li1.getPosition($('goban'))
@@ -830,6 +831,7 @@ function updateBoardLines() {
         var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
+        if (mirrored) angle += 180
         var length = Math.sqrt(dx * dx + dy * dy)
 
         line.setStyles({
