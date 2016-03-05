@@ -694,7 +694,7 @@ function addEngineItem(name, path, args) {
 
 function showMessageBox(message, type, buttons, cancelId) {
     var result = confirm(message)
-    return result ? 0 : 1
+    return result ? 0 : cancelId
 
     setIsBusy(true)
 
