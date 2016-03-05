@@ -1017,11 +1017,10 @@ function useTool(vertex, event) {
     setCurrentTreePosition(tree, index)
 }
 
-function drawLine(vertex, event) {
+function drawLine(vertex) {
     var tool = getSelectedTool()
 
-    if (event.buttons == 0) return
-    if (!getEditMode() || tool != 'line' && tool != 'arrow') return
+    if (!vertex || !getEditMode() || tool != 'line' && tool != 'arrow') return
 
     if (!$('goban').retrieve('edittool-data')) {
         var hr = new Element('hr', { class: tool }).store('v1', vertex).store('v2', vertex)
