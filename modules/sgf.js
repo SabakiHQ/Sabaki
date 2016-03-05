@@ -273,6 +273,8 @@ context.fromTree = function(tree) {
             node[id].forEach(function(value) {
                 output += '[' + context.escapeString(value.toString()) + ']'
             })
+
+            if (node[id].length == 0) output += '[]'
         }
 
         output += '\n'
