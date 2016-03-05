@@ -1021,7 +1021,7 @@ function drawLine(vertex, event) {
     var tool = getSelectedTool()
 
     if (event.buttons == 0) return
-    if (tool != 'line' && tool != 'arrow') return
+    if (!getEditMode() || tool != 'line' && tool != 'arrow') return
 
     if (!$('goban').retrieve('edittool-data')) {
         var hr = new Element('hr', { class: tool }).store('v1', vertex).store('v2', vertex)
