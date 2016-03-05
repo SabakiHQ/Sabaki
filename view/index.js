@@ -56,13 +56,11 @@ function setRootTree(tree) {
     tree.parent = null
     setCurrentTreePosition(sgf.addBoard(tree), 0, true)
 
-    setPlayerName(
-        1,
+    setPlayerName(1,
         gametree.getPlayerName(1, tree, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
-    setPlayerName(
-        -1,
+    setPlayerName(-1,
         gametree.getPlayerName(-1, tree, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
@@ -182,6 +180,8 @@ function getSelectedTool() {
 
     if (tool == 'stone') {
         return li.getElement('img').get('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+    } else if (tool == 'line') {
+        return li.getElement('img').get('src').indexOf('line') != -1 ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -193,6 +193,7 @@ function setSelectedTool(tool) {
         if (getSelectedTool().indexOf(tool) != -1) return
     }
 
+    $('goban').store('edittool-data', null)
     $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
 
@@ -221,9 +222,9 @@ function setBoard(board) {
             })
             li.set('title', '')
 
-            if (li.retrieve('tuple') in board.overlays) {
-                var overlay = board.overlays[li.retrieve('tuple')]
-                var type = overlay[0], ghost = overlay[1], label = overlay[2]
+            if (li.retrieve('tuple') in board.markups) {
+                var markup = board.markups[li.retrieve('tuple')]
+                var type = markup[0], ghost = markup[1], label = markup[2]
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
@@ -242,6 +243,20 @@ function setBoard(board) {
                 .set('src', '../img/goban/stone_' + sign + '.png')
         }
     }
+
+    // Add lines
+
+    $$('#goban hr').destroy()
+
+    board.lines.forEach(function(line) {
+        $('goban').grab(
+            new Element('hr', { class: line[2] ? 'arrow' : 'line' })
+            .store('v1', line[0])
+            .store('v2', line[1])
+        )
+    })
+
+    updateBoardLines()
 }
 
 function getScoringMethod() {
@@ -362,6 +377,10 @@ function prepareEditTools() {
             var img = this.getElement('img')
             var black = img.get('src') == '../img/edit/stone_1.svg'
             img.set('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
+        } else if (this.getParent().hasClass('line-tool')) {
+            var img = this.getElement('img')
+            var line = img.get('src') == '../img/edit/line.svg'
+            img.set('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
 }
@@ -882,18 +901,62 @@ function useTool(vertex, event) {
             if ('AE' in node) node.AE.push(point)
             else node.AE = [point]
         }
+    } else if (tool == 'line' || tool == 'arrow') {
+        // Check whether to remove a line
+
+        var hr = $('goban').retrieve('edittool-data')
+
+        if (hr) {
+            var v1 = hr.retrieve('v1'), v2 = hr.retrieve('v2')
+            var toDelete = $$('#goban hr').filter(function(x) {
+                var w1 = x.retrieve('v1'), w2 = x.retrieve('v2')
+                var result = x != hr
+                    && w1[0] == v1[0] && w1[1] == v1[1]
+                    && w2[0] == v2[0] && w2[1] == v2[1]
+
+                if (tool == 'line' || x.hasClass('line')) result = result || x != hr
+                    && w1[0] == v2[0] && w1[1] == v2[1]
+                    && w2[0] == v1[0] && w2[1] == v1[1]
+
+                return result
+            })
+
+            if (toDelete.length != 0) hr.destroy()
+            toDelete.destroy()
+        }
+
+        $('goban').store('edittool-data', null)
+
+        // Update SGF & board
+
+        node.LN = []
+        node.AR = []
+        board.lines = []
+
+        $$('#goban hr').forEach(function(hr) {
+            var p1 = sgf.vertex2point(hr.retrieve('v1'))
+            var p2 = sgf.vertex2point(hr.retrieve('v2'))
+
+            if (p1 == p2) return
+
+            node[hr.hasClass('arrow') ? 'AR' : 'LN'].push(p1 + ':' + p2)
+            board.lines.push([hr.retrieve('v1'), hr.retrieve('v2'), hr.hasClass('arrow')])
+        })
+
+        if (node.LN.length == 0) delete node.LN
+        if (node.AR.length == 0) delete node.AR
     } else {
         if (event.button != 0) return
 
         if (tool != 'label' && tool != 'number') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == tool) {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == tool) {
+                delete board.markups[vertex]
             } else {
-                board.overlays[vertex] = [tool, 0, '']
+                board.markups[vertex] = [tool, 0, '']
             }
         } else if (tool == 'number') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == 'label') {
+                delete board.markups[vertex]
             } else {
                 var number = 1
 
@@ -912,11 +975,11 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.overlays[vertex] = [tool, 0, number.toString()]
+                board.markups[vertex] = [tool, 0, number.toString()]
             }
         } else if (tool == 'label') {
-            if (vertex in board.overlays && board.overlays[vertex][0] == 'label') {
-                delete board.overlays[vertex]
+            if (vertex in board.markups && board.markups[vertex][0] == 'label') {
+                delete board.markups[vertex]
             } else {
                 var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                 var k = 0
@@ -936,7 +999,7 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.overlays[vertex] = [tool, 0, alpha[k]]
+                board.markups[vertex] = [tool, 0, alpha[k]]
             }
         }
 
@@ -946,11 +1009,11 @@ function useTool(vertex, event) {
 
         $$('#goban .row li').forEach(function(li) {
             var v = li.retrieve('tuple')
-            if (!(v in board.overlays)) return
+            if (!(v in board.markups)) return
 
-            var id = dictionary[board.overlays[v][0]]
+            var id = dictionary[board.markups[v][0]]
             var pt = sgf.vertex2point(v)
-            if (id == 'LB') pt += ':' + board.overlays[v][2]
+            if (id == 'LB') pt += ':' + board.markups[v][2]
 
             if (id in node) node[id].push(pt)
             else node[id] = [pt]
@@ -959,6 +1022,23 @@ function useTool(vertex, event) {
 
     setUndoable(false)
     setCurrentTreePosition(tree, index)
+}
+
+function drawLine(vertex, event) {
+    var tool = getSelectedTool()
+
+    if (event.buttons == 0) return
+    if (tool != 'line' && tool != 'arrow') return
+
+    if (!$('goban').retrieve('edittool-data')) {
+        var hr = new Element('hr', { class: tool }).store('v1', vertex).store('v2', vertex)
+        $('goban').grab(hr).store('edittool-data', hr)
+    } else {
+        var hr = $('goban').retrieve('edittool-data')
+        hr.store('v2', vertex)
+    }
+
+    updateBoardLines()
 }
 
 function findPosition(step, condition) {
@@ -1044,8 +1124,8 @@ function vertexClicked(vertex, event) {
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
-        } else if (vertex in board.overlays
-        && board.overlays[vertex][0] == 'point'
+        } else if (vertex in board.markups
+        && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
             removeNode.apply(null, getCurrentTreePosition())
         }
@@ -1173,17 +1253,30 @@ function commitGameInfo() {
     var rootNode = getRootTree().nodes[0]
     var info = $('info')
 
-    rootNode.BR = [info.getElement('input[name="rank_1"]').get('value').trim()]
-    rootNode.WR = [info.getElement('input[name="rank_-1"]').get('value').trim()]
-    rootNode.PB = [info.getElement('input[name="name_1"]').get('value').trim()]
-    rootNode.PW = [info.getElement('input[name="name_-1"]').get('value').trim()]
+    var data = {
+        'rank_1': 'BR',
+        'rank_-1': 'WR',
+        'name_1': 'PB',
+        'name_-1': 'PW',
+        'result': 'RE',
+        'name': 'GN',
+        'event': 'EV'
+    }
 
-    setPlayerName(1, rootNode.PB[0], rootNode.BR[0])
-    setPlayerName(-1, rootNode.PW[0], rootNode.WR[0])
+    for (var name in data) {
+        var value = info.getElement('input[name="' + name + '"]').get('value').trim()
+        rootNode[data[name]] = [value]
+        if (value == '') delete rootNode[data[name]]
+    }
 
-    var result = info.getElement('input[name="result"]').get('value').trim()
-    rootNode.RE = [result]
-    if (result == '') delete rootNode.RE
+    setPlayerName(1,
+        gametree.getPlayerName(1, getRootTree(), 'Black'),
+        'BR' in rootNode ? rootNode.BR[0] : ''
+    )
+    setPlayerName(-1,
+        gametree.getPlayerName(-1, getRootTree(), 'White'),
+        'WR' in rootNode ? rootNode.WR[0] : ''
+    )
 
     var komi = info.getElement('input[name="komi"]').get('value').toFloat()
     rootNode.KM = [String.from(komi)]
@@ -1508,9 +1601,9 @@ function saveFile(filename) {
     setIsBusy(false)
 }
 
-function clearOverlays() {
+function clearMarkups() {
     closeDrawers()
-    var overlayIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
+    var markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
     setUndoable(true)
@@ -1518,7 +1611,7 @@ function clearOverlays() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    overlayIds.forEach(function(id) {
+    markupIds.forEach(function(id) {
         delete tree.nodes[index][id]
     })
 

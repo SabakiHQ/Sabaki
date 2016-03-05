@@ -52,6 +52,9 @@
                 <li class="circle-tool">
                     <a href="#" title="Circle Tool"><img src="../img/edit/circle.svg" /></a>
                 </li>
+                <li class="line-tool">
+                    <a href="#" title="Line Tool"><img src="../img/edit/line.svg" /></a>
+                </li>
                 <li class="label-tool">
                     <a href="#" title="Label Tool"><img src="../img/edit/label.svg" /></a>
                 </li>
@@ -166,20 +169,24 @@
     <form>
         <section>
             <input type="text" name="rank_1" placeholder="Rank" />
-            <input type="text" name="name_1" placeholder="Player Black" />
+            <input type="text" name="name_1" placeholder="Black" />
             <img class="currentplayer" src="../img/ui/blacktoplay.svg" />
-            <input type="text" name="name_-1" placeholder="Player White" />
+            <input type="text" name="name_-1" placeholder="White" />
             <input type="text" name="rank_-1" placeholder="Rank" />
         </section>
 
         <ul>
             <li>
-                <label><span>Result:</span>
-                <input type="text" name="result" placeholder="None" /></label>
+                <label><span>Name:</span>
+                <input type="text" name="name" placeholder="(Untitled)" /></label>
             </li>
             <li>
-                <label><span>Komi:</span>
-                <input type="text" name="komi" placeholder="0" /></label>
+                <label><span>Event:</span>
+                <input type="text" name="event" placeholder="None" /></label>
+            </li>
+            <li>
+                <label><span>Board size:</span>
+                <input type="number" name="size" placeholder="19" max="25" min="9" /></label>
             </li>
             <li>
                 <label><span>Handicap:</span>
@@ -196,15 +203,19 @@
                 </select></label>
             </li>
             <li>
-                <label><span>Board size:</span>
-                <input type="number" name="size" placeholder="19" max="25" min="9" /></label>
+                <label><span>Komi:</span>
+                <input type="text" name="komi" placeholder="0" /></label>
             </li>
-        </ul>
+            <li>
+                <label><span>Result:</span>
+                <input type="text" name="result" placeholder="None" /></label>
+            </li>
 
-        <p>
-            <button type="submit" onclick="commitGameInfo(); closeGameInfo(); return false">OK</button>
-            <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
-        </p>
+            <p>
+                <button type="submit" onclick="commitGameInfo(); closeGameInfo(); return false">OK</button>
+                <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
+            </p>
+        </ul>
     </form>
 </section>
 
@@ -319,6 +330,8 @@
 
 <section id="gamechooser">
     <h2>Manage Games</h2>
+
+    <input type="search" name="filter" placeholder="Filter" />
 
     <div class="games-list">
         <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>

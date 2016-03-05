@@ -347,6 +347,7 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
     } else {
+        $('goban').store('edittool-data', null)
         document.body.removeClass('edit')
     }
 }
@@ -607,6 +608,19 @@ function prepareResizers() {
     })
 }
 
+function prepareGameChooser() {
+    $$('#gamechooser > input').addEvent('input', function() {
+        var value = this.value
+
+        $$('#gamechooser .games-list li:not(.add)').forEach(function(li) {
+            if (li.getElements('span').some(function(span) {
+                return span.get('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
+            })) li.removeClass('hide')
+            else li.addClass('hide')
+        })
+    })
+}
+
 function updateTitle() {
     document.title = app.getName()
 }
@@ -763,10 +777,14 @@ function buildBoard() {
                     $('goban').store('mousedown', false)
                     vertexClicked(this, e.event)
                 }.bind(vertex))
+                .addEvent('mousemove', function(e) {
+                    if (!$('goban').retrieve('mousedown')) return
+                    drawLine(this, e.event)
+                }.bind(vertex))
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
-                .grab(new Element('div', { class: 'paint' }))
+                .grab(new Element('div.paint'))
             )
         }
 
@@ -795,6 +813,30 @@ function buildBoard() {
     })
 }
 
+function updateBoardLines() {
+    $$('#goban hr').forEach(function(line) {
+        var v1 = line.retrieve('v1'), v2 = line.retrieve('v2')
+        var mirrored = v2[0] < v1[0]
+        var li1 = $('goban').getElement('.pos_' + v1[0] + '-' + v1[1])
+        var li2 = $('goban').getElement('.pos_' + v2[0] + '-' + v2[1])
+        var pos1 = li1.getPosition($('goban'))
+        var pos2 = li2.getPosition($('goban'))
+        var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
+
+        var angle = Math.atan(dy / dx) * 180 / Math.PI
+        if (mirrored) angle += 180
+        var length = Math.sqrt(dx * dx + dy * dy)
+
+        line.setStyles({
+            top: (pos1.y + li1.getSize().y / 2 + pos2.y + li2.getSize().y / 2) / 2 - 2,
+            left: (pos1.x + li1.getSize().x / 2 + pos2.x + li2.getSize().x / 2) / 2 - 2,
+            marginLeft: -length / 2,
+            width: length,
+            transform: 'rotate(' + angle + 'deg)'
+        })
+    })
+}
+
 function resizeBoard() {
     var board = getBoard()
     if (!board) return
@@ -820,6 +862,8 @@ function resizeBoard() {
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
+
+    updateBoardLines()
 }
 
 function showIndicator(vertex) {
@@ -1042,6 +1086,8 @@ function showGameInfo() {
     info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
     info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
     info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
+    info.getElement('input[name="name"]').set('value', 'GN' in rootNode ? rootNode.GN[0] : '')
+    info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
 
@@ -1120,6 +1166,7 @@ function showGameChooser(callback) {
 
     closeDrawers()
 
+    $$('#gamechooser > input')[0].set('value', '').focus()
     $$('#gamechooser ol li:not(.add)').destroy()
     $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
         closeGameChooser()
@@ -1141,16 +1188,20 @@ function showGameChooser(callback) {
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
             new Element('div', { draggable: true })
-            .grab(new Element('span', { text: 'GN' in node ? node.GN[0] : '' }))
+            .grab(new Element('span'))
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
         ), 'before')
 
+        var gamename = li.getElement('span')
         var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
         var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
+
         if ('BR' in node) black.set('title', node.BR[0])
         if ('WR' in node) white.set('title', node.WR[0])
+        if ('GN' in node) gamename.set('text', node.GN[0]).set('title', node.GN[0])
+        else if ('EV' in node) gamename.set('text', node.EV[0]).set('title', node.EV[0])
 
         li.store('gametree', tree).getElement('div').addEvent('click', function() {
             var link = this
@@ -1239,4 +1290,5 @@ document.addEvent('domready', function() {
 
     prepareScrollbars()
     prepareResizers()
+    prepareGameChooser()
 })
