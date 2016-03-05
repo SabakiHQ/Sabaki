@@ -1,4 +1,4 @@
-(;GM[1]AP[Sabaki:0.10.1]CA[UTF-8]SZ[19]
+(;GM[1]AP[Sabaki:0.11.0]CA[UTF-8]SZ[19]
 (;AB[dd][kc][qd]CR[aa:se][as]N[Low Chinese opening]
 )(;AB[dd][kd][qd]CR[aa:se][as]N[High Chinese opening]
 )(;AB[dd][pc][qe]CR[aa:sf][as]N[Orthodox opening]
@@ -28,9 +28,10 @@
 )(;CR[dc][ec][de][ee]AB[dd]AW[ed]N[Attachment]
 )(;CR[ed]AB[dd][fd]N[One-point jump]
 )(;CR[ee][ef]AB[dd][fe][eg]N[Big bulge]
-)(;CR[ed][ee]AB[dd][fe]N[Small Knight]
+)(;CR[ed][ee]AB[dd][fe]N[Small knight]
 )(;CR[ed][fd]AB[dd][gd]N[Two-point jump]
 )(;CR[ed][fd][ee][fe]AB[dd][ge]N[Large knight]
 )(;CR[cc][dc][ec][cd][ed][ce][de]AB[dd]AW[ee]N[Shoulder hit]
 )(;CR[ed][de][ee][fe][ef]AB[dd][ff]N[Diagonal jump]
 ))
+
