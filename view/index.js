@@ -243,7 +243,7 @@ function setBoard(board) {
 
     // Add lines
 
-    $$('#goban .line, #goban .arrow').destroy()
+    $$('#goban hr').destroy()
 
     board.lines.forEach(function(line) {
         $('goban').grab(

@@ -821,7 +821,7 @@ function buildBoard() {
 }
 
 function updateBoardLines() {
-    $$('#goban .line, #goban .arrow').forEach(function(line) {
+    $$('#goban hr').forEach(function(line) {
         var v1 = line.retrieve('v1'), v2 = line.retrieve('v2')
         var li1 = $('goban').getElement('.pos_' + v1[0] + '-' + v1[1])
         var li2 = $('goban').getElement('.pos_' + v2[0] + '-' + v2[1])
