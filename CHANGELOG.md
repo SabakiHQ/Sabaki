@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* SGF-compatible line and arrow markup
+* Filter in 'Manage Games'
+* More game info fields
+
+**Changed**
+
+* Update to Electron v0.36.10
+
 ## [Sabaki v0.11.0][v0.11.0] (2016-03-03)
 
 **Added**
