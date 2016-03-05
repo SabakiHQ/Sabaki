@@ -69,7 +69,7 @@ var defaults = {
     'view.properties_minheight': 15,
     'view.fuzzy_stone_placement': true,
     'view.show_leftsidebar': false,
-    'view.show_comments': true,
+    'view.show_comments': false,
     'view.show_coordinates': false,
     'view.show_graph': true,
     'view.show_next_moves': true,
