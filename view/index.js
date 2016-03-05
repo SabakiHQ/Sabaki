@@ -842,8 +842,6 @@ function useTool(vertex, event) {
         triangle: 'TR',
         circle: 'CR',
         square: 'SQ',
-        line: 'LN',
-        arrow: 'AR',
         number: 'LB',
         label: 'LB'
     }
@@ -909,7 +907,7 @@ function useTool(vertex, event) {
 
             if (p1 == p2) return
 
-            node[dictionary[hr.get('class')]].push(p1 + ':' + p2)
+            node[hr.hasClass('arrow') ? 'AR' : 'LN'].push(p1 + ':' + p2)
             board.lines.push([hr.retrieve('v1'), hr.retrieve('v2'), hr.hasClass('arrow')])
         })
 
