@@ -180,6 +180,8 @@ function getSelectedTool() {
 
     if (tool == 'stone') {
         return li.getElement('img').get('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+    } else if (tool == 'line') {
+        return li.getElement('img').get('src').indexOf('line') != -1 ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -191,6 +193,7 @@ function setSelectedTool(tool) {
         if (getSelectedTool().indexOf(tool) != -1) return
     }
 
+    $('goban').store('edittool-data', null)
     $$('#edit .' + tool + '-tool a').fireEvent('click')
 }
 
@@ -374,6 +377,10 @@ function prepareEditTools() {
             var img = this.getElement('img')
             var black = img.get('src') == '../img/edit/stone_1.svg'
             img.set('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
+        } else if (this.getParent().hasClass('line-tool')) {
+            var img = this.getElement('img')
+            var line = img.get('src') == '../img/edit/line.svg'
+            img.set('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
 }
@@ -838,6 +845,8 @@ function useTool(vertex, event) {
         number: 'LB',
         label: 'LB'
     }
+
+    if (tool == 'line' || tool == 'arrow') return
 
     if (tool.indexOf('stone') != -1) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {

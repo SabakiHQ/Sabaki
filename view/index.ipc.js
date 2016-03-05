@@ -17,6 +17,7 @@ var menudata = {
     "triangletool": function() { setSelectedTool('triangle') },
     "squaretool": function() { setSelectedTool('square') },
     "circletool": function() { setSelectedTool('circle') },
+    "linetool": function() { setSelectedTool('line') },
     "labeltool": function() { setSelectedTool('label') },
     "numbertool": function() { setSelectedTool('number') },
     "removenode": function() { removeNode.apply(null, getCurrentTreePosition()) },

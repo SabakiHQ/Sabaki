@@ -347,6 +347,7 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
     } else {
+        $('goban').store('edittool-data', null)
         document.body.removeClass('edit')
     }
 }

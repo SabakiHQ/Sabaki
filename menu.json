@@ -84,13 +84,18 @@
                 "action": "circletool"
             },
             {
-                "label": "&Label Tool",
+                "label": "&Line Tool",
                 "accelerator": "CmdOrCtrl+6",
+                "action": "linetool"
+            },
+            {
+                "label": "La&bel Tool",
+                "accelerator": "CmdOrCtrl+7",
                 "action": "labeltool"
             },
             {
                 "label": "&Number Tool",
-                "accelerator": "CmdOrCtrl+7",
+                "accelerator": "CmdOrCtrl+8",
                 "action": "numbertool"
             },
             { "type": "separator" },
