@@ -907,7 +907,7 @@ function useTool(vertex, event) {
                     && w1[0] == v1[0] && w1[1] == v1[1]
                     && w2[0] == v2[0] && w2[1] == v2[1]
 
-                if (tool == 'line') result = result || x != hr
+                if (tool == 'line' || x.hasClass('line')) result = result || x != hr
                     && w1[0] == v2[0] && w1[1] == v2[1]
                     && w2[0] == v1[0] && w2[1] == v1[1]
 
