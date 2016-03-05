@@ -774,16 +774,43 @@ function buildBoard() {
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 li.addClass('hoshi')
 
+            var getEndTargetVertex = function(e) {
+                var endTarget = document.elementFromPoint(
+                    e.touches[0].pageX,
+                    e.touches[0].pageY
+                )
+
+                if (!endTarget) return null
+                var v = endTarget.retrieve('tuple')
+                if (!v) endTarget = endTarget.getParent('li')
+                if (endTarget) v = endTarget.retrieve('tuple')
+
+                return v
+            }
+
             ol.adopt(li.adopt(img)
                 .addEvent('mouseup', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
+
                     $('goban').store('mousedown', false)
                     vertexClicked(this, e.event)
                 }.bind(vertex))
+                .addEvent('touchend', function(e) {
+                    if (getEditMode() && ['line', 'arrow'].indexOf(getSelectedTool()) >= 0) {
+                        e.preventDefault()
+                        vertexClicked(null, { button: 0 })
+                    }
+                })
                 .addEvent('mousemove', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
-                    drawLine(this, e.event)
+                    if (event.buttons == 0) return
+
+                    drawLine(this)
                 }.bind(vertex))
+                .addEvent('touchmove', function(e) {
+                    e.preventDefault()
+                    drawLine(getEndTargetVertex(e.event))
+                })
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
