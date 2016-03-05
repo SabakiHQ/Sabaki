@@ -842,11 +842,11 @@ function useTool(vertex, event) {
         triangle: 'TR',
         circle: 'CR',
         square: 'SQ',
+        line: 'LN',
+        arrow: 'AR',
         number: 'LB',
         label: 'LB'
     }
-
-    if (tool == 'line' || tool == 'arrow') return
 
     if (tool.indexOf('stone') != -1) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
@@ -896,6 +896,25 @@ function useTool(vertex, event) {
             if ('AE' in node) node.AE.push(point)
             else node.AE = [point]
         }
+    } else if (tool == 'line' || tool == 'arrow') {
+        $('goban').store('edittool-data', null)
+
+        node.LN = []
+        node.AR = []
+        board.lines = []
+
+        $$('#goban hr').forEach(function(hr) {
+            var p1 = sgf.vertex2point(hr.retrieve('v1'))
+            var p2 = sgf.vertex2point(hr.retrieve('v2'))
+
+            if (p1 == p2) return
+
+            node[dictionary[hr.get('class')]].push(p1 + ':' + p2)
+            board.lines.push([hr.retrieve('v1'), hr.retrieve('v2'), hr.hasClass('arrow')])
+        })
+
+        if (node.LN.length == 0) delete node.LN
+        if (node.AR.length == 0) delete node.AR
     } else {
         if (event.button != 0) return
 
@@ -973,6 +992,23 @@ function useTool(vertex, event) {
 
     setUndoable(false)
     setCurrentTreePosition(tree, index)
+}
+
+function drawLine(vertex, event) {
+    var tool = getSelectedTool()
+
+    if (event.buttons == 0) return
+    if (tool != 'line' && tool != 'arrow') return
+
+    if (!$('goban').retrieve('edittool-data')) {
+        var hr = new Element('hr', { class: tool }).store('v1', vertex).store('v2', vertex)
+        $('goban').grab(hr).store('edittool-data', hr)
+    } else {
+        var hr = $('goban').retrieve('edittool-data')
+        hr.store('v2', vertex)
+    }
+
+    updateBoardLines()
 }
 
 function findPosition(step, condition) {

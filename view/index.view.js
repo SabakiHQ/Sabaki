@@ -789,10 +789,14 @@ function buildBoard() {
                     $('goban').store('mousedown', false)
                     vertexClicked(this, e.event)
                 }.bind(vertex))
+                .addEvent('mousemove', function(e) {
+                    if (!$('goban').retrieve('mousedown')) return
+                    drawLine(this, e.event)
+                }.bind(vertex))
                 .addEvent('mousedown', function() {
                     $('goban').store('mousedown', true)
                 })
-                .grab(new Element('div', { class: 'paint' }))
+                .grab(new Element('div.paint'))
             )
         }
 
