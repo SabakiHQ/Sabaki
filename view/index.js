@@ -895,7 +895,26 @@ function useTool(vertex, event) {
             else node.AE = [point]
         }
     } else if (tool == 'line' || tool == 'arrow') {
+        // Check whether to remove a line
+
+        var hr = $('goban').retrieve('edittool-data')
+
+        if (hr) {
+            var v1 = hr.retrieve('v1'), v2 = hr.retrieve('v2')
+            var toDelete = $$('#goban hr').filter(function(x) {
+                var w1 = x.retrieve('v1'), w2 = x.retrieve('v2')
+                return x != hr
+                    && w1[0] == v1[0] && w1[1] == v1[1]
+                    && w2[0] == v2[0] && w2[1] == v2[1]
+            })
+
+            if (toDelete.length != 0) hr.destroy()
+            toDelete.destroy()
+        }
+
         $('goban').store('edittool-data', null)
+
+        // Update SGF & board
 
         node.LN = []
         node.AR = []
