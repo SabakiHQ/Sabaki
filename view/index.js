@@ -1301,6 +1301,7 @@ function commitGameInfo() {
     }
 
     setUndoable(false)
+    updateSidebar()
 }
 
 function commitScore() {
