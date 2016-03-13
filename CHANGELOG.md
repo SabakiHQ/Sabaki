@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Show game result when at the end of main variation
+
 ## [Sabaki v0.11.1][v0.11.1] (2016-03-05)
 
 **Added**
