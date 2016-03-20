@@ -22,6 +22,7 @@ context.playCapture = function() {
         index = Math.floor(Math.random() * captureSounds.length)
     }
 
+    lastCaptureIndex = index
     captureSounds[index].play()
 }
 
@@ -32,6 +33,7 @@ context.playPachi = function() {
         index = Math.floor(Math.random() * pachiSounds.length)
     }
 
+    lastPachiIndex = index
     pachiSounds[index].play()
 }
 
