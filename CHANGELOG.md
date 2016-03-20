@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Show game result when at the end of main variation
+* Update to Electron v0.37.2
 
 ## [Sabaki v0.11.1][v0.11.1] (2016-03-05)
 
