@@ -1109,6 +1109,8 @@ function vertexClicked(vertex, event) {
 
         setIndicatorVertex(vertex)
         findMove(getIndicatorVertex(), getFindText(), 1)
+    } else if (getGuessMode()) {
+        // TODO
     } else {
         // Playing mode
 
@@ -1618,12 +1620,16 @@ function clearMarkups() {
 }
 
 function goBack() {
+    if (getGuessMode()) return
+
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
     setCurrentTreePosition.apply(null, gametree.navigate(tree, index, -1))
 }
 
 function goForward() {
+    if (getGuessMode()) return
+
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
     setCurrentTreePosition.apply(null, gametree.navigate(tree, index, 1))

@@ -50,7 +50,8 @@ var menudata = {
     "gtpconsole": function() { setShowLeftSidebar(!getShowLeftSidebar()) },
     "clearconsole": clearConsole,
 
-    "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()); resizeBoard() },
+    "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()) },
+    "toggleguessmode": function() { setGuessMode(!getGuessMode()) },
     "toggleshownextmoves": function() { setShowNextMoves(!getShowNextMoves()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
     "togglecomments": function() { setSidebarArrangement(getShowGraph(), !getShowComment()) },

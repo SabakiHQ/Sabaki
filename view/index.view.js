@@ -54,6 +54,7 @@ function setShowCoordinates(show) {
     else $('goban').removeClass('coordinates')
 
     setting.set('view.show_coordinates', show)
+    resizeBoard()
 }
 
 function getShowLeftSidebar() {
@@ -359,9 +360,11 @@ function getGuessMode() {
 function setGuessMode(guessMode) {
     if (guessMode) {
         closeDrawers()
-        document.body.addClass('guess')
+        document.body.addClass('guess').store('guess_shownextmoves', getShowNextMoves())
+        setShowNextMoves(false)
     } else {
         document.body.removeClass('guess')
+        setShowNextMoves(document.body.retrieve('guess_shownextmoves') || getShowNextMoves())
     }
 }
 
@@ -1335,6 +1338,7 @@ function closeDrawers() {
     setEditMode(false)
     setScoringMode(false)
     setFindMode(false)
+    setGuessMode(false)
 }
 
 /**

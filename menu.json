@@ -252,6 +252,11 @@
         "label": "&View",
         "submenu": [
             {
+                "label": "Toggle G&uess Mode",
+                "action": "toggleguessmode"
+            },
+            { "type": "separator" },
+            {
                 "label": "Toggle &Coordinates",
                 "action": "togglecoordinates"
             },
