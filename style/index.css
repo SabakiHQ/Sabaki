@@ -112,7 +112,7 @@ header, #edit, #scoring, #find, #guess {
     .edit #bar { background: #C4BD64; }
     .scoring #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
-    .guess #bar { background: #80397B; }
+    .guess #bar { background: #823499; }
     .edit #edit, .scoring #scoring, .find #find, .guess #guess {
         top: 0;
     }

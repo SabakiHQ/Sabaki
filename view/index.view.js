@@ -361,7 +361,7 @@ function setGuessMode(guessMode) {
     if (guessMode) {
         closeDrawers()
         document.body.addClass('guess').store('guess_shownextmoves', getShowNextMoves())
-        setShowNextMoves(false)
+        $('goban').removeClass('variations')
     } else {
         document.body.removeClass('guess')
         setShowNextMoves(document.body.retrieve('guess_shownextmoves') || getShowNextMoves())
