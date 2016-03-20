@@ -352,6 +352,19 @@ function setEditMode(editMode) {
     }
 }
 
+function getGuessMode() {
+    return document.body.hasClass('guess')
+}
+
+function setGuessMode(guessMode) {
+    if (guessMode) {
+        closeDrawers()
+        document.body.addClass('guess')
+    } else {
+        document.body.removeClass('guess')
+    }
+}
+
 function getScoringMode() {
     return document.body.hasClass('scoring')
 }
