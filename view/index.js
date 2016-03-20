@@ -1516,7 +1516,6 @@ function loadGameFromIndex(index) {
 
 function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
-    setIsBusy(true)
 
     if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -1527,38 +1526,42 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        closeDrawers()
-
-        setTimeout(function() {
-            var win = remote.getCurrentWindow()
-            var lastprogress = -1
-
-            try {
-                var trees = sgf.parseFile(filename, function(progress) {
-                    if (progress - lastprogress < 0.05) return
-
-                    setProgressIndicator(progress, win)
-                    lastprogress = progress
-                }).subtrees
-
-                if (trees.length == 0) throw true
-
-                setGameTrees(trees)
-                setRepresentedFilename(filename)
-                loadGameFromIndex(0)
-                updateFileHash()
-
-                if (trees.length > 1) showGameChooser()
-            } catch(e) {
-                showMessageBox('This file is unreadable.', 'warning')
-            }
-
-            setProgressIndicator(-1, win)
-            setIsBusy(false)
-        }, setting.get('app.loadgame_delay'))
-    } else {
-        setIsBusy(false)
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }))
     }
+}
+
+function loadFileFromSgf(content) {
+    if (getIsBusy() || !askForSave()) return
+    setIsBusy(true)
+    closeDrawers()
+
+    setTimeout(function() {
+        var win = remote.getCurrentWindow()
+        var lastprogress = -1
+
+        try {
+            var trees = sgf.parse(sgf.tokenize(content), function(progress) {
+                if (progress - lastprogress < 0.05) return
+
+                setProgressIndicator(progress, win)
+                lastprogress = progress
+            }).subtrees
+
+            if (trees.length == 0) throw true
+
+            setGameTrees(trees)
+            setRepresentedFilename(null)
+            loadGameFromIndex(0)
+            updateFileHash()
+
+            if (trees.length > 1) showGameChooser()
+        } catch(e) {
+            showMessageBox('This file is unreadable.', 'warning')
+        }
+
+        setProgressIndicator(-1, win)
+        setIsBusy(false)
+    }, setting.get('app.loadgame_delay'))
 }
 
 function saveFile(filename) {
