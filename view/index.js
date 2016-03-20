@@ -1530,12 +1530,12 @@ function loadFile(filename) {
 
     if (filename) {
         setRepresentedFilename(filename)
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }))
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true)
     }
 }
 
-function loadFileFromSgf(content) {
-    if (getIsBusy() || !askForSave()) return
+function loadFileFromSgf(content, dontask) {
+    if (getIsBusy() || !dontask && !askForSave()) return
     setIsBusy(true)
     closeDrawers()
 
