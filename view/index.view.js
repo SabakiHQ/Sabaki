@@ -352,6 +352,19 @@ function setEditMode(editMode) {
     }
 }
 
+function getGuessMode() {
+    return document.body.hasClass('guess')
+}
+
+function setGuessMode(guessMode) {
+    if (guessMode) {
+        closeDrawers()
+        document.body.addClass('guess')
+    } else {
+        document.body.removeClass('guess')
+    }
+}
+
 function getScoringMode() {
     return document.body.hasClass('scoring')
 }
@@ -425,6 +438,16 @@ function getCurrentMoveInterpretation() {
     var board = getBoard()
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
+
+    // Determine and of main variation
+
+    if (gametree.onMainTrack(tp[0]) && gametree.navigate(tp[0], tp[1], 1)[0] == null) {
+        var rootNode = getRootTree().nodes[0]
+
+        if ('RE' in rootNode && rootNode.RE[0].trim() != '') {
+            return 'Result: ' + rootNode.RE[0]
+        }
+    }
 
     // Determine capture
 

@@ -1,5 +1,6 @@
 var remote = { getCurrentWindow: function() {} }
 var ipcRenderer = null
+var clipboard = null
 var fs = null
 var shell = null
 var sgf = window.sgf
@@ -1308,6 +1309,7 @@ function commitGameInfo() {
     }
 
     setUndoable(false)
+    updateSidebar()
 }
 
 function commitScore() {
@@ -1523,7 +1525,6 @@ function loadGameFromIndex(index) {
 
 function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
-    setIsBusy(true)
 
     if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -1534,38 +1535,42 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        closeDrawers()
-
-        setTimeout(function() {
-            var win = remote.getCurrentWindow()
-            var lastprogress = -1
-
-            try {
-                var trees = sgf.parseFile(filename, function(progress) {
-                    if (progress - lastprogress < 0.05) return
-
-                    setProgressIndicator(progress, win)
-                    lastprogress = progress
-                }).subtrees
-
-                if (trees.length == 0) throw true
-
-                setGameTrees(trees)
-                setRepresentedFilename(filename)
-                loadGameFromIndex(0)
-                updateFileHash()
-
-                if (trees.length > 1) showGameChooser()
-            } catch(e) {
-                showMessageBox('This file is unreadable.', 'warning')
-            }
-
-            setProgressIndicator(-1, win)
-            setIsBusy(false)
-        }, setting.get('app.loadgame_delay'))
-    } else {
-        setIsBusy(false)
+        setRepresentedFilename(filename)
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }))
     }
+}
+
+function loadFileFromSgf(content) {
+    if (getIsBusy() || !askForSave()) return
+    setIsBusy(true)
+    closeDrawers()
+
+    setTimeout(function() {
+        var win = remote.getCurrentWindow()
+        var lastprogress = -1
+
+        try {
+            var trees = sgf.parse(sgf.tokenize(content), function(progress) {
+                if (progress - lastprogress < 0.05) return
+
+                setProgressIndicator(progress, win)
+                lastprogress = progress
+            }).subtrees
+
+            if (trees.length == 0) throw true
+
+            setGameTrees(trees)
+            loadGameFromIndex(0)
+            updateFileHash()
+
+            if (trees.length > 1) showGameChooser()
+        } catch(e) {
+            showMessageBox('This file is unreadable.', 'warning')
+        }
+
+        setProgressIndicator(-1, win)
+        setIsBusy(false)
+    }, setting.get('app.loadgame_delay'))
 }
 
 function saveFile(filename) {
@@ -1579,25 +1584,28 @@ function saveFile(filename) {
     }
 
     if (filename) {
-        var trees = getGameTrees()
-        var tree = getRootTree()
-
-        var text = ''
-
-        for (var i = 0; i < trees.length; i++) {
-            var t = trees[i]
-            if (i == getGameIndex()) t = tree
-
-            t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-            text += '(' + sgf.fromTree(t) + ')\n\n'
-        }
-
-        fs.writeFile(filename, text)
+        fs.writeFile(filename, saveFileToSgf())
         updateFileHash()
         setRepresentedFilename(filename)
     }
 
     setIsBusy(false)
+}
+
+function saveFileToSgf() {
+    var trees = getGameTrees()
+    var tree = getRootTree()
+    var text = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        var t = trees[i]
+        if (i == getGameIndex()) t = tree
+
+        t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
+        text += '(' + sgf.fromTree(t) + ')\n\n'
+    }
+
+    return text
 }
 
 function clearMarkups() {

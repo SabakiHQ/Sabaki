@@ -1,4 +1,4 @@
-header, #edit, #scoring, #find {
+header, #edit, #scoring, #find, #guess {
         position: absolute;
         left: 0;
         right: 0;
@@ -113,17 +113,15 @@ header, #edit, #scoring, #find {
     .edit #bar { background: #C4BD64; }
     .scoring #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
-    #edit {
-        color: #333;
-        top: -40px;
-    }
-    .edit #edit, .scoring #scoring, .find #find {
+    .guess #bar { background: #80397B; }
+    .edit #edit, .scoring #scoring, .find #find, .guess #guess {
         top: 0;
     }
-    .edit header, .scoring header, .find header {
+    .edit header, .scoring header, .find header, .guess header {
         top: 40px;
     }
-    #scoring, #find {
+    #edit { color: #333; }
+    #edit, #scoring, #find, #guess {
         top: -40px;
     }
     #scoring button, #find button {
@@ -155,7 +153,7 @@ header, #edit, #scoring, #find {
         transform: translateY(-50%);
 }
 
-#edit a.close, #scoring a.close, #find a.close {
+#edit a.close, #scoring a.close, #find a.close, #guess a.close {
         display: none;
         position: absolute;
         right: 4px;
@@ -165,11 +163,12 @@ header, #edit, #scoring, #find {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
-    #scoring a.close, #find a.close {
+    #scoring a.close, #find a.close, #guess a.close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #edit a.close:active, #scoring a.close:active, #find a.close:active {
+    #edit a.close:active, #scoring a.close:active,
+    #find a.close:active, #guess a.close:active {
         opacity: .7;
     }
     #edit ul {
@@ -188,10 +187,10 @@ header, #edit, #scoring, #find {
         height: 40px;
         width: 35px;
     }
-    .edit #bar #edit ul li a:hover {
+    .edit #edit ul li a:hover {
         background: #B3AC53;
     }
-    .edit #bar #edit ul li.selected a, .edit #bar #edit ul li a:active {
+    .edit #edit ul li.selected a, .edit #edit ul li a:active {
         background: #A29B42;
     }
     #edit ul li a img {
