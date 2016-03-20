@@ -24,12 +24,21 @@
             },
             { "type": "separator" },
             {
+                "label": "Load From &Clipboard",
+                "action": "loadclipboard"
+            },
+            {
+                "label": "Copy To Clipboard",
+                "action": "copytoclipboard"
+            },
+            { "type": "separator" },
+            {
                 "label": "&Manage Games…",
                 "action": "managegames"
             },
             { "type": "separator" },
             {
-                "label": "S&core",
+                "label": "Sco&re",
                 "action": "score"
             },
             {

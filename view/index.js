@@ -1,5 +1,6 @@
 var remote = require('electron').remote
 var ipcRenderer = require('electron').ipcRenderer
+var clipboard = require('electron').clipboard
 var fs = require('fs')
 var shell = require('shell')
 var sgf = require('../modules/sgf')
@@ -8,9 +9,9 @@ var fuzzyfinder = require('../modules/fuzzyfinder')
 var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
 var helper = require('../modules/helper')
-var process = remote.require('process')
 var app = remote.app
 var dialog = remote.dialog
+var process = remote.require('process')
 var gtp = remote.require('./modules/gtp')
 var setting = remote.require('./modules/setting')
 
@@ -1526,6 +1527,7 @@ function loadFile(filename) {
     }
 
     if (filename) {
+        setRepresentedFilename(filename)
         loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }))
     }
 }
@@ -1550,7 +1552,6 @@ function loadFileFromSgf(content) {
             if (trees.length == 0) throw true
 
             setGameTrees(trees)
-            setRepresentedFilename(null)
             loadGameFromIndex(0)
             updateFileHash()
 
@@ -1575,25 +1576,28 @@ function saveFile(filename) {
     }
 
     if (filename) {
-        var trees = getGameTrees()
-        var tree = getRootTree()
-
-        var text = ''
-
-        for (var i = 0; i < trees.length; i++) {
-            var t = trees[i]
-            if (i == getGameIndex()) t = tree
-
-            t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-            text += '(' + sgf.fromTree(t) + ')\n\n'
-        }
-
-        fs.writeFile(filename, text)
+        fs.writeFile(filename, saveFileToSgf())
         updateFileHash()
         setRepresentedFilename(filename)
     }
 
     setIsBusy(false)
+}
+
+function saveFileToSgf() {
+    var trees = getGameTrees()
+    var tree = getRootTree()
+    var text = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        var t = trees[i]
+        if (i == getGameIndex()) t = tree
+
+        t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
+        text += '(' + sgf.fromTree(t) + ')\n\n'
+    }
+
+    return text
 }
 
 function clearMarkups() {

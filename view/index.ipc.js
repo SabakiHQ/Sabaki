@@ -5,6 +5,8 @@ var menudata = {
     "loadfile": loadFile,
     "savefile": function() { saveFile(getRepresentedFilename()) },
     "saveas": saveFile,
+    "loadclipboard": function() { loadFileFromSgf(clipboard.readText()) },
+    "copytoclipboard": function() { clipboard.writeText(saveFileToSgf()) },
     "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
     "gameinfo": showGameInfo,
