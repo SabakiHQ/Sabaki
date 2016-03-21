@@ -365,6 +365,7 @@ function setGuessMode(guessMode) {
     } else {
         document.body.removeClass('guess')
         setShowNextMoves(document.body.retrieve('guess_shownextmoves') || getShowNextMoves())
+        setCurrentTreePosition.apply(null, getCurrentTreePosition())
     }
 }
 

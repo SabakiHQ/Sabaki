@@ -216,7 +216,7 @@ function setBoard(board) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[li.retrieve('tuple')]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
-                'cross', 'square', 'label', 'point']
+                'cross', 'square', 'label', 'point', 'dimmed', 'paint_1', 'paint_-1']
 
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
@@ -1129,16 +1129,27 @@ function vertexClicked(vertex, event) {
 
         var color = getCurrentPlayer() > 0 ? 'B' : 'W'
         var nextVertex = sgf.point2vertex(nextNode[color][0])
+        var board = getBoard()
 
-        if (!getBoard().hasVertex(nextVertex)) {
+        if (!board.hasVertex(nextVertex)) {
             setGuessMode(false)
             return
         }
 
-        if (vertex[0] == nextVertex[0] || vertex[1] == nextVertex[1]) {
+        if (vertex[0] == nextVertex[0] && vertex[1] == nextVertex[1]) {
             makeMove(vertex)
         } else {
-            // TODO
+            var i = 0
+            if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
+                i = 1
+
+            for (var x = 0; x < board.size; x++) {
+                for (var y = 0; y < board.size; y++) {
+                    var z = i == 0 ? x : y
+                    if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
+                        $$('#goban .pos_' + x + '-' + y)[0].addClass('paint_1')
+                }
+            }
         }
     } else {
         // Playing mode
