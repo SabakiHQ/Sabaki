@@ -1139,6 +1139,9 @@ function vertexClicked(vertex, event) {
         if (vertex[0] == nextVertex[0] && vertex[1] == nextVertex[1]) {
             makeMove(vertex)
         } else {
+            if (board.arrangement[vertex] != 0) return
+            if ($$('#goban .pos_' + vertex[0] + '-' + vertex[1])[0].hasClass('paint_1')) return
+
             var i = 0
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
                 i = 1
