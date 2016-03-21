@@ -1119,19 +1119,27 @@ function vertexClicked(vertex, event) {
         }
 
         var nextNode = tp[0].nodes[tp[1]]
+
+        if ('B' in nextNode) setCurrentPlayer(1)
+        else if ('W' in nextNode) setCurrentPlayer(-1)
+        else {
+            setGuessMode(false)
+            return
+        }
+
         var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-
-        if (!(color in nextNode)) return
-
         var nextVertex = sgf.point2vertex(nextNode[color][0])
+
         if (!getBoard().hasVertex(nextVertex)) {
             setGuessMode(false)
             return
         }
 
-        if (vertex[0] != nextVertex[0] || vertex[1] != nextVertex[1]) return
-
-        makeMove(vertex)
+        if (vertex[0] == nextVertex[0] || vertex[1] == nextVertex[1]) {
+            makeMove(vertex)
+        } else {
+            // TODO
+        }
     } else {
         // Playing mode
 
