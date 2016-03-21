@@ -1110,7 +1110,28 @@ function vertexClicked(vertex, event) {
         setIndicatorVertex(vertex)
         findMove(getIndicatorVertex(), getFindText(), 1)
     } else if (getGuessMode()) {
-        // TODO
+        if (event.button != 0) return
+
+        var tp = gametree.navigate.apply(null, getCurrentTreePosition().concat([1]))
+        if (!tp[0]) {
+            setGuessMode(false)
+            return
+        }
+
+        var nextNode = tp[0].nodes[tp[1]]
+        var color = getCurrentPlayer() > 0 ? 'B' : 'W'
+
+        if (!(color in nextNode)) return
+
+        var nextVertex = sgf.point2vertex(nextNode[color][0])
+        if (!getBoard().hasVertex(nextVertex)) {
+            setGuessMode(false)
+            return
+        }
+
+        if (vertex[0] != nextVertex[0] || vertex[1] != nextVertex[1]) return
+
+        makeMove(vertex)
     } else {
         // Playing mode
 
