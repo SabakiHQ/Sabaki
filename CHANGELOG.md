@@ -2,12 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
+
+**Added**
+
+* Guess Mode
+* Load SGF files from clipboard
+* Copy SGF files to clipboard
 
 **Changed**
 
 * Show game result when at the end of main variation
-* Update to Electron v0.37.2
+* Update to Electron v0.37.3
 
 ## [Sabaki v0.11.1][v0.11.1] (2016-03-05)
 
@@ -268,7 +274,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.2...master
+[v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
+[v0.11.1]: https://github.com/yishn/Sabaki/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.0
 [v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.10.0...v0.10.1
 [v0.10.0]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.0
