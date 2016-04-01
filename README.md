@@ -19,6 +19,7 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
 - Find move
 - Position & move annotations
 - GTP engines support
+- Guess mode
 
 ## Third Party Libraries
 

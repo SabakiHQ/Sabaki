@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Guess Mode
+* Guess mode
 * Load SGF files from clipboard
 * Copy SGF files to clipboard
 
