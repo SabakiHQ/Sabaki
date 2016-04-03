@@ -2,7 +2,7 @@
   "name": "sabaki",
   "productName": "Sabaki",
   "version": "0.11.2",
-  "description": "An elegant Go board and SGF editor for a more civilized age.",
+  "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen",
   "main": "main.js",
   "repository": {
