@@ -2,11 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.11.3][v0.11.3] (2016-04-03)
+
+**Fixed**
+
+* Fix missing WebGL libraries in Windows
 
 **Changed**
 
-* Fix missing WebGL libraries in Windows
 * Update to Electron v0.37.4
 
 ## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
@@ -281,7 +284,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.3...master
+[v0.11.3]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.3
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/yishn/Sabaki/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.0
