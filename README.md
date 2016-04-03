@@ -8,7 +8,6 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
 
 ## Features
 
-- Resizable game board
 - Fuzzy stone placement
 - Read and save SGF games and collections
 - Display formatted SGF comments
