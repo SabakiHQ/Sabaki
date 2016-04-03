@@ -17,18 +17,20 @@ function newWindow(path) {
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
         useContentSize: true,
-        show: false,
+        show: true,
+        backgroundColor: '#EAB45E',
         webPreferences: {
             textAreasAreResizable: false
         }
     })
 
+    buildMenu()
     windows.push(window)
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
         .on('did-finish-load', function() {
-            window.show()
+            window.setBackgroundColor('#111')
             if (path) window.webContents.send('load-game', path)
         })
         .on('new-window', function(e) { e.preventDefault() })
@@ -189,7 +191,6 @@ function buildMenu() {
     }
 }
 
-ipcMain.on('build-menu', buildMenu)
 ipcMain.on('new-window', newWindow)
 
 app.on('window-all-closed', function() {

@@ -546,10 +546,6 @@ function prepareConsole() {
 }
 
 function loadEngines() {
-    // Load menu items
-
-    ipcRenderer.send('build-menu')
-
     // Load engines list
 
     var ul = $$('#preferences .engines-list ul')[0]
