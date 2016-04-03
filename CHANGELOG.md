@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Fix missing WebGL libraries in Windows
 * Update to Electron v0.37.4
 
 ## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
