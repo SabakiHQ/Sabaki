@@ -71,21 +71,6 @@ function getFileHash() {
     return document.body.retrieve('filehash')
 }
 
-function generateFileHash() {
-    var trees = getGameTrees()
-    var hash = ''
-
-    for (var i = 0; i < trees.length; i++) {
-        hash += gametree.getHash(trees[i])
-    }
-
-    return hash
-}
-
-function updateFileHash() {
-    document.body.store('filehash', generateFileHash())
-}
-
 function getGraphMatrixDict() {
     return $('graph').retrieve('graphmatrixdict')
 }
@@ -543,6 +528,21 @@ function prepareConsole() {
             })()
         }
     })
+}
+
+function generateFileHash() {
+    var trees = getGameTrees()
+    var hash = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        hash += gametree.getHash(trees[i])
+    }
+
+    return hash
+}
+
+function updateFileHash() {
+    document.body.store('filehash', generateFileHash())
 }
 
 function loadEngines() {
@@ -1856,6 +1856,7 @@ document.addEvent('keydown', function(e) {
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
+    newFile()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
@@ -1864,8 +1865,6 @@ document.addEvent('keydown', function(e) {
 })
 
 window.addEvent('load', function() {
-    newFile()
-
     if (!setting.get('app.startup_check_updates')) return
 
     setTimeout(function() {
