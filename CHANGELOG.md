@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Faster startup
+
 ## [Sabaki v0.11.3][v0.11.3] (2016-04-03)
 
 **Fixed**

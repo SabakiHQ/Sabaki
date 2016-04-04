@@ -17,7 +17,6 @@ function newWindow(path) {
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
         useContentSize: true,
-        show: true,
         backgroundColor: '#EAB45E',
         webPreferences: {
             textAreasAreResizable: false
