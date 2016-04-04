@@ -20,8 +20,8 @@
     "sigma": "^1.0.3"
   },
   "scripts": {
-    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.4 --out=../ --overwrite --icon=./icon.ico --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.CompanyName=\"Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
-    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.4 --out=../ --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --ignore=.*\\.icns$",
-    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.4 --out=../ --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --icon=./icon.icns --app-category-type=public.app-category.games"
+    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.3 --out=../ --overwrite --icon=./icon.ico --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.CompanyName=\"Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\"",
+    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.3 --out=../ --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --ignore=.*\\.icns$",
+    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.11.3 --build-version=0.11.3 --version=0.37.3 --out=../ --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --icon=./icon.icns --app-category-type=public.app-category.games"
   }
 }

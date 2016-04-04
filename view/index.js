@@ -1627,15 +1627,11 @@ function saveFile(filename) {
 
 function saveFileToSgf() {
     var trees = getGameTrees()
-    var tree = getRootTree()
     var text = ''
 
     for (var i = 0; i < trees.length; i++) {
-        var t = trees[i]
-        if (i == getGameIndex()) t = tree
-
-        t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-        text += '(' + sgf.fromTree(t) + ')\n\n'
+        trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
+        text += '(' + sgf.fromTree(trees[i]) + ')\n\n'
     }
 
     return text
