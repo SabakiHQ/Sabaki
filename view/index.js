@@ -1617,7 +1617,7 @@ function saveFile(filename) {
     }
 
     if (filename) {
-        fs.writeFile(filename, saveFileToSgf())
+        fs.writeFileSync(filename, saveFileToSgf())
         updateFileHash()
         setRepresentedFilename(filename)
     }
