@@ -12,11 +12,12 @@ var openfile = null
 function newWindow(path) {
     var window = new BrowserWindow({
         icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
+        title: 'Sabaki',
+        useContentSize: true,
         width: setting.get('window.width'),
         height: setting.get('window.height'),
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
-        useContentSize: true,
         backgroundColor: '#EAB45E',
         webPreferences: {
             textAreasAreResizable: false
