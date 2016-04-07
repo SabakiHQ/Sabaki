@@ -94,7 +94,7 @@
                 "action": "circletool"
             },
             {
-                "label": "&Line Tool",
+                "label": "&Line/Arrow Tool",
                 "accelerator": "CmdOrCtrl+6",
                 "action": "linetool"
             },
