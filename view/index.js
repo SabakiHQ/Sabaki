@@ -1568,12 +1568,13 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        setRepresentedFilename(filename)
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true)
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true, function(error) {
+            if (!error) setRepresentedFilename(filename)
+        })
     }
 }
 
-function loadFileFromSgf(content, dontask) {
+function loadFileFromSgf(content, dontask, callback) {
     if (getIsBusy() || !dontask && !askForSave()) return
     setIsBusy(true)
     closeDrawers()
@@ -1581,6 +1582,7 @@ function loadFileFromSgf(content, dontask) {
     setTimeout(function() {
         var win = remote.getCurrentWindow()
         var lastprogress = -1
+        var error = false
 
         try {
             var trees = sgf.parse(sgf.tokenize(content), function(progress) {
@@ -1599,10 +1601,13 @@ function loadFileFromSgf(content, dontask) {
             if (trees.length > 1) showGameChooser()
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
+            error = true
         }
 
         setProgressIndicator(-1, win)
         setIsBusy(false)
+
+        if (callback) callback(error)
     }, setting.get('app.loadgame_delay'))
 }
 
