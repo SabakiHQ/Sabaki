@@ -5,7 +5,7 @@ var shell = null
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
-    shell = require('shell')
+    shell = require('electron').shell
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
