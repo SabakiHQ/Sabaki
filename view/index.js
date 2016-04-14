@@ -874,6 +874,16 @@ function useTool(vertex, event) {
         for (var i = -1; i <= 1; i++) {
             if (!(ids[i + 1] in node)) continue
 
+            // Resolve compressed lists
+
+            node[ids[i + 1]] = node[ids[i + 1]].map(function(value) {
+                return sgf.compressed2list(value).map(sgf.vertex2point)
+            }).reduce(function(list, x) {
+                return list.concat(x)
+            })
+
+            // Remove residue
+
             k = node[ids[i + 1]].indexOf(point)
             if (k >= 0) {
                 node[ids[i + 1]].splice(k, 1)
