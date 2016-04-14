@@ -8,6 +8,7 @@ var Menu = require('electron').Menu
 
 var windows = []
 var openfile = null
+var isReady = false
 
 function newWindow(path) {
     var window = new BrowserWindow({
@@ -47,7 +48,7 @@ function newWindow(path) {
 
 function buildMenu() {
     var template = JSON.parse(JSON.stringify(require('./menu.json')))
-    var noWindows = BrowserWindow.getAllWindows().length == 0
+    var noWindows = windows.length == 0
 
     // Create app menu for OS X
 
@@ -214,11 +215,14 @@ app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {
         app.quit()
     } else {
+        windows = []
         buildMenu()
     }
 })
 
 app.on('ready', function() {
+    isReady = true
+
     if (!openfile && process.argv.length >= 2)
         openfile = process.argv[1]
 
@@ -232,7 +236,7 @@ app.on('activate', function(e, hasVisibleWindows) {
 app.on('open-file', function(e, path) {
     e.preventDefault()
 
-    if (BrowserWindow.getAllWindows().length == 0) {
+    if (!isReady) {
         openfile = path
     } else {
         newWindow(path)
