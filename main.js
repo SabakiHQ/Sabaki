@@ -35,7 +35,11 @@ function newWindow(path) {
         })
         .on('new-window', function(e) { e.preventDefault() })
 
-    window.on('closed', function() { window = null })
+    window.on('closed', function() {
+        window = null
+        windows = windows.filter(function(x) { return x != null })
+    })
+
     window.loadURL('file://' + __dirname + '/view/index.html')
     // window.toggleDevTools()
 
@@ -98,6 +102,10 @@ function buildMenu() {
             submenu: appMenu
         })
 
+        if (windows.length == 0) {
+            template = [template[0], template[template.length - 1]]
+        }
+
         // Add 'Window' menu
 
         template.splice(template.length - 1, 0, {
@@ -121,30 +129,33 @@ function buildMenu() {
     // Load engines
 
     var engineMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Engine' })[0]
-    var attachMenu = engineMenu.submenu[0].submenu
 
-    attachMenu.length = 0
+    if (engineMenu) {
+        var attachMenu = engineMenu.submenu[0].submenu
 
-    setting.getEngines().forEach(function(engine) {
-        attachMenu.push({
-            label: engine.name,
-            click: function() {
-                var window = BrowserWindow.getFocusedWindow()
-                if (!window) return
+        attachMenu.length = 0
 
-                window.webContents.send('attach-engine', engine.path, engine.args)
-            }
+        setting.getEngines().forEach(function(engine) {
+            attachMenu.push({
+                label: engine.name,
+                click: function() {
+                    var window = BrowserWindow.getFocusedWindow()
+                    if (!window) return
+
+                    window.webContents.send('attach-engine', engine.path, engine.args)
+                }
+            })
         })
-    })
 
-    if (setting.getEngines().length != 0) {
-        attachMenu.push({ type: 'separator' })
+        if (setting.getEngines().length != 0) {
+            attachMenu.push({ type: 'separator' })
+        }
+
+        attachMenu.push({
+            label: '&Manage Engines…',
+            action: 'manageengines'
+        })
     }
-
-    attachMenu.push({
-        label: '&Manage Engines…',
-        action: 'manageengines'
-    })
 
     // Handle clicks
 
@@ -194,8 +205,11 @@ function buildMenu() {
 ipcMain.on('new-window', newWindow)
 
 app.on('window-all-closed', function() {
-    // Quit when all windows are closed.
-    app.quit()
+    if (process.platform != 'darwin') {
+        app.quit()
+    } else {
+        buildMenu()
+    }
 })
 
 app.on('ready', function() {
