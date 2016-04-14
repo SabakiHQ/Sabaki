@@ -37,7 +37,6 @@ function newWindow(path) {
 
     window.on('closed', function() {
         window = null
-        windows = windows.filter(function(x) { return x != null })
     })
 
     window.loadURL('file://' + __dirname + '/view/index.html')
@@ -62,16 +61,18 @@ function buildMenu() {
         var helpMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Help' })[0]
         var items = helpMenu.submenu.splice(0, 3)
 
-        appMenu.push.apply(appMenu, items.slice(0, 2))
+        appMenu.push.apply(appMenu, items.slice(0, windows.length == 0 ? 1 : 2))
 
         // Remove original 'Preferences' menu item
 
         var fileMenu = template.filter(function(x) { return x.label.replace('&', '') == 'File' })[0]
-        items = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)
+        var preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
+
+        if (window.length == 0) preferenceItem.enabled = false
 
         appMenu.push.apply(appMenu, [
             { type: 'separator' },
-            items[1],
+            preferenceItem,
             { type: 'separator' },
             {
                 label: 'Services',
@@ -111,6 +112,10 @@ function buildMenu() {
         template.splice(template.length - 1, 0, {
             label: 'Window',
             submenu: [
+                {
+                    label: 'New Window',
+                    click: newWindow
+                },
                 {
                     label: 'Minimize',
                     role: 'minimize',
@@ -208,6 +213,7 @@ app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {
         app.quit()
     } else {
+        windows = []
         buildMenu()
     }
 })
