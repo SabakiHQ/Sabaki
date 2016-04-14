@@ -68,7 +68,7 @@ function buildMenu() {
         var fileMenu = template.filter(function(x) { return x.label.replace('&', '') == 'File' })[0]
         var preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
 
-        if (window.length == 0) preferenceItem.enabled = false
+        if (windows.length == 0) preferenceItem.enabled = false
 
         appMenu.push.apply(appMenu, [
             { type: 'separator' },
