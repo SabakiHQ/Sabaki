@@ -876,11 +876,13 @@ function useTool(vertex, event) {
 
             // Resolve compressed lists
 
-            node[ids[i]] = node[ids[i]].map(function(value) {
-                return sgf.compressed2list(value).map(sgf.vertex2point)
-            }).reduce(function(list, x) {
-                return list.concat(x)
-            })
+            if (node[ids[i]].some(function(x) { return x.indexOf(':') >= 0 })) {
+                node[ids[i]] = node[ids[i]].map(function(value) {
+                    return sgf.compressed2list(value).map(sgf.vertex2point)
+                }).reduce(function(list, x) {
+                    return list.concat(x)
+                })
+            }
 
             // Remove residue
 
