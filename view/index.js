@@ -871,12 +871,12 @@ function useTool(vertex, event) {
         var id = ids[sign + 1]
         var point = sgf.vertex2point(vertex)
 
-        for (var i = -1; i <= 1; i++) {
-            if (!(ids[i + 1] in node)) continue
+        for (var i = 0; i <= 2; i++) {
+            if (!(ids[i] in node)) continue
 
             // Resolve compressed lists
 
-            node[ids[i + 1]] = node[ids[i + 1]].map(function(value) {
+            node[ids[i]] = node[ids[i]].map(function(value) {
                 return sgf.compressed2list(value).map(sgf.vertex2point)
             }).reduce(function(list, x) {
                 return list.concat(x)
@@ -884,13 +884,12 @@ function useTool(vertex, event) {
 
             // Remove residue
 
-            k = node[ids[i + 1]].indexOf(point)
+            k = node[ids[i]].indexOf(point)
             if (k >= 0) {
-                node[ids[i + 1]].splice(k, 1)
+                node[ids[i]].splice(k, 1)
 
-                if (node[ids[i + 1]].length == 0) {
-                    delete node[ids[i + 1]]
-                }
+                if (node[ids[i]].length == 0)
+                    delete node[ids[i]]
             }
         }
 
