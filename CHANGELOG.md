@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Add 'New Window' menu item in OS X
+* Closing all windows doesn't quit the app in OS X
+
+**Fixed**
+
+* Opening an unreadable file doesn't set represented filename anymore
+* Fix repeated exceptions when opening an empty game tree
+* Fix editing compressed point lists for AB/AW/AE properties not working
+
 ## [Sabaki v0.11.4][v0.11.4] (2016-04-07)
 
 **Fixed**
