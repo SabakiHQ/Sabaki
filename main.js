@@ -24,8 +24,8 @@ function newWindow(path) {
         }
     })
 
-    buildMenu()
     windows.push(window)
+    buildMenu()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents
