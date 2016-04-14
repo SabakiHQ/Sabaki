@@ -7,7 +7,7 @@ var alpha = 'abcdefghjklmnopqrstuvwxyz'
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
     var inputs = input.split(' ').filter(function(x) { return x != '' })
-    var id = parseInt(inputs[0])
+    var id = parseFloat(inputs[0])
 
     if (!isNaN(id)) inputs.splice(0, 1)
     var name = inputs[0]
@@ -22,7 +22,7 @@ exports.parseResponse = function(input) {
     var hasId = input[1] != ' '
 
     input = input.substr(1)
-    var id = hasId ? parseInt(input.split(' ')[0]) : null
+    var id = hasId ? parseFloat(input.split(' ')[0]) : null
 
     if (hasId) input = input.substr((id + '').length)
 
@@ -37,6 +37,6 @@ exports.vertex2point = function(v, size) {
 
 exports.point2vertex = function(point, size) {
     var x = alpha.indexOf(point[0].toLowerCase())
-    var y = size - parseInt(point.substr(1))
+    var y = size - parseFloat(point.substr(1))
     return [x, y]
 }

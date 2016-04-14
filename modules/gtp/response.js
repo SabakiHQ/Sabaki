@@ -1,7 +1,7 @@
 var helper = require('../helper')
 
 var Response = function(id, content, error, internal) {
-    this.id = parseInt(id)
+    this.id = parseFloat(id)
     this.content = content
     this.error = error ? true : false
     this.internal = internal ? true : false
@@ -14,7 +14,7 @@ Response.prototype = {
 
     toHtml: function() {
         if (!helper) return this.toString()
-        
+
         if (!this.internal) {
             var c = this.error ? 'error' : 'success'
             return '<span class="' + c + '">' + (this.error ? '?' : '=') + '</span>'
