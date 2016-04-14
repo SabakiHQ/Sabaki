@@ -46,9 +46,8 @@ function newWindow(path) {
     return window
 }
 
-function buildMenu() {
+function buildMenu(noWindows) {
     var template = JSON.parse(JSON.stringify(require('./menu.json')))
-    var noWindows = windows.length == 0
 
     // Create app menu for OS X
 
@@ -105,9 +104,7 @@ function buildMenu() {
             submenu: appMenu
         })
 
-        if (noWindows) {
-            template = [template[0], template[template.length - 1]]
-        }
+        if (noWindows) template = [template[0], template[template.length - 1]]
 
         // Add 'Window' menu
 
@@ -204,7 +201,7 @@ function buildMenu() {
     if (process.platform == 'darwin') {
         app.dock.setMenu(Menu.buildFromTemplate([{
             label: 'New Window',
-            click: function() { newWindow() }
+            click: newWindow.bind(null, null)
         }]))
     }
 }
@@ -215,8 +212,7 @@ app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {
         app.quit()
     } else {
-        windows = []
-        buildMenu()
+        buildMenu(true)
     }
 })
 
