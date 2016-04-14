@@ -206,7 +206,7 @@ function buildMenu(noWindows) {
     }
 }
 
-ipcMain.on('new-window', newWindow)
+ipcMain.on('new-window', function(e, path) { newWindow(path) })
 
 app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {

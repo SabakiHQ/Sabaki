@@ -2,6 +2,7 @@
 
 var menudata = {
     "newfile": function() { newFile(true) },
+    "newwindow": function() { ipcRenderer.send('new-window') },
     "loadfile": loadFile,
     "savefile": function() { saveFile(getRepresentedFilename()) },
     "saveas": saveFile,

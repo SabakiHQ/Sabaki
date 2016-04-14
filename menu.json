@@ -8,7 +8,13 @@
                 "action": "newfile"
             },
             {
-                "label": "&Load…",
+                "label": "New &Window",
+                "accelerator": "CmdOrCtrl+Shift+N",
+                "action": "newwindow"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Open…",
                 "accelerator": "CmdOrCtrl+O",
                 "action": "loadfile"
             },
