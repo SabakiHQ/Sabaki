@@ -47,6 +47,7 @@ function newWindow(path) {
 
 function buildMenu() {
     var template = JSON.parse(JSON.stringify(require('./menu.json')))
+    var noWindows = BrowserWindow.getAllWindows().length == 0
 
     // Create app menu for OS X
 
@@ -61,14 +62,14 @@ function buildMenu() {
         var helpMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Help' })[0]
         var items = helpMenu.submenu.splice(0, 3)
 
-        appMenu.push.apply(appMenu, items.slice(0, windows.length == 0 ? 1 : 2))
+        appMenu.push.apply(appMenu, items.slice(0, noWindows ? 1 : 2))
 
         // Remove original 'Preferences' menu item
 
         var fileMenu = template.filter(function(x) { return x.label.replace('&', '') == 'File' })[0]
         var preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
 
-        if (windows.length == 0) preferenceItem.enabled = false
+        if (noWindows) preferenceItem.enabled = false
 
         appMenu.push.apply(appMenu, [
             { type: 'separator' },
@@ -103,7 +104,7 @@ function buildMenu() {
             submenu: appMenu
         })
 
-        if (windows.length == 0) {
+        if (noWindows) {
             template = [template[0], template[template.length - 1]]
         }
 
@@ -114,7 +115,7 @@ function buildMenu() {
             submenu: [
                 {
                     label: 'New Window',
-                    click: newWindow
+                    click: newWindow.bind(null, null)
                 },
                 {
                     label: 'Minimize',
@@ -213,7 +214,6 @@ app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {
         app.quit()
     } else {
-        windows = []
         buildMenu()
     }
 })
