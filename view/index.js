@@ -633,31 +633,6 @@ function syncEngine() {
     setIsBusy(false)
 }
 
-function checkForUpdates(callback) {
-    if (!callback) callback = function(hasUpdates) {}
-    var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
-
-    // Check internet connection first
-    remote.require('dns').lookup('github.com', function(err) {
-        if (err) return
-
-        remote.require('https').get(url, function(response) {
-            response.once('data', function(chunk) {
-                chunk = '' + chunk
-                var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
-
-                if (hasUpdates && showMessageBox(
-                    'There is a new version of ' + app.getName() + ' available.',
-                    'info',
-                    ['Download Update', 'Not Now'], 1
-                ) == 0) shell.openExternal(url)
-
-                callback(hasUpdates)
-            })
-        }).on('error', function(e) {})
-    })
-}
-
 function makeMove(vertex, sendCommand) {
     if (sendCommand == null) sendCommand = getEngineController() != null
 
@@ -1877,13 +1852,7 @@ document.addEvent('keydown', function(e) {
     })
 })
 
-window.addEvent('load', function() {
-    if (!setting.get('app.startup_check_updates')) return
-
-    setTimeout(function() {
-        checkForUpdates()
-    }, setting.get('app.startup_check_updates_delay'))
-}).addEvent('resize', function() {
+window.addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {

@@ -1,5 +1,7 @@
 var process = require('process')
 var app = require('electron').app
+var shell = require('electron').shell
+var dialog = require('electron').dialog
 var ipcMain = require('electron').ipcMain
 var setting = require('./modules/setting')
 
@@ -206,7 +208,44 @@ function buildMenu(noWindows) {
     }
 }
 
+function checkForUpdates(showNoUpdatesDialog) {
+    var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
+
+    // Check internet connection first
+    require('dns').lookup('github.com', function(err) {
+        if (err) return
+
+        require('https').get(url, function(response) {
+            response.once('data', function(chunk) {
+                chunk = '' + chunk
+                var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
+
+                if (hasUpdates) {
+                    dialog.showMessageBox({
+                        type: 'info',
+                        buttons: ['Download Update', 'Not Now'],
+                        title: app.getName(),
+                        message: 'There is a new version of ' + app.getName() + ' available.',
+                        noLink: true,
+                        cancelId: 1
+                    }, function(response) {
+                        if (response == 0) shell.openExternal(url)
+                    })
+                } else if (showNoUpdatesDialog) {
+                    dialog.showMessageBox({
+                        type: 'info',
+                        buttons: ['OK'],
+                        title: app.getName(),
+                        message: 'There are no updates available.'
+                    }, function() {})
+                }
+            })
+        }).on('error', function(e) {})
+    })
+}
+
 ipcMain.on('new-window', function(e, path) { newWindow(path) })
+ipcMain.on('check-for-updates', function(e, showNoUpdatesDialog) { checkForUpdates(showNoUpdatesDialog) })
 
 app.on('window-all-closed', function() {
     if (process.platform != 'darwin') {
@@ -223,6 +262,12 @@ app.on('ready', function() {
         openfile = process.argv[1]
 
     newWindow(openfile)
+
+    if (setting.get('app.startup_check_updates')) {
+        setTimeout(function() {
+            checkForUpdates()
+        }, setting.get('app.startup_check_updates_delay'))
+    }
 })
 
 app.on('activate', function(e, hasVisibleWindows) {

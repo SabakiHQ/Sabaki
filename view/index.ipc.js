@@ -63,12 +63,7 @@ var menudata = {
         win.setAutoHideMenuBar(win.isFullScreen())
     },
 
-    "checkforupdates": function() {
-        checkForUpdates(function(hasUpdates) {
-            if (hasUpdates) return
-            showMessageBox('There are no updates available.')
-        })
-    },
+    "checkforupdates": function() { ipcRenderer.send('check-for-updates', true) },
     "github": function() { shell.openExternal('https://github.com/yishn/' + app.getName()) },
     "reportissue": function() { shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues') }
 }
