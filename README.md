@@ -2,13 +2,12 @@
 
 <img src="logo.png" width="156" height="156">
 
-An elegant Go board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
+An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
 ![Screenshot](screenshot.png)
 
 ## Features
 
-- Resizable game board
 - Fuzzy stone placement
 - Read and save SGF games and collections
 - Display formatted SGF comments
@@ -19,6 +18,7 @@ An elegant Go board and SGF editor for a more civilized age. [Download the lates
 - Find move
 - Position & move annotations
 - GTP engines support
+- Guess mode
 
 ## Third Party Libraries
 

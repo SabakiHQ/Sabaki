@@ -2,11 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Add 'New Window' menu item in OS X
+* Closing all windows doesn't quit the app in OS X
+
+**Fixed**
+
+* Opening an unreadable file doesn't set represented filename anymore
+* Fix repeated exceptions when opening an empty game tree
+* Fix editing compressed point lists for AB/AW/AE properties not working
+
+## [Sabaki v0.11.4][v0.11.4] (2016-04-07)
+
+**Fixed**
+
+* Fix missing WebGL libraries in Windows
+* Fix crash while saving files
+
+**Changed**
+
+* Faster startup
+* Update to Electron v0.37.5
+
 ## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
 
 **Added**
 
-* Guess Mode
+* Guess mode
 * Load SGF files from clipboard
 * Copy SGF files to clipboard
 
@@ -267,14 +292,14 @@ All notable changes to this project will be documented in this file.
 * Fix unresponsiveness when clicking on a vertex on the game graph
 
 **Changed**
-* Improve camera panning of the game graph
 * Update to Electron v0.30.0
 
 ## Goban v0.1.0 (2015-06-20)
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.4...master
+[v0.11.4]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.4
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/yishn/Sabaki/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.0
