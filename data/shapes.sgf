@@ -1,4 +1,4 @@
-(;GM[1]AP[Sabaki:0.11.0]CA[UTF-8]SZ[19]
+(;GM[1]AP[Sabaki:0.11.4]CA[UTF-8]SZ[19]
 (;AB[dd][kc][qd]CR[aa:se][as]N[Low Chinese opening]
 )(;AB[dd][kd][qd]CR[aa:se][as]N[High Chinese opening]
 )(;AB[dd][pc][qe]CR[aa:sf][as]N[Orthodox opening]
@@ -25,6 +25,7 @@
 )(;CR[ee][ef]AB[dd][fe][df][fg]N[Parallelogram]
 )(;CR[ed][de][ee][ef]AB[dd][df][fe]N[Dog’s head]
 )(;CR[ed][de][ee][fe][ef]AB[dd][df][ge]N[Horse’s head]
+)(;AB[dd]AW[ed][cd]N[Wedge]CR[cc][dc][ec][ce][de][ee]
 )(;CR[dc][ec][de][ee]AB[dd]AW[ed]N[Attachment]
 )(;CR[ed]AB[dd][fd]N[One-point jump]
 )(;CR[ee][ef]AB[dd][fe][eg]N[Big bulge]
