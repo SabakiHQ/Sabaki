@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
 
 **Changed**
 
 * Add 'New Window' menu item in OS X
 * Closing all windows doesn't quit the app in OS X
+* Associate SGF files with Sabaki in OS X
 
 **Fixed**
 
