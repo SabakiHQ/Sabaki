@@ -104,11 +104,11 @@ function buildMenu(noWindows) {
             submenu: appMenu
         })
 
-        if (noWindows) template = [template[0], template[template.length - 1]]
+        if (noWindows) template = [template[0]]
 
         // Add 'Window' menu
 
-        template.splice(template.length - 1, 0, {
+        template.splice(noWindows ? template.length : template.length - 1, 0, {
             label: 'Window',
             submenu: [
                 {
