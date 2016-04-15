@@ -413,7 +413,7 @@ function prepareSlider() {
 
         var level = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
         var pos = gametree.navigate(getRootTree(), 0, level)
-        if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()))
+        if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()) - 1)
 
         if (helper.equals(pos, getCurrentTreePosition())) return
         setCurrentTreePosition.apply(null, pos)
