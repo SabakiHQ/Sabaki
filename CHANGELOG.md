@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Add edit button to comments section
+
+**Fixed**
+
+* Fix comments textbox scrolling to top when editing
+
 ## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
 
 **Changed**

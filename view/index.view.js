@@ -347,6 +347,8 @@ function setEditMode(editMode) {
     if (editMode) {
         closeDrawers()
         document.body.addClass('edit')
+
+        $$('#properties textarea')[0].scrollTo(0, 0)
     } else {
         $('goban').store('edittool-data', null)
         document.body.removeClass('edit')
