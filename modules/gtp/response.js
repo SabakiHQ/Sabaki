@@ -3,8 +3,8 @@ var helper = require('../helper')
 var Response = function(id, content, error, internal) {
     this.id = parseFloat(id)
     this.content = content
-    this.error = error ? true : false
-    this.internal = internal ? true : false
+    this.error = !!error
+    this.internal = !!internal
 }
 
 Response.prototype = {
