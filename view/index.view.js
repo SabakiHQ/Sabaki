@@ -1242,7 +1242,7 @@ function showGameChooser(callback) {
         if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
         var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
-        var svg = board.getSvg(153)
+        var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
         $$('#gamechooser ol li.add')[0].grab(li.grab(
@@ -1275,6 +1275,10 @@ function showGameChooser(callback) {
             $('gamechooser').store('dragging', this.getParent('li'))
         })
     }
+
+    var addSvg = $$('#gamechooser ol li.add svg')[0]
+    addSvg.set('width', setting.get('gamechooser.thumbnail_size'))
+    addSvg.set('height', setting.get('gamechooser.thumbnail_size'))
 
     $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()

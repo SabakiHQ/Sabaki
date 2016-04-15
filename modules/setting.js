@@ -47,6 +47,7 @@ var defaults = {
     'game.show_ko_warning': true,
     'game.show_suicide_warning': true,
     'gamechooser.show_delay': 100,
+    'gamechooser.thumbnail_size': 153,
     'graph.collapse_min_depth': 1,
     'graph.collapse_tokens_count': 100000,
     'graph.delay': 300,
