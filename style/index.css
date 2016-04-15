@@ -498,7 +498,8 @@ header, #edit, #scoring, #find, #guess {
         word-wrap: break-word;
     }
     #properties .inner .header { color: #999; }
-    #properties .inner .header img {
+    #properties .inner .header img:nth-child(1),
+    #properties .inner .header img:nth-child(2) {
         display: none;
         margin-right: 3px;
         padding: 2px;
@@ -515,6 +516,20 @@ header, #edit, #scoring, #find, #guess {
     #properties .inner .header.positionstatus img:nth-child(1),
     #properties .inner .header.movestatus img:nth-child(2) {
         display: inline;
+    }
+    #properties .inner .header img:last-child {
+        position: relative;
+        top: -1px;
+        right: -1px;
+        margin-left: 15px;
+        padding: 3px;
+        float: right;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+        opacity: .5;
+    }
+    #properties .inner .header img:last-child:hover {
+        background: white;
 }
 
 #indicator {
