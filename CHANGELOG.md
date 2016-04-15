@@ -4,10 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add edit button to comments section
+
+**Fixed**
+
+* Fix comments textbox scrolling to top when editing
+
+## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
+
 **Changed**
 
-* Add 'New Window' menu item in OS X
+* Add 'New Window' menu item
 * Closing all windows doesn't quit the app in OS X
+* Associate SGF files with Sabaki in OS X
 
 **Fixed**
 
@@ -72,13 +83,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.10.1][v0.10.1] (2016-02-27)
 
-**Fixed**
-
-* Fix regression where saving SGF files results in an exception
-* Editing node title doesn't put cursor at the very end
-
-## [Sabaki v0.10.0][v0.10.0] (2016-02-27)
-
 **Added**
 
 * Show SGF node name (`N` property) if available
@@ -96,6 +100,7 @@ All notable changes to this project will be documented in this file.
 
 * Fix incorrectly escaped `>` character in comment
 * Prevent user from sliding out of viewport by selecting text
+* Fix regression where saving SGF files results in an exception
 
 ## [Sabaki v0.9.1][v0.9.1] (2016-02-24)
 
@@ -298,13 +303,13 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.4...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.5...master
+[v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.4...v0.11.5
 [v0.11.4]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.4
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
 [v0.11.1]: https://github.com/yishn/Sabaki/compare/v0.11.0...v0.11.1
 [v0.11.0]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.0
-[v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.10.0...v0.10.1
-[v0.10.0]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.0
+[v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.1
 [v0.9.1]: https://github.com/yishn/Sabaki/compare/v0.8.1...v0.9.1
 [v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.7.6...v0.8.1
 [v0.7.6]: https://github.com/yishn/Sabaki/compare/v0.7.1...v0.7.6

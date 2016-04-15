@@ -71,21 +71,6 @@ function getFileHash() {
     return document.body.retrieve('filehash')
 }
 
-function generateFileHash() {
-    var trees = getGameTrees()
-    var hash = ''
-
-    for (var i = 0; i < trees.length; i++) {
-        hash += gametree.getHash(trees[i])
-    }
-
-    return hash
-}
-
-function updateFileHash() {
-    document.body.store('filehash', generateFileHash())
-}
-
 function getGraphMatrixDict() {
     return $('graph').retrieve('graphmatrixdict')
 }
@@ -547,12 +532,22 @@ function prepareConsole() {
     })
 }
 
+function generateFileHash() {
+    var trees = getGameTrees()
+    var hash = ''
+
+    for (var i = 0; i < trees.length; i++) {
+        hash += gametree.getHash(trees[i])
+    }
+
+    return hash
+}
+
+function updateFileHash() {
+    document.body.store('filehash', generateFileHash())
+}
+
 function loadEngines() {
-    return
-    // Load menu items
-
-    ipcRenderer.send('build-menu')
-
     // Load engines list
 
     var ul = $$('#preferences .engines-list ul')[0]
@@ -662,12 +657,11 @@ function makeMove(vertex, sendCommand) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
             var tp = gametree.navigate(tree, index, -1)
-            var prevTree = tp[0], prevIndex = tp[1]
             var ko = false
 
-            if (prevTree) {
+            if (tp) {
                 var hash = getBoard().makeMove(sign, vertex).getHash()
-                ko = prevTree.nodes[prevIndex].board.getHash() == hash
+                ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
             if (ko && showMessageBox(
@@ -786,14 +780,18 @@ function makeMove(vertex, sendCommand) {
     var enterScoring = false
 
     if (pass && createNode) {
-        var tp = getCurrentTreePosition(), ptp = gametree.navigate(tp[0], tp[1], -1)
-        var prevNode = ptp[0].nodes[ptp[1]]
-        var prevColor = sign > 0 ? 'W' : 'B'
-        var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+        var tp = getCurrentTreePosition()
+        var ptp = gametree.navigate(tp[0], tp[1], -1)
 
-        if (prevPass) {
-            enterScoring = true
-            setScoringMode(true)
+        if (ptp) {
+            var prevNode = ptp[0].nodes[ptp[1]]
+            var prevColor = sign > 0 ? 'W' : 'B'
+            var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+
+            if (prevPass) {
+                enterScoring = true
+                setScoringMode(true)
+            }
         }
     }
 
@@ -829,7 +827,7 @@ function useTool(vertex, event) {
     }
 
     if (tool.indexOf('stone') != -1) {
-        if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
+        if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
             // New variation needed
 
             var updateRoot = tree == getRootTree()
@@ -856,16 +854,27 @@ function useTool(vertex, event) {
         var id = ids[sign + 1]
         var point = sgf.vertex2point(vertex)
 
-        for (var i = -1; i <= 1; i++) {
-            if (!(ids[i + 1] in node)) continue
+        for (var i = 0; i <= 2; i++) {
+            if (!(ids[i] in node)) continue
 
-            k = node[ids[i + 1]].indexOf(point)
+            // Resolve compressed lists
+
+            if (node[ids[i]].some(function(x) { return x.indexOf(':') >= 0 })) {
+                node[ids[i]] = node[ids[i]].map(function(value) {
+                    return sgf.compressed2list(value).map(sgf.vertex2point)
+                }).reduce(function(list, x) {
+                    return list.concat(x)
+                })
+            }
+
+            // Remove residue
+
+            k = node[ids[i]].indexOf(point)
             if (k >= 0) {
-                node[ids[i + 1]].splice(k, 1)
+                node[ids[i]].splice(k, 1)
 
-                if (node[ids[i + 1]].length == 0) {
-                    delete node[ids[i + 1]]
-                }
+                if (node[ids[i]].length == 0)
+                    delete node[ids[i]]
             }
         }
 
@@ -1220,7 +1229,6 @@ function updateCommentText() {
     })()))
 
     $$('#properties .gm-scroll-view')[0].scrollTo(0, 0)
-    $$('#properties textarea')[0].scrollTo(0, 0)
     $('properties').retrieve('scrollbar').update()
 }
 
@@ -1554,12 +1562,13 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        setRepresentedFilename(filename)
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true)
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true, function(error) {
+            if (!error) setRepresentedFilename(filename)
+        })
     }
 }
 
-function loadFileFromSgf(content, dontask) {
+function loadFileFromSgf(content, dontask, callback) {
     if (getIsBusy() || !dontask && !askForSave()) return
     setIsBusy(true)
     closeDrawers()
@@ -1567,6 +1576,7 @@ function loadFileFromSgf(content, dontask) {
     setTimeout(function() {
         var win = remote.getCurrentWindow()
         var lastprogress = -1
+        var error = false
 
         try {
             var trees = sgf.parse(sgf.tokenize(content), function(progress) {
@@ -1576,7 +1586,8 @@ function loadFileFromSgf(content, dontask) {
                 lastprogress = progress
             }).subtrees
 
-            if (trees.length == 0) throw true
+            if (trees.length == 0 || trees.some(function(t) { return t.nodes.length == 0 }))
+                throw true
 
             setGameTrees(trees)
             loadGameFromIndex(0)
@@ -1585,10 +1596,13 @@ function loadFileFromSgf(content, dontask) {
             if (trees.length > 1) showGameChooser()
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
+            error = true
         }
 
         setProgressIndicator(-1, win)
         setIsBusy(false)
+
+        if (callback) callback(error)
     }, setting.get('app.loadgame_delay'))
 }
 
@@ -1603,7 +1617,7 @@ function saveFile(filename) {
     }
 
     if (filename) {
-        fs.writeFile(filename, saveFileToSgf())
+        fs.writeFileSync(filename, saveFileToSgf())
         updateFileHash()
         setRepresentedFilename(filename)
     }
@@ -1613,15 +1627,11 @@ function saveFile(filename) {
 
 function saveFileToSgf() {
     var trees = getGameTrees()
-    var tree = getRootTree()
     var text = ''
 
     for (var i = 0; i < trees.length; i++) {
-        var t = trees[i]
-        if (i == getGameIndex()) t = tree
-
-        t.nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-        text += '(' + sgf.fromTree(t) + ')\n\n'
+        trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
+        text += '(' + sgf.fromTree(trees[i]) + ')\n\n'
     }
 
     return text
@@ -1804,7 +1814,7 @@ function removeNode(tree, index) {
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     if (getCurrentGraphNode()) prev = getCurrentTreePosition()
-    setCurrentTreePosition(prev[0], prev[1])
+    setCurrentTreePosition.apply(null, prev)
 }
 
 function undoBoard() {
@@ -1842,6 +1852,7 @@ document.addEvent('keydown', function(e) {
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
+    newFile()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()

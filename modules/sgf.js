@@ -150,7 +150,7 @@ context.addBoard = function(tree, index, baseboard) {
     if (!baseboard) {
         var prev = gametree.navigate(tree, index, -1)
 
-        if (!prev[0]) {
+        if (!prev) {
             var size = 'SZ' in node ? node.SZ[0].toInt() : 19
             baseboard = new Board(size)
         } else {
