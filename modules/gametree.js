@@ -97,7 +97,7 @@ context.navigate = function(tree, index, step) {
         return context.navigate(next, 0, newstep)
     }
 
-    return [null, 0]
+    return null
 }
 
 context.makeNodeIterator = function(tree, index) {
@@ -324,7 +324,7 @@ context.matrixdict2graph = function(matrixdict) {
             graph.nodes.push(node)
 
             var prev = context.navigate(tree, index, -1)
-            if (!prev[0]) continue
+            if (!prev) continue
             var prevId = prev[0].id + '-' + prev[1]
             var prevPos = dict[prevId]
 

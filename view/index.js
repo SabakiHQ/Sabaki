@@ -652,12 +652,11 @@ function makeMove(vertex, sendCommand) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
             var tp = gametree.navigate(tree, index, -1)
-            var prevTree = tp[0], prevIndex = tp[1]
             var ko = false
 
-            if (prevTree) {
+            if (tp) {
                 var hash = getBoard().makeMove(sign, vertex).getHash()
-                ko = prevTree.nodes[prevIndex].board.getHash() == hash
+                ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
             if (ko && showMessageBox(
@@ -776,14 +775,18 @@ function makeMove(vertex, sendCommand) {
     var enterScoring = false
 
     if (pass && createNode) {
-        var tp = getCurrentTreePosition(), ptp = gametree.navigate(tp[0], tp[1], -1)
-        var prevNode = ptp[0].nodes[ptp[1]]
-        var prevColor = sign > 0 ? 'W' : 'B'
-        var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+        var tp = getCurrentTreePosition()
+        var ptp = gametree.navigate(tp[0], tp[1], -1)
 
-        if (prevPass) {
-            enterScoring = true
-            setScoringMode(true)
+        if (ptp) {
+            var prevNode = ptp[0].nodes[ptp[1]]
+            var prevColor = sign > 0 ? 'W' : 'B'
+            var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+
+            if (prevPass) {
+                enterScoring = true
+                setScoringMode(true)
+            }
         }
     }
 
@@ -819,7 +822,7 @@ function useTool(vertex, event) {
     }
 
     if (tool.indexOf('stone') != -1) {
-        if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)[0]) {
+        if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
             // New variation needed
 
             var updateRoot = tree == getRootTree()
@@ -1806,7 +1809,7 @@ function removeNode(tree, index) {
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     if (getCurrentGraphNode()) prev = getCurrentTreePosition()
-    setCurrentTreePosition(prev[0], prev[1])
+    setCurrentTreePosition.apply(null, prev)
 }
 
 function undoBoard() {

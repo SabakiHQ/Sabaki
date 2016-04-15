@@ -449,7 +449,7 @@ function getCurrentMoveInterpretation() {
 
     // Determine and of main variation
 
-    if (gametree.onMainTrack(tp[0]) && gametree.navigate(tp[0], tp[1], 1)[0] == null) {
+    if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
         var rootNode = getRootTree().nodes[0]
 
         if ('RE' in rootNode && rootNode.RE[0].trim() != '') {
@@ -459,9 +459,9 @@ function getCurrentMoveInterpretation() {
 
     // Determine capture
 
-    var ptp = gametree.navigate.apply(null, tp.concat([-1]))
+    var ptp = gametree.navigate(tp[0], tp[1], -1)
 
-    if (ptp[0]) {
+    if (ptp) {
         var prevBoard = ptp[0].nodes[ptp[1]].board
 
         if (!helper.equals(prevBoard.captures, board.captures))
@@ -1244,7 +1244,7 @@ function showGameChooser(callback) {
         var tree = trees[i]
         var li = new Element('li')
         var tp = gametree.navigate(tree, 0, 30)
-        if (!tp[0]) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+        if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
         var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(153)
