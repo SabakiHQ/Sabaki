@@ -410,8 +410,10 @@ function prepareSlider() {
 
     var changeSlider = function(percentage) {
         percentage = Math.min(1, Math.max(0, percentage))
-        var height = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
-        var pos = gametree.navigate(getRootTree(), 0, height)
+
+        var level = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
+        var pos = gametree.navigate(getRootTree(), 0, level)
+        if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()))
 
         if (helper.equals(pos, getCurrentTreePosition())) return
         setCurrentTreePosition.apply(null, pos)
@@ -1103,7 +1105,7 @@ function vertexClicked(vertex, event) {
         if (event.button != 0) return
 
         var tp = gametree.navigate.apply(null, getCurrentTreePosition().concat([1]))
-        if (!tp[0]) {
+        if (!tp) {
             setGuessMode(false)
             return
         }
@@ -1696,7 +1698,7 @@ function goToComment(step) {
 
     while (true) {
         tp = gametree.navigate.apply(null, tp.concat([step]))
-        if (!tp[0]) break
+        if (!tp) break
 
         var node = tp[0].nodes[tp[1]]
 

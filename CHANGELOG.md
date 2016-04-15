@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix comments textbox scrolling to top when editing
+* Slider doesn't stop halfway anymore when sliding over the end
 
 ## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
 
