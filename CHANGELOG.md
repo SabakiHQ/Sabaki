@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Add 'New Window' menu item in OS X
+* Add 'New Window' menu item
 * Closing all windows doesn't quit the app in OS X
 * Associate SGF files with Sabaki in OS X
 
