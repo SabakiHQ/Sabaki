@@ -131,19 +131,12 @@ body:not(.scoring) .goban .row li.dimmed img {
         opacity: .3;
         z-index: 2;
     }
-    .goban .row li.ghostcircle_1 .stone::after, .goban .row li.ghostcircle_-1 .stone::after {
-        width: .43em;
-        height: .43em;
-    }
-    .goban .row li.ghostcircle_-1 .stone::after { border-color: white; }
     .goban .row li.ghost_1 .stone::after,
     .goban .row li.sign_-1.point .stone::after { background: black; }
     .goban .row li.ghost_-1 .stone::after,
     .goban .row li.sign_1.point .stone::after { background: white; }
     .goban.variations .row li.ghost_1 .stone::after,
-    .goban.variations .row li.ghost_-1 .stone::after,
-    .goban.joseki .row li.ghostcircle_1 .stone::after,
-    .goban.joseki .row li.ghostcircle_-1 .stone::after { display: block; }
+    .goban.variations .row li.ghost_-1 .stone::after { display: block; }
     .goban .row li.point .stone::after {
         display: block;
         width: .29em;
