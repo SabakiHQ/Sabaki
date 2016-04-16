@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Add edit button to comments section
 
+**Changed**
+
+* Now board markup scales with board size
+
 **Fixed**
 
 * Fix engines menu list not updating when adding/removing engines

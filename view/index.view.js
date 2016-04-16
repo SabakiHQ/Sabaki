@@ -826,7 +826,7 @@ function buildBoard() {
                 return v
             }
 
-            ol.adopt(li.adopt(img)
+            ol.adopt(li.adopt(new Element('div.stone').adopt(img))
                 .addEvent('mouseup', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
 
@@ -927,6 +927,7 @@ function resizeBoard() {
     $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
+    $('goban').setStyle('font-size', fieldsize)
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
