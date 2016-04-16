@@ -5,11 +5,6 @@
  */
 
 .goban {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        bottom: 40px;
         border: 10px solid #ca933a;
         padding: 10px 8px 8px 10px;
         background: url('../img/goban/board.png') center #ECB55A;
