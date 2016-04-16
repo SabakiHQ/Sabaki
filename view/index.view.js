@@ -1077,6 +1077,41 @@ function openCommentMenu() {
     menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
 }
 
+function openEnginesMenu(element, callback) {
+    if (!callback) callback = function() {}
+
+    var template = [{
+        label: '&Manual',
+        click: function() { callback(null) }
+    }]
+
+    var engineItems = setting.getEngines().map(function(engine) {
+        return {
+            label: engine.name,
+            click: function() { callback(engine) }
+        }
+    })
+
+    if (engineItems.length > 0) {
+        template.push({ type: 'separator' })
+        template.push.apply(template, engineItems)
+    }
+
+    template.push({ type: 'separator'})
+    template.push({
+        label: 'Manage &Engines…',
+        click: function() {
+            showPreferences()
+            setPreferencesTab('engines')
+        }
+    })
+
+    var coord = element.getCoordinates()
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+}
+
 function openNodeMenu(tree, index) {
     if (getScoringMode()) return
 
