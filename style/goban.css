@@ -38,7 +38,10 @@
  * Coordinates
  */
 
-.goban .coordy {
+.goban .coordx, .goban .coordy {
+        font-size: .6em;
+    }
+    .goban .coordy {
         position: absolute;
         left: 0;
         margin: 0;
