@@ -1067,8 +1067,8 @@ function openCommentMenu() {
             } else {
                 clear()
                 node[p] = [value]
-                commitCommentText()
             }
+            updateCommentText()
         }
     })
 
