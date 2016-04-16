@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 * Fix engines menu list not updating when adding/removing engines
 * Fix comments textbox scrolling to top when editing
+* Fix navigation shortcuts not working after closing drawers
 * Slider doesn't stop halfway anymore when sliding over the end
 
 ## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
