@@ -1,4 +1,5 @@
 var child_process = require('child_process')
+var path = require('path')
 var events = require('events')
 var gtp = require('./index')
 
@@ -9,7 +10,9 @@ var Controller = function(exec, args) {
     self._buffer = ''
     self.commands = []
     self.error = false
-    self.process = child_process.execFile(exec, args)
+    self.process = child_process.execFile(exec, args, {
+        cwd: path.dirname(exec)
+    })
 
     self.process.on('error', function() {
         self.error = true
