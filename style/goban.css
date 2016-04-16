@@ -123,10 +123,10 @@ body:not(.scoring) .goban .row li.dimmed img {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: .6em;
-        height: .6em;
-        margin-left: -.32em;
-        margin-top: -.32em;
+        width: .5em;
+        height: .5em;
+        margin-left: -.27em;
+        margin-top: -.27em;
         border-radius: 500em;
         opacity: .3;
         z-index: 2;
