@@ -327,6 +327,7 @@ function setFindMode(pickMode) {
     } else {
         hideIndicator()
         document.body.removeClass('find')
+        document.activeElement.blur()
         setFindText('')
     }
 }
