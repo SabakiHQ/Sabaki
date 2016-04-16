@@ -543,6 +543,17 @@ function prepareGameInfo() {
         closeGameInfo()
         return false
     })
+
+    $$('#info .currentplayer').addEvent('click', function() {
+        var data = $$('#info section input[type="text"]').map(function(el) {
+            return el.get('value')
+        })
+
+        $$('#info section input[name="rank_1"]')[0].set('value', data[3])
+        $$('#info section input[name="rank_-1"]')[0].set('value', data[0])
+        $$('#info section input[name="name_1"]')[0].set('value', data[2])
+        $$('#info section input[name="name_-1"]')[0].set('value', data[1])
+    })
 }
 
 function generateFileHash() {
