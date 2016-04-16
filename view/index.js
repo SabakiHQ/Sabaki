@@ -63,7 +63,7 @@ function setRootTree(tree) {
     )
     setPlayerName(-1,
         gametree.getPlayerName(-1, tree, 'White'),
-        'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+        'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
 
