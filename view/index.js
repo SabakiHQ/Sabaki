@@ -532,6 +532,19 @@ function prepareConsole() {
     })
 }
 
+function prepareGameInfo() {
+    $$('#info button[type="submit"]').addEvent('click', function() {
+        commitGameInfo()
+        closeGameInfo()
+        return false
+    })
+
+    $$('#info button[type="reset"]').addEvent('click', function() {
+        closeGameInfo()
+        return false
+    })
+}
+
 function generateFileHash() {
     var trees = getGameTrees()
     var hash = ''
@@ -1850,6 +1863,7 @@ document.addEvent('keydown', function(e) {
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
+    prepareGameInfo()
     newFile()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
