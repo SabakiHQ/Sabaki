@@ -139,10 +139,10 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban.variations .row li.ghost_-1 .stone::after { display: block; }
     .goban .row li.point .stone::after {
         display: block;
-        width: .29em;
-        height: .29em;
-        margin-left: -.18em;
-        margin-top: -.18em;
+        width: 8px;
+        height: 8px;
+        margin-left: -5px;
+        margin-top: -5px;
         opacity: 1;
 }
 
