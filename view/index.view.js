@@ -1172,6 +1172,7 @@ function showGameInfo() {
 
 function closeGameInfo() {
     $('info').removeClass('show')
+    document.activeElement.blur()
 }
 
 function showScore() {
@@ -1197,6 +1198,7 @@ function showScore() {
 
 function closeScore() {
     $('score').removeClass('show')
+    document.activeElement.blur()
     setScoringMode(false)
 }
 
@@ -1218,6 +1220,7 @@ function showPreferences() {
 
 function closePreferences() {
     $('preferences').removeClass('show')
+    document.activeElement.blur()
 }
 
 function showGameChooser(callback) {
@@ -1336,6 +1339,7 @@ function showGameChooser(callback) {
 
 function closeGameChooser() {
     $('gamechooser').removeClass('show')
+    document.activeElement.blur()
 }
 
 function closeDrawers() {
