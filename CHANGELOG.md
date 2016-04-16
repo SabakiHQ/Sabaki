@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Fix engines menu list not updating when adding/removing engines
 * Fix comments textbox scrolling to top when editing
 * Slider doesn't stop halfway anymore when sliding over the end
 

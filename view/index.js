@@ -1375,6 +1375,8 @@ function commitPreferences() {
 
     setting.save()
     loadEngines()
+
+    ipcRenderer.send('build-menu')
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {

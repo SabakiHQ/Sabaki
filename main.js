@@ -245,6 +245,7 @@ function checkForUpdates(showNoUpdatesDialog) {
 }
 
 ipcMain.on('new-window', function(e, path) { newWindow(path) })
+ipcMain.on('build-menu', function(e) { buildMenu() })
 ipcMain.on('check-for-updates', function(e, showNoUpdatesDialog) { checkForUpdates(showNoUpdatesDialog) })
 
 app.on('window-all-closed', function() {
