@@ -826,7 +826,7 @@ function buildBoard() {
                 return v
             }
 
-            ol.adopt(li.adopt(img)
+            ol.adopt(li.adopt(new Element('div.stone').adopt(img))
                 .addEvent('mouseup', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
 
