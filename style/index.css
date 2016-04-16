@@ -589,10 +589,11 @@ header, #edit, #scoring, #find, #guess {
     #info section .menu {
         filter: invert(100%);
         -webkit-filter: invert(100%);
-        margin-bottom: 5px;
+        margin: 0 2px 5px;
         padding: 3px;
     }
-    #info section .menu:hover {
+    #info section .menu.disabled { opacity: 0; }
+    #info section .menu:not(.disabled):hover {
         background: rgba(255, 255, 255, .5);
     }
     @media screen and (max-width: 600px) {

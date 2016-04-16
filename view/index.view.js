@@ -1202,6 +1202,9 @@ function showGameInfo() {
     var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
     handicap.disabled = disabled
     size.disabled = disabled
+
+    if (disabled) info.getElements('section .menu').addClass('disabled')
+    else info.getElements('section .menu').removeClass('disabled')
 }
 
 function closeGameInfo() {
