@@ -25,7 +25,7 @@
         display: inline-block;
         text-align: center;
     }
-    .goban li img {
+    .goban li .stone, .goban li .stone img {
         position: absolute;
         left: 0;
         top: 0;
@@ -117,7 +117,7 @@ body:not(.scoring) .goban .row li.dimmed img {
  * Markups
  */
 
-.goban .row li::after, .goban .row li::after {
+.goban .row li .stone::after, .goban .row li .stone::after {
         content: '';
         display: none;
         position: absolute;
@@ -131,20 +131,20 @@ body:not(.scoring) .goban .row li.dimmed img {
         opacity: .3;
         z-index: 2;
     }
-    .goban .row li.ghostcircle_1::after, .goban .row li.ghostcircle_-1::after {
+    .goban .row li.ghostcircle_1 .stone::after, .goban .row li.ghostcircle_-1 .stone::after {
         width: .43em;
         height: .43em;
     }
-    .goban .row li.ghostcircle_-1::after { border-color: white; }
-    .goban .row li.ghost_1::after,
-    .goban .row li.sign_-1.point::after { background: black; }
-    .goban .row li.ghost_-1::after,
-    .goban .row li.sign_1.point::after { background: white; }
-    .goban.variations .row li.ghost_1::after,
-    .goban.variations .row li.ghost_-1::after,
-    .goban.joseki .row li.ghostcircle_1::after,
-    .goban.joseki .row li.ghostcircle_-1::after { display: block; }
-    .goban .row li.point::after {
+    .goban .row li.ghostcircle_-1 .stone::after { border-color: white; }
+    .goban .row li.ghost_1 .stone::after,
+    .goban .row li.sign_-1.point .stone::after { background: black; }
+    .goban .row li.ghost_-1 .stone::after,
+    .goban .row li.sign_1.point .stone::after { background: white; }
+    .goban.variations .row li.ghost_1 .stone::after,
+    .goban.variations .row li.ghost_-1 .stone::after,
+    .goban.joseki .row li.ghostcircle_1 .stone::after,
+    .goban.joseki .row li.ghostcircle_-1 .stone::after { display: block; }
+    .goban .row li.point .stone::after {
         display: block;
         width: .29em;
         height: .29em;
@@ -153,52 +153,46 @@ body:not(.scoring) .goban .row li.dimmed img {
         opacity: 1;
 }
 
-.goban .row li::before {
+.goban .row li .stone::before {
+        box-sizing: border-box;
         content: '';
         display: none;
         position: absolute;
         left: 50%;
         top: 50%;
-        width: .63em;
-        height: .63em;
-        margin-left: -.44em;
-        margin-top: -.44em;
         background: url('../img/goban/board.png') center #EFB65D;
-        border: .1em solid #5E2E0C;
+        border: 2px solid #5E2E0C;
         text-align: center;
-        line-height: .88;
-        font-size: .68em;
         font-weight: bold;
         z-index: 2;
     }
-    .goban .row li.sign_1::before {
+    .goban .row li.sign_1 .stone::before {
         background: transparent;
         border-color: white;
         color: white;
         box-shadow: none !important;
         text-shadow: none;
     }
-    .goban .row li.sign_-1::before {
+    .goban .row li.sign_-1 .stone::before {
         background: transparent;
         border-color: black;
         color: black;
         box-shadow: none !important;
         text-shadow: none;
     }
-    .goban .row li.circle::before {
+    .goban .row li.square .stone::before,
+    .goban .row li.circle .stone::before {
         display: block;
+        width: .5em;
+        height: .5em;
+        margin-left: -.28em;
+        margin-top: -.28em;
+        box-shadow: 0 1px 0 #D28D32;
+    }
+    .goban .row li.circle .stone::before {
         border-radius: 500em;
-        box-shadow: 0 1px 0 #D28D32;
     }
-    .goban .row li.square::before {
-        display: block;
-        width: .53em;
-        height: .53em;
-        margin-left: -.38em;
-        margin-top: -.38em;
-        box-shadow: 0 1px 0 #D28D32;
-    }
-    .goban .row li.cross::before {
+    .goban .row li.cross .stone::before {
         content: '\2715';
         display: block;
         border: none;
@@ -209,7 +203,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         font-size: .7em;
         line-height: .93;
     }
-    .goban .row li.triangle::before {
+    .goban .row li.triangle .stone::before {
         content: '\25b3';
         display: block;
         width: .77em;
@@ -221,19 +215,21 @@ body:not(.scoring) .goban .row li.dimmed img {
         font-weight: normal;
         line-height: .46;
     }
-    .goban .row li.label::before {
+    .goban .row li.label .stone::before {
         content: attr(title);
         display: block;
         border: none;
         width: 1.15em;
         height: 1.09em;
-        margin-left: -.60em;
+        margin-top: -.6em;
+        margin-left: -.6em;
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: normal;
         font-size: .6em;
+        line-height: 1.09;
     }
-    .goban .row li.smalllabel::before {
+    .goban .row li.smalllabel .stone::before {
         width: 1.94em;
         height: 1.2em;
         margin-top: -.65em;
@@ -273,91 +269,35 @@ body:not(.scoring) .goban .row li.dimmed img {
  * Fuzzy stone placement
  */
 
-.goban.fuzzy .row li.shift_1 img {
-        left: -.07em;
+.goban.fuzzy .row li.sign_1.shift_1 .stone,
+.goban.fuzzy .row li.sign_-1.shift_1 .stone {
+        transform: translateX(-2px);
     }
-    .goban.fuzzy .row li.point.shift_1::after {
-        margin-left: -.25em;
+    .goban.fuzzy .row li.sign_1.shift_2 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_2 .stone {
+        transform: translateY(-2px);
     }
-    .goban.fuzzy .row li.sign_1.shift_1::before,
-    .goban.fuzzy .row li.sign_-1.shift_1::before {
-        transform: translateX(-.07em);
+    .goban.fuzzy .row li.sign_1.shift_3 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_3 .stone {
+        transform: translateX(2px);
     }
-    .goban.fuzzy .row li.shift_2 img {
-        top: -.07em;
+    .goban.fuzzy .row li.sign_1.shift_4 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_4 .stone {
+        transform: translateY(2px);
     }
-    .goban.fuzzy .row li.point.shift_2::after {
-        margin-top: -.25em;
+    .goban.fuzzy .row li.sign_1.shift_5 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_5 .stone {
+        transform: translate(-1px, -1px);
     }
-    .goban.fuzzy .row li.sign_1.shift_2::before,
-    .goban.fuzzy .row li.sign_-1.shift_2::before {
-        transform: translateY(-.07em);
+    .goban.fuzzy .row li.sign_1.shift_6 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_6 .stone {
+        transform: translate(1px, -1px);
     }
-    .goban.fuzzy .row li.shift_3 img {
-        left: .07em;
+    .goban.fuzzy .row li.sign_1.shift_7 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_7 .stone {
+        transform: translate(1px, 1px);
     }
-    .goban.fuzzy .row li.point.shift_3::after {
-        margin-left: -.11em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_3::before,
-    .goban.fuzzy .row li.sign_-1.shift_3::before {
-        transform: translateX(.07em);
-    }
-    .goban.fuzzy .row li.shift_4 img {
-        top: .07em;
-    }
-    .goban.fuzzy .row li.point.shift_4::after {
-        margin-top: -.11em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_4::before,
-    .goban.fuzzy .row li.sign_-1.shift_4::before {
-        transform: translateY(.07em);
-    }
-    .goban.fuzzy .row li.shift_5 img {
-        top: -.036em;
-        left: -.036em;
-    }
-    .goban.fuzzy .row li.point.shift_5::after {
-        margin-top: -.21em;
-        margin-left: -.21em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_5::before,
-    .goban.fuzzy .row li.sign_-1.shift_5::before {
-        transform: translate(-.036em, -.036em);
-    }
-    .goban.fuzzy .row li.shift_6 img {
-        top: -.036em;
-        left: .036em;
-    }
-    .goban.fuzzy .row li.point.shift_6::after {
-        margin-top: -.21em;
-        margin-left: -.14em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_6::before,
-    .goban.fuzzy .row li.sign_-1.shift_6::before {
-        transform: translate(.036em, -.036em);
-    }
-    .goban.fuzzy .row li.shift_7 img {
-        top: .036em;
-        left: .036em;
-    }
-    .goban.fuzzy .row li.point.shift_7::after {
-        margin-top: -.14em;
-        margin-left: -.14em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_7::before,
-    .goban.fuzzy .row li.sign_-1.shift_7::before {
-        transform: translate(.036em, .036em);
-    }
-    .goban.fuzzy .row li.shift_8 img {
-        top: .036em;
-        left: -.036em;
-    }
-    .goban.fuzzy .row li.point.shift_8::after {
-        margin-top: -.14em;
-        margin-left: -.21em;
-    }
-    .goban.fuzzy .row li.sign_1.shift_8::before,
-    .goban.fuzzy .row li.sign_-1.shift_8::before {
-        transform: translate(-.036em, .036em);
+    .goban.fuzzy .row li.sign_1.shift_8 .stone,
+    .goban.fuzzy .row li.sign_-1.shift_8 .stone {
+        transform: translate(-1px, 1px);
 }
