@@ -327,6 +327,7 @@ function setFindMode(pickMode) {
     } else {
         hideIndicator()
         document.body.removeClass('find')
+        document.activeElement.blur()
         setFindText('')
     }
 }
@@ -704,6 +705,7 @@ function addEngineItem(name, path, args) {
             }
         }).grab(new Element('img', {
             src: '../node_modules/octicons/svg/file-directory.svg',
+            title: 'Browse…',
             height: 14
         })))
     ).grab(
@@ -1067,8 +1069,8 @@ function openCommentMenu() {
             } else {
                 clear()
                 node[p] = [value]
-                commitCommentText()
             }
+            updateCommentText()
         }
     })
 
