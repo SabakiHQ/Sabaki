@@ -705,6 +705,7 @@ function addEngineItem(name, path, args) {
             }
         }).grab(new Element('img', {
             src: '../node_modules/octicons/svg/file-directory.svg',
+            title: 'Browse…',
             height: 14
         })))
     ).grab(
