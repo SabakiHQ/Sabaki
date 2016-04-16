@@ -123,18 +123,17 @@ body:not(.scoring) .goban .row li.dimmed img {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 16px;
-        height: 16px;
-        margin-left: -9px;
-        margin-top: -9px;
-        border-radius: 8px;
+        width: .6em;
+        height: .6em;
+        margin-left: -.32em;
+        margin-top: -.32em;
+        border-radius: 500em;
         opacity: .3;
         z-index: 2;
     }
     .goban .row li.ghostcircle_1::after, .goban .row li.ghostcircle_-1::after {
-        border: 2px solid black;
-        width: 12px;
-        height: 12px;
+        width: .43em;
+        height: .43em;
     }
     .goban .row li.ghostcircle_-1::after { border-color: white; }
     .goban .row li.ghost_1::after,
@@ -147,10 +146,10 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban.joseki .row li.ghostcircle_-1::after { display: block; }
     .goban .row li.point::after {
         display: block;
-        width: 8px;
-        height: 8px;
-        margin-left: -5px;
-        margin-top: -5px;
+        width: .29em;
+        height: .29em;
+        margin-left: -.18em;
+        margin-top: -.18em;
         opacity: 1;
 }
 
@@ -160,15 +159,15 @@ body:not(.scoring) .goban .row li.dimmed img {
         position: absolute;
         left: 50%;
         top: 50%;
-        width: 12px;
-        height: 12px;
-        margin-left: -9px;
-        margin-top: -9px;
+        width: .63em;
+        height: .63em;
+        margin-left: -.44em;
+        margin-top: -.44em;
         background: url('../img/goban/board.png') center #EFB65D;
-        border: 2px solid #5E2E0C;
+        border: .1em solid #5E2E0C;
         text-align: center;
-        line-height: 16px;
-        font-size: 19px;
+        line-height: .88;
+        font-size: .68em;
         font-weight: bold;
         z-index: 2;
     }
@@ -188,54 +187,59 @@ body:not(.scoring) .goban .row li.dimmed img {
     }
     .goban .row li.circle::before {
         display: block;
-        border-radius: 14px;
+        border-radius: 500em;
         box-shadow: 0 1px 0 #D28D32;
     }
     .goban .row li.square::before {
         display: block;
-        width: 10px;
-        height: 10px;
-        margin-left: -8px;
-        margin-top: -8px;
+        width: .53em;
+        height: .53em;
+        margin-left: -.38em;
+        margin-top: -.38em;
         box-shadow: 0 1px 0 #D28D32;
     }
     .goban .row li.cross::before {
         content: '\2715';
         display: block;
         border: none;
-        width: 20px;
-        height: 20px;
-        margin-left: -11px;
-        margin-top: -11px;
-        font-size: 20px;
-        line-height: 18px
+        width: 1em;
+        height: 1em;
+        margin-left: -.55em;
+        margin-top: -.55em;
+        font-size: .7em;
+        line-height: .93;
     }
     .goban .row li.triangle::before {
         content: '\25b3';
         display: block;
-        width: 20px;
-        height: 20px;
-        margin-left: -11px;
-        margin-top: -11px;
+        width: .77em;
+        height: .77em;
+        margin-left: -.40em;
+        margin-top: -.40em;
         border: none;
-        font-size: 25px;
+        font-size: .9em;
         font-weight: normal;
-        line-height: 13px
+        line-height: .46;
     }
     .goban .row li.label::before {
         content: attr(title);
         display: block;
         border: none;
-        width: 20px;
-        height: 18px;
-        margin-left: -11px;
+        width: 1.15em;
+        height: 1.09em;
+        margin-left: -.60em;
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: normal;
-        font-size: 16px;
+        font-size: .6em;
     }
     .goban .row li.smalllabel::before {
-        font-size: 10px;
+        width: 1.94em;
+        height: 1.2em;
+        margin-top: -.65em;
+        margin-left: -1.04em;
+        font-size: .36em;
+        line-height: 1.2;
 }
 
 /**
@@ -246,7 +250,7 @@ body:not(.scoring) .goban .row li.dimmed img {
 .goban .arrow::before, .goban .arrow::after {
     position: absolute;
     border: none;
-    height: 3px;
+    height: .11em;
     background: #7F4F2E;
     pointer-events: none;
     z-index: 3;
@@ -254,14 +258,14 @@ body:not(.scoring) .goban .row li.dimmed img {
 
 .goban .arrow::before, .goban .arrow::after {
         content: '';
-        width: 10px;
+        width: .36em;
         right: 0;
-        top: -2px;
+        top: -.07em;
         transform: rotate(30deg);
     }
     .goban .arrow::after {
         top: auto;
-        bottom: -2px;
+        bottom: -.07em;
         transform: rotate(-30deg);
 }
 
@@ -270,90 +274,90 @@ body:not(.scoring) .goban .row li.dimmed img {
  */
 
 .goban.fuzzy .row li.shift_1 img {
-        left: -2px;
+        left: -.07em;
     }
     .goban.fuzzy .row li.point.shift_1::after {
-        margin-left: -7px;
+        margin-left: -.25em;
     }
     .goban.fuzzy .row li.sign_1.shift_1::before,
     .goban.fuzzy .row li.sign_-1.shift_1::before {
-        transform: translateX(-2px);
+        transform: translateX(-.07em);
     }
     .goban.fuzzy .row li.shift_2 img {
-        top: -2px;
+        top: -.07em;
     }
     .goban.fuzzy .row li.point.shift_2::after {
-        margin-top: -7px;
+        margin-top: -.25em;
     }
     .goban.fuzzy .row li.sign_1.shift_2::before,
     .goban.fuzzy .row li.sign_-1.shift_2::before {
-        transform: translateY(-2px);
+        transform: translateY(-.07em);
     }
     .goban.fuzzy .row li.shift_3 img {
-        left: 2px;
+        left: .07em;
     }
     .goban.fuzzy .row li.point.shift_3::after {
-        margin-left: -3px;
+        margin-left: -.11em;
     }
     .goban.fuzzy .row li.sign_1.shift_3::before,
     .goban.fuzzy .row li.sign_-1.shift_3::before {
-        transform: translateX(2px);
+        transform: translateX(.07em);
     }
     .goban.fuzzy .row li.shift_4 img {
-        top: 2px;
+        top: .07em;
     }
     .goban.fuzzy .row li.point.shift_4::after {
-        margin-top: -3px;
+        margin-top: -.11em;
     }
     .goban.fuzzy .row li.sign_1.shift_4::before,
     .goban.fuzzy .row li.sign_-1.shift_4::before {
-        transform: translateY(2px);
+        transform: translateY(.07em);
     }
     .goban.fuzzy .row li.shift_5 img {
-        top: -1px;
-        left: -1px;
+        top: -.036em;
+        left: -.036em;
     }
     .goban.fuzzy .row li.point.shift_5::after {
-        margin-top: -6px;
-        margin-left: -6px;
+        margin-top: -.21em;
+        margin-left: -.21em;
     }
     .goban.fuzzy .row li.sign_1.shift_5::before,
     .goban.fuzzy .row li.sign_-1.shift_5::before {
-        transform: translate(-1px, -1px);
+        transform: translate(-.036em, -.036em);
     }
     .goban.fuzzy .row li.shift_6 img {
-        top: -1px;
-        left: 1px;
+        top: -.036em;
+        left: .036em;
     }
     .goban.fuzzy .row li.point.shift_6::after {
-        margin-top: -6px;
-        margin-left: -4px;
+        margin-top: -.21em;
+        margin-left: -.14em;
     }
     .goban.fuzzy .row li.sign_1.shift_6::before,
     .goban.fuzzy .row li.sign_-1.shift_6::before {
-        transform: translate(1px, -1px);
+        transform: translate(.036em, -.036em);
     }
     .goban.fuzzy .row li.shift_7 img {
-        top: 1px;
-        left: 1px;
+        top: .036em;
+        left: .036em;
     }
     .goban.fuzzy .row li.point.shift_7::after {
-        margin-top: -4px;
-        margin-left: -4px;
+        margin-top: -.14em;
+        margin-left: -.14em;
     }
     .goban.fuzzy .row li.sign_1.shift_7::before,
     .goban.fuzzy .row li.sign_-1.shift_7::before {
-        transform: translate(1px, 1px);
+        transform: translate(.036em, .036em);
     }
     .goban.fuzzy .row li.shift_8 img {
-        top: 1px;
-        left: -1px;
+        top: .036em;
+        left: -.036em;
     }
     .goban.fuzzy .row li.point.shift_8::after {
-        margin-top: -4px;
-        margin-left: -6px;
+        margin-top: -.14em;
+        margin-left: -.21em;
     }
     .goban.fuzzy .row li.sign_1.shift_8::before,
     .goban.fuzzy .row li.sign_-1.shift_8::before {
-        transform: translate(-1px, 1px);
+        transform: translate(-.036em, .036em);
 }
