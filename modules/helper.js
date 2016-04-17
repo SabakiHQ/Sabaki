@@ -23,8 +23,10 @@ function prepareMarked() {
         gfm: true,
         tables: false,
         breaks: true,
-        sanitize: false,
-        smartypants: true
+        sanitize: true,
+        smartypants: true,
+        xhtml: true,
+        headerPrefix: 'commentsheader-'
     })
 }
 
@@ -92,16 +94,24 @@ context.getSymmetries = function(tuple) {
     return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
 }
 
-context.htmlify = function(input, renderUrl, renderEmail, renderCoord, renderMarkdown) {
-    if (renderCoord)
-        input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
-            return '<span class="coord">' + coord + '</span>'
-        })
+context.htmlify = function(input) {
+    input = input.replace(/\b((https?|ftps?)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
+        return '<a href="' + url + '">' + url + '</a>'
+    })
 
-    if (renderMarkdown)
-        input = marked(input.replace(/\r\n/g, '\n').replace(/\n/g, '  \n'))
+    input = input.replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
+        return '<a href="mailto:' + email + '">' + email + '</a>'
+    })
+
+    input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
+        return '<span class="coord">' + coord + '</span>'
+    })
 
     return input
+}
+
+context.markdown = function(input) {
+    return marked(input.replace(/\r\n/g, '\n').replace(/\n/g, '  \n'))
 }
 
 context.wireLinks = function(container) {

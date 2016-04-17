@@ -10,6 +10,8 @@
 
 ;(function() {
 
+var helper = typeof require != 'undefined' ? require('./helper') : window.helper;
+
 /**
  * Block-Level Grammar
  */
@@ -451,7 +453,7 @@ Lexer.prototype.token = function(src, top, bq) {
 
 var inline = {
   escape: /^\\([\\`*{}\[\]()#+\-.!_>])/,
-  autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
+  autolink: noop,
   url: noop,
   tag: /^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,
   link: /^!?\[(inside)\]\(href\)/,
@@ -496,15 +498,7 @@ inline.pedantic = merge({}, inline.normal, {
  * GFM Inline Grammar
  */
 
-inline.gfm = merge({}, inline.normal, {
-  escape: replace(inline.escape)('])', '~|])')(),
-  url: /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,
-  del: noop,
-  text: replace(inline.text)
-    (']|', '~]|')
-    ('|', '|https?://|')
-    ()
-});
+inline.gfm = merge({}, inline.normal);
 
 /**
  * GFM + Line Breaks Inline Grammar
@@ -684,12 +678,8 @@ InlineLexer.prototype.output = function(src) {
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
-
-      cap[0] = escape(this.smartypants(cap[0])).replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-          return '<a href="mailto:' + email + '">' + email + '</a>'
-      });
-
-      out += this.renderer.text(cap[0]);
+      cap[0] = escape(this.smartypants(cap[0]));
+      out += this.renderer.text(helper.htmlify(cap[0]));
       continue;
     }
 
