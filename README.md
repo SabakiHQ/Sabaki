@@ -10,7 +10,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 - Fuzzy stone placement
 - Read and save SGF games and collections
-- Display formatted SGF comments
+- Display formatted SGF comments using a subset of Markdown
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
