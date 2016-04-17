@@ -460,7 +460,7 @@ function getCurrentMoveInterpretation() {
         if ('EV' in node) result.push(node.EV[0])
         if ('GN' in node) result.push(node.GN[0])
 
-        return result.join(' — ')
+        return result.filter(function(x) { return x.trim() != '' }).join(' — ')
     }
 
     // Determine end of main variation
