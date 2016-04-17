@@ -97,7 +97,7 @@ context.getSymmetries = function(tuple) {
 context.htmlify = function(input) {
     urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s]\\b'
     emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-    coordRegex = '[a-hj-zA-HJ-Z][1-9][0-9]?'
+    coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
     totalRegex = '(' + [urlRegex, emailRegex, coordRegex].join('|') + ')'
 
     input = input.replace(new RegExp(totalRegex, 'g'), function(match) {
