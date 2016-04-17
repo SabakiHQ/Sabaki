@@ -16,7 +16,6 @@
   "dependencies": {
     "argv-split": "^1.0.0",
     "gemini-scrollbar": "^1.2.9",
-    "marked": "^0.3.5",
     "octicons": "^3.3.0",
     "sigma": "^1.0.3"
   },
