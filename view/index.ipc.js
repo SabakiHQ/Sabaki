@@ -27,8 +27,8 @@ var menudata = {
     "makemainvariation": makeMainVariation,
 
     "findmode": function() { setFindMode(!getFindMode()) },
-    "findnext": function() { findMove(getIndicatorVertex(), getFindText(), 1) },
-    "findprevious": function() { findMove(getIndicatorVertex(), getFindText(), -1) },
+    "findnext": function() { setFindMode(true); findMove(getIndicatorVertex(), getFindText(), 1) },
+    "findprevious": function() { setFindMode(true); findMove(getIndicatorVertex(), getFindText(), -1) },
     "togglehotspot": function() { setHotspot(!getHotspot()) },
     "nexthotspot": function() { findBookmark(1) },
     "previoushotspot": function() { findBookmark(-1) },

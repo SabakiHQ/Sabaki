@@ -323,12 +323,14 @@ function setFindMode(pickMode) {
     if (pickMode) {
         closeDrawers()
         document.body.addClass('find')
-        $('find').getElement('input').focus()
+
+        var input = $('find').getElement('input')
+        input.focus()
+        input.select()
     } else {
         hideIndicator()
         document.body.removeClass('find')
         document.activeElement.blur()
-        setFindText('')
     }
 }
 

@@ -157,6 +157,7 @@ header, #edit, #scoring, #find, #guess {
         position: absolute;
         left: 10px;
         top: 50%;
+        width: 143px;
         transform: translateY(-50%);
 }
 
