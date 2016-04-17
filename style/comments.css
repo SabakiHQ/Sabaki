@@ -1,6 +1,7 @@
 #properties .inner p,
 #properties .inner ul,
 #properties .inner ol,
+#properties .inner blockquote,
 #properties .inner h1,
 #properties .inner h2,
 #properties .inner h3,
@@ -24,6 +25,11 @@
 #properties .inner ul,
 #properties .inner ol {
     margin-left: 1.5em;
+}
+
+#properties .inner blockquote {
+    border-left: 5px solid #393939;
+    padding-left: 1em;
 }
 
 #properties .inner a {
