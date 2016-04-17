@@ -1684,9 +1684,11 @@ function goToPreviousFork() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    if (tree.parent == null || tree.parent.nodes.length == 0)
-        setCurrentTreePosition(tree, 0)
-    else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    if (tree.parent == null || tree.parent.nodes.length == 0) {
+        if (index != 0) setCurrentTreePosition(tree, 0)
+    } else {
+        setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    }
 }
 
 function goToComment(step) {
