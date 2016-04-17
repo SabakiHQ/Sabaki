@@ -93,16 +93,6 @@ context.getSymmetries = function(tuple) {
 }
 
 context.htmlify = function(input, renderUrl, renderEmail, renderCoord, renderMarkdown) {
-    if (renderUrl)
-        input = input.replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
-            return '<a href="' + url + '">' + url + '</a>'
-        })
-
-    if (renderEmail)
-        input = input.replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-            return '<a href="mailto:' + email + '">' + email + '</a>'
-        })
-
     if (renderCoord)
         input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
             return '<span class="coord">' + coord + '</span>'

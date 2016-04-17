@@ -48,7 +48,7 @@ block.blockquote = replace(block.blockquote)
   ();
 
 block._tag = '(?!(?:'
-  + 'a|span)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
+  + 'span)\\b)\\w+(?!:/|[^\\w\\s@]*@)\\b';
 
 block.html = replace(block.html)
   ('comment', /<!--[\s\S]*?-->/)
@@ -684,7 +684,12 @@ InlineLexer.prototype.output = function(src) {
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
-      out += this.renderer.text(escape(this.smartypants(cap[0])));
+
+      cap[0] = escape(this.smartypants(cap[0])).replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
+          return '<a href="mailto:' + email + '">' + email + '</a>'
+      });
+
+      out += this.renderer.text(cap[0]);
       continue;
     }
 
