@@ -1,4 +1,8 @@
 /**
+ * This is a modified version of marked v0.3.5 for Sabaki
+ */
+
+/**
  * marked - a markdown parser
  * Copyright (c) 2011-2014, Christopher Jeffrey. (MIT Licensed)
  * https://github.com/chjj/marked
