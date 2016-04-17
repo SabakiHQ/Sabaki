@@ -452,7 +452,18 @@ function getCurrentMoveInterpretation() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    // Determine and of main variation
+    // Determine root node
+
+    if (!tp[0].parent && tp[1] == 0) {
+        var result = []
+
+        if ('EV' in node) result.push(node.EV[0])
+        if ('GN' in node) result.push(node.GN[0])
+
+        return result.join(' — ')
+    }
+
+    // Determine end of main variation
 
     if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
         var rootNode = getRootTree().nodes[0]
