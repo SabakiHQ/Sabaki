@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Now board markup scales with board size
+* Update to Electron v0.37.6
 
 **Fixed**
 
