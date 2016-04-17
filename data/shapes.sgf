@@ -8,7 +8,13 @@
 )(;AB[cd][hc][nc]CR[aa:se][as]AW[pd]N[Micro Chinese opening]
 )(;AB[pd][jd][dd]CR[aa:se][as]N[Sanrensei opening]
 )(;AB[dd][pd]CR[aa:se][as]N[Nirensei opening]
-)(;AB[qd][pq][cp][pe]AW[dc][oc][qo]CR[aa:ss]N[Shusaku opening]
+)(;AB[qd][pq][cp][pe]AW[dc][oc][qo]CR[aa:ss]N[Shūsaku opening]
+)(;AW[qd]AB[oc]CR[ba][ss][na:se]N[Low Approach]
+)(;AW[qd]AB[od]CR[ba][ss][na:se]N[High Approach]
+)(;AB[oc][qd]CR[ba][ss][na:sg]N[Low Enclosure]
+)(;AB[od][qd]CR[ba][ss][na:sg]N[High Enclosure]
+)(;AB[nc][qd]CR[ba][ss][ma:sg]N[Low Enclosure]
+)(;AB[nd][qd]CR[ba][ss][ma:sg]N[High Enclosure]
 )(;CR[ec][ed][fe][ge]AB[dd][de][ef][ff][fd]N[Mouth shape]
 )(;CR[ed][ee][fe][ge]AB[dd][de][fd][ff]N[Table shape]
 )(;CR[de][ee][ef][ff]AB[dd][ed][df][fg]N[Tippy table]
@@ -35,4 +41,3 @@
 )(;CR[cc][dc][ec][cd][ed][ce][de]AB[dd]AW[ee]N[Shoulder hit]
 )(;CR[ed][de][ee][fe][ef]AB[dd][ff]N[Diagonal jump]
 ))
-

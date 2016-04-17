@@ -19,7 +19,7 @@ Response.prototype = {
             var c = this.error ? 'error' : 'success'
             return '<span class="' + c + '">' + (this.error ? '?' : '=') + '</span>'
                 + (!isNaN(this.id) ? '<span class="id">' + this.id + '</span>' : '')
-                + ' ' + helper.htmlify(this.content, true, true, true)
+                + ' ' + helper.htmlify(this.content)
         } else {
             return '<span class="internal">' + this.content + '</span>'
         }

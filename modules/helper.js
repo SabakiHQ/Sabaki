@@ -2,15 +2,33 @@
 
 var gtp = null
 var shell = null
+var marked = root.marked
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
+    marked = require('./marked')
     shell = require('electron').shell
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
 
 var id = 0
+
+function prepareMarked() {
+    renderer = new marked.Renderer()
+    renderer.image = renderer.link
+
+    marked.setOptions({
+        renderer: renderer,
+        gfm: true,
+        tables: false,
+        breaks: true,
+        sanitize: true,
+        smartypants: true,
+        xhtml: true,
+        headerPrefix: 'commentsheader-'
+    })
+}
 
 context.getId = function() {
     return ++id
@@ -76,42 +94,24 @@ context.getSymmetries = function(tuple) {
     return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
 }
 
-context.htmlify = function(input, renderUrl, renderEmail, renderCoord, useParagraphs) {
-    input = input.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
+context.htmlify = function(input) {
+    input = input.replace(/\b((https?|ftps?)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
+        return '<a href="' + url + '">' + url + '</a>'
+    })
 
-    if (renderUrl)
-        input = input.replace(/\b((http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
-            return '<a href="' + url + '">' + url + '</a>'
-        })
+    input = input.replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
+        return '<a href="mailto:' + email + '">' + email + '</a>'
+    })
 
-    if (renderEmail)
-        input = input.replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-            return '<a href="mailto:' + email + '">' + email + '</a>'
-        })
-
-    if (renderCoord)
-        input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
-            return '<span class="coord">' + coord + '</span>'
-        })
-
-    if (useParagraphs) {
-        input = '<p>' + input.trim().split('\n').map(function(s) {
-            if (s.trim() == '') return ''
-
-            if (s.trim().split('').every(function(x) {
-                return x == '-' || x == '='
-            })) return '</p><hr><p>'
-
-            return s
-        }).join('<br>')
-        .replace(/<br><br>/g, '</p><p>')
-        .replace(/(<br>)*<p>(<br>)*/g, '<p>')
-        .replace(/(<br>)*<\/p>(<br>)*/g, '</p>') + '</p>'
-    }
+    input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
+        return '<span class="coord">' + coord + '</span>'
+    })
 
     return input
+}
+
+context.markdown = function(input) {
+    return marked(input.trim().replace(/\r\n/g, '\n').replace(/\n/g, '  \n'))
 }
 
 context.wireLinks = function(container) {
@@ -127,5 +127,7 @@ context.wireLinks = function(container) {
         hideIndicator()
     })
 }
+
+prepareMarked()
 
 }).call(null, typeof module != 'undefined' ? module : window)

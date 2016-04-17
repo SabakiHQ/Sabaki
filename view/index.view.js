@@ -234,7 +234,7 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = helper.htmlify(text, true, true, true, true)
+    var html = helper.markdown(text)
     var container = $$('#properties .inner .comment')[0]
     var textarea = $$('#properties textarea')[0]
 
@@ -323,12 +323,14 @@ function setFindMode(pickMode) {
     if (pickMode) {
         closeDrawers()
         document.body.addClass('find')
-        $('find').getElement('input').focus()
+
+        var input = $('find').getElement('input')
+        input.focus()
+        input.select()
     } else {
         hideIndicator()
         document.body.removeClass('find')
         document.activeElement.blur()
-        setFindText('')
     }
 }
 
@@ -450,7 +452,18 @@ function getCurrentMoveInterpretation() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    // Determine and of main variation
+    // Determine root node
+
+    if (!tp[0].parent && tp[1] == 0) {
+        var result = []
+
+        if ('EV' in node) result.push(node.EV[0])
+        if ('GN' in node) result.push(node.GN[0])
+
+        return result.join(' — ')
+    }
+
+    // Determine end of main variation
 
     if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
         var rootNode = getRootTree().nodes[0]

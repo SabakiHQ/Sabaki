@@ -206,7 +206,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.set('title', '')
+            li.getElement('.stone').set('title', '')
 
             if (li.retrieve('tuple') in board.markups) {
                 var markup = board.markups[li.retrieve('tuple')]
@@ -1708,9 +1708,11 @@ function goToPreviousFork() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    if (tree.parent == null || tree.parent.nodes.length == 0)
-        setCurrentTreePosition(tree, 0)
-    else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    if (tree.parent == null || tree.parent.nodes.length == 0) {
+        if (index != 0) setCurrentTreePosition(tree, 0)
+    } else {
+        setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    }
 }
 
 function goToComment(step) {

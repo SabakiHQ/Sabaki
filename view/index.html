@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="../style/app.css" />
 <link rel="stylesheet" type="text/css" href="../style/goban.css" />
 <link rel="stylesheet" type="text/css" href="../style/index.css" />
+<link rel="stylesheet" type="text/css" href="../style/comments.css" />
 
 <script src="../node_modules/sigma/build/sigma.min.js"></script>
 <script src="../node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"></script>
@@ -69,7 +70,7 @@
 
         <section id="find">
             <form>
-                <input type="search" placeholder="Find" />
+                <input type="text" placeholder="Find" />
 
                 <button onclick="findMove(getIndicatorVertex(), getFindText(), 1); return false" type="submit">
                     <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Down" />
@@ -137,13 +138,12 @@
         <div class="gm-scroll-view">
             <div class="inner">
                 <p class="header">
-                    <img width="16" height="16" />
-                    <img width="16" height="16" />
+                    <img width="16" height="16" class="positionstatus" />
+                    <img width="16" height="16" class="movestatus" />
+                    <img src="../node_modules/octicons/svg/pencil.svg" class="editbutton"
+                        title="Edit" width="16" height="16" onclick="setEditMode(true)" />
 
                     <span></span>
-
-                    <img src="../node_modules/octicons/svg/pencil.svg"
-                        title="Edit" width="16" height="16" onclick="setEditMode(true)" />
                 </p>
                 <div class="comment"></div>
             </div>
