@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Add edit button to comments section
+* Allow a subset of Markdown in the comments section
 
 **Changed**
 
