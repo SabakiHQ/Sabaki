@@ -234,7 +234,7 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = helper.htmlify(text, true, true, true)
+    var html = helper.htmlify(text, true, true, true, true)
     var container = $$('#properties .inner .comment')[0]
     var textarea = $$('#properties textarea')[0]
 
