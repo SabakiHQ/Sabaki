@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.12.0][unreleased] (Unreleased)
+## [Sabaki v0.12.0][v0.12.0] (2016-04-19)
 
 **Added**
 
@@ -313,7 +313,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.5...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.0...master
+[v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.4...v0.11.5
 [v0.11.4]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.4
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
