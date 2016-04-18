@@ -149,7 +149,18 @@ body:not(.scoring) .goban .row li.dimmed img {
         opacity: 1;
 }
 
-.goban .row li .stone::before {
+.goban .row li .stone span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        text-align: center;
+        font-weight: bold;
+        z-index: 2;
+    }
+    .goban .row li .stone span::before,
+    .goban .row li .stone span::after {
         box-sizing: border-box;
         content: '';
         display: none;
@@ -158,26 +169,25 @@ body:not(.scoring) .goban .row li.dimmed img {
         top: 50%;
         background: url('../img/goban/board.png') center #EFB65D;
         border: 2px solid #5E2E0C;
-        text-align: center;
-        font-weight: bold;
-        z-index: 2;
     }
-    .goban .row li.sign_1 .stone::before {
+    .goban .row li.sign_1 .stone span::before,
+    .goban .row li.sign_1 .stone span::after {
         background: transparent;
         border-color: white;
         color: white;
         box-shadow: none !important;
         text-shadow: none;
     }
-    .goban .row li.sign_-1 .stone::before {
+    .goban .row li.sign_-1 .stone span::before,
+    .goban .row li.sign_-1 .stone span::after {
         background: transparent;
         border-color: black;
         color: black;
         box-shadow: none !important;
         text-shadow: none;
     }
-    .goban .row li.square .stone::before,
-    .goban .row li.circle .stone::before {
+    .goban .row li.square .stone span::before,
+    .goban .row li.circle .stone span::before {
         display: block;
         width: .5em;
         height: .5em;
@@ -185,10 +195,10 @@ body:not(.scoring) .goban .row li.dimmed img {
         margin-top: -.28em;
         box-shadow: 0 1px 0 #D28D32;
     }
-    .goban .row li.circle .stone::before {
+    .goban .row li.circle .stone span::before {
         border-radius: 500em;
     }
-    .goban .row li.cross .stone::before {
+    .goban .row li.cross .stone span::before {
         content: '\2715';
         display: block;
         border: none;
@@ -199,19 +209,27 @@ body:not(.scoring) .goban .row li.dimmed img {
         font-size: .7em;
         line-height: .93;
     }
-    .goban .row li.triangle .stone::before {
-        content: '\25b3';
+    .goban .row li.triangle .stone span::before {
         display: block;
-        width: .77em;
-        height: .77em;
-        margin-left: -.40em;
-        margin-top: -.40em;
-        border: none;
-        font-size: .9em;
-        font-weight: normal;
-        line-height: .46;
+        width: .59em;
+        height: .5em;
+        border-width: 0 0 2px;
+        margin-left: -.34em;
+        margin-top: -.33em;
+        box-shadow: 0 1px 0 #D28D32;
     }
-    .goban .row li.label .stone::before {
+    .goban .row li.triangle .stone span::after {
+        display: block;
+        width: .4em;
+        height: .4em;
+        border-bottom: none;
+        border-right: none;
+        margin-left: -.25em;
+        margin-top: -.1em;
+        background: none;
+        transform: scaleY(1.7) rotate(45deg);
+    }
+    .goban .row li.label .stone span::before {
         content: attr(title);
         display: block;
         border: none;
@@ -225,7 +243,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         font-size: .6em;
         line-height: 1.09;
     }
-    .goban .row li.smalllabel .stone::before {
+    .goban .row li.smalllabel .stone span::before {
         width: 1.94em;
         height: 1.2em;
         margin-top: -.65em;

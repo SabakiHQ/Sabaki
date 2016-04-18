@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix misplaced triangle markup under OS X
+
 ## [Sabaki v0.12.0][v0.12.0] (2016-04-19)
 
 **Added**

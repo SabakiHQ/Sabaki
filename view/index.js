@@ -206,7 +206,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.getElement('.stone').set('title', '')
+            li.getElement('.stone span').set('title', '')
 
             if (li.retrieve('tuple') in board.markups) {
                 var markup = board.markups[li.retrieve('tuple')]
@@ -214,7 +214,7 @@ function setBoard(board) {
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
-                if (label != '') li.getElement('.stone').set('title', label)
+                if (label != '') li.getElement('.stone span').set('title', label)
                 if (label.length >= 3) li.addClass('smalllabel')
                 else li.removeClass('smalllabel')
             }
