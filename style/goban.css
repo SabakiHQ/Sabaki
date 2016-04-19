@@ -258,16 +258,16 @@ body:not(.scoring) .goban .row li.dimmed img {
         box-shadow: none;
         font-weight: normal;
         font-size: .6em;
-        line-height: 1.2;
+        line-height: .9;
         text-overflow: ellipsis;
     }
     .goban .row li.smalllabel .stone span::before {
         width: 1.94em;
         height: 1.2em;
-        margin-top: -.65em;
+        margin-top: -.75em;
         margin-left: -1.04em;
         font-size: .36em;
-        line-height: 1.2;
+        line-height: .9;
 }
 
 /**
