@@ -7,7 +7,7 @@
 .goban {
         border: 10px solid #ca933a;
         padding: 10px 8px 8px 10px;
-        background: url('../img/goban/board.png') center #ECB55A;
+        background: url('../img/goban/board.png') center #ECB55A fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
@@ -167,7 +167,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         position: absolute;
         left: 50%;
         top: 50%;
-        background: url('../img/goban/board.png') center #EFB65D;
+        background: url('../img/goban/board.png') center #EFB65D fixed;
         border: 2px solid #5E2E0C;
         box-shadow: 0 1px 0 #D28D32;
     }
@@ -205,7 +205,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         height: .7em;
         margin-left: -.35em;
         margin-top: -.35em;
-        background: url('../img/goban/board.png') center #EFB65D;
+        background: url('../img/goban/board.png') center #EFB65D fixed;
     }
     .goban .row li.cross.sign_1 .stone span,
     .goban .row li.cross.sign_-1 .stone span {
@@ -220,10 +220,10 @@ body:not(.scoring) .goban .row li.dimmed img {
         height: 0;
         margin-left: -.36em;
         margin-top: -.05em;
+        box-shadow: none;
         transform: rotate(45deg);
     }
     .goban .row li.cross .stone span::after {
-        box-shadow: none;
         transform: rotate(-45deg);
     }
     .goban .row li.triangle .stone span::before {
