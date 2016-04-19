@@ -119,7 +119,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
     redraw = !!redraw
         || !node
         || !gametree.onCurrentTrack(tree)
-        || tree.collapsed && index == tree.nodes.length - 1
+        || tree.collapsed
 
     var t = tree
     t.collapsed = false
