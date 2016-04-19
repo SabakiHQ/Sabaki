@@ -153,8 +153,8 @@ body:not(.scoring) .goban .row li.dimmed img {
         position: absolute;
         top: 0;
         left: 0;
-        right: 0;
-        bottom: 0;
+        width: 100%;
+        height: 100%;
         text-align: center;
         font-weight: bold;
         z-index: 2;
@@ -169,13 +169,14 @@ body:not(.scoring) .goban .row li.dimmed img {
         top: 50%;
         background: url('../img/goban/board.png') center #EFB65D;
         border: 2px solid #5E2E0C;
+        box-shadow: 0 1px 0 #D28D32;
     }
     .goban .row li.sign_1 .stone span::before,
     .goban .row li.sign_1 .stone span::after {
         background: transparent;
         border-color: white;
         color: white;
-        box-shadow: none !important;
+        box-shadow: none;
         text-shadow: none;
     }
     .goban .row li.sign_-1 .stone span::before,
@@ -183,7 +184,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         background: transparent;
         border-color: black;
         color: black;
-        box-shadow: none !important;
+        box-shadow: none;
         text-shadow: none;
     }
     .goban .row li.square .stone span::before,
@@ -193,21 +194,37 @@ body:not(.scoring) .goban .row li.dimmed img {
         height: .5em;
         margin-left: -.28em;
         margin-top: -.28em;
-        box-shadow: 0 1px 0 #D28D32;
     }
     .goban .row li.circle .stone span::before {
         border-radius: 500em;
     }
-    .goban .row li.cross .stone span::before {
-        content: '\2715';
+    .goban .row li.cross .stone span {
+        top: 50%;
+        left: 50%;
+        width: .7em;
+        height: .7em;
+        margin-left: -.35em;
+        margin-top: -.35em;
+        background: url('../img/goban/board.png') center #EFB65D;
+    }
+    .goban .row li.cross.sign_1 .stone span,
+    .goban .row li.cross.sign_-1 .stone span {
+        background: transparent;
+    }
+    .goban .row li.cross .stone span::before,
+    .goban .row li.cross .stone span::after {
+        content: '';
         display: block;
-        border: none;
-        width: 1em;
-        height: 1em;
-        margin-left: -.55em;
-        margin-top: -.55em;
-        font-size: .7em;
-        line-height: .93;
+        border-width: 2px 0 0 0;
+        width: .7em;
+        height: 0;
+        margin-left: -.36em;
+        margin-top: -.05em;
+        transform: rotate(45deg);
+    }
+    .goban .row li.cross .stone span::after {
+        box-shadow: none;
+        transform: rotate(-45deg);
     }
     .goban .row li.triangle .stone span::before {
         display: block;
@@ -216,7 +233,6 @@ body:not(.scoring) .goban .row li.dimmed img {
         border-width: 0 0 2px;
         margin-left: -.34em;
         margin-top: -.33em;
-        box-shadow: 0 1px 0 #D28D32;
     }
     .goban .row li.triangle .stone span::after {
         display: block;
@@ -227,6 +243,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         margin-left: -.25em;
         margin-top: -.1em;
         background: none;
+        box-shadow: none;
         transform: scaleY(1.7) rotate(45deg);
     }
     .goban .row li.label .stone span::before {
@@ -238,10 +255,11 @@ body:not(.scoring) .goban .row li.dimmed img {
         margin-top: -.6em;
         margin-left: -.6em;
         overflow: hidden;
-        text-overflow: ellipsis;
+        box-shadow: none;
         font-weight: normal;
         font-size: .6em;
-        line-height: 1.09;
+        line-height: 1.2;
+        text-overflow: ellipsis;
     }
     .goban .row li.smalllabel .stone span::before {
         width: 1.94em;
