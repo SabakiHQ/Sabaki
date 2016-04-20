@@ -859,7 +859,7 @@ function buildBoard() {
                 })
                 .addEvent('mousemove', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
-                    if (event.buttons == 0) return
+                    if (e.event.buttons == 0) return
 
                     drawLine(this)
                 }.bind(vertex))
