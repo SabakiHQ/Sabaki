@@ -46,7 +46,7 @@ The binaries will be in `Sabaki/bin/`.
 
 ## Web Version
 
-Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in a modern browser, but it's far from complete and many things are not working yet.
+Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser, but it's far from complete and many things are not working yet.
 
 ## Third Party Libraries
 
