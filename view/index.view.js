@@ -965,7 +965,6 @@ function hideIndicator() {
 }
 
 function openHeaderMenu() {
-    return
     var template = [
         {
             label: '&Pass',

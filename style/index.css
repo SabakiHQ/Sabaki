@@ -108,7 +108,6 @@ header, #edit, #scoring, #find, #guess {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #headermenu { display: none; }
     .undoable header .undo { top: 50%; }
     .bookmark header .undo { left: 32px; }
     #headermenu:hover, header .undo:hover {
