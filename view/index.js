@@ -1493,13 +1493,12 @@ function askForSave() {
 
     if (hash != getFileHash()) {
         var answer = showMessageBox(
-            'Your changes will be lost if you close this file without saving.',
+            'Your changes will be lost if you close this file without saving. Do you want to proceed?',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveFile(getRepresentedFilename())
-        else if (answer == 2) return false
+        if (answer == 2) return false
     }
 
     return true
