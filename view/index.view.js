@@ -968,7 +968,7 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Remove Node',
-            click: function() { removeNode(tree, index) }
+            click: function() { removeNode.apply(null, getCurrentTreePosition()) }
         },
         {
             label: 'Make &Main Variation',
