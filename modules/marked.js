@@ -10,8 +10,6 @@
 
 ;(function() {
 
-var helper = typeof require != 'undefined' ? require('./helper') : window.helper;
-
 /**
  * Block-Level Grammar
  */
@@ -677,6 +675,7 @@ InlineLexer.prototype.output = function(src) {
 
     // text
     if (cap = this.rules.text.exec(src)) {
+      var helper = typeof require != 'undefined' ? require('./helper') : window.helper;
       src = src.substring(cap[0].length);
       out += this.renderer.text(helper.htmlify(escape(this.smartypants(cap[0]))));
       continue;
