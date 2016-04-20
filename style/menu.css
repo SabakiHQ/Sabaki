@@ -9,7 +9,9 @@
 
 .popupmenu {
         position: absolute;
-        background: rgba(0, 0, 0, .7);
+        background: rgba(0, 0, 0, .9);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+        color: white;
         list-style: none;
         opacity: 0;
         transition: opacity .2s;
@@ -18,8 +20,16 @@
     .popupmenu.show {
         opacity: 1;
     }
-    .popupmenu li {
+    .popupmenu li:not(.separator) {
         display: block;
-        height: 1.2em;
-        line-height: 1.2em;
+        height: 1em;
+        padding: 7px 30px;
+        line-height: 1em;
     }
+    .popupmenu li.separator {
+        height: 2px;
+        background: rgba(255, 255, 255, .3);
+    }
+    .popupmenu li:not(.separator):hover {
+        background: #0050C0;
+}
