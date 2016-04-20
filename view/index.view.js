@@ -988,7 +988,6 @@ function openHeaderMenu() {
             label: '&Score',
             click: function() { setScoringMode(true) }
         },
-        { type: 'separator' },
         {
             label: '&Edit',
             click: function() { setEditMode(true) }
