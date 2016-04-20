@@ -967,6 +967,15 @@ function hideIndicator() {
 function openHeaderMenu() {
     var template = [
         {
+            label: '&Remove Node',
+            click: function() { removeNode(tree, index) }
+        },
+        {
+            label: 'Make &Main Variation',
+            click: function() { makeMainVariation() }
+        },
+        { type: 'separator' },
+        {
             label: '&Pass',
             click: function() { makeMove([-1, -1]) }
         },
