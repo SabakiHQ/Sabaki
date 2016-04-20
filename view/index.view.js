@@ -967,12 +967,21 @@ function hideIndicator() {
 function openHeaderMenu() {
     var template = [
         {
+            label: 'New Game',
+            click: function() { newFile(true) }
+        },
+        { type: 'separator' },
+        {
             label: '&Remove Node',
-            click: function() { removeNode(tree, index) }
+            click: function() { removeNode.apply(null, getCurrentTreePosition()) }
         },
         {
             label: 'Make &Main Variation',
             click: function() { makeMainVariation() }
+        },
+        {
+            label: 'Toggle Coordinates',
+            click: function() { setShowCoordinates(!getShowCoordinates()) }
         },
         { type: 'separator' },
         {
@@ -983,7 +992,6 @@ function openHeaderMenu() {
             label: '&Score',
             click: function() { setScoringMode(true) }
         },
-        { type: 'separator' },
         {
             label: '&Edit',
             click: function() { setEditMode(true) }

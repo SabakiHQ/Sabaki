@@ -1,0 +1,47 @@
+#popupmenu-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.popupmenu {
+        position: absolute;
+        background: rgba(0, 0, 0, .9);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+        color: white;
+        list-style: none;
+        opacity: 0;
+        transition: opacity .2s;
+        z-index: 1001;
+    }
+    .popupmenu.show {
+        opacity: 1;
+    }
+    .popupmenu li:not(.separator) {
+        position: relative;
+        display: block;
+        height: 1em;
+        padding: 7px 30px;
+        line-height: 1em;
+    }
+    .popupmenu li.checked::before {
+        content: '';
+        position: absolute;
+        width: 1em;
+        height: 1em;
+        left: 9px;
+        top: 7px;
+        background: url('../node_modules/octicons/svg/check.svg') left top/1em 1em;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+    }
+    .popupmenu li.separator {
+        height: 2px;
+        background: rgba(255, 255, 255, .3);
+    }
+    .popupmenu li:not(.separator):hover {
+        background-color: #0050C0;
+}

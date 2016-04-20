@@ -17,7 +17,7 @@ var setting = window.setting
 
 var GeminiScrollbar = window.GeminiScrollbar
 var Board = window.Board
-var Menu = null
+var Menu = window.Menu
 var MenuItem = null
 
 /**
