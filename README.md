@@ -20,6 +20,36 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - GTP engines support
 - Guess mode
 
+## Building
+
+### Requirements
+
+* [Node.js](https://nodejs.org/en/download/) and npm
+
+### Instructions
+
+Clone Sabaki:
+
+~~~
+git clone https://github.com/yishn/Sabaki
+cd Sabaki
+~~~
+
+Install `electron-packager` globally using npm and the dependencies of Sabaki:
+
+~~~
+npm install electron-packager -g
+npm install
+~~~
+
+You can build Sabaki by using one of the three build instructions depending on the target OS:
+
+* `npm run build:win`
+* `npm run build:linux`
+* `npm run build:osx`
+
+The output folders will be on the same level as the Sabaki folder.
+
 ## Third Party Libraries
 
 * [Electron](http://electron.atom.io/)
