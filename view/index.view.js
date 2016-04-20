@@ -665,6 +665,9 @@ function prepareGameChooser() {
             })) li.removeClass('hide')
             else li.addClass('hide')
         })
+
+        var gamesList = $$('#gamechooser .games-list')[0]
+        gamesList.retrieve('scrollbar').update()
     })
 }
 
