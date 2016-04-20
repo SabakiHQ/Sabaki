@@ -42,7 +42,7 @@ You can build Sabaki by using one of the three build instructions depending on t
 * `npm run build:linux`
 * `npm run build:osx`
 
-The output folders will be on the same level as the Sabaki folder.
+The binaries will be in `Sabaki/bin/`.
 
 ## Third Party Libraries
 
