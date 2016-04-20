@@ -22,20 +22,14 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 ## Building
 
-### Requirements
-
-* [Node.js](https://nodejs.org/en/download/) and npm
-
-### Instructions
-
-Clone Sabaki:
+Building Sabaki requires [Node.js](https://nodejs.org/en/download/) and npm. First, clone Sabaki:
 
 ~~~
 git clone https://github.com/yishn/Sabaki
 cd Sabaki
 ~~~
 
-Install `electron-packager` globally using npm and the dependencies of Sabaki:
+Install `electron-packager` globally and the dependencies of Sabaki using npm:
 
 ~~~
 npm install electron-packager -g
