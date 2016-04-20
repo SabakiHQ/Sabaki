@@ -27,14 +27,27 @@ Menu.buildFromTemplate = function(template) {
     })
 
     menu.popup = function(_, x, y) { Menu.show(element, x, y) }
+    return menu
 }
 
 Menu.hide = function() {
-    $$('ul.popupmenu').dispose()
+    $$('ul.popupmenu, #popupmenu-overlay').dispose()
 }
 
 Menu.show = function(menu, x, y) {
-    // TODO
+    document.body.grab(new Element('div#popupmenu-overlay', {
+        events: { click: Menu.hide }
+    })).grab(menu)
+    menu.setStyle('left', x).setStyle('top', y)
+
+    var coord = menu.getCoordinates()
+    var menuSize = menu.getSize()
+    var bodySize = document.body.getSize()
+
+    if (coord.bottom > bodySize.y) menu.setStyle('top', y - menuSize.y)
+    if (coord.right > bodySize.x) menu.setStyle('left', x - menuSize.x)
+
+    menu.addClass('show')
 }
 
 window.Menu = Menu
