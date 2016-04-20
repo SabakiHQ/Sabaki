@@ -63,7 +63,7 @@ function setRootTree(tree) {
     )
     setPlayerName(-1,
         gametree.getPlayerName(-1, tree, 'White'),
-        'WR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
+        'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
 
@@ -119,7 +119,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
     redraw = !!redraw
         || !node
         || !gametree.onCurrentTrack(tree)
-        || tree.collapsed && index == tree.nodes.length - 1
+        || tree.collapsed
 
     var t = tree
     t.collapsed = false
@@ -206,7 +206,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.set('title', '')
+            li.getElement('.stone span').set('title', '')
 
             if (li.retrieve('tuple') in board.markups) {
                 var markup = board.markups[li.retrieve('tuple')]
@@ -214,7 +214,7 @@ function setBoard(board) {
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
-                if (label != '') li.set('title', label)
+                if (label != '') li.getElement('.stone span').set('title', label)
                 if (label.length >= 3) li.addClass('smalllabel')
                 else li.removeClass('smalllabel')
             }
@@ -1380,6 +1380,8 @@ function commitPreferences() {
 
     setting.save()
     loadEngines()
+
+    ipcRenderer.send('build-menu')
 }
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
@@ -1688,9 +1690,11 @@ function goToPreviousFork() {
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
 
-    if (tree.parent == null || tree.parent.nodes.length == 0)
-        setCurrentTreePosition(tree, 0)
-    else setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    if (tree.parent == null || tree.parent.nodes.length == 0) {
+        if (index != 0) setCurrentTreePosition(tree, 0)
+    } else {
+        setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
+    }
 }
 
 function goToComment(step) {

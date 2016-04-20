@@ -10,7 +10,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 - Fuzzy stone placement
 - Read and save SGF games and collections
-- Display formatted SGF comments
+- Display formatted SGF comments using a subset of Markdown
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
@@ -28,6 +28,8 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
   ([MIT License](https://github.com/mootools/mootools-core/blob/master/Source/license.txt))
 * [sigma](http://sigmajs.org/)
   ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
+* [marked](https://github.com/chjj/marked)
+  ([MIT License](https://github.com/chjj/marked/blob/master/LICENSE))
 * [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
 * [argv-split](https://github.com/kaelzhang/node-argv-split)

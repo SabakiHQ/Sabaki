@@ -1,3 +1,11 @@
+#goban {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 40px;
+}
+
 header, #edit, #scoring, #find, #guess {
         position: absolute;
         left: 0;
@@ -150,6 +158,7 @@ header, #edit, #scoring, #find, #guess {
         position: absolute;
         left: 10px;
         top: 50%;
+        width: 143px;
         transform: translateY(-50%);
 }
 
@@ -481,44 +490,31 @@ header, #edit, #scoring, #find, #guess {
         cursor: ns-resize;
         z-index: 10;
     }
-    #properties p {
-        margin: 1em 0;
-    }
-    #properties a {
-        color: white;
-        cursor: pointer;
-    }
-    #properties hr {
-        border: 0;
-        margin: 1em 0;
-        height: 2px;
-        background: #393939;
-    }
     #properties .inner {
         margin: 15px;
         word-wrap: break-word;
     }
     #properties .inner .header { color: #999; }
-    #properties .inner .header img:nth-child(1),
-    #properties .inner .header img:nth-child(2) {
+    #properties .inner .header img.positionstatus,
+    #properties .inner .header img.movestatus {
         display: none;
         margin-right: 3px;
         padding: 2px;
     }
-    #properties .inner .header.positionstatus img:nth-child(1) { opacity: .7; }
-    #properties .inner .header.positionstatus img:nth-child(2) {
+    #properties .inner .header.positionstatus img.positionstatus { opacity: .7; }
+    #properties .inner .header.positionstatus img.movestatus {
         position: relative;
         top: 5px;
         margin-left: -17px;
     }
-    #properties .inner .header:not(.positionstatus) img:nth-child(2) {
+    #properties .inner .header:not(.positionstatus) img.movestatus {
         transform: scale(1.5);
     }
-    #properties .inner .header.positionstatus img:nth-child(1),
-    #properties .inner .header.movestatus img:nth-child(2) {
+    #properties .inner .header.positionstatus img.positionstatus,
+    #properties .inner .header.movestatus img.movestatus {
         display: inline;
     }
-    #properties .inner .header img:last-child {
+    #properties .inner .header img.editbutton {
         position: relative;
         top: -1px;
         right: -1px;
@@ -529,7 +525,7 @@ header, #edit, #scoring, #find, #guess {
         -webkit-filter: invert(100%);
         opacity: .5;
     }
-    #properties .inner .header img:last-child:hover {
+    #properties .inner .header img.editbutton:hover {
         background: white;
 }
 
