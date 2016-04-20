@@ -108,7 +108,7 @@ header, #edit, #scoring, #find, #guess {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #headermenu, header .undo { display: none; }
+    #headermenu { display: none; }
     .undoable header .undo { top: 50%; }
     .bookmark header .undo { left: 32px; }
     #headermenu:hover, header .undo:hover {
@@ -163,7 +163,7 @@ header, #edit, #scoring, #find, #guess {
 }
 
 #edit a.close, #scoring a.close, #find a.close, #guess a.close {
-        display: none;
+        display: block;
         position: absolute;
         right: 4px;
         top: 0;
