@@ -979,6 +979,10 @@ function openHeaderMenu() {
             label: 'Make &Main Variation',
             click: function() { makeMainVariation() }
         },
+        {
+            label: 'Toggle Coordinates',
+            click: function() { setShowCoordinates(!getShowCoordinates()) }
+        },
         { type: 'separator' },
         {
             label: '&Pass',
