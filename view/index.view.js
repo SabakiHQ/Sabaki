@@ -967,6 +967,11 @@ function hideIndicator() {
 function openHeaderMenu() {
     var template = [
         {
+            label: 'New Game',
+            click: function() { newFile(true) }
+        },
+        { type: 'separator' },
+        {
             label: '&Remove Node',
             click: function() { removeNode.apply(null, getCurrentTreePosition()) }
         },
