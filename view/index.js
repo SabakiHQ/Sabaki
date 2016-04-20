@@ -1754,6 +1754,8 @@ function goToMainVariation() {
     var tree = tp[0]
     var root = getRootTree()
 
+    if (gametree.onMainTrack(tree)) return
+
     while (!gametree.onMainTrack(tree)) {
         tree = tree.parent
     }
