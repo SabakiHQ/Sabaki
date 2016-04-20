@@ -1,4 +1,6 @@
-Menu = {}
+(function() {
+
+var Menu = {}
 
 Menu.buildFromTemplate = function(template) {
     var menu = {}
@@ -36,3 +38,5 @@ Menu.show = function(menu, x, y) {
 }
 
 window.Menu = Menu
+
+})()
