@@ -1556,6 +1556,25 @@ function loadGameFromIndex(index) {
 function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
 
+    $('fileinput').set('value', '').removeEvents('change').addEvent('change', function(evt) {
+        var f = evt.target.files[0]
+
+        if (f) {
+            var r = new FileReader()
+
+            r.onload = function(e) {
+                var contents = e.target.result
+                loadFileFromSgf(contents, true)
+            }
+
+            r.readAsText(f)
+        } else {
+            alert('Failed to load file.')
+        }
+    }).click()
+
+    return
+
     if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]

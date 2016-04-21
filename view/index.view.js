@@ -972,6 +972,10 @@ function openHeaderMenu() {
             click: function() { newFile(true) }
         },
         {
+            label: 'Open File…',
+            click: function() { loadFile() }
+        },
+        {
             label: 'Download SGF',
             click: function() { saveFile() }
         },
