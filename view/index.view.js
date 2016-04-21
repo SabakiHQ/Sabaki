@@ -977,14 +977,6 @@ function openHeaderMenu() {
         },
         { type: 'separator' },
         {
-            label: '&Remove Node',
-            click: function() { removeNode.apply(null, getCurrentTreePosition()) }
-        },
-        {
-            label: 'Make &Main Variation',
-            click: function() { makeMainVariation() }
-        },
-        {
             label: 'Toggle Coordinates',
             click: function() { setShowCoordinates(!getShowCoordinates()) }
         },
