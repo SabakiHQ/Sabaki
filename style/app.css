@@ -94,6 +94,9 @@ form p, form ul li {
     input[type="text"] {
         width: 125px;
     }
+    textarea {
+        resize: none;
+    }
     input[type="checkbox"] {
         -webkit-appearance: none;
         display: inline-block;
