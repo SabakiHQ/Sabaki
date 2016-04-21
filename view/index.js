@@ -1,8 +1,7 @@
 var remote = { getCurrentWindow: function() {} }
-var ipcRenderer = null
+var ipcRenderer = { send: function() {} }
 var clipboard = null
 var fs = null
-var shell = null
 var sgf = window.sgf
 var boardmatcher = window.boardmatcher
 var fuzzyfinder = window.fuzzyfinder

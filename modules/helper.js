@@ -118,7 +118,11 @@ context.markdown = function(input) {
 
 context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
-        if (!shell) return true
+        if (!shell) {
+            this.target = '_blank'
+            return true
+        }
+
         shell.openExternal(this.href)
         return false
     })
