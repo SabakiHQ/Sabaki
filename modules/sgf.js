@@ -24,13 +24,15 @@ context.meta = {
 }
 
 context.tokenize = function(input) {
+    input = input.replace(/(\r\n|\n\r)/g, '\n')
+
     var tokens = []
     var rules = {
         ignore: /^\s+/,
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
         prop_ident: /^[A-Za-z]+/,
-        c_value_type: /^\[([^\\\]]|\\.)*\]/
+        c_value_type: /^\[([^\\\]]|\\[^])*\]/
     }
 
     while (input.length > 0) {
@@ -304,7 +306,7 @@ context.unescapeString = function(input) {
     var result = ''
     var inBackslash = false
 
-    input = input.replace(/\\(\r\n|\n\r|\n|\r)/g, '')
+    input = input.replace(/(\r\n|\n\r)/g, '\n')
 
     for (var i = 0; i < input.length; i++) {
         if (!inBackslash) {
