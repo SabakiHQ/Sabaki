@@ -1887,6 +1887,7 @@ document.addEvent('keydown', function(e) {
 
 window.addEvent('resize', function() {
     resizeBoard()
+    setShowSidebar(document.body.getSize().x >= 800)
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
         e.event.returnValue = ' '
