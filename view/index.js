@@ -1609,23 +1609,22 @@ function loadFileFromSgf(content, dontask, callback) {
     }, setting.get('app.loadgame_delay'))
 }
 
-function saveFile(filename) {
+function saveFile() {
     if (getIsBusy()) return
-    setIsBusy(true)
 
-    if (!filename) {
-        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
-            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
-        })
-    }
+    var sgf = saveFileToSgf()
+    var link = 'data:application/x-go-sgf;charset=utf-8,' + encodeURIComponent(sgf)
+    var el = new Element('a', {
+        download: 'game.sgf',
+        href: link,
+        css: { display: 'none' }
+    })
 
-    if (filename) {
-        fs.writeFileSync(filename, saveFileToSgf())
-        updateFileHash()
-        setRepresentedFilename(filename)
-    }
+    document.body.grab(el)
+    el.click()
+    el.destroy()
 
-    setIsBusy(false)
+    updateFileHash()
 }
 
 function saveFileToSgf() {
