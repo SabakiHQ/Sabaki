@@ -1112,7 +1112,7 @@ function openNodeMenu(tree, index, event) {
     }
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
 }
 
 function openGameMenu(element, event) {
@@ -1145,7 +1145,7 @@ function openGameMenu(element, event) {
     }]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
 }
 
 function clearConsole() {
