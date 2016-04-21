@@ -41,6 +41,7 @@
     }
     .popupmenu li.separator {
         height: 2px;
+        margin: 3px 0;
         background: rgba(255, 255, 255, .3);
     }
     .popupmenu li:not(.separator):hover {
