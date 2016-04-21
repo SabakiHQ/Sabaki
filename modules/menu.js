@@ -36,16 +36,15 @@ Menu.hide = function() {
 
 Menu.show = function(menu, x, y) {
     document.body.grab(new Element('div#popupmenu-overlay', {
-        events: { click: Menu.hide }
+        events: { mouseup: Menu.hide }
     })).grab(menu)
-    menu.setStyle('left', x).setStyle('top', y)
 
-    var coord = menu.getCoordinates()
     var menuSize = menu.getSize()
     var bodySize = document.body.getSize()
+    menu.setStyle('left', x).setStyle('top', y)
 
-    if (coord.bottom > bodySize.y) menu.setStyle('top', y - menuSize.y)
-    if (coord.right > bodySize.x) menu.setStyle('left', x - menuSize.x)
+    if (y + menuSize.y > bodySize.y) menu.setStyle('top', y - menuSize.y)
+    if (x + menuSize.x > bodySize.x) menu.setStyle('left', x - menuSize.x)
 
     menu.addClass('show')
 }
