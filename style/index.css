@@ -428,8 +428,8 @@ header, #edit, #scoring, #find, #guess {
     #properties .edit textarea {
         top: 51px;
         left: 0;
-        bottom: 0;
         width: 100%;
+        height: calc(100% - 51px);
         padding-top: 0;
     }
     #properties .edit input {
