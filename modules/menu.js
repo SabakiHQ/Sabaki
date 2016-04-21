@@ -36,7 +36,7 @@ Menu.hide = function() {
 
 Menu.show = function(menu, x, y) {
     document.body.grab(new Element('div#popupmenu-overlay', {
-        events: { mouseup: Menu.hide }
+        events: { click: Menu.hide }
     })).grab(menu)
 
     var menuSize = menu.getSize()

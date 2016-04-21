@@ -1110,7 +1110,7 @@ function openCommentMenu() {
     var coord = $$('#properties .edit .header img')[0].getCoordinates()
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+    menu.popup(remote.getCurrentWindow(), Math.round(coord.right), Math.round(coord.bottom))
 }
 
 function openNodeMenu(tree, index, event) {
