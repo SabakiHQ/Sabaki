@@ -966,7 +966,7 @@ function hideIndicator() {
 function openHeaderMenu() {
     var template = [
         {
-            label: 'New Game',
+            label: 'New File',
             click: function() { newFile(true) }
         },
         {
@@ -985,6 +985,10 @@ function openHeaderMenu() {
         {
             label: 'Toggle Coordinates',
             click: function() { setShowCoordinates(!getShowCoordinates()) }
+        },
+        {
+            label: 'Manage Games…',
+            click: function() { showGameChooser() }
         },
         { type: 'separator' },
         {
