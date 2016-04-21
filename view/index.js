@@ -396,7 +396,7 @@ function prepareGameGraph() {
     s.bind('clickNode', function(e) {
         setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        openNodeMenu.apply(null, getTreePos(e))
+        openNodeMenu.apply(null, getTreePos(e), e.event)
     })
 
     container.store('sigma', s)

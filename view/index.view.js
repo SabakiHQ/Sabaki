@@ -1096,7 +1096,7 @@ function openCommentMenu() {
     menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
 }
 
-function openNodeMenu(tree, index) {
+function openNodeMenu(tree, index, event) {
     if (getScoringMode()) return
 
     var template = [{
@@ -1115,7 +1115,7 @@ function openNodeMenu(tree, index) {
     menu.popup(remote.getCurrentWindow(), event.x, event.y)
 }
 
-function openGameMenu(element) {
+function openGameMenu(element, event) {
     var template = [{
         label: '&Remove',
         click: function() {
@@ -1299,7 +1299,7 @@ function showGameChooser(callback) {
             }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
-            openGameMenu(this)
+            openGameMenu(this, e.event)
         }).addEvent('dragstart', function(e) {
             $('gamechooser').store('dragging', this.getParent('li'))
         })
