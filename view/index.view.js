@@ -981,6 +981,14 @@ function openHeaderMenu() {
             click: function() { setShowCoordinates(!getShowCoordinates()) }
         },
         {
+            label: 'Toggle Show Next Moves',
+            click: function() { setShowNextMoves(!getShowNextMoves()) }
+        },
+        {
+            label: 'Toggle Guess Mode',
+            click: function() { setGuessMode(!getGuessMode()) }
+        },
+        {
             label: 'Manage Games…',
             click: function() { showGameChooser() }
         },
