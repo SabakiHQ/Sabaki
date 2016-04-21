@@ -59,8 +59,18 @@
         position: relative;
         background: url('../img/goban/inner.png') center;
     }
-    .goban .row li.hoshi {
-        background-image: url('../img/goban/hoshi.png');
+    .goban .row li.hoshi::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: -.14em;
+        margin-left: -.14em;
+        width: .21em;
+        height: .21em;
+        border-radius: .21em;
+        background: #5E2E0C;
     }
     .goban .row:nth-child(3) li {
         background-image: url('../img/goban/side-n.png');
