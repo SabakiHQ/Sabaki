@@ -316,6 +316,7 @@ context.unescapeString = function(input) {
                 inBackslash = true
         } else {
             result += input[i]
+            inBackslash = false
         }
     }
 
