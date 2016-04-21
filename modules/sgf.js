@@ -292,7 +292,23 @@ context.escapeString = function(input) {
 }
 
 context.unescapeString = function(input) {
-    return input.replace(/\\(\r\n|\n\r|\n|\r)/g, '').replace(/\\(.)/g, function(m, p) { return p })
+    var result = ''
+    var inBackslash = false
+
+    input = input.replace(/\\(\r\n|\n\r|\n|\r)/g, '')
+
+    for (var i = 0; i < input.length; i++) {
+        if (!inBackslash) {
+            if (input[i] != '\\')
+                result += input[i]
+            else if (input[i] == '\\')
+                inBackslash = true
+        } else {
+            result += input[i]
+        }
+    }
+
+    return result
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
