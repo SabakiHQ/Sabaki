@@ -1114,7 +1114,6 @@ function openCommentMenu() {
 }
 
 function openNodeMenu(tree, index) {
-    return
     if (getScoringMode()) return
 
     var template = [{
