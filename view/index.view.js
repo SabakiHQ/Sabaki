@@ -667,7 +667,9 @@ function prepareGameChooser() {
 }
 
 function updateTitle() {
-    document.title = app.getName()
+    var title = app.getName()
+    if (getGameTrees().length > 1) title = title + ' — Game ' + (getGameIndex() + 1)
+    document.title = title
 }
 
 function addEngineItem(name, path, args) {
