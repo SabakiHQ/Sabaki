@@ -1536,7 +1536,7 @@ function newFile(playSound) {
     loadGameFromIndex(0)
     updateFileHash()
 
-    if (arguments.length >= 1 && playSound) {
+    if (playSound) {
         sound.playNewGame()
         showGameInfo()
     }
