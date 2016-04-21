@@ -137,6 +137,10 @@ form p, form ul li {
         text-align: right;
 }
 
+#fileinput {
+    display: none;
+}
+
 /**
  * Gemini Scrollbars
  */
