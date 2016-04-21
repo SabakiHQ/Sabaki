@@ -1885,9 +1885,7 @@ document.addEvent('keydown', function(e) {
     })
 })
 
-window.addEvent('load', function() {
-    newFile(true)
-}).addEvent('resize', function() {
+window.addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
