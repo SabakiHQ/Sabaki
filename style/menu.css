@@ -46,4 +46,7 @@
     }
     .popupmenu li:not(.separator):hover {
         background-color: #0050C0;
+    }
+    .popupmenu li:not(.separator):active {
+        background-color: #0030A0;
 }
