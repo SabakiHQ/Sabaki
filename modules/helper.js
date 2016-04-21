@@ -10,6 +10,15 @@ if (typeof require != 'undefined') {
     shell = require('electron').shell
 }
 
+if (!gtp) gtp = {
+    point2vertex: function(point, size) {
+        var alpha = 'abcdefghjklmnopqrstuvwxyz'
+        var x = alpha.indexOf(point[0].toLowerCase())
+        var y = size - parseFloat(point.substr(1))
+        return [x, y]
+    }
+}
+
 var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
 
 var id = 0
