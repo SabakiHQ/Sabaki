@@ -71,8 +71,14 @@ context.parse = function(tokens, callback, start, depth) {
             node = {}
             tree.nodes.push(node)
         } else if (type == 'prop_ident') {
-            node[value] = []
-            property = node[value]
+            var id = value.split('').filter(function(x) {
+                return x.toUpperCase() == x
+            }).join('')
+
+            if (id != '') {
+                node[id] = []
+                property = node[id]
+            }
         } else if (type == 'c_value_type') {
             property.push(context.unescapeString(value.substr(1, value.length - 2)))
         }
