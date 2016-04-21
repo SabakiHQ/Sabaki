@@ -241,7 +241,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         width: .54em;
         height: .5em;
         border-width: 0 0 2px;
-        margin-left: calc(-.28em - 1px);
+        margin-left: calc(-.27em - 1px);
         margin-top: calc(-.3em - 1px);
     }
     .goban .row li.triangle .stone span::after {

@@ -1891,7 +1891,7 @@ window.addEvent('load', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
-        e.event.returnValue = 'false'
+        e.event.returnValue = ' '
         return
     }
 
