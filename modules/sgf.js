@@ -315,7 +315,9 @@ context.unescapeString = function(input) {
             else if (input[i] == '\\')
                 inBackslash = true
         } else {
-            result += input[i]
+            if (input[i] != '\n')
+                result += input[i]
+
             inBackslash = false
         }
     }
