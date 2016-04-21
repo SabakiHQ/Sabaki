@@ -2,17 +2,21 @@
 
 var gametree = root.gametree
 var helper = root.helper
+var setting = root.setting
 var fs = null
 
 if (typeof require != 'undefined') {
     gametree = require('../modules/gametree')
     helper = require('../modules/helper')
+    setting = require('remote').require('./modules/setting')
     fs = require('fs')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
 
 var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+var collapseTokensCount = setting.get('graph.collapse_tokens_count')
+var collapseMinDepth = setting.get('graph.collapse_min_depth')
 
 context.meta = {
     name: 'Smart Game Format',
@@ -58,8 +62,7 @@ context.parse = function(tokens, callback, start, depth) {
 
     var i = start[0]
     var node, property, tree = gametree.new()
-    tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
-        && depth >= setting.get('graph.collapse_min_depth')
+    tree.collapsed = tokens.length >= collapseTokensCount && depth >= collapseMinDepth
 
     while (i < tokens.length) {
         if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
