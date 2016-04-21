@@ -2,17 +2,21 @@
 
 var gametree = root.gametree
 var helper = root.helper
+var setting = root.setting
 var fs = null
 
 if (typeof require != 'undefined') {
     gametree = require('../modules/gametree')
     helper = require('../modules/helper')
+    setting = require('remote').require('./modules/setting')
     fs = require('fs')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
 
 var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+var collapseTokensCount = setting.get('graph.collapse_tokens_count')
+var collapseMinDepth = setting.get('graph.collapse_min_depth')
 
 context.meta = {
     name: 'Smart Game Format',
@@ -26,7 +30,7 @@ context.tokenize = function(input) {
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
         prop_ident: /^[A-Za-z]+/,
-        c_value_type: /^\[(\]|[^]*?[^\\]\]|[^]*\\\\\])/
+        c_value_type: /^\[([^\\\]]|\\.)*\]/
     }
 
     while (input.length > 0) {
@@ -58,8 +62,7 @@ context.parse = function(tokens, callback, start, depth) {
 
     var i = start[0]
     var node, property, tree = gametree.new()
-    tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
-        && depth >= setting.get('graph.collapse_min_depth')
+    tree.collapsed = tokens.length >= collapseTokensCount && depth >= collapseMinDepth
 
     while (i < tokens.length) {
         if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
@@ -71,8 +74,14 @@ context.parse = function(tokens, callback, start, depth) {
             node = {}
             tree.nodes.push(node)
         } else if (type == 'prop_ident') {
-            node[value] = []
-            property = node[value]
+            var id = value.split('').filter(function(x) {
+                return x.toUpperCase() == x
+            }).join('')
+
+            if (id != '') {
+                node[id] = []
+                property = node[id]
+            }
         } else if (type == 'c_value_type') {
             property.push(context.unescapeString(value.substr(1, value.length - 2)))
         }
@@ -292,7 +301,23 @@ context.escapeString = function(input) {
 }
 
 context.unescapeString = function(input) {
-    return input.replace(/\\(\r\n|\n\r|\n|\r)/g, '').replace(/\\(.)/g, function(m, p) { return p })
+    var result = ''
+    var inBackslash = false
+
+    input = input.replace(/\\(\r\n|\n\r|\n|\r)/g, '')
+
+    for (var i = 0; i < input.length; i++) {
+        if (!inBackslash) {
+            if (input[i] != '\\')
+                result += input[i]
+            else if (input[i] == '\\')
+                inBackslash = true
+        } else {
+            result += input[i]
+        }
+    }
+
+    return result
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)

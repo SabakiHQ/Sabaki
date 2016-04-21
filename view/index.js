@@ -119,7 +119,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
     redraw = !!redraw
         || !node
         || !gametree.onCurrentTrack(tree)
-        || tree.collapsed && index == tree.nodes.length - 1
+        || tree.collapsed
 
     var t = tree
     t.collapsed = false
@@ -206,7 +206,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.getElement('.stone').set('title', '')
+            li.getElement('.stone span').set('title', '')
 
             if (li.retrieve('tuple') in board.markups) {
                 var markup = board.markups[li.retrieve('tuple')]
@@ -214,7 +214,7 @@ function setBoard(board) {
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
-                if (label != '') li.getElement('.stone').set('title', label)
+                if (label != '') li.getElement('.stone span').set('title', label)
                 if (label.length >= 3) li.addClass('smalllabel')
                 else li.removeClass('smalllabel')
             }
@@ -396,7 +396,8 @@ function prepareGameGraph() {
     s.bind('clickNode', function(e) {
         setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        openNodeMenu.apply(null, getTreePos(e))
+        console.log(e)
+        openNodeMenu.apply(null, getTreePos(e).concat([e.data.captor]))
     })
 
     container.store('sigma', s)
@@ -1555,7 +1556,7 @@ function newFile(playSound) {
     loadGameFromIndex(0)
     updateFileHash()
 
-    if (arguments.length >= 1 && playSound) {
+    if (playSound) {
         sound.playNewGame()
         showGameInfo()
     }
@@ -1772,6 +1773,8 @@ function goToMainVariation() {
     var tree = tp[0]
     var root = getRootTree()
 
+    if (gametree.onMainTrack(tree)) return
+
     while (!gametree.onMainTrack(tree)) {
         tree = tree.parent
     }
@@ -1889,7 +1892,7 @@ window.addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
-        e.event.returnValue = 'false'
+        e.event.returnValue = ' '
         return
     }
 

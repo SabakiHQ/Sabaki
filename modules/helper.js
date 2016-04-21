@@ -95,16 +95,18 @@ context.getSymmetries = function(tuple) {
 }
 
 context.htmlify = function(input) {
-    input = input.replace(/\b((https?|ftps?)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]+(\/\S*)?)/g, function(url) {
-        return '<a href="' + url + '">' + url + '</a>'
-    })
+    urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s]\\b'
+    emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
+    coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
+    totalRegex = '(' + [urlRegex, emailRegex, coordRegex].join('|') + ')'
 
-    input = input.replace(/\b[^\s@]+@[a-zA-Z0-9\-\.]+\.[a-zA-Z]+\b/g, function(email) {
-        return '<a href="mailto:' + email + '">' + email + '</a>'
-    })
-
-    input = input.replace(/\b[a-hj-zA-HJ-Z][1-9][0-9]?\b/g, function(coord) {
-        return '<span class="coord">' + coord + '</span>'
+    input = input.replace(new RegExp(totalRegex, 'g'), function(match) {
+        if (new RegExp(urlRegex).test(match))
+            return '<a href="' + match + '">' + match + '</a>'
+        if (new RegExp(emailRegex).test(match))
+            return '<a href="mailto:' + match + '">' + match + '</a>'
+        if (new RegExp(coordRegex).test(match))
+            return '<span class="coord">' + match + '</span>'
     })
 
     return input
@@ -116,7 +118,11 @@ context.markdown = function(input) {
 
 context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
-        if (!shell) return true
+        if (!shell) {
+            this.target = '_blank'
+            return true
+        }
+        
         shell.openExternal(this.href)
         return false
     })

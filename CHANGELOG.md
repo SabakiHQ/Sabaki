@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary a little bit over a second
+
+**Fixed**
+
+* Fix misplaced triangle markup under OS X
+* Fix incorrect parsing of backslashes in comments
+
+## [Sabaki v0.12.0][v0.12.0] (2016-04-19)
+
 **Added**
 
 * Add edit button to comments section
@@ -19,6 +30,7 @@ All notable changes to this project will be documented in this file.
 * Fix engines menu list not updating when adding/removing engines
 * Fix comments textbox scrolling to top when editing
 * Fix navigation shortcuts not working after closing drawers
+* Fix conflicting auto-links in the comments section
 * Slider doesn't stop halfway anymore when sliding over the end
 
 ## [Sabaki v0.11.5][v0.11.5] (2016-04-15)
@@ -312,7 +324,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.11.5...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.0...master
+[v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.4...v0.11.5
 [v0.11.4]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.4
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2

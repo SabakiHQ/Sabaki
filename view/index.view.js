@@ -460,7 +460,7 @@ function getCurrentMoveInterpretation() {
         if ('EV' in node) result.push(node.EV[0])
         if ('GN' in node) result.push(node.GN[0])
 
-        return result.join(' — ')
+        return result.filter(function(x) { return x.trim() != '' }).join(' — ')
     }
 
     // Determine end of main variation
@@ -665,6 +665,9 @@ function prepareGameChooser() {
             })) li.removeClass('hide')
             else li.addClass('hide')
         })
+
+        var gamesList = $$('#gamechooser .games-list')[0]
+        gamesList.retrieve('scrollbar').update()
     })
 }
 
@@ -841,7 +844,7 @@ function buildBoard() {
                 return v
             }
 
-            ol.adopt(li.adopt(new Element('div.stone').adopt(img))
+            ol.adopt(li.adopt(new Element('div.stone').adopt(img).adopt(new Element('span')))
                 .addEvent('mouseup', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
 
@@ -856,7 +859,7 @@ function buildBoard() {
                 })
                 .addEvent('mousemove', function(e) {
                     if (!$('goban').retrieve('mousedown')) return
-                    if (event.buttons == 0) return
+                    if (e.event.buttons == 0) return
 
                     drawLine(this)
                 }.bind(vertex))
@@ -1128,7 +1131,7 @@ function openEnginesMenu(element, callback) {
     menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
 }
 
-function openNodeMenu(tree, index) {
+function openNodeMenu(tree, index, event) {
     if (getScoringMode()) return
 
     var template = [{
@@ -1144,10 +1147,10 @@ function openNodeMenu(tree, index) {
     }
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
 }
 
-function openGameMenu(element) {
+function openGameMenu(element, event) {
     var template = [{
         label: '&Remove',
         click: function() {
@@ -1177,7 +1180,7 @@ function openGameMenu(element) {
     }]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.x, event.y)
+    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
 }
 
 function clearConsole() {
@@ -1334,7 +1337,7 @@ function showGameChooser(callback) {
             }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
-            openGameMenu(this)
+            openGameMenu(this, e.event)
         }).addEvent('dragstart', function(e) {
             $('gamechooser').store('dragging', this.getParent('li'))
         })

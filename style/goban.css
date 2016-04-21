@@ -7,7 +7,7 @@
 .goban {
         border: 10px solid #ca933a;
         padding: 10px 8px 8px 10px;
-        background: url('../img/goban/board.png') center #ECB55A;
+        background: url('../img/goban/board.png') center #ECB55A fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
@@ -59,8 +59,18 @@
         position: relative;
         background: url('../img/goban/inner.png') center;
     }
-    .goban .row li.hoshi {
-        background-image: url('../img/goban/hoshi.png');
+    .goban .row li.hoshi::after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-top: calc(-.105em - 1px);
+        margin-left: calc(-.105em - 1px);
+        width: .21em;
+        height: .21em;
+        border-radius: .21em;
+        background: #5E2E0C;
     }
     .goban .row:nth-child(3) li {
         background-image: url('../img/goban/side-n.png');
@@ -128,8 +138,8 @@ body:not(.scoring) .goban .row li.dimmed img {
         top: 50%;
         width: .5em;
         height: .5em;
-        margin-left: -.27em;
-        margin-top: -.27em;
+        margin-left: calc(-.25em - 1px);
+        margin-top: calc(-.25em - 1px);
         border-radius: 500em;
         opacity: .3;
         z-index: 2;
@@ -149,69 +159,104 @@ body:not(.scoring) .goban .row li.dimmed img {
         opacity: 1;
 }
 
-.goban .row li .stone::before {
+.goban .row li .stone span {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        font-weight: bold;
+        z-index: 2;
+    }
+    .goban .row li .stone span::before,
+    .goban .row li .stone span::after {
         box-sizing: border-box;
         content: '';
         display: none;
         position: absolute;
         left: 50%;
         top: 50%;
-        background: url('../img/goban/board.png') center #EFB65D;
+        background: url('../img/goban/board.png') center #EFB65D fixed;
         border: 2px solid #5E2E0C;
-        text-align: center;
-        font-weight: bold;
-        z-index: 2;
+        box-shadow: 0 1px 0 #D28D32;
     }
-    .goban .row li.sign_1 .stone::before {
+    .goban .row li.sign_1 .stone span::before,
+    .goban .row li.sign_1 .stone span::after {
         background: transparent;
         border-color: white;
         color: white;
-        box-shadow: none !important;
+        box-shadow: none;
         text-shadow: none;
     }
-    .goban .row li.sign_-1 .stone::before {
+    .goban .row li.sign_-1 .stone span::before,
+    .goban .row li.sign_-1 .stone span::after {
         background: transparent;
         border-color: black;
         color: black;
-        box-shadow: none !important;
+        box-shadow: none;
         text-shadow: none;
     }
-    .goban .row li.square .stone::before,
-    .goban .row li.circle .stone::before {
+    .goban .row li.square .stone span::before,
+    .goban .row li.circle .stone span::before {
         display: block;
         width: .5em;
         height: .5em;
-        margin-left: -.28em;
-        margin-top: -.28em;
-        box-shadow: 0 1px 0 #D28D32;
+        margin-left: calc(-.25em - 1px);
+        margin-top: calc(-.25em - 1px);
     }
-    .goban .row li.circle .stone::before {
+    .goban .row li.circle .stone span::before {
         border-radius: 500em;
     }
-    .goban .row li.cross .stone::before {
-        content: '\2715';
-        display: block;
-        border: none;
-        width: 1em;
-        height: 1em;
-        margin-left: -.55em;
-        margin-top: -.55em;
-        font-size: .7em;
-        line-height: .93;
+    .goban .row li.cross .stone span {
+        top: 50%;
+        left: 50%;
+        width: .7em;
+        height: .7em;
+        margin-left: calc(-.35em - 1px);
+        margin-top: calc(-.35em - 1px);
+        background: url('../img/goban/board.png') center #EFB65D fixed;
     }
-    .goban .row li.triangle .stone::before {
-        content: '\25b3';
-        display: block;
-        width: .77em;
-        height: .77em;
-        margin-left: -.40em;
-        margin-top: -.40em;
-        border: none;
-        font-size: .9em;
-        font-weight: normal;
-        line-height: .46;
+    .goban .row li.cross.sign_1 .stone span,
+    .goban .row li.cross.sign_-1 .stone span {
+        background: transparent;
     }
-    .goban .row li.label .stone::before {
+    .goban .row li.cross .stone span::before,
+    .goban .row li.cross .stone span::after {
+        content: '';
+        display: block;
+        border-width: 2px 0 0 0;
+        width: .7em;
+        height: 0;
+        margin-left: calc(-.35em - 1px);
+        margin-top: -1px;
+        box-shadow: none;
+        transform: rotate(45deg);
+    }
+    .goban .row li.cross .stone span::after {
+        transform: rotate(-45deg);
+    }
+    .goban .row li.triangle .stone span::before {
+        display: block;
+        width: .54em;
+        height: .5em;
+        border-width: 0 0 2px;
+        margin-left: calc(-.27em - 1px);
+        margin-top: calc(-.3em - 1px);
+    }
+    .goban .row li.triangle .stone span::after {
+        display: block;
+        width: .4em;
+        height: .4em;
+        border-bottom: 2px solid transparent;
+        border-right: 2px solid transparent;
+        margin-left: calc(-.2em - 1px);
+        margin-top: -1px;
+        background: none;
+        box-shadow: none;
+        transform: scaleY(1.7) rotate(45deg);
+    }
+    .goban .row li.label .stone span::before {
         content: attr(title);
         display: block;
         border: none;
@@ -220,18 +265,19 @@ body:not(.scoring) .goban .row li.dimmed img {
         margin-top: -.6em;
         margin-left: -.6em;
         overflow: hidden;
-        text-overflow: ellipsis;
+        box-shadow: none;
         font-weight: normal;
         font-size: .6em;
-        line-height: 1.09;
+        line-height: .9;
+        text-overflow: ellipsis;
     }
-    .goban .row li.smalllabel .stone::before {
+    .goban .row li.smalllabel .stone span::before {
         width: 1.94em;
         height: 1.2em;
-        margin-top: -.65em;
+        margin-top: -.75em;
         margin-left: -1.04em;
         font-size: .36em;
-        line-height: 1.2;
+        line-height: .9;
 }
 
 /**
