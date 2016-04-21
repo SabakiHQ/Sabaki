@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary a little bit over a second
+
 **Fixed**
 
 * Fix misplaced triangle markup under OS X
