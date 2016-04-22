@@ -23,22 +23,6 @@ var context = typeof module != 'undefined' ? module.exports : (window.helper = {
 
 var id = 0
 
-function prepareMarked() {
-    renderer = new marked.Renderer()
-    renderer.image = renderer.link
-
-    marked.setOptions({
-        renderer: renderer,
-        gfm: true,
-        tables: false,
-        breaks: true,
-        sanitize: true,
-        smartypants: true,
-        xhtml: true,
-        headerPrefix: 'commentsheader-'
-    })
-}
-
 context.getId = function() {
     return ++id
 }
@@ -142,7 +126,5 @@ context.wireLinks = function(container) {
         hideIndicator()
     })
 }
-
-prepareMarked()
 
 }).call(null, typeof module != 'undefined' ? module : window)

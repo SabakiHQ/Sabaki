@@ -452,7 +452,13 @@ function getCurrentMoveInterpretation() {
         if ('EV' in node) result.push(node.EV[0])
         if ('GN' in node) result.push(node.GN[0])
 
-        return result.filter(function(x) { return x.trim() != '' }).join(' — ')
+        result = result.filter(function(x) { return x.trim() != '' }).join(' — ')
+        if (result != '')
+            return result
+
+        var today = new Date()
+        if (today.getDate() == 25 && today.getMonth() == 3)
+            return 'Happy Birthday, Sabaki!'
     }
 
     // Determine end of main variation
@@ -460,9 +466,8 @@ function getCurrentMoveInterpretation() {
     if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
         var rootNode = getRootTree().nodes[0]
 
-        if ('RE' in rootNode && rootNode.RE[0].trim() != '') {
+        if ('RE' in rootNode && rootNode.RE[0].trim() != '')
             return 'Result: ' + rootNode.RE[0]
-        }
     }
 
     // Determine capture
@@ -528,7 +533,8 @@ function getCurrentMoveInterpretation() {
         return v[0] == vertex[0] && v[1] == vertex[1]
     })) return 'Hoshi'
 
-    if (diff[1] <= 6) return diff.join('-') + ' point'
+    if (diff[1] <= 6)
+        return diff.join('-') + ' point'
 
     return ''
 }
