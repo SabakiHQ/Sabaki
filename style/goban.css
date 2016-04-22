@@ -269,10 +269,10 @@ body:not(.scoring) .goban .row li.dimmed img {
         content: attr(title);
         display: block;
         border: none;
-        width: 1.15em;
-        height: 1.09em;
-        margin-top: -.6em;
-        margin-left: -.6em;
+        width: 1.16em;
+        height: 1.1em;
+        margin-top: calc(-.56em - 1px);
+        margin-left: calc(-.55em - 1px);
         overflow: hidden;
         box-shadow: none;
         font-weight: normal;
@@ -282,9 +282,9 @@ body:not(.scoring) .goban .row li.dimmed img {
     }
     .goban .row li.smalllabel .stone span::before {
         width: 1.94em;
-        height: 1.2em;
-        margin-top: -.75em;
-        margin-left: -1.04em;
+        height: 1.1em;
+        margin-top: calc(-.54em - 1px);
+        margin-left: calc(-.97em - 1px);
         font-size: .36em;
         line-height: .9;
 }
