@@ -1021,7 +1021,11 @@ function openHeaderMenu() {
     ]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
+    menu.popup(
+        remote.getCurrentWindow(),
+        Math.round($('headermenu').getPosition().x),
+        Math.round($$('header')[0].getCoordinates().top)
+    )
 }
 
 function openCommentMenu() {
@@ -1133,7 +1137,7 @@ function openNodeMenu(tree, index, event) {
     }
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
+    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
 function openGameMenu(element, event) {
@@ -1166,7 +1170,7 @@ function openGameMenu(element, event) {
     }]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
+    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
 function clearConsole() {
