@@ -8,7 +8,7 @@ var fuzzyfinder = window.fuzzyfinder
 var gametree = window.gametree
 var sound = window.sound
 var helper = window.helper
-var process = { argv: { length: -1 } }
+var process = { argv: { length: -1 }, platform: 'web' }
 var app = { getName: function() { return 'Sabaki' }, getVersion: function() { return 'web' } }
 var dialog = { showMessageBox: function() {} }
 var gtp = null
@@ -1564,7 +1564,9 @@ function loadFile(filename) {
 
             r.onload = function(e) {
                 var contents = e.target.result
-                loadFileFromSgf(contents, true)
+                loadFileFromSgf(contents, true, function(error) {
+                    if (!error) setRepresentedFilename(f.name)
+                })
             }
 
             r.readAsText(f)
@@ -1634,7 +1636,7 @@ function saveFile() {
     var sgf = saveFileToSgf()
     var link = 'data:application/x-go-sgf;charset=utf-8,' + encodeURIComponent(sgf)
     var el = new Element('a', {
-        download: 'game.sgf',
+        download: getRepresentedFilename() || 'game.sgf',
         href: link,
         css: { display: 'none' }
     })

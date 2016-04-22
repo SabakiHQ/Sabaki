@@ -431,9 +431,6 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
-    return
-    var path = require('path')
-
     document.body.store('representedfilename', filename)
     updateTitle()
 }
@@ -667,8 +664,14 @@ function prepareGameChooser() {
 }
 
 function updateTitle() {
+    var basename = function(x) { return x }
     var title = app.getName()
-    if (getGameTrees().length > 1) title = title + ' — Game ' + (getGameIndex() + 1)
+    var filename = getRepresentedFilename()
+
+    if (filename) title = basename(filename)
+    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
+    if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
+
     document.title = title
 }
 
