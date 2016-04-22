@@ -1048,7 +1048,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosAnnotations()
                 clearMoveAnnotations()
-                commitCommentText()
+                updateSidebar(true, true)
             }
         },
         { type: 'separator' },
