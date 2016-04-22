@@ -388,7 +388,7 @@ context.fromJson = function(json) {
 }
 
 context.getHash = function(tree) {
-    return helper.hash(require('./sgf').fromTree(tree))
+    return helper.hash((typeof require == 'undefined' ? root.sgf : require('./sgf')).fromTree(tree))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
