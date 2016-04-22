@@ -1312,7 +1312,7 @@ function commitGameInfo() {
     else rootNode.HA = [String.from(handicap + 1)]
 
     var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = [String.from(Math.max(Math.min(size, 26), 9))]
+    rootNode.SZ = [String.from(Math.max(Math.min(size, 25), 9))]
     if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
     if (!info.getElement('select[name="handicap"]').disabled) {

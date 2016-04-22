@@ -1197,7 +1197,7 @@ function showGameInfo() {
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
     else handicap.selectedIndex = 0
 
-    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
+    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0 || 'AB' in rootNode
     handicap.disabled = disabled
     size.disabled = disabled
 }
