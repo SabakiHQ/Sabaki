@@ -8,11 +8,11 @@ var fuzzyfinder = window.fuzzyfinder
 var gametree = window.gametree
 var sound = window.sound
 var helper = window.helper
+var setting = window.setting
+var gtp = null
 var process = { argv: { length: -1 }, platform: 'web' }
 var app = { getName: function() { return 'Sabaki' }, getVersion: function() { return 'web' } }
 var dialog = { showMessageBox: function() {} }
-var gtp = null
-var setting = window.setting
 
 var GeminiScrollbar = window.GeminiScrollbar
 var Board = window.Board
@@ -1316,7 +1316,7 @@ function commitGameInfo() {
     else rootNode.HA = [String.from(handicap + 1)]
 
     var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = [String.from(Math.max(Math.min(size, 26), 9))]
+    rootNode.SZ = [String.from(Math.max(Math.min(size, 25), 9))]
     if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
     if (!info.getElement('select[name="handicap"]').disabled) {

@@ -9,7 +9,7 @@ if (typeof require != 'undefined') {
     Board = require('./board')
 
     helper = require('./helper')
-    setting = require('electron').remote.require('./modules/setting')
+    setting = require('./setting')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.gametree = {})

@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Support for old SGF 'long property ids' (see [#68](https://github.com/yishn/Sabaki/issues/68))
+
 **Changed**
 
 * Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary a little bit over a second
+* Significant graph updating speed increase
+* Update to Electon v0.37.7
 
 **Fixed**
 

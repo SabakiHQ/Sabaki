@@ -5,9 +5,11 @@ var path = null
 var app = null
 
 if (typeof require != 'undefined') {
+    var remote = require('electron').remote
+    
     fs = require('fs')
     path = require('path')
-    app = require('electron').app
+    app = remote ? remote.app : require('electron').app
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
