@@ -1867,7 +1867,7 @@ window.addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
-        e.event.returnValue = ' '
+        e.event.returnValue = 'false'
         return
     }
 
