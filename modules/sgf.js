@@ -24,7 +24,7 @@ context.meta = {
 }
 
 context.tokenize = function(input) {
-    input = input.replace(/(\r\n|\n\r)/g, '\n')
+    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
 
     var tokens = []
     var rules = {
@@ -306,7 +306,7 @@ context.unescapeString = function(input) {
     var result = ''
     var inBackslash = false
 
-    input = input.replace(/(\r\n|\n\r)/g, '\n')
+    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
 
     for (var i = 0; i < input.length; i++) {
         if (!inBackslash) {
@@ -315,7 +315,7 @@ context.unescapeString = function(input) {
             else if (input[i] == '\\')
                 inBackslash = true
         } else {
-            if (['\n', '\r'].indexOf(input[i]) < 0)
+            if (input[i] != '\n')
                 result += input[i]
 
             inBackslash = false
