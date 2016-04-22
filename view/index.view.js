@@ -1099,7 +1099,8 @@ function openCommentMenu() {
                 clear()
                 node[p] = [value]
             }
-            updateCommentText()
+
+            setCurrentTreePosition.apply(null, getCurrentTreePosition().concat([true, true]))
         }
     })
 
