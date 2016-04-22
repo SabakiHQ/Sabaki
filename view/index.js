@@ -1871,6 +1871,26 @@ document.addEvent('keydown', function(e) {
         // Escape key
         closeDrawers()
     }
+
+    if (e.code == 36) {
+        // Home
+        goToBeginning()
+    } else if (e.code == 35) {
+        // End
+        goToEnd()
+    } else if (e.code == 38) {
+        // Up
+        goBack()
+    } else if (e.code == 40) {
+        // Down
+        goForward()
+    } else if (e.code == 37) {
+        // Left
+        goToPreviousVariation()
+    } else if (e.code == 39) {
+        // Right
+        goToNextVariation()
+    }
 }).addEvent('domready', function() {
     loadSettings()
     loadEngines()
