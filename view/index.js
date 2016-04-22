@@ -1890,7 +1890,7 @@ window.addEvent('resize', function() {
     setShowSidebar(document.body.getSize().x >= 800)
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
-        e.event.returnValue = ' '
+        e.event.returnValue = 'false'
         return
     }
 
