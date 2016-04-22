@@ -10,10 +10,10 @@ var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
 var helper = require('../modules/helper')
 var setting = require('../modules/setting')
+var gtp = require('../modules/gtp')
 var app = remote.app
 var dialog = remote.dialog
 var process = remote.require('process')
-var gtp = remote.require('./modules/gtp')
 
 var GeminiScrollbar = require('gemini-scrollbar')
 var Board = require('../modules/board')
