@@ -1035,12 +1035,12 @@ function openCommentMenu() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    var clearPosAnnotations = function() {
-        ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
+    var clearProperties = function(properties) {
+        properties.forEach(function(p) { delete node[p] })
     }
-    var clearMoveAnnotations = function() {
-        ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
-    }
+    var clearPosAnnotations = clearProperties.bind(null, ['UC', 'GW', 'DM', 'GB'])
+    var clearMoveAnnotations = clearProperties.bind(null, ['BM', 'TE', 'DO', 'IT'])
+    var clearHotspot = clearProperties.bind(null, ['HO'])
 
     var template = [
         {
@@ -1099,6 +1099,15 @@ function openCommentMenu() {
             }
         ])
     }
+
+    template.push.apply(template, [
+        { type: 'separator' },
+        {
+            label: '&Hotspot',
+            type: 'checkbox',
+            data: ['HO', clearHotspot, 1]
+        }
+    ])
 
     template.forEach(function(item) {
         if (!('data' in item)) return
