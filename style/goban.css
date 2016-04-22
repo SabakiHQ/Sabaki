@@ -228,7 +228,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         border-width: 2px 0 0 0;
         width: .7em;
         height: 0;
-        margin-left: calc(-.35em - 1px);
+        margin-left: -.35em;
         margin-top: -1px;
         box-shadow: none;
         transform: rotate(45deg);
@@ -237,24 +237,33 @@ body:not(.scoring) .goban .row li.dimmed img {
         transform: rotate(-45deg);
     }
     .goban .row li.triangle .stone span::before {
+        box-sizing: content-box;
         display: block;
-        width: .54em;
-        height: .5em;
-        border-width: 0 0 2px;
-        margin-left: calc(-.27em - 1px);
-        margin-top: calc(-.3em - 1px);
+        border-top: none;
+        border-left: .3em solid transparent;
+        border-right: .3em solid transparent;
+        border-bottom: .6em solid;
+        margin-left: -.3em;
+        margin-top: -.4em;
+        background: none;
     }
     .goban .row li.triangle .stone span::after {
+        box-sizing: content-box;
         display: block;
-        width: .4em;
-        height: .4em;
-        border-bottom: 2px solid transparent;
-        border-right: 2px solid transparent;
-        margin-left: calc(-.2em - 1px);
-        margin-top: -1px;
+        border-top: none;
+        border-left: calc(.3em - 3px) solid transparent;
+        border-right: calc(.3em - 3px) solid transparent;
+        border-bottom: calc(.6em - 6px) solid #EFB65D;
+        margin-left: calc(-.3em + 3px);
+        margin-top: calc(-.4em + 4px);
         background: none;
         box-shadow: none;
-        transform: scaleY(1.7) rotate(45deg);
+    }
+    .goban .row li.triangle.sign_1 .stone span::after {
+        border-bottom-color: #242424;
+    }
+    .goban .row li.triangle.sign_-1 .stone span::after {
+        border-bottom-color: #E2E2E2;
     }
     .goban .row li.label .stone span::before {
         content: attr(title);
@@ -289,7 +298,7 @@ body:not(.scoring) .goban .row li.dimmed img {
     position: absolute;
     border: none;
     height: .11em;
-    background: #7F4F2E;
+    background: #5E2E0C;
     pointer-events: none;
     z-index: 3;
 }
