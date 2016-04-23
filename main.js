@@ -15,7 +15,7 @@ var isReady = false
 function newWindow(path) {
     var window = new BrowserWindow({
         icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
-        title: 'Sabaki',
+        title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
         height: setting.get('window.height'),
