@@ -272,7 +272,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         width: 1.16em;
         height: 1.1em;
         margin-top: calc(-.56em - 1px);
-        margin-left: calc(-.55em - 1px);
+        margin-left: calc(-.58em - 1px);
         overflow: hidden;
         box-shadow: none;
         font-weight: normal;
