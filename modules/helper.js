@@ -1,13 +1,11 @@
 (function(root) {
 
 var gtp = null
-var shell = null
 var marked = root.marked
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
     marked = require('./marked')
-    shell = require('electron').shell
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
@@ -101,6 +99,8 @@ context.markdown = function(input) {
 }
 
 context.wireLinks = function(container) {
+    var shell = typeof require != 'undefined' ? require('electron').shell : null
+
     container.getElements('a').addEvent('click', function() {
         if (!shell) {
             this.target = '_blank'
@@ -110,6 +110,7 @@ context.wireLinks = function(container) {
         shell.openExternal(this.href)
         return false
     })
+
     container.getElements('.coord').addEvent('mouseenter', function() {
         var v = gtp.point2vertex(this.get('text'), getBoard().size)
         showIndicator(v)
