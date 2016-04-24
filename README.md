@@ -1,4 +1,4 @@
-# Sabaki
+# Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
 
 <img src="logo.png" width="156" height="156">
 
