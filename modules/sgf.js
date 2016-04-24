@@ -60,7 +60,7 @@ context.parse = function(tokens, callback, start, depth) {
     var i = start[0]
     var node, property, tree = gametree.new()
     tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
-        && depth >= setting.get('graph.collapse_min_depth')
+        && depth > setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
         if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
