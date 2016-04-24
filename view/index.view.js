@@ -1290,7 +1290,7 @@ function showGameChooser(callback) {
         var tp = gametree.navigate(tree, 0, 30)
         if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
-        var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
+        var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 

@@ -55,7 +55,7 @@ function setRootTree(tree) {
     setGameTrees(trees)
 
     tree.parent = null
-    setCurrentTreePosition(sgf.addBoard(tree), 0, true)
+    setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
     setPlayerName(1,
         gametree.getPlayerName(1, tree, 'Black'),
@@ -133,7 +133,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
 
     updateSidebar(redraw, now)
     setShowHotspot('HO' in tree.nodes[index])
-    sgf.addBoard(tree, index)
+    gametree.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
     // Determine current player
@@ -730,7 +730,7 @@ function makeMove(vertex, sendCommand) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
+                setCurrentTreePosition(gametree.addBoard(variations[0]), 0)
                 createNode = false
             }
         }
@@ -748,7 +748,7 @@ function makeMove(vertex, sendCommand) {
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
 
-            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) setRootTree(splitted)
             setCurrentTreePosition(newtree, 0)
         }
