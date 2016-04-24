@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in a little bit under a second
+* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in ~1 second
 * Significant graph updating speed increase
 * Update to Electon v0.37.7
 
