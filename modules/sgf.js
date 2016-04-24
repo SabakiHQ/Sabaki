@@ -120,12 +120,13 @@ context.parseFile = function(filename, callback) {
 
 context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
-    return [alpha.indexOf(point[0]), alpha.indexOf(point[1])]
+    return point.split('').map(function(x) { return alpha.indexOf(x) })
 }
 
 context.vertex2point = function(vertex) {
     var x = vertex[0], y = vertex[1]
-    if (x < 0 || y < 0) return ''
+    if (Math.min(x, y) < 0 || Math.max(x, y) >= alpha.length)
+        return ''
     return alpha[x] + alpha[y]
 }
 
@@ -275,13 +276,7 @@ context.stringify = function(tree) {
 
         for (var id in node) {
             if (id.toUpperCase() != id) continue
-            output += id
-
-            node[id].forEach(function(value) {
-                output += '[' + context.escapeString(value.toString()) + ']'
-            })
-
-            if (node[id].length == 0) output += '[]'
+            output += id + '[' + node[id].map(context.escapeString).join('][') + ']'
         }
 
         output += '\n'
@@ -295,7 +290,7 @@ context.stringify = function(tree) {
 }
 
 context.escapeString = function(input) {
-    return input.replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
+    return input.toString().replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
 }
 
 context.unescapeString = function(input) {
