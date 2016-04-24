@@ -1630,7 +1630,7 @@ function saveFileToSgf() {
 
     for (var i = 0; i < trees.length; i++) {
         trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-        text += '(' + sgf.fromTree(trees[i]) + ')\n\n'
+        text += '(' + sgf.stringify(trees[i]) + ')\n\n'
     }
 
     return text

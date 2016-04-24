@@ -267,7 +267,7 @@ context.addBoard = function(tree, index, baseboard) {
     return tree
 }
 
-context.fromTree = function(tree) {
+context.stringify = function(tree) {
     var output = ''
 
     tree.nodes.forEach(function(node) {
@@ -288,7 +288,7 @@ context.fromTree = function(tree) {
     })
 
     for (var i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + context.fromTree(tree.subtrees[i]) + ')'
+        output += '(' + context.stringify(tree.subtrees[i]) + ')'
     }
 
     return output
