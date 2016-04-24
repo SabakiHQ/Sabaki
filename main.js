@@ -138,6 +138,7 @@ function buildMenu(noWindows) {
 
         attachMenu.length = 0
 
+        setting.load()
         setting.getEngines().forEach(function(engine) {
             attachMenu.push({
                 label: engine.name,
