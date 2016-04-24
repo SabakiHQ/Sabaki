@@ -2,23 +2,22 @@
 
 var fs = null
 var path = null
-var app = null
 
 if (typeof require != 'undefined') {
-    var remote = require('electron').remote
-    
     fs = require('fs')
     path = require('path')
-    app = remote ? remote.app : require('electron').app
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
 
-var namesort = function(x, y) { return x.name > y.name ? 1 : x.name == y.name ? 0 : -1 }
-var settingspath = ''
+var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
+var settingspath = null
 
-if (path && app)
+if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
+    var remote = require('electron').remote
+    var app = remote ? remote.app : require('electron').app
     settingspath = path.join(app.getPath('userData'), 'settings.json')
+}
 
 var settings = {}
 var engines = []
@@ -87,7 +86,7 @@ var defaults = {
 }
 
 context.load = function() {
-    if (!fs) return settings = defaults
+    if (!settingspath) return settings = defaults
 
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
 
@@ -105,7 +104,7 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!fs) return context
+    if (!settingspath) return context
 
     fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
     return context
@@ -141,10 +140,12 @@ context.clearEngines = function() {
     return context
 }
 
-try {
-    fs.accessSync(settingspath, fs.F_OK)
-} catch(err) {
-    context.save()
+if (settingspath) {
+    try {
+        fs.accessSync(settingspath, fs.F_OK)
+    } catch(err) {
+        context.save()
+    }
 }
 
 context.load()
