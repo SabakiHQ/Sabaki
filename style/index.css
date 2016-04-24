@@ -845,7 +845,7 @@ header, #edit, #scoring, #find, #guess {
         font-weight: normal;
     }
     .engines-list li h3 + p input {
-        padding-right: 25px;
+        padding-right: 30px;
         opacity: .5;
     }
     .engines-list li > * { margin: 0; }
@@ -861,7 +861,7 @@ header, #edit, #scoring, #find, #guess {
     }
     .engines-list li a.browse {
         left: auto;
-        right: 10px;
+        right: 15px;
         opacity: .5;
         transition: opacity .2s;
     }
