@@ -1,13 +1,11 @@
 (function(root) {
 
 var gametree = root.gametree
-var helper = root.helper
 var setting = root.setting
 var fs = null
 
 if (typeof require != 'undefined') {
     gametree = require('./gametree')
-    helper = require('./helper')
     setting = require('./setting')
     fs = require('fs')
 }
