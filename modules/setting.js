@@ -16,7 +16,15 @@ var settingspath = null
 if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
     var remote = require('electron').remote
     var app = remote ? remote.app : require('electron').app
-    settingspath = path.join(app.getPath('userData'), 'settings.json')
+    var directory = app.getPath('userData')
+
+    try {
+        fs.accessSync(directory, fs.F_OK)
+    } catch(e) {
+        fs.mkdirSync(directory)
+    }
+
+    settingspath = path.join(directory, 'settings.json')
 }
 
 var settings = {}
