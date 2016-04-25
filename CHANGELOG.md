@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
+
+**Fixed**
+
+* Fix uncaught exception at first time startup
+
 ## [Sabaki v0.12.1][v0.12.1] (2016-04-24)
 
 **Added**
