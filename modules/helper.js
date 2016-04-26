@@ -63,6 +63,11 @@ context.equals = function(a, b) {
     return false
 }
 
+context.lexicalCompare = function(a, b) {
+    if (!a.length || !b.length) return a.length - b.length
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : context.lexicalCompare(a.slice(1), b.slice(1))
+}
+
 context.getSymmetries = function(tuple) {
     var reversed = [tuple[1], tuple[0]]
     var s = function(v) {
