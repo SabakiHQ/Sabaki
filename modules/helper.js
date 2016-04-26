@@ -1,9 +1,11 @@
 (function(root) {
 
+var shell = null
 var gtp = null
 var marked = root.marked
 
 if (typeof require != 'undefined') {
+    shell = require('electron').shell
     gtp = require('./gtp')
     marked = require('./marked')
 }
@@ -104,8 +106,6 @@ context.markdown = function(input) {
 }
 
 context.wireLinks = function(container) {
-    var shell = typeof require != 'undefined' ? require('electron').shell : null
-
     container.getElements('a').addEvent('click', function() {
         if (!shell) {
             this.target = '_blank'
