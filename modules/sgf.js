@@ -1,22 +1,17 @@
 (function(root) {
 
 var gametree = root.gametree
-var helper = root.helper
 var setting = root.setting
 var fs = null
 
 if (typeof require != 'undefined') {
-    gametree = require('../modules/gametree')
-    helper = require('../modules/helper')
-    setting = require('remote').require('./modules/setting')
+    gametree = require('./gametree')
+    setting = require('./setting')
     fs = require('fs')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
-
 var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-var collapseTokensCount = setting.get('graph.collapse_tokens_count')
-var collapseMinDepth = setting.get('graph.collapse_min_depth')
 
 context.meta = {
     name: 'Smart Game Format',
@@ -24,13 +19,15 @@ context.meta = {
 }
 
 context.tokenize = function(input) {
+    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
+
     var tokens = []
     var rules = {
         ignore: /^\s+/,
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
         prop_ident: /^[A-Za-z]+/,
-        c_value_type: /^\[([^\\\]]|\\.)*\]/
+        c_value_type: /^\[([^\\\]]|\\[^])*\]/
     }
 
     while (input.length > 0) {
@@ -62,7 +59,8 @@ context.parse = function(tokens, callback, start, depth) {
 
     var i = start[0]
     var node, property, tree = gametree.new()
-    tree.collapsed = tokens.length >= collapseTokensCount && depth >= collapseMinDepth
+    tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
+        && depth > setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
         if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
@@ -122,12 +120,13 @@ context.parseFile = function(filename, callback) {
 
 context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
-    return [alpha.indexOf(point[0]), alpha.indexOf(point[1])]
+    return point.split('').map(function(x) { return alpha.indexOf(x) })
 }
 
 context.vertex2point = function(vertex) {
     var x = vertex[0], y = vertex[1]
-    if (x < 0 || y < 0) return ''
+    if (Math.min(x, y) < 0 || Math.max(x, y) >= alpha.length)
+        return ''
     return alpha[x] + alpha[y]
 }
 
@@ -148,128 +147,7 @@ context.compressed2list = function(compressed) {
     return list
 }
 
-context.addBoard = function(tree, index, baseboard) {
-    if (isNaN(index)) index = 0
-    if (index >= tree.nodes.length) return tree
-
-    var node = tree.nodes[index]
-    var vertex = null
-    var board = null
-
-    if (!baseboard) {
-        var prev = gametree.navigate(tree, index, -1)
-
-        if (!prev) {
-            var size = 'SZ' in node ? node.SZ[0].toInt() : 19
-            baseboard = new Board(size)
-        } else {
-            var prevNode = prev[0].nodes[prev[1]]
-
-            if (!prevNode.board) context.addBoard(prev[0], prev[1])
-            baseboard = prevNode.board
-        }
-    }
-
-    if ('B' in node) {
-        vertex = context.point2vertex(node.B[0])
-        board = baseboard.makeMove(1, vertex)
-    } else if ('W' in node) {
-        vertex = context.point2vertex(node.W[0])
-        board = baseboard.makeMove(-1, vertex)
-    }
-
-    if (!board) board = baseboard.clone()
-
-    var ids = ['AW', 'AE', 'AB']
-
-    for (var i = 0; i < ids.length; i++) {
-        if (!(ids[i] in node)) continue
-
-        node[ids[i]].forEach(function(value) {
-            context.compressed2list(value).forEach(function(vertex) {
-                board.arrangement[vertex] = i - 1
-            })
-        })
-    }
-
-    if (vertex != null) {
-        board.markups[vertex] = ['point', 0, '']
-    }
-
-    var ids = ['CR', 'MA', 'SQ', 'TR']
-    var classes = ['circle', 'cross', 'square', 'triangle']
-
-    for (var i = 0; i < ids.length; i++) {
-        if (!(ids[i] in node)) continue
-
-        node[ids[i]].forEach(function(value) {
-            context.compressed2list(value).forEach(function(vertex) {
-                board.markups[vertex] = [classes[i], 0, '']
-            })
-        })
-    }
-
-    if ('LB' in node) {
-        node.LB.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var point = composed.slice(0, sep)
-            var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.markups[context.point2vertex(point)] = ['label', 0, label]
-        })
-    }
-
-    if ('LN' in node) {
-        node.LN.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var p1 = composed.slice(0, sep)
-            var p2 = composed.slice(sep + 1)
-            board.lines.push([context.point2vertex(p1), context.point2vertex(p2), false])
-        })
-    }
-
-    if ('AR' in node) {
-        node.AR.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var p1 = composed.slice(0, sep)
-            var p2 = composed.slice(sep + 1)
-            board.lines.push([context.point2vertex(p1), context.point2vertex(p2), true])
-        })
-    }
-
-    node.board = board
-
-    // Add variation overlays
-
-    var addOverlay = function(node) {
-        var v, sign
-
-        if ('B' in node) {
-            v = sgf.point2vertex(node.B[0])
-            sign = 1
-        } else if ('W' in node) {
-            v = sgf.point2vertex(node.W[0])
-            sign = -1
-        } else {
-            return
-        }
-
-        if (v in board.markups) board.markups[v][1] = sign
-        else board.markups[v] = ['', sign, '']
-    }
-
-    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
-        tree.subtrees.forEach(function(subtree) {
-            if (subtree.nodes.length == 0) return
-            addOverlay(subtree.nodes[0])
-        })
-    } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1])
-    }
-
-    return tree
-}
-
-context.fromTree = function(tree) {
+context.stringify = function(tree) {
     var output = ''
 
     tree.nodes.forEach(function(node) {
@@ -277,34 +155,28 @@ context.fromTree = function(tree) {
 
         for (var id in node) {
             if (id.toUpperCase() != id) continue
-            output += id
-
-            node[id].forEach(function(value) {
-                output += '[' + context.escapeString(value.toString()) + ']'
-            })
-
-            if (node[id].length == 0) output += '[]'
+            output += id + '[' + node[id].map(context.escapeString).join('][') + ']'
         }
 
         output += '\n'
     })
 
     for (var i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + context.fromTree(tree.subtrees[i]) + ')'
+        output += '(' + context.stringify(tree.subtrees[i]) + ')'
     }
 
     return output
 }
 
 context.escapeString = function(input) {
-    return input.replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
+    return input.toString().replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
 }
 
 context.unescapeString = function(input) {
     var result = ''
     var inBackslash = false
 
-    input = input.replace(/\\(\r\n|\n\r|\n|\r)/g, '')
+    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
 
     for (var i = 0; i < input.length; i++) {
         if (!inBackslash) {
@@ -313,7 +185,10 @@ context.unescapeString = function(input) {
             else if (input[i] == '\\')
                 inBackslash = true
         } else {
-            result += input[i]
+            if (input[i] != '\n')
+                result += input[i]
+
+            inBackslash = false
         }
     }
 

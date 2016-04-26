@@ -9,7 +9,7 @@ if (typeof require != 'undefined') {
     Board = require('./board')
 
     helper = require('./helper')
-    setting = require('electron').remote.require('./modules/setting')
+    setting = require('./setting')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.gametree = {})
@@ -360,6 +360,127 @@ context.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
+context.addBoard = function(tree, index, baseboard) {
+    if (isNaN(index)) index = 0
+    if (index >= tree.nodes.length) return tree
+
+    var node = tree.nodes[index]
+    var vertex = null
+    var board = null
+
+    if (!baseboard) {
+        var prev = context.navigate(tree, index, -1)
+
+        if (!prev) {
+            var size = 'SZ' in node ? node.SZ[0].toInt() : 19
+            baseboard = new Board(size)
+        } else {
+            var prevNode = prev[0].nodes[prev[1]]
+
+            if (!prevNode.board) context.addBoard(prev[0], prev[1])
+            baseboard = prevNode.board
+        }
+    }
+
+    if ('B' in node) {
+        vertex = sgf.point2vertex(node.B[0])
+        board = baseboard.makeMove(1, vertex)
+    } else if ('W' in node) {
+        vertex = sgf.point2vertex(node.W[0])
+        board = baseboard.makeMove(-1, vertex)
+    }
+
+    if (!board) board = baseboard.clone()
+
+    var ids = ['AW', 'AE', 'AB']
+
+    for (var i = 0; i < ids.length; i++) {
+        if (!(ids[i] in node)) continue
+
+        node[ids[i]].forEach(function(value) {
+            sgf.compressed2list(value).forEach(function(vertex) {
+                board.arrangement[vertex] = i - 1
+            })
+        })
+    }
+
+    if (vertex != null) {
+        board.markups[vertex] = ['point', 0, '']
+    }
+
+    var ids = ['CR', 'MA', 'SQ', 'TR']
+    var classes = ['circle', 'cross', 'square', 'triangle']
+
+    for (var i = 0; i < ids.length; i++) {
+        if (!(ids[i] in node)) continue
+
+        node[ids[i]].forEach(function(value) {
+            sgf.compressed2list(value).forEach(function(vertex) {
+                board.markups[vertex] = [classes[i], 0, '']
+            })
+        })
+    }
+
+    if ('LB' in node) {
+        node.LB.forEach(function(composed) {
+            var sep = composed.indexOf(':')
+            var point = composed.slice(0, sep)
+            var label = composed.slice(sep + 1).replace(/\s+/, ' ')
+            board.markups[sgf.point2vertex(point)] = ['label', 0, label]
+        })
+    }
+
+    if ('LN' in node) {
+        node.LN.forEach(function(composed) {
+            var sep = composed.indexOf(':')
+            var p1 = composed.slice(0, sep)
+            var p2 = composed.slice(sep + 1)
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), false])
+        })
+    }
+
+    if ('AR' in node) {
+        node.AR.forEach(function(composed) {
+            var sep = composed.indexOf(':')
+            var p1 = composed.slice(0, sep)
+            var p2 = composed.slice(sep + 1)
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), true])
+        })
+    }
+
+    node.board = board
+
+    // Add variation overlays
+
+    var addOverlay = function(node) {
+        var v, sign
+
+        if ('B' in node) {
+            v = sgf.point2vertex(node.B[0])
+            sign = 1
+        } else if ('W' in node) {
+            v = sgf.point2vertex(node.W[0])
+            sign = -1
+        } else {
+            return
+        }
+
+        if (v in board.markups) board.markups[v][1] = sign
+        else board.markups[v] = ['', sign, '']
+    }
+
+    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
+        tree.subtrees.forEach(function(subtree) {
+            if (subtree.nodes.length == 0) return
+            addOverlay(subtree.nodes[0])
+        })
+    } else if (index < tree.nodes.length - 1) {
+        addOverlay(tree.nodes[index + 1])
+    }
+
+    return tree
+}
+
 context.getJson = function(tree) {
     return JSON.stringify(tree, function(name, val) {
         var list = ['id', 'board', 'parent', 'collapsed', 'current']
@@ -388,7 +509,8 @@ context.fromJson = function(json) {
 }
 
 context.getHash = function(tree) {
-    return helper.hash(context.getJson(tree))
+    var sgf = typeof require == 'undefined' ? root.sgf : require('./sgf')
+    return helper.hash(sgf.stringify(tree))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)

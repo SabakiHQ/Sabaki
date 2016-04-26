@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
+
+**Fixed**
+
+* Fix uncaught exception at first time startup
+
+## [Sabaki v0.12.1][v0.12.1] (2016-04-24)
+
+**Added**
+
+* Support for old SGF 'long property ids' (see [#68](https://github.com/yishn/Sabaki/issues/68))
 
 **Changed**
 
-* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary a little bit over a second
+* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in ~1 second
+* Significant graph updating speed increase
+* Update to Electon v0.37.7
 
 **Fixed**
 
@@ -40,24 +52,17 @@ All notable changes to this project will be documented in this file.
 * Add 'New Window' menu item
 * Closing all windows doesn't quit the app in OS X
 * Associate SGF files with Sabaki in OS X
-
-**Fixed**
-
-* Opening an unreadable file doesn't set represented filename anymore
-* Fix repeated exceptions when opening an empty game tree
-* Fix editing compressed point lists for AB/AW/AE properties not working
-
-## [Sabaki v0.11.4][v0.11.4] (2016-04-07)
+* Faster startup
+* Update to Electron v0.37.5
 
 **Fixed**
 
 * Fix missing WebGL libraries in Windows
 * Fix crash while saving files
+* Opening an unreadable file doesn't set represented filename anymore
+* Fix repeated exceptions when opening an empty game tree
+* Fix editing compressed point lists for AB/AW/AE properties not working
 
-**Changed**
-
-* Faster startup
-* Update to Electron v0.37.5
 
 ## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
 
@@ -66,35 +71,18 @@ All notable changes to this project will be documented in this file.
 * Guess mode
 * Load SGF files from clipboard
 * Copy SGF files to clipboard
-
-**Changed**
-
-* Show game result when at the end of main variation
-* Update to Electron v0.37.3
-
-## [Sabaki v0.11.1][v0.11.1] (2016-03-05)
-
-**Added**
-
 * SGF-compatible line and arrow markup
 * Filter in 'Manage Games'
 * More game info fields
-
-**Changed**
-
-* Update to Electron v0.36.10
-
-## [Sabaki v0.11.0][v0.11.0] (2016-03-03)
-
-**Added**
-
 * Add opening data
 * Add 'Go To Main Variation' menu item
 * Supports SGF collections
 
 **Changed**
 
+* Show game result when at the end of main variation
 * Smaller font size for larger board labels
+* Update to Electron v0.37.3
 
 **Fixed**
 
@@ -324,13 +312,12 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.2...master
+[v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.1...v0.12.2
+[v0.12.1]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
-[v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.4...v0.11.5
-[v0.11.4]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.4
-[v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.11.1...v0.11.2
-[v0.11.1]: https://github.com/yishn/Sabaki/compare/v0.11.0...v0.11.1
-[v0.11.0]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.0
+[v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
+[v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.2
 [v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.1
 [v0.9.1]: https://github.com/yishn/Sabaki/compare/v0.8.1...v0.9.1
 [v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.7.6...v0.8.1

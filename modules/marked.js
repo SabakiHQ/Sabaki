@@ -883,12 +883,7 @@ Renderer.prototype.link = function(href, title, text) {
 };
 
 Renderer.prototype.image = function(href, title, text) {
-  var out = '<img src="' + href + '" alt="' + text + '"';
-  if (title) {
-    out += ' title="' + title + '"';
-  }
-  out += this.options.xhtml ? '/>' : '>';
-  return out;
+  return this.link(href, title, text);
 };
 
 Renderer.prototype.text = function(text) {
@@ -1234,20 +1229,20 @@ marked.setOptions = function(opt) {
 
 marked.defaults = {
   gfm: true,
-  tables: true,
-  breaks: false,
+  tables: false,
+  breaks: true,
   pedantic: false,
-  sanitize: false,
+  sanitize: true,
   sanitizer: null,
   mangle: true,
   smartLists: false,
   silent: false,
   highlight: null,
   langPrefix: 'lang-',
-  smartypants: false,
-  headerPrefix: '',
+  smartypants: true,
+  headerPrefix: 'commentsheader-',
   renderer: new Renderer,
-  xhtml: false
+  xhtml: true
 };
 
 /**

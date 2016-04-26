@@ -1,34 +1,16 @@
 (function(root) {
 
 var gtp = null
-var shell = null
 var marked = root.marked
 
 if (typeof require != 'undefined') {
     gtp = require('./gtp')
     marked = require('./marked')
-    shell = require('electron').shell
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
 
 var id = 0
-
-function prepareMarked() {
-    renderer = new marked.Renderer()
-    renderer.image = renderer.link
-
-    marked.setOptions({
-        renderer: renderer,
-        gfm: true,
-        tables: false,
-        breaks: true,
-        sanitize: true,
-        smartypants: true,
-        xhtml: true,
-        headerPrefix: 'commentsheader-'
-    })
-}
 
 context.getId = function() {
     return ++id
@@ -81,6 +63,11 @@ context.equals = function(a, b) {
     return false
 }
 
+context.lexicalCompare = function(a, b) {
+    if (!a.length || !b.length) return a.length - b.length
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : context.lexicalCompare(a.slice(1), b.slice(1))
+}
+
 context.getSymmetries = function(tuple) {
     var reversed = [tuple[1], tuple[0]]
     var s = function(v) {
@@ -117,15 +104,18 @@ context.markdown = function(input) {
 }
 
 context.wireLinks = function(container) {
+    var shell = typeof require != 'undefined' ? require('electron').shell : null
+
     container.getElements('a').addEvent('click', function() {
         if (!shell) {
             this.target = '_blank'
             return true
         }
-        
+
         shell.openExternal(this.href)
         return false
     })
+
     container.getElements('.coord').addEvent('mouseenter', function() {
         var v = gtp.point2vertex(this.get('text'), getBoard().size)
         showIndicator(v)
@@ -133,7 +123,5 @@ context.wireLinks = function(container) {
         hideIndicator()
     })
 }
-
-prepareMarked()
 
 }).call(null, typeof module != 'undefined' ? module : window)

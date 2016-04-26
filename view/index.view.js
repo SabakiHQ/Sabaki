@@ -460,7 +460,13 @@ function getCurrentMoveInterpretation() {
         if ('EV' in node) result.push(node.EV[0])
         if ('GN' in node) result.push(node.GN[0])
 
-        return result.filter(function(x) { return x.trim() != '' }).join(' — ')
+        result = result.filter(function(x) { return x.trim() != '' }).join(' — ')
+        if (result != '')
+            return result
+
+        var today = new Date()
+        if (today.getDate() == 25 && today.getMonth() == 3)
+            return 'Happy Birthday, Sabaki!'
     }
 
     // Determine end of main variation
@@ -468,9 +474,8 @@ function getCurrentMoveInterpretation() {
     if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
         var rootNode = getRootTree().nodes[0]
 
-        if ('RE' in rootNode && rootNode.RE[0].trim() != '') {
+        if ('RE' in rootNode && rootNode.RE[0].trim() != '')
             return 'Result: ' + rootNode.RE[0]
-        }
     }
 
     // Determine capture
@@ -536,7 +541,8 @@ function getCurrentMoveInterpretation() {
         return v[0] == vertex[0] && v[1] == vertex[1]
     })) return 'Hoshi'
 
-    if (diff[1] <= 6) return diff.join('-') + ' point'
+    if (diff[1] <= 6)
+        return diff.join('-') + ' point'
 
     return ''
 }
@@ -1000,19 +1006,23 @@ function openHeaderMenu() {
     ]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), $('headermenu').getPosition().x, $$('header')[0].getCoordinates().top)
+    menu.popup(
+        remote.getCurrentWindow(),
+        Math.round($('headermenu').getPosition().x),
+        Math.round($$('header')[0].getCoordinates().top)
+    )
 }
 
 function openCommentMenu() {
     var tp = getCurrentTreePosition()
     var node = tp[0].nodes[tp[1]]
 
-    var clearPosAnnotations = function() {
-        ['UC', 'GW', 'DM', 'GB'].forEach(function(p) { delete node[p] })
+    var clearProperties = function(properties) {
+        properties.forEach(function(p) { delete node[p] })
     }
-    var clearMoveAnnotations = function() {
-        ['BM', 'TE', 'DO', 'IT'].forEach(function(p) { delete node[p] })
-    }
+    var clearPosAnnotations = clearProperties.bind(null, ['UC', 'GW', 'DM', 'GB'])
+    var clearMoveAnnotations = clearProperties.bind(null, ['BM', 'TE', 'DO', 'IT'])
+    var clearHotspot = clearProperties.bind(null, ['HO'])
 
     var template = [
         {
@@ -1020,7 +1030,7 @@ function openCommentMenu() {
             click: function() {
                 clearPosAnnotations()
                 clearMoveAnnotations()
-                commitCommentText()
+                updateSidebar(true, true)
             }
         },
         { type: 'separator' },
@@ -1072,6 +1082,15 @@ function openCommentMenu() {
         ])
     }
 
+    template.push.apply(template, [
+        { type: 'separator' },
+        {
+            label: '&Hotspot',
+            type: 'checkbox',
+            data: ['HO', clearHotspot, 1]
+        }
+    ])
+
     template.forEach(function(item) {
         if (!('data' in item)) return
 
@@ -1086,7 +1105,8 @@ function openCommentMenu() {
                 clear()
                 node[p] = [value]
             }
-            updateCommentText()
+
+            setCurrentTreePosition.apply(null, getCurrentTreePosition().concat([true, true]))
         }
     })
 
@@ -1147,7 +1167,7 @@ function openNodeMenu(tree, index, event) {
     }
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
+    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
 function openGameMenu(element, event) {
@@ -1180,7 +1200,7 @@ function openGameMenu(element, event) {
     }]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), event.clientX, event.clientY)
+    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
 function clearConsole() {
@@ -1218,7 +1238,7 @@ function showGameInfo() {
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
     else handicap.selectedIndex = 0
 
-    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0
+    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0 || 'AB' in rootNode
     handicap.disabled = disabled
     size.disabled = disabled
 
@@ -1308,7 +1328,7 @@ function showGameChooser(callback) {
         var tp = gametree.navigate(tree, 0, 30)
         if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
-        var board = sgf.addBoard.apply(null, tp).nodes[tp[1]].board
+        var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 

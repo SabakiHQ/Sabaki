@@ -9,11 +9,11 @@ var fuzzyfinder = require('../modules/fuzzyfinder')
 var gametree = require('../modules/gametree')
 var sound = require('../modules/sound')
 var helper = require('../modules/helper')
+var setting = require('../modules/setting')
+var gtp = require('../modules/gtp')
 var app = remote.app
 var dialog = remote.dialog
 var process = remote.require('process')
-var gtp = remote.require('./modules/gtp')
-var setting = remote.require('./modules/setting')
 
 var GeminiScrollbar = require('gemini-scrollbar')
 var Board = require('../modules/board')
@@ -55,7 +55,7 @@ function setRootTree(tree) {
     setGameTrees(trees)
 
     tree.parent = null
-    setCurrentTreePosition(sgf.addBoard(tree), 0, true)
+    setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
     setPlayerName(1,
         gametree.getPlayerName(1, tree, 'Black'),
@@ -133,7 +133,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
 
     updateSidebar(redraw, now)
     setShowHotspot('HO' in tree.nodes[index])
-    sgf.addBoard(tree, index)
+    gametree.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
     // Determine current player
@@ -754,7 +754,7 @@ function makeMove(vertex, sendCommand) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
+                setCurrentTreePosition(gametree.addBoard(variations[0]), 0)
                 createNode = false
             }
         }
@@ -772,7 +772,7 @@ function makeMove(vertex, sendCommand) {
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
 
-            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) setRootTree(splitted)
             setCurrentTreePosition(newtree, 0)
         }
@@ -1336,7 +1336,7 @@ function commitGameInfo() {
     else rootNode.HA = [String.from(handicap + 1)]
 
     var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = [String.from(Math.max(Math.min(size, 26), 9))]
+    rootNode.SZ = [String.from(Math.max(Math.min(size, 25), 9))]
     if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
     if (!info.getElement('select[name="handicap"]').disabled) {
@@ -1654,7 +1654,7 @@ function saveFileToSgf() {
 
     for (var i = 0; i < trees.length; i++) {
         trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-        text += '(' + sgf.fromTree(trees[i]) + ')\n\n'
+        text += '(' + sgf.stringify(trees[i]) + ')\n\n'
     }
 
     return text
@@ -1892,7 +1892,7 @@ window.addEvent('resize', function() {
     resizeBoard()
 }).addEvent('beforeunload', function(e) {
     if (!askForSave()) {
-        e.event.returnValue = ' '
+        e.event.returnValue = 'false'
         return
     }
 

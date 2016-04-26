@@ -1,4 +1,4 @@
-# Sabaki
+# Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
 
 <img src="logo.png" width="156" height="156">
 
@@ -43,6 +43,13 @@ You can build Sabaki by using one of the three build instructions depending on t
 * `npm run build:osx`
 
 The binaries will be in `Sabaki/bin/`.
+
+To run the (currently very limited) tests, you have to install [mocha](https://mochajs.org) globally using npm:
+
+~~~
+npm install mocha -g
+npm test
+~~~
 
 ## Web Version
 
