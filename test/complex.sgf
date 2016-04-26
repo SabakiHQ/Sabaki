@@ -1,0 +1,2407 @@
+(;FF[4]
+GM[1]
+PC[OGS: http://online-go.com/game/review/114161]
+BR[8d]
+WR[8d]
+CP[online-go.com]
+RE[?]
+SZ[19]
+KM[7.5]
+RU[chinese]
+
+;B[qd]
+;W[dd]
+;B[pq]C[
+
+-- chat --
+akoveable: oups
+akoveable: sorry
+
+]
+
+;W[dp]
+;B[fc]C[
+
+-- chat --
+YSR43: :D
+AerialSnack: c14?
+Fairgo: Hey, welcome to the relay! :)
+NomGhost: c14 has been played
+
+]
+
+;W[cf]C[
+
+-- chat --
+Kid Icarus: ooh i think lee sedol is trying to fuck with alphago
+Kid Icarus: theres a move at R8 now
+hajoucha: hi, thanks for the relay, here the yt live stream lags horibly
+thouis: I doubt that will work.
+
+]
+
+;B[ql]C[
+
+-- chat --
+YSR43: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 
+thouis: (fucking with it, I mean)
+Kid Icarus: and perhaps thats fuseki isnt in the database
+thouis: there's no fuseki DB.
+Chinitsu: nice!
+AerialSnack: ^
+thouis: Pure MCTS and deep networks.
+Kid Icarus: well, i mean based on its training games, it has patterns in the programming right?
+Fairgo: Time settings are 2 hours main time with 3 x 1 min byomi
+
+]
+
+;W[od]C[
+
+-- chat --
+Kid Icarus: board positions it has 'seen' before 
+thouis: Kid Icarus: yes, but only built up of local features
+AerialSnack:  M16 seems kind of passive
+thouis: So going "off-book" doesn't really cause it any more difficulty.
+Pempu: where is this demo relayed from? They are several moves deeped in to the game already
+thouis: Fairgo is relaying it, I believe, from youtube.
+
+]
+
+;B[ld]
+;W[qc]
+;B[rc]C[
+
+-- chat --
+HowToPlay?: youtube chat is a mess..... 
+Kid Icarus: but if it hasnt experienced a position before, wouldnt that effect something?
+Sidaroth: I see two more moves on the YT stream, but it is lagging a bit
+AerialSnack: Muahaha, I'm able to guess some moves
+
+]
+
+;W[pc]
+;B[re]C[
+
+-- chat --
+donjuan100: I don't know Kid Icarus, it played itself millions of times ... it's seen some shit
+thouis: heh
+Pempu: Relaying from a stream is pretty hard. No way to know move order 
+thouis: it's played past lives of itself, too.
+donjuan100: lolz^
+
+]
+
+;W[of]
+;B[pg]
+;W[og]
+;B[ph]C[
+
+-- chat --
+AerialSnack: Is there a way to make variations and keep what the person in charge of the review on the original line?
+thouis: AerialSnack: what do you mean?
+thouis: you can click to make your own variations (and share them using the share box, above)
+
+]
+
+(;W[id]C[
+
+-- chat --
+Kid Icarus: did they not explain to Michael Redmond then that there is no database?
+AerialSnack: lol
+thouis: possibly not.
+AerialSnack: So far I have a 70% success rate with predicting moves
+thouis: Well, there was the KGS training database, which one of the networks it uses was trained from.
+thouis: But probably not in the way most people think about it
+Pempu: Is the hardware for alphago the same as in Fan Hui game?
+thouis: they've probably spun up more resources.
+Pempu: probably...
+thouis: And might be running their deeper (stronger, slower) network on it
+thouis: but otherwise, I expect about the same.
+Kid Icarus: seems like from google's perspective they'd want a commentator that knew a bit of the novelty of the program itself
+pagia: I think black get a slightly behind now
+
+]
+
+;B[lf]C[
+
+-- chat --
+Kid Icarus: and the way it works
+Sidaroth: I don't think he really understands the monte carlo method either
+AerialSnack: I feel like this would be better without the commentators... 
+
+]
+
+;W[oh]C[
+
+-- chat --
+thouis: I have the sound off :)
+thouis: I can read the paper for commentary
+pperez333: they coulde have had a Google guy for the technical comments...
+
+]
+
+(;B[pi]C[
+
+-- chat --
+AerialSnack: Why not P11?
+S_Alexander: How strong the commentator?
+apetresc: 9-dan pro
+oshn: I'd liked it more with Japanese commentators
+
+]
+
+;W[lh]C[
+
+-- chat --
+Kid Icarus: its in korea tho
+
+]
+
+(;B[kh]C[
+
+-- chat --
+hermitage171: where is the relay from?
+hermitage171: i.e. what site?4
+HowToPlay?: it was already said in chat
+Kid Icarus: its streaming on youtube
+
+]
+
+;W[ke]C[
+
+-- chat --
+HowToPlay?: but its from youtube 
+chopper: What significance does it have that Sedol was given black? I thought the more senior player usually got White? 
+Kid Icarus: they nigiri'd
+thouis: chopper: it's random, now
+gamesorry: P11 leaves bad aji
+chopper: ah
+thouis: how does AG nigiri?  it doens't have hands
+Kid Icarus: maybe its wrangler did
+thouis: cheating!
+Kid Icarus: or it just guesses even or odd
+chopper: yeah, if it's random using a computer ... AG could have manipulated the results :P
+tinuviel: isn't that why they're playing 5 games?
+
+]
+
+;B[le]C[
+
+-- chat --
+chopper: i thought they were playing 3 ?
+HowToPlay?: nope 5
+Fairgo: Best of 5
+chopper: wow, ok
+YSR43: not best of 5 all 5 games
+Fairgo: Right, my mistake
+
+]
+
+(;W[ge]C[
+
+-- chat --
+AerialSnack: That was a lot of time for what seemed like an obvious move
+
+]
+
+)(;W[lg]C[
+
+-- chat --
+Zal: Got to make sure
+dneg: b stick won't die right?
+dneg: i'm scared :(
+dneg: bots so good at capturing races
+kamoro: I'd be more worried about it getting attacked for W profit
+kamoro: If its only job is to live, it will live
+arczyx: yeah
+arczyx: if black get split here it'll be hard
+
+]
+
+;B[kg]C[
+
+-- chat --
+chopper: I wonder how likely this type of game is to make a player more nervous than usual. After all, they're probably quite jaded to being nervous, but this is ... a special event.
+Pedro Páramo: Things turned into a fist fight faster than I expected
+
+]
+
+;W[kf]C[
+
+-- chat --
+AerialSnack: L14 nextx
+
+]
+
+(;B[jf]C[
+
+-- chat --
+AerialSnack: M13 was a really good move
+
+]
+
+)(;B[ne]C[
+
+-- chat --
+chopper: "If I get defeated it might be negative for go, but it is inevitable in this modern life. But it won't destroy the value of go itself" -Lee
+chopper: i guess he answered already
+
+]
+
+;W[oe]C[
+
+-- chat --
+Pempu: This game might become a masterpiece
+HowToPlay?: The divine move might be found within these 5 games 
+
+]
+
+;B[jc]
+;W[ic]C[
+
+-- chat --
+thouis:  I feel like AG would prefer to be in fights.  I would expect its local play is stronger than its global play
+AerialSnack: I know how Lee Seedol could win....
+AerialSnack: Nuclear Tesuji
+thouis: kick out the plug
+Pedro Páramo: But for real. If Alpha Go wins this I will have to reconsider severely my thoughts on the limits of evolution. Is IA the future and we just defectuous flesh steppingstones of evolution?
+dneg: MR is awesome, gotta watching this again
+thouis: Pedro Páramo: same thing was said around chess.
+thouis: I wonder what the next "milestone" is.
+Pempu: JiuJitsu
+
+]
+
+(;B[nc]C[
+
+-- chat --
+AerialSnack: Is there a different stream with different commentary?
+
+]
+
+)(;B[jd]C[
+
+-- chat --
+thouis: Pempu: driving in boston traffic
+Bronze: how important is time?
+philippe.beaudoin: AerialSnack: One is starting in 20 minutes on the AGA YouTube channel.
+Pedro Páramo: Guess you are right, thouis. 
+AerialSnack: I'd say relatively unimpotant Bronze\\
+
+]
+
+;W[ie]C[
+
+-- chat --
+Bronze: gotcha thats what a lot of my chess wins come down to
+thouis: against machines?
+Bronze: lol no other people
+Kid Icarus: who is gonna comment on the AGA channel?
+YSR43: this youtube stream keeps changing screen >:l
+philippe.beaudoin: Kid Icarus: Myungwan Kim (9p)
+Sidaroth: andrew and myungwan I think?
+Kid Icarus: i thought he wasn't going to comment until game 3
+DemDandelions: i wish i could have a better grasp on what's happening
+Sidaroth: I think he is commented game 3 infront of a live audience, if I'm not mistaken
+Kid Icarus: ah
+thouis: Lee thinking a long time
+AlmostMatt: When does the AGA channel intend to begin?
+Ludens: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 
+
+]
+
+;B[je]C[
+
+-- chat --
+AerialSnack: In about 15 minutes
+AerialSnack: K15 seems like a strange move. I mean, it's what I would play, but that only adds to the confusion xD
+
+]
+
+;W[jf]
+(;B[hf]
+)(;B[if]C[
+
+-- chat --
+Tarqeq: it threatens the J16 group
+Kid Icarus: black has to keep the cuts up
+arczyx: if black didn't play there white would get connected too easily
+Kid Icarus: so it doesnt become a one sided fight
+chopper:  "How did you know? Oh Yeah! You're a top professional" -- my favorite line so far
+Tarqeq: it's kind of interesting
+
+]
+
+;W[jg]C[
+
+-- chat --
+Traveller: :-)
+Pedro Páramo: i guess lee is taking a risk trying to prove a point here. Who will read better in the end? Im nerveus allready
+tankbard: I'm glad to see Alphago doesn't defy our conventional wisdom by enough that it did something different there
+Pempu: Sedol seems a bit nervous
+thouis: I would expect AG to read a lot better
+arczyx: the hair is the cause
+arczyx: i'm sure
+arczyx: lol
+thouis: Especially in complicated fights, where there are only a few moves to consider.
+DemDandelions: computer getting psychological edge already
+Shawnxiaoxu: exciting
+thouis: the top group's not completely settled, either, I think
+KillerDucky: At first I thought this fight would be bad for white but now I'm not sure...
+Bronze: ^
+donjuan100: LOL their giving sedol a hard time about his hair too
+chopper: OMG, is he tryign to get Redmond uncomfrotable with praise? Redmon is handling it welll though
+Kid Icarus: called that one
+Kid Icarus: in my mind
+
+]
+
+(;B[ki]C[
+
+-- chat --
+AerialSnack: This fight is pretty straightforward
+AerialSnack: I think this fight was pretty bad for lee, both his stones that are separated are in danger
+
+]
+
+)(;B[li]
+;W[mi]
+;B[hf]C[
+
+-- chat --
+arczyx: wow he wants to kill everything
+Kid Icarus: thats how i feel when i play gnugo
+thouis: G16?
+chopper: I've called everything so far
+dneg: how strong is the other commentator?
+chopper: in my mind
+arczyx: L11 doesn't work
+Kid Icarus: he is john connor
+dneg: yeah and? lol
+
+]
+
+(;W[ki]C[
+
+-- chat --
+AerialSnack: L11?
+AerialSnack: L11 kills the group, does it not?
+
+]
+
+)(;W[ih]C[
+
+-- chat --
+tesujikid1: lee can tka ethe four stones above
+KillerDucky: Chris Garlock is AGA 3d
+thouis: AerialSnack: you can click it out
+AerialSnack: Yeah, but I'm not strong enough to tell what pros will do xD
+arczyx: now L11 can work
+arczyx: i think
+tesujikid1: this looks like a good result for lee
+
+]
+
+;B[mb]C[
+
+-- chat --
+Bronze: don't think l11 is a good move
+mattsan: Didn't really expect that.
+
+]
+
+;W[gd]C[
+
+-- chat --
+donjuan100: nope
+kamoro: For W, I11 connects up his stones. For B, it's too slow.
+DemDandelions: i dont get the logic behing n18
+dneg: b still have left corner
+darkplayah: man this is *really* complicated
+yuri: had to turn off the stream. the mixture between professional analysis and explanation of the rules of the game was driving me crazy
+dneg: 3-3 later or use some aji but gotta keep sente
+Pempu: N18 makes a bit of eye space and protects against L16 L17 M17 cut
+thouis: DemDandelions: making eye space, I Think
+AerialSnack: n18 gives black eye space and takes away white territory at the same time
+Zal: Doesnt N18 just establish some shape for territory
+yuri: isn't it tempting to take the center stones?
+DemDandelions: ok, thanks 
+yuri: f17 wasn't happy anyways
+Zal: That too
+thouis: yuri: left side bigger?
+
+]
+
+;B[ki]C[
+
+-- chat --
+thouis: and if they try to run, attack for profit?
+
+]
+
+;W[mj]C[
+
+-- chat --
+Bronze: so why was L11 a good move?
+dneg: oh alpha wanna keep top part
+AerialSnack: L11 makes fights easier for black
+thouis: Bronze: might just be too much to give up without a fight
+AerialSnack: Because the shape is stronger
+thouis: how settled is white upper right?  
+
+]
+
+;B[kk]C[
+
+-- chat --
+Traveller: Not very
+yuri: seems like plenty of room
+thouis: to me, too.  
+yuri: not 100%, but ok
+Zal: It seems okay
+Zal: Not in eminent danger at the moment atleast 
+Traveller: Agree with that
+Bronze: does this have a marker for a removed stone?
+yuri: cant believe we ended up with everyone settled
+thouis: not everyone settled.
+yuri: cept for poor f17
+trohde: W J18, B P18
+darkplayah: white is going for everything?!?!
+thouis: white going for whatever makes it win :)
+
+]
+
+(;W[ib]C[
+
+-- chat --
+AerialSnack: Bronze, no
+
+]
+
+;B[ob]C[
+
+-- chat --
+AerialSnack: White is pressuring I think
+arczyx: before white 1 space jump
+Pempu: uh oh! killing move!
+
+]
+
+;W[ml]C[
+
+-- chat --
+YSR43: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 
+darkplayah: is this guy really 3d or he is just "playing dumb"?
+darkplayah: so can white get it?
+
+]
+
+;B[lm]C[
+
+-- chat --
+AerialSnack: They talked about that. There's a few theories they gave
+tankbard: 48 WJ18, 49 BP18, 50 WN8, 51 BM7
+AerialSnack: Both because Fan Hui played passively, and since Fan Hui was weaker, AG didn't need to fight
+YSR43: this is the right move. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 
+Fairgo: Thanks @trohde
+trohde: <3
+thouis: Bronze: it probably accepts fights that it thinks are good for it :)
+itz.ye11ow: Kappa Kappa TAIWAN #1 Kappa Kappa
+itz.ye11ow: oh, sorry, wrong chat.
+
+]
+
+;W[nc]
+;B[nb]
+;W[kb]C[
+
+-- chat --
+Bronze: Lol twitch viewer
+tankbard: lol
+tankbard: PJSalt
+YSR43: BIblethump
+
+]
+
+;B[lc]C[
+
+-- chat --
+AerialSnack: Eh, the rules not changing is a lie. Points were calculated by how many stones you had on the board, and territory wasn't calculated at all
+arczyx: wow black's in great danger
+thouis: Oh how I wish I could see AG's move evaluation score.
+Bronze: how valuable is j19?
+Zal: To me it looks like whites in more danger
+CylonBunny: Didn't think to see classic L&D this early
+Bronze: or h19?
+AerialSnack: J19 is not valuable at all?
+tankbard: Yeah I don't know about that black group
+dneg: man o man
+
+]
+
+;W[mm]C[
+
+-- chat --
+AerialSnack: black is looking dead
+
+]
+
+;B[ln]C[
+
+-- chat --
+thouis: white may be forcing some moves to make sure it can make eyes?
+Zal: lol I love the commentator "it's probably alive..."
+AerialSnack: How can it live?
+CylonBunny: If Lee Sedol played it... It's alive
+pagia: I think both white and black are not in danger. But  unfavorable for black
+tankbard: lol
+S_Alexander: When AGA starts?
+llirret: p17 
+DemDandelions: oh my, my brain is so confused by this commentary
+CylonBunny: Pro vs 30 kyu commentary
+NomGhost: yeah this is hilarious
+Bronze: please i'm 25kyu
+tankbard: lol
+.Rev: AGA stream is starting
+tankbard: This is amazing
+NomGhost: high-level analysis mixed with absolute beginner explanations
+CylonBunny: Yeah, he is playing the role of the 30kyu for all the nin players tuning in
+NomGhost: yeah he's 'playing dumb' to make it accessible for casual people
+Traveller: He is really 3D based on AGA play
+llirret: just mute it LOL
+tankbard: I like how they haven't actually defined an eye yet
+thouis: filthy casuals, as we call them
+Bronze: i'm assuming that an eye is capturing a single stone?
+CylonBunny: They just need to pick a target audience and stick to it
+AerialSnack: You're right, they haven't explained what an eye is xD
+pperez333: btw, the AGA broadcasting just started
+pperez333: https://www.youtube.com/watch?v=YZPKR7HzM_s
+MasterMind2349: Hi
+
+]
+
+(;W[kl]C[
+
+-- chat --
+llirret: wow
+trohde: Lee doesn’t look too happy
+Zal: New beginners are probably like "Eyes" I can see them just fine
+pagia: L18 is sharp!!!!
+tinuviel: he looks focused, trohde
+pagia: wrong ,L8 is sharp!
+
+]
+
+;B[ll]C[
+
+-- chat --
+AerialSnack: I don't get L8
+tankbard: Wow, it wants the center group too
+CylonBunny: W wants everything
+YSR43: greedy machine
+YSR43: >:l
+YSR43: taking ppl's job taking ppl's houses
+thouis: driving cars for us.
+thouis: makign things for us.
+thouis: damn machines.
+
+]
+
+;W[lk]
+(;B[jj]C[
+
+-- chat --
+thouis: AG's all "cut cut cut"
+DemDandelions: i'm reading robopocalypse atm, how fitting
+AerialSnack: Someone explain K10 for me please
+Zal: Gets that group the heck out
+YSR43: it gotta live
+Zal: Nice
+Bronze: what about the black group on row 14?
+CylonBunny: Connects and is threaten ing WS group
+AerialSnack: Why not capture L8 instead?
+
+]
+
+;W[jl]C[
+
+-- chat --
+Bronze: pandanet or something
+
+]
+
+(;AB[hh]C[
+
+-- chat --
+lucius286: in danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H12 
+
+]
+
+)(;B[hj]C[
+
+-- chat --
+chopper: lol, redmond just got corrected
+AerialSnack: I stopped watching that stream, what did he get corrected on?
+Pempu: https://www.youtube.com/watch?v=3YLzxz7QCMI  badukTV live stream 
+chopper: he started talking about a pin on the other commentator, saying it was from pandanet
+chopper: and the other commentator said no, it's this other totally different thing
+AerialSnack: bahaha
+AerialSnack: Ugh, I need to sleep. I wish I lived in korea
+
+]
+
+;W[hi]C[
+
+-- chat --
+chopper: west coast it's only 9pm. you don't need to move THAT far
+chopper: and I would NOT want to live in korea
+chopper: great food, but ...
+dneg: kimchi
+Pempu: hehe 80k people watching official youtube stream and 45k watching badukTV stream :)
+AerialSnack: I plan on moving to the west coast, actually
+chopper: good plan :) just stay out of cali ;P
+Bronze: its 1114 here and i have to wake up at 530
+Fairgo: 11:15 here too
+Toreg: 4;14pm
+
+]
+
+;B[gj]C[
+
+-- chat --
+mattsan: 12:15 AM :D
+DemDandelions: 6am x_x
+Sommelier: Sedol pulled back
+
+]
+
+;W[gf]C[
+
+-- chat --
+Sommelier: was about to play, then pulled back
+philippe.beaudoin: Anybody watching the AGA broadcast?
+AerialSnack: I am
+pagia: May be Lee must to make a ko at upper left corner.
+AerialSnack: It's kind of... subpar
+zemotion: lol 
+AerialSnack: Nah, Lee isn't doing anything in the upper left corner I thin
+tankbard: Missing J11?
+
+]
+
+;B[ii]C[
+
+-- chat --
+philippe.beaudoin: The commentary is solid, the production needs work. :)
+AerialSnack: ^^
+
+]
+
+;W[jh]
+;B[ij]C[
+
+-- chat --
+tankbard: W K12, B J10
+Giuseppe Bonello: white's weak!
+
+]
+
+;W[mn]C[
+
+-- chat --
+StaIkerSan: jeez, i hope this chat makes a higher level discussion than explaining ataris
+Zal: Honestly I'm just lost
+Opodeldoc: That old game company?
+darkplayah: i guess it's fine to help new people coming in... but yea im waiting yeagerly for myungwan's commentary
+acTane: hey snap backs are serious business
+AerialSnack: I've understood a good 80% of the game
+thouis: I'm lost in my own games... I have no hope of understanding this one
+Bronze: ^
+philippe.beaudoin: ^^
+tankbard: I'm not convinced that a new player would really get much out of talking about snapbacks <_<
+crux00: ... well, it's for journalists and computer programmers as much as ppl who already know/like go ;)
+Zal: Haha, this amount of fighting is something I've hardly experienced
+tinuviel: probably can get higher level explanations on the aga youtube stream
+yuri: its funny, when you begin, you are too violent. then you learn to settle down, and this kind of game is just frightening
+AerialSnack: I was able to predict most of the first half of what has happened, but now it's byond me
+Zal: Must be stressful
+trohde: Myungwan is commenting onGA channel already https://www.youtube.com/watch?v=YZPKR7HzM_s
+Zal: Now my games consist of," yeah you can have that, I dont want to fight you"
+darkplayah: ah cool
+
+]
+
+;B[lo]
+;W[mo]
+;B[lp]C[
+
+-- chat --
+darkplayah: <3 myungwan
+DawoonYi: this is coll
+DawoonYi: cool
+DawoonYi: can I check the estimated score on this game?
+thouis: not on review boards...
+thouis: you could download the sgf and feed it to gnugo or something
+Scorpiour: Alphago is frightful
+DawoonYi: many Thanks
+yuri: that would be pretty useless
+Zal: Lee is gaining a lot in the middle
+DawoonYi: we can copy this game online. and then
+mark5000: Crazy Stone thinks white is winning by 18 points
+Opodeldoc: B+R
+
+]
+
+;W[mp]C[
+
+-- chat --
+DawoonYi: we can calculate this game in live.
+yuri: probably isn't going to completely translate...is upper left going to wake up?
+DawoonYi: thanks
+luckymedie: right now black plus about 125
+philippe.beaudoin: Looking at the board, this is so horizontal/vertical. Strange. :)
+DemDandelions: oh my, they read twitchstyle nicknames
+chauncey: I'd be scared as white
+thouis: I'd be scared as either.
+chauncey: yeah, I'd be scared as black too
+CylonBunny: I'm scared
+shanta: from the start
+shanta: imo
+shanta: lee sedol was on the defensive
+
+]
+
+;B[lq]C[
+
+-- chat --
+tankbard: @mark5000 Yeah but Crazy Stone's biased ;-)
+Bronze: this seems very agressive
+llirret: wow
+
+]
+
+;W[mq]C[
+
+-- chat --
+thouis: wow.
+
+]
+
+;B[im]C[
+
+-- chat --
+YSR43: lol fun game
+DemDandelions: this looks like me playing lol
+Karet: "mine"
+yuri: very strange. 
+dneg: w looks funny
+madswirljh: b corner
+yuri: could j7 be looser?
+luckymedie: that is game
+YSR43: seems like white gotta jump lower right immidiately
+llirret: both not making concession
+thouis: yuri: I think W would get more aji out of it, then
+luckymedie: Black secured victory
+YSR43: is that a correct strategy?
+Zal: Ouch I do not want to be white right about now
+DrSFBrains40: Who is who?
+Zal: Black Lee Sedol
+tankbard: Lee Sedol is black
+YSR43: B human W machine
+Zal: White AlphaGO
+DrSFBrains40: Thanks!
+Bronze: white is the terminator black is sean connor
+tankbard: Also that's a lot of open space in the lower left...
+Pedro Páramo: Sedol B, AG is W
+mark5000: Lee left the game board
+thouis: AlphaGo quickly rearranges stones
+YSR43: cigarette time
+mark5000: Auto-resign in two minutes
+thouis: looks innocent when he comes back
+thouis: really?
+thouis: no bathroom breaks?
+muloka: auto resign really?
+DemDandelions: central park hustler style
+crux00: ... isn't that a joke about the rules here? :)
+mark5000: I'm kidding. OGS does that not RL
+thouis: yes.
+thouis: just got it. 
+tankbard: Whew
+chauncey: Lee Sedol winning the mind games
+Jadeite: hehe
+YSR43: yea gotta use that computer psychology
+CylonBunny: I wonder how AlphaGo decides how long to think about each move. This one is taking a lot longer than the last few
+
+]
+
+;W[qo]C[
+
+-- chat --
+Acumen: R5 was taken
+AerialSnack: Wow, I leave for 5 minutes and Lee Sedol is kicking butt
+Opodeldoc: Humans aren't over yet.
+dneg: go lsd
+yuri: still not settled...small b in corner, w alive
+yuri: right?
+CylonBunny: I'm still not entirely sure how Bs top will play out
+CylonBunny: I assume it's alive because Lee Sedol
+chauncey: isn't B just alive top?
+farful: btop is alive and can always connect with r18
+farful: or make two eyes with n14
+Toreg: 67 dislikes, wtf
+mark5000: Lee is checking to make sure Ke Jie isn't controlling the computer
+Bronze: lol
+Roybie: haha
+Fairgo: lol
+DawoonYi: ㅋㅋㅋㅋLOL
+EIFY: lol
+gamesorry: Ke Jie is here: http://sports.letv.com/match/122341003.html#live/1020160303210913
+pagia: ^^
+
+]
+
+(;B[fq]C[
+
+-- chat --
+Roybie: definitely having a shit, or a smoke, or both
+Karet: Whoa
+thouis: that is one hell of a tenuki
+AerialSnack: Uhhh
+AerialSnack: I was going to go to sleep
+AerialSnack: But maybe not
+thouis: not anymore!
+calantir: holy crap
+yuri: tenuki!!
+blarbly: that was big 
+Opodeldoc: Lee doesn't always tenuki, but when he does, damn...
+AerialSnack: Well, it is always an option
+muloka: AerialSnack: I know. I said g'nite to my friends 30 minutes ago.
+madswirljh: it is big
+tankbard: Probably fine, otherwise he'd need to finish any fighting in the lower right with sente
+DrSFBrains40: It seems much bigger to me than R4.  Isn't it?
+madswirljh: if he abandons that stone he can still get some big endgame on the side
+yuri: well, that would be gote
+tankbard: If white got that point after the fight in the lower right it'd look pretty bad
+AerialSnack: Not necessarily DrSFBrains40, because white can kill Q3
+
+]
+
+;W[gg]C[
+
+-- chat --
+DrSFBrains40: wow
+llirret: ...?
+AerialSnack: WTF
+blarbly: no...
+AerialSnack: The tenukis
+muloka: hahaha
+Pedro Páramo: oooooooooohhh
+llirret: wtf
+acTane: ????????????
+tankbard: lol
+thouis: wha?
+luckymedie: good move
+madswirljh: cpu is getting competitive
+Pempu: ok this is in!
+chauncey: wtf is this
+yuri: thats failicious...from my limited perspective
+AerialSnack: PLEASE TELL ME WHAT THE COMMENTATORS ARE SAYING
+YSR43: G_G 
+madswirljh: white really wants to live
+luckymedie: very strong
+Bronze: am i confused because i'm stupid or what?
+DrSFBrains40: Attack of the killer tenukis!
+thouis: maybe AG lost?
+Opodeldoc: AG decides corners are overrated
+tankbard: They haven't said anything about G13 yet
+Traveller: Which stream?
+farful: can someone give me a link to korean commentary?
+DemDandelions: derp
+YSR43: alpago confused
+AerialSnack: No, that was a terrible move, I'm pretty sure
+YSR43: lool
+Pempu: AlphaGo is aiming at 0,5 point win
+AerialSnack: ^
+arczyx: is this AG's way of resigning?
+yuri: that just sucked
+chauncey: fighting tenuki with tenuki
+
+]
+
+;B[cn]C[
+
+-- chat --
+Karet: Haha
+crux00: G13 does look kinda derp, especiallly now with c6
+acTane: #rekt
+madswirljh: whites corner right now
+Pempu: This is not the game BTW
+CylonBunny: If either of these players played it - it's not a terrible move
+madswirljh: thats like 1/5 of the board
+luckymedie: excelleellent plY
+madswirljh: this is the game
+arczyx: rip AG
+Traveller: That helps upper left
+arczyx: long live humanity
+tankbard: Yeah I'm curious as to what AG has in mind for G13, so to speak
+acTane: helps upper left but 3-3 still live
+AerialSnack: I mean, those two stones were already dead?
+Pempu: They are going to undo :)
+thouis: AG operator's probably all "wtf are you doing machine?"
+mark5000: It reduces aji I guess
+YSR43: lool
+Roybie: "undo requested"
+thouis: heh.
+AerialSnack: I don't think AG operator's actually knows how to play that well?
+
+]
+
+;W[dn]C[
+
+-- chat --
+CylonBunny: Reduces aji they weren't totally dead
+yuri: but in gote...now?
+luckymedie: The program got over trained and has become broken
+
+]
+
+;B[dm]C[
+
+-- chat --
+mark5000: Mike doesn't like it. haha
+mark5000: "A bit of a slow move"
+tankbard: Excellent
+yuri: a bit?
+DemDandelions: i like how they talk about a move they dont show
+AerialSnack: Oh yeah, it was a bit slow
+Pempu: G13 removed aji from top left corner. Now it's all white's territory
+tankbard: I wanna hear some sass
+yuri: nothing left in the corner pempu?
+mark5000: Chris: "We can introduce a new word" Mike: "Thick? Or slow?
+thouis: If white thinks it's able to survive, and definitely up, solidifying the top makes some sense.
+mark5000: Chris: "tenuki"
+madswirljh: this actually doesn't seem that bad to me
+thouis: Also, makes moves around C10 stronger, no?
+acTane: lololol
+AerialSnack: sure thois, but I mean, white gave up so much in the bottom left
+
+]
+
+;W[fp]C[
+
+-- chat --
+madswirljh: wait what
+yuri: e3?
+AerialSnack: Unless AG thinks that it can still easily get the corner? Maybe that aji was more of a threat than LSD's fighting?
+thouis: I'm lost.
+AerialSnack: AG is drunk
+CylonBunny: New josrki? I have seen this move beffore
+AerialSnack: I mean, it doesn't seem weak
+AerialSnack: Just different
+madswirljh: situational
+thouis: I wonder how AG behaves when it can't find a win.
+madswirljh: w gets a corner I guess
+aik: did G13 protect against C17?
+
+]
+
+;B[gp]C[
+
+-- chat --
+DemDandelions: sepuku
+YSR43: someone needs to hit alpago on head 
+arczyx: will AG play more recklessly if it's behind?
+quuxman: some bots just start playing ridiculously when they can't find a winning path
+YSR43: so it can be fixed
+arczyx: or just play normally all the time?
+AerialSnack: white can still get the bottom right though
+chauncey: monte carlo bots usually win small and lose spectacularly, alphago probably plays like that too
+Pedro Páramo: It is wednesday my dudes
+AerialSnack: If it gets sente
+thouis: quite possibly.  safe moves that lead to a loss will quickly die out in the tree
+Bronze: is alpha go actually losing right now? still seems like it could go either way
+mark5000: I don't think this is the monte carlo case though. It seems AG over-estimates the position for itself
+thouis: if it thought it was losing, it would probably resign.
+AerialSnack: It looks like white is winning, but black has a lot of potential to come back, so even
+thouis: mark5000: what do you mean?
+yuri: seems like it could conceivably be over in 4-5 moves 
+CylonBunny: Does it know how to resign? I'd think that would be the operators job just like finishing moves and passing
+DemDandelions: i guess they could have some kind of go expert that could press the resign button before AG ridicules itself
+YSR43: @bronze, it doesn't seem like white could secure more than black at the moment
+
+]
+
+;W[gq]C[
+
+-- chat --
+thouis: CylonBunny: it gives a win probabiilty, I think.  If that drops too low, they could resign
+mark5000: Crazy Stone also over estimates right now. W+19.5
+CylonBunny: This cross cut is amazing
+thouis: how strong is Crazy STone?
+yuri: can a dan comment? is crosscut really a good move here?
+thouis: AG = cut cut cut
+YSR43: around 1~3 level i think
+YSR43: 1~3 dan
+AerialSnack: Crosscut seems okay since white is locally stronger
+thouis: 6 stones weaker than AG?
+mark5000: It's 6d. At the level I'm running it, 3d
+CylonBunny: AG went from passive to super aggressive. Google turned it to 11 I think
+chauncey: maybe it thinks it's behind
+Traveller: Likely
+pagia: Is Alphago making a sabaki?
+AerialSnack: Oh god, I was going to go to bed 45 minutes ago, I seriously have to go.
+thouis: after that crosscut?
+tankbard: LIES
+Traveller: I should already be in bed
+muloka: @AerialSnack, ditto. I'm off to sleep now.
+yuri: sabaki in this case just means erasure?
+tankbard: Just watch from bed :3
+Fishbreath: I budgeted myself until 2am
+CylonBunny: I'm in bed...
+AerialSnack: I'm in bed too, but I need to be sleeping in this bed
+tinuviel: our 6yo decided this was a great time to have an all out meltdown
+CylonBunny: Myung Kim confirms this is not josrki he has ever seen
+tinuviel: she's asleep now, thank god
+Adarain: ah, kids :)
+thouis: "naptime" spray is your friend
+StaIkerSan: Myung Kim confirms he is in love with alpha go
+Bronze: give her a go board
+muloka: haha my kid is our bed right now... she's 4 and we play Go.
+Roybie: he already decided alphago was a she
+CylonBunny: Cool to see a neural net AI come up with new sequences...
+dneg: lol
+Traveller: I'm married to one
+muloka: g'nite, enjoy the rest of the game.
+thouis: Lee should tenuky.
+Traveller: Cheers
+Bronze: if it's anything like chess it will change things a lot
+Baran: me too I have to go too ;_;
+thouis: I'm giving myself 13 more minuts
+Ketchup4: glad it is only 4pm in my place
+trohde: what shall I say … 06:48 am in Germany …
+
+]
+
+(;B[cc]
+;W[dc]
+;B[cd]
+;W[ce]
+;B[db]C[
+
+-- chat --
+AerialSnack: I don't think I've ever met a girl that was this aggressive
+AerialSnack: I wonder how much this will change how we play?
+AerialSnack: Yeah, I should be off too, ciao
+
+]
+
+)(;B[fr]C[
+
+-- chat --
+Roybie: almost 6pm here, still a couple of hours before I need to go to work woot
+CylonBunny: I have to be clocked in at my bench in 7 hrs...
+Bronze: lawyer?
+CylonBunny: Scientist
+Fishbreath: From the perspective of an AI developer, this is a super-interesting game
+Adarain: the timing is really inconvenient here, got up at 5 for the game, but won't be able to finish watching it
+thouis: damn those koreans with their GMT+9 bullshit
+thouis: I bet they did that on purpose.
+
+]
+
+;W[co]
+;B[en]C[
+
+-- chat --
+Adarain: you'd think that with alphago being european, they'd've found some timeframe that doesn't completely ignore europe
+Adarain: but I guess sedol got to decide on times
+thouis: So many more Go players in Asia, makes sense to go there.
+lemmata: Well, live games aren't the best way to enjoy go anyways... commentary is always much better post-game
+lemmata: Well, I take that back. I guess it's a matter of taste
+calantir: hey lemmata!
+calantir: long time no see
+lemmata: Hi hi hi
+calantir: welcome back
+Pempu: They don't even play on prime time in Korea. 
+lemmata: Long time ^^
+
+]
+
+;W[do]C[
+
+-- chat --
+YSR43: they play after breakfast :)
+
+]
+
+;B[ep]C[
+
+-- chat --
+yuri: oh, snap
+Bronze: as someone who sucks at this game that looked like a good move
+
+]
+
+;W[cm]
+;B[dl]C[
+
+-- chat --
+Adarain: well, all the moves you get to see in this game ought to be good moves, they are strong players after all ^^
+Baran: ok gotta leave now, have fun guys !
+YSR43: that 40 pts chunk lol
+tinuviel: see ya, baran
+yuri: seems like a sad time for w
+lemmata: B70+ W50- according to WBaduk commentary
+lemmata: not sure about the language (it doesn't sound like an exact count)
+
+]
+
+;W[lr]
+;B[kr]C[
+
+-- chat --
+Adarain: wouldn't top left have been much bigger?
+Adarain: (for white)
+lemmata: There's a lot of aji in the top left. Not completely white territory
+Ketchup4: agree
+thouis: not if black doesn't respond to M2
+YSR43: yea black can just reduce ~10 by 3-3
+Karet: This seems to strengthen white and prepare for the attack against bottom-right
+lemmata: It would be interesting to see pro commentary. Myungwan said that AlphaGo actually has "intuition" of some sort.
+kamoro: The original stream was talking about how important sente is. But isn't it less important here? Both upper right and lower left are big. If B takes one, W takes the other or vice versa.
+Adarain: doesn't alphago have a problem with sente anyway?
+
+]
+
+;W[rb]
+;B[jb]C[
+
+-- chat --
+quuxman: B's wall in the bottom looks more valuable
+yuri: isn't k18 yose....isn't that an insult?
+Bronze: what is yose?
+
+]
+
+;W[ja]C[
+
+-- chat --
+Adarain: endgame move
+Bronze: because he's forcing the resolution of that fight?
+yuri: oh sorry, i missed the corner play at s18
+Adarain: oh, that happened
+Adarain: didn't see it either
+yuri: but i already watched redmond read it out :)
+Traveller: Almost not thinking time for that play in response to S18
+
+]
+
+;B[mf]C[
+
+-- chat --
+Traveller: not=no
+quuxman: he had already planned it out
+lemmata: This really makes me want to play go again... :-(
+zemotion: play :D 
+quuxman: breaking up the top group from the corner forces him to connect to the lone stone on the left, or like discussed by the commentators, start making eyes in the middle
+DemDandelions: "yeah.... i'll do that"
+
+]
+
+;W[mh]
+;B[nd]C[
+
+-- chat --
+quuxman: yep, playing out exactly as the commenter predicted
+
+]
+
+;W[qj]C[
+
+-- chat --
+Opodeldoc: wow
+arczyx: super aggressive
+tankbard: wow
+Pempu: this is lovely
+thouis: so many wow
+tankbard: what
+mark5000: Cool
+tankbard: Fighting spirit
+thouis: dammit!
+thouis: I was going to go to sleep
+zemotion: wow 
+calantir: too exciting
+Antaranian: kiai
+yuri: w fail
+zemotion: ke jie said that 
+calantir: guess we're stuck here
+thouis: I wonder if AG has a way to signal "please slam this stone down"
+quuxman: 102 is pretty aggressive, no?
+mark5000: "A nice point--a commonly played move"
+mark5000: lol
+quuxman: looks like R10 can be obviously cut off
+aik: how?
+Bronze: not sure thats true
+thouis: not easily
+pagia: still have a weakness at point A
+pagia: R14
+thouis: it gets help from R5
+Roybie: the commentators missed the exchanges at K18 which is annoying me 
+quuxman: Roybie: wasn't that just an attempt to connect to F17 while extending the K16 group?
+quuxman: I mean not an attempt, but a threat
+Roybie: I don't mean talking about it, I mean missed it off their board
+thouis: OK, I really have to sleep, now.
+DemDandelions: i wish i wasnt aware of that
+quuxman: oh haha, you're right
+thouis: Goodnight, all.  I hope this continues to be exciting
+DemDandelions: good night
+tankbard: thouis is about to sleep, that means lsd is about to respond
+tinuviel: goodnight, thouis!
+tankbard: Any second now
+thouis: Many thanks to Fairgo
+Fairgo: Goodnight thouis!
+DemDandelions: i wonder if there were bets on this ?
+tankbard: So many bets
+quuxman: so R8 is pretty sad
+Adarain: there were many bets
+DemDandelions: and if so, what were the ods
+Adarain: pretty much 50-50
+DemDandelions: oh...
+Bronze: the dan9 bet that alphago would win 1 game
+quuxman: but B's huge chunk in bottom middle makes up for losses on the right side
+Adarain: my personal bet was alphago wins the first game and then lee wins everything else, but my layman opinion is that black is winning here
+yuri: from my uninformed position it seems like b is just playing it out
+Traveller: I think B ahead
+Traveller: I think W agrees and is pushing a bit
+yuri: but he's taking his time on this last move
+chauncey: yeah, lots of time spent on this move
+mark5000: Crazy Stone eased up a bit, now saying W+14.5
+Traveller: LOTS of reading on this one
+zemotion: really? 
+zemotion: damn 
+mark5000: Speaking personally, I slightly favor black.
+zemotion: on chinese stream ke jie said that lee wins 
+mark5000: Lower center is huge for B
+Bronze: how come he thinks lee wins?
+Luqman: Has anyone kept track of the time he's using now?
+Traveller: Ke Jie would know how Lee would play
+Bronze: over 6 minutes
+mark5000: 56-54 AG-Lee
+zemotion: mm i forgot, was tuning in and out a bit cuz they gossiped a lot...
+Opodeldoc: gnugo thinks B+22 here
+Traveller: Take a pillar of salt with that estimate
+Bronze: hes at 10 minutes now i think
+zemotion: but by earlier midgame he said lee sedol will win 5-0 and a bit more 
+pagia: Just look R10 Alphago is 9P
+chauncey: more grains of salt than possible go games
+jovebob: wow
+jelser: Sedol said: "Alphago made a winning move that humans cannot make" was he referring to 102?
+Desolation: imagime that Alphago masters the divine move
+
+]
+
+(;B[ri]
+;W[qk]C[
+
+-- chat --
+pagia: A. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 S11 R9 
+
+]
+
+)(;B[pk]
+;W[qf]C[
+
+-- chat --
+pagia: B. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q9 R14 
+
+]
+
+)(;B[pj]C[
+
+-- chat --
+Luqman: Hmm quite a bit of time
+
+]
+
+;W[qk]C[
+
+-- chat --
+Traveller: Quick response from AG
+Bronze: damn i'm going to be tired at work tomorrow
+
+]
+
+;B[pl]C[
+
+-- chat --
+Traveller: You and me both
+zemotion: lol all of us 
+Traveller: With plenty of company
+calantir: fight lee fight!
+Fairgo: It'll be worth it no worries :)
+chauncey: gotta get up so early tomorrow...
+bibadum: 13pm in Thailand no worry about working tomorrow neither :-)
+tankbard: >:(
+
+]
+
+;W[pk]
+;B[ok]C[
+
+-- chat --
+Adarain: bah, need to go to school in a few minutes, I want to keep watching :/
+tankbard: LSD looks unhappy
+calantir: he was shaking his head
+yuri: r8 dead? doesn't seem like it
+calantir: was that his version of haylee's "reeeally?"
+zemotion: lol i think he does that often 
+Traveller: I suspect this isn't as easy as he was expecting
+Bronze: can't white cut r8 off easily?
+tankbard: I don't think this position is that trivially in his favor, but I guess I wouldn't know
+
+]
+
+;W[rh]C[
+
+-- chat --
+tankbard: He did spend 10 minutes reading before Q10
+Traveller: True
+yuri: seems like w is pretty screwed to me
+Bronze: but white can capture the Q group right?
+arczyx: if this play doesn't work white straight up lose
+arczyx: especially since it's chinese rules
+tankbard: It seems like if white manages to live, even small, that puts a big dent in B's territoy
+Roybie: I'd like to see a KO
+Roybie: to see how AG plays
+Adarain: ko would be neat to see, yea
+pagia: S10 anti R10 weakness
+trohde: Did Myungwan say that Ali is probably stronger than he is?
+pagia: S12 anti R10 weakness
+yuri: redmond is looking upset too
+zemotion: yeah i heard someone mention that 
+calantir: really want to see the ko
+zemotion: kinda crazy 
+tankbard: Wasn't ko mentioned as one of AG's shortcomings in the analysis after Fan Hui?
+Adarain: time to go, goodbye yall
+calantir: night
+pagia: goodbye :)
+tankbard: He's really burning through his time now...
+calantir: this is the crucial moment
+calantir: if he gets an advantage here, he's well ahead
+KetchupIV: the breaking point
+tinuviel: goodnight, adarain
+Zal: I left like 40 min ago and nothing has changed
+darkplayah: myungwan kim says its close but B might be able to kill white attack
+
+]
+
+;B[rl]C[
+
+-- chat --
+Kabootle: good morning everyone
+pagia: If black kill R10 group,may get gote so that white could kill R3 by sente
+calantir: Redmond is saying black could give up S17 stones
+calantir: to make Q3 stronger
+
+]
+
+;W[qf]C[
+
+-- chat --
+kamoro: @pagia but then after that, B has sente to live at C17?
+Roybie: seems likely after that move
+
+]
+
+;B[ri]C[
+
+-- chat --
+Roybie: @calantir 
+Aiko Akemi: anyone has the link to korean stream please..?
+
+]
+
+;W[rf]C[
+
+-- chat --
+yuri: sente seems big now
+
+]
+
+;B[pf]
+;W[qe]C[
+
+-- chat --
+pagia: yes,who get the sent will get lower right conner
+StaIkerSan: Myung Kim say w might win whaaaaaat
+
+]
+
+;B[qh]C[
+
+-- chat --
+Roybie: he's just in love with ag
+calantir: white's sente
+gamesorry: Ke Jie also says that
+zemotion: yeah pretty crazy 
+StaIkerSan: who the hell will get the upper left corner
+gor: even if white loses he still player well
+gor: played*
+calantir: if w plays a move in lower right, black takes upper left
+Traveller: lower right larger than upper left
+pagia: upper left is a ko
+Roybie: haha the handler really slammed that one down
+Zal: He was ready
+Traveller: handler is one of the programmers
+calantir: lol
+zemotion: really? 
+zemotion: cool 
+pagia: alphago play at C17!!!!
+
+]
+
+;W[cc]
+;B[bn]
+;W[bm]
+;B[bl]C[
+
+-- chat --
+Manslay: if it was a human this would certainly mean "I won, go home Lee"
+quuxman: so is this the greatest Go game yet?
+gor: lower right looks huge
+pagia: Now black is in danger...
+
+]
+
+;W[bo]C[
+
+-- chat --
+Traveller: Even I saw that sequence
+
+]
+
+;B[rg]C[
+
+-- chat --
+Manslay: w sente again
+yuri: ? n
+KetchupIV: ag is really stronger than everyone thought i believe
+Acumen: T14 is points?
+Traveller: AG was classed as Pro strength
+chopper: how can redmond be so cold?
+StaIkerSan: i cant believe how strong it is
+Traveller: The only question was just how strong
+Bronze: they made changes to AG between last months and now
+gor: well,lee might still crush it in yose
+gor: too early to judge
+
+]
+
+;W[mr]C[
+
+-- chat --
+Bronze: anyway i have to go to bed
+Bronze: night all
+Traveller: Night, Bronze
+KillerDucky: what did Redmond say?
+trohde: nighty night
+mark5000: Crazy Stone took a real dive just now. W+4.5
+Zal: This guy and tennis
+calantir: he just doesn't seem nearly as anxious about the prospect of alphago winning
+calantir: garlock seems nervous
+Zal: lol
+StaIkerSan: yose is normally an advantage for the AI, and the game is close, thats the thing...
+Roybie: more tennis!
+Zal: I like Go.. but in Tennis 
+Roybie: haha
+Zal: Comedy gold
+Roybie: go lee, fight
+
+]
+
+;B[po]C[
+
+-- chat --
+pagia: I am thinking of a question,does Alphago knows Chinese rule?
+calantir: not protecting L3
+Manslay: Lee went fighting from the move 9
+zemotion: yeah it should 
+KillerDucky: Alphago only knows Chinese rules
+tankbard: Presumably its valuation function is based on that
+pagia: oh thanks
+
+]
+
+;W[jr]C[
+
+-- chat --
+dneg: O_O
+gor: if b wins the t16 ko then whites dragon might be in danger
+mark5000: well
+yuri: umm
+
+]
+
+(;B[kq]C[
+
+-- chat --
+mark5000: Good move
+yuri: b l1 not ok?
+StaIkerSan: omg i want lee to win so badly
+Roybie: redmond went over that yuri 
+Roybie: i guess it's dangerous
+yuri: stopped listening
+zemotion: i want lee to win too :( 
+Roybie: lee, shirked away from a fight...
+yuri: oh, 1 stone too short
+dneg: TEAM LSD \\o/ /o/ \o\
+dneg: wew
+
+]
+
+;W[pn]
+;B[oo]C[
+
+-- chat --
+Pempu: It's better to put move numbers in the shared variations. Manually
+acTane: they ran out of stones, this game
+darkplayah: Maybe, but I'm sure Google has thrown a colossal, astonishing amount of computers at this
+darkplayah: it seems like it scaled Elo logarithmically or something with number of GPUs, but 100x as many GPUs would still make a huge impact
+
+]
+
+;W[qp]C[
+
+-- chat --
+yuri: whoops
+yuri: think they would know better
+
+]
+
+;B[on]C[
+
+-- chat --
+acTane: like cmon google
+tankbard: Well, I'm sure he's lost a few just dropping them too :P
+gor: at this rate the dragon will die
+
+]
+
+;W[pp]C[
+
+-- chat --
+yuri: nw!
+Roybie: redmond said this move would be bad for white
+gor: i dont think p3 cut works
+calantir: could white's dragon die?
+calantir: that would be insane
+
+]
+
+;B[op]C[
+
+-- chat --
+Roybie: that would be AWESOME
+yuri: ls playing fast
+mark5000: Probably not. There's eye spaces on the bottom and middle and top of it
+chauncey: seems unlikely
+gor: there is only one eye on top
+gor: gote eye
+gor: and after o9 its hard for white to build center eye
+gor: of course black needs to play q15 first
+
+]
+
+;W[qq]C[
+
+-- chat --
+gor: p2 and the bottom eye is gone as well
+yuri: redmond looks exhausted
+theemathas: Why doesn't black play Q15 at some point?
+darkhh: lol
+Pempu: theemathas: not big enough (yet)
+DrSFBrains40: Is T14 not big enough yet?
+
+]
+
+(;B[or]C[
+
+-- chat --
+Galuel: why P2 whould be better than Q2 ?
+theemathas: At least it's going to guarantee that the dragon is alive
+yuri: hf. b setting up the kill
+theemathas: if white plays something on the upper right
+gor: p2 is better because now r2 is not sente for white
+Kugosaki Weichigo: bottom eye gone... lee shark dol smells blood
+mark5000: This is a really interesting game
+mark5000: So much violence
+Zal: I like it!
+StaIkerSan: this is the most interesting game ive ever seen
+Fairgo: I love these kind of games
+MasterMind2349: Hello
+
+]
+
+;W[pr]
+;B[oq]C[
+
+-- chat --
+Kugosaki Weichigo: interesting ones?
+Zal: Fighting ones
+Fairgo: ^
+
+]
+
+;W[pd]C[
+
+-- chat --
+Zal: Viewers actually almost at 90k
+Zal: I thought It'd decline
+
+]
+
+;B[qr]C[
+
+-- chat --
+Zal: on YouTube
+zemotion: yeah surprised 
+gor: whats the youtube link?
+zemotion: maybe more ppl tuning in in asia/europe? 
+mark5000: https://gaming.youtube.com/watch?v=vFr3K2DORc8
+Fairgo: https://www.youtube.com/watch?v=vFr3K2DORc8
+gor: ty
+Pempu: The official stream is that. There are dozens of other streams also with 40k+ viewers
+Kugosaki Weichigo: that twitch chat though...
+yuri: MR is analyzing the kill
+Opodeldoc: AG is considering resign.
+StaIkerSan: first capture lél
+
+]
+
+;W[rr]
+;B[ps]C[
+
+-- chat --
+yuri: oh, thats over
+darkhh: first blood
+
+]
+
+;W[rs]C[
+
+-- chat --
+Galuel: s1 played
+mark5000: Lee Sedol is shaking his head
+yuri: fast play by LSD
+pagia: if white keep sente,probably win at least 10.5point
+
+]
+
+;B[rn]C[
+
+-- chat --
+mark5000: Slow play by AG
+dneg: omg lsd u showed *_*
+Roybie: does he think he's lost I wonder
+dneg: them* :D
+zemotion: ke jie says he loses 
+chauncey: monte carlo bots take a lot of slow moves when they think they are comfortably ahead
+cdybeijing: still playing?
+yuri: w dead LR thought, right?
+
+]
+
+;W[ro]C[
+
+-- chat --
+yuri: no, sorry, not
+
+]
+
+;B[qn]C[
+
+-- chat --
+StaIkerSan: alpha go playing very slowly because it wins?
+chauncey: possibly
+mark5000: Mike says W has 70 points
+mark5000: "Still could be a close game"
+yuri: worried l1
+Roybie: yeah seems big for either
+
+]
+
+(;W[so]
+;B[cl]C[
+
+-- chat --
+theemathas: was t5 really neccessary?
+gor: i wonder if t16 can work for black
+mark5000: Yes
+yuri: yeah but gote for 1, sente for other
+pagia: computer go lousy when he is getting ahead
+gor: nvm
+yuri: are we really down to the left side?
+yuri: no andrei44
+Zal: Play it out
+Zal: You have the tools in fron tof you
+Zal: haha
+tankbard: That upper left corner is huge :/
+Opodeldoc: 381 here
+Opodeldoc: It's been tricling up
+JoeGoh: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 
+Zal: White is winning?
+Zal: I bet 1 dollar on white
+Zal: whoop
+Zal: 412 people here? Why is it that the closer the game is to ending the more people come
+
+]
+
+(;W[an]C[
+
+-- chat --
+CuTy: L1 and C12 which one bigger?
+
+]
+
+;B[ks]C[
+
+-- chat --
+Andrei44: oh i see
+Roybie: he didn't take the left side...
+mark5000: Surprising
+tankbard: Still haven't fixed K18/K19 lol
+
+]
+
+;W[om]
+;B[ol]C[
+
+-- chat --
+Roybie: black wins by timeout
+BlackTea: woah 380+ ppl
+Traveller: New record!
+tankbard: Well, AG probably has some search depth tuning based on remaining time
+Roybie: yeah no doubt
+
+]
+
+;W[ci]C[
+
+-- chat --
+tankbard: Wonder what those graphs look like
+hajoucha: BlackTea: what is "ppl"
+gor: c3?
+tinuviel: people
+pagia: Lee has already lost I think
+hajoucha: oh, I see
+tinuviel: watching this relay
+mark5000: I was looking at c3. Mike was looking at only D2 for some reason
+
+]
+
+;B[hh]C[
+
+-- chat --
+Giuseppe Bonello: ขาวมุมซ้ายล่างมีปัญหาแต่รอดแล้วว
+AerialSnack: Wow, there's still so many people here
+NejvětšíFaget: wow
+Jordus: you can watch the game on youtube. They have the match video posted
+Jordus: w/ English commentary from Michael Redmond I should say as well
+Chinitsu: ugh whenever I get in a game with lot of chat my browser just freeze
+Peng15: hello
+jelser: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+jelser: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+SuperGeheim: Heya
+wingly: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+CuTy: i think Lee win 4-1
+CuTy: but
+animeboy225: Hello
+Billy31: hi. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+Zizigooloo: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+Zizigooloo: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+Zizigooloo: sry
+derpziIIa: Does anyone have the link to Round 2 of AlphaGo vs Lee Sedol?
+CarlPatenaudePoulin: https://online-go.com/demo/114754
+hajoucha: speaking of links - could you please send a link to Round 3 rely? (unfortunately, I deleted it by mistake)...
+hajoucha: oh, I found it on the game 2 rely: https://online-go.com/demo/115995
+DennisNg: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+DennisNg: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
+
+]
+
+;W[hg]
+;B[dr]C[
+
+-- chat --
+dingrite1: i dont see how black can win this, its starting to get exponentially easier for AG with every move and Lee doesn't appear to have an advantage.. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 
+Fumbar: man, what a game
+Fumbar: i'm very excited
+
+]
+
+;W[dj]
+;B[bq]C[
+
+-- chat --
+Pempu: dingrite1: why did you share a variation with no stones?-)
+Giuseppe Bonello: lol
+bmc: exponential is not the right word :)
+dingrite1: mistake, the closer to the endgame this gets the better AG can execute its MCTS
+
+]
+
+;W[cq]C[
+
+-- chat --
+Kabootle: they are having one right now
+Kabootle: oh wow, it seems to be over
+Kabootle: he resigned
+Kabootle: this was awesome, time to go to work :(
+
+]
+
+;B[cr]C[
+
+-- chat --
+pagia: white now is sure win :(
+Giuseppe Bonello: oh
+nogtv: mcts?
+quuxman: I expected Lee to play in the left middle before the bottom left corner
+
+]
+
+;W[bp]
+(;B[oc]
+;W[eo]
+;B[fo]
+;W[fk]C[
+
+-- chat --
+Manslay: sure win. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 P17 E5 F5 F9 
+generalbaguette: Around 50 GPUs for playin, I think.
+generalbaguette: And around 25 thousand GPUs for training.
+generalbaguette: It's more complicated than minimax.
+generalbaguette: They explain it in the paper.
+
+]
+
+)(;B[dq]C[
+
+-- chat --
+dingrite1: monte carlo tree search
+Traveller: AGA feed says so
+nogtv: ah, thank you
+Traveller: yep
+bibadum: how many cpus and storage does it use ?
+
+]
+
+;W[br]
+;B[cp]C[
+
+-- chat --
+Roybie: ko!
+BlackTea: 405 !!
+Traveller: 411
+yuri: no ko :(
+yuri: wth
+trohde: 412
+Andrei44: a3 c3 a4
+
+]
+
+(;W[aq]
+;B[cq]
+;W[ap]C[
+
+-- chat --
+theemathas: white ends up getting an eye at A5
+theemathas: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+theemathas: no ko
+theemathas: here. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+peco: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+
+]
+
+)(;W[ap]C[
+
+-- chat --
+Tarot: a4 was all about making life. I probably would've hastily played a3.
+Tarot: Or, actually perhaps would've played e5 and either gotten into trouble or exterminated d7 group.
+
+]
+
+;B[ek]C[
+
+-- chat --
+Traveller: Europe waking up?
+quuxman: all I know is it uses 6KW of power
+Andrei44: okay, rule of 1-2-3
+dingrite1: 1200 cpus
+gor: i didnt know we have 400 users @ ogs
+trohde: 92.860 watching the DeepMind YT channel meanwhile, an hour ago it were a lot less
+zomega: I'm here for alternate analysis (US, EST)
+zomega: Reddit brought me here
+theemathas: Who's leading?
+opache: better chat here as well lol
+CarlPatenaudePoulin: hi folks
+nogtv: ogs ftw
+
+]
+
+;W[fi]
+;B[bj]C[
+
+-- chat --
+CarlPatenaudePoulin: I don't know anything about go, but I'm learning neural nets
+nogtv: zomega: link?
+tankbard: LSD play pretty fast now
+CarlPatenaudePoulin: https://www.reddit.com/r/baduk/comments/49g1bv/alphago_and_lee_sedol_mega_thread/?sort=new
+opache: lee sedol looking nervous
+Traveller: White is ahead
+juliancamilo.osorio: Lol Carl
+
+]
+
+;W[bi]C[
+
+-- chat --
+juliancamilo.osorio: Weird to see you in here
+
+]
+
+;B[pb]C[
+
+-- chat --
+CarlPatenaudePoulin: sup dawg
+juliancamilo.osorio: man, we have class early tomorrow
+CarlPatenaudePoulin: ;___; don't tell Jaksic I'm doing this instead of studying for his midterm
+
+]
+
+;W[qb]
+;B[sf]C[
+
+-- chat --
+dingrite1: when you think about it, they train AG in generations. white was likely ahead the entire time and mere humans couldnt see it.
+gor: usually mere humans can count as well
+
+]
+
+;W[rd]
+;B[ai]C[
+
+-- chat --
+zomega: It'd be really interesting to see AG's internal heuristics over the course of the game...
+dingrite1: it doesnt use any heuristics
+juliancamilo.osorio: yeah, going right back to that right after the score is announced
+juliancamilo.osorio: (Not really. going to sleep immediately)
+pagia: white still get 10.5-9.5point ahead
+
+]
+
+;W[ah]
+;B[aj]C[
+
+-- chat --
+zomega: The output of the minimax'd heurisitic net on current board position.
+Manslay: there's no minimax
+
+]
+
+;W[bh]
+;B[gi]C[
+
+-- chat --
+Manslay: it just googles the next move
+theemathas: pagia: did you count the komi?
+zomega: I'm aware.
+dingrite1: it has 2 neural nets, one for cutting down the search space by suggesting likely moves and another for scoring the board. then its just a clever application of MC tree search.
+
+]
+
+;W[fj]
+;B[fk]C[
+
+-- chat --
+DemDandelions: the left guy isn't adding much overall
+chauncey: I'm expecting a new paper after this series
+dingrite1: the board score net could be said to be a heuristic by some stretch of the imagination, but its a hueristic validated with millions of games.
+chauncey: my guess is they've added something new more than just extra training
+
+]
+
+;W[oc]
+;B[mc]C[
+
+-- chat --
+zomega: Extra compute? :P
+chauncey: probably not
+dingrite1: they are clever, they just throw out the old games and use the millions of generated games to train the next AG generation. so they can effectivelly improve with just self-play.
+chauncey: something novel that wasn't in the paper
+
+]
+
+;W[nm]C[
+
+-- chat --
+chauncey: I'm an AI researcher so I doubt that extra training can scale like alphago has
+
+]
+
+(;B[pm]
+;W[cj]
+;B[al]C[
+
+-- chat --
+dingrite1: the quality of the generated games due to self play grow sin quality.
+chauncey: you usually get diminishing returns and they clearly aren't getting that
+
+]
+
+;W[aq]C[
+
+-- chat --
+Manslay: its Ke Jie behind the screen
+generalbaguette: Self-play has been known since TD-Gammon in the early 90s.
+Seb32: ^
+
+]
+
+;B[gh]C[
+
+-- chat --
+chauncey: more training doesnt lead to improvement after a while
+
+]
+
+;W[fh]C[
+
+-- chat --
+dingrite1: but they arent using self-play just to improve the policy network, they are keeping that data to later train the next generation of the scoring net - hence the massive improvement
+Traveller: I'd hate to see the time run out
+Manslay: white is not that much ahead actually... but theres no chance black could catch up
+bmc: chauncey I don't think that's true in this case
+chauncey: it should scale logarithmically but logarithmic growth is extremely slow
+apetresc: Traveller, there's byo-yomi so don't worry :)
+Traveller: You get to a limit based on the scoring algorithm
+phil.bordelon: Been sitting and watching people chat here about AlphaGo and wishing I could talk more about how it works :p
+bmc: there's no reason self-play and reinforcement learning would stop getting stronger
+tanerr: AlphaGO please beat the left guy, i dont want to hear him!
+Traveller: Just throughing more iron doesn't help enough
+Traveller: throwing
+dingrite1: you cant say logarithmic when the dataset is constantly evolving. but we dont have access to deepmind so we can just speculate
+darkplayah: right, but 100x as many GPUs was still a significant Elo advantage. At this level I think it can make the difference.
+darkplayah: I think it was decisive in reading really far into those weird moves
+trohde: Myungwan allegedly said for the 2nd time that Ali is stronger than he is
+chauncey: they saw a very small improvement in Elo for distributed alphago, 100x more GPUs would not be a very big difference
+chauncey: watch for another paper soon
+tankbard: Still haven't seen AG in a ko fight
+Manslay: really?
+dingrite1: it can read into local space probably very deeply, thats the sort of thing they didnt do in their paper but should have.
+chauncey: it's probably in the program but not the paper since it isn't interesting to the machine learning community
+DemDandelions: redmond basically telling garlock to s**t up
+Traveller: About time
+Andrei44: i wanna close E5 so badly :)
+gor: lee looks nervous
+Traveller: Search gets better in endgame
+tankbard: That looked like a resign
+tanerr: YES, please GARLOCK shut up!
+KetchupIV: GG
+tankbard: GG
+farful: gg
+HongTatsanaviriyaporn: Garlock so stupid
+Karet: gg
+Fairgo: Lee Sedol has resigned
+tankbard: Looks like W+10 by my rough count?
+Claint: yep. Lee has resigned.
+dneg: lol
+quuxman: sad
+calantir: damn
+zemotion: so sad T_T 
+pagia: With out komi seems still white wins....:(
+nogtv: resign?
+gor: who played alpha moves on the board?
+nogtv: or pass pass
+CarlPatenaudePoulin: OOOOOOOO
+Traveller: Wow!!
+Karet: Seems pretty shaken now
+generalbaguette: Lead programmer of alphago put the stones on.
+dneg: i don't feel like watching the commentary now cos of the unsatisfied expectators - bad jokes ? of ? lol
+philippe.beaudoin: Crazy.
+Manslay: Lee wouldn't sleep tonight
+dneg: but LSD WHY :(
+chauncey: Lee is really shaken
+dneg: i wanna cry
+tankbard: Yeah, he's going to be studying this hard
+phil.bordelon: Amazing.
+tankbard: Damn though
+Traveller: Why I'm listening to the AGA feed
+bibadum: lol or maybe since there's millions of dollars in game there a bunker full of chinese children used as neural network :-D  Like in movie "The Divine Move" :-D
+dneg: so wait
+dneg: what is the losing move for b?
+chauncey: his whole lifes work but he gets beaten by a program, ouch :(
+generalbaguette: Latency of children is too high.
+dneg: by how much is it leading?
+bibadum: you can lower children latency using meth
+chauncey: it will happen to a lot of humans soon
+dneg: why didn't b take left side........
+vlin: B overplayed the upper battle, then never had a chance since.
+Fairgo: Thanks everyone for watching!
+dneg: i cannot unsee
+dneg: what i saw
+KetchupIV: it is a good game
+Luqman: Thank you for relaying!
+tanerr: Thank you Fairgo
+Traveller: Thanks FAirgo
+trohde: THANK YOU, Fairgo!
+zemotion: thank you so much 
+hajoucha: thank you for rely. Helped a lot here...
+trohde: this was awesome
+Traveller: 435+ watching
+generalbaguette: Thanks!
+KetchupIV: time to review the game
+pagia: thanks!
+phil.bordelon: Thanks for doing this, Fairgo.
+tankbard: Yeah, can't wait to see the commentary for this
+StaIkerSan: omagad what did just happen
+tankbard: thx fairgo
+vlin: Lee needs better opening.
+dingrite1: by how much was AG winning at the end?
+Fumbar: something ilke 4 or five points i believe
+Fumbar: within komi
+Luqman: Wow, really close...
+eevolt: what a rush!
+calantir: Welcome guests to the recording of this exciting game! I recommend you make an account on OGS so that you can play games, ask questions, and learn more about the game of Go!
+calantir: Lee Sedol lost this game, but another one is being played tonight
+hajoucha: will there be a rely from match #2 again? 
+hajoucha: youtube lags a lot. 
+hajoucha: but that lag may not be due to so many people watching ... so I guess the rely would not help ...
+Weidel: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A4 E9 F11 B10 B11 Q18 R18 T14 S16 A11 A12 A10 B12 G11 F10 F9 P17 N17 O7 Q7 C10 A8 A3 G12 F12 
+MasterMind2349: The divine move?
+MasterMind2349: Yes but it's actually tru
+whzecomjm: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A4 E9 F11 B10 B11 Q18 R18 T14 S16 A11 A12 A10 B12 G11 F10 F9 P17 N17 O7 Q7 C10 A8 A3 G12 F12 
+drmfslxd0: 4：1 Mr Lee win finally
+ClarkLee: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A4 E9 F11 B10 B11 Q18 R18 T14 S16 A11 A12 A10 B12 G11 F10 F9 P17 N17 O7 Q7 C10 A8 A3 G12 F12 
+
+]
+
+)(;B[jn]C[
+
+-- chat --
+MasterMind2349: I read the manga hey wanna play a game
+MasterMind2349: ok^_^
+
+]
+
+))))(;W[ks]
+(;B[jq]
+;W[ir]
+;B[iq]
+;W[hq]
+;B[hp]
+;W[gs]C[
+
+-- chat --
+Tarot: l1 better than the take at a6?. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 L1 K3 J2 J3 H3 H4 G1 
+
+]
+
+)(;B[iq]
+;W[jq]
+;B[jp]
+;W[ip]
+;B[ir]
+;W[js]
+;B[hp]
+;W[io]
+;B[jo]
+;W[in]
+;B[jn]
+(;W[ho]
+;B[go]
+;W[gn]C[
+
+-- chat --
+Tarot: this could've been interesting:  *. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 L1 J3 K3 K4 J4 J2 K1 H4 J5 K5 J6 K6 H5 G5 G6 
+Tarot: ah, nevermind, delete last variation.
+Tarot: >^oo^<
+Tarot: This was a fascinating game to observe.
+
+]
+
+)(;W[hn]
+;B[gn]
+;W[hm]
+;B[gm]
+;W[jm]C[
+
+-- chat --
+Tarot: perhaps something like this, certainly I am making "wrong" moves in these chains, however:. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 L1 J3 K3 K4 J4 J2 K1 H4 J5 K5 J6 K6 H6 G6 H7 G7 K7 
+Tarot: For some strange reason, this game seemed easy to understand for the high sdk. Usually, pro games have several areas that are mystifying. I think perhaps game 2 will be of the mystifying type.
+Tarot: I predicted AlphaGo 4-1 over Sedol. Now, due to AlphaGo learning from Sedol's play, there is little hope for the human. 
+Tarot: AlphaGo: 5-0
+
+]
+
+))))(;W[sr]C[
+
+-- chat --
+Andrei44: t4 kills?
+
+]
+
+)(;AB[sp]C[
+
+-- chat --
+theemathas: lol....
+
+]
+
+;W[so]
+;B[rq]C[
+
+-- chat --
+gamesorry: t4 kill without t5. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T4 T5 S3 
+
+]
+
+))(;B[pr]
+;W[qr]C[
+
+-- chat --
+Pempu: Now black would need to defend against A. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 Q2 R2 
+
+]
+
+))(;B[ks]
+;W[kq]
+;B[jq]
+;W[kp]C[
+
+-- chat --
+mark5000: danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L1 L3 K3 L4 
+
+]
+
+;B[jp]
+;W[ko]
+;B[kn]
+;W[jo]
+;B[jn]
+;W[io]
+;B[ir]
+;W[hp]
+;B[go]
+;W[hr]C[
+
+-- chat --
+gamesorry: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L1 L3 K3 L4 K4 L5 L6 K5 K6 J5 J2 H4 G5 H2 
+
+]
+
+))))(;B[dc]
+;W[cc]
+;B[ed]
+;W[db]
+;B[hg]
+;W[hh]
+;B[gg]C[
+
+-- chat --
+gamesorry: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 D17 C17 E16 D18 H13 H12 G13 
+
+]
+
+)(;B[hg]C[
+
+-- chat --
+geotheory: 79: H13 I think would've been my strategy
+
+]
+
+)))(;B[jl]
+;W[kj]
+(;B[jk]
+;W[jj]C[
+
+-- chat --
+vpfli: if b captures l8, w gets the four center stones
+thouis: because this, I think. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K8 L10 K9 K10 
+
+]
+
+)(;B[jj]
+;W[lj]C[
+
+-- chat --
+Zal: Because then he captures the group
+Zal: Who cares about that one stone 
+
+]
+
+)))(;W[pb]
+;B[mf]
+;W[mh]
+;B[nd]
+;W[oc]
+;B[jb]
+;W[ja]
+;B[la]C[
+
+-- chat --
+gamesorry: Black can live. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 Q18 N14 N12 O16 P17 K18 K19 M19 
+
+]
+
+))(;W[ml]C[
+
+-- chat --
+thouis: and it counts +50 the same as +.5
+chopper: yeah, what a huge battle
+YSR43: o_O is this right 
+chopper: mistake is going to hurt
+trohde: @Fairgo, you missed W J18, B P18
+arczyx: yeah
+
+]
+
+;B[lm]C[
+
+-- chat --
+CylonBunny: W seems much more aggressive than AlphaGo version how played Fan Hui
+Bronze: maybe alphago tends to accept offered fights
+thouis: what move number was J18?
+Bronze: but doesn't start fights 
+darkplayah: \[1:58\] trohde \[9k\]: @Fairgo, you missed W J18, B P18 -- fix please?
+
+]
+
+))))))))(;B[ie]C[
+
+-- chat --
+HelioSeven: ever read or watched hikaru no go?
+HelioSeven: hm, maybe... not what I watched last night, though
+HelioSeven: both players very sloppy, honestly
+HelioSeven: sure
+
+]
+
+))(;B[oi]C[
+
+-- chat --
+pagia: P11 black get three line operation.......
+
+]
+
+))(;W[jd]
+;B[jc]
+;W[kc]
+;B[kd]C[
+
+-- chat --
+Pempu: Like this test. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 K16 K17 L17 L16 
+
+]
+
+))

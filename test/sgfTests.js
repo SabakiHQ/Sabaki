@@ -1,4 +1,5 @@
 var assert = require('assert')
+var fs = require('fs')
 var sgf = require('../modules/sgf')
 var gametree = require('../modules/gametree')
 
@@ -113,6 +114,13 @@ describe('sgf', function() {
                     ]
                 })
             )
+        })
+        it('should parse a relatively complex file', function() {
+            var contents = fs.readFileSync(__dirname + '/complex.sgf', 'utf8')
+            var tokens = sgf.tokenize(contents)
+            var tree = sgf.parse(tokens)
+
+            assert.equal(tree.subtrees.length, 1)
         })
     })
 
