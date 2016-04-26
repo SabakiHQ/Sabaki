@@ -44,10 +44,11 @@ You can build Sabaki by using one of the three build instructions depending on t
 
 The binaries will be in `Sabaki/bin/`.
 
-To run the (currently very limited) tests, you have to install [mocha](https://mochajs.org) globally using npm:
+To run the (currently very limited) tests, you have to install `electron-prebuilt` and `electron-mocha` globally using npm:
 
 ~~~
-npm install mocha -g
+npm install electron-prebuilt -g
+npm install electron-mocha -g
 npm test
 ~~~
 
