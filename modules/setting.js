@@ -2,10 +2,14 @@
 
 var fs = null
 var path = null
+var app = null
 
 if (typeof require != 'undefined') {
+    var remote = require('electron').remote
+
     fs = require('fs')
     path = require('path')
+    app = remote ? remote.app : require('electron').app
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
@@ -14,8 +18,6 @@ var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name
 var settingspath = null
 
 if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
-    var remote = require('electron').remote
-    var app = remote ? remote.app : require('electron').app
     var directory = app.getPath('userData')
 
     try {
