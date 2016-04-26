@@ -4,6 +4,7 @@ node_js:
   - "4"
 before_script:
   - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+  - npm install -g electron-prebuilt
   - npm install -g electron-mocha
 notifications:
   email:
