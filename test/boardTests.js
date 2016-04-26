@@ -1,4 +1,5 @@
 var assert = require('assert')
+var helper = require('../modules/helper')
 var Board = require('../modules/board')
 
 describe('Board', function() {
@@ -85,13 +86,36 @@ describe('Board', function() {
         })
     })
 
-    describe('getDistanceToGround', function() {
-        it('should return the minimum distance to the board borders', function() {
+    describe('getCanonicalVertex', function() {
+        it('should work', function() {
             var board = new Board()
-            assert.equal(board.getDistanceToGround([3, 4]), 3)
-            assert.equal(board.getDistanceToGround([4, 3]), 3)
-            assert.equal(board.getDistanceToGround([18, 3]), 0)
-            assert.equal(board.getDistanceToGround([15, 5]), 3)
+            assert.deepEqual(board.getCanonicalVertex([3, 4]), [3, 4])
+            assert.deepEqual(board.getCanonicalVertex([4, 3]), [3, 4])
+            assert.deepEqual(board.getCanonicalVertex([18, 3]), [0, 3])
+            assert.deepEqual(board.getCanonicalVertex([15, 5]), [3, 5])
+        })
+    })
+
+    describe('getSymmetries', function() {
+        it('should work', function() {
+            var board = new Board()
+
+            assert.deepEqual(
+                board.getSymmetries([3, 4]).sort(helper.lexicalCompare),
+                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
+            )
+            assert.deepEqual(
+                board.getSymmetries([4, 3]).sort(helper.lexicalCompare),
+                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
+            )
+            assert.deepEqual(
+                board.getSymmetries([18, 3]).sort(helper.lexicalCompare),
+                [[0, 3], [0, 3], [0, 15], [0, 15], [3, 0], [3, 0], [15, 0], [15, 0]]
+            )
+            assert.deepEqual(
+                board.getSymmetries([15, 5]).sort(helper.lexicalCompare),
+                [[3, 5], [3, 13], [5, 3], [5, 15], [13, 3], [13, 15], [15, 5], [15, 13]]
+            )
         })
     })
 
@@ -120,7 +144,10 @@ describe('Board', function() {
             ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
 
-            assert.deepEqual(board.getConnectedComponent([1, 1], [-1]), [[1, 1], [2, 1]])
+            assert.deepEqual(
+                board.getConnectedComponent([1, 1], [-1]).sort(helper.lexicalCompare),
+                [[1, 1], [2, 1]]
+            )
         })
         it('should be able to return the stone connected component of a vertex', function() {
             var board = new Board()
@@ -128,8 +155,8 @@ describe('Board', function() {
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
 
             assert.deepEqual(
-                board.getConnectedComponent([1, 1], [-1, 1]), 
-                [[1, 1], [0, 1], [2, 1], [2, 0], [1, 0], [2, 2], [1, 2]]
+                board.getConnectedComponent([1, 1], [-1, 1]).sort(helper.lexicalCompare),
+                [[0, 1], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2]]
             )
         })
     })
@@ -138,7 +165,11 @@ describe('Board', function() {
         it('should return the liberties of the chain of the given vertex', function() {
             var board = new Board()
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
-            assert.deepEqual(board.getLiberties([1, 1]), [[0, 1], [1, 0], [1, 2], [3, 1], [2, 0], [2, 2]])
+
+            assert.deepEqual(
+                board.getLiberties([1, 1]).sort(helper.lexicalCompare),
+                [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]]
+            )
             assert.deepEqual(board.getLiberties([1, 2]), [])
         })
         it('should return empty list for a vertex not on the board', function() {
