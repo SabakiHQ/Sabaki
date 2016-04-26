@@ -44,6 +44,13 @@ You can build Sabaki by using one of the three build instructions depending on t
 
 The binaries will be in `Sabaki/bin/`.
 
+To run the (currently very limited) tests, you have to install [mocha](https://mochajs.org) globally using npm:
+
+~~~
+npm install mocha -g
+npm test
+~~~
+
 ## Web Version
 
 Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser, but it's far from complete and many things are not working yet.
