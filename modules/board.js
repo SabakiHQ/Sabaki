@@ -328,6 +328,8 @@ Board.prototype = {
     },
 
     getSvg: function(pixelsize) {
+        if (!document) return null
+
         var ns = 'http://www.w3.org/2000/svg'
         var svg = document.createElementNS(ns, 'svg')
         svg.setAttribute('width', pixelsize)
