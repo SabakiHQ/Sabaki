@@ -243,7 +243,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         border-left: .3em solid transparent;
         border-right: .3em solid transparent;
         border-bottom: .5em solid;
-        margin-left: -.3em;
+        margin-left: calc(-.3em - 1px);
         margin-top: -.35em;
         background: none;
     }
@@ -254,7 +254,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         border-left: calc(.3em - 3px) solid transparent;
         border-right: calc(.3em - 3px) solid transparent;
         border-bottom: calc(.5em - 6px) solid #EFB65D;
-        margin-left: calc(-.3em + 3px);
+        margin-left: calc(-.3em + 2px);
         margin-top: calc(-.35em + 4px);
         background: none;
         box-shadow: none;
