@@ -1119,15 +1119,22 @@ function openCommentMenu() {
 function openEnginesMenu(element, callback) {
     if (!callback) callback = function() {}
 
+    var currentIndex = element.retrieve('engineindex')
+    if (currentIndex == null) currentIndex = -1
+
     var template = [{
         label: '&Manual',
-        click: function() { callback(null) }
+        type: 'checkbox',
+        checked: currentIndex < 0,
+        click: function() { callback(null, -1) }
     }]
 
-    var engineItems = setting.getEngines().map(function(engine) {
+    var engineItems = setting.getEngines().map(function(engine, i) {
         return {
             label: engine.name,
-            click: function() { callback(engine) }
+            type: 'checkbox',
+            checked: currentIndex == i,
+            click: function() { callback(engine, i) }
         }
     })
 

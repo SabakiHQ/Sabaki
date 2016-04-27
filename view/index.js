@@ -555,6 +555,14 @@ function prepareGameInfo() {
         $$('#info section input[name="name_1"]')[0].set('value', data[2])
         $$('#info section input[name="name_-1"]')[0].set('value', data[1])
     })
+
+    $$('#info section img.menu').addEvent('click', function() {
+        var el = this
+
+        openEnginesMenu(el, function(engine, i) {
+            el.store('engineindex', i)
+        })
+    })
 }
 
 function generateFileHash() {
