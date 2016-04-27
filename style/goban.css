@@ -25,13 +25,26 @@
         display: inline-block;
         text-align: center;
     }
-    .goban li .stone, .goban li .stone img {
+    .goban li .stone, .goban li .stone img, .goban li .stone::before {
         position: absolute;
         left: 0;
         top: 0;
         height: 100%;
         width: 100%;
         z-index: 1;
+    }
+    .goban li .stone img, .goban li .stone::before {
+        height: calc(100% - 2px);
+        width: calc(100% - 2px);
+    }
+    .goban li.sign_1 .stone::before, .goban li.sign_-1 .stone::before {
+        content: '';
+        display: block;
+        border-radius: 100%;
+        background: black;
+        opacity: .3;
+        box-shadow: 0 2px .18em black;
+        z-index: 0;
 }
 
 /**

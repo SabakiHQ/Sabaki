@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="47"
-   height="47"
-   viewBox="0 0 46.999998 46.999998"
+   width="43"
+   height="43"
+   viewBox="0 0 43 43"
    id="svg2"
    version="1.1"
    inkscape:version="0.91pre3 r13670"
@@ -135,19 +135,6 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Ebene 2"
-     style="opacity:0.6"
-     transform="translate(0,-1.9999998)">
-    <circle
-       style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.99750137;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4483-6)"
-       id="path3336-4"
-       cx="23.83877"
-       cy="26.195808"
-       r="20.501244" />
-  </g>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
