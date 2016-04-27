@@ -592,6 +592,7 @@ header, #edit, #scoring, #find, #guess {
     #info section .menu:not(.disabled):hover {
         background: rgba(255, 255, 255, .5);
     }
+    #info:not(.newgame) section .menu { display: none; }
     @media screen and (max-width: 600px) {
         #info section input { width: 100px; }
     }

@@ -10,7 +10,7 @@ var menudata = {
     "copytoclipboard": function() { clipboard.writeText(saveFileToSgf()) },
     "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
-    "gameinfo": showGameInfo,
+    "gameinfo": function() { showGameInfo() },
     "preferences": showPreferences,
 
     "editmode": function() { setEditMode(!getEditMode()) },

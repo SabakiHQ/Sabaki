@@ -1001,7 +1001,7 @@ function openHeaderMenu() {
         { type: 'separator' },
         {
             label: '&Info',
-            click: showGameInfo
+            click: function() { showGameInfo() }
         }
     ]
 
@@ -1220,7 +1220,7 @@ function clearConsole() {
  * Drawers
  */
 
-function showGameInfo() {
+function showGameInfo(newGame) {
     closeDrawers()
 
     var tree = getRootTree()
@@ -1249,8 +1249,8 @@ function showGameInfo() {
     handicap.disabled = disabled
     size.disabled = disabled
 
-    if (disabled) info.getElements('section .menu').addClass('disabled')
-    else info.getElements('section .menu').removeClass('disabled')
+    if (newGame) info.addClass('newgame')
+    else info.removeClass('newgame')
 }
 
 function closeGameInfo() {
