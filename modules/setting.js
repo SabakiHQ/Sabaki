@@ -40,6 +40,9 @@ var defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
+    'board.stone_image_-1': '../img/goban/stone_-1.svg',
+    'board.stone_image_1': '../img/goban/stone_1.svg',
+    'board.stone_image_0': '../img/goban/stone_0.svg',
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
         'genmove', 'undo', 'fixed_handicap',

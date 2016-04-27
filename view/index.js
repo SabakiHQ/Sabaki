@@ -226,7 +226,7 @@ function setBoard(board) {
             }
 
             li.addClass('sign_' + sign).getElement('img')
-                .set('src', '../img/goban/stone_' + sign + '.png')
+                .set('src', setting.get('board.stone_image_' + sign))
         }
     }
 
