@@ -600,7 +600,7 @@ header, #edit, #scoring, #find, #guess {
     #info section .menu.active:hover {
         background: #4FE7F6;
     }
-    #info:not(.newgame) section .menu { display: none; }
+    #info.disabled section .menu { display: none; }
     @media screen and (max-width: 600px) {
         #info section input { width: 100px; }
     }

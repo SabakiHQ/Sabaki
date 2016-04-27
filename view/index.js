@@ -1592,7 +1592,7 @@ function newFile(playSound) {
 
     if (playSound) {
         sound.playNewGame()
-        showGameInfo(true)
+        showGameInfo()
     }
 }
 
