@@ -829,7 +829,7 @@ function buildBoard() {
         for (var x = 0; x < board.size; x++) {
             var vertex = [x, y]
             var li = new Element('li.pos_' + x + '-' + y)
-                .store('tuple', vertex)
+                .store('vertex', vertex)
                 .addClass('shift_' + Math.floor(Math.random() * 9))
             var img = new Element('img', { src: '../img/goban/stone_0.png' })
 
@@ -843,9 +843,9 @@ function buildBoard() {
                 )
 
                 if (!endTarget) return null
-                var v = endTarget.retrieve('tuple')
+                var v = endTarget.retrieve('vertex')
                 if (!v) endTarget = endTarget.getParent('li')
-                if (endTarget) v = endTarget.retrieve('tuple')
+                if (endTarget) v = endTarget.retrieve('vertex')
 
                 return v
             }
@@ -901,7 +901,7 @@ function buildBoard() {
     // Readjust shifts
 
     $$('#goban .row li:not(.shift_0)').forEach(function(li) {
-        readjustShifts(li.retrieve('tuple'))
+        readjustShifts(li.retrieve('vertex'))
     })
 }
 

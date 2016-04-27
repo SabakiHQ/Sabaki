@@ -199,7 +199,7 @@ function setBoard(board) {
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[li.retrieve('tuple')]
+            var sign = board.arrangement[li.retrieve('vertex')]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
                 'cross', 'square', 'label', 'point', 'dimmed', 'paint_1', 'paint_-1']
 
@@ -208,8 +208,8 @@ function setBoard(board) {
             })
             li.getElement('.stone span').set('title', '')
 
-            if (li.retrieve('tuple') in board.markups) {
-                var markup = board.markups[li.retrieve('tuple')]
+            if (li.retrieve('vertex') in board.markups) {
+                var markup = board.markups[li.retrieve('vertex')]
                 var type = markup[0], ghost = markup[1], label = markup[2]
 
                 if (type != '') li.addClass(type)
@@ -990,7 +990,7 @@ function useTool(vertex, event) {
         // Update SGF
 
         $$('#goban .row li').forEach(function(li) {
-            var v = li.retrieve('tuple')
+            var v = li.retrieve('vertex')
             if (!(v in board.markups)) return
 
             var id = dictionary[board.markups[v][0]]
@@ -1237,14 +1237,14 @@ function updateAreaMap() {
         if (li.hasClass('sign_1')) board.captures['-1']++
         else if (li.hasClass('sign_-1')) board.captures['1']++
 
-        board.arrangement[li.retrieve('tuple')] = 0
+        board.arrangement[li.retrieve('vertex')] = 0
     })
 
     var map = board.getAreaMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[li.retrieve('tuple')])
+            .addClass('area_' + map[li.retrieve('vertex')])
     })
 
     var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
