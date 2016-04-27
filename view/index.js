@@ -564,8 +564,11 @@ function prepareGameInfo() {
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            el.getParent().getElement('input[name="name_1"]').set('value', engine ? engine.name : '')
+            el.getParent().getElement('input[name^="name_"]').set('value', engine ? engine.name : '')
             el.store('engineindex', i)
+
+            if (engine) el.addClass('active')
+            else el.removeClass('active')
         })
     })
 }

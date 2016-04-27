@@ -587,10 +587,16 @@ header, #edit, #scoring, #find, #guess {
         -webkit-filter: invert(100%);
         margin: 0 2px 5px;
         padding: 3px;
+        transition: background .2s;
     }
-    #info section .menu.disabled { opacity: 0; }
-    #info section .menu:not(.disabled):hover {
+    #info section .menu.active {
+        background: #2FC5E4;
+    }
+    #info section .menu:hover {
         background: rgba(255, 255, 255, .5);
+    }
+    #info section .menu.active:hover {
+        background: #4FE7F6;
     }
     #info:not(.newgame) section .menu { display: none; }
     @media screen and (max-width: 600px) {
