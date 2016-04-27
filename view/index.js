@@ -554,6 +554,15 @@ function prepareGameInfo() {
         $$('#info section input[name="rank_-1"]')[0].set('value', data[0])
         $$('#info section input[name="name_1"]')[0].set('value', data[2])
         $$('#info section input[name="name_-1"]')[0].set('value', data[1])
+
+        data = $$('#info section .menu').map(function(el) {
+            return [el.hasClass('active'), el.retrieve('engineindex')]
+        })
+
+        $$('#info section .menu')[0].toggleClass('active', data[1][0])
+        $$('#info section .menu')[0].store('engineindex', data[1][1])
+        $$('#info section .menu')[1].toggleClass('active', data[0][0])
+        $$('#info section .menu')[1].store('engineindex', data[0][1])
     })
 
     $$('#info section img.menu').addEvent('click', function() {
