@@ -576,7 +576,8 @@ function prepareGameInfo() {
             this.store('engineindex', i)
 
             if (engine) {
-                var other = $('info').getElement('section .menu.active')
+                var els = $('info').getElements('section .menu')
+                var other = els[0] == this ? els[1] : els[0]
                 if (other) selectEngine.call(other, null, -1)
 
                 this.addClass('active')
