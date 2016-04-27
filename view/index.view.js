@@ -1241,7 +1241,7 @@ function showGameInfo(newGame) {
     handicap.disabled = disabled
     size.disabled = disabled
 
-    info.toggleClass('newgame', newGame)
+    info.toggleClass('newgame', !!newGame)
 }
 
 function closeGameInfo() {
