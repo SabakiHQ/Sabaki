@@ -455,6 +455,7 @@ header, #edit, #scoring, #find, #guess {
         margin-left: 0;
         padding: 3px;
         opacity: .8;
+        transition: background .2s;
     }
     #properties .edit .header img:hover { background: #B3AC53; }
     #properties .edit .header div {
@@ -523,6 +524,7 @@ header, #edit, #scoring, #find, #guess {
         filter: invert(100%);
         -webkit-filter: invert(100%);
         opacity: .5;
+        transition: background .2s;
     }
     #properties .inner .header img.editbutton:hover {
         background: white;
