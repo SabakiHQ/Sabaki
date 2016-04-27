@@ -28,9 +28,7 @@ function getShowNextMoves() {
 }
 
 function setShowNextMoves(show) {
-    if (show) $('goban').addClass('variations')
-    else $('goban').removeClass('variations')
-
+    $('goban').toggleClass('variations', show)
     setting.set('view.show_next_moves', show)
 }
 
@@ -39,9 +37,7 @@ function getFuzzyStonePlacement() {
 }
 
 function setFuzzyStonePlacement(fuzzy) {
-    if (fuzzy) $('goban').addClass('fuzzy')
-    else $('goban').removeClass('fuzzy')
-
+    $('goban').toggleClass('fuzzy', fuzzy)
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
@@ -50,9 +46,7 @@ function getShowCoordinates() {
 }
 
 function setShowCoordinates(show) {
-    if (show) $('goban').addClass('coordinates')
-    else $('goban').removeClass('coordinates')
-
+    $('goban').toggleClass('coordinates', show)
     setting.set('view.show_coordinates', show)
     resizeBoard()
 }
@@ -73,8 +67,7 @@ function setShowLeftSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
     }
 
-    if (show) document.body.addClass('leftsidebar')
-    else document.body.removeClass('leftsidebar')
+    document.body.toggleClass('leftsidebar', show)
 
     $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
     $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
@@ -115,8 +108,7 @@ function setShowSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
     }
 
-    if (show) document.body.addClass('sidebar')
-    else document.body.removeClass('sidebar')
+    document.body.toggleClass('sidebar', show)
 
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
@@ -203,8 +195,7 @@ function getShowHotspot() {
 }
 
 function setShowHotspot(bookmark) {
-    if (bookmark) document.body.addClass('bookmark')
-    else document.body.removeClass('bookmark')
+    document.body.toggleClass('bookmark', bookmark)
 }
 
 function getCaptures() {
@@ -1250,8 +1241,7 @@ function showGameInfo(newGame) {
     handicap.disabled = disabled
     size.disabled = disabled
 
-    if (newGame) info.addClass('newgame')
-    else info.removeClass('newgame')
+    info.toggleClass('newgame', newGame)
 }
 
 function closeGameInfo() {
