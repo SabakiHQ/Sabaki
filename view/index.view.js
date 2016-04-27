@@ -1237,6 +1237,7 @@ function showGameInfo(newGame) {
     info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+    info.getElements('section .menu').removeClass('active').store('engineindex', -1)
 
     var size = info.getElement('input[name="size"]')
     size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
