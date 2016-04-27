@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
 
+**Added**
+
+* Ability to choose GTP engine directly in the 'New Game' dialog
+
 **Fixed**
 
 * Fix uncaught exception at first time startup
