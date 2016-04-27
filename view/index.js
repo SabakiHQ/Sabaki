@@ -559,17 +559,26 @@ function prepareGameInfo() {
     $$('#info section img.menu').addEvent('click', function() {
         var el = this
 
-        openEnginesMenu(el, function(engine, i) {
-            var currentIndex = el.retrieve('engineindex')
+        function selectEngine(engine, i) {
+            var currentIndex = this.retrieve('engineindex')
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            el.getParent().getElement('input[name^="name_"]').set('value', engine ? engine.name : '')
-            el.store('engineindex', i)
+            this.getParent().getElement('input[name^="name_"]').set('value', engine ? engine.name : '')
+            this.store('engineindex', i)
 
-            if (engine) el.addClass('active')
-            else el.removeClass('active')
-        })
+            if (engine) {
+                var other = $('info').getElement('section .menu.active')
+                if (other) selectEngine.call(other, null, -1)
+
+                this.addClass('active')
+            } else {
+                $('info').getElements('section .menu')
+                .removeClass('active')
+            }
+        }
+
+        openEnginesMenu(el, selectEngine.bind(el))
     })
 }
 
