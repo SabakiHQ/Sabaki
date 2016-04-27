@@ -560,6 +560,11 @@ function prepareGameInfo() {
         var el = this
 
         openEnginesMenu(el, function(engine, i) {
+            var currentIndex = el.retrieve('engineindex')
+            if (currentIndex == null) currentIndex = -1
+            if (i == currentIndex) return
+
+            el.getParent().getElement('input[name="name_1"]').set('value', engine ? engine.name : '')
             el.store('engineindex', i)
         })
     })
