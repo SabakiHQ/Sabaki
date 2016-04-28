@@ -585,6 +585,7 @@ header, #edit, #scoring, #find, #guess {
         margin: 0 10px;
     }
     #info section .menu {
+        display: none;
         filter: invert(100%);
         -webkit-filter: invert(100%);
         margin: 0 2px 5px;
