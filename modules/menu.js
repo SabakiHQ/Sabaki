@@ -43,8 +43,8 @@ Menu.show = function(menu, x, y) {
     var bodySize = document.body.getSize()
     menu.setStyle('left', x).setStyle('top', y)
 
-    if (y + menuSize.y > bodySize.y) menu.setStyle('top', y - menuSize.y)
-    if (x + menuSize.x > bodySize.x) menu.setStyle('left', x - menuSize.x)
+    if (y + menuSize.y > bodySize.y) menu.setStyle('top', Math.max(0, y - menuSize.y))
+    if (x + menuSize.x > bodySize.x) menu.setStyle('left', Math.max(0, x - menuSize.x))
 
     menu.addClass('show')
 }
