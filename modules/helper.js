@@ -10,7 +10,7 @@ if (typeof require != 'undefined') {
     marked = require('./marked')
 }
 
-if (!gtp) gtp = {
+gtp = {
     point2vertex: function(point, size) {
         var alpha = 'abcdefghjklmnopqrstuvwxyz'
         var x = alpha.indexOf(point[0].toLowerCase())
