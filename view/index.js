@@ -655,7 +655,6 @@ function attachEngine(exec, args, genMove) {
 
 function detachEngine() {
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
-    clearConsole()
 
     $('console').store('controller', null)
         .store('boardhash', null)
