@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
+## [Unreleased][unreleased]
 
 **Added**
 
 * Ability to choose GTP engine directly inside the 'New Game' drawer
+
+**Changed**
+
+* SVG stone images
+
+## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
 
 **Fixed**
 
