@@ -100,7 +100,8 @@
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
 
-            <img class="currentplayer" src="../img/ui/blacktoplay.svg" height="22" onclick="makeMove([-1, -1])" />
+            <img src="../img/ui/blacktoplay.svg" class="currentplayer"
+                height="22" onclick="makeMove([-1, -1])" title="Pass" />
 
             <div class="bookmark" title="Hotspot"></div>
 
@@ -181,11 +182,23 @@
 <section id="info">
     <form>
         <section>
-            <input type="text" name="rank_1" placeholder="Rank" />
-            <input type="text" name="name_1" placeholder="Black" />
-            <img class="currentplayer" src="../img/ui/blacktoplay.svg" />
-            <input type="text" name="name_-1" placeholder="White" />
-            <input type="text" name="rank_-1" placeholder="Rank" />
+            <span>
+                <img src="../node_modules/octicons/svg/chevron-down.svg"
+                    width="16" height="16" class="menu" />
+
+                <input type="text" name="rank_1" placeholder="Rank" />
+                <input type="text" name="name_1" placeholder="Black" />
+            </span>
+
+            <img class="currentplayer" src="../img/ui/blacktoplay.svg" height="31" title="Swap" />
+
+            <span>
+                <input type="text" name="name_-1" placeholder="White" />
+                <input type="text" name="rank_-1" placeholder="Rank" />
+
+                <img src="../node_modules/octicons/svg/chevron-down.svg"
+                    width="16" height="16" class="menu" />
+            </span>
         </section>
 
         <ul>
@@ -225,8 +238,8 @@
             </li>
 
             <p>
-                <button type="submit" onclick="commitGameInfo(); closeGameInfo(); return false">OK</button>
-                <button type="reset" onclick="closeGameInfo(); return false">Cancel</button>
+                <button type="submit">OK</button>
+                <button type="reset">Cancel</button>
             </p>
         </ul>
     </form>

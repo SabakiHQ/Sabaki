@@ -54,7 +54,7 @@ function setRootTree(tree) {
     setGameTrees(trees)
 
     tree.parent = null
-    setCurrentTreePosition(sgf.addBoard(tree), 0, true)
+    setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
     setPlayerName(1,
         gametree.getPlayerName(1, tree, 'Black'),
@@ -132,7 +132,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
 
     updateSidebar(redraw, now)
     setShowHotspot('HO' in tree.nodes[index])
-    sgf.addBoard(tree, index)
+    gametree.addBoard(tree, index)
     setBoard(tree.nodes[index].board)
 
     // Determine current player
@@ -198,7 +198,7 @@ function setBoard(board) {
     for (var x = 0; x < board.size; x++) {
         for (var y = 0; y < board.size; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[li.retrieve('tuple')]
+            var sign = board.arrangement[li.retrieve('vertex')]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
                 'cross', 'square', 'label', 'point', 'dimmed', 'paint_1', 'paint_-1']
 
@@ -207,15 +207,14 @@ function setBoard(board) {
             })
             li.getElement('.stone span').set('title', '')
 
-            if (li.retrieve('tuple') in board.markups) {
-                var markup = board.markups[li.retrieve('tuple')]
+            if (li.retrieve('vertex') in board.markups) {
+                var markup = board.markups[li.retrieve('vertex')]
                 var type = markup[0], ghost = markup[1], label = markup[2]
 
                 if (type != '') li.addClass(type)
                 if (ghost != 0) li.addClass('ghost_' + ghost)
                 if (label != '') li.getElement('.stone span').set('title', label)
-                if (label.length >= 3) li.addClass('smalllabel')
-                else li.removeClass('smalllabel')
+                li.toggleClass('smalllabel', label.length >= 3)
             }
 
             if (li.hasClass('sign_' + sign)) continue
@@ -225,7 +224,7 @@ function setBoard(board) {
             }
 
             li.addClass('sign_' + sign).getElement('img')
-                .set('src', '../img/goban/stone_' + sign + '.png')
+                .set('src', setting.get('board.stone_image_' + sign))
         }
     }
 
@@ -534,6 +533,65 @@ function prepareConsole() {
     })
 }
 
+function prepareGameInfo() {
+    $$('#info button[type="submit"]').addEvent('click', function() {
+        commitGameInfo()
+        closeGameInfo()
+        return false
+    })
+
+    $$('#info button[type="reset"]').addEvent('click', function() {
+        closeGameInfo()
+        return false
+    })
+
+    $$('#info .currentplayer').addEvent('click', function() {
+        var data = $$('#info section input[type="text"]').map(function(el) {
+            return el.get('value')
+        })
+
+        $$('#info section input[name="rank_1"]')[0].set('value', data[3])
+        $$('#info section input[name="rank_-1"]')[0].set('value', data[0])
+        $$('#info section input[name="name_1"]')[0].set('value', data[2])
+        $$('#info section input[name="name_-1"]')[0].set('value', data[1])
+
+        data = $$('#info section .menu').map(function(el) {
+            return [el.hasClass('active'), el.retrieve('engineindex')]
+        })
+
+        $$('#info section .menu')[0].toggleClass('active', data[1][0])
+        $$('#info section .menu')[0].store('engineindex', data[1][1])
+        $$('#info section .menu')[1].toggleClass('active', data[0][0])
+        $$('#info section .menu')[1].store('engineindex', data[0][1])
+    })
+
+    $$('#info section img.menu').addEvent('click', function() {
+        var el = this
+
+        function selectEngine(engine, i) {
+            var currentIndex = this.retrieve('engineindex')
+            if (currentIndex == null) currentIndex = -1
+            if (i == currentIndex) return
+
+            this.getParent().getElement('input[name^="name_"]').set('value', engine ? engine.name : '')
+            this.store('engineindex', i)
+
+            if (engine) {
+                var els = $('info').getElements('section .menu')
+                var other = els[0] == this ? els[1] : els[0]
+                if (other) selectEngine.call(other, null, -1)
+
+                this.addClass('active')
+            } else {
+                $('info').getElements('section .menu')
+                .removeClass('active')
+            }
+        }
+
+        openEnginesMenu(el, selectEngine.bind(el))
+    })
+}
+
 function generateFileHash() {
     var trees = getGameTrees()
     var hash = ''
@@ -560,7 +618,7 @@ function loadEngines() {
     })
 }
 
-function attachEngine(exec, args) {
+function attachEngine(exec, args, genMove) {
     return
     detachEngine()
     setIsBusy(true)
@@ -592,13 +650,14 @@ function attachEngine(exec, args) {
 
         syncEngine()
         setIsBusy(false)
+
+        if (!!genMove) generateMove()
     }, setting.get('gtp.attach_delay'))
 }
 
 function detachEngine() {
     return
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
-    clearConsole()
 
     $('console').store('controller', null)
         .store('boardhash', null)
@@ -734,7 +793,7 @@ function makeMove(vertex, sendCommand) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(sgf.addBoard(variations[0]), 0)
+                setCurrentTreePosition(gametree.addBoard(variations[0]), 0)
                 createNode = false
             }
         }
@@ -752,7 +811,7 @@ function makeMove(vertex, sendCommand) {
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
 
-            sgf.addBoard(newtree, newtree.nodes.length - 1)
+            gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) setRootTree(splitted)
             setCurrentTreePosition(newtree, 0)
         }
@@ -994,7 +1053,7 @@ function useTool(vertex, event) {
         // Update SGF
 
         $$('#goban .row li').forEach(function(li) {
-            var v = li.retrieve('tuple')
+            var v = li.retrieve('vertex')
             if (!(v in board.markups)) return
 
             var id = dictionary[board.markups[v][0]]
@@ -1241,14 +1300,14 @@ function updateAreaMap() {
         if (li.hasClass('sign_1')) board.captures['-1']++
         else if (li.hasClass('sign_-1')) board.captures['1']++
 
-        board.arrangement[li.retrieve('tuple')] = 0
+        board.arrangement[li.retrieve('vertex')] = 0
     })
 
     var map = board.getAreaMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[li.retrieve('tuple')])
+            .addClass('area_' + map[li.retrieve('vertex')])
     })
 
     var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
@@ -1339,6 +1398,22 @@ function commitGameInfo() {
 
     setUndoable(false)
     updateSidebar()
+
+    // Start engine
+
+    if (!$('info').hasClass('disabled')) {
+        var engines = setting.getEngines()
+        var indices = $$('#info section .menu').map(function(x) { return x.retrieve('engineindex') })
+        var max = Math.max.apply(null, indices)
+        var sign = indices.indexOf(max) == 0 ? 1 : -1
+
+        if (max >= 0) {
+            var engine = engines[max]
+            attachEngine(engine.path, engine.args, getCurrentPlayer() == sign)
+        } else {
+            detachEngine()
+        }
+    }
 }
 
 function commitScore() {
@@ -1654,7 +1729,7 @@ function saveFileToSgf() {
 
     for (var i = 0; i < trees.length; i++) {
         trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
-        text += '(' + sgf.fromTree(trees[i]) + ')\n\n'
+        text += '(' + sgf.stringify(trees[i]) + ')\n\n'
     }
 
     return text
@@ -1899,6 +1974,7 @@ document.addEvent('keydown', function(e) {
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
+    prepareGameInfo()
     newFile()
 
     $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {

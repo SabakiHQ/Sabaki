@@ -1,5 +1,11 @@
 (function(root) {
 
+var helper = root.helper
+
+if (typeof require != 'undefined') {
+    helper = require('./helper')
+}
+
 var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
 
 context.filter = function(needle, haystack) {
@@ -10,7 +16,7 @@ context.filter = function(needle, haystack) {
         if (v) result.push(v)
     }
 
-    result.sort(lexicalSort)
+    result.sort(helper.lexicalCompare)
     return result.map(function(x) { return x[x.length - 1] })
 }
 
@@ -19,7 +25,7 @@ context.find = function(needle, haystack) {
 
     for (var i = 0; i < haystack.length; i++) {
         var v = generateVector(needle, haystack[i])
-        if (v && (!min || lexicalSort(v, min) < 0)) min = v
+        if (v && (!min || helper.lexicalCompare(v, min) < 0)) min = v
     }
 
     return min ? min[min.length - 1] : null
@@ -49,11 +55,6 @@ function generateVector(needle, hay) {
     v[2] = indices[1]
 
     return v
-}
-
-function lexicalSort(a, b) {
-    if (!a.length || !b.length) return a.length - b.length
-    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : lexicalSort(a.slice(1), b.slice(1))
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)

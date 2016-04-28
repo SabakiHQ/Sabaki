@@ -1,4 +1,4 @@
-# Sabaki
+# Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
 
 <img src="logo.png" width="156" height="156">
 
@@ -20,6 +20,14 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - GTP engines support
 - Guess mode
 
+
+To run the (currently very limited) tests, you have to install `electron-prebuilt` and `electron-mocha` globally using npm:
+
+~~~
+npm install electron-prebuilt -g
+npm install electron-mocha -g
+npm test
+~~~
 
 ## Web Version
 

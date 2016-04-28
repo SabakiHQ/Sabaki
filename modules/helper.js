@@ -1,13 +1,13 @@
 (function(root) {
 
-var gtp = null
 var shell = null
+var gtp = null
 var marked = root.marked
 
 if (typeof require != 'undefined') {
+    shell = require('electron').shell
     gtp = require('./gtp')
     marked = require('./marked')
-    shell = require('electron').shell
 }
 
 if (!gtp) gtp = {
@@ -74,6 +74,11 @@ context.equals = function(a, b) {
     return false
 }
 
+context.lexicalCompare = function(a, b) {
+    if (!a.length || !b.length) return a.length - b.length
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : context.lexicalCompare(a.slice(1), b.slice(1))
+}
+
 context.getSymmetries = function(tuple) {
     var reversed = [tuple[1], tuple[0]]
     var s = function(v) {
@@ -119,6 +124,7 @@ context.wireLinks = function(container) {
         shell.openExternal(this.href)
         return false
     })
+
     container.getElements('.coord').addEvent('mouseenter', function() {
         var v = gtp.point2vertex(this.get('text'), getBoard().size)
         showIndicator(v)

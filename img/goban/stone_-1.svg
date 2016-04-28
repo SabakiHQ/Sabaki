@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="47"
-   height="47"
-   viewBox="0 0 46.999998 46.999998"
+   width="43"
+   height="43"
+   viewBox="0 0 43 43"
    id="svg2"
    version="1.1"
    inkscape:version="0.91pre3 r13670"
@@ -23,11 +23,11 @@
        inkscape:collect="always"
        id="linearGradient4333">
       <stop
-         style="stop-color:#e1e1e1;stop-opacity:1"
+         style="stop-color:#eeeeee;stop-opacity:1"
          offset="0"
          id="stop4335" />
       <stop
-         style="stop-color:#e1e1e1;stop-opacity:0"
+         style="stop-color:#eeeeee;stop-opacity:0"
          offset="1"
          id="stop4337" />
     </linearGradient>
@@ -37,11 +37,11 @@
       <stop
          id="stop4327"
          offset="0"
-         style="stop-color:#d2d2d2;stop-opacity:1" />
+         style="stop-color:#dddddd;stop-opacity:1" />
       <stop
          id="stop4329"
          offset="1"
-         style="stop-color:#f4f4f4;stop-opacity:1" />
+         style="stop-color:#ffffff;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
@@ -62,25 +62,6 @@
        x2="20.901062"
        y2="1035.356"
        gradientUnits="userSpaceOnUse" />
-    <filter
-       style="color-interpolation-filters:sRGB;"
-       inkscape:label="Blur"
-       id="filter4483-6">
-      <feGaussianBlur
-         stdDeviation="1 1"
-         result="fbSourceGraphic"
-         id="feGaussianBlur4485-9" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix4513" />
-      <feGaussianBlur
-         id="feGaussianBlur4515"
-         stdDeviation="1 1"
-         result="blur"
-         in="fbSourceGraphic" />
-    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -117,20 +98,7 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Ebene 2"
-     style="opacity:0.595"
-     transform="translate(0,-1.9999998)">
-    <circle
-       style="display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.99750137;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4483-6)"
-       id="path3336-4"
-       cx="23.574768"
-       cy="25.931807"
-       r="20.501244" />
-  </g>
-  <g
+ <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"

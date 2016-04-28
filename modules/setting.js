@@ -6,7 +6,7 @@ var app = null
 
 if (typeof require != 'undefined') {
     var remote = require('electron').remote
-    
+
     fs = require('fs')
     path = require('path')
     app = remote ? remote.app : require('electron').app
@@ -14,11 +14,20 @@ if (typeof require != 'undefined') {
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
 
-var namesort = function(x, y) { return x.name > y.name ? 1 : x.name == y.name ? 0 : -1 }
-var settingspath = ''
+var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
+var settingspath = null
 
-if (path && app)
-    settingspath = path.join(app.getPath('userData'), 'settings.json')
+if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
+    var directory = app.getPath('userData')
+
+    try {
+        fs.accessSync(directory, fs.F_OK)
+    } catch(e) {
+        fs.mkdirSync(directory)
+    }
+
+    settingspath = path.join(directory, 'settings.json')
+}
 
 var settings = {}
 var engines = []
@@ -31,6 +40,9 @@ var defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
+    'board.stone_image_-1': '../img/goban/stone_-1.svg',
+    'board.stone_image_1': '../img/goban/stone_1.svg',
+    'board.stone_image_0': '../img/goban/stone_0.svg',
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
         'genmove', 'undo', 'fixed_handicap',
@@ -87,7 +99,7 @@ var defaults = {
 }
 
 context.load = function() {
-    if (!fs) return settings = defaults
+    if (!settingspath) return settings = defaults
 
     settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
 
@@ -105,7 +117,7 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!fs) return context
+    if (!settingspath) return context
 
     fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
     return context
@@ -141,10 +153,12 @@ context.clearEngines = function() {
     return context
 }
 
-try {
-    fs.accessSync(settingspath, fs.F_OK)
-} catch(err) {
-    context.save()
+if (settingspath) {
+    try {
+        fs.accessSync(settingspath, fs.F_OK)
+    } catch(err) {
+        context.save()
+    }
 }
 
 context.load()
