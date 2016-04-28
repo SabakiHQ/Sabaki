@@ -2,19 +2,22 @@
  * Getter & setter
  */
 
+var busyTimeout = null
+
 function getIsBusy() {
     return document.body.retrieve('busy')
 }
 
 function setIsBusy(busy) {
     document.body.store('busy', busy)
+    clearTimeout(busyTimeout)
 
     if (busy) {
         document.body.addClass('busy')
         return
     }
 
-    setTimeout(function() {
+    busyTimeout = setTimeout(function() {
         document.body.removeClass('busy')
     }, setting.get('app.hide_busy_delay'))
 }

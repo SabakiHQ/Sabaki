@@ -647,9 +647,9 @@ function attachEngine(exec, args, genMove) {
         })
 
         syncEngine()
-        setIsBusy(false)
 
-        if (!!genMove) generateMove()
+        if (!!genMove) generateMove(true)
+        else setIsBusy(false)
     }, setting.get('gtp.attach_delay'))
 }
 
