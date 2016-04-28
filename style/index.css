@@ -455,6 +455,7 @@ header, #edit, #scoring, #find, #guess {
         margin-left: 0;
         padding: 3px;
         opacity: .8;
+        transition: background .2s;
     }
     #properties .edit .header img:hover { background: #B3AC53; }
     #properties .edit .header div {
@@ -523,6 +524,7 @@ header, #edit, #scoring, #find, #guess {
         filter: invert(100%);
         -webkit-filter: invert(100%);
         opacity: .5;
+        transition: background .2s;
     }
     #properties .inner .header img.editbutton:hover {
         background: white;
@@ -579,13 +581,30 @@ header, #edit, #scoring, #find, #guess {
         text-align: center;
         margin-bottom: 20px;
     }
-    #info section img {
+    #info section .currentplayer {
         margin: 0 10px;
-        height: 31px;
     }
-    #info section input[name$="_1"] {
-        text-align: right;
+    #info section .menu {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+        margin: 0 2px 5px;
+        padding: 3px;
+        transition: background .2s;
     }
+    #info section .menu.active {
+        background: #2FC5E4;
+    }
+    #info section .menu:hover {
+        background: rgba(255, 255, 255, .5);
+    }
+    #info section .menu.active:hover {
+        background: #4FE7F6;
+    }
+    #info.disabled section .menu { display: none; }
+    @media screen and (max-width: 600px) {
+        #info section input { width: 100px; }
+    }
+    #info section input[name$="_1"] { text-align: right; }
     #info section input[name^="rank"] {
         width: 40px;
     }

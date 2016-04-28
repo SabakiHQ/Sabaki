@@ -2,19 +2,22 @@
  * Getter & setter
  */
 
+var busyTimeout = null
+
 function getIsBusy() {
     return document.body.retrieve('busy')
 }
 
 function setIsBusy(busy) {
     document.body.store('busy', busy)
+    clearTimeout(busyTimeout)
 
     if (busy) {
         document.body.addClass('busy')
         return
     }
 
-    setTimeout(function() {
+    busyTimeout = setTimeout(function() {
         document.body.removeClass('busy')
     }, setting.get('app.hide_busy_delay'))
 }
@@ -28,9 +31,7 @@ function getShowNextMoves() {
 }
 
 function setShowNextMoves(show) {
-    if (show) $('goban').addClass('variations')
-    else $('goban').removeClass('variations')
-
+    $('goban').toggleClass('variations', show)
     setting.set('view.show_next_moves', show)
 }
 
@@ -39,9 +40,7 @@ function getFuzzyStonePlacement() {
 }
 
 function setFuzzyStonePlacement(fuzzy) {
-    if (fuzzy) $('goban').addClass('fuzzy')
-    else $('goban').removeClass('fuzzy')
-
+    $('goban').toggleClass('fuzzy', fuzzy)
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
@@ -50,9 +49,7 @@ function getShowCoordinates() {
 }
 
 function setShowCoordinates(show) {
-    if (show) $('goban').addClass('coordinates')
-    else $('goban').removeClass('coordinates')
-
+    $('goban').toggleClass('coordinates', show)
     setting.set('view.show_coordinates', show)
     resizeBoard()
 }
@@ -73,8 +70,7 @@ function setShowLeftSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
     }
 
-    if (show) document.body.addClass('leftsidebar')
-    else document.body.removeClass('leftsidebar')
+    document.body.toggleClass('leftsidebar', show)
 
     $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
     $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
@@ -115,8 +111,7 @@ function setShowSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
     }
 
-    if (show) document.body.addClass('sidebar')
-    else document.body.removeClass('sidebar')
+    document.body.toggleClass('sidebar', show)
 
     $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
     $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
@@ -203,8 +198,7 @@ function getShowHotspot() {
 }
 
 function setShowHotspot(bookmark) {
-    if (bookmark) document.body.addClass('bookmark')
-    else document.body.removeClass('bookmark')
+    document.body.toggleClass('bookmark', bookmark)
 }
 
 function getCaptures() {
@@ -1001,7 +995,7 @@ function openHeaderMenu() {
         { type: 'separator' },
         {
             label: '&Info',
-            click: showGameInfo
+            click: function() { showGameInfo() }
         }
     ]
 
@@ -1116,6 +1110,48 @@ function openCommentMenu() {
     menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
 }
 
+function openEnginesMenu(element, callback) {
+    if (!callback) callback = function() {}
+
+    var currentIndex = element.retrieve('engineindex')
+    if (currentIndex == null) currentIndex = -1
+
+    var template = [{
+        label: '&Manual',
+        type: 'checkbox',
+        checked: currentIndex < 0,
+        click: function() { callback(null, -1) }
+    }]
+
+    var engineItems = setting.getEngines().map(function(engine, i) {
+        return {
+            label: engine.name,
+            type: 'checkbox',
+            checked: currentIndex == i,
+            click: function() { callback(engine, i) }
+        }
+    })
+
+    if (engineItems.length > 0) {
+        template.push({ type: 'separator' })
+        template.push.apply(template, engineItems)
+    }
+
+    template.push({ type: 'separator'})
+    template.push({
+        label: 'Manage &Engines…',
+        click: function() {
+            showPreferences()
+            setPreferencesTab('engines')
+        }
+    })
+
+    var coord = element.getCoordinates()
+
+    menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+}
+
 function openNodeMenu(tree, index, event) {
     if (getScoringMode()) return
 
@@ -1195,6 +1231,7 @@ function showGameInfo() {
     info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+    info.getElements('section .menu').removeClass('active').store('engineindex', -1)
 
     var size = info.getElement('input[name="size"]')
     size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
@@ -1203,13 +1240,17 @@ function showGameInfo() {
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
     else handicap.selectedIndex = 0
 
-    var disabled = tree.nodes.length > 1 || tree.subtrees.length > 0 || 'AB' in rootNode
+    var disabled = tree.nodes.length > 1
+        || tree.subtrees.length > 0
+        || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
+
     handicap.disabled = disabled
     size.disabled = disabled
+    info.toggleClass('disabled', disabled)
 }
 
 function closeGameInfo() {
-    $('info').removeClass('show')
+    $('info').removeClass('show').removeClass('disabled')
     document.activeElement.blur()
 }
 
