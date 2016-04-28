@@ -585,10 +585,10 @@ header, #edit, #scoring, #find, #guess {
         margin: 0 10px;
     }
     #info section .menu {
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
         margin: 0 2px 5px;
         padding: 3px;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
         transition: background .2s;
     }
     #info section .menu.active {
