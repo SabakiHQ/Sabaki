@@ -617,7 +617,7 @@ function loadEngines() {
     })
 }
 
-function attachEngine(exec, args) {
+function attachEngine(exec, args, genMove) {
     detachEngine()
     setIsBusy(true)
 
@@ -648,6 +648,8 @@ function attachEngine(exec, args) {
 
         syncEngine()
         setIsBusy(false)
+
+        if (!!genMove) generateMove()
     }, setting.get('gtp.attach_delay'))
 }
 
@@ -1393,6 +1395,22 @@ function commitGameInfo() {
 
     setUndoable(false)
     updateSidebar()
+
+    // Start engine
+
+    if (!$('info').hasClass('disabled')) {
+        var engines = setting.getEngines()
+        var indices = $$('#info section .menu').map(function(x) { return x.retrieve('engineindex') })
+        var max = Math.max.apply(null, indices)
+        var sign = indices.indexOf(max) == 0 ? 1 : -1
+
+        if (max >= 0) {
+            var engine = engines[max]
+            attachEngine(engine.path, engine.args, getCurrentPlayer() == sign)
+        } else {
+            detachEngine()
+        }
+    }
 }
 
 function commitScore() {
