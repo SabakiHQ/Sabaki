@@ -92,9 +92,12 @@ context.parse = function(tokens, callback, start, depth) {
             start[0] = i + 1
 
             t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
-            t.parent = tree
-            tree.subtrees.push(t)
-            tree.current = 0
+
+            if (t.nodes.length > 0) {
+                t.parent = tree
+                tree.subtrees.push(t)
+                tree.current = 0
+            }
 
             i = start[0]
         } else if (tokens[i][0] == 'parenthesis' && tokens[i][1] == ')') {
