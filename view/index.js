@@ -1685,8 +1685,7 @@ function loadFileFromSgf(content, dontask, callback) {
                 lastprogress = progress
             }).subtrees
 
-            if (trees.length == 0 || trees.some(function(t) { return t.nodes.length == 0 }))
-                throw true
+            if (trees.length == 0) throw true
 
             setGameTrees(trees)
             loadGameFromIndex(0)

@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * SVG stone images
+* Doesn't clear GTP console when detaching engines
+* Update to Electron v0.37.8
 
 ## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
 

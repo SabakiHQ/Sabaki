@@ -122,6 +122,29 @@ describe('sgf', function() {
 
             assert.equal(tree.subtrees.length, 1)
         })
+        it('should ignore empty subtrees', function() {
+            assert.equal(
+                gametree.getJson(sgf.parse(sgf.tokenize('(;B[hh]()(;W[ii])()(;W[hi]C[h]))'))),
+                gametree.getJson({
+                    nodes: [],
+                    subtrees: [
+                        {
+                            nodes: [{ B: ['hh'] }],
+                            subtrees: [
+                                {
+                                    nodes: [{ W: ['ii'] }],
+                                    subtrees: []
+                                },
+                                {
+                                    nodes: [{ W: ['hi'], C: ['h'] }],
+                                    subtrees: []
+                                }
+                            ]
+                        }
+                    ]
+                })
+            )
+        })
     })
 
     describe('point2vertex', function() {
