@@ -28,12 +28,12 @@ function newWindow(path) {
     buildMenu()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
-    window.webContents
-        .on('did-finish-load', function() {
-            window.setBackgroundColor('#111')
-            if (path) window.webContents.send('load-game', path)
-        })
-        .on('new-window', function(e) { e.preventDefault() })
+    window.webContents.on('did-finish-load', function() {
+        window.setBackgroundColor('#111')
+        if (path) window.webContents.send('load-game', path)
+    }).on('new-window', function(e) {
+        e.preventDefault()
+    })
 
     window.on('closed', function() {
         window = null
