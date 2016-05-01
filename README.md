@@ -54,7 +54,7 @@ npm test
 
 ## Web Version
 
-Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser, but it's far from complete and many things are not working yet.
+Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a working demo at http://sabaki.yichuanshen.de/web/.
 
 ## Third Party Libraries
 
