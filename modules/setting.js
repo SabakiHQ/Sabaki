@@ -101,7 +101,11 @@ var defaults = {
 context.load = function() {
     if (!settingspath) return settings = defaults
 
-    settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+    try {
+        settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+    } catch(e) {
+        settings = {}
+    }
 
     // Load default settings
 
