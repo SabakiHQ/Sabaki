@@ -1,13 +1,15 @@
 (function(root) {
 
+var fs = null
 var gametree = root.gametree
 var setting = root.setting
-var fs = null
+var helper = root.helper
 
 if (typeof require != 'undefined') {
+    fs = require('fs')
     gametree = require('./gametree')
     setting = require('./setting')
-    fs = require('fs')
+    helper = require('./helper')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
@@ -19,7 +21,7 @@ context.meta = {
 }
 
 context.tokenize = function(input) {
-    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
+    input = helper.normalizeEndings(input)
 
     var tokens = []
     var rules = {
@@ -179,7 +181,7 @@ context.unescapeString = function(input) {
     var result = ''
     var inBackslash = false
 
-    input = input.replace(/(\r\n|\n\r|\r)/g, '\n')
+    input = helper.normalizeEndings(input)
 
     for (var i = 0; i < input.length; i++) {
         if (!inBackslash) {

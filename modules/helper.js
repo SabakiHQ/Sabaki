@@ -107,7 +107,11 @@ context.htmlify = function(input) {
 }
 
 context.markdown = function(input) {
-    return marked(input.trim().replace(/\r\n/g, '\n').replace(/\n/g, '  \n'))
+    return marked(context.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
+}
+
+context.normalizeEndings = function(input) {
+    return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
 
 context.wireLinks = function(container) {
