@@ -1823,8 +1823,6 @@ function goToMainVariation() {
     var tree = tp[0]
     var root = getRootTree()
 
-    if (gametree.onMainTrack(tree)) return
-
     while (!gametree.onMainTrack(tree)) {
         tree = tree.parent
     }
@@ -1834,7 +1832,11 @@ function goToMainVariation() {
         root = root.subtrees[0]
     }
 
-    setCurrentTreePosition(tree, tree.nodes.length - 1, false, true)
+    if (gametree.onMainTrack(tp[0])) {
+        setCurrentTreePosition(tree, tp[1], false, true)
+    } else {
+        setCurrentTreePosition(tree, tree.nodes.length - 1, false, true)
+    }
 }
 
 function makeMainVariation() {
