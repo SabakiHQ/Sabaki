@@ -2,11 +2,13 @@
 
 var shell = null
 var gtp = null
+var gametree = root.gametree
 var marked = root.marked
 
 if (typeof require != 'undefined') {
     shell = require('electron').shell
     gtp = require('./gtp')
+    gametree = require('./gametree')
     marked = require('./marked')
 }
 
@@ -87,13 +89,16 @@ context.htmlify = function(input) {
     urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s]\\b'
     emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
     coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
-    totalRegex = '(' + [urlRegex, emailRegex, coordRegex].join('|') + ')'
+    movenumberRegex = '\\B#\\d+\\b'
+    totalRegex = '(' + [urlRegex, emailRegex, coordRegex, movenumberRegex].join('|') + ')'
 
     input = input.replace(new RegExp(totalRegex, 'g'), function(match) {
         if (new RegExp(urlRegex).test(match))
-            return '<a href="' + match + '">' + match + '</a>'
+            return '<a href="' + match + '" class="external">' + match + '</a>'
         if (new RegExp(emailRegex).test(match))
-            return '<a href="mailto:' + match + '">' + match + '</a>'
+            return '<a href="mailto:' + match + '" class="external">' + match + '</a>'
+        if (new RegExp(movenumberRegex).test(match))
+            return '<a href="#" class="movenumber">' + match + '</a>'
         if (new RegExp(coordRegex).test(match))
             return '<span class="coord">' + match + '</span>'
     })
@@ -107,12 +112,20 @@ context.markdown = function(input) {
 
 context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
-        if (!shell) {
-            this.target = '_blank'
-            return true
+        if (this.hasClass('external'))  {
+            if (!shell) {
+                this.target = '_blank'
+                return true
+            }
+
+            shell.openExternal(this.href)
+        } else if (this.hasClass('movenumber')) {
+            var movenumber = +this.get('text').slice(1)
+            var tp = getCurrentTreePosition()
+
+            setCurrentTreePosition.apply(null, gametree.navigate(getRootTree(), 0, movenumber))
         }
 
-        shell.openExternal(this.href)
         return false
     })
 
