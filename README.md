@@ -2,7 +2,7 @@
 
 <img src="logo.png" width="156" height="156">
 
-An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
+An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is the web version of Sabaki. It's a trimmed-down version that runs in any modern browser. To run Sabaki, simply open `./view/index.html` in a browser. You can try a working demo at http://sabaki.yichuanshen.de/web/.
 
 ![Screenshot](screenshot.png)
 
@@ -19,19 +19,6 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Position & move annotations
 - GTP engines support
 - Guess mode
-
-
-To run the (currently very limited) tests, you have to install `electron-prebuilt` and `electron-mocha` globally using npm:
-
-~~~
-npm install electron-prebuilt -g
-npm install electron-mocha -g
-npm test
-~~~
-
-## Web Version
-
-This is the web version of Sabaki. It's a trimmed-down version that runs in any modern browser, but it's far from complete and many things are not working yet. To run Sabaki, simply open `./view/index.html` in a browser.
 
 ## Third Party Libraries
 
