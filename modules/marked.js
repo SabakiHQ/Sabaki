@@ -874,7 +874,7 @@ Renderer.prototype.link = function(href, title, text) {
       return '';
     }
   }
-  var out = '<a href="' + href + '"';
+  var out = '<a href="' + href + '" class="external"';
   if (title) {
     out += ' title="' + title + '"';
   }
@@ -1235,7 +1235,7 @@ marked.defaults = {
   sanitize: true,
   sanitizer: null,
   mangle: true,
-  smartLists: false,
+  smartLists: true,
   silent: false,
   highlight: null,
   langPrefix: 'lang-',
