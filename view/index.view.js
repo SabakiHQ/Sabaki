@@ -1274,7 +1274,7 @@ function showGameInfo() {
 }
 
 function closeGameInfo() {
-    $('info').removeClass('show').removeClass('disabled')
+    $('info').removeClass('show')
     document.activeElement.blur()
 }
 

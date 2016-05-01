@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to choose GTP engine directly inside the 'New Game' drawer
+* Ability to link to move numbers in the comments
 
 **Changed**
 
