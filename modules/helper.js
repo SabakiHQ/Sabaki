@@ -86,7 +86,7 @@ context.getSymmetries = function(tuple) {
 }
 
 context.htmlify = function(input) {
-    urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s]\\b'
+    urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
     emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
     coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
     movenumberRegex = '\\B#\\d+\\b'
