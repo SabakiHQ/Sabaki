@@ -121,6 +121,7 @@ context.wireLinks = function(container) {
             shell.openExternal(this.href)
         } else if (this.hasClass('movenumber')) {
             var movenumber = +this.get('text').slice(1)
+            setUndoable(true)
             goToMainVariation()
 
             var tp = gametree.navigate(getRootTree(), 0, movenumber)
