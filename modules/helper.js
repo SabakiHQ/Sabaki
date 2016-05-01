@@ -43,15 +43,25 @@ context.equals = function(a, b) {
     if (a == null || b == null) return a == b
 
     var t = Object.prototype.toString.call(a)
-    if (t != Object.prototype.toString.call(b)) return false
+    if (t !== Object.prototype.toString.call(b)) return false
 
-    if (t == '[object Array]') {
+    var aa = t === '[object Array]'
+    var ao = t === '[object Object]'
+
+    if (aa) {
         if (a.length !== b.length) return false
         for (var i = 0; i < a.length; i++)
             if (!context.equals(a[i], b[i])) return false
         return true
-    } else {
-        return a == b
+    } else if (ao) {
+        var kk = Object.keys(a)
+        if (kk.length !== Object.keys(b).length) return false
+        for (var i = 0; i < kk.length; i++) {
+            k = kk[i]
+            if (!(k in b)) return false
+            if (!context.equals(a[k], b[k])) return false
+        }
+        return true
     }
 
     return false
