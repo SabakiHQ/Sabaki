@@ -22,37 +22,9 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
 
-## Building
+## Building & Tests
 
-Building Sabaki requires [Node.js](https://nodejs.org/en/download/) and npm. First, clone Sabaki:
-
-~~~
-git clone https://github.com/yishn/Sabaki
-cd Sabaki
-~~~
-
-Install `electron-packager` globally and the dependencies of Sabaki using npm:
-
-~~~
-npm install electron-packager -g
-npm install
-~~~
-
-You can build Sabaki by using one of the three build instructions depending on the target OS:
-
-* `npm run build:win`
-* `npm run build:linux`
-* `npm run build:osx`
-
-The binaries will be in `Sabaki/bin/`.
-
-To run the (currently very limited) tests, you have to install `electron-prebuilt` and `electron-mocha` globally using npm:
-
-~~~
-npm install electron-prebuilt -g
-npm install electron-mocha -g
-npm test
-~~~
+See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests) in the wiki.
 
 ## Web Version
 
