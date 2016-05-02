@@ -20,12 +20,7 @@ var settingspath = null
 if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
     var directory = app.getPath('userData')
 
-    try {
-        fs.accessSync(directory, fs.F_OK)
-    } catch(e) {
-        fs.mkdirSync(directory)
-    }
-
+    try { fs.mkdirSync(directory) } catch(e) {}
     settingspath = path.join(directory, 'settings.json')
 }
 
@@ -95,13 +90,17 @@ var defaults = {
     'window.height': 622,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 577
+    'window.width': 578
 }
 
 context.load = function() {
     if (!settingspath) return settings = defaults
 
-    settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+    try {
+        settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+    } catch(e) {
+        settings = {}
+    }
 
     // Load default settings
 
@@ -151,14 +150,6 @@ context.getEngines = function() {
 context.clearEngines = function() {
     engines.length = 0
     return context
-}
-
-if (settingspath) {
-    try {
-        fs.accessSync(settingspath, fs.F_OK)
-    } catch(err) {
-        context.save()
-    }
 }
 
 context.load()

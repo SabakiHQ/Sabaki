@@ -2,12 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.12.3][v0.12.3] (2016-05-02)
 
 **Added**
 
 * Ability to choose GTP engine directly inside the 'New Game' drawer
-* Ability to link to move numbers in the comments
+* Ability to link to move numbers in the comments (see [wiki](https://github.com/yishn/Sabaki/wiki/How-to-write-comments))
 
 **Changed**
 
@@ -325,7 +325,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.3...master
+[v0.12.3]: https://github.com/yishn/Sabaki/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.1
 [v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
