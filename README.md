@@ -22,13 +22,17 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
 
+## Web Version
+
+Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a working demo at http://sabaki.yichuanshen.de/web/.
+
 ## Building & Tests
 
 See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests) in the wiki.
 
-## Web Version
+## License
 
-Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a working demo at http://sabaki.yichuanshen.de/web/.
+This project is licensed under the [MIT license](https://github.com/yishn/Sabaki/blob/master/LICENSE.md).
 
 ## Third Party Libraries
 
