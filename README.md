@@ -10,7 +10,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 - Fuzzy stone placement
 - Read and save SGF games and collections
-- Display formatted SGF comments using a subset of Markdown
+- Display formatted SGF comments using a [subset of Markdown](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki)
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
@@ -19,6 +19,8 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Position & move annotations
 - GTP engines support
 - Guess mode
+
+For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
 
 ## Building
 
