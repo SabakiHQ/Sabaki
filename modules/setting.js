@@ -95,7 +95,7 @@ var defaults = {
     'window.height': 622,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 577
+    'window.width': 578
 }
 
 context.load = function() {
@@ -155,14 +155,6 @@ context.getEngines = function() {
 context.clearEngines = function() {
     engines.length = 0
     return context
-}
-
-if (settingspath) {
-    try {
-        fs.accessSync(settingspath, fs.F_OK)
-    } catch(err) {
-        context.save()
-    }
 }
 
 context.load()
