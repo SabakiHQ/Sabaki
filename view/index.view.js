@@ -971,6 +971,16 @@ function hideIndicator() {
 function openHeaderMenu() {
     var template = [
         {
+            label: 'About Sabaki…',
+            click: function() {
+                new Element('a', {
+                    href: 'http://sabaki.yichuanshen.de',
+                    target: '_blank'
+                }).click()
+            }
+        },
+        { type: 'separator' },
+        {
             label: 'New File',
             click: function() { newFile(true) }
         },
