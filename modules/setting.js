@@ -20,12 +20,7 @@ var settingspath = null
 if (path && typeof describe == 'undefined' && typeof it == 'undefined') {
     var directory = app.getPath('userData')
 
-    try {
-        fs.accessSync(directory, fs.F_OK)
-    } catch(e) {
-        fs.mkdirSync(directory)
-    }
-
+    try { fs.mkdirSync(directory) } catch(e) {}
     settingspath = path.join(directory, 'settings.json')
 }
 
