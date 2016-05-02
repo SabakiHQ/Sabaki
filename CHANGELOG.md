@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to choose GTP engine directly inside the 'New Game' drawer
-* Ability to link to move numbers in the comments (see [wiki](https://github.com/yishn/Sabaki/wiki/How-to-write-comments))
+* Ability to link to move numbers in the comments (see [wiki](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki))
 
 **Changed**
 
