@@ -973,10 +973,14 @@ function openHeaderMenu() {
         {
             label: 'About Sabaki…',
             click: function() {
-                new Element('a', {
+                var link = new Element('a', {
                     href: 'http://sabaki.yichuanshen.de',
-                    target: '_blank'
-                }).click()
+                    target: '_blank',
+                    css: { display: 'none' }
+                })
+                document.body.grab(link)
+                link.click()
+                link.dispose()
             }
         },
         { type: 'separator' },
