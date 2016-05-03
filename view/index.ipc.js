@@ -69,7 +69,7 @@ var menudata = {
 }
 
 ipcRenderer.on('menu-click', function(e, action) { menudata[action]() })
-ipcRenderer.on('load-game', function(e, path) { loadFile(path) })
+ipcRenderer.on('load-file', function(e, path) { loadFile(path) })
 ipcRenderer.on('attach-engine', function(e, path, args) { attachEngine(path, args) })
 
 })()
