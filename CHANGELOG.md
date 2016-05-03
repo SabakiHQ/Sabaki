@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.12.4][v0.12.4] (2016-05-03)
+
+**Fixed**
+
+* Revert back to PNG stone images (see [#74](https://github.com/yishn/Sabaki/issues/74))
+
 ## [Sabaki v0.12.3][v0.12.3] (2016-05-02)
 
 **Added**
@@ -325,7 +331,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.3...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.4...master
+[v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/yishn/Sabaki/compare/v0.12.2...v0.12.3
 [v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.1...v0.12.2
 [v0.12.1]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.1
