@@ -23,12 +23,6 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
 
-**Fixed**
-
-* Fix uncaught exception at first time startup
-
-## [Sabaki v0.12.1][v0.12.1] (2016-04-24)
-
 **Added**
 
 * Support for old SGF 'long property ids' (see [#68](https://github.com/yishn/Sabaki/issues/68))
@@ -334,8 +328,7 @@ First release
 [unreleased]: https://github.com/yishn/Sabaki/compare/v0.12.4...master
 [v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.12.3...v0.12.4
 [v0.12.3]: https://github.com/yishn/Sabaki/compare/v0.12.2...v0.12.3
-[v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.1...v0.12.2
-[v0.12.1]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.1
+[v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.2
 [v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.2
