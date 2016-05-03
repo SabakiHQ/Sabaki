@@ -2,8 +2,6 @@ exports.Command = require('./command.js')
 exports.Response = require('./response.js')
 exports.Controller = require('./controller.js')
 
-var alpha = 'abcdefghjklmnopqrstuvwxyz'
-
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
     var inputs = input.split(' ').filter(function(x) { return x != '' })
