@@ -6,6 +6,8 @@ if (typeof require != 'undefined') {
     helper = require('./helper')
 }
 
+var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+
 var Board = function(width, height, arrangement, captures) {
     this.width = width ? width : 19
     this.height = height ? height : 19
@@ -63,13 +65,13 @@ Board.prototype = {
 
     getSymmetries: function(vertex) {
         var self = this
-        var m = self.size - 1
+        var mx = self.width - 1
+        var my = self.height - 1
         if (!self.hasVertex(vertex)) return []
 
-        return helper.getSymmetries(vertex).map(function(x) {
-            return x.map(function(y) {
-                return (y % m + m) % m
-            })
+        return helper.getSymmetries(vertex).map(function(v) {
+            var x = v[0], y = v[1]
+            return [(x % mx + mx) % mx, (y % my + my) % my]
         })
     },
 
@@ -133,8 +135,8 @@ Board.prototype = {
         var self = this
         var map = {}
 
-        for (var i = 0; i < self.size; i++) {
-            for (var j = 0; j < self.size; j++) {
+        for (var i = 0; i < self.width; i++) {
+            for (var j = 0; j < self.height; j++) {
                 var vertex = [i, j]
 
                 if (vertex in map) continue
@@ -186,6 +188,17 @@ Board.prototype = {
         }
 
         return score
+    },
+
+    vertex2coord: function(vertex) {
+        if (!this.hasVertex(vertex)) return null
+        return alpha[vertex[0]] + (this.height - vertex[1])
+    },
+
+    coord2vertex: function(coord) {
+        var x = alpha.indexOf(coord[0].toUpperCase())
+        var y = size - +coord.substr(1)
+        return [x, y]
     },
 
     isValid: function() {

@@ -136,7 +136,7 @@ context.wireLinks = function(container) {
     })
 
     container.getElements('.coord').addEvent('mouseenter', function() {
-        var v = gtp.point2vertex(this.get('text'), getBoard().size)
+        var v = getBoard().coord2vertex(this.get('text'))
         showIndicator(v)
     }).addEvent('mouseleave', function() {
         hideIndicator()
