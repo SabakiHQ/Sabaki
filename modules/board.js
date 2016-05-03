@@ -201,7 +201,7 @@ Board.prototype = {
 
     coord2vertex: function(coord) {
         var x = alpha.indexOf(coord[0].toUpperCase())
-        var y = size - +coord.substr(1)
+        var y = this.height - +coord.substr(1)
         return [x, y]
     },
 
