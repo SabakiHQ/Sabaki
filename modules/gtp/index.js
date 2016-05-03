@@ -28,15 +28,3 @@ exports.parseResponse = function(input) {
 
     return new exports.Response(id, input.substr(1), error)
 }
-
-exports.vertex2point = function(v, size) {
-    if (v[0] < 0 || v[1] < 0 || v[0] >= size || v[1] >= size)
-        return 'pass'
-    return alpha[v[0]] + (size - v[1])
-}
-
-exports.point2vertex = function(point, size) {
-    var x = alpha.indexOf(point[0].toLowerCase())
-    var y = size - parseFloat(point.substr(1))
-    return [x, y]
-}

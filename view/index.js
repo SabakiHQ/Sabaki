@@ -688,8 +688,9 @@ function syncEngine() {
             var v = [i, j]
             var sign = board.arrangement[v]
             if (sign == 0) continue
+
             var color = sign > 0 ? 'B' : 'W'
-            var point = gtp.vertex2point(v, board.width)
+            var point = board.vertex2coord(v)
 
             sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
         }
@@ -860,7 +861,7 @@ function makeMove(vertex, sendCommand) {
 
     if (sendCommand && !enterScoring) {
         sendGTPCommand(
-            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().width)]),
+            new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
             true
         )
         $('console').store('boardhash', getBoard().getHash())
@@ -1525,7 +1526,7 @@ function generateMove(ignoreBusy) {
 
         var v = [-1, -1]
         if (r.content.toLowerCase() != 'pass')
-            v = gtp.point2vertex(r.content, getBoard().width)
+            v = getBoard().coord2vertex(r.content)
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)
