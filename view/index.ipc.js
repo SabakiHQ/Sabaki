@@ -69,7 +69,12 @@ var menudata = {
 }
 
 ipcRenderer.on('menu-click', function(e, action) { menudata[action]() })
-ipcRenderer.on('load-game', function(e, path) { loadFile(path) })
 ipcRenderer.on('attach-engine', function(e, path, args) { attachEngine(path, args) })
+
+ipcRenderer.on('load-file', function(e, path) {
+    setTimeout(function() {
+        loadFile(path)
+    }, setting.get('app.loadgame_delay'))
+})
 
 })()

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix occasional crash when opening small files at startup
+
 ## [Sabaki v0.12.4][v0.12.4] (2016-05-03)
 
 **Fixed**
