@@ -357,7 +357,7 @@ Board.prototype = {
         var svg = document.createElementNS(ns, 'svg')
         svg.setAttribute('width', pixelsize)
         svg.setAttribute('height', pixelsize)
-        var tileSize = (pixelsize - 1) / Math.min(this.width, this.height)
+        var tileSize = (pixelsize - 1) / Math.max(this.width, this.height)
         var radius = tileSize / 2
 
         // Draw hoshi
