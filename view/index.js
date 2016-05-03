@@ -188,7 +188,7 @@ function getBoard() {
 }
 
 function setBoard(board) {
-    if (!getBoard() || getBoard().size != board.size) {
+    if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
         $('goban').store('board', board)
         buildBoard()
     }
@@ -196,8 +196,8 @@ function setBoard(board) {
     $('goban').store('board', board)
     setCaptures(board.captures)
 
-    for (var x = 0; x < board.size; x++) {
-        for (var y = 0; y < board.size; y++) {
+    for (var x = 0; x < board.width; x++) {
+        for (var y = 0; y < board.height; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[li.retrieve('vertex')]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
@@ -675,17 +675,17 @@ function syncEngine() {
     setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
-    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.size]), true)
+    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.width]), true)
     sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
 
     // Replay
-    for (var i = 0; i < board.size; i++) {
-        for (var j = 0; j < board.size; j++) {
+    for (var i = 0; i < board.width; i++) {
+        for (var j = 0; j < board.height; j++) {
             var v = [i, j]
             var sign = board.arrangement[v]
             if (sign == 0) continue
             var color = sign > 0 ? 'B' : 'W'
-            var point = gtp.vertex2point(v, board.size)
+            var point = gtp.vertex2point(v, board.width)
 
             sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
         }
@@ -856,7 +856,7 @@ function makeMove(vertex, sendCommand) {
 
     if (sendCommand && !enterScoring) {
         sendGTPCommand(
-            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().width)]),
             true
         )
         $('console').store('boardhash', getBoard().getHash())
@@ -1193,8 +1193,8 @@ function vertexClicked(vertex, event) {
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
                 i = 1
 
-            for (var x = 0; x < board.size; x++) {
-                for (var y = 0; y < board.size; y++) {
+            for (var x = 0; x < board.width; x++) {
+                for (var y = 0; y < board.height; y++) {
                     var z = i == 0 ? x : y
                     if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
                         $$('#goban .pos_' + x + '-' + y)[0].addClass('paint_1')
@@ -1521,7 +1521,7 @@ function generateMove(ignoreBusy) {
 
         var v = [-1, -1]
         if (r.content.toLowerCase() != 'pass')
-            v = gtp.point2vertex(r.content, getBoard().size)
+            v = gtp.point2vertex(r.content, getBoard().width)
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)

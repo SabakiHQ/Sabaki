@@ -526,7 +526,7 @@ function getCurrentMoveInterpretation() {
 
     // Determine position to edges
 
-    if (vertex[0] == (board.size - 1) / 2 && vertex[1] == vertex[0])
+    if (vertex[0] == (board.width - 1) / 2 && vertex[1] == (board.height - 1) / 2)
         return 'Tengen'
 
     var diff = board.getCanonicalVertex(vertex).map(function(x) { return x + 1 })
@@ -817,10 +817,10 @@ function buildBoard() {
     var rows = []
     var hoshi = board.getHandicapPlacement(9)
 
-    for (var y = 0; y < board.size; y++) {
+    for (var y = 0; y < board.height; y++) {
         var ol = new Element('ol.row')
 
-        for (var x = 0; x < board.size; x++) {
+        for (var x = 0; x < board.width; x++) {
             var vertex = [x, y]
             var li = new Element('li.pos_' + x + '-' + y)
                 .store('vertex', vertex)
@@ -881,9 +881,12 @@ function buildBoard() {
     var coordx = new Element('ol.coordx')
     var coordy = new Element('ol.coordy')
 
-    for (var i = 0; i < board.size; i++) {
+    for (var i = 0; i < board.width; i++) {
         coordx.adopt(new Element('li', { text: alpha[i] }))
-        coordy.adopt(new Element('li', { text: board.size - i }))
+    }
+
+    for (var i = board.height; i > 0; i--) {
+        coordy.adopt(new Element('li', { text: i }))
     }
 
     var goban = $$('#goban div')[0]
@@ -931,7 +934,9 @@ function resizeBoard() {
     var height = $('goban').getStyle('height').toInt()
     var min = Math.min(width, height)
 
-    var size = !getShowCoordinates() ? board.size : board.size + 2
+    var size = Math.max(board.width, board.height)
+    if (getShowCoordinates()) size += 2
+
     var fieldsize = helper.roundEven(min / size)
     min = fieldsize * size
 
@@ -942,7 +947,7 @@ function resizeBoard() {
     $$('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
 
     $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
-    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
+    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.width + 1))
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     $('goban').setStyle('font-size', fieldsize)

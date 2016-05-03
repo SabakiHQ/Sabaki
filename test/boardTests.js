@@ -6,8 +6,8 @@ describe('Board', function() {
     describe('constructor', function() {
         it('should create an empty board', function() {
             var board = new Board()
-            for (var x = 0; x < board.size; x++) {
-                for (var y = 0; y < board.size; y++) {
+            for (var x = 0; x < board.width; x++) {
+                for (var y = 0; y < board.height; y++) {
                     assert.equal(board.arrangement[[x, y]], 0)
                 }
             }
@@ -48,8 +48,8 @@ describe('Board', function() {
             var board = new Board()
             assert(!board.hasVertex([-1, -1]))
             assert(!board.hasVertex([5, -1]))
-            assert(!board.hasVertex([board.size, 0]))
-            assert(!board.hasVertex([board.size, board.size]))
+            assert(!board.hasVertex([board.width, 0]))
+            assert(!board.hasVertex([board.width, board.height]))
         })
     })
 
