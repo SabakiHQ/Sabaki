@@ -275,7 +275,7 @@ Board.prototype = {
         var nearX = this.width >= 13 ? 3 : 2
         var nearY = this.height >= 13 ? 3 : 2
         var farX = this.width - nearX - 1
-        var farY = this.width - nearY - 1
+        var farY = this.height - nearY - 1
 
         var result = [[nearX, nearY], [farX, farY], [nearX, farY], [farX, nearY]]
 
