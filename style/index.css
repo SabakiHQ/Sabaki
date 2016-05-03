@@ -755,6 +755,7 @@ header, #edit, #scoring, #find, #guess {
     }
     #gamechooser li {
         float: left;
+        height: 253px;
         margin: 10px 10px 20px 10px;
     }
     #gamechooser li.insertleft {
