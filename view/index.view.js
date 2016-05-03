@@ -932,14 +932,17 @@ function resizeBoard() {
 
     var width = $('goban').getStyle('width').toInt()
     var height = $('goban').getStyle('height').toInt()
-    var min = Math.min(width, height)
+    var boardWidth = board.width
+    var boardHeight = board.height
 
-    var size = Math.max(board.width, board.height)
-    if (getShowCoordinates()) size += 2
+    if (getShowCoordinates()) {
+        boardWidth += 2
+        boardHeight += 2
+    }
 
-    var fieldsize = helper.roundEven(min / size)
-    var minX = fieldsize * board.width
-    var minY = fieldsize * board.height
+    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight))
+    var minX = fieldsize * boardWidth
+    var minY = fieldsize * boardHeight
 
     $$('#goban > div').setStyle('width', minX).setStyle('height', minY)
         .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
