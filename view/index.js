@@ -665,10 +665,14 @@ function detachEngine() {
 function syncEngine() {
     var board = getBoard()
 
-    if (!getEngineController()
-        || $('console').retrieve('boardhash') == board.getHash()) return
+    if (!getEngineController() || $('console').retrieve('boardhash') == board.getHash())
+        return
+        
     if (!board.isValid()) {
         showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        return
+    } else if (!board.isSquare()) {
+        showMessageBox('GTP engines don’t support rectangular boards.', 'warning')
         return
     }
 

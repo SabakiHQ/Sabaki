@@ -42,6 +42,10 @@ Board.prototype = {
         }
     },
 
+    isSquare: function() {
+        return this.width == this.height
+    },
+
     getDistance: function(v, w) {
         return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
     },
