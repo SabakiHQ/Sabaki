@@ -35,8 +35,8 @@ var defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
-    'board.stone_image_-1': '../img/goban/stone_-1.svg',
-    'board.stone_image_1': '../img/goban/stone_1.svg',
+    'board.stone_image_-1': '../img/goban/stone_-1.png',
+    'board.stone_image_1': '../img/goban/stone_1.png',
     'board.stone_image_0': '../img/goban/stone_0.svg',
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
@@ -71,6 +71,7 @@ var defaults = {
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
     'scoring.method': 'territory',
+    'setting.overwrite.v0.12.4': ['board.stone_image_-1', 'board.stone_image_1'],
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
@@ -112,7 +113,22 @@ context.load = function() {
     engines = settings['engines.list']
     engines.sort(namesort)
 
-    return context
+    // Overwrite settings
+
+    for (var overwriteKey in settings) {
+        if (overwriteKey.indexOf('setting.overwrite.') != 0) continue
+
+        var overwrites = settings[overwriteKey]
+        if (!overwrites.length) continue
+
+        for (var i = 0; i < overwrites.length; i++) {
+            settings[overwrites[i]] = defaults[overwrites[i]]
+        }
+
+        settings[overwriteKey] = []
+    }
+
+    return context.save()
 }
 
 context.save = function() {
