@@ -253,7 +253,7 @@ Board.prototype = {
     },
 
     getHandicapPlacement: function(count) {
-        if (Math.min.apply(null, this.width, this.height) < 6 || count < 2) return []
+        if (Math.min(this.width, this.height) < 6 || count < 2) return []
 
         var nearX = this.width >= 13 ? 3 : 2
         var nearY = this.height >= 13 ? 3 : 2
@@ -340,7 +340,7 @@ Board.prototype = {
         var svg = document.createElementNS(ns, 'svg')
         svg.setAttribute('width', pixelsize)
         svg.setAttribute('height', pixelsize)
-        var tileSize = (pixelsize - 1) / Math.min.apply(null, this.width, this.height)
+        var tileSize = (pixelsize - 1) / Math.min(this.width, this.height)
         var radius = tileSize / 2
 
         // Draw hoshi
