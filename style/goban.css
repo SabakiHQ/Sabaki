@@ -47,7 +47,7 @@
         z-index: 0;
     }
     .goban li.sign_1 .stone::before {
-        opacity: .45;
+        opacity: .4;
 }
 
 /**
