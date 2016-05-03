@@ -938,10 +938,11 @@ function resizeBoard() {
     if (getShowCoordinates()) size += 2
 
     var fieldsize = helper.roundEven(min / size)
-    min = fieldsize * size
+    var minX = fieldsize * board.width
+    var minY = fieldsize * board.height
 
-    $$('#goban > div').setStyle('width', min).setStyle('height', min)
-        .setStyle('margin-left', -min / 2).setStyle('margin-top', -min / 2)
+    $$('#goban > div').setStyle('width', minX).setStyle('height', minY)
+        .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
 
     $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
     $$('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)

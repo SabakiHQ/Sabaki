@@ -667,13 +667,13 @@ function syncEngine() {
 
     if (!getEngineController() || $('console').retrieve('boardhash') == board.getHash())
         return
-        
-    if (!board.isValid()) {
-        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
-        return
-    } else if (!board.isSquare()) {
+
+    if (!board.isSquare()) {
         showMessageBox('GTP engines don’t support rectangular boards.', 'warning')
-        return
+        return detachEngine()
+    } else if (!board.isValid()) {
+        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        return detachEngine()
     }
 
     setIsBusy(true)
