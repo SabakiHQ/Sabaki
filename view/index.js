@@ -590,7 +590,9 @@ function prepareGameInfo() {
         openEnginesMenu(el, selectEngine.bind(el))
     })
 
-    // Link height input to width input
+    // Handle size inputs
+
+    $$('#info input[name^="size-"]').set('placeholder', setting.get('game.default_board_size'))
 
     $$('#info input[name="size-width"]').addEvent('focus', function() {
         this.store('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
@@ -1391,7 +1393,7 @@ function commitGameInfo() {
     var width = +info.getElement('input[name="size-width"]').get('value')
     var height = +info.getElement('input[name="size-height"]').get('value')
     var size = ['width', 'height'].map(function(x) {
-        var num = +info.getElement('input[name="size-' + x + '"]').get('value')
+        var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 9), 25)
     })
