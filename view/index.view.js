@@ -1240,10 +1240,9 @@ function showGameInfo() {
     info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+    info.getElement('input[name="size-width"]').set('value', getBoard().width)
+    info.getElement('input[name="size-height"]').set('value', getBoard().height)
     info.getElements('section .menu').removeClass('active').store('engineindex', -1)
-
-    var size = info.getElement('input[name="size"]')
-    size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
 
     var handicap = info.getElement('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
@@ -1254,7 +1253,7 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    size.disabled = disabled
+    info.getElements('input[name^="size-"]').set('disabled', disabled)
     info.toggleClass('disabled', disabled)
 }
 

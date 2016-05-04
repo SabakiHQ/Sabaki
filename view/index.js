@@ -1375,9 +1375,19 @@ function commitGameInfo() {
     if (handicap == 0) delete rootNode.HA
     else rootNode.HA = ['' + handicap + 1]
 
-    var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = ['' + Math.max(Math.min(size, 25), 9)]
-    if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
+    var width = +info.getElement('input[name="size-width"]').get('value')
+    var height = +info.getElement('input[name="size-height"]').get('value')
+    var size = ['width', 'height'].map(function(x) {
+        var num = +info.getElement('input[name="size-' + x + '"]').get('value')
+        if (isNaN(num)) num = setting.get('game.default_board_size')
+        return Math.min(Math.max(num, 9), 25)
+    })
+
+    if (size[0] == size[1]) {
+        rootNode.SZ = ['' + size[0]]
+    } else {
+        rootNode.SZ = [size.join(':')]
+    }
 
     if (!info.getElement('select[name="handicap"]').disabled) {
         setCurrentTreePosition(getRootTree(), 0)
@@ -1420,7 +1430,7 @@ function commitGameInfo() {
 function commitScore() {
     var results = $$('#score tbody td:last-child').get('text')
     var diff = results[0].toFloat() - results[1].toFloat()
-    var result = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : 'Draw')
+    var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 
     showGameInfo()

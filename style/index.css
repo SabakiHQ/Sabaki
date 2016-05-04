@@ -621,7 +621,7 @@ header, #edit, #scoring, #find, #guess {
         bottom: 20px;
         margin: 0;
     }
-    #info input[name="komi"], #info input[name="size"] {
+    #info input[name="komi"], #info input[name^="size-"] {
         width: 40px;
     }
     #info label span {
