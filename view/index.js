@@ -595,6 +595,14 @@ function prepareGameInfo() {
     $$('#info input[name="size-width"]').addEvent('input', function() {
         this.getParent().getNext('input[name="size-height"]').value = this.value
     })
+
+    $$('#info span.size-swap').addEvent('click', function() {
+        var widthInput = $$('#info input[name="size-width"]')[0]
+        var heightInput = $$('#info input[name="size-height"]')[0]
+        var data = [widthInput.value, heightInput.value]
+        widthInput.value = data[1]
+        heightInput.value = data[0]
+    })
 }
 
 function generateFileHash() {

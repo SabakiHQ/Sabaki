@@ -622,7 +622,11 @@ header, #edit, #scoring, #find, #guess {
         margin: 0;
     }
     #info input[name="komi"], #info input[name^="size-"] {
-        width: 40px;
+        width: 41px;
+    }
+    #info span.size-swap {
+        padding: 3px;
+        cursor: pointer;
     }
     #info label span {
         display: inline-block;
