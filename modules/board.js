@@ -278,16 +278,19 @@ Board.prototype = {
         var farY = this.height - nearY - 1
 
         var result = [[nearX, nearY], [farX, farY], [nearX, farY], [farX, nearY]]
+        var middleX = (this.width - 1) / 2
+        var middleY = (this.height - 1) / 2
 
         if (this.width % 2 != 0 && this.height % 2 != 0) {
-            var middleX = (this.width - 1) / 2
-            var middleY = (this.height - 1) / 2
-
             if (count == 5) result.push([middleX, middleY])
             result.push([nearX, middleY], [farX, middleY])
 
             if (count == 7) result.push([middleX, middleY])
             result.push([middleX, nearY], [middleX, farY], [middleX, middleY])
+        } else if (this.width % 2 != 0) {
+            result.push([middleX, nearY], [middleX, farY])
+        } else if (this.height % 2 != 0) {
+            result.push([nearX, middleY], [farX, middleY])
         }
 
         return result.slice(0, count)
