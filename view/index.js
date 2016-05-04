@@ -1373,7 +1373,7 @@ function commitGameInfo() {
 
     var handicap = info.getElement('select[name="handicap"]').selectedIndex
     if (handicap == 0) delete rootNode.HA
-    else rootNode.HA = ['' + handicap + 1]
+    else rootNode.HA = ['' + (handicap + 1)]
 
     var width = +info.getElement('input[name="size-width"]').get('value')
     var height = +info.getElement('input[name="size-height"]').get('value')
