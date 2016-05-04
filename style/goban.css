@@ -283,24 +283,21 @@ body:not(.scoring) .goban .row li.dimmed img {
     }
     .goban .row li.label .stone span::before {
         content: attr(title);
-        display: block;
+        display: inline-block;
         border: none;
-        width: 1.16em;
+        max-width: 1.67em;
         height: 1.1em;
-        margin-top: calc(-.45em - 1px);
-        margin-left: calc(-.58em - 1px);
         overflow: hidden;
         box-shadow: none;
         font-weight: normal;
         font-size: .6em;
         line-height: .9;
         text-overflow: ellipsis;
+        transform: translate(calc(-50% - 1px), calc(-50% - 1px));
     }
     .goban .row li.smalllabel .stone span::before {
-        width: 1.94em;
+        max-width: 2.78em;
         height: 1.1em;
-        margin-top: calc(-.45em - 1px);
-        margin-left: calc(-.97em - 1px);
         font-size: .36em;
         line-height: .9;
 }
