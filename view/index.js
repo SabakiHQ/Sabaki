@@ -592,7 +592,10 @@ function prepareGameInfo() {
 
     // Link height input to width input
 
-    $$('#info input[name="size-width"]').addEvent('input', function() {
+    $$('#info input[name="size-width"]').addEvent('focus', function() {
+        this.store('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
+    }).addEvent('input', function() {
+        if (!this.retrieve('link')) return
         this.getParent().getNext('input[name="size-height"]').value = this.value
     })
 
