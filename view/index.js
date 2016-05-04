@@ -1413,15 +1413,14 @@ function commitGameInfo() {
 }
 
 function commitScore() {
-    var rootNode = getRootTree().nodes[0]
     var results = $$('#score tbody td:last-child').get('text')
     var diff = results[0].toFloat() - results[1].toFloat()
     var result = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : 'Draw')
     if (diff != 0) result = result + Math.abs(diff)
 
-    rootNode.RE = [result]
-
     showGameInfo()
+    $$('#info input[name="result"]').set('value', result)
+
     setUndoable(false)
 }
 
