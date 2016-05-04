@@ -1362,16 +1362,16 @@ function commitGameInfo() {
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
-    var komi = info.getElement('input[name="komi"]').get('value').toFloat()
-    rootNode.KM = [String.from(komi)]
+    var komi = +info.getElement('input[name="komi"]').get('value')
+    rootNode.KM = ['' + komi]
     if (isNaN(komi)) rootNode.KM = ['0']
 
     var handicap = info.getElement('select[name="handicap"]').selectedIndex
     if (handicap == 0) delete rootNode.HA
-    else rootNode.HA = [String.from(handicap + 1)]
+    else rootNode.HA = ['' + handicap + 1]
 
     var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = [String.from(Math.max(Math.min(size, 25), 9))]
+    rootNode.SZ = ['' + Math.max(Math.min(size, 25), 9)]
     if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
 
     if (!info.getElement('select[name="handicap"]').disabled) {
