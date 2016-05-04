@@ -85,6 +85,7 @@ header, #edit, #scoring, #find, #guess {
         margin-left: -17px;
         margin-top: -11px;
     }
+    header > img { cursor: pointer; }
     #headermenu, header .undo {
         left: auto;
         right: 0;
@@ -583,6 +584,7 @@ header, #edit, #scoring, #find, #guess {
     }
     #info section .currentplayer {
         margin: 0 10px;
+        cursor: pointer;
     }
     #info section .menu {
         margin: 0 2px 5px;
