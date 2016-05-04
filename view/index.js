@@ -602,6 +602,8 @@ function prepareGameInfo() {
     })
 
     $$('#info span.size-swap').addEvent('click', function() {
+        if ($('info').hasClass('disabled')) return
+
         var widthInput = $$('#info input[name="size-width"]')[0]
         var heightInput = $$('#info input[name="size-height"]')[0]
         var data = [widthInput.value, heightInput.value]
@@ -1387,8 +1389,8 @@ function commitGameInfo() {
     )
 
     var komi = +info.getElement('input[name="komi"]').get('value')
+    if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
-    if (isNaN(komi)) rootNode.KM = ['0']
 
     var width = +info.getElement('input[name="size-width"]').get('value')
     var height = +info.getElement('input[name="size-height"]').get('value')

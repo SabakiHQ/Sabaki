@@ -628,6 +628,7 @@ header, #edit, #scoring, #find, #guess {
         padding: 3px;
         cursor: pointer;
     }
+    #info.disabled span.size-swap { cursor: default; }
     #info label span {
         display: inline-block;
         width: 6em;
