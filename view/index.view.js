@@ -315,7 +315,7 @@ function getFindMode() {
 
 function setFindMode(pickMode) {
     if (pickMode) {
-        closeDrawers()
+        if (pickMode != getFindMode()) closeDrawers()
         document.body.addClass('find')
 
         var input = $('find').getElement('input')
