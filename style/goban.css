@@ -296,7 +296,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         transform: translate(calc(-50% - 1px), calc(-50% - 1px));
     }
     .goban .row li.smalllabel .stone span::before {
-        max-width: 2.78em;
+        max-width: 2.2em;
         height: 1.1em;
         font-size: .36em;
         line-height: .9;
