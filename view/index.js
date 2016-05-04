@@ -1385,10 +1385,6 @@ function commitGameInfo() {
     rootNode.KM = ['' + komi]
     if (isNaN(komi)) rootNode.KM = ['0']
 
-    var handicap = info.getElement('select[name="handicap"]').selectedIndex
-    if (handicap == 0) delete rootNode.HA
-    else rootNode.HA = ['' + (handicap + 1)]
-
     var width = +info.getElement('input[name="size-width"]').get('value')
     var height = +info.getElement('input[name="size-height"]').get('value')
     var size = ['width', 'height'].map(function(x) {
@@ -1403,19 +1399,21 @@ function commitGameInfo() {
         rootNode.SZ = [size.join(':')]
     }
 
-    if (!info.getElement('select[name="handicap"]').disabled) {
+    var handicapInput = info.getElement('select[name="handicap"]')
+    var handicap = handicapInput.selectedIndex
+
+    if (!handicapInput.disabled) {
         setCurrentTreePosition(getRootTree(), 0)
 
-        if (!('HA' in rootNode)) {
+        if (handicap == 0) {
             delete rootNode.AB
+            delete rootNode.HA
         } else {
             var board = getBoard()
-            var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
-            rootNode.AB = []
+            var stones = board.getHandicapPlacement(handicap + 1)
 
-            for (var i = 0; i < stones.length; i++) {
-                rootNode.AB.push(sgf.vertex2point(stones[i]))
-            }
+            rootNode.HA = ['' + stones.length]
+            rootNode.AB = stones.map(sgf.vertex2point)
         }
 
         setCurrentTreePosition(getRootTree(), 0)
