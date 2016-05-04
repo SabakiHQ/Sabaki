@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix occasional crash when opening small files at startup
+* Fix label markup cutting off content or truncating three digit numbers
 
 ## [Sabaki v0.12.4][v0.12.4] (2016-05-03)
 
