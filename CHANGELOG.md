@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Support for non-square boards
+
 **Fixed**
 
 * Fix deselecting vertex when finding moves
