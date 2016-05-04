@@ -589,6 +589,12 @@ function prepareGameInfo() {
 
         openEnginesMenu(el, selectEngine.bind(el))
     })
+
+    // Link height input to width input
+
+    $$('#info input[name="size-width"]').addEvent('change', function() {
+        this.getParent().getNext('input[name="size-height"]').value = this.value
+    })
 }
 
 function generateFileHash() {
