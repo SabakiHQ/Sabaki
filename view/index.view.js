@@ -35,6 +35,15 @@ function setShowNextMoves(show) {
     setting.set('view.show_next_moves', show)
 }
 
+function getShowSiblings() {
+    return $('goban').hasClass('siblings')
+}
+
+function setShowSiblings(show) {
+    $('goban').toggleClass('siblings', show)
+    setting.set('view.show_siblings', show)
+}
+
 function getFuzzyStonePlacement() {
     return $('goban').hasClass('fuzzy')
 }

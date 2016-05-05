@@ -54,6 +54,7 @@ var menudata = {
     "togglecoordinates": function() { setShowCoordinates(!getShowCoordinates()) },
     "toggleguessmode": function() { setGuessMode(!getGuessMode()) },
     "toggleshownextmoves": function() { setShowNextMoves(!getShowNextMoves()) },
+    "toggleshowsiblings": function() { setShowSiblings(!getShowSiblings()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
     "togglecomments": function() { setSidebarArrangement(getShowGraph(), !getShowComment()) },
     "togglefullscreen": function() {

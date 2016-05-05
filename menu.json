@@ -271,6 +271,10 @@
                 "label": "Toggle Show &Next Moves",
                 "action": "toggleshownextmoves"
             },
+            {
+                "label": "Toggle Show &Sibling Variations",
+                "action": "toggleshowsiblings"
+            },
             { "type": "separator" },
             {
                 "label": "Toggle Game &Graph",
@@ -284,7 +288,7 @@
             },
             { "type": "separator" },
             {
-                "label": "Toggle Full &Screen",
+                "label": "Toggle &Full Screen",
                 "accelerator": "CmdOrCtrl+Shift+F",
                 "action": "togglefullscreen"
             }
