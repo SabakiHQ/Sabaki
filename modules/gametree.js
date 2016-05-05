@@ -372,8 +372,18 @@ context.addBoard = function(tree, index, baseboard) {
         var prev = context.navigate(tree, index, -1)
 
         if (!prev) {
-            var size = 'SZ' in node ? node.SZ[0].toInt() : 19
-            baseboard = new Board(size)
+            var size = [19, 19]
+
+            if ('SZ' in node) {
+                size = node.SZ[0]
+
+                if (size.indexOf(':') >= 0) size = size.split(':')
+                else size = [size, size]
+
+                size = size.map(function(x) { return +x })
+            }
+
+            baseboard = new Board(size[0], size[1])
         } else {
             var prevNode = prev[0].nodes[prev[1]]
 

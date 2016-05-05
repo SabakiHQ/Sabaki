@@ -526,7 +526,7 @@ function getCurrentMoveInterpretation() {
 
     // Determine position to edges
 
-    if (vertex[0] == (board.size - 1) / 2 && vertex[1] == vertex[0])
+    if (vertex[0] == (board.width - 1) / 2 && vertex[1] == (board.height - 1) / 2)
         return 'Tengen'
 
     var diff = board.getCanonicalVertex(vertex).map(function(x) { return x + 1 })
@@ -817,10 +817,10 @@ function buildBoard() {
     var rows = []
     var hoshi = board.getHandicapPlacement(9)
 
-    for (var y = 0; y < board.size; y++) {
+    for (var y = 0; y < board.height; y++) {
         var ol = new Element('ol.row')
 
-        for (var x = 0; x < board.size; x++) {
+        for (var x = 0; x < board.width; x++) {
             var vertex = [x, y]
             var li = new Element('li.pos_' + x + '-' + y)
                 .store('vertex', vertex)
@@ -881,9 +881,12 @@ function buildBoard() {
     var coordx = new Element('ol.coordx')
     var coordy = new Element('ol.coordy')
 
-    for (var i = 0; i < board.size; i++) {
+    for (var i = 0; i < board.width; i++) {
         coordx.adopt(new Element('li', { text: alpha[i] }))
-        coordy.adopt(new Element('li', { text: board.size - i }))
+    }
+
+    for (var i = board.height; i > 0; i--) {
+        coordy.adopt(new Element('li', { text: i }))
     }
 
     var goban = $$('#goban div')[0]
@@ -929,20 +932,26 @@ function resizeBoard() {
 
     var width = $('goban').getStyle('width').toInt()
     var height = $('goban').getStyle('height').toInt()
-    var min = Math.min(width, height)
+    var boardWidth = board.width
+    var boardHeight = board.height
 
-    var size = !getShowCoordinates() ? board.size : board.size + 2
-    var fieldsize = helper.roundEven(min / size)
-    min = fieldsize * size
+    if (getShowCoordinates()) {
+        boardWidth += 2
+        boardHeight += 2
+    }
 
-    $$('#goban > div').setStyle('width', min).setStyle('height', min)
-        .setStyle('margin-left', -min / 2).setStyle('margin-top', -min / 2)
+    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight))
+    var minX = fieldsize * boardWidth
+    var minY = fieldsize * boardHeight
+
+    $$('#goban > div').setStyle('width', minX).setStyle('height', minY)
+        .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
 
     $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
     $$('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
 
     $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
-    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.size + 1))
+    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.width + 1))
 
     $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
     $('goban').setStyle('font-size', fieldsize)
@@ -1231,10 +1240,9 @@ function showGameInfo() {
     info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+    info.getElement('input[name="size-width"]').set('value', getBoard().width)
+    info.getElement('input[name="size-height"]').set('value', getBoard().height)
     info.getElements('section .menu').removeClass('active').store('engineindex', -1)
-
-    var size = info.getElement('input[name="size"]')
-    size.set('value', 'SZ' in rootNode ? rootNode.SZ[0] : '')
 
     var handicap = info.getElement('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, rootNode.HA[0].toInt() - 1)
@@ -1245,7 +1253,7 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    size.disabled = disabled
+    info.getElements('input[name^="size-"]').set('disabled', disabled)
     info.toggleClass('disabled', disabled)
 }
 

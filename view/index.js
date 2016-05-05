@@ -188,7 +188,7 @@ function getBoard() {
 }
 
 function setBoard(board) {
-    if (!getBoard() || getBoard().size != board.size) {
+    if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
         $('goban').store('board', board)
         buildBoard()
     }
@@ -196,8 +196,8 @@ function setBoard(board) {
     $('goban').store('board', board)
     setCaptures(board.captures)
 
-    for (var x = 0; x < board.size; x++) {
-        for (var y = 0; y < board.size; y++) {
+    for (var x = 0; x < board.width; x++) {
+        for (var y = 0; y < board.height; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[li.retrieve('vertex')]
             var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
@@ -589,6 +589,27 @@ function prepareGameInfo() {
 
         openEnginesMenu(el, selectEngine.bind(el))
     })
+
+    // Handle size inputs
+
+    $$('#info input[name^="size-"]').set('placeholder', setting.get('game.default_board_size'))
+
+    $$('#info input[name="size-width"]').addEvent('focus', function() {
+        this.store('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
+    }).addEvent('input', function() {
+        if (!this.retrieve('link')) return
+        this.getParent().getNext('input[name="size-height"]').value = this.value
+    })
+
+    $$('#info span.size-swap').addEvent('click', function() {
+        if ($('info').hasClass('disabled')) return
+
+        var widthInput = $$('#info input[name="size-width"]')[0]
+        var heightInput = $$('#info input[name="size-height"]')[0]
+        var data = [widthInput.value, heightInput.value]
+        widthInput.value = data[1]
+        heightInput.value = data[0]
+    })
 }
 
 function generateFileHash() {
@@ -665,27 +686,32 @@ function detachEngine() {
 function syncEngine() {
     var board = getBoard()
 
-    if (!getEngineController()
-        || $('console').retrieve('boardhash') == board.getHash()) return
-    if (!board.isValid()) {
-        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+    if (!getEngineController() || $('console').retrieve('boardhash') == board.getHash())
         return
+
+    if (!board.isSquare()) {
+        showMessageBox('GTP engines don’t support rectangular boards.', 'warning')
+        return detachEngine()
+    } else if (!board.isValid()) {
+        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        return detachEngine()
     }
 
     setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
-    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.size]), true)
+    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.width]), true)
     sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
 
     // Replay
-    for (var i = 0; i < board.size; i++) {
-        for (var j = 0; j < board.size; j++) {
+    for (var i = 0; i < board.width; i++) {
+        for (var j = 0; j < board.height; j++) {
             var v = [i, j]
             var sign = board.arrangement[v]
             if (sign == 0) continue
+
             var color = sign > 0 ? 'B' : 'W'
-            var point = gtp.vertex2point(v, board.size)
+            var point = board.vertex2coord(v)
 
             sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
         }
@@ -856,7 +882,7 @@ function makeMove(vertex, sendCommand) {
 
     if (sendCommand && !enterScoring) {
         sendGTPCommand(
-            new gtp.Command(null, 'play', [color, gtp.vertex2point(vertex, getBoard().size)]),
+            new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
             true
         )
         $('console').store('boardhash', getBoard().getHash())
@@ -1193,8 +1219,8 @@ function vertexClicked(vertex, event) {
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
                 i = 1
 
-            for (var x = 0; x < board.size; x++) {
-                for (var y = 0; y < board.size; y++) {
+            for (var x = 0; x < board.width; x++) {
+                for (var y = 0; y < board.height; y++) {
                     var z = i == 0 ? x : y
                     if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
                         $$('#goban .pos_' + x + '-' + y)[0].addClass('paint_1')
@@ -1363,30 +1389,38 @@ function commitGameInfo() {
     )
 
     var komi = +info.getElement('input[name="komi"]').get('value')
+    if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
-    if (isNaN(komi)) rootNode.KM = ['0']
 
-    var handicap = info.getElement('select[name="handicap"]').selectedIndex
-    if (handicap == 0) delete rootNode.HA
-    else rootNode.HA = ['' + handicap + 1]
+    var width = +info.getElement('input[name="size-width"]').get('value')
+    var height = +info.getElement('input[name="size-height"]').get('value')
+    var size = ['width', 'height'].map(function(x) {
+        var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
+        if (isNaN(num)) num = setting.get('game.default_board_size')
+        return Math.min(Math.max(num, 9), 25)
+    })
 
-    var size = info.getElement('input[name="size"]').get('value').toInt()
-    rootNode.SZ = ['' + Math.max(Math.min(size, 25), 9)]
-    if (isNaN(size)) rootNode.SZ = ['' + setting.get('game.default_board_size')]
+    if (size[0] == size[1]) {
+        rootNode.SZ = ['' + size[0]]
+    } else {
+        rootNode.SZ = [size.join(':')]
+    }
 
-    if (!info.getElement('select[name="handicap"]').disabled) {
+    var handicapInput = info.getElement('select[name="handicap"]')
+    var handicap = handicapInput.selectedIndex
+
+    if (!handicapInput.disabled) {
         setCurrentTreePosition(getRootTree(), 0)
 
-        if (!('HA' in rootNode)) {
+        if (handicap == 0) {
             delete rootNode.AB
+            delete rootNode.HA
         } else {
             var board = getBoard()
-            var stones = board.getHandicapPlacement(rootNode.HA[0].toInt())
-            rootNode.AB = []
+            var stones = board.getHandicapPlacement(handicap + 1)
 
-            for (var i = 0; i < stones.length; i++) {
-                rootNode.AB.push(sgf.vertex2point(stones[i]))
-            }
+            rootNode.HA = ['' + stones.length]
+            rootNode.AB = stones.map(sgf.vertex2point)
         }
 
         setCurrentTreePosition(getRootTree(), 0)
@@ -1415,7 +1449,7 @@ function commitGameInfo() {
 function commitScore() {
     var results = $$('#score tbody td:last-child').get('text')
     var diff = results[0].toFloat() - results[1].toFloat()
-    var result = diff > 0 ? 'B+' : (diff < 0 ? 'W+' : 'Draw')
+    var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 
     showGameInfo()
@@ -1520,7 +1554,7 @@ function generateMove(ignoreBusy) {
 
         var v = [-1, -1]
         if (r.content.toLowerCase() != 'pass')
-            v = gtp.point2vertex(r.content, getBoard().size)
+            v = getBoard().coord2vertex(r.content)
 
         $('console').store('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
         makeMove(v, false)

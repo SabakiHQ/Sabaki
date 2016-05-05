@@ -2,8 +2,6 @@ exports.Command = require('./command.js')
 exports.Response = require('./response.js')
 exports.Controller = require('./controller.js')
 
-var alpha = 'abcdefghjklmnopqrstuvwxyz'
-
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
     var inputs = input.split(' ').filter(function(x) { return x != '' })
@@ -27,16 +25,4 @@ exports.parseResponse = function(input) {
     if (hasId) input = input.substr((id + '').length)
 
     return new exports.Response(id, input.substr(1), error)
-}
-
-exports.vertex2point = function(v, size) {
-    if (v[0] < 0 || v[1] < 0 || v[0] >= size || v[1] >= size)
-        return 'pass'
-    return alpha[v[0]] + (size - v[1])
-}
-
-exports.point2vertex = function(point, size) {
-    var x = alpha.indexOf(point[0].toLowerCase())
-    var y = size - parseFloat(point.substr(1))
-    return [x, y]
 }
