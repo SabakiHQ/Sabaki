@@ -280,15 +280,15 @@ function setScoringMethod(method) {
         tds[4].set('text', 0)
 
         for (var i = 0; i <= 3; i++) {
-            if (tds[i].hasClass('disabled') || isNaN(tds[i].get('text').toFloat())) continue
-            tds[4].set('text', tds[4].get('text').toFloat() + tds[i].get('text').toFloat())
+            if (tds[i].hasClass('disabled') || isNaN(+tds[i].get('text'))) continue
+            tds[4].set('text', +tds[4].get('text') + +tds[i].get('text'))
         }
     }
 }
 
 function getKomi() {
     var rootNode = getRootTree().nodes[0]
-    return 'KM' in rootNode ? rootNode.KM[0].toFloat() : 0
+    return 'KM' in rootNode ? +rootNode.KM[0] : 0
 }
 
 function getEngineName() {
@@ -1466,7 +1466,7 @@ function commitGameInfo() {
 
 function commitScore() {
     var results = $$('#score tbody td:last-child').get('text')
-    var diff = results[0].toFloat() - results[1].toFloat()
+    var diff = +results[0] - +results[1]
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 

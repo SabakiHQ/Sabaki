@@ -1248,7 +1248,7 @@ function showGameInfo() {
     info.getElement('input[name="name"]').set('value', 'GN' in rootNode ? rootNode.GN[0] : '')
     info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
     info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
-    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? rootNode.KM[0].toFloat() : '')
+    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? +rootNode.KM[0] : '')
     info.getElement('input[name="size-width"]').set('value', getBoard().width)
     info.getElement('input[name="size-height"]').set('value', getBoard().height)
     info.getElements('section .menu').removeClass('active').store('engineindex', -1)
