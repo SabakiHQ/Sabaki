@@ -302,8 +302,8 @@ Board.prototype = {
         var done = {}
         var result = []
 
-        for (var i = 0; i < this.width; i++) {
-            for (var j = 0; j < this.height; j++) {
+        for (var i = 0; i < self.width; i++) {
+            for (var j = 0; j < self.height; j++) {
                 var vertex = [i, j]
                 if (map[vertex] != 0 || vertex in done) continue
 
