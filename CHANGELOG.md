@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Support for non-square boards
+
 **Fixed**
 
+* Fix deselecting vertex when finding moves
 * Fix occasional crash when opening small files at startup
 * Fix label markup cutting off content or truncating three digit numbers
 

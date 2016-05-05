@@ -85,6 +85,7 @@ header, #edit, #scoring, #find, #guess {
         margin-left: -17px;
         margin-top: -11px;
     }
+    header > img { cursor: pointer; }
     #headermenu, header .undo {
         left: auto;
         right: 0;
@@ -583,6 +584,7 @@ header, #edit, #scoring, #find, #guess {
     }
     #info section .currentplayer {
         margin: 0 10px;
+        cursor: pointer;
     }
     #info section .menu {
         display: none;
@@ -622,9 +624,14 @@ header, #edit, #scoring, #find, #guess {
         bottom: 20px;
         margin: 0;
     }
-    #info input[name="komi"], #info input[name="size"] {
-        width: 40px;
+    #info input[name="komi"], #info input[name^="size-"] {
+        width: 41px;
     }
+    #info span.size-swap {
+        padding: 3px;
+        cursor: pointer;
+    }
+    #info.disabled span.size-swap { cursor: default; }
     #info label span {
         display: inline-block;
         width: 6em;
@@ -756,6 +763,7 @@ header, #edit, #scoring, #find, #guess {
     }
     #gamechooser li {
         float: left;
+        height: 253px;
         margin: 10px 10px 20px 10px;
     }
     #gamechooser li.insertleft {

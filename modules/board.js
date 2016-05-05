@@ -6,16 +6,19 @@ if (typeof require != 'undefined') {
     helper = require('./helper')
 }
 
-var Board = function(size, arrangement, captures) {
-    this.size = !isNaN(size) ? size : 19
+var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+
+var Board = function(width, height, arrangement, captures) {
+    this.width = width ? width : 19
+    this.height = height ? height : 19
     this.captures = captures ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
     this.arrangement = {}
     this.markups = {}
     this.lines = []
 
     // Initialize arrangement
-    for (var x = 0; x < this.size; x++) {
-        for (var y = 0; y < this.size; y++) {
+    for (var x = 0; x < this.width; x++) {
+        for (var y = 0; y < this.height; y++) {
             this.arrangement[[x, y]] = arrangement ? arrangement[[x, y]] : 0
         }
     }
@@ -28,15 +31,19 @@ Board.prototype = {
 
     hasVertex: function(vertex) {
         var x = vertex[0], y = vertex[1]
-        return 0 <= Math.min(x, y) && Math.max(x, y) < this.size
+        return 0 <= x && x < this.width && 0 <= y && y < this.height
     },
 
     clear: function() {
-        for (var x = 0; x < this.size; x++) {
-            for (var y = 0; y < this.size; y++) {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
                 this.arrangement[[x, y]] = 0
             }
         }
+    },
+
+    isSquare: function() {
+        return this.width == this.height
     },
 
     getDistance: function(v, w) {
@@ -51,8 +58,8 @@ Board.prototype = {
         if (!this.hasVertex(vertex)) return [-1, -1]
 
         var v = [
-            Math.min(vertex[0], this.size - vertex[0] - 1),
-            Math.min(vertex[1], this.size - vertex[1] - 1)
+            Math.min(vertex[0], this.width - vertex[0] - 1),
+            Math.min(vertex[1], this.height - vertex[1] - 1)
         ]
 
         v.sort(function(x, y) { return x - y })
@@ -62,13 +69,13 @@ Board.prototype = {
 
     getSymmetries: function(vertex) {
         var self = this
-        var m = self.size - 1
+        var mx = self.width - 1
+        var my = self.height - 1
         if (!self.hasVertex(vertex)) return []
 
-        return helper.getSymmetries(vertex).map(function(x) {
-            return x.map(function(y) {
-                return (y % m + m) % m
-            })
+        return helper.getSymmetries(vertex).map(function(v) {
+            var x = v[0], y = v[1]
+            return [(x % mx + mx) % mx, (y % my + my) % my]
         })
     },
 
@@ -132,8 +139,8 @@ Board.prototype = {
         var self = this
         var map = {}
 
-        for (var i = 0; i < self.size; i++) {
-            for (var j = 0; j < self.size; j++) {
+        for (var i = 0; i < self.width; i++) {
+            for (var j = 0; j < self.height; j++) {
                 var vertex = [i, j]
 
                 if (vertex in map) continue
@@ -187,11 +194,22 @@ Board.prototype = {
         return score
     },
 
+    vertex2coord: function(vertex) {
+        if (!this.hasVertex(vertex)) return null
+        return alpha[vertex[0]] + (this.height - vertex[1])
+    },
+
+    coord2vertex: function(coord) {
+        var x = alpha.indexOf(coord[0].toUpperCase())
+        var y = this.height - +coord.substr(1)
+        return [x, y]
+    },
+
     isValid: function() {
         var liberties = {}
 
-        for (var x = 0; x < this.size; x++) {
-            for (var y = 0; y < this.size; y++) {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
                 var vertex = [x, y]
                 if (this.arrangement[vertex] == 0 || vertex in liberties) continue
 
@@ -208,7 +226,7 @@ Board.prototype = {
     },
 
     makeMove: function(sign, vertex) {
-        var move = new Board(this.size, this.arrangement, this.captures)
+        var move = new Board(this.width, this.height, this.arrangement, this.captures)
 
         if (sign == 0 || !this.hasVertex(vertex)) return move
         if (this.arrangement[vertex] != 0) return null
@@ -252,19 +270,27 @@ Board.prototype = {
     },
 
     getHandicapPlacement: function(count) {
-        if (this.size < 6 || count < 2) return []
+        if (Math.min(this.width, this.height) < 6 || count < 2) return []
 
-        var near = this.size >= 13 ? 3 : 2
-        var far = this.size - near - 1
+        var nearX = this.width >= 13 ? 3 : 2
+        var nearY = this.height >= 13 ? 3 : 2
+        var farX = this.width - nearX - 1
+        var farY = this.height - nearY - 1
 
-        var result = [[near, near], [far, far], [near, far], [far, near]]
+        var result = [[nearX, nearY], [farX, farY], [nearX, farY], [farX, nearY]]
+        var middleX = (this.width - 1) / 2
+        var middleY = (this.height - 1) / 2
 
-        if (this.size % 2 != 0) {
-            var middle = (this.size - 1) / 2
-            if (count == 5) result.push([middle, middle])
-            result.push([near, middle], [far, middle])
-            if (count == 7) result.push([middle, middle])
-            result.push([middle, near], [middle, far], [middle, middle])
+        if (this.width % 2 != 0 && this.height % 2 != 0) {
+            if (count == 5) result.push([middleX, middleY])
+            result.push([nearX, middleY], [farX, middleY])
+
+            if (count == 7) result.push([middleX, middleY])
+            result.push([middleX, nearY], [middleX, farY], [middleX, middleY])
+        } else if (this.width % 2 != 0) {
+            result.push([middleX, nearY], [middleX, farY])
+        } else if (this.height % 2 != 0) {
+            result.push([nearX, middleY], [farX, middleY])
         }
 
         return result.slice(0, count)
@@ -276,8 +302,8 @@ Board.prototype = {
         var done = {}
         var result = []
 
-        for (var i = 0; i < this.size; i++) {
-            for (var j = 0; j < this.size; j++) {
+        for (var i = 0; i < this.width; i++) {
+            for (var j = 0; j < this.height; j++) {
                 var vertex = [i, j]
                 if (map[vertex] != 0 || vertex in done) continue
 
@@ -332,10 +358,10 @@ Board.prototype = {
 
         var ns = 'http://www.w3.org/2000/svg'
         var svg = document.createElementNS(ns, 'svg')
-        svg.setAttribute('width', pixelsize)
-        svg.setAttribute('height', pixelsize)
-        var tileSize = (pixelsize - 1) / this.size
+        var tileSize = (pixelsize - 1) / Math.max(this.width, this.height)
         var radius = tileSize / 2
+        svg.setAttribute('width', tileSize * this.width + 1)
+        svg.setAttribute('height', tileSize * this.height + 1)
 
         // Draw hoshi
 
@@ -351,8 +377,8 @@ Board.prototype = {
 
         // Draw shadows
 
-        for (var x = 0; x < this.size; x++) {
-            for (var y = 0; y < this.size; y++) {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
 
                 var circle = document.createElementNS(ns, 'circle')
@@ -367,8 +393,8 @@ Board.prototype = {
 
         // Draw stones
 
-        for (var x = 0; x < this.size; x++) {
-            for (var y = 0; y < this.size; y++) {
+        for (var x = 0; x < this.width; x++) {
+            for (var y = 0; y < this.height; y++) {
                 if (this.arrangement[[x, y]] == 0) continue
 
                 var circle = document.createElementNS(ns, 'circle')

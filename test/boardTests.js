@@ -6,8 +6,8 @@ describe('Board', function() {
     describe('constructor', function() {
         it('should create an empty board', function() {
             var board = new Board()
-            for (var x = 0; x < board.size; x++) {
-                for (var y = 0; y < board.size; y++) {
+            for (var x = 0; x < board.width; x++) {
+                for (var y = 0; y < board.height; y++) {
                     assert.equal(board.arrangement[[x, y]], 0)
                 }
             }
@@ -48,23 +48,23 @@ describe('Board', function() {
             var board = new Board()
             assert(!board.hasVertex([-1, -1]))
             assert(!board.hasVertex([5, -1]))
-            assert(!board.hasVertex([board.size, 0]))
-            assert(!board.hasVertex([board.size, board.size]))
+            assert(!board.hasVertex([board.width, 0]))
+            assert(!board.hasVertex([board.width, board.height]))
         })
     })
 
     describe('clear', function() {
         it('should clear the stones on the board', function() {
-            var board = new Board(9)
+            var board = new Board(9, 9)
             board.arrangement[[0, 0]] = 1
             board.arrangement[[1, 1]] = -1
             board.arrangement[[3, 5]] = 1
 
             board.clear()
-            assert.deepEqual(board.arrangement, new Board(9).arrangement)
+            assert.deepEqual(board.arrangement, new Board(9, 9).arrangement)
         })
         it('should not clear markups or lines', function() {
-            var board = new Board(9)
+            var board = new Board(9, 9)
             var lines = [
                 [[0, 0], [8, 8], false],
                 [[8, 8], [0, 0], true]
@@ -74,7 +74,7 @@ describe('Board', function() {
 
             board.clear()
             assert.deepEqual(board.lines, lines)
-            assert.notDeepEqual(board.markups, new Board(9).markups)
+            assert.notDeepEqual(board.markups, new Board(9, 9).markups)
         })
     })
 
