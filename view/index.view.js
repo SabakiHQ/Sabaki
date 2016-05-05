@@ -1024,6 +1024,10 @@ function openHeaderMenu() {
             click: function() { setShowNextMoves(!getShowNextMoves()) }
         },
         {
+            label: 'Toggle Show Sibling Variations',
+            click: function() { setShowSiblings(!setShowSiblings()) }
+        },
+        {
             label: 'Toggle Guess Mode',
             click: function() { setGuessMode(!getGuessMode()) }
         },
