@@ -468,7 +468,7 @@ context.addBoard = function(tree, index, baseboard) {
 
     // Add variation overlays
 
-    var addOverlay = function(node) {
+    var addOverlay = function(node, type) {
         var v, sign
 
         if ('B' in node) {
@@ -481,16 +481,24 @@ context.addBoard = function(tree, index, baseboard) {
             return
         }
 
-        board.ghosts[v] = [sign, 'full']
+        if (board.arrangement[v] != 0) return
+        board.ghosts[v] = [sign, type]
     }
 
-    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
+    if (index == 0 && tree.parent) {
+        tree.parent.subtrees.forEach(function(subtree) {
+            if (subtree.nodes.length == 0) return
+            addOverlay(subtree.nodes[0], 'empty')
+        })
+    }
+
+    if (index == tree.nodes.length - 1) {
         tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
-            addOverlay(subtree.nodes[0])
+            addOverlay(subtree.nodes[0], 'full')
         })
     } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1])
+        addOverlay(tree.nodes[index + 1], 'full')
     }
 
     return tree
