@@ -142,7 +142,7 @@ function setCurrentTreePosition(tree, index, now, redraw) {
 
     if ('B' in tree.nodes[index]
     || 'PL' in tree.nodes[index] && tree.nodes[index].PL[0] == 'W'
-    || 'HA' in tree.nodes[index] && tree.nodes[index].HA[0].toInt() >= 1)
+    || 'HA' in tree.nodes[index] && +tree.nodes[index].HA[0] >= 1)
         currentplayer = -1
 
     setCurrentPlayer(currentplayer)
@@ -1029,7 +1029,7 @@ function useTool(vertex, event) {
 
                 if ('LB' in node) {
                     var list = node.LB.map(function(x) {
-                        return x.substr(3).toInt()
+                        return parseFloat(x.substr(3))
                     }).filter(function(x) {
                         return !isNaN(x)
                     })
