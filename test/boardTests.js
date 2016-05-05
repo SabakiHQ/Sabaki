@@ -70,7 +70,7 @@ describe('Board', function() {
                 [[8, 8], [0, 0], true]
             ]
             board.lines = lines
-            board.markups[[5, 5]] = ['label', 1, 'A']
+            board.markups[[5, 5]] = ['label', 'A']
 
             board.clear()
             assert.deepEqual(board.lines, lines)

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Support for non-square boards
+* Ability to show sibling variations on the board
 
 **Fixed**
 

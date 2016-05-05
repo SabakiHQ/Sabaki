@@ -198,24 +198,30 @@ function setBoard(board) {
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
-            var sign = board.arrangement[li.retrieve('vertex')]
-            var types = ['ghost_1', 'ghost_-1', 'circle', 'triangle',
-                'cross', 'square', 'label', 'point', 'dimmed', 'paint_1', 'paint_-1']
+            var sign = board.arrangement[[x, y]]
+            var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
+                'circle', 'triangle', 'cross', 'square', 'label', 'point',
+                'dimmed', 'paint_1', 'paint_-1']
+
+            // Clean up
 
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
             li.getElement('.stone span').set('title', '')
 
-            if (li.retrieve('vertex') in board.markups) {
-                var markup = board.markups[li.retrieve('vertex')]
-                var type = markup[0], ghost = markup[1], label = markup[2]
+            // Add markups
+
+            if ([x, y] in board.markups) {
+                var markup = board.markups[[x, y]]
+                var type = markup[0], label = markup[1]
 
                 if (type != '') li.addClass(type)
-                if (ghost != 0) li.addClass('ghost_' + ghost)
                 if (label != '') li.getElement('.stone span').set('title', label)
                 li.toggleClass('smalllabel', label.length >= 3)
             }
+
+            // Set stone image
 
             if (li.hasClass('sign_' + sign)) continue
 
@@ -227,6 +233,16 @@ function setBoard(board) {
                 .set('src', setting.get('board.stone_image_' + sign))
         }
     }
+
+    // Add ghosts
+
+    board.ghosts.forEach(function(x) {
+        var v = x[0], s = x[1], type = x[2]
+        var li = $('goban').getElement('.pos_' + v.join('-'))
+
+        if (type == 'child') li.addClass('ghost_' + s)
+        else if (type == 'sibling') li.addClass('siblingghost_' + s)
+    })
 
     // Add lines
 
@@ -340,6 +356,8 @@ function loadSettings() {
         $('goban').addClass('coordinates')
     if (setting.get('view.show_next_moves'))
         $('goban').addClass('variations')
+    if (setting.get('view.show_siblings'))
+        $('goban').addClass('siblings')
     if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
         setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
@@ -1023,7 +1041,7 @@ function useTool(vertex, event) {
             if (vertex in board.markups && board.markups[vertex][0] == tool) {
                 delete board.markups[vertex]
             } else {
-                board.markups[vertex] = [tool, 0, '']
+                board.markups[vertex] = [tool, '']
             }
         } else if (tool == 'number') {
             if (vertex in board.markups && board.markups[vertex][0] == 'label') {
@@ -1046,7 +1064,7 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.markups[vertex] = [tool, 0, number.toString()]
+                board.markups[vertex] = [tool, number.toString()]
             }
         } else if (tool == 'label') {
             if (vertex in board.markups && board.markups[vertex][0] == 'label') {
@@ -1070,7 +1088,7 @@ function useTool(vertex, event) {
                     }
                 }
 
-                board.markups[vertex] = [tool, 0, alpha[k]]
+                board.markups[vertex] = [tool, alpha[k]]
             }
         }
 
@@ -1084,7 +1102,7 @@ function useTool(vertex, event) {
 
             var id = dictionary[board.markups[v][0]]
             var pt = sgf.vertex2point(v)
-            if (id == 'LB') pt += ':' + board.markups[v][2]
+            if (id == 'LB') pt += ':' + board.markups[v][1]
 
             if (id in node) node[id].push(pt)
             else node[id] = [pt]

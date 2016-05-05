@@ -368,6 +368,8 @@ context.addBoard = function(tree, index, baseboard) {
     var vertex = null
     var board = null
 
+    // Get base board
+
     if (!baseboard) {
         var prev = context.navigate(tree, index, -1)
 
@@ -392,6 +394,8 @@ context.addBoard = function(tree, index, baseboard) {
         }
     }
 
+    // Make move
+
     if ('B' in node) {
         vertex = sgf.point2vertex(node.B[0])
         board = baseboard.makeMove(1, vertex)
@@ -401,6 +405,8 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (!board) board = baseboard.clone()
+
+    // Add markup
 
     var ids = ['AW', 'AE', 'AB']
 
@@ -415,7 +421,7 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (vertex != null) {
-        board.markups[vertex] = ['point', 0, '']
+        board.markups[vertex] = ['point', '']
     }
 
     var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -426,7 +432,7 @@ context.addBoard = function(tree, index, baseboard) {
 
         node[ids[i]].forEach(function(value) {
             sgf.compressed2list(value).forEach(function(vertex) {
-                board.markups[vertex] = [classes[i], 0, '']
+                board.markups[vertex] = [classes[i], '']
             })
         })
     }
@@ -436,7 +442,7 @@ context.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.markups[sgf.point2vertex(point)] = ['label', 0, label]
+            board.markups[sgf.point2vertex(point)] = ['label', label]
         })
     }
 
@@ -462,7 +468,7 @@ context.addBoard = function(tree, index, baseboard) {
 
     // Add variation overlays
 
-    var addOverlay = function(node) {
+    var addOverlay = function(node, type) {
         var v, sign
 
         if ('B' in node) {
@@ -475,17 +481,24 @@ context.addBoard = function(tree, index, baseboard) {
             return
         }
 
-        if (v in board.markups) board.markups[v][1] = sign
-        else board.markups[v] = ['', sign, '']
+        if (!board.hasVertex(v)) return
+        board.ghosts.push([v, sign, type])
     }
 
-    if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {
+    if (index == 0 && tree.parent) {
+        tree.parent.subtrees.forEach(function(subtree) {
+            if (subtree.nodes.length == 0) return
+            addOverlay(subtree.nodes[0], 'sibling')
+        })
+    }
+
+    if (index == tree.nodes.length - 1) {
         tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
-            addOverlay(subtree.nodes[0])
+            addOverlay(subtree.nodes[0], 'child')
         })
     } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1])
+        addOverlay(tree.nodes[index + 1], 'child')
     }
 
     return tree
