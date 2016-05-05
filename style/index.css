@@ -689,6 +689,10 @@ header, #edit, #scoring, #find, #guess {
     #score tbody tr:first-child {
         border-bottom: 1px solid rgba(0, 0, 0, .1);
     }
+    #score .result {
+        margin-right: 1.5em;
+        font-weight: bold;
+    }
     #score button {
         background: rgba(0, 0, 0, .1);
         color: #333;
