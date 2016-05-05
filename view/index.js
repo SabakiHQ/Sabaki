@@ -1981,7 +1981,8 @@ document.addEvent('keydown', function(e) {
         closeDrawers()
     }
 
-    if (getEditMode()) return
+    if (['input', 'textarea'].indexOf(document.activeElement.tagName.toLowerCase()) >= 0)
+        return
 
     if (e.code == 36) {
         // Home
