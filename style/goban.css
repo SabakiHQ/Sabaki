@@ -146,6 +146,7 @@ body:not(.scoring) .goban .row li.dimmed img {
 
 .goban .row li .stone::after, .goban .row li .stone::after {
         content: '';
+        box-sizing: border-box;
         display: none;
         position: absolute;
         left: 50%;
@@ -154,14 +155,22 @@ body:not(.scoring) .goban .row li.dimmed img {
         height: .5em;
         margin-left: calc(-.25em - 1px);
         margin-top: calc(-.25em - 1px);
-        border-radius: 500em;
-        opacity: .3;
+        border-radius: 100%;
+        opacity: .4;
         z-index: 2;
     }
-    .goban .row li.ghost_1 .stone::after,
+    .goban.siblings .row li.emptyghost_1 .stone::after { border: .1em solid black; }
+    .goban.siblings .row li.emptyghost_-1 .stone::after { border: .1em solid white; }
+    .goban.variations .row li.ghost_1 .stone::after,
     .goban .row li.sign_-1.point .stone::after { background: black; }
-    .goban .row li.ghost_-1 .stone::after,
+    .goban.variations .row li.ghost_-1 .stone::after,
     .goban .row li.sign_1.point .stone::after { background: white; }
+    .goban.variations .row li.ghost_1 .stone::after,
+    .goban.variations .row li.ghost_-1 .stone::after,
+    .goban .row li.point .stone::after,
+    .goban .row li.point .stone::after { border: none; }
+    .goban.siblings .row li.emptyghost_1 .stone::after,
+    .goban.siblings .row li.emptyghost_-1 .stone::after,
     .goban.variations .row li.ghost_1 .stone::after,
     .goban.variations .row li.ghost_-1 .stone::after { display: block; }
     .goban .row li.point .stone::after {
