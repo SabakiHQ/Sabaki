@@ -368,6 +368,8 @@ context.addBoard = function(tree, index, baseboard) {
     var vertex = null
     var board = null
 
+    // Get base board
+
     if (!baseboard) {
         var prev = context.navigate(tree, index, -1)
 
@@ -392,6 +394,8 @@ context.addBoard = function(tree, index, baseboard) {
         }
     }
 
+    // Make move
+
     if ('B' in node) {
         vertex = sgf.point2vertex(node.B[0])
         board = baseboard.makeMove(1, vertex)
@@ -401,6 +405,8 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (!board) board = baseboard.clone()
+
+    // Add markup
 
     var ids = ['AW', 'AE', 'AB']
 
@@ -415,7 +421,7 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (vertex != null) {
-        board.markups[vertex] = ['point', 0, '']
+        board.markups[vertex] = ['point', '']
     }
 
     var ids = ['CR', 'MA', 'SQ', 'TR']
@@ -426,7 +432,7 @@ context.addBoard = function(tree, index, baseboard) {
 
         node[ids[i]].forEach(function(value) {
             sgf.compressed2list(value).forEach(function(vertex) {
-                board.markups[vertex] = [classes[i], 0, '']
+                board.markups[vertex] = [classes[i], '']
             })
         })
     }
@@ -436,7 +442,7 @@ context.addBoard = function(tree, index, baseboard) {
             var sep = composed.indexOf(':')
             var point = composed.slice(0, sep)
             var label = composed.slice(sep + 1).replace(/\s+/, ' ')
-            board.markups[sgf.point2vertex(point)] = ['label', 0, label]
+            board.markups[sgf.point2vertex(point)] = ['label', label]
         })
     }
 
@@ -475,8 +481,7 @@ context.addBoard = function(tree, index, baseboard) {
             return
         }
 
-        if (v in board.markups) board.markups[v][1] = sign
-        else board.markups[v] = ['', sign, '']
+        board.ghosts[v] = [sign, 'full']
     }
 
     if (index == tree.nodes.length - 1 && tree.subtrees.length > 0) {

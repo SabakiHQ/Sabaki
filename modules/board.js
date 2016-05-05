@@ -14,6 +14,7 @@ var Board = function(width, height, arrangement, captures) {
     this.captures = captures ? { '-1': captures['-1'], '1': captures['1'] } : { '-1': 0, '1': 0 }
     this.arrangement = {}
     this.markups = {}
+    this.ghosts = {}
     this.lines = []
 
     // Initialize arrangement
