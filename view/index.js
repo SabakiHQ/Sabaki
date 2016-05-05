@@ -690,7 +690,7 @@ function syncEngine() {
         return
 
     if (!board.isSquare()) {
-        showMessageBox('GTP engines don’t support rectangular boards.', 'warning')
+        showMessageBox('GTP engines don’t support non-square boards.', 'warning')
         return detachEngine()
     } else if (!board.isValid()) {
         showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
