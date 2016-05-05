@@ -200,7 +200,7 @@ function setBoard(board) {
         for (var y = 0; y < board.height; y++) {
             var li = $('goban').getElement('.pos_' + x + '-' + y)
             var sign = board.arrangement[[x, y]]
-            var types = ['ghost_1', 'ghost_-1', 'emptyghost_1', 'emptyghost_-1',
+            var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
                 'dimmed', 'paint_1', 'paint_-1']
 
@@ -222,16 +222,6 @@ function setBoard(board) {
                 li.toggleClass('smalllabel', label.length >= 3)
             }
 
-            // Add ghosts
-
-            if ([x, y] in board.ghosts) {
-                var ghost = board.ghosts[[x, y]]
-                var s = ghost[0], type = ghost[1]
-
-                if (type == 'full') li.addClass('ghost_' + s)
-                else li.addClass('emptyghost_' + s)
-            }
-
             // Set stone image
 
             if (li.hasClass('sign_' + sign)) continue
@@ -244,6 +234,16 @@ function setBoard(board) {
                 .set('src', setting.get('board.stone_image_' + sign))
         }
     }
+
+    // Add ghosts
+
+    board.ghosts.forEach(function(x) {
+        var v = x[0], s = x[1], type = x[2]
+        var li = $('goban').getElement('.pos_' + v.join('-'))
+
+        if (type == 'child') li.addClass('ghost_' + s)
+        else if (type == 'sibling') li.addClass('siblingghost_' + s)
+    })
 
     // Add lines
 

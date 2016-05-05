@@ -481,24 +481,24 @@ context.addBoard = function(tree, index, baseboard) {
             return
         }
 
-        if (board.arrangement[v] != 0) return
-        board.ghosts[v] = [sign, type]
+        if (!board.hasVertex(v)) return
+        board.ghosts.push([v, sign, type])
     }
 
     if (index == 0 && tree.parent) {
         tree.parent.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
-            addOverlay(subtree.nodes[0], 'empty')
+            addOverlay(subtree.nodes[0], 'sibling')
         })
     }
 
     if (index == tree.nodes.length - 1) {
         tree.subtrees.forEach(function(subtree) {
             if (subtree.nodes.length == 0) return
-            addOverlay(subtree.nodes[0], 'full')
+            addOverlay(subtree.nodes[0], 'child')
         })
     } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1], 'full')
+        addOverlay(tree.nodes[index + 1], 'child')
     }
 
     return tree
