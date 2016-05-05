@@ -156,24 +156,34 @@ body:not(.scoring) .goban .row li.dimmed img {
         margin-left: calc(-.25em - 1px);
         margin-top: calc(-.25em - 1px);
         border-radius: 100%;
-        opacity: .4;
         z-index: 2;
     }
 
     .goban.siblings .row li.sign_0.siblingghost_1 .stone::after { background: black; }
     .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after { background: white; }
+    .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
+    .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after { opacity: .25; }
+    .goban.siblings:not(.variations) .row li.sign_0.siblingghost_1 .stone::after,
+    .goban.siblings:not(.variations) .row li.sign_0.siblingghost_-1 .stone::after { opacity: .4; }
 
     .goban.variations .row li.sign_0.ghost_1 .stone::after,
-    .goban .row li.sign_-1.point .stone::after { background: black; }
+    .goban .row li.sign_-1.point .stone::after {
+        background: black;
+        opacity: .4;
+    }
     .goban.variations .row li.sign_0.ghost_-1 .stone::after,
-    .goban .row li.sign_1.point .stone::after { background: white; }
+    .goban .row li.sign_1.point .stone::after {
+        background: white;
+        opacity: .4;
+    }
 
     .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
     .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after,
     .goban.variations .row li.sign_0.ghost_1 .stone::after,
     .goban.variations .row li.sign_0.ghost_-1 .stone::after { display: block; }
 
-    .goban .row li.point .stone::after {
+    .goban .row li.sign_1.point .stone::after,
+    .goban .row li.sign_-1.point .stone::after {
         display: block;
         width: 8px;
         height: 8px;
