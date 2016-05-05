@@ -611,7 +611,8 @@ header, #edit, #scoring, #find, #guess {
         width: 40px;
     }
     #info ul {
-        height: 152px;
+        height: 110px;
+        padding: 15px 0;
         column-count: 2;
         -webkit-column-count: 2;
         -moz-column-count: 2;
