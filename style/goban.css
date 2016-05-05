@@ -1,6 +1,4 @@
 /**
- * goban.css
- *
  * Styles the Go board
  */
 
@@ -299,7 +297,6 @@ body:not(.scoring) .goban .row li.dimmed img {
         max-width: 2.2em;
         height: 1.1em;
         font-size: .36em;
-        line-height: .9;
 }
 
 /**

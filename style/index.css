@@ -625,7 +625,7 @@ header, #edit, #scoring, #find, #guess {
         margin: 0;
     }
     #info input[name="komi"], #info input[name^="size-"] {
-        width: 41px;
+        width: 35px;
     }
     #info span.size-swap {
         padding: 3px;
@@ -700,9 +700,8 @@ header, #edit, #scoring, #find, #guess {
         bottom: -440px;
         height: 400px;
     }
-    #preferences form ul {
-        margin: 1.5em 0;
-    }
+    #preferences form ul { margin: 0 0 1.5em 0; }
+    #preferences form ul li { margin: 0 0 7px 0; }
     #preferences form > p:last-child {
         position: absolute;
         right: 20px;
@@ -710,6 +709,13 @@ header, #edit, #scoring, #find, #guess {
     }
     #preferences form > div {
         display: none;
+    }
+    #preferences form > div.general {
+        height: 315px;
+        padding-top: 1.5em;
+        column-count: 2;
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
     }
     #preferences form.general > div.general,
     #preferences form.engines > div.engines {

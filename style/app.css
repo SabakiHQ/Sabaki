@@ -1,9 +1,7 @@
 @import url('../node_modules/gemini-scrollbar/gemini-scrollbar.css');
 
 /**
- * app.css
- *
- * Provides general styles for websites that behave like apps.
+ * Provides general styles for native app like behavior.
  */
 
 * {
@@ -23,7 +21,6 @@ body, a {
     cursor: default;
     overflow: hidden;
     outline: 0;
-    -webkit-transform-style: preserve-3d;
     user-select: none;
     -ms-user-select: none;
     -moz-user-select: none;
@@ -99,6 +96,8 @@ form p, form ul li {
     }
     input[type="checkbox"] {
         -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
         display: inline-block;
         position: relative;
         height: 1.5em;
