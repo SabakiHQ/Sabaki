@@ -188,16 +188,6 @@ context.getCurrentHeight = function(tree) {
     return height
 }
 
-context.getWidth = function(tree) {
-    var width = 0
-
-    tree.subtrees.forEach(function(subtree) {
-        width += context.getWidth(subtree)
-    })
-
-    return Math.max(width, 1)
-}
-
 context.getLevel = function(tree, index) {
     return index + (tree.parent ? context.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
