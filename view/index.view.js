@@ -1175,12 +1175,12 @@ function openNodeMenu(tree, index, event) {
 
     var template = [
         {
-            label: '&Remove',
-            click: function() { removeNode(tree, index) }
-        },
-        {
             label: 'Make &Main Variation',
             click: function() { makeMainVariation(tree, index) }
+        },
+        {
+            label: '&Remove',
+            click: function() { removeNode(tree, index) }
         }
     ]
 
