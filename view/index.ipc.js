@@ -24,7 +24,7 @@ var menudata = {
     "labeltool": function() { setSelectedTool('label') },
     "numbertool": function() { setSelectedTool('number') },
     "removenode": function() { removeNode.apply(null, getCurrentTreePosition()) },
-    "makemainvariation": makeMainVariation,
+    "makemainvariation": function() { makeMainVariation.apply(null, getCurrentTreePosition()) },
 
     "findmode": function() { setFindMode(!getFindMode()) },
     "findnext": function() { setFindMode(true); findMove(getIndicatorVertex(), getFindText(), 1) },

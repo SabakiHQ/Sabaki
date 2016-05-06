@@ -1897,22 +1897,23 @@ function goToMainVariation() {
     }
 }
 
-function makeMainVariation() {
+function makeMainVariation(tree, index) {
     setUndoable(true, 'Restore Main Variation')
     closeDrawers()
 
-    var root = tree = getRootTree()
-    var level = gametree.getLevel.apply(null, getCurrentTreePosition())
+    var root = getRootTree()
+    var level = gametree.getLevel(tree, index)
+    var t = tree
 
-    while (tree.current != null) {
-        var subtree = tree.subtrees.splice(tree.current, 1)[0]
-        tree.subtrees.unshift(subtree)
-        tree.current = 0
+    while (t.parent != null) {
+        t.parent.subtrees.splice(t.parent.subtrees.indexOf(t), 1)
+        t.parent.subtrees.unshift(t)
+        t.parent.current = 0
 
-        tree = subtree
+        t = t.parent
     }
 
-    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level).concat([false, true]))
+    setCurrentTreePosition(tree, index, true, true)
 }
 
 function removeNode(tree, index) {
