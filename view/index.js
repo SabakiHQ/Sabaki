@@ -1768,12 +1768,12 @@ function saveFileToSgf() {
     return text
 }
 
-function clearMarkups() {
+function clearMarkup() {
     closeDrawers()
     var markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
-    setUndoable(true)
+    setUndoable(true, 'Restore Markup')
 
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
@@ -1898,7 +1898,7 @@ function goToMainVariation() {
 }
 
 function makeMainVariation() {
-    setUndoable(true)
+    setUndoable(true, 'Restore Main Variation')
     closeDrawers()
 
     var root = tree = getRootTree()
@@ -1929,7 +1929,7 @@ function removeNode(tree, index) {
 
     // Save undo information
 
-    setUndoable(true)
+    setUndoable(true, 'Undo Remove Node')
 
     // Remove node
 

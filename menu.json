@@ -70,8 +70,8 @@
                 "action": "editmode"
             },
             {
-                "label": "Clear &Markups",
-                "action": "clearmarkups"
+                "label": "Clear &Markup",
+                "action": "clearmarkup"
             },
             { "type": "separator" },
             {

@@ -14,7 +14,7 @@ var menudata = {
     "preferences": showPreferences,
 
     "editmode": function() { setEditMode(!getEditMode()) },
-    "clearmarkups": clearMarkups,
+    "clearmarkup": clearMarkup,
     "stonetool": function() { setSelectedTool('stone') },
     "crosstool": function() { setSelectedTool('cross') },
     "triangletool": function() { setSelectedTool('triangle') },
