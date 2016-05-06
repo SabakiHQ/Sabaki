@@ -205,7 +205,7 @@ context.getSection = function(tree, level) {
     return sections
 }
 
-context.getWidth = function(y, matrix) {
+context.getSectionWidth = function(y, matrix) {
     var keys = Object.keys(new Int8Array(10)).map(function(i) {
         return parseFloat(i) + y - 4
     }).filter(function(i) { return i >= 0 && i < matrix.length })

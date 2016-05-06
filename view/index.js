@@ -1595,7 +1595,7 @@ function centerGraphCameraAt(node) {
     var matrixdict = getGraphMatrixDict()
     var y = matrixdict[1][node.id][1]
 
-    var wp = gametree.getWidth(y, matrixdict[0])
+    var wp = gametree.getSectionWidth(y, matrixdict[0])
     var width = wp[0], padding = wp[1]
     var x = matrixdict[1][node.id][0] - padding
     var relX = width == 1 ? 0 : x / (width - 1)
