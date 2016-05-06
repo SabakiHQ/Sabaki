@@ -311,11 +311,13 @@ function getEngineCommands() {
     return $('console').retrieve('commands')
 }
 
-function setUndoable(undoable) {
+function setUndoable(undoable, tooltip) {
     if (undoable) {
         var rootTree = gametree.clone(getRootTree())
         var position = gametree.getLevel.apply(null, getCurrentTreePosition())
+        if (!tooltip) tooltip = 'Undo'
 
+        $$('#bar header .undo').set('title', tooltip)
         document.body
             .addClass('undoable')
             .store('undodata-root', rootTree)
