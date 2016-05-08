@@ -1398,7 +1398,8 @@ function commitGameInfo() {
         'name_-1': 'PW',
         'result': 'RE',
         'name': 'GN',
-        'event': 'EV'
+        'event': 'EV',
+        'date': 'DT'
     }
 
     for (var name in data) {
@@ -1416,23 +1417,24 @@ function commitGameInfo() {
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
+    // Handle komi
+
     var komi = +info.getElement('input[name="komi"]').get('value')
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
-    var width = +info.getElement('input[name="size-width"]').get('value')
-    var height = +info.getElement('input[name="size-height"]').get('value')
+    // Handle size
+
     var size = ['width', 'height'].map(function(x) {
         var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 9), 25)
     })
 
-    if (size[0] == size[1]) {
-        rootNode.SZ = ['' + size[0]]
-    } else {
-        rootNode.SZ = [size.join(':')]
-    }
+    if (size[0] == size[1]) rootNode.SZ = ['' + size[0]]
+    else rootNode.SZ = [size.join(':')]
+
+    // Handle handicap stones
 
     var handicapInput = info.getElement('select[name="handicap"]')
     var handicap = handicapInput.selectedIndex
