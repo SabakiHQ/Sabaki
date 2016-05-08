@@ -622,7 +622,19 @@ function prepareGameInfo() {
     // Prepare Pikaday
 
     var dateInput = $$('#info input[name="date"]')[0]
-    dateInput.store('pikaday', new Pikaday({ field: dateInput }))
+
+    dateInput.store('pikaday', new Pikaday({
+        field: dateInput,
+        position: 'top left',
+        firstDay: 1,
+        yearRange: 7,
+        onOpen: function() {
+            dateInput.retrieve('pikaday').gotoToday()
+        },
+        onDraw: function() {
+            dateInput.retrieve('pikaday').adjustPosition()
+        }
+    }))
 
     // Handle size inputs
 

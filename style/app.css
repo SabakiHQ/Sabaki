@@ -175,6 +175,7 @@ form p, form ul li {
     background: #fff;
     border: 1px solid #ccc;
     border-bottom-color: #bbb;
+    font-family: inherit;
 }
 
 .pika-single.is-bound {
@@ -187,7 +188,7 @@ form p, form ul li {
     background-color: #fff;
 }
 .pika-title select {
-    cursor: pointer;
+    cursor: default;
 }
 
 .pika-table th {
@@ -196,7 +197,7 @@ form p, form ul li {
 }
 
 .pika-button {
-    cursor: pointer;
+    cursor: default;
     color: #666;
     background: #f5f5f5;
 }
@@ -244,8 +245,7 @@ form p, form ul li {
     border-radius: 0;
 }
 
-/* styling for abbr */
 .pika-table abbr {
     border-bottom: none;
-    cursor: pointer;
+    cursor: default;
 }
