@@ -1,4 +1,5 @@
 @import url('../node_modules/gemini-scrollbar/gemini-scrollbar.css');
+@import url('../node_modules/pikaday/css/pikaday.css');
 
 /**
  * Provides general styles for native app like behavior.

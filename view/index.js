@@ -15,6 +15,7 @@ var app = remote.app
 var dialog = remote.dialog
 var process = remote.require('process')
 
+var Pikaday = require('pikaday')
 var GeminiScrollbar = require('gemini-scrollbar')
 var Board = require('../modules/board')
 var Menu = remote.Menu
@@ -617,6 +618,11 @@ function prepareGameInfo() {
 
         openEnginesMenu(el, selectEngine.bind(el))
     })
+
+    // Prepare Pikaday
+
+    var dateInput = $$('#info input[name="date"]')[0]
+    dateInput.store('pikaday', new Pikaday({ field: dateInput }))
 
     // Handle size inputs
 
