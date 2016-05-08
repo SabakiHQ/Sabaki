@@ -147,6 +147,28 @@ describe('sgf', function() {
         })
     })
 
+    describe('parseDates', function() {
+        it('should parse comma-separated dates', function() {
+            assert.deepEqual(sgf.parseDates('1996-12-27,1997-01-03'), [
+                [1996, 12, 27], [1997, 1, 3]
+            ])
+        })
+        it('should handle short-hand notation', function() {
+            assert.deepEqual(sgf.parseDates('1996-05,06'), [
+                [1996, 5, null], [1996, 6, null]
+            ])
+            assert.deepEqual(sgf.parseDates('1996-05-06,07,08'), [
+                [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
+            ])
+            assert.deepEqual(sgf.parseDates('1996,1997'), [
+                [1996, null, null], [1997, null, null]
+            ])
+            assert.deepEqual(sgf.parseDates('1996-12-27,28,1997-01-03,04'), [
+                [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
+            ])
+        })
+    })
+
     describe('point2vertex', function() {
         it('should return [-1, -1] when passing string with length > 2', function() {
             assert.deepEqual(sgf.point2vertex(''), [-1, -1])

@@ -123,6 +123,24 @@ context.parseFile = function(filename, callback) {
     return context.parse(tokens, callback)
 }
 
+context.parseDates = function(input) {
+    var dates = input.split(',').map(function(x) {
+        return x.trim().split('-').map(function(y) { return +y })
+    })
+
+    for (var i = 1; i < dates.length; i++) {
+        var date = dates[i]
+        var prev = dates[i - 1]
+
+        dates[i] = prev.slice(0, prev.length - date.length).concat(date)
+    }
+
+    dates.forEach(function(d) {
+        while (d.length < 3) d.push(null)
+    })
+
+    return dates}
+
 context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
     return point.split('').map(function(x) { return alpha.indexOf(x) })
