@@ -139,7 +139,8 @@ context.parseDates = function(input) {
         while (d.length < 3) d.push(null)
     })
 
-    return dates}
+    return dates
+}
 
 context.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
