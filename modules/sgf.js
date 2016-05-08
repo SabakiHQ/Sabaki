@@ -123,7 +123,7 @@ context.parseFile = function(filename, callback) {
     return context.parse(tokens, callback)
 }
 
-context.parseDates = function(input) {
+context.string2dates = function(input) {
     var dates = input.split(',').map(function(x) {
         return x.trim().split('-').map(function(y) { return +y })
     })
@@ -140,6 +140,29 @@ context.parseDates = function(input) {
     })
 
     return dates
+}
+
+context.dates2string = function(dates) {
+    var datesCopy = [dates[0].slice()]
+
+    for (var i = 1; i < dates.length; i++) {
+        var date = dates[i]
+        var prev = dates[i - 1]
+
+        var k = 0
+        for (var j = 0; j < date.length; j++) {
+            if (date[j] == prev[j] && k == j) k++
+            else break
+        }
+
+        datesCopy.push(date.slice(k))
+    }
+
+    return datesCopy.map(function(x) {
+        return x.filter(function(y) { return y != null }).map(function(y) {
+            return y > 9 ? '' + y : '0' + y
+        }).join('-')
+    }).join(',')
 }
 
 context.point2vertex = function(point) {
