@@ -999,6 +999,19 @@ function openHeaderMenu() {
                 link.dispose()
             }
         },
+        {
+            label: 'Report Issue…',
+            click: function() {
+                var link = new Element('a', {
+                    href: 'https://github.com/yishn/Sabaki/issues',
+                    target: '_blank',
+                    css: { display: 'none' }
+                })
+                document.body.grab(link)
+                link.click()
+                link.dispose()
+            }
+        },
         { type: 'separator' },
         {
             label: 'New File',
@@ -1027,10 +1040,6 @@ function openHeaderMenu() {
             label: 'Show Sibling Variations',
             checked: getShowSiblings(),
             click: function() { setShowSiblings(!getShowSiblings()) }
-        },
-        {
-            label: 'Toggle Guess Mode',
-            click: function() { setGuessMode(!getGuessMode()) }
         },
         {
             label: 'Manage Games…',
