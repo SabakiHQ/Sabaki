@@ -295,12 +295,8 @@ context.matrixdict2graph = function(matrixdict) {
             }
             var commentproperties = setting.get('sgf.comment_properties')
 
-            if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
-                node.originalColor = setting.get('graph.node_comment_color')
-            if ('HO' in tree.nodes[index])
-                node.originalColor = setting.get('graph.node_bookmark_color')
-
             // Show passes as squares
+
             if ('B' in tree.nodes[index] && tree.nodes[index].B[0] == ''
             || 'W' in tree.nodes[index] && tree.nodes[index].W[0] == '') {
                 node.type = 'square'
@@ -308,10 +304,18 @@ context.matrixdict2graph = function(matrixdict) {
             }
 
             // Show non-moves as diamonds
+
             if (!('B' in tree.nodes[index] || 'W' in tree.nodes[index])) {
                 node.type = 'diamond'
                 node.size++
             }
+
+            // Set color
+
+            if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
+                node.originalColor = setting.get('graph.node_comment_color')
+            if ('HO' in tree.nodes[index])
+                node.originalColor = setting.get('graph.node_bookmark_color')
 
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
@@ -328,6 +332,8 @@ context.matrixdict2graph = function(matrixdict) {
                 node.color = node.originalColor = setting.get('graph.node_collapsed_color')
 
             graph.nodes.push(node)
+
+            // Add helper nodes & edges
 
             var prev = context.navigate(tree, index, -1)
             if (!prev) continue
