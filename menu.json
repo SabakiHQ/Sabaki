@@ -262,35 +262,39 @@
                 "label": "Toggle G&uess Mode",
                 "action": "toggleguessmode"
             },
-            { "type": "separator" },
-            {
-                "label": "Toggle &Coordinates",
-                "action": "togglecoordinates"
-            },
-            {
-                "label": "Toggle Show &Next Moves",
-                "action": "toggleshownextmoves"
-            },
-            {
-                "label": "Toggle Show &Sibling Variations",
-                "action": "toggleshowsiblings"
-            },
-            { "type": "separator" },
-            {
-                "label": "Toggle Game &Graph",
-                "accelerator": "CmdOrCtrl+G",
-                "action": "togglegamegraph"
-            },
-            {
-                "label": "Toggle Co&mments",
-                "accelerator": "CmdOrCtrl+Shift+G",
-                "action": "togglecomments"
-            },
-            { "type": "separator" },
             {
                 "label": "Toggle &Full Screen",
                 "accelerator": "CmdOrCtrl+Shift+F",
                 "action": "togglefullscreen"
+            },
+            { "type": "separator" },
+            {
+                "label": "Show &Coordinates",
+                "checked": "view.show_coordinates",
+                "action": "togglecoordinates"
+            },
+            {
+                "label": "Show &Next Moves",
+                "checked": "view.show_next_moves",
+                "action": "toggleshownextmoves"
+            },
+            {
+                "label": "Show &Sibling Variations",
+                "checked": "view.show_siblings",
+                "action": "toggleshowsiblings"
+            },
+            { "type": "separator" },
+            {
+                "label": "Show Game &Graph",
+                "checked": "view.show_graph",
+                "accelerator": "CmdOrCtrl+G",
+                "action": "togglegamegraph"
+            },
+            {
+                "label": "Show Co&mments",
+                "checked": "view.show_comments",
+                "accelerator": "CmdOrCtrl+Shift+G",
+                "action": "togglecomments"
             }
         ]
     },

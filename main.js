@@ -163,7 +163,7 @@ function buildMenu(noWindows) {
 
     // Handle clicks
 
-    var handleClicks = function(items) {
+    var processMenu = function(items) {
         items.forEach(function(item) {
             if ('label' in item) {
                 item.label = item.label
@@ -184,13 +184,18 @@ function buildMenu(noWindows) {
                 delete item.action
             }
 
+            if ('checked' in item) {
+                item.type = 'checkbox'
+                item.checked = !!setting.get(item.checked)
+            }
+
             if ('submenu' in item) {
-                handleClicks(item.submenu)
+                processMenu(item.submenu)
             }
         })
     }
 
-    handleClicks(template)
+    processMenu(template)
 
     // Build
 
