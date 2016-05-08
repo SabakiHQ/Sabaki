@@ -1014,16 +1014,19 @@ function openHeaderMenu() {
         },
         { type: 'separator' },
         {
-            label: 'Toggle Coordinates',
+            label: 'Show Coordinates',
+            checked: getShowCoordinates(),
             click: function() { setShowCoordinates(!getShowCoordinates()) }
         },
         {
-            label: 'Toggle Show Next Moves',
+            label: 'Show Next Moves',
+            checked: getShowNextMoves(),
             click: function() { setShowNextMoves(!getShowNextMoves()) }
         },
         {
-            label: 'Toggle Show Sibling Variations',
-            click: function() { setShowSiblings(!setShowSiblings()) }
+            label: 'Show Sibling Variations',
+            checked: getShowSiblings(),
+            click: function() { setShowSiblings(!getShowSiblings()) }
         },
         {
             label: 'Toggle Guess Mode',
