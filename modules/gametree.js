@@ -307,6 +307,12 @@ context.matrixdict2graph = function(matrixdict) {
                 node.size++
             }
 
+            // Show non-moves as diamonds
+            if (!('B' in tree.nodes[index] || 'W' in tree.nodes[index])) {
+                node.type = 'diamond'
+                node.size++
+            }
+
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
             } else if (notCurrentTrack.indexOf(tree.id) == -1) {
