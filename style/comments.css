@@ -42,16 +42,6 @@
     cursor: pointer;
 }
 
-#properties .inner .coord {
-        padding: 0 5px;
-        background: #101010;
-        border-radius: 3px;
-        color: white;
-    }
-    #properties .inner .coord:hover {
-        background: #0082F0;
-}
-
 #properties .inner h1::after,
 #properties .inner h2::after,
 #properties .inner hr {
