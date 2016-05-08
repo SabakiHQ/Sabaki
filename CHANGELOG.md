@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Display non-moves as diamonds in the game graph
+
 **Fixed**
 
 * Fix console coordinates not being styled correctly
