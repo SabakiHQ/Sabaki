@@ -193,9 +193,10 @@ form p, form ul li {
 }
 
 .pika-prev, .pika-next {
+        background-size: 16px 16px;
+        cursor: default;
         filter: invert(100%);
         -webkit-filter: invert(100%);
-        background-size: 16px 16px;
     }
     .pika-prev {
         background-image: url('../node_modules/octicons/svg/chevron-left.svg');
@@ -219,6 +220,12 @@ form p, form ul li {
 
 .is-today .pika-button { color: #F75644; }
 
+.pika-button:hover {
+    color: #fff;
+    background: #823499;
+    border-radius: 0;
+}
+
 .is-selected .pika-button {
     color: #fff;
     font-weight: normal;
@@ -228,11 +235,5 @@ form p, form ul li {
 }
 
 .is-today .pika-button { font-weight: bold; }
-
-.pika-button:hover {
-    color: #fff;
-    background: #823499;
-    border-radius: 0;
-}
 
 .pika-table abbr { cursor: default; }
