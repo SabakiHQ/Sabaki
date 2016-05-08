@@ -1,14 +1,8 @@
 (function(root) {
 
-var shell = null
-var gtp = null
-var gametree = root.gametree
 var marked = root.marked
 
 if (typeof require != 'undefined') {
-    shell = require('electron').shell
-    gtp = require('./gtp')
-    gametree = require('./gametree')
     marked = require('./marked')
 }
 
@@ -121,35 +115,6 @@ context.htmlify = function(input) {
     })
 
     return input
-}
-
-context.wireLinks = function(container) {
-    container.getElements('a').addEvent('click', function() {
-        if (this.hasClass('external'))  {
-            if (!shell) {
-                this.target = '_blank'
-                return true
-            }
-
-            shell.openExternal(this.href)
-        } else if (this.hasClass('movenumber')) {
-            var movenumber = +this.get('text').slice(1)
-            setUndoable(true, 'Go Back')
-            goToMainVariation()
-
-            var tp = gametree.navigate(getRootTree(), 0, movenumber)
-            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
-        }
-
-        return false
-    })
-
-    container.getElements('.coord').addEvent('mouseenter', function() {
-        var v = getBoard().coord2vertex(this.get('text'))
-        showIndicator(v)
-    }).addEvent('mouseleave', function() {
-        if (!getFindMode()) hideIndicator()
-    })
 }
 
 }).call(null, typeof module != 'undefined' ? module : window)
