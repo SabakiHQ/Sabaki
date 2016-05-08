@@ -17,6 +17,7 @@
     "argv-split": "^1.0.0",
     "gemini-scrollbar": "^1.2.9",
     "octicons": "^3.3.0",
+    "pikaday": "^1.4.0",
     "sigma": "^1.0.3"
   },
   "scripts": {
