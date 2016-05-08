@@ -611,20 +611,21 @@ header, #edit, #scoring, #find, #guess {
         width: 40px;
     }
     #info ul {
-        height: 110px;
-        padding: 15px 0;
         column-count: 2;
         -webkit-column-count: 2;
         -moz-column-count: 2;
     }
-    #info ul li { margin: 0 0 7px 0; }
+    #info ul input[type="text"] {
+        width: calc(100% - 6em - 40px);
+        max-width: 200px;
+    }
     #info form p {
         position: absolute;
         right: 20px;
         bottom: 20px;
         margin: 0;
     }
-    #info input[name="komi"], #info input[name^="size-"] {
+    #info ul input[name="komi"], #info ul input[name^="size-"] {
         width: 35px;
     }
     #info span.size-swap {
