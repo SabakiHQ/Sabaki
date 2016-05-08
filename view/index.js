@@ -623,18 +623,41 @@ function prepareGameInfo() {
 
     var dateInput = $$('#info input[name="date"]')[0]
 
-    dateInput.store('pikaday', new Pikaday({
-        field: dateInput,
+    var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
-        yearRange: 7,
-        onOpen: function() {
-            dateInput.retrieve('pikaday').gotoToday()
-        },
+        yearRange: 6,
         onDraw: function() {
-            dateInput.retrieve('pikaday').adjustPosition()
+            if (!pikaday.isVisible()) return
+
+            pikaday.el
+            .setStyle('position', 'absolute')
+            .setStyle('left', dateInput.getPosition().x)
+            .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+
+            dateInput.focus()
         }
-    }))
+    })
+
+    dateInput.store('pikaday', pikaday)
+    pikaday.hide()
+
+    document.body.grab(pikaday.el).addEvent('click', function(e) {
+        if (pikaday.isVisible()
+        && e.target != dateInput
+        && e.target.getParents('.pika-lendar').length == 0)
+            pikaday.hide()
+    })
+
+    dateInput.addEvent('focus', function() {
+        pikaday.show()
+        pikaday.draw()
+    }).addEvent('blur', function() {
+        setTimeout(function() {
+            if (document.activeElement.getParents('.pika-lendar').length == 0)
+                pikaday.hide()
+        }, 50)
+    })
 
     // Handle size inputs
 

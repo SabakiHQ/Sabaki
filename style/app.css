@@ -171,14 +171,14 @@ form p, form ul li {
  */
 
 .pika-single {
+    position: absolute;
     color: white;
     background: #111;
     border: none;
     font-family: inherit;
-    transition: left .2s, top .2s, height .2s;
+    box-shadow: 0 5px 15px rgba(0,0,0,.5);
+    transition: left .2s, top .2s;
 }
-
-.pika-single.is-bound { box-shadow: 0 5px 15px rgba(0,0,0,.5); }
 
 .pika-label {
     overflow: visible;
