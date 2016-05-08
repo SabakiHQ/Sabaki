@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix console coordinates not being styled correctly
+
 ## [Sabaki v0.13.0][v0.13.0] (2016-05-08)
 
 **Added**
