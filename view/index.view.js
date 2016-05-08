@@ -368,11 +368,9 @@ function getGuessMode() {
 function setGuessMode(guessMode) {
     if (guessMode) {
         closeDrawers()
-        document.body.addClass('guess').store('guess_shownextmoves', getShowNextMoves())
-        $('goban').removeClass('variations')
+        document.body.addClass('guess')
     } else {
         document.body.removeClass('guess')
-        setShowNextMoves(document.body.retrieve('guess_shownextmoves') || getShowNextMoves())
         setCurrentTreePosition.apply(null, getCurrentTreePosition())
     }
 }
