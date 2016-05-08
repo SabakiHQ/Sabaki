@@ -1,14 +1,4 @@
-(;FF[4]
-GM[1]
-PC[OGS: http://online-go.com/game/review/114161]
-BR[8d]
-WR[8d]
-CP[online-go.com]
-RE[?]
-SZ[19]
-KM[7.5]
-RU[chinese]
-
+(;FF[4]GM[1]PC[OGS: http://online-go.com/game/review/114161]BR[8d]WR[8d]CP[online-go.com]RE[?]SZ[19]KM[7.5]RU[chinese]AP[Sabaki:0.12.4]
 ;B[qd]
 ;W[dd]
 ;B[pq]C[
@@ -18,7 +8,6 @@ akoveable: oups
 akoveable: sorry
 
 ]
-
 ;W[dp]
 ;B[fc]C[
 
@@ -29,7 +18,6 @@ Fairgo: Hey, welcome to the relay! :)
 NomGhost: c14 has been played
 
 ]
-
 ;W[cf]C[
 
 -- chat --
@@ -39,7 +27,6 @@ hajoucha: hi, thanks for the relay, here the yt live stream lags horibly
 thouis: I doubt that will work.
 
 ]
-
 ;B[ql]C[
 
 -- chat --
@@ -54,7 +41,6 @@ Kid Icarus: well, i mean based on its training games, it has patterns in the pro
 Fairgo: Time settings are 2 hours main time with 3 x 1 min byomi
 
 ]
-
 ;W[od]C[
 
 -- chat --
@@ -66,7 +52,6 @@ Pempu: where is this demo relayed from? They are several moves deeped in to the 
 thouis: Fairgo is relaying it, I believe, from youtube.
 
 ]
-
 ;B[ld]
 ;W[qc]
 ;B[rc]C[
@@ -78,7 +63,6 @@ Sidaroth: I see two more moves on the YT stream, but it is lagging a bit
 AerialSnack: Muahaha, I'm able to guess some moves
 
 ]
-
 ;W[pc]
 ;B[re]C[
 
@@ -90,7 +74,6 @@ thouis: it's played past lives of itself, too.
 donjuan100: lolz^
 
 ]
-
 ;W[of]
 ;B[pg]
 ;W[og]
@@ -102,7 +85,6 @@ thouis: AerialSnack: what do you mean?
 thouis: you can click to make your own variations (and share them using the share box, above)
 
 ]
-
 (;W[id]C[
 
 -- chat --
@@ -121,7 +103,6 @@ Kid Icarus: seems like from google's perspective they'd want a commentator that 
 pagia: I think black get a slightly behind now
 
 ]
-
 ;B[lf]C[
 
 -- chat --
@@ -130,7 +111,6 @@ Sidaroth: I don't think he really understands the monte carlo method either
 AerialSnack: I feel like this would be better without the commentators... 
 
 ]
-
 ;W[oh]C[
 
 -- chat --
@@ -139,7 +119,6 @@ thouis: I can read the paper for commentary
 pperez333: they coulde have had a Google guy for the technical comments...
 
 ]
-
 (;B[pi]C[
 
 -- chat --
@@ -149,14 +128,12 @@ apetresc: 9-dan pro
 oshn: I'd liked it more with Japanese commentators
 
 ]
-
 ;W[lh]C[
 
 -- chat --
 Kid Icarus: its in korea tho
 
 ]
-
 (;B[kh]C[
 
 -- chat --
@@ -166,7 +143,6 @@ HowToPlay?: it was already said in chat
 Kid Icarus: its streaming on youtube
 
 ]
-
 ;W[ke]C[
 
 -- chat --
@@ -184,7 +160,6 @@ chopper: yeah, if it's random using a computer ... AG could have manipulated the
 tinuviel: isn't that why they're playing 5 games?
 
 ]
-
 ;B[le]C[
 
 -- chat --
@@ -196,15 +171,7 @@ YSR43: not best of 5 all 5 games
 Fairgo: Right, my mistake
 
 ]
-
-(;W[ge]C[
-
--- chat --
-AerialSnack: That was a lot of time for what seemed like an obvious move
-
-]
-
-)(;W[lg]C[
+(;W[lg]C[
 
 -- chat --
 Zal: Got to make sure
@@ -217,7 +184,6 @@ arczyx: yeah
 arczyx: if black get split here it'll be hard
 
 ]
-
 ;B[kg]C[
 
 -- chat --
@@ -225,29 +191,19 @@ chopper: I wonder how likely this type of game is to make a player more nervous 
 Pedro Páramo: Things turned into a fist fight faster than I expected
 
 ]
-
 ;W[kf]C[
 
 -- chat --
 AerialSnack: L14 nextx
 
 ]
-
-(;B[jf]C[
-
--- chat --
-AerialSnack: M13 was a really good move
-
-]
-
-)(;B[ne]C[
+(;B[ne]C[
 
 -- chat --
 chopper: "If I get defeated it might be negative for go, but it is inevitable in this modern life. But it won't destroy the value of go itself" -Lee
 chopper: i guess he answered already
 
 ]
-
 ;W[oe]C[
 
 -- chat --
@@ -255,7 +211,6 @@ Pempu: This game might become a masterpiece
 HowToPlay?: The divine move might be found within these 5 games 
 
 ]
-
 ;B[jc]
 ;W[ic]C[
 
@@ -271,15 +226,7 @@ thouis: I wonder what the next "milestone" is.
 Pempu: JiuJitsu
 
 ]
-
-(;B[nc]C[
-
--- chat --
-AerialSnack: Is there a different stream with different commentary?
-
-]
-
-)(;B[jd]C[
+(;B[jd]C[
 
 -- chat --
 thouis: Pempu: driving in boston traffic
@@ -289,7 +236,6 @@ Pedro Páramo: Guess you are right, thouis.
 AerialSnack: I'd say relatively unimpotant Bronze\\
 
 ]
-
 ;W[ie]C[
 
 -- chat --
@@ -309,7 +255,6 @@ AlmostMatt: When does the AGA channel intend to begin?
 Ludens: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 
 
 ]
-
 ;B[je]C[
 
 -- chat --
@@ -317,10 +262,8 @@ AerialSnack: In about 15 minutes
 AerialSnack: K15 seems like a strange move. I mean, it's what I would play, but that only adds to the confusion xD
 
 ]
-
 ;W[jf]
-(;B[hf]
-)(;B[if]C[
+(;B[if]C[
 
 -- chat --
 Tarqeq: it threatens the J16 group
@@ -331,7 +274,6 @@ chopper:  "How did you know? Oh Yeah! You're a top professional" -- my favorite 
 Tarqeq: it's kind of interesting
 
 ]
-
 ;W[jg]C[
 
 -- chat --
@@ -355,16 +297,7 @@ Kid Icarus: called that one
 Kid Icarus: in my mind
 
 ]
-
-(;B[ki]C[
-
--- chat --
-AerialSnack: This fight is pretty straightforward
-AerialSnack: I think this fight was pretty bad for lee, both his stones that are separated are in danger
-
-]
-
-)(;B[li]
+(;B[li]
 ;W[mi]
 ;B[hf]C[
 
@@ -380,16 +313,7 @@ Kid Icarus: he is john connor
 dneg: yeah and? lol
 
 ]
-
-(;W[ki]C[
-
--- chat --
-AerialSnack: L11?
-AerialSnack: L11 kills the group, does it not?
-
-]
-
-)(;W[ih]C[
+(;W[ih]C[
 
 -- chat --
 tesujikid1: lee can tka ethe four stones above
@@ -401,7 +325,6 @@ arczyx: i think
 tesujikid1: this looks like a good result for lee
 
 ]
-
 ;B[mb]C[
 
 -- chat --
@@ -409,7 +332,6 @@ Bronze: don't think l11 is a good move
 mattsan: Didn't really expect that.
 
 ]
-
 ;W[gd]C[
 
 -- chat --
@@ -431,14 +353,12 @@ Zal: That too
 thouis: yuri: left side bigger?
 
 ]
-
 ;B[ki]C[
 
 -- chat --
 thouis: and if they try to run, attack for profit?
 
 ]
-
 ;W[mj]C[
 
 -- chat --
@@ -450,7 +370,6 @@ AerialSnack: Because the shape is stronger
 thouis: how settled is white upper right?  
 
 ]
-
 ;B[kk]C[
 
 -- chat --
@@ -470,14 +389,12 @@ darkplayah: white is going for everything?!?!
 thouis: white going for whatever makes it win :)
 
 ]
-
 (;W[ib]C[
 
 -- chat --
 AerialSnack: Bronze, no
 
 ]
-
 ;B[ob]C[
 
 -- chat --
@@ -486,7 +403,6 @@ arczyx: before white 1 space jump
 Pempu: uh oh! killing move!
 
 ]
-
 ;W[ml]C[
 
 -- chat --
@@ -495,7 +411,6 @@ darkplayah: is this guy really 3d or he is just "playing dumb"?
 darkplayah: so can white get it?
 
 ]
-
 ;B[lm]C[
 
 -- chat --
@@ -510,7 +425,6 @@ itz.ye11ow: Kappa Kappa TAIWAN #1 Kappa Kappa
 itz.ye11ow: oh, sorry, wrong chat.
 
 ]
-
 ;W[nc]
 ;B[nb]
 ;W[kb]C[
@@ -522,7 +436,6 @@ tankbard: PJSalt
 YSR43: BIblethump
 
 ]
-
 ;B[lc]C[
 
 -- chat --
@@ -538,14 +451,12 @@ tankbard: Yeah I don't know about that black group
 dneg: man o man
 
 ]
-
 ;W[mm]C[
 
 -- chat --
 AerialSnack: black is looking dead
 
 ]
-
 ;B[ln]C[
 
 -- chat --
@@ -579,7 +490,6 @@ pperez333: https://www.youtube.com/watch?v=YZPKR7HzM_s
 MasterMind2349: Hi
 
 ]
-
 (;W[kl]C[
 
 -- chat --
@@ -591,7 +501,6 @@ tinuviel: he looks focused, trohde
 pagia: wrong ,L8 is sharp!
 
 ]
-
 ;B[ll]C[
 
 -- chat --
@@ -606,7 +515,6 @@ thouis: makign things for us.
 thouis: damn machines.
 
 ]
-
 ;W[lk]
 (;B[jj]C[
 
@@ -622,22 +530,13 @@ CylonBunny: Connects and is threaten ing WS group
 AerialSnack: Why not capture L8 instead?
 
 ]
-
 ;W[jl]C[
 
 -- chat --
 Bronze: pandanet or something
 
 ]
-
-(;AB[hh]C[
-
--- chat --
-lucius286: in danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H12 
-
-]
-
-)(;B[hj]C[
+(;B[hj]C[
 
 -- chat --
 chopper: lol, redmond just got corrected
@@ -649,7 +548,6 @@ AerialSnack: bahaha
 AerialSnack: Ugh, I need to sleep. I wish I lived in korea
 
 ]
-
 ;W[hi]C[
 
 -- chat --
@@ -665,7 +563,6 @@ Fairgo: 11:15 here too
 Toreg: 4;14pm
 
 ]
-
 ;B[gj]C[
 
 -- chat --
@@ -674,7 +571,6 @@ DemDandelions: 6am x_x
 Sommelier: Sedol pulled back
 
 ]
-
 ;W[gf]C[
 
 -- chat --
@@ -688,7 +584,6 @@ AerialSnack: Nah, Lee isn't doing anything in the upper left corner I thin
 tankbard: Missing J11?
 
 ]
-
 ;B[ii]C[
 
 -- chat --
@@ -696,7 +591,6 @@ philippe.beaudoin: The commentary is solid, the production needs work. :)
 AerialSnack: ^^
 
 ]
-
 ;W[jh]
 ;B[ij]C[
 
@@ -705,7 +599,6 @@ tankbard: W K12, B J10
 Giuseppe Bonello: white's weak!
 
 ]
-
 ;W[mn]C[
 
 -- chat --
@@ -730,7 +623,6 @@ Zal: Now my games consist of," yeah you can have that, I dont want to fight you"
 darkplayah: ah cool
 
 ]
-
 ;B[lo]
 ;W[mo]
 ;B[lp]C[
@@ -751,7 +643,6 @@ mark5000: Crazy Stone thinks white is winning by 18 points
 Opodeldoc: B+R
 
 ]
-
 ;W[mp]C[
 
 -- chat --
@@ -770,7 +661,6 @@ shanta: imo
 shanta: lee sedol was on the defensive
 
 ]
-
 ;B[lq]C[
 
 -- chat --
@@ -779,14 +669,12 @@ Bronze: this seems very agressive
 llirret: wow
 
 ]
-
 ;W[mq]C[
 
 -- chat --
 thouis: wow.
 
 ]
-
 ;B[im]C[
 
 -- chat --
@@ -833,7 +721,6 @@ YSR43: yea gotta use that computer psychology
 CylonBunny: I wonder how AlphaGo decides how long to think about each move. This one is taking a lot longer than the last few
 
 ]
-
 ;W[qo]C[
 
 -- chat --
@@ -859,7 +746,6 @@ gamesorry: Ke Jie is here: http://sports.letv.com/match/122341003.html#live/1020
 pagia: ^^
 
 ]
-
 (;B[fq]C[
 
 -- chat --
@@ -885,7 +771,6 @@ tankbard: If white got that point after the fight in the lower right it'd look p
 AerialSnack: Not necessarily DrSFBrains40, because white can kill Q3
 
 ]
-
 ;W[gg]C[
 
 -- chat --
@@ -927,7 +812,6 @@ yuri: that just sucked
 chauncey: fighting tenuki with tenuki
 
 ]
-
 ;B[cn]C[
 
 -- chat --
@@ -955,7 +839,6 @@ thouis: heh.
 AerialSnack: I don't think AG operator's actually knows how to play that well?
 
 ]
-
 ;W[dn]C[
 
 -- chat --
@@ -964,7 +847,6 @@ yuri: but in gote...now?
 luckymedie: The program got over trained and has become broken
 
 ]
-
 ;B[dm]C[
 
 -- chat --
@@ -986,7 +868,6 @@ acTane: lololol
 AerialSnack: sure thois, but I mean, white gave up so much in the bottom left
 
 ]
-
 ;W[fp]C[
 
 -- chat --
@@ -1004,7 +885,6 @@ madswirljh: w gets a corner I guess
 aik: did G13 protect against C17?
 
 ]
-
 ;B[gp]C[
 
 -- chat --
@@ -1030,7 +910,6 @@ DemDandelions: i guess they could have some kind of go expert that could press t
 YSR43: @bronze, it doesn't seem like white could secure more than black at the moment
 
 ]
-
 ;W[gq]C[
 
 -- chat --
@@ -1081,21 +960,7 @@ Ketchup4: glad it is only 4pm in my place
 trohde: what shall I say … 06:48 am in Germany …
 
 ]
-
-(;B[cc]
-;W[dc]
-;B[cd]
-;W[ce]
-;B[db]C[
-
--- chat --
-AerialSnack: I don't think I've ever met a girl that was this aggressive
-AerialSnack: I wonder how much this will change how we play?
-AerialSnack: Yeah, I should be off too, ciao
-
-]
-
-)(;B[fr]C[
+(;B[fr]C[
 
 -- chat --
 Roybie: almost 6pm here, still a couple of hours before I need to go to work woot
@@ -1108,7 +973,6 @@ thouis: damn those koreans with their GMT+9 bullshit
 thouis: I bet they did that on purpose.
 
 ]
-
 ;W[co]
 ;B[en]C[
 
@@ -1126,14 +990,12 @@ Pempu: They don't even play on prime time in Korea.
 lemmata: Long time ^^
 
 ]
-
 ;W[do]C[
 
 -- chat --
 YSR43: they play after breakfast :)
 
 ]
-
 ;B[ep]C[
 
 -- chat --
@@ -1141,7 +1003,6 @@ yuri: oh, snap
 Bronze: as someone who sucks at this game that looked like a good move
 
 ]
-
 ;W[cm]
 ;B[dl]C[
 
@@ -1155,7 +1016,6 @@ lemmata: B70+ W50- according to WBaduk commentary
 lemmata: not sure about the language (it doesn't sound like an exact count)
 
 ]
-
 ;W[lr]
 ;B[kr]C[
 
@@ -1172,7 +1032,6 @@ kamoro: The original stream was talking about how important sente is. But isn't 
 Adarain: doesn't alphago have a problem with sente anyway?
 
 ]
-
 ;W[rb]
 ;B[jb]C[
 
@@ -1182,7 +1041,6 @@ yuri: isn't k18 yose....isn't that an insult?
 Bronze: what is yose?
 
 ]
-
 ;W[ja]C[
 
 -- chat --
@@ -1195,7 +1053,6 @@ yuri: but i already watched redmond read it out :)
 Traveller: Almost not thinking time for that play in response to S18
 
 ]
-
 ;B[mf]C[
 
 -- chat --
@@ -1207,7 +1064,6 @@ quuxman: breaking up the top group from the corner forces him to connect to the 
 DemDandelions: "yeah.... i'll do that"
 
 ]
-
 ;W[mh]
 ;B[nd]C[
 
@@ -1215,7 +1071,6 @@ DemDandelions: "yeah.... i'll do that"
 quuxman: yep, playing out exactly as the commenter predicted
 
 ]
-
 ;W[qj]C[
 
 -- chat --
@@ -1299,30 +1154,12 @@ jelser: Sedol said: "Alphago made a winning move that humans cannot make" was he
 Desolation: imagime that Alphago masters the divine move
 
 ]
-
-(;B[ri]
-;W[qk]C[
-
--- chat --
-pagia: A. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 S11 R9 
-
-]
-
-)(;B[pk]
-;W[qf]C[
-
--- chat --
-pagia: B. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q9 R14 
-
-]
-
-)(;B[pj]C[
+(;B[pj]C[
 
 -- chat --
 Luqman: Hmm quite a bit of time
 
 ]
-
 ;W[qk]C[
 
 -- chat --
@@ -1330,7 +1167,6 @@ Traveller: Quick response from AG
 Bronze: damn i'm going to be tired at work tomorrow
 
 ]
-
 ;B[pl]C[
 
 -- chat --
@@ -1344,7 +1180,6 @@ bibadum: 13pm in Thailand no worry about working tomorrow neither :-)
 tankbard: >:(
 
 ]
-
 ;W[pk]
 ;B[ok]C[
 
@@ -1360,7 +1195,6 @@ Bronze: can't white cut r8 off easily?
 tankbard: I don't think this position is that trivially in his favor, but I guess I wouldn't know
 
 ]
-
 ;W[rh]C[
 
 -- chat --
@@ -1394,7 +1228,6 @@ Zal: I left like 40 min ago and nothing has changed
 darkplayah: myungwan kim says its close but B might be able to kill white attack
 
 ]
-
 ;B[rl]C[
 
 -- chat --
@@ -1404,7 +1237,6 @@ calantir: Redmond is saying black could give up S17 stones
 calantir: to make Q3 stronger
 
 ]
-
 ;W[qf]C[
 
 -- chat --
@@ -1412,7 +1244,6 @@ kamoro: @pagia but then after that, B has sente to live at C17?
 Roybie: seems likely after that move
 
 ]
-
 ;B[ri]C[
 
 -- chat --
@@ -1420,14 +1251,12 @@ Roybie: @calantir
 Aiko Akemi: anyone has the link to korean stream please..?
 
 ]
-
 ;W[rf]C[
 
 -- chat --
 yuri: sente seems big now
 
 ]
-
 ;B[pf]
 ;W[qe]C[
 
@@ -1436,7 +1265,6 @@ pagia: yes,who get the sent will get lower right conner
 StaIkerSan: Myung Kim say w might win whaaaaaat
 
 ]
-
 ;B[qh]C[
 
 -- chat --
@@ -1459,7 +1287,6 @@ zemotion: cool
 pagia: alphago play at C17!!!!
 
 ]
-
 ;W[cc]
 ;B[bn]
 ;W[bm]
@@ -1472,14 +1299,12 @@ gor: lower right looks huge
 pagia: Now black is in danger...
 
 ]
-
 ;W[bo]C[
 
 -- chat --
 Traveller: Even I saw that sequence
 
 ]
-
 ;B[rg]C[
 
 -- chat --
@@ -1496,7 +1321,6 @@ gor: well,lee might still crush it in yose
 gor: too early to judge
 
 ]
-
 ;W[mr]C[
 
 -- chat --
@@ -1518,7 +1342,6 @@ Zal: Comedy gold
 Roybie: go lee, fight
 
 ]
-
 ;B[po]C[
 
 -- chat --
@@ -1531,7 +1354,6 @@ tankbard: Presumably its valuation function is based on that
 pagia: oh thanks
 
 ]
-
 ;W[jr]C[
 
 -- chat --
@@ -1541,7 +1363,6 @@ mark5000: well
 yuri: umm
 
 ]
-
 (;B[kq]C[
 
 -- chat --
@@ -1554,11 +1375,9 @@ yuri: stopped listening
 zemotion: i want lee to win too :( 
 Roybie: lee, shirked away from a fight...
 yuri: oh, 1 stone too short
-dneg: TEAM LSD \\o/ /o/ \o\
-dneg: wew
+dneg: TEAM LSD \\o/ /o/ odneg: wew
 
 ]
-
 ;W[pn]
 ;B[oo]C[
 
@@ -1569,7 +1388,6 @@ darkplayah: Maybe, but I'm sure Google has thrown a colossal, astonishing amount
 darkplayah: it seems like it scaled Elo logarithmically or something with number of GPUs, but 100x as many GPUs would still make a huge impact
 
 ]
-
 ;W[qp]C[
 
 -- chat --
@@ -1577,7 +1395,6 @@ yuri: whoops
 yuri: think they would know better
 
 ]
-
 ;B[on]C[
 
 -- chat --
@@ -1586,7 +1403,6 @@ tankbard: Well, I'm sure he's lost a few just dropping them too :P
 gor: at this rate the dragon will die
 
 ]
-
 ;W[pp]C[
 
 -- chat --
@@ -1597,7 +1413,6 @@ calantir: could white's dragon die?
 calantir: that would be insane
 
 ]
-
 ;B[op]C[
 
 -- chat --
@@ -1611,7 +1426,6 @@ gor: and after o9 its hard for white to build center eye
 gor: of course black needs to play q15 first
 
 ]
-
 ;W[qq]C[
 
 -- chat --
@@ -1623,7 +1437,6 @@ Pempu: theemathas: not big enough (yet)
 DrSFBrains40: Is T14 not big enough yet?
 
 ]
-
 (;B[or]C[
 
 -- chat --
@@ -1641,7 +1454,6 @@ Fairgo: I love these kind of games
 MasterMind2349: Hello
 
 ]
-
 ;W[pr]
 ;B[oq]C[
 
@@ -1651,7 +1463,6 @@ Zal: Fighting ones
 Fairgo: ^
 
 ]
-
 ;W[pd]C[
 
 -- chat --
@@ -1659,7 +1470,6 @@ Zal: Viewers actually almost at 90k
 Zal: I thought It'd decline
 
 ]
-
 ;B[qr]C[
 
 -- chat --
@@ -1677,7 +1487,6 @@ Opodeldoc: AG is considering resign.
 StaIkerSan: first capture lél
 
 ]
-
 ;W[rr]
 ;B[ps]C[
 
@@ -1686,7 +1495,6 @@ yuri: oh, thats over
 darkhh: first blood
 
 ]
-
 ;W[rs]C[
 
 -- chat --
@@ -1696,7 +1504,6 @@ yuri: fast play by LSD
 pagia: if white keep sente,probably win at least 10.5point
 
 ]
-
 ;B[rn]C[
 
 -- chat --
@@ -1710,14 +1517,12 @@ cdybeijing: still playing?
 yuri: w dead LR thought, right?
 
 ]
-
 ;W[ro]C[
 
 -- chat --
 yuri: no, sorry, not
 
 ]
-
 ;B[qn]C[
 
 -- chat --
@@ -1729,7 +1534,6 @@ yuri: worried l1
 Roybie: yeah seems big for either
 
 ]
-
 (;W[so]
 ;B[cl]C[
 
@@ -1755,14 +1559,12 @@ Zal: whoop
 Zal: 412 people here? Why is it that the closer the game is to ending the more people come
 
 ]
-
 (;W[an]C[
 
 -- chat --
 CuTy: L1 and C12 which one bigger?
 
 ]
-
 ;B[ks]C[
 
 -- chat --
@@ -1772,7 +1574,6 @@ mark5000: Surprising
 tankbard: Still haven't fixed K18/K19 lol
 
 ]
-
 ;W[om]
 ;B[ol]C[
 
@@ -1784,7 +1585,6 @@ tankbard: Well, AG probably has some search depth tuning based on remaining time
 Roybie: yeah no doubt
 
 ]
-
 ;W[ci]C[
 
 -- chat --
@@ -1798,7 +1598,6 @@ tinuviel: watching this relay
 mark5000: I was looking at c3. Mike was looking at only D2 for some reason
 
 ]
-
 ;B[hh]C[
 
 -- chat --
@@ -1828,7 +1627,6 @@ DennisNg: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 
 DennisNg: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 
 
 ]
-
 ;W[hg]
 ;B[dr]C[
 
@@ -1838,7 +1636,6 @@ Fumbar: man, what a game
 Fumbar: i'm very excited
 
 ]
-
 ;W[dj]
 ;B[bq]C[
 
@@ -1849,7 +1646,6 @@ bmc: exponential is not the right word :)
 dingrite1: mistake, the closer to the endgame this gets the better AG can execute its MCTS
 
 ]
-
 ;W[cq]C[
 
 -- chat --
@@ -1859,7 +1655,6 @@ Kabootle: he resigned
 Kabootle: this was awesome, time to go to work :(
 
 ]
-
 ;B[cr]C[
 
 -- chat --
@@ -1869,23 +1664,8 @@ nogtv: mcts?
 quuxman: I expected Lee to play in the left middle before the bottom left corner
 
 ]
-
 ;W[bp]
-(;B[oc]
-;W[eo]
-;B[fo]
-;W[fk]C[
-
--- chat --
-Manslay: sure win. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 P17 E5 F5 F9 
-generalbaguette: Around 50 GPUs for playin, I think.
-generalbaguette: And around 25 thousand GPUs for training.
-generalbaguette: It's more complicated than minimax.
-generalbaguette: They explain it in the paper.
-
-]
-
-)(;B[dq]C[
+(;B[dq]C[
 
 -- chat --
 dingrite1: monte carlo tree search
@@ -1895,7 +1675,6 @@ Traveller: yep
 bibadum: how many cpus and storage does it use ?
 
 ]
-
 ;W[br]
 ;B[cp]C[
 
@@ -1909,28 +1688,13 @@ trohde: 412
 Andrei44: a3 c3 a4
 
 ]
-
-(;W[aq]
-;B[cq]
-;W[ap]C[
-
--- chat --
-theemathas: white ends up getting an eye at A5
-theemathas: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
-theemathas: no ko
-theemathas: here. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
-peco: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
-
-]
-
-)(;W[ap]C[
+(;W[ap]C[
 
 -- chat --
 Tarot: a4 was all about making life. I probably would've hastily played a3.
 Tarot: Or, actually perhaps would've played e5 and either gotten into trouble or exterminated d7 group.
 
 ]
-
 ;B[ek]C[
 
 -- chat --
@@ -1948,7 +1712,6 @@ CarlPatenaudePoulin: hi folks
 nogtv: ogs ftw
 
 ]
-
 ;W[fi]
 ;B[bj]C[
 
@@ -1962,14 +1725,12 @@ Traveller: White is ahead
 juliancamilo.osorio: Lol Carl
 
 ]
-
 ;W[bi]C[
 
 -- chat --
 juliancamilo.osorio: Weird to see you in here
 
 ]
-
 ;B[pb]C[
 
 -- chat --
@@ -1978,7 +1739,6 @@ juliancamilo.osorio: man, we have class early tomorrow
 CarlPatenaudePoulin: ;___; don't tell Jaksic I'm doing this instead of studying for his midterm
 
 ]
-
 ;W[qb]
 ;B[sf]C[
 
@@ -1987,7 +1747,6 @@ dingrite1: when you think about it, they train AG in generations. white was like
 gor: usually mere humans can count as well
 
 ]
-
 ;W[rd]
 ;B[ai]C[
 
@@ -1999,7 +1758,6 @@ juliancamilo.osorio: (Not really. going to sleep immediately)
 pagia: white still get 10.5-9.5point ahead
 
 ]
-
 ;W[ah]
 ;B[aj]C[
 
@@ -2008,7 +1766,6 @@ zomega: The output of the minimax'd heurisitic net on current board position.
 Manslay: there's no minimax
 
 ]
-
 ;W[bh]
 ;B[gi]C[
 
@@ -2019,7 +1776,6 @@ zomega: I'm aware.
 dingrite1: it has 2 neural nets, one for cutting down the search space by suggesting likely moves and another for scoring the board. then its just a clever application of MC tree search.
 
 ]
-
 ;W[fj]
 ;B[fk]C[
 
@@ -2030,7 +1786,6 @@ dingrite1: the board score net could be said to be a heuristic by some stretch o
 chauncey: my guess is they've added something new more than just extra training
 
 ]
-
 ;W[oc]
 ;B[mc]C[
 
@@ -2041,14 +1796,12 @@ dingrite1: they are clever, they just throw out the old games and use the millio
 chauncey: something novel that wasn't in the paper
 
 ]
-
 ;W[nm]C[
 
 -- chat --
 chauncey: I'm an AI researcher so I doubt that extra training can scale like alphago has
 
 ]
-
 (;B[pm]
 ;W[cj]
 ;B[al]C[
@@ -2058,7 +1811,6 @@ dingrite1: the quality of the generated games due to self play grow sin quality.
 chauncey: you usually get diminishing returns and they clearly aren't getting that
 
 ]
-
 ;W[aq]C[
 
 -- chat --
@@ -2067,14 +1819,12 @@ generalbaguette: Self-play has been known since TD-Gammon in the early 90s.
 Seb32: ^
 
 ]
-
 ;B[gh]C[
 
 -- chat --
 chauncey: more training doesnt lead to improvement after a while
 
 ]
-
 ;W[fh]C[
 
 -- chat --
@@ -2185,7 +1935,6 @@ drmfslxd0: 4：1 Mr Lee win finally
 ClarkLee: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A4 E9 F11 B10 B11 Q18 R18 T14 S16 A11 A12 A10 B12 G11 F10 F9 P17 N17 O7 Q7 C10 A8 A3 G12 F12 
 
 ]
-
 )(;B[jn]C[
 
 -- chat --
@@ -2193,8 +1942,32 @@ MasterMind2349: I read the manga hey wanna play a game
 MasterMind2349: ok^_^
 
 ]
+))(;W[aq]
+;B[cq]
+;W[ap]C[
 
-))))(;W[ks]
+-- chat --
+theemathas: white ends up getting an eye at A5
+theemathas: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+theemathas: no ko
+theemathas: here. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+peco: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 D3 B2 C4 A3 C3 A4 
+
+]
+))(;B[oc]
+;W[eo]
+;B[fo]
+;W[fk]C[
+
+-- chat --
+Manslay: sure win. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 A6 L1 P7 P8 C11 H12 H13 D2 D10 B3 C3 C2 B4 P17 E5 F5 F9 
+generalbaguette: Around 50 GPUs for playin, I think.
+generalbaguette: And around 25 thousand GPUs for training.
+generalbaguette: It's more complicated than minimax.
+generalbaguette: They explain it in the paper.
+
+]
+))(;W[ks]
 (;B[jq]
 ;W[ir]
 ;B[iq]
@@ -2206,7 +1979,6 @@ MasterMind2349: ok^_^
 Tarot: l1 better than the take at a6?. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T5 C8 L1 K3 J2 J3 H3 H4 G1 
 
 ]
-
 )(;B[iq]
 ;W[jq]
 ;B[jp]
@@ -2229,7 +2001,6 @@ Tarot: >^oo^<
 Tarot: This was a fascinating game to observe.
 
 ]
-
 )(;W[hn]
 ;B[gn]
 ;W[hm]
@@ -2243,21 +2014,18 @@ Tarot: I predicted AlphaGo 4-1 over Sedol. Now, due to AlphaGo learning from Sed
 Tarot: AlphaGo: 5-0
 
 ]
-
 ))))(;W[sr]C[
 
 -- chat --
 Andrei44: t4 kills?
 
 ]
-
 )(;AB[sp]C[
 
 -- chat --
 theemathas: lol....
 
 ]
-
 ;W[so]
 ;B[rq]C[
 
@@ -2265,7 +2033,6 @@ theemathas: lol....
 gamesorry: t4 kill without t5. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 P2 Q2 P3 Q16 R2 S2 Q1 S1 S6 S5 R6 T4 T5 S3 
 
 ]
-
 ))(;B[pr]
 ;W[qr]C[
 
@@ -2273,7 +2040,6 @@ gamesorry: t4 kill without t5. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17
 Pempu: Now black would need to defend against A. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L3 Q6 P5 R4 P6 Q4 P4 R3 Q2 R2 
 
 ]
-
 ))(;B[ks]
 ;W[kq]
 ;B[jq]
@@ -2283,7 +2049,6 @@ Pempu: Now black would need to defend against A. From move 0: R16 D16 Q3 D4 F17 
 mark5000: danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L1 L3 K3 L4 
 
 ]
-
 ;B[jp]
 ;W[ko]
 ;B[kn]
@@ -2299,8 +2064,33 @@ mark5000: danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 
 gamesorry: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q10 R9 Q8 Q9 P9 S12 S8 R14 S11 S14 Q14 R15 R12 C17 B6 B7 B8 B5 S13 N2 Q5 K2 L1 L3 K3 L4 K4 L5 L6 K5 K6 J5 J2 H4 G5 H2 
 
 ]
+))(;B[ri]
+;W[qk]C[
 
-))))(;B[dc]
+-- chat --
+pagia: A. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 S11 R9 
+
+]
+)(;B[pk]
+;W[qf]C[
+
+-- chat --
+pagia: B. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 F3 G13 C6 D6 D7 F4 G4 G3 F2 C5 E6 D5 E4 C7 D8 M2 L2 S18 K18 K19 N14 N12 O16 R10 Q9 R14 
+
+]
+))(;B[cc]
+;W[dc]
+;B[cd]
+;W[ce]
+;B[db]C[
+
+-- chat --
+AerialSnack: I don't think I've ever met a girl that was this aggressive
+AerialSnack: I wonder how much this will change how we play?
+AerialSnack: Yeah, I should be off too, ciao
+
+]
+))(;B[dc]
 ;W[cc]
 ;B[ed]
 ;W[db]
@@ -2312,15 +2102,19 @@ gamesorry: d2. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14
 gamesorry: d1. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H10 H11 G10 G14 J11 K12 J10 N6 M5 N5 M4 N4 M3 N3 J7 R5 D17 C17 E16 D18 H13 H12 G13 
 
 ]
-
 )(;B[hg]C[
 
 -- chat --
 geotheory: 79: H13 I think would've been my strategy
 
 ]
+))(;AB[hh]C[
 
-)))(;B[jl]
+-- chat --
+lucius286: in danger. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K10 K8 H12 
+
+]
+))(;B[jl]
 ;W[kj]
 (;B[jk]
 ;W[jj]C[
@@ -2330,7 +2124,6 @@ vpfli: if b captures l8, w gets the four center stones
 thouis: because this, I think. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 L8 M8 M9 K8 L10 K9 K10 
 
 ]
-
 )(;B[jj]
 ;W[lj]C[
 
@@ -2339,7 +2132,6 @@ Zal: Because then he captures the group
 Zal: Who cares about that one stone 
 
 ]
-
 )))(;W[pb]
 ;B[mf]
 ;W[mh]
@@ -2353,7 +2145,6 @@ Zal: Who cares about that one stone
 gamesorry: Black can live. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 J16 M14 P12 Q11 M12 L12 L15 M15 M13 L13 L14 O15 P15 K17 J17 K16 J15 K15 K14 J14 K13 M11 N11 H14 J12 N18 G16 L11 N10 L9 J18 P18 N8 M7 O17 O18 L18 M17 N7 M6 Q18 N14 N12 O16 P17 K18 K19 M19 
 
 ]
-
 ))(;W[ml]C[
 
 -- chat --
@@ -2365,7 +2156,6 @@ trohde: @Fairgo, you missed W J18, B P18
 arczyx: yeah
 
 ]
-
 ;B[lm]C[
 
 -- chat --
@@ -2373,11 +2163,43 @@ CylonBunny: W seems much more aggressive than AlphaGo version how played Fan Hui
 Bronze: maybe alphago tends to accept offered fights
 thouis: what move number was J18?
 Bronze: but doesn't start fights 
-darkplayah: \[1:58\] trohde \[9k\]: @Fairgo, you missed W J18, B P18 -- fix please?
+darkplayah: [1:58\] trohde [9k\]: @Fairgo, you missed W J18, B P18 -- fix please?
 
 ]
+))(;W[ki]C[
 
-))))))))(;B[ie]C[
+-- chat --
+AerialSnack: L11?
+AerialSnack: L11 kills the group, does it not?
+
+]
+))(;B[ki]C[
+
+-- chat --
+AerialSnack: This fight is pretty straightforward
+AerialSnack: I think this fight was pretty bad for lee, both his stones that are separated are in danger
+
+]
+))(;B[hf]
+))(;B[nc]C[
+
+-- chat --
+AerialSnack: Is there a different stream with different commentary?
+
+]
+))(;B[jf]C[
+
+-- chat --
+AerialSnack: M13 was a really good move
+
+]
+))(;W[ge]C[
+
+-- chat --
+AerialSnack: That was a lot of time for what seemed like an obvious move
+
+]
+))(;B[ie]C[
 
 -- chat --
 HelioSeven: ever read or watched hikaru no go?
@@ -2386,14 +2208,12 @@ HelioSeven: both players very sloppy, honestly
 HelioSeven: sure
 
 ]
-
 ))(;B[oi]C[
 
 -- chat --
 pagia: P11 black get three line operation.......
 
 ]
-
 ))(;W[jd]
 ;B[jc]
 ;W[kc]
@@ -2403,5 +2223,5 @@ pagia: P11 black get three line operation.......
 Pempu: Like this test. From move 0: R16 D16 Q3 D4 F17 C14 R8 P16 M16 R17 S17 Q17 S15 P14 Q13 P13 Q12 K16 K17 L17 L16 
 
 ]
-
 ))
+

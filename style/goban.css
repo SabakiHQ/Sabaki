@@ -173,10 +173,10 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban.variations .row li.sign_0.ghost_-1 .stone::after,
     .goban .row li.sign_1.point .stone::after { background: white; }
 
-    .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
-    .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after,
-    .goban.variations .row li.sign_0.ghost_1 .stone::after,
-    .goban.variations .row li.sign_0.ghost_-1 .stone::after { display: block; }
+    body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
+    body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after,
+    body:not(.guess) .goban.variations .row li.sign_0.ghost_1 .stone::after,
+    body:not(.guess) .goban.variations .row li.sign_0.ghost_-1 .stone::after { display: block; }
 
     .goban .row li.sign_1.point .stone::after,
     .goban .row li.sign_-1.point .stone::after {

@@ -368,11 +368,9 @@ function getGuessMode() {
 function setGuessMode(guessMode) {
     if (guessMode) {
         closeDrawers()
-        document.body.addClass('guess').store('guess_shownextmoves', getShowNextMoves())
-        $('goban').removeClass('variations')
+        document.body.addClass('guess')
     } else {
         document.body.removeClass('guess')
-        setShowNextMoves(document.body.retrieve('guess_shownextmoves') || getShowNextMoves())
         setCurrentTreePosition.apply(null, getCurrentTreePosition())
     }
 }
@@ -1215,17 +1213,16 @@ function openEnginesMenu(element, callback) {
 function openNodeMenu(tree, index, event) {
     if (getScoringMode()) return
 
-    var template = [{
-        label: '&Remove',
-        click: function() { removeNode(tree, index) }
-    }]
-
-    if (gametree.onCurrentTrack(tree)) {
-        template.push({
+    var template = [
+        {
             label: 'Make &Main Variation',
-            click: function() { makeMainVariation() }
-        })
-    }
+            click: function() { makeMainVariation(tree, index) }
+        },
+        {
+            label: '&Remove',
+            click: function() { removeNode(tree, index) }
+        }
+    ]
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))

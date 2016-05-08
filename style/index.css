@@ -296,16 +296,6 @@ header, #edit, #scoring, #find, #guess {
         background: transparent;
 }
 
-.coord {
-        padding: 0 5px;
-        background: #101010;
-        color: white;
-        border-radius: 3px;
-    }
-    .coord:hover {
-        background: #0082F0;
-}
-
 #sidebar {
         display: none;
         position: absolute;

@@ -94,6 +94,14 @@ context.getSymmetries = function(tuple) {
     return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
 }
 
+context.normalizeEndings = function(input) {
+    return input.replace(/\r\n|\n\r|\r/g, '\n')
+}
+
+context.markdown = function(input) {
+    return marked(context.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
+}
+
 context.htmlify = function(input) {
     urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
     emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
@@ -115,14 +123,6 @@ context.htmlify = function(input) {
     return input
 }
 
-context.markdown = function(input) {
-    return marked(context.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
-}
-
-context.normalizeEndings = function(input) {
-    return input.replace(/\r\n|\n\r|\r/g, '\n')
-}
-
 context.wireLinks = function(container) {
     container.getElements('a').addEvent('click', function() {
         if (this.hasClass('external'))  {
@@ -134,7 +134,7 @@ context.wireLinks = function(container) {
             shell.openExternal(this.href)
         } else if (this.hasClass('movenumber')) {
             var movenumber = +this.get('text').slice(1)
-            setUndoable(true)
+            setUndoable(true, 'Go Back')
             goToMainVariation()
 
             var tp = gametree.navigate(getRootTree(), 0, movenumber)
@@ -148,7 +148,7 @@ context.wireLinks = function(container) {
         var v = getBoard().coord2vertex(this.get('text'))
         showIndicator(v)
     }).addEvent('mouseleave', function() {
-        hideIndicator()
+        if (!getFindMode()) hideIndicator()
     })
 }
 

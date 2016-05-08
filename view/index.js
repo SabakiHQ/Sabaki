@@ -310,11 +310,13 @@ function getEngineCommands() {
     return $('console').retrieve('commands')
 }
 
-function setUndoable(undoable) {
+function setUndoable(undoable, tooltip) {
     if (undoable) {
         var rootTree = gametree.clone(getRootTree())
         var position = gametree.getLevel.apply(null, getCurrentTreePosition())
+        if (!tooltip) tooltip = 'Undo'
 
+        $$('#bar header .undo').set('title', tooltip)
         document.body
             .addClass('undoable')
             .store('undodata-root', rootTree)
@@ -1598,7 +1600,7 @@ function centerGraphCameraAt(node) {
     var matrixdict = getGraphMatrixDict()
     var y = matrixdict[1][node.id][1]
 
-    var wp = gametree.getWidth(y, matrixdict[0])
+    var wp = gametree.getSectionWidth(y, matrixdict[0])
     var width = wp[0], padding = wp[1]
     var x = matrixdict[1][node.id][0] - padding
     var relX = width == 1 ? 0 : x / (width - 1)
@@ -1790,12 +1792,12 @@ function saveFileToSgf() {
     return text
 }
 
-function clearMarkups() {
+function clearMarkup() {
     closeDrawers()
     var markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
-    setUndoable(true)
+    setUndoable(true, 'Restore Markup')
 
     var tp = getCurrentTreePosition()
     var tree = tp[0], index = tp[1]
@@ -1919,22 +1921,23 @@ function goToMainVariation() {
     }
 }
 
-function makeMainVariation() {
-    setUndoable(true)
+function makeMainVariation(tree, index) {
+    setUndoable(true, 'Restore Main Variation')
     closeDrawers()
 
-    var root = tree = getRootTree()
-    var level = gametree.getLevel.apply(null, getCurrentTreePosition())
+    var root = getRootTree()
+    var level = gametree.getLevel(tree, index)
+    var t = tree
 
-    while (tree.current != null) {
-        var subtree = tree.subtrees.splice(tree.current, 1)[0]
-        tree.subtrees.unshift(subtree)
-        tree.current = 0
+    while (t.parent != null) {
+        t.parent.subtrees.splice(t.parent.subtrees.indexOf(t), 1)
+        t.parent.subtrees.unshift(t)
+        t.parent.current = 0
 
-        tree = subtree
+        t = t.parent
     }
 
-    setCurrentTreePosition.apply(null, gametree.navigate(root, 0, level).concat([false, true]))
+    setCurrentTreePosition(tree, index, true, true)
 }
 
 function removeNode(tree, index) {
@@ -1951,7 +1954,7 @@ function removeNode(tree, index) {
 
     // Save undo information
 
-    setUndoable(true)
+    setUndoable(true, 'Undo Remove Node')
 
     // Remove node
 
