@@ -566,7 +566,8 @@ header, #edit, #scoring, #find, #guess {
         background: #111;
         color: #eee;
     }
-    #info input:focus, #info select:focus, button:hover, button:focus,
+    #info input:focus, #info select:focus,
+    button:hover:not([class^="pika-"]), button:focus:not([class^="pika-"]),
     #preferences input:focus, #preferences select:focus,
     #gamechooser input:focus {
         background: #1a1a1a;
