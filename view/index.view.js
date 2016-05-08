@@ -243,7 +243,7 @@ function setCommentText(text) {
 
     if (textarea.get('value') != text) textarea.set('value', text)
     container.set('html', html)
-    helper.wireLinks(container)
+    wireLinks(container)
 }
 
 function getCommentTitle() {
@@ -1223,6 +1223,35 @@ function clearConsole() {
     $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
     $$('#console .inner form:last-child input')[0].set('value', '').focus()
     $('console').retrieve('scrollbar').update()
+}
+
+function wireLinks(container) {
+    container.getElements('a').addEvent('click', function() {
+        if (this.hasClass('external'))  {
+            if (!shell) {
+                this.target = '_blank'
+                return true
+            }
+
+            shell.openExternal(this.href)
+        } else if (this.hasClass('movenumber')) {
+            var movenumber = +this.get('text').slice(1)
+            setUndoable(true, 'Go Back')
+            goToMainVariation()
+
+            var tp = gametree.navigate(getRootTree(), 0, movenumber)
+            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
+        }
+
+        return false
+    })
+
+    container.getElements('.coord').addEvent('mouseenter', function() {
+        var v = getBoard().coord2vertex(this.get('text'))
+        showIndicator(v)
+    }).addEvent('mouseleave', function() {
+        if (!getFindMode()) hideIndicator()
+    })
 }
 
 /**
