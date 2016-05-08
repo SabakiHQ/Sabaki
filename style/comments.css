@@ -47,7 +47,6 @@
         background: #101010;
         border-radius: 3px;
         color: white;
-        cursor: pointer;
     }
     #properties .inner .coord:hover {
         background: #0082F0;
