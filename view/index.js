@@ -627,8 +627,43 @@ function prepareGameInfo() {
         position: 'top left',
         firstDay: 1,
         yearRange: 6,
+        onOpen: function() {
+            if (!pikaday) return
+
+            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+                return x.length == 3
+            })
+
+            if (dates.length > 0) {
+                pikaday.setDate(dates[0].join('-'), true)
+            } else {
+                pikaday.gotoToday()
+            }
+
+            pikaday.el.setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+        },
         onDraw: function() {
             if (!pikaday.isVisible()) return
+
+            // Get and mark dates
+
+            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+                return x.length == 3
+            })
+
+            dates.forEach(function(date) {
+                var data = { year: date[0], month: date[1] - 1, day: date[2] }
+                var q = '.pika-button'
+
+                for (var key in data) {
+                    q += '[data-pika-' + key + '="' + data[key] + '"]'
+                }
+
+                var el = pikaday.el.getElement(q)
+                if (el) el.getParent().addClass('is-multi-selected')
+            })
+
+            // Adjust position & height
 
             pikaday.el
             .setStyle('position', 'absolute')
@@ -661,6 +696,8 @@ function prepareGameInfo() {
             if (document.activeElement.getParents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
+    }).addEvent('input', function() {
+        pikaday.draw()
     })
 
     // Handle size inputs
