@@ -163,6 +163,9 @@ describe('sgf', function() {
             assert.deepEqual(sgf.string2dates('1996-05,06-01'), [
                 [1996, 5], [1996, 6, 1]
             ])
+            assert.deepEqual(sgf.string2dates('1996-05,1997'), [
+                [1996, 5], [1997]
+            ])
             assert.deepEqual(sgf.string2dates('1996-05-06,07,08'), [
                 [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
             ])
@@ -183,6 +186,9 @@ describe('sgf', function() {
             assert.equal(sgf.dates2string([
                 [1996, 5], [1996, 6, 1]
             ]), '1996-05,06-01')
+            assert.equal(sgf.dates2string([
+                [1996, 5], [1997]
+            ]), '1996-05,1997')
             assert.equal(sgf.dates2string([
                 [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
             ]), '1996-05-06,07,08')
