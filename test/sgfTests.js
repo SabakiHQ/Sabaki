@@ -153,6 +153,9 @@ describe('sgf', function() {
                 [1996, 12, 27], [1997, 1, 3]
             ])
         })
+        it('should be able to handle empty strings', function() {
+            assert.deepEqual(sgf.string2dates(''), [])
+        })
         it('should handle short-hand notation', function() {
             assert.deepEqual(sgf.string2dates('1996-05,06'), [
                 [1996, 5], [1996, 6]
@@ -183,6 +186,9 @@ describe('sgf', function() {
             assert.equal(sgf.dates2string([
                 [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
             ]), '1996-12-27,28,1997-01-03,04')
+        })
+        it('should be able to handle empty strings', function() {
+            assert.equal(sgf.dates2string([]), '')
         })
         it('should be inverse to string2dates', function() {
             assert.deepEqual(sgf.string2dates(sgf.dates2string([
