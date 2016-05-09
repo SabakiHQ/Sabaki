@@ -230,8 +230,7 @@ function setBoard(board) {
                 if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
             }
 
-            li.addClass('sign_' + sign).getElement('img')
-                .set('src', setting.get('board.stone_image_' + sign))
+            li.addClass('sign_' + sign)
         }
     }
 
