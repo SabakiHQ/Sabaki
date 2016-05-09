@@ -636,6 +636,10 @@ function prepareGameInfo() {
             .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
 
             dateInput.focus()
+        },
+        onSelect: function() {
+            var date = pikaday.getDate()
+            var array = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
         }
     })
 
