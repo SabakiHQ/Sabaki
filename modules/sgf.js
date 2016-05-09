@@ -124,9 +124,10 @@ context.parseFile = function(filename, callback) {
 }
 
 context.string2dates = function(input) {
-    if (!input.match(/^\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}-)?\d{1,2}(-\d{1,2})?)*$/)) {
+    if (!input.match(/^(\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}|(\d{4}-)?\d{1,2}(-\d{1,2})?))*)?$/))
         return null
-    }
+    if (input.trim() == '')
+        return []
 
     var dates = input.split(',').map(function(x) {
         return x.trim().split('-').map(function(y) { return +y })
@@ -143,6 +144,8 @@ context.string2dates = function(input) {
 }
 
 context.dates2string = function(dates) {
+    if (dates.length == 0) return ''
+
     var datesCopy = [dates[0].slice()]
 
     for (var i = 1; i < dates.length; i++) {
