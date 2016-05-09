@@ -947,7 +947,7 @@ function resizeBoard() {
         boardHeight += 2
     }
 
-    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight))
+    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight, 150))
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
