@@ -130,17 +130,29 @@ context.string2dates = function(input) {
         return []
 
     var dates = input.split(',').map(function(x) {
-        return x.trim().split('-').map(function(y) { return +y })
+        return x.trim().split('-')
     })
 
     for (var i = 1; i < dates.length; i++) {
         var date = dates[i]
         var prev = dates[i - 1]
 
-        dates[i] = prev.slice(0, prev.length - date.length).concat(date)
+        if (date[0].length != 4) {
+            // No year
+
+            if (date.length == 1 && prev.length == 3) {
+                // Add month
+                date.unshift(prev[1])
+            }
+
+            // Add year
+            date.unshift(prev[0])
+        }
     }
 
-    return dates
+    return dates.map(function(x) {
+        return x.map(function(y) { return +y })
+    })
 }
 
 context.dates2string = function(dates) {
