@@ -124,7 +124,7 @@ context.parseFile = function(filename, callback) {
 }
 
 context.string2dates = function(input) {
-    if (!input.match(/^\d{4}(-\d{1,2}(-\d{1,2})?)?(,(\d{4}-)?\d{1,2}(-\d{1,2})?)*$/)) {
+    if (!input.match(/^\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}-)?\d{1,2}(-\d{1,2})?)*$/)) {
         return null
     }
 
