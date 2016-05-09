@@ -1420,12 +1420,10 @@ function commitGameInfo() {
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
-    var width = +info.getElement('input[name="size-width"]').get('value')
-    var height = +info.getElement('input[name="size-height"]').get('value')
     var size = ['width', 'height'].map(function(x) {
         var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
         if (isNaN(num)) num = setting.get('game.default_board_size')
-        return Math.min(Math.max(num, 9), 25)
+        return Math.min(Math.max(num, 3), 25)
     })
 
     if (size[0] == size[1]) {
