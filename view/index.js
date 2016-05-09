@@ -688,7 +688,7 @@ function prepareGameInfo() {
                 dates = dates.filter(function(x) { return !helper.equals(x, date) })
             }
 
-            dateInput.value = sgf.dates2string(dates.sort(helper.lexicalSort))
+            dateInput.value = sgf.dates2string(dates.sort(helper.lexicalCompare))
         }
     })
 
