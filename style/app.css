@@ -211,12 +211,23 @@ form p, form ul li {
 }
 
 .pika-button {
-    cursor: default;
-    color: white;
-    background: #1a1a1a;
+        cursor: default;
+        color: white;
+        background: #1a1a1a;
+    }
+    .pika-button:active, .pika-prev:active, .pika-next:active {
+        position: static;
 }
 
 .pika-week { color: #999; }
+
+.is-selected .pika-button {
+    color: #fff;
+    font-weight: normal;
+    background: #1a1a1a;
+    box-shadow: none;
+    border-radius: 0;
+}
 
 .is-today .pika-button { color: #F75644; }
 
@@ -226,12 +237,9 @@ form p, form ul li {
     border-radius: 0;
 }
 
-.is-selected .pika-button {
+.is-multi-selected .pika-button {
     color: #fff;
-    font-weight: normal;
     background: #0050C0;
-    box-shadow: none;
-    border-radius: 0;
 }
 
 .is-today .pika-button { font-weight: bold; }
