@@ -668,7 +668,12 @@ function prepareGameInfo() {
             pikaday.el
             .setStyle('position', 'absolute')
             .setStyle('left', dateInput.getPosition().x)
-            .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+            .setStyle('top', Math.min(
+                dateInput.getPosition().y - pikaday.el.getSize().y,
+                pikaday.el.getPosition().y
+            ))
+
+            // Focus input
 
             dateInput.focus()
         },
@@ -683,6 +688,7 @@ function prepareGameInfo() {
 
     document.body.grab(pikaday.el).addEvent('click', function(e) {
         if (pikaday.isVisible()
+        && document.activeElement != dateInput
         && e.target != dateInput
         && e.target.getParents('.pika-lendar').length == 0)
             pikaday.hide()
