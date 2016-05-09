@@ -622,7 +622,14 @@ function prepareGameInfo() {
     // Prepare Pikaday
 
     var dateInput = $$('#info input[name="date"]')[0]
+    var adjustPosition = function(pikaday) {
+        if (!pikaday.isVisible()) return
 
+        pikaday.el
+        .setStyle('position', 'absolute')
+        .setStyle('left', dateInput.getPosition().x + dateInput.getSize().x + 10)
+        .setStyle('top', $('info').getPosition().y + $('info').getSize().y / 2 - pikaday.el.getSize().y / 2)
+    }
     var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
@@ -640,7 +647,7 @@ function prepareGameInfo() {
                 pikaday.gotoToday()
             }
 
-            pikaday.el.setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+            adjustPosition(pikaday)
         },
         onDraw: function() {
             if (!pikaday.isVisible()) return
@@ -662,16 +669,6 @@ function prepareGameInfo() {
                 var el = pikaday.el.getElement(q)
                 if (el) el.getParent().addClass('is-multi-selected')
             })
-
-            // Adjust position & height
-
-            pikaday.el
-            .setStyle('position', 'absolute')
-            .setStyle('left', dateInput.getPosition().x)
-            .setStyle('top', Math.min(
-                dateInput.getPosition().y - pikaday.el.getSize().y,
-                pikaday.el.getPosition().y
-            ))
 
             // Focus input
 
@@ -701,6 +698,10 @@ function prepareGameInfo() {
         && e.target != dateInput
         && e.target.getParents('.pika-lendar').length == 0)
             pikaday.hide()
+    })
+
+    window.addEvent('resize', function() {
+        adjustPosition(pikaday)
     })
 
     dateInput.addEvent('focus', function() {
