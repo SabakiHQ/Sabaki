@@ -700,7 +700,6 @@ function prepareGameInfo() {
 
     dateInput.addEvent('focus', function() {
         pikaday.show()
-        pikaday.draw()
     }).addEvent('blur', function() {
         setTimeout(function() {
             if (document.activeElement.getParents('.pika-lendar').length == 0)
