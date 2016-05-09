@@ -349,7 +349,7 @@ function setHotspot(bookmark) {
 }
 
 function getEmptyGameTree() {
-    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+    var buffer = ';GM[1]FF[4]AP[' + app.getName() + ':' + app.getVersion() + ']'
     buffer += 'CA[UTF-8]KM[' + setting.get('game.default_komi')
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
