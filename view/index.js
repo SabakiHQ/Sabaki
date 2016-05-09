@@ -678,8 +678,17 @@ function prepareGameInfo() {
             dateInput.focus()
         },
         onSelect: function() {
+            var dates = sgf.string2dates(dateInput.value) || []
             var date = pikaday.getDate()
-            var array = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+            date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+
+            if (!dates.some(function(x) { return helper.equals(x, date) })) {
+                dates.push(date)
+            } else {
+                dates = dates.filter(function(x) { return !helper.equals(x, date) })
+            }
+
+            dateInput.value = sgf.dates2string(dates.sort(helper.lexicalSort))
         }
     })
 
