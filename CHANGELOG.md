@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix console coordinates not being styled correctly
+* Fix weird grid lines behavior with small board sizes
 
 ## [Sabaki v0.13.0][v0.13.0] (2016-05-08)
 
