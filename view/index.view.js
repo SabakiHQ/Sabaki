@@ -942,7 +942,7 @@ function resizeBoard() {
         boardHeight += 2
     }
 
-    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight))
+    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight, 150))
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
@@ -1318,16 +1318,24 @@ function showGameInfo() {
     var tree = getRootTree()
     var rootNode = tree.nodes[0]
     var info = $('info')
+    var data = {
+        'rank_1': 'BR',
+        'rank_-1': 'WR',
+        'name': 'GN',
+        'event': 'EV',
+        'date': 'DT',
+        'result': 'RE'
+    }
 
     info.addClass('show').getElement('input[name="name_1"]').focus()
 
+    for (var key in data) {
+        var value = data[key]
+        info.getElement('input[name="' + key + '"]').set('value', value in rootNode ? rootNode[value][0] : '')
+    }
+
     info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, tree, ''))
     info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
-    info.getElement('input[name="rank_1"]').set('value', 'BR' in rootNode ? rootNode.BR[0] : '')
-    info.getElement('input[name="rank_-1"]').set('value', 'WR' in rootNode ? rootNode.WR[0] : '')
-    info.getElement('input[name="name"]').set('value', 'GN' in rootNode ? rootNode.GN[0] : '')
-    info.getElement('input[name="event"]').set('value', 'EV' in rootNode ? rootNode.EV[0] : '')
-    info.getElement('input[name="result"]').set('value', 'RE' in rootNode ? rootNode.RE[0] : '')
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? +rootNode.KM[0] : '')
     info.getElement('input[name="size-width"]').set('value', getBoard().width)
     info.getElement('input[name="size-height"]').set('value', getBoard().height)

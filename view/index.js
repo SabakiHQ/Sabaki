@@ -14,6 +14,7 @@ var process = { argv: { length: -1 }, platform: 'web' }
 var app = { getName: function() { return 'Sabaki' }, getVersion: function() { return 'web' } }
 var dialog = { showMessageBox: function() {} }
 
+var Pikaday = window.Pikaday
 var GeminiScrollbar = window.GeminiScrollbar
 var Board = window.Board
 var Menu = window.Menu
@@ -348,7 +349,7 @@ function setHotspot(bookmark) {
 }
 
 function getEmptyGameTree() {
-    var buffer = ';GM[1]AP[' + app.getName() + ':' + app.getVersion() + ']'
+    var buffer = ';GM[1]FF[4]AP[' + app.getName() + ':' + app.getVersion() + ']'
     buffer += 'CA[UTF-8]KM[' + setting.get('game.default_komi')
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
@@ -617,6 +618,96 @@ function prepareGameInfo() {
         }
 
         openEnginesMenu(el, selectEngine.bind(el))
+    })
+
+    // Prepare Pikaday
+
+    var dateInput = $$('#info input[name="date"]')[0]
+
+    var pikaday = new Pikaday({
+        position: 'top left',
+        firstDay: 1,
+        yearRange: 6,
+        onOpen: function() {
+            if (!pikaday) return
+
+            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+                return x.length == 3
+            })
+
+            if (dates.length > 0) {
+                pikaday.setDate(dates[0].join('-'), true)
+            } else {
+                pikaday.gotoToday()
+            }
+        },
+        onDraw: function() {
+            if (!pikaday.isVisible()) return
+
+            // Get and mark dates
+
+            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+                return x.length == 3
+            })
+
+            dates.forEach(function(date) {
+                var data = { year: date[0], month: date[1] - 1, day: date[2] }
+                var q = '.pika-button'
+
+                for (var key in data) {
+                    q += '[data-pika-' + key + '="' + data[key] + '"]'
+                }
+
+                var el = pikaday.el.getElement(q)
+                if (el) el.getParent().addClass('is-multi-selected')
+            })
+
+            // Adjust position & height
+
+            pikaday.el
+            .setStyle('position', 'absolute')
+            .setStyle('left', dateInput.getPosition().x)
+            .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+
+            // Focus input
+
+            dateInput.focus()
+        },
+        onSelect: function() {
+            var dates = sgf.string2dates(dateInput.value) || []
+            var date = pikaday.getDate()
+            date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+
+            if (!dates.some(function(x) { return helper.equals(x, date) })) {
+                dates.push(date)
+            } else {
+                dates = dates.filter(function(x) { return !helper.equals(x, date) })
+            }
+
+            dateInput.value = sgf.dates2string(dates.sort(helper.lexicalCompare))
+        }
+    })
+
+    dateInput.store('pikaday', pikaday)
+    pikaday.hide()
+
+    document.body.grab(pikaday.el).addEvent('click', function(e) {
+        if (pikaday.isVisible()
+        && document.activeElement != dateInput
+        && e.target != dateInput
+        && e.target.getParents('.pika-lendar').length == 0)
+            pikaday.hide()
+    })
+
+    dateInput.addEvent('focus', function() {
+        pikaday.show()
+    }).addEvent('blur', function() {
+        setTimeout(function() {
+            if (document.activeElement.getParents('.pika-lendar').length == 0)
+                pikaday.hide()
+        }, 50)
+    }).addEvent('input', function() {
+        pikaday.draw()
     })
 
     // Handle size inputs
@@ -1402,7 +1493,8 @@ function commitGameInfo() {
         'name_-1': 'PW',
         'result': 'RE',
         'name': 'GN',
-        'event': 'EV'
+        'event': 'EV',
+        'date': 'DT'
     }
 
     for (var name in data) {
@@ -1420,23 +1512,24 @@ function commitGameInfo() {
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
+    // Handle komi
+
     var komi = +info.getElement('input[name="komi"]').get('value')
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
-    var width = +info.getElement('input[name="size-width"]').get('value')
-    var height = +info.getElement('input[name="size-height"]').get('value')
+    // Handle size
+
     var size = ['width', 'height'].map(function(x) {
         var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
         if (isNaN(num)) num = setting.get('game.default_board_size')
-        return Math.min(Math.max(num, 9), 25)
+        return Math.min(Math.max(num, 3), 25)
     })
 
-    if (size[0] == size[1]) {
-        rootNode.SZ = ['' + size[0]]
-    } else {
-        rootNode.SZ = [size.join(':')]
-    }
+    if (size[0] == size[1]) rootNode.SZ = ['' + size[0]]
+    else rootNode.SZ = [size.join(':')]
+
+    // Handle handicap stones
 
     var handicapInput = info.getElement('select[name="handicap"]')
     var handicap = handicapInput.selectedIndex
