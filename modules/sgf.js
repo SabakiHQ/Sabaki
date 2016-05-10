@@ -123,23 +123,61 @@ context.parseFile = function(filename, callback) {
     return context.parse(tokens, callback)
 }
 
-context.parseDates = function(input) {
+context.string2dates = function(input) {
+    if (!input.match(/^(\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}|(\d{4}-)?\d{1,2}(-\d{1,2})?))*)?$/))
+        return null
+    if (input.trim() == '')
+        return []
+
     var dates = input.split(',').map(function(x) {
-        return x.trim().split('-').map(function(y) { return +y })
+        return x.trim().split('-')
     })
 
     for (var i = 1; i < dates.length; i++) {
         var date = dates[i]
         var prev = dates[i - 1]
 
-        dates[i] = prev.slice(0, prev.length - date.length).concat(date)
+        if (date[0].length != 4) {
+            // No year
+
+            if (date.length == 1 && prev.length == 3) {
+                // Add month
+                date.unshift(prev[1])
+            }
+
+            // Add year
+            date.unshift(prev[0])
+        }
     }
 
-    dates.forEach(function(d) {
-        while (d.length < 3) d.push(null)
+    return dates.map(function(x) {
+        return x.map(function(y) { return +y })
     })
+}
 
-    return dates
+context.dates2string = function(dates) {
+    if (dates.length == 0) return ''
+
+    var datesCopy = [dates[0].slice()]
+
+    for (var i = 1; i < dates.length; i++) {
+        var date = dates[i]
+        var prev = dates[i - 1]
+
+        var k = 0
+        for (var j = 0; j < date.length; j++) {
+            if (date[j] == prev[j] && k == j) k++
+            else break
+        }
+
+        datesCopy.push(date.slice(k))
+    }
+
+    return datesCopy.map(function(x) {
+        return x.map(function(y) {
+            return y > 9 ? '' + y : '0' + y
+        }).join('-')
+    }).join(',')
 }
 
 context.point2vertex = function(point) {

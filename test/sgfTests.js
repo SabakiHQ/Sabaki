@@ -147,25 +147,87 @@ describe('sgf', function() {
         })
     })
 
-    describe('parseDates', function() {
+    describe('string2dates', function() {
         it('should parse comma-separated dates', function() {
-            assert.deepEqual(sgf.parseDates('1996-12-27,1997-01-03'), [
+            assert.deepEqual(sgf.string2dates('1996-12-27,1997-01-03'), [
                 [1996, 12, 27], [1997, 1, 3]
             ])
         })
+        it('should be able to handle empty strings', function() {
+            assert.deepEqual(sgf.string2dates(''), [])
+        })
         it('should handle short-hand notation', function() {
-            assert.deepEqual(sgf.parseDates('1996-05,06'), [
-                [1996, 5, null], [1996, 6, null]
+            assert.deepEqual(sgf.string2dates('1996-05,06'), [
+                [1996, 5], [1996, 6]
             ])
-            assert.deepEqual(sgf.parseDates('1996-05-06,07,08'), [
+            assert.deepEqual(sgf.string2dates('1996-05,06-01'), [
+                [1996, 5], [1996, 6, 1]
+            ])
+            assert.deepEqual(sgf.string2dates('1996-05,1997'), [
+                [1996, 5], [1997]
+            ])
+            assert.deepEqual(sgf.string2dates('1996-05-06,07,08'), [
                 [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
             ])
-            assert.deepEqual(sgf.parseDates('1996,1997'), [
-                [1996, null, null], [1997, null, null]
+            assert.deepEqual(sgf.string2dates('1996,1997'), [
+                [1996], [1997]
             ])
-            assert.deepEqual(sgf.parseDates('1996-12-27,28,1997-01-03,04'), [
+            assert.deepEqual(sgf.string2dates('1996-12-27,28,1997-01-03,04'), [
                 [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
             ])
+        })
+    })
+
+    describe('dates2string', function() {
+        it('should work', function() {
+            assert.equal(sgf.dates2string([
+                [1996, 5], [1996, 6]
+            ]), '1996-05,06')
+            assert.equal(sgf.dates2string([
+                [1996, 5], [1996, 6, 1]
+            ]), '1996-05,06-01')
+            assert.equal(sgf.dates2string([
+                [1996, 5], [1997]
+            ]), '1996-05,1997')
+            assert.equal(sgf.dates2string([
+                [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
+            ]), '1996-05-06,07,08')
+            assert.equal(sgf.dates2string([
+                [1996], [1997]
+            ]), '1996,1997')
+            assert.equal(sgf.dates2string([
+                [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
+            ]), '1996-12-27,28,1997-01-03,04')
+        })
+        it('should be able to handle empty strings', function() {
+            assert.equal(sgf.dates2string([]), '')
+        })
+        it('should be inverse to string2dates', function() {
+            assert.deepEqual(sgf.string2dates(sgf.dates2string([
+                [1996, 5], [1996, 6]
+            ])), [
+                [1996, 5], [1996, 6]
+            ])
+            assert.deepEqual(sgf.string2dates(sgf.dates2string([
+                [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
+            ])), [
+                [1996, 5, 6], [1996, 5, 7], [1996, 5, 8]
+            ])
+            assert.deepEqual(sgf.string2dates(sgf.dates2string([
+                [1996], [1997]
+            ])), [
+                [1996], [1997]
+            ])
+            assert.deepEqual(sgf.string2dates(sgf.dates2string([
+                [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
+            ])), [
+                [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
+            ])
+
+            assert.equal(sgf.dates2string(sgf.string2dates('1996-05,06')), '1996-05,06')
+            assert.equal(sgf.dates2string(sgf.string2dates('1996-05-06,07,08')), '1996-05-06,07,08')
+            assert.equal(sgf.dates2string(sgf.string2dates('1996,1997')), '1996,1997')
+            assert.equal(sgf.dates2string(sgf.string2dates('1996-12-27,28,1997-01-03,04')), '1996-12-27,28,1997-01-03,04')
         })
     })
 

@@ -44,6 +44,8 @@ This project is licensed under the [MIT license](https://github.com/yishn/Sabaki
   ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
 * [marked](https://github.com/chjj/marked)
   ([MIT License](https://github.com/chjj/marked/blob/master/LICENSE))
+* [Pikaday](https://github.com/dbushell/Pikaday)
+  ([MIT License](https://github.com/dbushell/Pikaday/blob/master/LICENSE))
 * [gemini-scrollbar](http://noeldelgado.github.io/gemini-scrollbar/)
   ([MIT License](https://github.com/noeldelgado/gemini-scrollbar/blob/master/LICENSE))
 * [argv-split](https://github.com/kaelzhang/node-argv-split)
