@@ -18,12 +18,20 @@ var context = typeof module != 'undefined' ? module.exports : (window.setting = 
 
 var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
 var settingspath = null
+var stylespath = null
 
 if (app && path) {
     var directory = app.getPath('userData')
-
     try { fs.mkdirSync(directory) } catch(e) {}
+
     settingspath = path.join(directory, 'settings.json')
+    stylespath = path.join(directory, 'styles.css')
+
+    try {
+        fs.accessSync(stylespath, fs.R_OK)
+    } catch(e) {
+        fs.writeFileSync(stylespath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
+    }
 }
 
 var settings = {}
@@ -131,7 +139,7 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!settingspath) return context
+    if (!settingspath || !stylespath) return context
 
     fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
     return context
