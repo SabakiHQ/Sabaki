@@ -4,9 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to add dates to games
+
 **Changed**
 
 * Display non-moves as diamonds in the game graph
+* Bump Electron v1.0
 
 **Fixed**
 
