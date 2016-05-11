@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Display non-moves as diamonds in the game graph
+* Bump Electron v1.0
 
 **Fixed**
 
