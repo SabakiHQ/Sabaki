@@ -361,6 +361,8 @@ function getEmptyGameTree() {
  */
 
 function loadSettings() {
+    $$('head link.userstyle').set('href', setting.stylesPath)
+
     if (setting.get('view.fuzzy_stone_placement'))
         $('goban').addClass('fuzzy')
     if (setting.get('view.show_coordinates'))
