@@ -15,22 +15,19 @@ if (typeof require != 'undefined') {
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
-
 var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
-var settingspath = null
-var stylespath = null
 
 if (app && path) {
     var directory = app.getPath('userData')
     try { fs.mkdirSync(directory) } catch(e) {}
 
-    settingspath = path.join(directory, 'settings.json')
-    stylespath = path.join(directory, 'styles.css')
+    exports.settingsPath = path.join(directory, 'settings.json')
+    exports.stylesPath = path.join(directory, 'styles.css')
 
     try {
-        fs.accessSync(stylespath, fs.R_OK)
+        fs.accessSync(exports.stylesPath, fs.R_OK)
     } catch(e) {
-        fs.writeFileSync(stylespath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
+        fs.writeFileSync(exports.stylesPath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
     }
 }
 
@@ -102,10 +99,10 @@ var defaults = {
 }
 
 context.load = function() {
-    if (!settingspath) return settings = defaults
+    if (!exports.settingsPath) return settings = defaults
 
     try {
-        settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+        settings = JSON.parse(fs.readFileSync(exports.settingsPath, { encoding: 'utf8' }))
     } catch(e) {
         settings = {}
     }
@@ -139,9 +136,9 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!settingspath || !stylespath) return context
+    if (!exports.settingsPath || !exports.stylesPath) return context
 
-    fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
+    fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
     return context
 }
 
