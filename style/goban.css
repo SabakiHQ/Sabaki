@@ -297,7 +297,7 @@ body:not(.scoring) .goban .row li.dimmed img {
         border-bottom-color: #242424;
     }
     .goban .row li.triangle.sign_-1 .stone span::after {
-        border-bottom-color: #E2E2E2;
+        border-bottom-color: #EDEDED;
     }
     .goban .row li.label .stone span::before {
         content: attr(title);
