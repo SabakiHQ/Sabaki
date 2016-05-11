@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to add dates to games
+* Ability to create games on small boards
 * Ability to style Sabaki with userstyles
 
 **Changed**
