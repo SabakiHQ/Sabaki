@@ -827,7 +827,7 @@ function buildBoard() {
             var li = new Element('li.pos_' + x + '-' + y)
                 .store('vertex', vertex)
                 .addClass('shift_' + Math.floor(Math.random() * 9))
-            var img = new Element('img', { src: '../img/goban/stone_0.png' })
+            var img = new Element('img', { src: '../img/goban/stone_0.svg' })
 
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 li.addClass('hoshi')

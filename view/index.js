@@ -230,8 +230,7 @@ function setBoard(board) {
                 if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
             }
 
-            li.addClass('sign_' + sign).getElement('img')
-                .set('src', setting.get('board.stone_image_' + sign))
+            li.addClass('sign_' + sign)
         }
     }
 
@@ -361,6 +360,8 @@ function getEmptyGameTree() {
  */
 
 function loadSettings() {
+    $$('head link.userstyle').set('href', setting.stylesPath)
+
     if (setting.get('view.fuzzy_stone_placement'))
         $('goban').addClass('fuzzy')
     if (setting.get('view.show_coordinates'))

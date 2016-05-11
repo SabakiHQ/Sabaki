@@ -35,6 +35,12 @@
         height: calc(100% - 2px);
         width: calc(100% - 2px);
     }
+    .goban li.sign_1 .stone img {
+        background: url('../img/goban/stone_1.png') center / 100% 100%;
+    }
+    .goban li.sign_-1 .stone img {
+        background: url('../img/goban/stone_-1.png') center / 100% 100%;
+    }
     .goban li.sign_1 .stone::before, .goban li.sign_-1 .stone::before {
         content: '';
         display: block;

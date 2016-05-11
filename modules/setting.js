@@ -15,15 +15,20 @@ if (typeof require != 'undefined') {
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
-
 var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
-var settingspath = null
 
 if (app && path) {
     var directory = app.getPath('userData')
-
     try { fs.mkdirSync(directory) } catch(e) {}
-    settingspath = path.join(directory, 'settings.json')
+
+    exports.settingsPath = path.join(directory, 'settings.json')
+    exports.stylesPath = path.join(directory, 'styles.css')
+
+    try {
+        fs.accessSync(exports.stylesPath, fs.R_OK)
+    } catch(e) {
+        fs.writeFileSync(exports.stylesPath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
+    }
 }
 
 var settings = {}
@@ -37,9 +42,6 @@ var defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
-    'board.stone_image_-1': '../img/goban/stone_-1.png',
-    'board.stone_image_1': '../img/goban/stone_1.png',
-    'board.stone_image_0': '../img/goban/stone_0.svg',
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
         'genmove', 'undo', 'fixed_handicap',
@@ -73,7 +75,6 @@ var defaults = {
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
     'scoring.method': 'territory',
-    'setting.overwrite.v0.12.4': ['board.stone_image_-1', 'board.stone_image_1'],
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
@@ -98,10 +99,10 @@ var defaults = {
 }
 
 context.load = function() {
-    if (!settingspath) return settings = defaults
+    if (!exports.settingsPath) return settings = defaults
 
     try {
-        settings = JSON.parse(fs.readFileSync(settingspath, { encoding: 'utf8' }))
+        settings = JSON.parse(fs.readFileSync(exports.settingsPath, { encoding: 'utf8' }))
     } catch(e) {
         settings = {}
     }
@@ -135,9 +136,9 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!settingspath) return context
+    if (!exports.settingsPath || !exports.stylesPath) return context
 
-    fs.writeFileSync(settingspath, JSON.stringify(settings, null, '  '))
+    fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
     return context
 }
 
