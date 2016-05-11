@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Display non-moves as diamonds in the game graph
-* Bump Electron v1.0
+* Bump Electron v1.0.1
 
 **Fixed**
 
@@ -34,31 +34,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.12.4][v0.12.4] (2016-05-03)
 
-**Fixed**
-
-* Revert back to PNG stone images (see [#74](https://github.com/yishn/Sabaki/issues/74))
-
-## [Sabaki v0.12.3][v0.12.3] (2016-05-02)
-
 **Added**
 
+* Now board markup scales with board size
+* Add edit button to comments section
+* Allow a subset of Markdown in the comments section
 * Ability to choose GTP engine directly inside the 'New Game' drawer
 * Ability to link to move numbers in the comments (see [wiki](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki))
-
-**Changed**
-
-* SVG stone images
-* Doesn't clear GTP console when detaching engines
-* Update to Electron v0.37.8
-
-## [Sabaki v0.12.2][v0.12.2] (2016-04-25)
-
-**Added**
-
 * Support for old SGF 'long property ids' (see [#68](https://github.com/yishn/Sabaki/issues/68))
 
 **Changed**
 
+* Doesn't clear GTP console when detaching engines
 * Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in ~1 second
 * Significant graph updating speed increase
 * Update to Electon v0.37.7
@@ -67,21 +54,6 @@ All notable changes to this project will be documented in this file.
 
 * Fix misplaced triangle markup under OS X
 * Fix incorrect parsing of backslashes in comments
-
-## [Sabaki v0.12.0][v0.12.0] (2016-04-19)
-
-**Added**
-
-* Add edit button to comments section
-* Allow a subset of Markdown in the comments section
-
-**Changed**
-
-* Now board markup scales with board size
-* Update to Electron v0.37.6
-
-**Fixed**
-
 * Fix engines menu list not updating when adding/removing engines
 * Fix comments textbox scrolling to top when editing
 * Fix navigation shortcuts not working after closing drawers
@@ -357,10 +329,7 @@ First release
 
 [unreleased]: https://github.com/yishn/Sabaki/compare/v0.13.0...master
 [v0.13.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.13.0
-[v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.12.3...v0.12.4
-[v0.12.3]: https://github.com/yishn/Sabaki/compare/v0.12.2...v0.12.3
-[v0.12.2]: https://github.com/yishn/Sabaki/compare/v0.12.0...v0.12.2
-[v0.12.0]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.0
+[v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.2
 [v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.1
