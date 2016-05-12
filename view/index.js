@@ -629,6 +629,21 @@ function prepareGameInfo() {
         .setStyle('left', dateInput.getPosition().x)
         .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
     }
+    var markDates = function(pikaday) {
+        var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+            return x.length == 3
+        })
+
+        pikaday.el.getElements('.pika-button').forEach(function(el) {
+            var year = +el.get('data-pika-year')
+            var month = +el.get('data-pika-month')
+            var day = +el.get('data-pika-day')
+
+            el.getParent().toggleClass('is-multi-selected', dates.some(function(d) {
+                return helper.equals(d, [year, month + 1, day])
+            }))
+        })
+    }
     var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
@@ -652,24 +667,7 @@ function prepareGameInfo() {
             if (!pikaday.isVisible()) return
 
             adjustPosition(pikaday)
-
-            // Get and mark dates
-
-            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
-                return x.length == 3
-            })
-
-            dates.forEach(function(date) {
-                var data = { year: date[0], month: date[1] - 1, day: date[2] }
-                var q = '.pika-button'
-
-                for (var key in data) {
-                    q += '[data-pika-' + key + '="' + data[key] + '"]'
-                }
-
-                var el = pikaday.el.getElement(q)
-                if (el) el.getParent().addClass('is-multi-selected')
-            })
+            markDates(pikaday)
 
             // Focus input
 
@@ -711,7 +709,7 @@ function prepareGameInfo() {
                 pikaday.hide()
         }, 50)
     }).addEvent('input', function() {
-        pikaday.draw()
+        markDates(pikaday)
     })
 
     // Handle size inputs
