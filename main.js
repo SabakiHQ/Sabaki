@@ -289,3 +289,15 @@ app.on('open-file', function(e, path) {
         newWindow(path)
     }
 })
+
+process.on('uncaughtException', function(err) {
+    dialog.showErrorBox(app.getName(), [
+        'Something weird happened. ',
+        app.getName(),
+        ' will shut itself down.\n',
+        'If possible, please report this on ',
+        app.getName() + '’s repository on GitHub.'
+    ].join(''))
+
+    app.quit()
+})
