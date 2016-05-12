@@ -291,7 +291,7 @@ app.on('open-file', function(e, path) {
 })
 
 process.on('uncaughtException', function(err) {
-    dialog.showErrorBox(app.getName(), [
+    dialog.showErrorBox(app.getName() + ' v' + app.getVersion(), [
         'Something weird happened. ',
         app.getName(),
         ' will shut itself down.\n',
