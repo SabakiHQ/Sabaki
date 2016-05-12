@@ -296,7 +296,8 @@ process.on('uncaughtException', function(err) {
         app.getName(),
         ' will shut itself down.\n',
         'If possible, please report this on ',
-        app.getName() + '’s repository on GitHub.'
+        app.getName() + '’s repository on GitHub.\n\n',
+        err.stack
     ].join(''))
 
     app.quit()
