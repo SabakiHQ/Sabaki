@@ -100,7 +100,7 @@ var defaults = {
 }
 
 context.load = function() {
-    if (!exports || !exports.settingsPath) return settings = defaults
+    if (!app) return settings = defaults
 
     try {
         settings = JSON.parse(fs.readFileSync(exports.settingsPath, { encoding: 'utf8' }))
@@ -137,7 +137,7 @@ context.load = function() {
 }
 
 context.save = function() {
-    if (!exports || !exports.settingsPath || !exports.stylesPath) return context
+    if (!app) return context
 
     fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
     return context
