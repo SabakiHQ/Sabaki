@@ -824,10 +824,12 @@ function buildBoard() {
 
         for (var x = 0; x < board.width; x++) {
             var vertex = [x, y]
-            var li = new Element('li.pos_' + x + '-' + y)
-                .store('vertex', vertex)
-                .addClass('shift_' + Math.floor(Math.random() * 9))
             var img = new Element('img', { src: '../img/goban/stone_0.svg' })
+            var li = new Element('li')
+                .store('vertex', vertex)
+                .addClass('pos_' + x + '-' + y)
+                .addClass('shift_' + Math.floor(Math.random() * 9))
+                .addClass('random_' + Math.floor(Math.random() * 5))
 
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 li.addClass('hoshi')

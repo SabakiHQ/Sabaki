@@ -49,6 +49,7 @@ var defaults = {
         'loadsgf'
     ],
     'console.max_history_count': 30,
+    'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.undo_delay': 100,
