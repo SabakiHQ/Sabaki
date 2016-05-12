@@ -620,7 +620,7 @@ function prepareGameInfo() {
         openEnginesMenu(el, selectEngine.bind(el))
     })
 
-    // Prepare Pikaday
+    // Prepare date input
 
     var dateInput = $$('#info input[name="date"]')[0]
     var adjustPosition = function() {
