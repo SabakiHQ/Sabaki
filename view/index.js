@@ -623,7 +623,12 @@ function prepareGameInfo() {
     // Prepare Pikaday
 
     var dateInput = $$('#info input[name="date"]')[0]
-
+    var adjustPosition = function() {
+        pikaday.el
+        .setStyle('position', 'absolute')
+        .setStyle('left', dateInput.getPosition().x)
+        .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+    }
     var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
@@ -640,9 +645,13 @@ function prepareGameInfo() {
             } else {
                 pikaday.gotoToday()
             }
+
+            adjustPosition()
         },
         onDraw: function() {
             if (!pikaday.isVisible()) return
+
+            adjustPosition()
 
             // Get and mark dates
 
@@ -661,13 +670,6 @@ function prepareGameInfo() {
                 var el = pikaday.el.getElement(q)
                 if (el) el.getParent().addClass('is-multi-selected')
             })
-
-            // Adjust position & height
-
-            pikaday.el
-            .setStyle('position', 'absolute')
-            .setStyle('left', dateInput.getPosition().x)
-            .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
 
             // Focus input
 
@@ -698,6 +700,8 @@ function prepareGameInfo() {
         && e.target.getParents('.pika-lendar').length == 0)
             pikaday.hide()
     })
+
+    window.addEvent('resize', adjustPosition)
 
     dateInput.addEvent('focus', function() {
         pikaday.show()
