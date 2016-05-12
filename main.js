@@ -40,7 +40,7 @@ function newWindow(path) {
     })
 
     window.loadURL('file://' + __dirname + '/view/index.html')
-    // window.toggleDevTools()
+    if (setting.get('debug.dev_tools')) window.toggleDevTools()
 
     return window
 }
