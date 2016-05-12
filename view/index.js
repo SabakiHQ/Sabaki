@@ -623,7 +623,7 @@ function prepareGameInfo() {
     // Prepare date input
 
     var dateInput = $$('#info input[name="date"]')[0]
-    var adjustPosition = function() {
+    var adjustPosition = function(pikaday) {
         pikaday.el
         .setStyle('position', 'absolute')
         .setStyle('left', dateInput.getPosition().x)
@@ -646,12 +646,12 @@ function prepareGameInfo() {
                 pikaday.gotoToday()
             }
 
-            adjustPosition()
+            adjustPosition(pikaday)
         },
         onDraw: function() {
             if (!pikaday.isVisible()) return
 
-            adjustPosition()
+            adjustPosition(pikaday)
 
             // Get and mark dates
 
@@ -701,7 +701,7 @@ function prepareGameInfo() {
             pikaday.hide()
     })
 
-    window.addEvent('resize', adjustPosition)
+    window.addEvent('resize', function() { adjustPosition(pikaday) })
 
     dateInput.addEvent('focus', function() {
         pikaday.show()
