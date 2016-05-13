@@ -2,13 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.14.0][unreleased] (Unreleased)
+## [Sabaki v0.14.0][v0.14.0] (2016-05-14)
 
 **Added**
 
 * Ability to add dates to games
 * Ability to create games on small boards
-* Ability to style Sabaki with userstyles
+* Ability to style Sabaki with userstyles (see [wiki](https://github.com/yishn/Sabaki/wiki/Userstyle-Tutorial))
 
 **Changed**
 
@@ -329,7 +329,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.13.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.14.0...master
+[v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.13.0...v0.14.0
 [v0.13.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.13.0
 [v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5

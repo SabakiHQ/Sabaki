@@ -669,8 +669,6 @@ function prepareGameInfo() {
             adjustPosition(pikaday)
             markDates(pikaday)
 
-            // Focus input
-
             dateInput.focus()
         },
         onSelect: function() {
