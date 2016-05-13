@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Display non-moves as diamonds in the game graph
-* Update to Electron v1.0.1
+* Update to Electron v1.0.2
 
 **Fixed**
 
