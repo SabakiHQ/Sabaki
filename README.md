@@ -11,6 +11,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 - Fuzzy stone placement
 - Read and save SGF games and collections
 - Display formatted SGF comments using a [subset of Markdown](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki)
+- Personalize board appearance with [userstyles](https://github.com/yishn/Sabaki/wiki/Userstyles)
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
