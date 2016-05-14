@@ -193,7 +193,7 @@ form p, form ul li {
 }
 
 .pika-prev, .pika-next {
-        background-size: 16px 16px;
+        background-size: 16px 8px;
         cursor: default;
         filter: invert(100%);
         -webkit-filter: invert(100%);
@@ -244,4 +244,7 @@ form p, form ul li {
 
 .is-today .pika-button { font-weight: bold; }
 
-.pika-table abbr { cursor: default; }
+.pika-table abbr {
+    cursor: default;
+    text-decoration: none;
+}
