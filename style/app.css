@@ -197,7 +197,7 @@ form p, form ul li {
 }
 
 .pika-prev, .pika-next {
-        background-size: 16px 8px;
+        background-size: 8px 16px;
         cursor: default;
         filter: invert(100%);
         -webkit-filter: invert(100%);
