@@ -613,6 +613,7 @@ header, #edit, #scoring, #find, #guess {
         width: 40px;
     }
     #info ul {
+        height: 160px;
         column-count: 2;
         -webkit-column-count: 2;
         -moz-column-count: 2;
