@@ -116,6 +116,16 @@ header, #edit, #scoring, #find, #guess {
 }
 
 #bar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 40px;
+        overflow: hidden;
+        text-align: center;
+        background: #26292C;
+        color: #eee;
+        line-height: 40px;
         transition: background .2s;
     }
     .edit #bar { background: #C4BD64; }
