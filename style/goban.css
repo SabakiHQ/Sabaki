@@ -186,10 +186,10 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban .row li.sign_1.point .stone::after,
     .goban .row li.sign_-1.point .stone::after {
         display: block;
-        width: 8px;
-        height: 8px;
-        margin-left: -5px;
-        margin-top: -5px;
+        width: .30em;
+        height: .30em;
+        margin-left: calc(-.15em - 1px);
+        margin-top: calc(-.15em - 1px);
 }
 
 .goban .row li .stone span {
