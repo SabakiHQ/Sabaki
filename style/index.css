@@ -4,14 +4,16 @@ main {
         top: 0;
         right: 0;
         bottom: 40px;
-        background: #727D5D url('../img/ui/tatami.png') center;
+        background: linear-gradient(to bottom, rgba(20, 0, 15, .5), transparent 5px),
+            linear-gradient(to top, rgba(20, 0, 15, .5), transparent 5px),
+            #727D5D url('../img/ui/tatami.png') center;
     }
     #goban {
         box-sizing: border-box;
         position: absolute;
         left: 50%;
         top: 50%;
-        box-shadow: 0 5px 15px rgba(40, 0, 33, .7);
+        box-shadow: 0 5px 20px rgba(20, 0, 15, .7);
 }
 
 header, #edit, #scoring, #find, #guess {

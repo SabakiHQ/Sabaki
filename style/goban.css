@@ -47,7 +47,7 @@
         border-radius: 100%;
         background: black;
         opacity: .4;
-        box-shadow: 0 2px .18em rgba(40, 0, 33, 1);
+        box-shadow: 0 2px .18em rgba(20, 0, 15, 1);
         z-index: 0;
     }
     .goban li.sign_1 .stone::before {
