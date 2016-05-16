@@ -4,8 +4,7 @@ main {
         top: 0;
         right: 0;
         bottom: 40px;
-        background: linear-gradient(to bottom, rgba(20, 0, 15, .5), transparent 5px),
-            #C2CB9C url('../img/ui/tatami.png') center;
+        background: #C2CB9C url('../img/ui/tatami.png') center;
     }
     #goban {
         box-sizing: border-box;
