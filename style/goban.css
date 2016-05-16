@@ -46,12 +46,12 @@
         display: block;
         border-radius: 100%;
         background: black;
-        opacity: .3;
-        box-shadow: 0 2px .18em black;
+        opacity: .4;
+        box-shadow: 0 2px .18em rgba(40, 0, 33, 1);
         z-index: 0;
     }
     .goban li.sign_1 .stone::before {
-        opacity: .4;
+        opacity: .5;
 }
 
 /**
