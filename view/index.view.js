@@ -998,10 +998,18 @@ function openHeaderMenu() {
             click: function() { makeMove([-1, -1]) }
         },
         {
+            label: '&Resign',
+            click: function() {
+                showGameInfo()
+                var player = getCurrentPlayer() > 0 ? 'W' : 'B'
+                $$('#info input[name="result"]').set('value', player + '+Resign')
+            }
+        },
+        { type: 'separator' },
+        {
             label: '&Score',
             click: function() { setScoringMode(true) }
         },
-        { type: 'separator' },
         {
             label: '&Edit',
             click: function() { setEditMode(true) }

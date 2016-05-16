@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* 'Resign' menu item under 'Pass'
+
 ## [Sabaki v0.14.0][v0.14.0] (2016-05-14)
 
 **Added**
