@@ -3,7 +3,7 @@
  */
 
 .goban {
-        border: 7px solid #ca933a;
+        border: 5px solid #ca933a;
         padding: 10px 8px 8px 10px;
         background: url('../img/goban/board.png') center #ECB55A fixed;
         color: #5E2E0C;
