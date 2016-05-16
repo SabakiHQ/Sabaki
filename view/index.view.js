@@ -943,27 +943,28 @@ function resizeBoard() {
     var outerHeight = $$('main')[0].getStyle('height').toInt()
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = outerWidth - $('goban').getStyle('border-left-width').toInt()
+    var width = helper.floorEven(outerWidth - $('goban').getStyle('border-left-width').toInt()
         - $('goban').getStyle('border-right-width').toInt()
         - $('goban').getStyle('padding-left').toInt()
-        - $('goban').getStyle('padding-right').toInt()
-    var height = outerHeight - $('goban').getStyle('border-top-width').toInt()
+        - $('goban').getStyle('padding-right').toInt())
+    var height = helper.floorEven(outerHeight - $('goban').getStyle('border-top-width').toInt()
         - $('goban').getStyle('border-bottom-width').toInt()
         - $('goban').getStyle('padding-top').toInt()
-        - $('goban').getStyle('padding-bottom').toInt()
-    var gobanSize = Math.min(outerWidth, outerHeight)
+        - $('goban').getStyle('padding-bottom').toInt())
 
     if (getShowCoordinates()) {
         boardWidth += 2
         boardHeight += 2
     }
 
-    var fieldsize = helper.roundEven(Math.min(width / boardWidth, height / boardHeight, 150))
+    var fieldsize = helper.floorEven(Math.min(width / boardWidth, height / boardHeight, 150))
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
-    $('goban').setStyle('width', gobanSize).setStyle('height', gobanSize)
-        .setStyle('margin-left', -gobanSize / 2).setStyle('margin-top', -gobanSize / 2)
+    $('goban').setStyle('width', minX + outerWidth - width)
+        .setStyle('height', minY + outerHeight - height)
+        .setStyle('margin-left', -(minX + outerWidth - width) / 2)
+        .setStyle('margin-top', -(minY + outerHeight - height) / 2)
     $$('#goban > div').setStyle('width', minX).setStyle('height', minY)
         .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
 

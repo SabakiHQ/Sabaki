@@ -27,8 +27,8 @@ context.hash = function(str) {
     return hash
 }
 
-context.roundEven = function(float) {
-    var value = Math.round(float)
+context.floorEven = function(float) {
+    var value = Math.floor(float)
     return value % 2 == 0 ? value : value - 1
 }
 
