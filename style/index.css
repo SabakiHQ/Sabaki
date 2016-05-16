@@ -4,7 +4,7 @@ main {
         top: 0;
         right: 0;
         bottom: 40px;
-        background: #727D5D;
+        background: #727D5D url('../img/ui/tatami.png') center;
     }
     #goban {
         box-sizing: border-box;
