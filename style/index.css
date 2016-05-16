@@ -5,7 +5,7 @@ main {
         right: 0;
         bottom: 40px;
         background: linear-gradient(to bottom, rgba(20, 0, 15, .5), transparent 5px),
-            #727D5D url('../img/ui/tatami.png') center;
+            #C2CB9C url('../img/ui/tatami.png') center;
     }
     #goban {
         box-sizing: border-box;
