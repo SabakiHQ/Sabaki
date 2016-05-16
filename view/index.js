@@ -2087,7 +2087,7 @@ document.addEvent('keydown', function(e) {
     prepareGameInfo()
     newFile()
 
-    $$('#goban, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
+    $$('main, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     })

@@ -1,9 +1,17 @@
-#goban {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 40px;
+main {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 40px;
+        background: #727D5D;
+    }
+    #goban {
+        box-sizing: border-box;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, .7);
 }
 
 header, #edit, #scoring, #find, #guess {

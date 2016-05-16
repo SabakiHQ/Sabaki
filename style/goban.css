@@ -3,13 +3,13 @@
  */
 
 .goban {
-        border: 10px solid #ca933a;
+        border: 7px solid #ca933a;
         padding: 10px 8px 8px 10px;
         background: url('../img/goban/board.png') center #ECB55A fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
-    .goban div {
+    .goban > div {
         position: absolute;
         left: 50%;
         top: 50%;
