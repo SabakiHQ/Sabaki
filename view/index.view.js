@@ -999,11 +999,7 @@ function openHeaderMenu() {
         },
         {
             label: '&Resign',
-            click: function() {
-                showGameInfo()
-                var player = getCurrentPlayer() > 0 ? 'W' : 'B'
-                $$('#info input[name="result"]').set('value', player + '+Resign')
-            }
+            click: function() { makeResign() }
         },
         { type: 'separator' },
         {
