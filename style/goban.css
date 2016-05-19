@@ -3,13 +3,14 @@
  */
 
 .goban {
-        border: 10px solid #ca933a;
+        border: 5px solid rgb(202, 147, 58);
         padding: 10px 8px 8px 10px;
-        background: url('../img/goban/board.png') center #ECB55A fixed;
+        background: linear-gradient(to top, rgba(180, 127, 38, .3), transparent),
+            #ECB55A url('../img/goban/board.png') center fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
-    .goban div {
+    .goban > div {
         position: absolute;
         left: 50%;
         top: 50%;
@@ -46,12 +47,12 @@
         display: block;
         border-radius: 100%;
         background: black;
-        opacity: .3;
-        box-shadow: 0 2px .18em black;
+        opacity: .4;
+        box-shadow: 0 2px .18em rgba(20, 0, 15, 1);
         z-index: 0;
     }
     .goban li.sign_1 .stone::before {
-        opacity: .4;
+        opacity: .5;
 }
 
 /**
@@ -132,7 +133,6 @@ body:not(.scoring) .goban .row li.dimmed img {
         width: 100%;
         height: 100%;
         opacity: .3;
-        transform: translate(-50%, -50%);
         z-index: 3;
     }
     .scoring .goban .row li.area_1 div.paint,
@@ -187,10 +187,10 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban .row li.sign_1.point .stone::after,
     .goban .row li.sign_-1.point .stone::after {
         display: block;
-        width: 8px;
-        height: 8px;
-        margin-left: -5px;
-        margin-top: -5px;
+        width: .30em;
+        height: .30em;
+        margin-left: calc(-.15em - 1px);
+        margin-top: calc(-.15em - 1px);
 }
 
 .goban .row li .stone span {
