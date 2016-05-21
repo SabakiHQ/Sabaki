@@ -5,8 +5,7 @@
 .goban {
         border: 5px solid rgb(202, 147, 58);
         padding: 10px 8px 8px 10px;
-        background: linear-gradient(to top, rgba(180, 127, 38, .3), transparent),
-            #ECB55A url('../img/goban/board.png') center fixed;
+        background: #ECB55A url('../img/goban/board.png') center fixed;
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
