@@ -294,7 +294,7 @@ process.on('uncaughtException', function(err) {
     dialog.showErrorBox(app.getName() + ' v' + app.getVersion(), [
         'Something weird happened. ',
         app.getName(),
-        ' will shut itself down.\n',
+        ' will shut itself down. ',
         'If possible, please report this on ',
         app.getName() + '’s repository on GitHub.\n\n',
         err.stack
