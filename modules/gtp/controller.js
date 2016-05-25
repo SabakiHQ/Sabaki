@@ -40,7 +40,9 @@ var Controller = function(exec, args) {
         }
     })
 
-    self.process.stderr.on('data', function(data) {})
+    self.process.stderr.on('data', function(data) {
+        self.emit('stderr', data)
+    })
 }
 
 require('util').inherits(Controller, events.EventEmitter)
