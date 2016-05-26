@@ -450,7 +450,8 @@ Board.prototype = {
             circle: ['W', 'C', 'B'],
             square: ['@', 'S', '#'],
             triangle: ['Q', 'T', 'Y'],
-            cross: ['P', 'M', 'Z']
+            cross: ['P', 'M', 'Z'],
+            label: null
         }
 
         for (var x = 0; x < self.width; x++) {
@@ -473,7 +474,20 @@ Board.prototype = {
             }
         }
 
-        return ('\n' + result.join('').trim()).split('\n').map(function(l) { return '$$ ' + l }).join('\n')
+        result = result.join('')
+
+        // Add lines & arrows
+
+        self.lines.forEach(function(line) {
+            var start = line[0], end = line[1], arrow = line[2]
+            var type = arrow ? 'AR' : 'LN'
+
+            result += '{' + type + ' '
+                + self.vertex2coord(start) + ' '
+                + self.vertex2coord(end) + '}\n'
+        })
+
+        return ('\n' + result.trim()).split('\n').map(function(l) { return '$$ ' + l }).join('\n')
     },
 
     getHash: function() {
