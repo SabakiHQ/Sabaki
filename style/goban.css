@@ -381,3 +381,7 @@ body:not(.scoring) .goban .row li.dimmed img {
     .goban.fuzzy .row li.sign_-1.shift_8 .stone {
         transform: translate(-1px, 1px);
 }
+
+.goban.animation .row li .stone.animate {
+    transition: transform .2s;
+}
