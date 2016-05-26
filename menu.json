@@ -34,8 +34,12 @@
                 "action": "loadclipboard"
             },
             {
-                "label": "Copy To Clipboard",
+                "label": "Copy &To Clipboard",
                 "action": "copytoclipboard"
+            },
+            {
+                "label": "Copy &ASCII Diagram",
+                "action": "copyascii"
             },
             { "type": "separator" },
             {

@@ -8,6 +8,7 @@ var menudata = {
     "saveas": saveFile,
     "loadclipboard": function() { loadFileFromSgf(clipboard.readText(), false, setRepresentedFilename.bind(null, null)) },
     "copytoclipboard": function() { clipboard.writeText(saveFileToSgf()) },
+    "copyascii": function() { clipboard.writeText(getBoard().generateAscii()) },
     "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
     "gameinfo": function() { showGameInfo() },
