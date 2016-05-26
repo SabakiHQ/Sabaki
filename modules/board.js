@@ -413,6 +413,70 @@ Board.prototype = {
         return svg
     },
 
+    generateAscii: function() {
+        var result = []
+        var self = this
+
+        var getIndexFromVertex = function(vertex) {
+            var x = vertex[0], y = vertex[1]
+            var rowLength = 4 + self.width * 2
+            return rowLength + rowLength * y + 1 + x * 2 + 1
+        }
+
+        // Make empty board
+
+        result.push('+')
+        for (var x = 0; x < self.width; x++) result.push('-', '-')
+        result.push('-', '+', '\n')
+
+        for (var y = 0; y < self.height; y++) {
+            result.push('|')
+            for (var x = 0; x < self.width; x++) result.push(' ', '.')
+            result.push(' ', '|', '\n')
+        }
+
+        result.push('+')
+        for (var x = 0; x < self.width; x++) result.push('-', '-')
+        result.push('-', '+', '\n')
+
+        this.getHandicapPlacement(9).forEach(function(v) {
+            result[getIndexFromVertex(v)] = ','
+        })
+
+        // Place markups & stones
+
+        var data = {
+            plain: ['X', '.', 'O'],
+            circle: ['B', 'C', 'W'],
+            square: ['#', 'S', '@'],
+            triangle: ['Y', 'T', 'Q'],
+            cross: ['Z', 'M', 'P']
+        }
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                var i = getIndexFromVertex(v)
+                var s = self.arrangement[v]
+
+                if (!self.markups[v]) {
+                    result[i] = data.plain[s + 1]
+                } else {
+                    var type = self.markups[v][0]
+                    var label = self.markups[v][1]
+
+                    if (type != 'label') {
+                        result[i] = data[self.markups[v][0]][s + 1]
+                    } else if (s == 0 && label.length == 1 && isNaN(parseFloat(label))) {
+                        result[i] = label.toLowerCase()
+                    }
+                }
+            }
+        }
+
+        return ('\n' + result.join('').trim()).split('\n').map(function(l) { return '$$ ' + l }).join('\n')
+    },
+
     getHash: function() {
         return helper.hash(JSON.stringify(this.arrangement))
     }
