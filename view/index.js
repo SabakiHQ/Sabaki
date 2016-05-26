@@ -899,8 +899,11 @@ function makeMove(vertex, sendCommand) {
         var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
         var direction = Math.floor(Math.random() * 9)
 
+        li.addClass('animate')
         for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
         li.addClass('shift_' + direction)
+        setTimeout(function() { li.removeClass('animate') }, 200)
+
         readjustShifts(vertex)
     }
 

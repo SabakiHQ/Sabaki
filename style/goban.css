@@ -382,6 +382,6 @@ body:not(.scoring) .goban .row li.dimmed img {
         transform: translate(-1px, 1px);
 }
 
-.goban.animation .row li .stone.animate {
+.goban.animation .row li.animate .stone {
     transition: transform .2s;
 }
