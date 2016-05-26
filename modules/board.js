@@ -446,11 +446,11 @@ Board.prototype = {
         // Place markups & stones
 
         var data = {
-            plain: ['X', '.', 'O'],
-            circle: ['B', 'C', 'W'],
-            square: ['#', 'S', '@'],
-            triangle: ['Y', 'T', 'Q'],
-            cross: ['Z', 'M', 'P']
+            plain: ['O', null, 'X'],
+            circle: ['W', 'C', 'B'],
+            square: ['@', 'S', '#'],
+            triangle: ['Q', 'T', 'Y'],
+            cross: ['P', 'M', 'Z']
         }
 
         for (var x = 0; x < self.width; x++) {
@@ -459,14 +459,13 @@ Board.prototype = {
                 var i = getIndexFromVertex(v)
                 var s = self.arrangement[v]
 
-                if (!self.markups[v]) {
-                    result[i] = data.plain[s + 1]
+                if (!self.markups[v] || !(self.markups[v][0] in data)) {
+                    if (s != 0) result[i] = data.plain[s + 1]
                 } else {
-                    var type = self.markups[v][0]
-                    var label = self.markups[v][1]
+                    var type = self.markups[v][0], label = self.markups[v][1]
 
                     if (type != 'label') {
-                        result[i] = data[self.markups[v][0]][s + 1]
+                        result[i] = data[type][s + 1]
                     } else if (s == 0 && label.length == 1 && isNaN(parseFloat(label))) {
                         result[i] = label.toLowerCase()
                     }
