@@ -363,24 +363,22 @@ function getEmptyGameTree() {
 function loadSettings() {
     $$('head link.userstyle').set('href', setting.stylesPath)
 
-    if (setting.get('view.fuzzy_stone_placement'))
-        $('goban').addClass('fuzzy')
-    if (setting.get('view.show_coordinates'))
-        $('goban').addClass('coordinates')
-    if (setting.get('view.show_next_moves'))
-        $('goban').addClass('variations')
-    if (setting.get('view.show_siblings'))
-        $('goban').addClass('siblings')
+    $('goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
+    $('goban').toggleClass('animation', setting.get('view.animated_placement'))
+    $('goban').toggleClass('coordinates', setting.get('view.show_coordinates'))
+    $('goban').toggleClass('variations', setting.get('view.show_next_moves'))
+    $('goban').toggleClass('siblings', setting.get('view.show_siblings'))
+
     if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
         setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
+
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         document.body.addClass('sidebar')
         setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
+        setSidebarWidth(setting.get('view.sidebar_width'))
     }
-
-    setSidebarWidth(setting.get('view.sidebar_width'))
 }
 
 function prepareEditTools() {
