@@ -1003,6 +1003,45 @@ function hideIndicator() {
         .store('vertex', null)
 }
 
+function clearConsole() {
+    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
+    $$('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('console').retrieve('scrollbar').update()
+}
+
+function wireLinks(container) {
+    container.getElements('a').addEvent('click', function() {
+        if (this.hasClass('external'))  {
+            if (!shell) {
+                this.target = '_blank'
+                return true
+            }
+
+            shell.openExternal(this.href)
+        } else if (this.hasClass('movenumber')) {
+            var movenumber = +this.get('text').slice(1)
+            setUndoable(true, 'Go Back')
+            goToMainVariation()
+
+            var tp = gametree.navigate(getRootTree(), 0, movenumber)
+            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
+        }
+
+        return false
+    })
+
+    container.getElements('.coord').addEvent('mouseenter', function() {
+        var v = getBoard().coord2vertex(this.get('text'))
+        showIndicator(v)
+    }).addEvent('mouseleave', function() {
+        if (!getFindMode()) hideIndicator()
+    })
+}
+
+/**
+ * Menus
+ */
+
 function openHeaderMenu() {
     var template = [
         {
@@ -1205,71 +1244,60 @@ function openNodeMenu(tree, index, event) {
 }
 
 function openGameMenu(element, event) {
-    var template = [{
-        label: '&Remove',
-        click: function() {
-            var trees = getGameTrees()
+    var template = [
+        {
+            label: '&Remove Game',
+            click: function() {
+                var trees = getGameTrees()
 
-            if (showMessageBox(
-                'Do you really want to remove this game permanently?',
-                'warning',
-                ['Remove Game', 'Cancel'], 1
-            ) == 1) return
+                if (showMessageBox(
+                    'Do you really want to remove this game permanently?',
+                    'warning',
+                    ['Remove Game', 'Cancel'], 1
+                ) == 1) return
 
-            var index = element.getParent('ol').getElements('li div').indexOf(element)
-            var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
+                var index = element.getParent('ol').getElements('li div').indexOf(element)
+                var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
 
-            trees.splice(index, 1)
-            if (trees.length == 0) {
-                trees.push(getEmptyGameTree())
-                closeGameChooser()
+                trees.splice(index, 1)
+                if (trees.length == 0) {
+                    trees.push(getEmptyGameTree())
+                    closeGameChooser()
+                }
+
+                setGameTrees(trees)
+                loadGameFromIndex(0)
+
+                element.getParent().destroy()
+                scrollbar.update()
             }
+        },
+        {
+            label: 'Remove &Other Games',
+            click: function() {
+                if (showMessageBox(
+                    'Do you really want to remove all other games permanently?',
+                    'warning',
+                    ['Remove Game', 'Cancel'], 1
+                ) == 1) return
 
-            setGameTrees(trees)
-            loadGameFromIndex(0)
+                setGameTrees([element.getParent('li').retrieve('gametree')])
+                loadGameFromIndex(0)
 
-            element.getParent().destroy()
-            scrollbar.update()
+                element.getParent('.games-list').getElements('li div').filter(function(el) {
+                    return el != element
+                }).forEach(function(el) {
+                    el.getParent('li').destroy()
+                })
+
+                var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
+                scrollbar.update()
+            }
         }
-    }]
+    ]
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
-}
-
-function clearConsole() {
-    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
-    $$('#console .inner form:last-child input')[0].set('value', '').focus()
-    $('console').retrieve('scrollbar').update()
-}
-
-function wireLinks(container) {
-    container.getElements('a').addEvent('click', function() {
-        if (this.hasClass('external'))  {
-            if (!shell) {
-                this.target = '_blank'
-                return true
-            }
-
-            shell.openExternal(this.href)
-        } else if (this.hasClass('movenumber')) {
-            var movenumber = +this.get('text').slice(1)
-            setUndoable(true, 'Go Back')
-            goToMainVariation()
-
-            var tp = gametree.navigate(getRootTree(), 0, movenumber)
-            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
-        }
-
-        return false
-    })
-
-    container.getElements('.coord').addEvent('mouseenter', function() {
-        var v = getBoard().coord2vertex(this.get('text'))
-        showIndicator(v)
-    }).addEvent('mouseleave', function() {
-        if (!getFindMode()) hideIndicator()
-    })
 }
 
 /**
