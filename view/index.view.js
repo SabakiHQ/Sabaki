@@ -1385,11 +1385,7 @@ function showGameChooser(callback) {
     closeDrawers()
 
     $$('#gamechooser > input')[0].set('value', '').focus()
-    $$('#gamechooser ol li:not(.add)').destroy()
-    $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
-        closeGameChooser()
-        callback(getGameTrees().length)
-    })
+    $$('#gamechooser ol')[0].empty()
 
     var trees = getGameTrees()
     var currentTree = getRootTree()
@@ -1404,13 +1400,13 @@ function showGameChooser(callback) {
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
-        $$('#gamechooser ol li.add')[0].grab(li.grab(
+        $$('#gamechooser ol')[0].grab(li.grab(
             new Element('div', { draggable: true })
             .grab(new Element('span'))
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
-        ), 'before')
+        ))
 
         var gamename = li.getElement('span')
         var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
@@ -1435,10 +1431,6 @@ function showGameChooser(callback) {
         })
     }
 
-    var addSvg = $$('#gamechooser ol li.add svg')[0]
-    addSvg.set('width', setting.get('gamechooser.thumbnail_size'))
-    addSvg.set('height', setting.get('gamechooser.thumbnail_size'))
-
     $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()
         if (!$('gamechooser').retrieve('dragging')) return
@@ -1449,7 +1441,7 @@ function showGameChooser(callback) {
         if (x <= middle - 10 && !this.hasClass('insertleft')) {
             $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertleft')
-        } else if (x > middle + 10 && !this.hasClass('insertright') && !this.hasClass('add')) {
+        } else if (x > middle + 10 && !this.hasClass('insertright')) {
             $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertright')
         }
@@ -1469,7 +1461,7 @@ function showGameChooser(callback) {
         if (afterli) afterli.grab(dragged, 'before')
         if (beforeli) beforeli.grab(dragged, 'after')
 
-        setGameTrees($$('#gamechooser ol li:not(.add)').map(function(x) {
+        setGameTrees($$('#gamechooser ol > li').map(function(x) {
             return x.retrieve('gametree')
         }))
 
