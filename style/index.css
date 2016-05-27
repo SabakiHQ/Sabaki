@@ -773,6 +773,9 @@ header, #edit, #scoring, #find, #guess {
         padding: 20px;
         text-align: right;
     }
+    #gamechooser button[name="add"] {
+        float: left;
+    }
     #gamechooser .games-list {
         position: absolute;
         top: 76px;
