@@ -364,7 +364,7 @@ function loadSettings() {
     $$('head link.userstyle').set('href', setting.stylesPath)
 
     $('goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
-    $('goban').toggleClass('animation', setting.get('view.animated_placement'))
+    $('goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
     $('goban').toggleClass('coordinates', setting.get('view.show_coordinates'))
     $('goban').toggleClass('variations', setting.get('view.show_next_moves'))
     $('goban').toggleClass('siblings', setting.get('view.show_siblings'))
