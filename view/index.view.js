@@ -53,6 +53,15 @@ function setFuzzyStonePlacement(fuzzy) {
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
+function getAnimatedStonePlacement() {
+    return $('goban').hasClass('animation')
+}
+
+function setAnimatedStonePlacement(animate) {
+    $('goban').toggleClass('animation', animate)
+    setting.set('view.animate_stone_placement', animate)
+}
+
 function getShowCoordinates() {
     return $('goban').hasClass('coordinates')
 }
