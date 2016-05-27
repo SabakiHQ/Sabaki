@@ -1595,6 +1595,7 @@ function commitPreferences() {
 
     remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
     setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
+    setAnimatedStonePlacement(setting.get('view.animated_stone_placement'))
 
     // Save engines
 
