@@ -1278,7 +1278,7 @@ function openGameMenu(element, event) {
                 if (showMessageBox(
                     'Do you really want to remove all other games permanently?',
                     'warning',
-                    ['Remove Game', 'Cancel'], 1
+                    ['Remove Games', 'Cancel'], 1
                 ) == 1) return
 
                 setGameTrees([element.getParent('li').retrieve('gametree')])
@@ -1296,8 +1296,24 @@ function openGameMenu(element, event) {
         }
     ]
 
-    menu = Menu.buildFromTemplate(template)
+    var menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
+}
+
+function openAddGameMenu() {
+    var template = [
+        {
+            label: 'Add &New Game'
+        },
+        {
+            label: 'Add &Existing File…'
+        }
+    ]
+
+    var menu = Menu.buildFromTemplate(template)
+    var button = $('gamechooser').getElement('button[name="add"]')
+    var position = button.getPosition()
+    menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.getSize().y))
 }
 
 /**
