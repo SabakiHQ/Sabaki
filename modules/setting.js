@@ -94,10 +94,10 @@ var defaults = {
     'view.leftsidebar_minwidth': 100,
     'view.sidebar_width': 200,
     'view.sidebar_minwidth': 100,
-    'window.height': 622,
+    'window.height': 604,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 578
+    'window.width': 564
 }
 
 context.load = function() {
