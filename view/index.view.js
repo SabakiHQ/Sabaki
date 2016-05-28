@@ -1267,7 +1267,7 @@ function openGameMenu(element, event) {
                     closeGameChooser()
                 } else {
                     setGameIndex(0)
-                    showGameChooser()
+                    showGameChooser(true)
                 }
             }
         },
@@ -1282,7 +1282,7 @@ function openGameMenu(element, event) {
 
                 setGameTrees([element.getParent('li').retrieve('gametree')])
                 setGameIndex(0)
-                showGameChooser()
+                showGameChooser(true)
             }
         }
     ]
@@ -1300,7 +1300,7 @@ function openAddGameMenu() {
 
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
-                showGameChooser()
+                showGameChooser(true)
             }
         },
         {
@@ -1316,7 +1316,7 @@ function openAddGameMenu() {
 
                 setGameTrees(getGameTrees().concat(trees))
                 setGameIndex(getGameIndex())
-                showGameChooser()
+                showGameChooser(true)
             }
         }
     ]
@@ -1426,10 +1426,11 @@ function closePreferences() {
     document.activeElement.blur()
 }
 
-function showGameChooser(callback) {
-    if (!callback) callback = function(index) {
-        setGameIndex(index)
-    }
+function showGameChooser(restoreScrollbarPos) {
+    if (restoreScrollbarPos == null)
+        restoreScrollbarPos = true
+
+    var scrollbarPos = restoreScrollbarPos ? $$('#gamechooser .gm-scroll-view')[0].scrollTop : 0
 
     closeDrawers()
 
@@ -1470,7 +1471,7 @@ function showGameChooser(callback) {
             var link = this
             closeGameChooser()
             setTimeout(function() {
-                callback($$('#gamechooser ol li div').indexOf(link))
+                setGameIndex($$('#gamechooser ol li div').indexOf(link))
             }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
@@ -1520,7 +1521,7 @@ function showGameChooser(callback) {
 
     $('gamechooser').addClass('show')
     window.fireEvent('resize')
-    $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
+    $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
 }
 
 function closeGameChooser() {
