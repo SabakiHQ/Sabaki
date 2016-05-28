@@ -40,7 +40,14 @@ function getGameIndex() {
 }
 
 function setGameIndex(index) {
+    var trees = getGameTrees()
     document.body.store('gameindex', index)
+
+    setGameTrees(trees)
+    setRootTree(trees[index])
+    updateTitle()
+    setUndoable(false)
+    if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
 function getRootTree() {
@@ -1764,24 +1771,13 @@ function newFile(playSound) {
     closeDrawers()
     setGameTrees([getEmptyGameTree()])
     setRepresentedFilename(null)
-    loadGameFromIndex(0)
+    setGameIndex(0)
     updateFileHash()
 
     if (playSound) {
         sound.playNewGame()
         showGameInfo()
     }
-}
-
-function loadGameFromIndex(index) {
-    var trees = getGameTrees()
-
-    setGameTrees(trees)
-    setGameIndex(index)
-    setRootTree(trees[index])
-    updateTitle()
-    setUndoable(false)
-    if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
 function loadFile(filename) {
@@ -1823,7 +1819,7 @@ function loadFileFromSgf(content, dontask, callback) {
             if (trees.length == 0) throw true
 
             setGameTrees(trees)
-            loadGameFromIndex(0)
+            setGameIndex(0)
             updateFileHash()
 
             if (trees.length > 1)

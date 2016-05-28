@@ -1263,10 +1263,10 @@ function openGameMenu(element, event) {
 
                 if (trees.length == 0) {
                     trees.push(getEmptyGameTree())
-                    loadGameFromIndex(0)
+                    setGameIndex(0)
                     closeGameChooser()
                 } else {
-                    loadGameFromIndex(0)
+                    setGameIndex(0)
                     showGameChooser()
                 }
             }
@@ -1281,7 +1281,7 @@ function openGameMenu(element, event) {
                 ) == 1) return
 
                 setGameTrees([element.getParent('li').retrieve('gametree')])
-                loadGameFromIndex(0)
+                setGameIndex(0)
                 showGameChooser()
             }
         }
@@ -1298,7 +1298,7 @@ function openAddGameMenu() {
             click: function() {
                 var tree = getEmptyGameTree()
                 setGameTrees(getGameTrees().concat([tree]))
-                loadGameFromIndex(getGameTrees().length - 1)
+                setGameIndex(getGameTrees().length - 1)
                 showGameChooser()
             }
         },
@@ -1414,7 +1414,7 @@ function closePreferences() {
 
 function showGameChooser(callback) {
     if (!callback) callback = function(index) {
-        loadGameFromIndex(index)
+        setGameIndex(index)
     }
 
     closeDrawers()
@@ -1502,7 +1502,6 @@ function showGameChooser(callback) {
 
         var newindex = getGameTrees().indexOf(currentTree)
         setGameIndex(newindex)
-        updateTitle()
     })
 
     $('gamechooser').addClass('show')
