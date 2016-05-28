@@ -555,24 +555,28 @@ function getCurrentMoveInterpretation() {
 function prepareScrollbars() {
     $('properties').store('scrollbar', new GeminiScrollbar({
         element: $('properties'),
-        createElements: false
+        createElements: false,
+        foreGemini: true
     }).create())
 
     $('console').store('scrollbar', new GeminiScrollbar({
         element: $('console'),
-        createElements: false
+        createElements: false,
+        foreGemini: true
     }).create())
 
     var enginesList = $$('#preferences .engines-list')[0]
     enginesList.store('scrollbar', new GeminiScrollbar({
         element: enginesList,
-        createElements: false
+        createElements: false,
+        foreGemini: true
     }).create())
 
     var gamesList = $$('#gamechooser .games-list')[0]
     gamesList.store('scrollbar', new GeminiScrollbar({
         element: gamesList,
-        createElements: false
+        createElements: false,
+        foreGemini: true
     }).create())
 
     window.addEvent('resize', function() {
