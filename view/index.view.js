@@ -556,27 +556,27 @@ function prepareScrollbars() {
     $('properties').store('scrollbar', new GeminiScrollbar({
         element: $('properties'),
         createElements: false,
-        foreGemini: true
+        forceGemini: true
     }).create())
 
     $('console').store('scrollbar', new GeminiScrollbar({
         element: $('console'),
         createElements: false,
-        foreGemini: true
+        forceGemini: true
     }).create())
 
     var enginesList = $$('#preferences .engines-list')[0]
     enginesList.store('scrollbar', new GeminiScrollbar({
         element: enginesList,
         createElements: false,
-        foreGemini: true
+        forceGemini: true
     }).create())
 
     var gamesList = $$('#gamechooser .games-list')[0]
     gamesList.store('scrollbar', new GeminiScrollbar({
         element: gamesList,
         createElements: false,
-        foreGemini: true
+        forceGemini: true
     }).create())
 
     window.addEvent('resize', function() {
