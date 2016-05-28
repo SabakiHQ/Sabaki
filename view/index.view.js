@@ -1257,19 +1257,18 @@ function openGameMenu(element, event) {
                 ) == 1) return
 
                 var index = element.getParent('ol').getElements('li div').indexOf(element)
-                var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
-
                 trees.splice(index, 1)
-                if (trees.length == 0) {
-                    trees.push(getEmptyGameTree())
-                    closeGameChooser()
-                }
 
                 setGameTrees(trees)
-                loadGameFromIndex(0)
 
-                element.getParent().destroy()
-                scrollbar.update()
+                if (trees.length == 0) {
+                    trees.push(getEmptyGameTree())
+                    loadGameFromIndex(0)
+                    closeGameChooser()
+                } else {
+                    loadGameFromIndex(0)
+                    showGameChooser()
+                }
             }
         },
         {
@@ -1283,15 +1282,7 @@ function openGameMenu(element, event) {
 
                 setGameTrees([element.getParent('li').retrieve('gametree')])
                 loadGameFromIndex(0)
-
-                element.getParent('.games-list').getElements('li div').filter(function(el) {
-                    return el != element
-                }).forEach(function(el) {
-                    el.getParent('li').destroy()
-                })
-
-                var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
-                scrollbar.update()
+                showGameChooser()
             }
         }
     ]
@@ -1303,7 +1294,13 @@ function openGameMenu(element, event) {
 function openAddGameMenu() {
     var template = [
         {
-            label: 'Add &New Game'
+            label: 'Add &New Game',
+            click: function() {
+                var tree = getEmptyGameTree()
+                setGameTrees(getGameTrees().concat([tree]))
+                loadGameFromIndex(getGameTrees().length - 1)
+                showGameChooser()
+            }
         },
         {
             label: 'Add &Existing File…'
@@ -1417,12 +1414,6 @@ function closePreferences() {
 
 function showGameChooser(callback) {
     if (!callback) callback = function(index) {
-        if (index == getGameTrees().length) {
-            var tree = getEmptyGameTree()
-            closeDrawers()
-            setGameTrees(getGameTrees().concat([tree]))
-        }
-
         loadGameFromIndex(index)
     }
 
@@ -1514,11 +1505,9 @@ function showGameChooser(callback) {
         updateTitle()
     })
 
-    setTimeout(function() {
-        $('gamechooser').addClass('show')
-        window.fireEvent('resize')
-        $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
-    }, setting.get('gamechooser.show_delay'))
+    $('gamechooser').addClass('show')
+    window.fireEvent('resize')
+    $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
 }
 
 function closeGameChooser() {

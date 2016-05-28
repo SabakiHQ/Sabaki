@@ -1826,7 +1826,8 @@ function loadFileFromSgf(content, dontask, callback) {
             loadGameFromIndex(0)
             updateFileHash()
 
-            if (trees.length > 1) showGameChooser()
+            if (trees.length > 1)
+                setTimeout(showGameChooser, setting.get('gamechooser.show_delay'))
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
             error = true
