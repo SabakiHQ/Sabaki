@@ -1297,13 +1297,27 @@ function openAddGameMenu() {
             label: 'Add &New Game',
             click: function() {
                 var tree = getEmptyGameTree()
+
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
                 showGameChooser()
             }
         },
         {
-            label: 'Add &Existing File…'
+            label: 'Add &Existing File…',
+            click: function() {
+                var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                    filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+                })
+
+                if (!filename) return
+                else filename = filename[0]
+                var trees = sgf.parseFile(filename).subtrees
+
+                setGameTrees(getGameTrees().concat(trees))
+                setGameIndex(getGameIndex())
+                showGameChooser()
+            }
         }
     ]
 
