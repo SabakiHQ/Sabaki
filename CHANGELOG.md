@@ -12,7 +12,8 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Current stone markers resize with board
-* Update to Electron v1.1.1
+* Change 'Go To Beginning' and 'Go To End' keyboard shortcuts to `Home`/`End`
+* Update to Electron v1.1.3
 
 **Fixed**
 

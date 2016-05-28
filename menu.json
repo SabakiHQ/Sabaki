@@ -204,12 +204,12 @@
             { "type": "separator" },
             {
                 "label": "Go To Be&ginning",
-                "accelerator": "CmdOrCtrl+Home",
+                "accelerator": "Home",
                 "action": "gotobeginning"
             },
             {
                 "label": "Go To &End",
-                "accelerator": "CmdOrCtrl+End",
+                "accelerator": "End",
                 "action": "gotoend"
             },
             { "type": "separator" },
