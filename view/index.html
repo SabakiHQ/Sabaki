@@ -300,9 +300,9 @@
 <section id="preferences">
     <ul class="tabs">
         <li class="current">
-            <a href="#" onclick="setPreferencesTab('general'); return false" class="general">General</a>
+            <a href="#" onclick="return setPreferencesTab('general')" class="general">General</a>
         </li><li>
-            <a href="#" onclick="setPreferencesTab('engines'); return false" class="engines">Engines</a>
+            <a href="#" onclick="return setPreferencesTab('engines')" class="engines">Engines</a>
         </li>
     </ul>
 
@@ -320,6 +320,11 @@
             <ul>
                 <li><label><input type="checkbox" name="view.fuzzy_stone_placement" />
                     Fuzzy stone placement</label></li>
+                <li><label><input type="checkbox" name="view.animated_stone_placement" />
+                    Animate fuzzy placement</label></li>
+            </ul>
+
+            <ul>
                 <li><label><input type="checkbox" name="game.show_ko_warning" />
                     Show ko warning</label></li>
                 <li><label><input type="checkbox" name="game.show_suicide_warning" />

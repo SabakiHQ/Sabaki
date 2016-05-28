@@ -53,6 +53,15 @@ function setFuzzyStonePlacement(fuzzy) {
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
+function getAnimatedStonePlacement() {
+    return $('goban').hasClass('animation')
+}
+
+function setAnimatedStonePlacement(animate) {
+    $('goban').toggleClass('animation', animate)
+    setting.set('view.animate_stone_placement', animate)
+}
+
 function getShowCoordinates() {
     return $('goban').hasClass('coordinates')
 }
@@ -779,7 +788,7 @@ function showMessageBox(message, type, buttons, cancelId) {
 }
 
 function readjustShifts(vertex) {
-    var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])[0]
+    var li = $$('#goban .pos_' + vertex.join('-'))[0]
     var direction = li.get('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
@@ -789,22 +798,31 @@ function readjustShifts(vertex) {
     if (direction.length == 0) return
     direction = direction[0]
 
+    var query, removeShifts
+
     if (direction == 1 || direction == 5 || direction == 8) {
         // Left
-        $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
-            .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
+        query = '#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1]
+        removeShifts = [3, 7, 6]
     } else if (direction == 2 || direction == 5 || direction == 6) {
         // Top
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
-            .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
+        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1)
+        removeShifts = [4, 7, 8]
     } else if (direction == 3 || direction == 7 || direction == 6) {
         // Right
-        $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
-            .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
+        query = '#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1]
+        removeShifts = [1, 5, 8]
     } else if (direction == 4 || direction == 7 || direction == 8) {
         // Bottom
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
-            .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
+        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1)
+        removeShifts = [2, 5, 6]
+    }
+
+    if (query && removeShifts) {
+        var el = $$(query)
+        el.addClass('animate')
+        removeShifts.forEach(function(s) { el.removeClass('shift_' + s) })
+        setTimeout(function() { el.removeClass('animate') }, 200)
     }
 }
 

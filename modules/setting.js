@@ -82,6 +82,7 @@ var defaults = {
     'sound.enable': true,
     'view.properties_height': 50,
     'view.properties_minheight': 20,
+    'view.animated_stone_placement': true,
     'view.fuzzy_stone_placement': true,
     'view.show_leftsidebar': false,
     'view.show_comments': false,

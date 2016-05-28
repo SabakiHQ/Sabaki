@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Create ASCII diagrams
+* Ability to animate fuzzy placement of stones
 * 'Resign' menu item under 'Pass'
 
 **Changed**
