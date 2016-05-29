@@ -1375,22 +1375,6 @@ function openAddGameMenu() {
                 setGameIndex(getGameTrees().length - 1)
                 showGameChooser(true)
             }
-        },
-        {
-            label: 'Add &Existing File…',
-            click: function() {
-                var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
-                    filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
-                })
-
-                if (!filename) return
-                else filename = filename[0]
-                var trees = sgf.parseFile(filename).subtrees
-
-                setGameTrees(getGameTrees().concat(trees))
-                setGameIndex(getGameIndex())
-                showGameChooser(true)
-            }
         }
     ]
 
