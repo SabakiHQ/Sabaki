@@ -8,10 +8,12 @@ All notable changes to this project will be documented in this file.
 
 * Create ASCII diagrams
 * Ability to animate fuzzy placement of stones
+* Ability to add existing files to SGF collection
 * 'Resign' menu item under 'Pass'
 
 **Changed**
 
+* Board adapts size, looking more natural
 * Current stone markers resize with board
 * Change 'Go To Beginning' and 'Go To End' keyboard shortcuts to `Home`/`End`
 * Update to Electron v1.1.3
