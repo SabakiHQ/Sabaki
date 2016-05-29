@@ -233,7 +233,7 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     while (hasCollisions) {
         hasCollisions = false
 
-        for (var y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+        for (var y = 0; y < Math.min(tree.nodes.length, matrix.length - yshift); y++) {
             if (xshift >= matrix[yshift + y].length) continue
 
             hasCollisions = true
@@ -241,6 +241,10 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
             break
         }
     }
+
+    while (yshift + tree.nodes.length < matrix.length
+    && xshift < matrix[yshift + tree.nodes.length].length - 1)
+        xshift++
 
     for (var y = 0; y < tree.nodes.length; y++) {
         while (xshift >= matrix[yshift + y].length) {
