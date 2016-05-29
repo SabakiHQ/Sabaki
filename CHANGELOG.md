@@ -6,11 +6,15 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Create ASCII diagrams
+* Ability to animate fuzzy placement of stones
 * 'Resign' menu item under 'Pass'
 
 **Changed**
 
 * Current stone markers resize with board
+* Change 'Go To Beginning' and 'Go To End' keyboard shortcuts to `Home`/`End`
+* Update to Electron v1.1.3
 
 **Fixed**
 

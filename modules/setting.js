@@ -81,6 +81,7 @@ var defaults = {
     'sound.capture_delay_min': 300,
     'sound.enable': true,
     'view.properties_height': 50,
+    'view.animated_stone_placement': true,
     'view.properties_minheight': 15,
     'view.fuzzy_stone_placement': true,
     'view.show_leftsidebar': false,
@@ -93,10 +94,10 @@ var defaults = {
     'view.leftsidebar_minwidth': 100,
     'view.sidebar_width': 270,
     'view.sidebar_minwidth': 100,
-    'window.height': 622,
+    'window.height': 604,
     'window.minheight': 590,
     'window.minwidth': 550,
-    'window.width': 578
+    'window.width': 564
 }
 
 context.load = function() {

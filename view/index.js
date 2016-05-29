@@ -1,4 +1,5 @@
 var fs = null
+var process = { argv: { length: -1 }, platform: 'web' }
 var remote = { getCurrentWindow: function() {} }
 var ipcRenderer = { send: function() {} }
 var clipboard = null
@@ -11,7 +12,6 @@ var sound = window.sound
 var helper = window.helper
 var setting = window.setting
 var gtp = null
-var process = { argv: { length: -1 }, platform: 'web' }
 var app = { getName: function() { return 'Sabaki' }, getVersion: function() { return 'web' } }
 var dialog = { showMessageBox: function() {} }
 
@@ -40,7 +40,14 @@ function getGameIndex() {
 }
 
 function setGameIndex(index) {
+    var trees = getGameTrees()
     document.body.store('gameindex', index)
+
+    setGameTrees(trees)
+    setRootTree(trees[index])
+    updateTitle()
+    setUndoable(false)
+    if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
 function getRootTree() {
@@ -363,24 +370,22 @@ function getEmptyGameTree() {
 function loadSettings() {
     $$('head link.userstyle').set('href', setting.stylesPath)
 
-    if (setting.get('view.fuzzy_stone_placement'))
-        $('goban').addClass('fuzzy')
-    if (setting.get('view.show_coordinates'))
-        $('goban').addClass('coordinates')
-    if (setting.get('view.show_next_moves'))
-        $('goban').addClass('variations')
-    if (setting.get('view.show_siblings'))
-        $('goban').addClass('siblings')
+    $('goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
+    $('goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
+    $('goban').toggleClass('coordinates', setting.get('view.show_coordinates'))
+    $('goban').toggleClass('variations', setting.get('view.show_next_moves'))
+    $('goban').toggleClass('siblings', setting.get('view.show_siblings'))
+
     if (setting.get('view.show_leftsidebar')) {
         document.body.addClass('leftsidebar')
         setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
+
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         document.body.addClass('sidebar')
         setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
+        setSidebarWidth(setting.get('view.sidebar_width'))
     }
-
-    setSidebarWidth(setting.get('view.sidebar_width'))
 }
 
 function prepareEditTools() {
@@ -906,8 +911,11 @@ function makeMove(vertex, sendCommand) {
         var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])
         var direction = Math.floor(Math.random() * 9)
 
+        li.addClass('animate')
         for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
         li.addClass('shift_' + direction)
+        setTimeout(function() { li.removeClass('animate') }, 200)
+
         readjustShifts(vertex)
     }
 
@@ -1599,6 +1607,7 @@ function commitPreferences() {
 
     remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
     setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
+    setAnimatedStonePlacement(setting.get('view.animated_stone_placement'))
 
     // Save engines
 
@@ -1769,24 +1778,13 @@ function newFile(playSound) {
     closeDrawers()
     setGameTrees([getEmptyGameTree()])
     setRepresentedFilename(null)
-    loadGameFromIndex(0)
+    setGameIndex(0)
     updateFileHash()
 
     if (playSound) {
         sound.playNewGame()
         showGameInfo()
     }
-}
-
-function loadGameFromIndex(index) {
-    var trees = getGameTrees()
-
-    setGameTrees(trees)
-    setGameIndex(index)
-    setRootTree(trees[index])
-    updateTitle()
-    setUndoable(false)
-    if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
 
 function loadFile(filename) {
@@ -1849,10 +1847,11 @@ function loadFileFromSgf(content, dontask, callback) {
             if (trees.length == 0) throw true
 
             setGameTrees(trees)
-            loadGameFromIndex(0)
+            setGameIndex(0)
             updateFileHash()
 
-            if (trees.length > 1) showGameChooser()
+            if (trees.length > 1)
+                setTimeout(showGameChooser, setting.get('gamechooser.show_delay'))
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
             error = true

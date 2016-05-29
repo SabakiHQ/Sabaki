@@ -11,7 +11,7 @@ main {
         position: absolute;
         left: 50%;
         top: 50%;
-        box-shadow: 0 5px 20px rgba(20, 0, 15, .7);
+        box-shadow: 0 5px 20px rgba(20, 0, 15, .8);
 }
 
 header, #edit, #scoring, #find, #guess {
@@ -726,8 +726,8 @@ header, #edit, #scoring, #find, #guess {
         bottom: -440px;
         height: 400px;
     }
-    #preferences form ul { margin: 0 0 1.5em 0; }
-    #preferences form ul li { margin: 0 0 7px 0; }
+    #preferences form ul { margin: 1.5em 0; }
+    #preferences form ul li { margin: 7px 0; }
     #preferences form > p:last-child {
         position: absolute;
         right: 20px;
@@ -773,6 +773,9 @@ header, #edit, #scoring, #find, #guess {
         right: 0;
         padding: 20px;
         text-align: right;
+    }
+    #gamechooser button[name="add"] {
+        float: left;
     }
     #gamechooser .games-list {
         position: absolute;

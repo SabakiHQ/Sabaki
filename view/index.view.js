@@ -53,6 +53,15 @@ function setFuzzyStonePlacement(fuzzy) {
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
+function getAnimatedStonePlacement() {
+    return $('goban').hasClass('animation')
+}
+
+function setAnimatedStonePlacement(animate) {
+    $('goban').toggleClass('animation', animate)
+    setting.set('view.animate_stone_placement', animate)
+}
+
 function getShowCoordinates() {
     return $('goban').hasClass('coordinates')
 }
@@ -774,7 +783,7 @@ function showMessageBox(message, type, buttons, cancelId) {
 }
 
 function readjustShifts(vertex) {
-    var li = $$('#goban .pos_' + vertex[0] + '-' + vertex[1])[0]
+    var li = $$('#goban .pos_' + vertex.join('-'))[0]
     var direction = li.get('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
@@ -784,22 +793,31 @@ function readjustShifts(vertex) {
     if (direction.length == 0) return
     direction = direction[0]
 
+    var query, removeShifts
+
     if (direction == 1 || direction == 5 || direction == 8) {
         // Left
-        $$('#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1])
-            .removeClass('shift_3').removeClass('shift_7').removeClass('shift_6')
+        query = '#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1]
+        removeShifts = [3, 7, 6]
     } else if (direction == 2 || direction == 5 || direction == 6) {
         // Top
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1))
-            .removeClass('shift_4').removeClass('shift_7').removeClass('shift_8')
+        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1)
+        removeShifts = [4, 7, 8]
     } else if (direction == 3 || direction == 7 || direction == 6) {
         // Right
-        $$('#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1])
-            .removeClass('shift_1').removeClass('shift_5').removeClass('shift_8')
+        query = '#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1]
+        removeShifts = [1, 5, 8]
     } else if (direction == 4 || direction == 7 || direction == 8) {
         // Bottom
-        $$('#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1))
-            .removeClass('shift_2').removeClass('shift_5').removeClass('shift_6')
+        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1)
+        removeShifts = [2, 5, 6]
+    }
+
+    if (query && removeShifts) {
+        var el = $$(query)
+        el.addClass('animate')
+        removeShifts.forEach(function(s) { el.removeClass('shift_' + s) })
+        setTimeout(function() { el.removeClass('animate') }, 200)
     }
 }
 
@@ -997,6 +1015,45 @@ function hideIndicator() {
         .setStyle('left', '')
         .store('vertex', null)
 }
+
+function clearConsole() {
+    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
+    $$('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('console').retrieve('scrollbar').update()
+}
+
+function wireLinks(container) {
+    container.getElements('a').addEvent('click', function() {
+        if (this.hasClass('external'))  {
+            if (!shell) {
+                this.target = '_blank'
+                return true
+            }
+
+            shell.openExternal(this.href)
+        } else if (this.hasClass('movenumber')) {
+            var movenumber = +this.get('text').slice(1)
+            setUndoable(true, 'Go Back')
+            goToMainVariation()
+
+            var tp = gametree.navigate(getRootTree(), 0, movenumber)
+            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
+        }
+
+        return false
+    })
+
+    container.getElements('.coord').addEvent('mouseenter', function() {
+        var v = getBoard().coord2vertex(this.get('text'))
+        showIndicator(v)
+    }).addEvent('mouseleave', function() {
+        if (!getFindMode()) hideIndicator()
+    })
+}
+
+/**
+ * Menus
+ */
 
 function openHeaderMenu() {
     var template = [
@@ -1260,71 +1317,87 @@ function openNodeMenu(tree, index, event) {
 }
 
 function openGameMenu(element, event) {
-    var template = [{
-        label: '&Remove',
-        click: function() {
-            var trees = getGameTrees()
+    var template = [
+        {
+            label: '&Remove Game',
+            click: function() {
+                var trees = getGameTrees()
 
-            if (showMessageBox(
-                'Do you really want to remove this game permanently?',
-                'warning',
-                ['Remove Game', 'Cancel'], 1
-            ) == 1) return
+                if (showMessageBox(
+                    'Do you really want to remove this game permanently?',
+                    'warning',
+                    ['Remove Game', 'Cancel'], 1
+                ) == 1) return
 
-            var index = element.getParent('ol').getElements('li div').indexOf(element)
-            var scrollbar = element.getParent('.games-list').retrieve('scrollbar')
+                var index = element.getParent('ol').getElements('li div').indexOf(element)
+                trees.splice(index, 1)
 
-            trees.splice(index, 1)
-            if (trees.length == 0) {
-                trees.push(getEmptyGameTree())
-                closeGameChooser()
+                setGameTrees(trees)
+
+                if (trees.length == 0) {
+                    trees.push(getEmptyGameTree())
+                    setGameIndex(0)
+                    closeGameChooser()
+                } else {
+                    setGameIndex(0)
+                    showGameChooser(true)
+                }
             }
+        },
+        {
+            label: 'Remove &Other Games',
+            click: function() {
+                if (showMessageBox(
+                    'Do you really want to remove all other games permanently?',
+                    'warning',
+                    ['Remove Games', 'Cancel'], 1
+                ) == 1) return
 
-            setGameTrees(trees)
-            loadGameFromIndex(0)
-
-            element.getParent().destroy()
-            scrollbar.update()
+                setGameTrees([element.getParent('li').retrieve('gametree')])
+                setGameIndex(0)
+                showGameChooser(true)
+            }
         }
-    }]
+    ]
 
-    menu = Menu.buildFromTemplate(template)
+    var menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
-function clearConsole() {
-    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
-    $$('#console .inner form:last-child input')[0].set('value', '').focus()
-    $('console').retrieve('scrollbar').update()
-}
+function openAddGameMenu() {
+    var template = [
+        {
+            label: 'Add &New Game',
+            click: function() {
+                var tree = getEmptyGameTree()
 
-function wireLinks(container) {
-    container.getElements('a').addEvent('click', function() {
-        if (this.hasClass('external'))  {
-            if (!shell) {
-                this.target = '_blank'
-                return true
+                setGameTrees(getGameTrees().concat([tree]))
+                setGameIndex(getGameTrees().length - 1)
+                showGameChooser(true)
             }
+        },
+        {
+            label: 'Add &Existing File…',
+            click: function() {
+                var filename = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                    filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+                })
 
-            shell.openExternal(this.href)
-        } else if (this.hasClass('movenumber')) {
-            var movenumber = +this.get('text').slice(1)
-            setUndoable(true, 'Go Back')
-            goToMainVariation()
+                if (!filename) return
+                else filename = filename[0]
+                var trees = sgf.parseFile(filename).subtrees
 
-            var tp = gametree.navigate(getRootTree(), 0, movenumber)
-            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
+                setGameTrees(getGameTrees().concat(trees))
+                setGameIndex(getGameIndex())
+                showGameChooser(true)
+            }
         }
+    ]
 
-        return false
-    })
-
-    container.getElements('.coord').addEvent('mouseenter', function() {
-        var v = getBoard().coord2vertex(this.get('text'))
-        showIndicator(v)
-    }).addEvent('mouseleave', function() {
-        if (!getFindMode()) hideIndicator()
-    })
+    var menu = Menu.buildFromTemplate(template)
+    var button = $('gamechooser').getElement('button[name="add"]')
+    var position = button.getPosition()
+    menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.getSize().y))
 }
 
 /**
@@ -1426,25 +1499,16 @@ function closePreferences() {
     document.activeElement.blur()
 }
 
-function showGameChooser(callback) {
-    if (!callback) callback = function(index) {
-        if (index == getGameTrees().length) {
-            var tree = getEmptyGameTree()
-            closeDrawers()
-            setGameTrees(getGameTrees().concat([tree]))
-        }
+function showGameChooser(restoreScrollbarPos) {
+    if (restoreScrollbarPos == null)
+        restoreScrollbarPos = true
 
-        loadGameFromIndex(index)
-    }
+    var scrollbarPos = restoreScrollbarPos ? $$('#gamechooser .gm-scroll-view')[0].scrollTop : 0
 
     closeDrawers()
 
     $$('#gamechooser > input')[0].set('value', '').focus()
-    $$('#gamechooser ol li:not(.add)').destroy()
-    $$('#gamechooser ol li.add div')[0].removeEvents('click').addEvent('click', function() {
-        closeGameChooser()
-        callback(getGameTrees().length)
-    })
+    $$('#gamechooser ol')[0].empty()
 
     var trees = getGameTrees()
     var currentTree = getRootTree()
@@ -1459,13 +1523,13 @@ function showGameChooser(callback) {
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
-        $$('#gamechooser ol li.add')[0].grab(li.grab(
+        $$('#gamechooser ol')[0].grab(li.grab(
             new Element('div', { draggable: true })
             .grab(new Element('span'))
             .grab(svg)
             .grab(new Element('span.black', { text: 'Black' }))
             .grab(new Element('span.white', { text: 'White' }))
-        ), 'before')
+        ))
 
         var gamename = li.getElement('span')
         var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
@@ -1480,7 +1544,7 @@ function showGameChooser(callback) {
             var link = this
             closeGameChooser()
             setTimeout(function() {
-                callback($$('#gamechooser ol li div').indexOf(link))
+                setGameIndex($$('#gamechooser ol li div').indexOf(link))
             }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
@@ -1489,10 +1553,6 @@ function showGameChooser(callback) {
             $('gamechooser').store('dragging', this.getParent('li'))
         })
     }
-
-    var addSvg = $$('#gamechooser ol li.add svg')[0]
-    addSvg.set('width', setting.get('gamechooser.thumbnail_size'))
-    addSvg.set('height', setting.get('gamechooser.thumbnail_size'))
 
     $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()
@@ -1504,7 +1564,7 @@ function showGameChooser(callback) {
         if (x <= middle - 10 && !this.hasClass('insertleft')) {
             $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertleft')
-        } else if (x > middle + 10 && !this.hasClass('insertright') && !this.hasClass('add')) {
+        } else if (x > middle + 10 && !this.hasClass('insertright')) {
             $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertright')
         }
@@ -1524,20 +1584,17 @@ function showGameChooser(callback) {
         if (afterli) afterli.grab(dragged, 'before')
         if (beforeli) beforeli.grab(dragged, 'after')
 
-        setGameTrees($$('#gamechooser ol li:not(.add)').map(function(x) {
+        setGameTrees($$('#gamechooser ol > li').map(function(x) {
             return x.retrieve('gametree')
         }))
 
         var newindex = getGameTrees().indexOf(currentTree)
         setGameIndex(newindex)
-        updateTitle()
     })
 
-    setTimeout(function() {
-        $('gamechooser').addClass('show')
-        window.fireEvent('resize')
-        $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, 0)
-    }, setting.get('gamechooser.show_delay'))
+    $('gamechooser').addClass('show')
+    window.fireEvent('resize')
+    $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
 }
 
 function closeGameChooser() {

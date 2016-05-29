@@ -313,9 +313,9 @@
 <section id="preferences">
     <ul class="tabs">
         <li class="current">
-            <a href="#" onclick="setPreferencesTab('general'); return false" class="general">General</a>
+            <a href="#" onclick="return setPreferencesTab('general')" class="general">General</a>
         </li><li>
-            <a href="#" onclick="setPreferencesTab('engines'); return false" class="engines">Engines</a>
+            <a href="#" onclick="return setPreferencesTab('engines')" class="engines">Engines</a>
         </li>
     </ul>
 
@@ -333,6 +333,11 @@
             <ul>
                 <li><label><input type="checkbox" name="view.fuzzy_stone_placement" />
                     Fuzzy stone placement</label></li>
+                <li><label><input type="checkbox" name="view.animated_stone_placement" />
+                    Animate fuzzy placement</label></li>
+            </ul>
+
+            <ul>
                 <li><label><input type="checkbox" name="game.show_ko_warning" />
                     Show ko warning</label></li>
                 <li><label><input type="checkbox" name="game.show_suicide_warning" />
@@ -374,23 +379,12 @@
         <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
         <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
         <div class="gm-scroll-view">
-            <ol>
-                <li class="add">
-                    <div>
-                        <span></span>
-                        <svg width="153" height="153">
-                            <line x1="50%" y1="25%" x2="50%" y2="75%" stroke="#393939" stroke-width="5" />
-                            <line y1="50%" x1="25%" y2="50%" x2="75%" stroke="#393939" stroke-width="5" />
-                        </svg>
-                        <span>Add Game</span>
-                        <span></span>
-                    </div>
-                </li>
-            </ol>
+            <ol></ol>
         </div>
     </div>
 
     <p>
+        <button type="button" class="dropdown" name="add" onclick="openAddGameMenu()">Add</button>
         <button type="button" onclick="closeGameChooser()">Close</button>
     </p>
 </section>

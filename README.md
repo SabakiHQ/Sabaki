@@ -18,7 +18,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 - Scoring tool
 - Find move
 - Position & move annotations
-- GTP engines support
+- [GTP engines](https://github.com/yishn/Sabaki/wiki/Engines) support
 - Guess mode
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
