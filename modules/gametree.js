@@ -234,7 +234,7 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
         hasCollisions = false
 
         for (var y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length) continue
+            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
 
             hasCollisions = true
             xshift++
