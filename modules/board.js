@@ -209,7 +209,7 @@ Board.prototype = {
             else if (self.arrangement[v] == 0) min++
             else min = Infinity
 
-            map[v] = v in map ? Math.min(min, map[v]) : min
+            map[v] = min = v in map ? Math.min(min, map[v]) : min
         }
 
         for (var y = 0; y < self.height; y++) {
