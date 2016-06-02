@@ -51,6 +51,30 @@ Board.prototype = {
         return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
     },
 
+    getPathDistance: function(v, w, colors) {
+        if (!this.hasVertex(v) || !this.hasVertex(w)) return -1
+
+        var self = this
+        var stack = [[v, 0]]
+        var visited = {}
+
+        while (stack.length > 0) {
+            var tuple = stack.shift()
+            var active = tuple[0], d = tuple[1]
+
+            visited[active] = true
+            if (active[0] == w[0] && active[1] == w[1]) return d
+
+            stack.push.apply(stack, self.getNeighbors(active).filter(function(x) {
+                return !(x in visited) && colors.indexOf(self.arrangement[x]) >= 0
+            }).map(function(x) {
+                return [x, d + 1]
+            }))
+        }
+
+        return -1
+    },
+
     getDistanceToGround: function(vertex) {
         return this.getCanonicalVertex(vertex)[0]
     },
