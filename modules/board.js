@@ -198,6 +198,65 @@ Board.prototype = {
         return map
     },
 
+    getNearestNeighborMap: function(color) {
+        var map = {}
+        var min = Infinity
+        var self = this
+
+        var f = function(x, y) {
+            var v = [x, y]
+            if (self.arrangement[v] == color) min = 0
+            else if (self.arrangement[v] == 0) min++
+            else min = Infinity
+
+            map[v] = v in map ? Math.min(min, map[v]) : min
+        }
+
+        for (var y = 0; y < self.height; y++) {
+            min = Infinity
+
+            for (var x = 0; x < self.width; x++) {
+                var old = Infinity
+
+                for (var ny = y; ny < self.height; ny++) {
+                    f(x, ny)
+                    if (ny == y) old = min
+                }
+
+                min = old
+
+                for (var ny = y - 1; ny >= 0; ny--) {
+                    f(x, ny)
+                }
+
+                min = old
+            }
+        }
+
+        for (var y = self.height - 1; y >= 0; y--) {
+            min = Infinity
+
+            for (var x = self.width - 1; x >= 0; x--) {
+                var old = Infinity
+
+                for (var ny = y; ny < self.height; ny++) {
+                    f(x, ny)
+                    if (ny == y) old = min
+                }
+
+                min = old
+
+                for (var ny = y - 1; ny >= 0; ny--) {
+                    f(x, ny)
+                }
+
+                min = old
+            }
+        }
+
+        return map
+    },
+
     getScore: function(areaMap) {
         var score = {}
 
