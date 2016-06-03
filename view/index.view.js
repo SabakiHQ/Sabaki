@@ -1421,8 +1421,6 @@ function showScore() {
 
 function closeScore() {
     $('score').removeClass('show')
-    document.activeElement.blur()
-    setScoringMode(false)
 }
 
 function showPreferences() {
