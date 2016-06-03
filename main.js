@@ -29,7 +29,6 @@ function newWindow(path) {
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents.on('did-finish-load', function() {
-        window.setBackgroundColor('#111')
         if (path) window.webContents.send('load-file', path)
     }).on('new-window', function(e) {
         e.preventDefault()
