@@ -152,12 +152,14 @@ Board.prototype = {
     },
 
     getRelatedChains: function(vertex) {
-        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
+        // if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
+        //
+        // var area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
+        // return area.filter(function(v) {
+        //     return this.arrangement[v] == this.arrangement[vertex]
+        // }, this)
 
-        var area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
-        return area.filter(function(v) {
-            return this.arrangement[v] == this.arrangement[vertex]
-        }, this)
+        return this.getChain(vertex)
     },
 
     getAreaMap: function() {

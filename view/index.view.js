@@ -402,10 +402,10 @@ function setScoringMode(scoringMode) {
         closeDrawers()
         document.body.addClass('scoring')
 
-        var deadstones = getBoard().guessDeadStones()
-        deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-        })
+        // var deadstones = getBoard().guessDeadStones()
+        // deadstones.forEach(function(v) {
+        //     $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+        // })
 
         updateAreaMap()
     } else {
