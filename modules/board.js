@@ -205,18 +205,24 @@ Board.prototype = {
 
     getAreaEstimateMap: function() {
         var self = this
-        var map = self.getAreaMap()
+        var map = {}
 
         var pnnmap = self.getNearestNeighborMap(1)
         var nnnmap = self.getNearestNeighborMap(-1)
+        var pimap = self.getInfluenceMap(1)
+        var nimap = self.getInfluenceMap(-1)
 
         for (var x = 0; x < self.width; x++) {
             for (var y = 0; y < self.height; y++) {
                 var v = [x, y]
-                if (self.arrangement[v] != 0) continue
-                
+                if (self.arrangement[v] != 0) {
+                    map[v] = self.arrangement[v]
+                    continue
+                }
+
                 var s = Math.sign(nnnmap[v] - pnnmap[v])
-                if (s > 0 && pnnmap[v] > 6 || s < 0 && nnnmap[v] > 6)
+                if (s > 0 && pnnmap[v] > 6 || s < 0 && nnnmap[v] > 6
+                || s > 0 && Math.round(pimap[v]) < 2 || s < 0 && Math.round(nimap[v]) < 2)
                     s = 0
 
                 map[v] = s
