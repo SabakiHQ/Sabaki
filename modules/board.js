@@ -294,6 +294,7 @@ Board.prototype = {
     getInfluenceMap: function(sign) {
         var self = this
         var map = {}
+        var done = {}
 
         // Initialize
 
@@ -323,8 +324,8 @@ Board.prototype = {
             return [x, y]
         }
 
-        var castInfluence = function(vertex, distance) {
-            var stack = [[vertex, 0]]
+        var castInfluence = function(chain, distance) {
+            var stack = chain.map(function(x) { return [x, 0] })
             var visited = {}
 
             while (stack.length > 0) {
@@ -333,7 +334,12 @@ Board.prototype = {
 
                 if (v in visited) continue
                 visited[v] = true
-                map[getVertex(v)] += 1.5 / (d / 2 + 1)
+
+                if (!self.hasVertex(v)) {
+                    map[getVertex(v)] += 2
+                } else {
+                    map[v] += 1.5 / (d / distance * 6 + 1)
+                }
 
                 stack.push.apply(stack, self.getNeighbors(v, true).filter(function(x) {
                     return d + 1 <= distance
@@ -348,8 +354,11 @@ Board.prototype = {
         for (var x = 0; x < self.width; x++) {
             for (var y = 0; y < self.height; y++) {
                 var v = [x, y]
-                if (self.arrangement[v] != sign) continue
-                castInfluence(v, 6)
+                if (v in done || self.arrangement[v] != sign) continue
+                var chain = self.getChain(v)
+
+                chain.forEach(function(x) { done[x] = true })
+                castInfluence(chain, 6)
             }
         }
 
