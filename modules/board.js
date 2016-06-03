@@ -105,14 +105,16 @@ Board.prototype = {
         })
     },
 
-    getNeighbors: function(vertex) {
+    getNeighbors: function(vertex, ignoreBoard) {
         var self = this
-        if (!self.hasVertex(vertex)) return []
+        if (!ignoreBoard && !self.hasVertex(vertex)) return []
         var x = vertex[0], y = vertex[1]
 
         return [
             [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(self.hasVertex.bind(self))
+        ].filter(function(v) {
+            return ignoreBoard || self.hasVertex(v)
+        })
     },
 
     getConnectedComponent: function(vertex, colors, result) {
