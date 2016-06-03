@@ -62,6 +62,7 @@ Board.prototype = {
             var tuple = stack.shift()
             var active = tuple[0], d = tuple[1]
 
+            if (active in visited) continue
             visited[active] = true
             if (active[0] == w[0] && active[1] == w[1]) return d
 
