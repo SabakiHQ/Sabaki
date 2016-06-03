@@ -198,6 +198,23 @@ Board.prototype = {
         return map
     },
 
+    getAreaEstimateMap: function() {
+        var self = this
+        var map = {}
+
+        var pnnmap = self.getNearestNeighborMap(1)
+        var nnnmap = self.getNearestNeighborMap(-1)
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                map[v] = Math.sign(nnnmap[v] - pnnmap[v])
+            }
+        }
+
+        return map
+    },
+
     getNearestNeighborMap: function(color) {
         var map = {}
         var min = Infinity

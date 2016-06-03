@@ -1461,7 +1461,7 @@ function updateAreaMap() {
         board.arrangement[li.retrieve('vertex')] = 0
     })
 
-    var map = board.getAreaMap()
+    var map = board.getAreaEstimateMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
