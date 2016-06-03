@@ -226,14 +226,14 @@ Board.prototype = {
         return map
     },
 
-    getNearestNeighborMap: function(color) {
+    getNearestNeighborMap: function(sign) {
         var map = {}
         var min = Infinity
         var self = this
 
         var f = function(x, y) {
             var v = [x, y]
-            if (self.arrangement[v] == color) min = 0
+            if (self.arrangement[v] == sign) min = 0
             else if (self.arrangement[v] == 0) min++
             else min = Infinity
 
@@ -279,6 +279,71 @@ Board.prototype = {
                 }
 
                 min = old
+            }
+        }
+
+        return map
+    },
+
+    getInfluenceMap: function(sign) {
+        var self = this
+        var map = {}
+
+        // Initialize
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                map[[x, y]] = 0
+            }
+        }
+
+        // Cast influence
+
+        var getVertex = function(v) {
+            if (self.hasVertex(v)) return v
+
+            var x = v[0], y = v[1]
+
+            if (x < 0)
+                x = -x - 1
+            else if (x >= self.width)
+                x = 2 * self.width - x - 1
+
+            if (y < 0)
+                y = -y - 1
+            else if (y >= self.height)
+                y = 2 * self.height - y - 1
+
+            return [x, y]
+        }
+
+        var castInfluence = function(vertex, distance) {
+            var stack = [[vertex, 0]]
+            var visited = {}
+
+            while (stack.length > 0) {
+                var tuple = stack.shift()
+                var v = tuple[0], d = tuple[1]
+
+                if (v in visited) continue
+                visited[v] = true
+                map[getVertex(v)] += 1.5 / (d / 2 + 1)
+
+                stack.push.apply(stack, self.getNeighbors(v, true).filter(function(x) {
+                    return d + 1 <= distance
+                    && self.arrangement[x] != -sign
+                    && !(x in visited)
+                }).map(function(x) {
+                    return [x, d + 1]
+                }))
+            }
+        }
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                if (self.arrangement[v] != sign) continue
+                castInfluence(v, 6)
             }
         }
 
