@@ -205,7 +205,7 @@ Board.prototype = {
 
     getAreaEstimateMap: function() {
         var self = this
-        var map = {}
+        var map = self.getAreaMap()
 
         var pnnmap = self.getNearestNeighborMap(1)
         var nnnmap = self.getNearestNeighborMap(-1)
@@ -215,10 +215,7 @@ Board.prototype = {
         for (var x = 0; x < self.width; x++) {
             for (var y = 0; y < self.height; y++) {
                 var v = [x, y]
-                if (self.arrangement[v] != 0) {
-                    map[v] = self.arrangement[v]
-                    continue
-                }
+                if (map[v] != 0) continue
 
                 var s = Math.sign(nnnmap[v] - pnnmap[v])
                 if (s > 0 && pnnmap[v] > 6 || s < 0 && nnnmap[v] > 6
@@ -334,12 +331,7 @@ Board.prototype = {
 
                 if (v in visited) continue
                 visited[v] = true
-
-                if (!self.hasVertex(v)) {
-                    map[getVertex(v)] += 2
-                } else {
-                    map[v] += 1.5 / (d / distance * 6 + 1)
-                }
+                map[getVertex(v)] += !self.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
                 stack.push.apply(stack, self.getNeighbors(v, true).filter(function(x) {
                     return d + 1 <= distance
