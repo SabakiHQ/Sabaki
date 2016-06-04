@@ -247,17 +247,13 @@ Board.prototype = {
             for (var x = 0; x < self.width; x++) {
                 var old = Infinity
 
-                for (var ny = y; ny < self.height; ny++) {
-                    f(x, ny)
-                    if (ny == y) old = min
-                }
+                f(x, y)
+                old = min
 
+                for (var ny = y + 1; ny < self.height; ny++) f(x, ny)
                 min = old
 
-                for (var ny = y - 1; ny >= 0; ny--) {
-                    f(x, ny)
-                }
-
+                for (var ny = y - 1; ny >= 0; ny--) f(x, ny)
                 min = old
             }
         }
@@ -268,17 +264,13 @@ Board.prototype = {
             for (var x = self.width - 1; x >= 0; x--) {
                 var old = Infinity
 
-                for (var ny = y; ny < self.height; ny++) {
-                    f(x, ny)
-                    if (ny == y) old = min
-                }
+                f(x, y)
+                old = min
 
+                for (var ny = y + 1; ny < self.height; ny++) f(x, ny)
                 min = old
 
-                for (var ny = y - 1; ny >= 0; ny--) {
-                    f(x, ny)
-                }
-
+                for (var ny = y - 1; ny >= 0; ny--) f(x, ny)
                 min = old
             }
         }
