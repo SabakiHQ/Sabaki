@@ -1311,6 +1311,16 @@ function vertexClicked(vertex, event) {
         })
 
         updateAreaMap()
+    } else if (getEstimatorMode()) {
+        if ($('score').hasClass('show')) return
+        if (event.button != 0) return
+        if (getBoard().arrangement[vertex] == 0) return
+
+        getBoard().getChain(vertex).forEach(function(v) {
+            $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
+        })
+
+        updateAreaMap(true)
     } else if (getEditMode()) {
         useTool(vertex, event)
     } else if (getFindMode()) {

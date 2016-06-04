@@ -388,8 +388,8 @@ function getScoringMode() {
     return document.body.hasClass('scoring')
 }
 
-function setScoringMode(scoringMode) {
-    if (scoringMode) {
+function setScoringMode(mode) {
+    if (mode) {
         // Clean board
         $$('#goban .row li')
         .removeClass('area_-1')
@@ -402,14 +402,38 @@ function setScoringMode(scoringMode) {
         closeDrawers()
         document.body.addClass('scoring')
 
-        // var deadstones = getBoard().guessDeadStones()
-        // deadstones.forEach(function(v) {
-        //     $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
-        // })
+        var deadstones = getBoard().guessDeadStones()
+        deadstones.forEach(function(v) {
+            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+        })
 
         updateAreaMap()
     } else {
         document.body.removeClass('scoring')
+    }
+}
+
+function getEstimatorMode() {
+    return document.body.hasClass('estimator')
+}
+
+function setEstimatorMode(mode) {
+    if (mode) {
+        // Clean board
+        $$('#goban .row li')
+        .removeClass('area_-1')
+        .removeClass('area_0')
+        .removeClass('area_1')
+        .removeClass('opacity_6')
+        .removeClass('opacity_3')
+        .removeClass('dead')
+
+        closeDrawers()
+        document.body.addClass('estimator')
+
+        updateAreaMap(true)
+    } else {
+        document.body.removeClass('estimator')
     }
 }
 
