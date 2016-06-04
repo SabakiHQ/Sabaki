@@ -1589,6 +1589,7 @@ function closeDrawers() {
     closeGameChooser()
     setEditMode(false)
     setScoringMode(false)
+    setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
 }
