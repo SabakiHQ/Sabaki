@@ -110,7 +110,7 @@ function getCurrentTreePosition() {
 }
 
 function setCurrentTreePosition(tree, index, now, redraw) {
-    if (!tree || getScoringMode()) return
+    if (!tree || getScoringMode() || getEstimatorMode()) return
 
     // Remove old graph node color
 
