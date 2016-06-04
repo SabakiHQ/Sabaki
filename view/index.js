@@ -1451,7 +1451,7 @@ function updateCommentText() {
     $('properties').retrieve('scrollbar').update()
 }
 
-function updateAreaMap() {
+function updateAreaMap(useEstimateMap) {
     var board = getBoard().clone()
 
     $$('#goban .row li.dead').forEach(function(li) {
@@ -1461,19 +1461,21 @@ function updateAreaMap() {
         board.arrangement[li.retrieve('vertex')] = 0
     })
 
-    var map = board.getAreaEstimateMap()
+    var map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
             .addClass('area_' + map[li.retrieve('vertex')])
     })
 
-    // var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
-    //
-    // if (falsedead.length > 0) {
-    //     falsedead.removeClass('dead')
-    //     return updateAreaMap()
-    // }
+    if (!useEstimateMap) {
+        var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
+
+        if (falsedead.length > 0) {
+            falsedead.removeClass('dead')
+            return updateAreaMap()
+        }
+    }
 
     $('goban').store('areamap', map)
         .store('finalboard', board)
