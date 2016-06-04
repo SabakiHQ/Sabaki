@@ -146,12 +146,6 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
     body:not(.scoring):not(.estimator) .goban .row li.paint_-1 div.paint {
         display: block;
         background-color: white;
-    }
-    .goban .row li.opacity_6 div.paint {
-        opacity: .2;
-    }
-    .goban .row li.opacity_3 div.paint {
-        opacity: .1;
 }
 
 /**

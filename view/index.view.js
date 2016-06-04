@@ -395,8 +395,6 @@ function setScoringMode(mode) {
         .removeClass('area_-1')
         .removeClass('area_0')
         .removeClass('area_1')
-        .removeClass('opacity_6')
-        .removeClass('opacity_3')
         .removeClass('dead')
 
         closeDrawers()
@@ -424,8 +422,6 @@ function setEstimatorMode(mode) {
         .removeClass('area_-1')
         .removeClass('area_0')
         .removeClass('area_1')
-        .removeClass('opacity_6')
-        .removeClass('opacity_3')
         .removeClass('dead')
 
         closeDrawers()
