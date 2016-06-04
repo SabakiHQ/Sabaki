@@ -1102,6 +1102,10 @@ function openHeaderMenu() {
             click: function() { setScoringMode(true) }
         },
         {
+            label: 'Es&timate',
+            click: function() { setEstimatorMode(true) }
+        },
+        {
             label: '&Edit',
             click: function() { setEditMode(true) }
         },
