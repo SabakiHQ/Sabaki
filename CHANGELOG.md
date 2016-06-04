@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to add multiple existin files to SGF collection
+
 **Changed**
 
 * Update to Electron v1.2.1
