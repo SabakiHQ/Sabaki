@@ -199,6 +199,20 @@ Board.prototype = {
             }
         }
 
+        // Fix holes and prevent single point areas
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                var neighbors = self.getNeighbors(v)
+                if (neighbors.length == 0) continue
+
+                var s = map[v] == 0 ? map[neighbors[0]] : 0
+                if (neighbors.every(function(x) { return map[x] == s }))
+                    map[v] = s
+            }
+        }
+
         return map
     },
 
