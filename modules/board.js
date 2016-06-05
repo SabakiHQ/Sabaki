@@ -92,18 +92,25 @@ Board.prototype = {
         })
     },
 
-    getConnectedComponent: function(vertex, colors, result) {
-        if (!this.hasVertex(vertex)) return []
+    getConnectedComponent: function(vertex, func, result) {
+        var self = this
+
+        if (func instanceof Array) {
+            var signs = func
+            func = function(v) { return signs.indexOf(self.arrangement[v]) >= 0 }
+        }
+
+        if (!self.hasVertex(vertex)) return []
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighbors(vertex).forEach(function(v) {
-            if (colors.indexOf(this.arrangement[v]) == -1) return
+        self.getNeighbors(vertex).forEach(function(v) {
+            if (!func(v)) return
             if (result.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
             result.push(v)
-            this.getConnectedComponent(v, colors, result)
-        }.bind(this))
+            self.getConnectedComponent(v, func, result)
+        })
 
         return result
     },
