@@ -1009,12 +1009,8 @@ function makeMove(vertex, sendCommand) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        if (!pass) {
-            sendGTPCommand(
-                new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
-                true
-            )
-        }
+        var command = new gtp.Command(null, 'play', [color, pass ? 'pass' : getBoard().vertex2coord(vertex)])
+        sendGTPCommand(command, true)
 
         $('console').store('boardhash', getBoard().getHash())
 
