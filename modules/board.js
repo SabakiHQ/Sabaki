@@ -80,28 +80,37 @@ Board.prototype = {
         })
     },
 
-    getNeighbors: function(vertex) {
+    getNeighbors: function(vertex, ignoreBoard) {
         var self = this
-        if (!self.hasVertex(vertex)) return []
+        if (!ignoreBoard && !self.hasVertex(vertex)) return []
         var x = vertex[0], y = vertex[1]
 
         return [
             [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(self.hasVertex.bind(self))
+        ].filter(function(v) {
+            return ignoreBoard || self.hasVertex(v)
+        })
     },
 
-    getConnectedComponent: function(vertex, colors, result) {
-        if (!this.hasVertex(vertex)) return []
+    getConnectedComponent: function(vertex, func, result) {
+        var self = this
+
+        if (func instanceof Array) {
+            var signs = func
+            func = function(v) { return signs.indexOf(self.arrangement[v]) >= 0 }
+        }
+
+        if (!self.hasVertex(vertex)) return []
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighbors(vertex).forEach(function(v) {
-            if (colors.indexOf(this.arrangement[v]) == -1) return
+        self.getNeighbors(vertex).forEach(function(v) {
+            if (!func(v)) return
             if (result.some(function(w) { return w[0] == v[0] && w[1] == v[1] })) return
 
             result.push(v)
-            this.getConnectedComponent(v, colors, result)
-        }.bind(this))
+            self.getConnectedComponent(v, func, result)
+        })
 
         return result
     },
@@ -168,6 +177,166 @@ Board.prototype = {
                 chain.forEach(function(c) {
                     map[c] = sign * indicator
                 })
+            }
+        }
+
+        return map
+    },
+
+    getAreaEstimateMap: function() {
+        var self = this
+        var map = self.getAreaMap()
+
+        var pnnmap = self.getNearestNeighborMap(1)
+        var nnnmap = self.getNearestNeighborMap(-1)
+        var pimap = self.getInfluenceMap(1)
+        var nimap = self.getInfluenceMap(-1)
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                if (map[v] != 0) continue
+
+                var s = Math.sign(nnnmap[v] - pnnmap[v])
+                if (s > 0 && pnnmap[v] > 6 || s < 0 && nnnmap[v] > 6
+                || s > 0 && Math.round(pimap[v]) < 2 || s < 0 && Math.round(nimap[v]) < 2)
+                    s = 0
+
+                map[v] = s
+            }
+        }
+
+        // Fix holes and prevent single point areas
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                var neighbors = self.getNeighbors(v)
+                if (neighbors.length == 0) continue
+
+                var s = map[v] == 0 ? map[neighbors[0]] : 0
+                if (neighbors.every(function(x) { return map[x] == s }))
+                    map[v] = s
+            }
+        }
+
+        return map
+    },
+
+    getNearestNeighborMap: function(sign) {
+        var map = {}
+        var min = Infinity
+        var self = this
+
+        var f = function(x, y) {
+            var v = [x, y]
+            if (self.arrangement[v] == sign) min = 0
+            else if (self.arrangement[v] == 0) min++
+            else min = Infinity
+
+            map[v] = min = v in map ? Math.min(min, map[v]) : min
+        }
+
+        for (var y = 0; y < self.height; y++) {
+            min = Infinity
+
+            for (var x = 0; x < self.width; x++) {
+                var old = Infinity
+
+                f(x, y)
+                old = min
+
+                for (var ny = y + 1; ny < self.height; ny++) f(x, ny)
+                min = old
+
+                for (var ny = y - 1; ny >= 0; ny--) f(x, ny)
+                min = old
+            }
+        }
+
+        for (var y = self.height - 1; y >= 0; y--) {
+            min = Infinity
+
+            for (var x = self.width - 1; x >= 0; x--) {
+                var old = Infinity
+
+                f(x, y)
+                old = min
+
+                for (var ny = y + 1; ny < self.height; ny++) f(x, ny)
+                min = old
+
+                for (var ny = y - 1; ny >= 0; ny--) f(x, ny)
+                min = old
+            }
+        }
+
+        return map
+    },
+
+    getInfluenceMap: function(sign) {
+        var self = this
+        var map = {}
+        var done = {}
+
+        // Initialize
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                map[[x, y]] = 0
+            }
+        }
+
+        // Cast influence
+
+        var getVertex = function(v) {
+            if (self.hasVertex(v)) return v
+
+            var x = v[0], y = v[1]
+
+            if (x < 0)
+                x = -x - 1
+            else if (x >= self.width)
+                x = 2 * self.width - x - 1
+
+            if (y < 0)
+                y = -y - 1
+            else if (y >= self.height)
+                y = 2 * self.height - y - 1
+
+            return [x, y]
+        }
+
+        var castInfluence = function(chain, distance) {
+            var stack = chain.map(function(x) { return [x, 0] })
+            var visited = {}
+
+            while (stack.length > 0) {
+                var tuple = stack.shift()
+                var v = tuple[0], d = tuple[1]
+
+                if (v in visited) continue
+                visited[v] = true
+                map[getVertex(v)] += !self.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
+
+                stack.push.apply(stack, self.getNeighbors(v, true).filter(function(x) {
+                    return d + 1 <= distance
+                    && self.arrangement[x] != -sign
+                    && !(x in visited)
+                }).map(function(x) {
+                    return [x, d + 1]
+                }))
+            }
+        }
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var v = [x, y]
+                if (v in done || self.arrangement[v] != sign) continue
+                var chain = self.getChain(v)
+
+                chain.forEach(function(x) { done[x] = true })
+                castInfluence(chain, 6)
             }
         }
 
@@ -298,6 +467,48 @@ Board.prototype = {
     },
 
     guessDeadStones: function() {
+        var self = this
+        var map = self.getAreaEstimateMap()
+        var done = {}
+        var result = []
+        var list = []
+
+        for (var x = 0; x < self.width; x++) {
+            for (var y = 0; y < self.height; y++) {
+                var vertex = [x, y]
+                var sign = self.arrangement[vertex]
+                if (sign == 0 || vertex in done) continue
+
+                var area = self.getConnectedComponent(vertex, function(v) {
+                    return map[v] == sign
+                })
+
+                area.forEach(function(v) { done[v] = true })
+                list.push([vertex, area.length])
+            }
+        }
+
+        list.sort(function(a, b) { return a[1] - b[1] })
+
+        for (var i = 0; i < list.length; i++) {
+            var vertex = list[i][0]
+            var sign = self.arrangement[vertex]
+            var area = self.getConnectedComponent(vertex, function(v) {
+                return map[v] == sign
+            })
+
+            if (area.length >= 8) continue
+
+            area.forEach(function(v) { map[v] = -sign })
+            result.push.apply(result, area.filter(function(v) {
+                return self.arrangement[v] != 0
+            }))
+        }
+
+        return result
+    },
+
+    determineDeadStones: function() {
         var self = this
         var map = self.getAreaMap()
         var done = {}

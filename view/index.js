@@ -110,7 +110,7 @@ function getCurrentTreePosition() {
 }
 
 function setCurrentTreePosition(tree, index, now, redraw) {
-    if (!tree || getScoringMode()) return
+    if (!tree || getScoringMode() || getEstimatorMode()) return
 
     // Remove old graph node color
 
@@ -1014,10 +1014,9 @@ function makeMove(vertex, sendCommand) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        sendGTPCommand(
-            new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
-            true
-        )
+        var command = new gtp.Command(null, 'play', [color, pass ? 'pass' : getBoard().vertex2coord(vertex)])
+        sendGTPCommand(command, true)
+
         $('console').store('boardhash', getBoard().getHash())
 
         setIsBusy(true)
@@ -1306,16 +1305,19 @@ function findMove(vertex, text, step) {
 function vertexClicked(vertex, event) {
     closeGameInfo()
 
-    if (getScoringMode()) {
+    if (getScoringMode() || getEstimatorMode()) {
         if ($('score').hasClass('show')) return
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
-        getBoard().getRelatedChains(vertex).forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
+        var dead = !$$('#goban .pos_' + vertex.join('-'))[0].hasClass('dead')
+        var stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
+
+        stones.forEach(function(v) {
+            $$('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
         })
 
-        updateAreaMap()
+        updateAreaMap(getEstimatorMode())
     } else if (getEditMode()) {
         useTool(vertex, event)
     } else if (getFindMode()) {
@@ -1456,7 +1458,7 @@ function updateCommentText() {
     $('properties').retrieve('scrollbar').update()
 }
 
-function updateAreaMap() {
+function updateAreaMap(useEstimateMap) {
     var board = getBoard().clone()
 
     $$('#goban .row li.dead').forEach(function(li) {
@@ -1466,18 +1468,20 @@ function updateAreaMap() {
         board.arrangement[li.retrieve('vertex')] = 0
     })
 
-    var map = board.getAreaMap()
+    var map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
 
     $$('#goban .row li').forEach(function(li) {
         li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
             .addClass('area_' + map[li.retrieve('vertex')])
     })
 
-    var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
+    if (!useEstimateMap) {
+        var falsedead = $$('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
-    if (falsedead.length > 0) {
-        falsedead.removeClass('dead')
-        return updateAreaMap()
+        if (falsedead.length > 0) {
+            falsedead.removeClass('dead')
+            return updateAreaMap()
+        }
     }
 
     $('goban').store('areamap', map)

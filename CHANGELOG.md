@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Score estimator
+* Ability to add multiple existing files to SGF collection
+
+**Changed**
+
+* Doesn't leave scoring mode when closing score table
+* Update to Electron v1.2.1
+
+**Fixed**
+
+* Fix sending invalid GTP command when passing
+
 ## [Sabaki v0.15.0][v0.15.0] (2016-06-01)
 
 **Added**
@@ -29,6 +45,9 @@ All notable changes to this project will be documented in this file.
 * Ability to add dates to games
 * Ability to create games on small boards
 * Ability to style Sabaki with userstyles (see [wiki](https://github.com/yishn/Sabaki/wiki/Userstyle-Tutorial))
+* Support for non-square boards
+* Ability to show sibling variations on the board
+* Display result in scoring table
 
 **Changed**
 
@@ -39,17 +58,6 @@ All notable changes to this project will be documented in this file.
 
 * Fix coordinates in console not being styled correctly
 * Fix weird grid lines behavior with small board sizes
-
-## [Sabaki v0.13.0][v0.13.0] (2016-05-08)
-
-**Added**
-
-* Support for non-square boards
-* Ability to show sibling variations on the board
-* Display result in scoring table
-
-**Fixed**
-
 * Fix deselecting vertex when finding moves
 * Fix occasional crash when opening small files at startup
 * Fix label markup cutting off content or truncating three digit numbers
@@ -99,7 +107,6 @@ All notable changes to this project will be documented in this file.
 * Opening an unreadable file doesn't set represented filename anymore
 * Fix repeated exceptions when opening an empty game tree
 * Fix editing compressed point lists for AB/AW/AE properties not working
-
 
 ## [Sabaki v0.11.2][v0.11.2] (2016-04-01)
 
@@ -349,9 +356,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.14.0...master
-[v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.13.0...v0.14.0
-[v0.13.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.13.0
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.15.0...master
+[v0.15.0]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.0
+[v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0
 [v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
 [v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.2

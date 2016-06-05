@@ -15,6 +15,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
+- Score estimator
 - Scoring tool
 - Find move
 - Position & move annotations
