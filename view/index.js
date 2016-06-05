@@ -1009,10 +1009,13 @@ function makeMove(vertex, sendCommand) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        sendGTPCommand(
-            new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
-            true
-        )
+        if (!pass) {
+            sendGTPCommand(
+                new gtp.Command(null, 'play', [color, getBoard().vertex2coord(vertex)]),
+                true
+            )
+        }
+
         $('console').store('boardhash', getBoard().getHash())
 
         setIsBusy(true)

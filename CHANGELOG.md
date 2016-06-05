@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 
 * Update to Electron v1.2.1
 
+**Fixed**
+
+* Fix sending invalid GTP command when passing
+
 ## [Sabaki v0.15.0][v0.15.0] (2016-06-01)
 
 **Added**
