@@ -389,6 +389,8 @@ function getScoringMode() {
 }
 
 function setScoringMode(mode, estimator) {
+    var type = estimator ? 'estimator' : 'scoring'
+
     if (mode) {
         // Clean board
         $$('#goban .row li')
@@ -398,16 +400,16 @@ function setScoringMode(mode, estimator) {
         .removeClass('dead')
 
         closeDrawers()
-        document.body.addClass(estimator ? 'estimator' : 'scoring')
+        document.body.addClass(type)
 
-        var deadstones = getBoard().guessDeadStones()
+        var deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
         deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+            $$('#goban .pos_' + v.join('-')).addClass('dead')
         })
 
         updateAreaMap(estimator)
     } else {
-        document.body.removeClass(estimator ? 'estimator' : 'scoring')
+        document.body.removeClass(type)
     }
 }
 

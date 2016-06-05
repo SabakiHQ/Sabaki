@@ -471,6 +471,7 @@ Board.prototype = {
         var map = self.getAreaEstimateMap()
         var done = {}
         var result = []
+        var list = []
 
         for (var x = 0; x < self.width; x++) {
             for (var y = 0; y < self.height; y++) {
@@ -482,81 +483,87 @@ Board.prototype = {
                     return map[v] == sign
                 })
 
-                var eyespace = area.filter(function(v) {
-                    return self.arrangement[v] == 0
-                })
-
                 area.forEach(function(v) { done[v] = true })
-
-                if (area.length < 8 || eyespace < 2) {
-                    area.forEach(function(v) { map[v] = -sign })
-
-                    result.push.apply(result, area.filter(function(v) {
-                        return self.arrangement[v] != 0
-                    }))
-                }
+                list.push([vertex, area.length])
             }
+        }
+
+        list.sort(function(a, b) { return a[1] - b[1] })
+
+        for (var i = 0; i < list.length; i++) {
+            var vertex = list[i][0]
+            var sign = self.arrangement[vertex]
+            var area = self.getConnectedComponent(vertex, function(v) {
+                return map[v] == sign
+            })
+
+            if (area.length >= 8) continue
+
+            area.forEach(function(v) { map[v] = -sign })
+            result.push.apply(result, area.filter(function(v) {
+                return self.arrangement[v] != 0
+            }))
         }
 
         return result
     },
 
-    // guessDeadStones: function() {
-    //     var self = this
-    //     var map = self.getAreaMap()
-    //     var done = {}
-    //     var result = []
-    //
-    //     for (var i = 0; i < self.width; i++) {
-    //         for (var j = 0; j < self.height; j++) {
-    //             var vertex = [i, j]
-    //             if (map[vertex] != 0 || vertex in done) continue
-    //
-    //             var posArea = self.getConnectedComponent(vertex, [0, -1])
-    //             var negArea = self.getConnectedComponent(vertex, [0, 1])
-    //             var posDead = posArea.filter(function(v) { return self.arrangement[v] == -1 })
-    //             var negDead = negArea.filter(function(v) { return self.arrangement[v] == 1 })
-    //
-    //             var sign = 0
-    //             var actualArea, actualDead
-    //
-    //             var negDiff = negArea.filter(function(y) {
-    //                 return !negDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
-    //                     && !posArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
-    //             })
-    //
-    //             var posDiff = posArea.filter(function(y) {
-    //                 return !posDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
-    //                     && !negArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
-    //             })
-    //
-    //             if (negDiff.length <= 1 && negDead.length <= posDead.length) {
-    //                 sign--
-    //                 actualArea = negArea
-    //                 actualDead = negDead
-    //             }
-    //
-    //             if (posDiff.length <= 1 && posDead.length <= negDead.length) {
-    //                 sign++
-    //                 actualArea = posArea
-    //                 actualDead = posDead
-    //             }
-    //
-    //             if (sign == 0) {
-    //                 actualArea = self.getChain(vertex)
-    //                 actualDead = []
-    //             }
-    //
-    //             actualArea.forEach(function(v) {
-    //                 done[v] = 1
-    //             })
-    //
-    //             result.push.apply(result, actualDead)
-    //         }
-    //     }
-    //
-    //     return result
-    // },
+    determineDeadStones: function() {
+        var self = this
+        var map = self.getAreaMap()
+        var done = {}
+        var result = []
+
+        for (var i = 0; i < self.width; i++) {
+            for (var j = 0; j < self.height; j++) {
+                var vertex = [i, j]
+                if (map[vertex] != 0 || vertex in done) continue
+
+                var posArea = self.getConnectedComponent(vertex, [0, -1])
+                var negArea = self.getConnectedComponent(vertex, [0, 1])
+                var posDead = posArea.filter(function(v) { return self.arrangement[v] == -1 })
+                var negDead = negArea.filter(function(v) { return self.arrangement[v] == 1 })
+
+                var sign = 0
+                var actualArea, actualDead
+
+                var negDiff = negArea.filter(function(y) {
+                    return !negDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                        && !posArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                })
+
+                var posDiff = posArea.filter(function(y) {
+                    return !posDead.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                        && !negArea.some(function(x) { return x[0] == y[0] && x[1] == y[1] })
+                })
+
+                if (negDiff.length <= 1 && negDead.length <= posDead.length) {
+                    sign--
+                    actualArea = negArea
+                    actualDead = negDead
+                }
+
+                if (posDiff.length <= 1 && posDead.length <= negDead.length) {
+                    sign++
+                    actualArea = posArea
+                    actualDead = posDead
+                }
+
+                if (sign == 0) {
+                    actualArea = self.getChain(vertex)
+                    actualDead = []
+                }
+
+                actualArea.forEach(function(v) {
+                    done[v] = 1
+                })
+
+                result.push.apply(result, actualDead)
+            }
+        }
+
+        return result
+    },
 
     getSvg: function(pixelsize) {
         if (!document) return null
