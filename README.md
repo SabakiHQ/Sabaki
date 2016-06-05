@@ -1,4 +1,6 @@
-# <img src="logo.png" width="64" height="64"> Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
+# Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
+
+<img src="logo.png" width="156" height="156">
 
 An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
