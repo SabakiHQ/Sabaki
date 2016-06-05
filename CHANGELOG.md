@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Doesn't leave scoring mode when closing score table
 * Update to Electron v1.2.1
 
 **Fixed**
