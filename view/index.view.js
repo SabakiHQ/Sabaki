@@ -388,7 +388,7 @@ function getScoringMode() {
     return document.body.hasClass('scoring')
 }
 
-function setScoringMode(mode) {
+function setScoringMode(mode, estimator) {
     if (mode) {
         // Clean board
         $$('#goban .row li')
@@ -398,16 +398,16 @@ function setScoringMode(mode) {
         .removeClass('dead')
 
         closeDrawers()
-        document.body.addClass('scoring')
+        document.body.addClass(estimator ? 'estimator' : 'scoring')
 
         var deadstones = getBoard().guessDeadStones()
         deadstones.forEach(function(v) {
             $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
         })
 
-        updateAreaMap()
+        updateAreaMap(estimator)
     } else {
-        document.body.removeClass('scoring')
+        document.body.removeClass(estimator ? 'estimator' : 'scoring')
     }
 }
 
@@ -416,21 +416,7 @@ function getEstimatorMode() {
 }
 
 function setEstimatorMode(mode) {
-    if (mode) {
-        // Clean board
-        $$('#goban .row li')
-        .removeClass('area_-1')
-        .removeClass('area_0')
-        .removeClass('area_1')
-        .removeClass('dead')
-
-        closeDrawers()
-        document.body.addClass('estimator')
-
-        updateAreaMap(true)
-    } else {
-        document.body.removeClass('estimator')
-    }
+    setScoringMode(mode, true)
 }
 
 function getIndicatorVertex() {
