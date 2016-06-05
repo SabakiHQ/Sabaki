@@ -1305,9 +1305,10 @@ function vertexClicked(vertex, event) {
         if ($('score').hasClass('show')) return
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
+        var dead = !$$('#goban .pos_' + vertex.join('-'))[0].hasClass('dead')
 
         getBoard().getRelatedChains(vertex).forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
+            $$('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
         })
 
         updateAreaMap()
