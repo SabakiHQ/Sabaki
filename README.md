@@ -1,6 +1,4 @@
-# Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
-
-<img src="logo.png" width="156" height="156">
+# <img src="logo.png" width="64" height="64"> Sabaki [![Build Status](https://travis-ci.org/yishn/Sabaki.svg?branch=master)](https://travis-ci.org/yishn/Sabaki)
 
 An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
@@ -15,6 +13,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - SGF editing tools
 - Lines & arrows markup
 - Game graph
+- Score estimator
 - Scoring tool
 - Find move
 - Position & move annotations
