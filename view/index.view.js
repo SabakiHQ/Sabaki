@@ -388,8 +388,10 @@ function getScoringMode() {
     return document.body.hasClass('scoring')
 }
 
-function setScoringMode(scoringMode) {
-    if (scoringMode) {
+function setScoringMode(mode, estimator) {
+    var type = estimator ? 'estimator' : 'scoring'
+
+    if (mode) {
         // Clean board
         $$('#goban .row li')
         .removeClass('area_-1')
@@ -398,17 +400,25 @@ function setScoringMode(scoringMode) {
         .removeClass('dead')
 
         closeDrawers()
-        document.body.addClass('scoring')
+        document.body.addClass(type)
 
-        var deadstones = getBoard().guessDeadStones()
+        var deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
         deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).addClass('dead')
+            $$('#goban .pos_' + v.join('-')).addClass('dead')
         })
 
-        updateAreaMap()
+        updateAreaMap(estimator)
     } else {
-        document.body.removeClass('scoring')
+        document.body.removeClass(type)
     }
+}
+
+function getEstimatorMode() {
+    return document.body.hasClass('estimator')
+}
+
+function setEstimatorMode(mode) {
+    setScoringMode(mode, true)
 }
 
 function getIndicatorVertex() {
@@ -1076,6 +1086,10 @@ function openHeaderMenu() {
             click: function() { setScoringMode(true) }
         },
         {
+            label: 'Es&timate',
+            click: function() { setEstimatorMode(true) }
+        },
+        {
             label: '&Edit',
             click: function() { setEditMode(true) }
         },
@@ -1426,8 +1440,6 @@ function showScore() {
 
 function closeScore() {
     $('score').removeClass('show')
-    document.activeElement.blur()
-    setScoringMode(false)
 }
 
 function showPreferences() {
@@ -1561,6 +1573,7 @@ function closeDrawers() {
     closeGameChooser()
     setEditMode(false)
     setScoringMode(false)
+    setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
 }

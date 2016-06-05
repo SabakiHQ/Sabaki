@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Score estimator
 * Ability to add multiple existin files to SGF collection
 
 **Changed**

@@ -11,6 +11,7 @@ var menudata = {
     "copyascii": function() { clipboard.writeText(getBoard().generateAscii()) },
     "managegames": function() { showGameChooser() },
     "score": function() { setScoringMode(true) },
+    "estimate": function() { setEstimatorMode(true) },
     "gameinfo": function() { showGameInfo() },
     "preferences": showPreferences,
 

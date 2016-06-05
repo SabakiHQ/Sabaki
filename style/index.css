@@ -14,7 +14,7 @@ main {
         box-shadow: 0 5px 20px rgba(20, 0, 15, .8);
 }
 
-header, #edit, #scoring, #find, #guess {
+header, #edit, #scoring, #estimator, #find, #guess {
         position: absolute;
         left: 0;
         right: 0;
@@ -137,28 +137,30 @@ header, #edit, #scoring, #find, #guess {
         transition: background .2s;
     }
     .edit #bar { background: #C4BD64; }
-    .scoring #bar { background: #C42311; }
+    .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
     .guess #bar { background: #823499; }
-    .edit #edit, .scoring #scoring, .find #find, .guess #guess {
+    .edit #edit, .scoring #scoring, .estimator #estimator, .find #find, .guess #guess {
         top: 0;
     }
-    .edit header, .scoring header, .find header, .guess header {
+    .edit header, .scoring header, .estimator header, .find header, .guess header {
         top: 40px;
     }
     #edit { color: #333; }
-    #edit, #scoring, #find, #guess {
+    #edit, #scoring, #estimator, #find, #guess {
         top: -40px;
     }
-    #scoring button, #find button {
+    #scoring button, #estimator button, #find button {
         position: absolute;
         left: 10px;
         top: 50%;
         background: #400000;
         transform: translateY(-50%);
     }
-    #scoring button:hover, #scoring button:focus { background: #600000; }
-    #scoring button:active, #find button:active { transform: translateY(-46%); }
+    #scoring button:hover, #scoring button:focus,
+    #estimator button:hover, #estimator button:focus { background: #600000; }
+    #scoring button:active, #estimator button:active,
+    #find button:active { transform: translateY(-46%); }
     #find button {
         left: 178px;
         padding-left: 7px;
@@ -180,7 +182,7 @@ header, #edit, #scoring, #find, #guess {
         transform: translateY(-50%);
 }
 
-#edit a.close, #scoring a.close, #find a.close, #guess a.close {
+#edit a.close, #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
         display: block;
         position: absolute;
         right: 4px;
@@ -190,11 +192,11 @@ header, #edit, #scoring, #find, #guess {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
-    #scoring a.close, #find a.close, #guess a.close {
+    #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #edit a.close:active, #scoring a.close:active,
+    #edit a.close:active, #scoring a.close:active, #estimator a.close:active
     #find a.close:active, #guess a.close:active {
         opacity: .7;
     }
