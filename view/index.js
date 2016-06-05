@@ -1301,27 +1301,19 @@ function findMove(vertex, text, step) {
 function vertexClicked(vertex, event) {
     closeGameInfo()
 
-    if (getScoringMode()) {
+    if (getScoringMode() || getEstimatorMode()) {
         if ($('score').hasClass('show')) return
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
-        var dead = !$$('#goban .pos_' + vertex.join('-'))[0].hasClass('dead')
 
-        getBoard().getRelatedChains(vertex).forEach(function(v) {
+        var dead = !$$('#goban .pos_' + vertex.join('-'))[0].hasClass('dead')
+        var stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
+
+        stones.forEach(function(v) {
             $$('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
         })
 
-        updateAreaMap()
-    } else if (getEstimatorMode()) {
-        if ($('score').hasClass('show')) return
-        if (event.button != 0) return
-        if (getBoard().arrangement[vertex] == 0) return
-
-        getBoard().getChain(vertex).forEach(function(v) {
-            $$('#goban .pos_' + v[0] + '-' + v[1]).toggleClass('dead')
-        })
-
-        updateAreaMap(true)
+        updateAreaMap(getEstimatorMode())
     } else if (getEditMode()) {
         useTool(vertex, event)
     } else if (getFindMode()) {
