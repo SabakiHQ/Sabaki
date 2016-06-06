@@ -255,7 +255,7 @@ function setBoard(board) {
 
     // Add lines
 
-    $('#goban hr').destroy()
+    $('#goban hr').remove()
 
     board.lines.forEach(function(line) {
         $('#goban').append(
@@ -1113,21 +1113,21 @@ function useTool(vertex, event) {
 
         if (hr) {
             var v1 = hr.data('v1'), v2 = hr.data('v2')
-            var toDelete = $('#goban hr').filter(function(x) {
-                var w1 = x.data('v1'), w2 = x.data('v2')
+            var toDelete = $('#goban hr').get().filter(function(x) {
+                var w1 = $(x).data('v1'), w2 = $(x).data('v2')
                 var result = x != hr
                     && w1[0] == v1[0] && w1[1] == v1[1]
                     && w2[0] == v2[0] && w2[1] == v2[1]
 
-                if (tool == 'line' || x.hasClass('line')) result = result || x != hr
+                if (tool == 'line' || $(x).hasClass('line')) result = result || x != hr
                     && w1[0] == v2[0] && w1[1] == v2[1]
                     && w2[0] == v1[0] && w2[1] == v1[1]
 
                 return result
             })
 
-            if (toDelete.length != 0) hr.destroy()
-            toDelete.destroy()
+            if (toDelete.length != 0) hr.remove()
+            toDelete.remove()
         }
 
         $('#goban').data('edittool-data', null)
@@ -1138,14 +1138,14 @@ function useTool(vertex, event) {
         node.AR = []
         board.lines = []
 
-        $('#goban hr').forEach(function(hr) {
-            var p1 = sgf.vertex2point(hr.data('v1'))
-            var p2 = sgf.vertex2point(hr.data('v2'))
+        $('#goban hr').get().forEach(function(hr) {
+            var p1 = sgf.vertex2point($(hr).data('v1'))
+            var p2 = sgf.vertex2point($(hr).data('v2'))
 
             if (p1 == p2) return
 
-            node[hr.hasClass('arrow') ? 'AR' : 'LN'].push(p1 + ':' + p2)
-            board.lines.push([hr.data('v1'), hr.data('v2'), hr.hasClass('arrow')])
+            node[$(hr).hasClass('arrow') ? 'AR' : 'LN'].push(p1 + ':' + p2)
+            board.lines.push([$(hr).data('v1'), $(hr).data('v2'), $(hr).hasClass('arrow')])
         })
 
         if (node.LN.length == 0) delete node.LN
