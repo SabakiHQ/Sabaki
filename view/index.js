@@ -408,10 +408,10 @@ function prepareEditTools() {
 }
 
 function prepareGameGraph() {
-    var container = $('#graph')
+    var $container = $('#graph')
     var s = new sigma({
         renderer: {
-            container: container,
+            container: $container.get(0),
             type: 'canvas'
         },
         settings: {
@@ -436,14 +436,11 @@ function prepareGameGraph() {
         openNodeMenu.apply(null, getTreePos(e).concat([e.data.captor]))
     })
 
-    container.data('sigma', s)
+    $container.data('sigma', s)
 }
 
 function prepareSlider() {
     var $slider = $('#sidebar .slider .inner').eq(0)
-    Element.NativeEvents.touchstart = 2
-    Element.NativeEvents.touchmove = 2
-    Element.NativeEvents.touchend = 2
 
     var changeSlider = function(percentage) {
         percentage = Math.min(1, Math.max(0, percentage))
@@ -493,18 +490,12 @@ function prepareSlider() {
         startAutoScroll($(this).hasClass('next') ? 1 : -1)
     })
 
-    document.on('mouseup', function() {
+    $(document).on('mouseup', function() {
         $('#sidebar .slider a').data('mousedown', false)
     })
 }
 
 function prepareDragDropFiles() {
-    Element.NativeEvents.dragover = 2
-    Element.NativeEvents.dragenter = 2
-    Element.NativeEvents.dragleave = 2
-    Element.NativeEvents.dragstart = 2
-    Element.NativeEvents.drop = 2
-
     $('body').on('dragover', function(e) {
         e.preventDefault()
     }).on('drop', function(e) {
@@ -631,24 +622,24 @@ function prepareGameInfo() {
 
     // Prepare date input
 
-    var dateInput = $('#info input[name="date"]')[0]
+    var $dateInput = $('#info input[name="date"]').eq(0)
     var adjustPosition = function(pikaday) {
-        pikaday.el
+        $(pikaday.el)
         .css('position', 'absolute')
-        .css('left', dateInput.position().left)
-        .css('top', dateInput.position().top - pikaday.el.innerHeight())
+        .css('left', $dateInput.position().left)
+        .css('top', $dateInput.position().top - $(pikaday.el).innerHeight())
     }
     var markDates = function(pikaday) {
-        var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+        var dates = (sgf.string2dates($dateInput.value) || []).filter(function(x) {
             return x.length == 3
         })
 
-        pikaday.el.children('.pika-button').forEach(function(el) {
-            var year = +el.attr('data-pika-year')
-            var month = +el.attr('data-pika-month')
-            var day = +el.attr('data-pika-day')
+        $(pikaday.el).children('.pika-button').get().forEach(function(el) {
+            var year = +$(el).attr('data-pika-year')
+            var month = +$(el).attr('data-pika-month')
+            var day = +$(el).attr('data-pika-day')
 
-            el.parent().toggleClass('is-multi-selected', dates.some(function(d) {
+            $(el).parent().toggleClass('is-multi-selected', dates.some(function(d) {
                 return helper.equals(d, [year, month + 1, day])
             }))
         })
@@ -660,7 +651,7 @@ function prepareGameInfo() {
         onOpen: function() {
             if (!pikaday) return
 
-            var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
+            var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
                 return x.length == 3
             })
 
@@ -678,10 +669,10 @@ function prepareGameInfo() {
             adjustPosition(pikaday)
             markDates(pikaday)
 
-            dateInput.focus()
+            $dateInput.focus()
         },
         onSelect: function() {
-            var dates = sgf.string2dates(dateInput.value) || []
+            var dates = sgf.string2dates($dateInput.val()) || []
             var date = pikaday.getDate()
             date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
@@ -691,24 +682,24 @@ function prepareGameInfo() {
                 dates = dates.filter(function(x) { return !helper.equals(x, date) })
             }
 
-            dateInput.value = sgf.dates2string(dates.sort(helper.lexicalCompare))
+            $dateInput.val(sgf.dates2string(dates.sort(helper.lexicalCompare)))
         }
     })
 
-    dateInput.data('pikaday', pikaday)
+    $dateInput.data('pikaday', pikaday)
     pikaday.hide()
 
     $('body').append(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
-        && document.activeElement != dateInput
-        && e.target != dateInput
+        && document.activeElement != $dateInput.get(0)
+        && e.target != $dateInput.get(0)
         && e.target.parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
     $(window).on('resize', function() { adjustPosition(pikaday) })
 
-    dateInput.on('focus', function() {
+    $dateInput.on('focus', function() {
         pikaday.show()
     }).on('blur', function() {
         setTimeout(function() {
@@ -759,8 +750,7 @@ function updateFileHash() {
 function loadEngines() {
     // Load engines list
 
-    var ul = $('#preferences .engines-list ul')[0]
-    ul.empty()
+    $('#preferences .engines-list ul').empty()
 
     setting.getEngines().forEach(function(engine) {
         addEngineItem(engine.name, engine.path, engine.args)

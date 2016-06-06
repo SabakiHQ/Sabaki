@@ -227,9 +227,11 @@ function getCaptures() {
 }
 
 function setCaptures(captures) {
-    $('#player_-1 .captures')[0].text(captures['-1'])
+    $('#player_-1 .captures')
+        .text(captures['-1'])
         .css('opacity', captures['-1'] == 0 ? 0 : .7)
-    $('#player_1 .captures')[0].text(captures['1'])
+    $('#player_1 .captures')
+        .text(captures['1'])
         .css('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
@@ -573,24 +575,24 @@ function getCurrentMoveInterpretation() {
 
 function prepareScrollbars() {
     $('#properties').data('scrollbar', new GeminiScrollbar({
-        element: $('#properties'),
+        element: $('#properties').get(0),
         createElements: false
     }).create())
 
     $('#console').data('scrollbar', new GeminiScrollbar({
-        element: $('#console'),
+        element: $('#console').get(0),
         createElements: false
     }).create())
 
-    var enginesList = $('#preferences .engines-list')[0]
-    enginesList.data('scrollbar', new GeminiScrollbar({
-        element: enginesList,
+    var $enginesList = $('#preferences .engines-list')
+    $enginesList.data('scrollbar', new GeminiScrollbar({
+        element: $enginesList.get(0),
         createElements: false
     }).create())
 
-    var gamesList = $('#gamechooser .games-list')[0]
-    gamesList.data('scrollbar', new GeminiScrollbar({
-        element: gamesList,
+    var $gamesList = $('#gamechooser .games-list')
+    $gamesList.data('scrollbar', new GeminiScrollbar({
+        element: $gamesList.get(0),
         createElements: false
     }).create())
 
@@ -772,7 +774,7 @@ function addEngineItem(name, path, args) {
     )
 
     $ul.append($li)
-    $li.find('h3 input').focus()
+    $li.find('h3 input').get(0).focus()
 
     var enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
@@ -799,8 +801,8 @@ function showMessageBox(message, type, buttons, cancelId) {
 }
 
 function readjustShifts(vertex) {
-    var li = $('#goban .pos_' + vertex.join('-'))[0]
-    var direction = li.attr('class').split(' ').filter(function(x) {
+    var $li = $('#goban .pos_' + vertex.join('-'))
+    var direction = $li.attr('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
         return +x.replace('shift_', '')
@@ -813,24 +815,24 @@ function readjustShifts(vertex) {
 
     if (direction == 1 || direction == 5 || direction == 8) {
         // Left
-        query = '#goban .pos_' + (vertex[0] - 1) + '-' + vertex[1]
+        query = (vertex[0] - 1) + '-' + vertex[1]
         removeShifts = [3, 7, 6]
     } else if (direction == 2 || direction == 5 || direction == 6) {
         // Top
-        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] - 1)
+        query = vertex[0] + '-' + (vertex[1] - 1)
         removeShifts = [4, 7, 8]
     } else if (direction == 3 || direction == 7 || direction == 6) {
         // Right
-        query = '#goban .pos_' + (vertex[0] + 1) + '-' + vertex[1]
+        query = (vertex[0] + 1) + '-' + vertex[1]
         removeShifts = [1, 5, 8]
     } else if (direction == 4 || direction == 7 || direction == 8) {
         // Bottom
-        query = '#goban .pos_' + vertex[0] + '-' + (vertex[1] + 1)
+        query = vertex[0] + '-' + (vertex[1] + 1)
         removeShifts = [2, 5, 6]
     }
 
     if (query && removeShifts) {
-        var $el = $(query)
+        var $el = $('#goban .pos_' + query)
         $el.addClass('animate')
         removeShifts.forEach(function(s) { $el.removeClass('shift_' + s) })
         setTimeout(function() { $el.removeClass('animate') }, 200)
@@ -941,22 +943,22 @@ function buildBoard() {
 }
 
 function updateBoardLines() {
-    $('#goban hr').forEach(function(line) {
-        var v1 = line.data('v1'), v2 = line.data('v2')
+    $('#goban hr').get().forEach(function(line) {
+        var v1 = $(line).data('v1'), v2 = $(line).data('v2')
         var mirrored = v2[0] < v1[0]
-        var li1 = $('#goban').find('.pos_' + v1[0] + '-' + v1[1])
-        var li2 = $('#goban').find('.pos_' + v2[0] + '-' + v2[1])
-        var pos1 = li1.getPosition($('#goban'))
-        var pos2 = li2.getPosition($('#goban'))
-        var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
+        var $li1 = $('#goban').find('.pos_' + v1[0] + '-' + v1[1])
+        var $li2 = $('#goban').find('.pos_' + v2[0] + '-' + v2[1])
+        var pos1 = $li1.position($('#goban'))
+        var pos2 = $li2.position($('#goban'))
+        var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
         if (mirrored) angle += 180
         var length = Math.sqrt(dx * dx + dy * dy)
 
-        line.setStyles({
-            top: (pos1.y + li1.innerHeight() / 2 + pos2.y + li2.innerHeight() / 2) / 2 - 2,
-            left: (pos1.x + li1.innerWidth() / 2 + pos2.x + li2.innerWidth() / 2) / 2 - 2,
+        $(line).css({
+            top: (pos1.top + $li1.innerHeight() / 2 + pos2.top + $li2.innerHeight() / 2) / 2 - 2,
+            left: (pos1.left + $li1.innerWidth() / 2 + pos2.left + $li2.innerWidth() / 2) / 2 - 2,
             marginLeft: -length / 2,
             width: length,
             transform: 'rotate(' + angle + 'deg)'
@@ -1008,22 +1010,22 @@ function resizeBoard() {
 
 function showIndicator(vertex) {
     var x = vertex[0], y = vertex[1]
-    var li = $('#goban .pos_' + x + '-' + y)
+    var $li = $('#goban .pos_' + x + '-' + y)
 
-    if (li.length == 0) return
-    li = li[0]
+    if ($li.length == 0) return
 
-    $('#indicator').css('top', li.position().top)
-        .css('left', li.position().left)
-        .css('height', li.innerHeight())
-        .css('width', li.innerWidth())
-        .data('vertex', vertex)
+    $('#indicator').css('top', $li.position().top)
+    .css('left', $li.position().left)
+    .css('height', $li.innerHeight())
+    .css('width', $li.innerWidth())
+    .data('vertex', vertex)
 }
 
 function hideIndicator() {
-    $('#indicator').css('top', '')
-        .css('left', '')
-        .data('vertex', null)
+    $('#indicator')
+    .css('top', ' ')
+    .css('left', ' ')
+    .data('vertex', null)
 }
 
 function clearConsole() {
