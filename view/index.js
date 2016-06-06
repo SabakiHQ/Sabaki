@@ -259,7 +259,8 @@ function setBoard(board) {
 
     board.lines.forEach(function(line) {
         $('#goban').append(
-            new Element('hr', { class: line[2] ? 'arrow' : 'line' })
+            $('<hr/>')
+            .addClass(line[2] ? 'arrow' : 'line')
             .data('v1', line[0])
             .data('v2', line[1])
         )
@@ -1109,25 +1110,25 @@ function useTool(vertex, event) {
     } else if (tool == 'line' || tool == 'arrow') {
         // Check whether to remove a line
 
-        var hr = $('#goban').data('edittool-data')
+        var $hr = $('#goban').data('edittool-data')
 
-        if (hr) {
-            var v1 = hr.data('v1'), v2 = hr.data('v2')
+        if ($hr) {
+            var v1 = $hr.data('v1'), v2 = $hr.data('v2')
             var toDelete = $('#goban hr').get().filter(function(x) {
                 var w1 = $(x).data('v1'), w2 = $(x).data('v2')
-                var result = x != hr
+                var result = x != $hr.get(0)
                     && w1[0] == v1[0] && w1[1] == v1[1]
                     && w2[0] == v2[0] && w2[1] == v2[1]
 
-                if (tool == 'line' || $(x).hasClass('line')) result = result || x != hr
+                if (tool == 'line' || $(x).hasClass('line')) result = result || x != $hr.get(0)
                     && w1[0] == v2[0] && w1[1] == v2[1]
                     && w2[0] == v1[0] && w2[1] == v1[1]
 
                 return result
             })
 
-            if (toDelete.length != 0) hr.remove()
-            toDelete.remove()
+            if (toDelete.length != 0) $hr.remove()
+            $(toDelete).remove()
         }
 
         $('#goban').data('edittool-data', null)
@@ -1235,11 +1236,11 @@ function drawLine(vertex) {
     if (!vertex || !getEditMode() || tool != 'line' && tool != 'arrow') return
 
     if (!$('#goban').data('edittool-data')) {
-        var hr = new Element('hr', { class: tool }).data('v1', vertex).data('v2', vertex)
-        $('#goban').append(hr).data('edittool-data', hr)
+        var $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
+        $('#goban').append($hr).data('edittool-data', $hr)
     } else {
-        var hr = $('#goban').data('edittool-data')
-        hr.data('v2', vertex)
+        var $hr = $('#goban').data('edittool-data')
+        $hr.data('v2', vertex)
     }
 
     updateBoardLines()
@@ -1640,24 +1641,24 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     var controller = getEngineController()
     var container = $('#console .inner')[0]
     var oldform = container.find('form:last-child')
-    var form = oldform.clone().cloneEvents(oldform)
-    var pre = new Element('pre', { text: ' ' })
+    var $form = oldform.clone(true, true)
+    var $pre = $('<pre/>').text(' ')
 
-    form.find('input').val('').cloneEvents(oldform.find('input'))
+    $form.find('input').val('')
     oldform.addClass('waiting').find('input').value = command.toString()
-    container.append(pre).append(form)
-    if (getShowLeftSidebar()) form.find('input').focus()
+    container.append($pre).append($form)
+    if (getShowLeftSidebar()) $form.find('input').focus()
 
     // Cleanup
     var forms = $('#console .inner form')
     if (forms.length > setting.get('console.max_history_count')) {
-        forms[0].getNext('pre').dispose()
-        forms[0].dispose()
+        forms[0].getNext('pre').remove()
+        forms[0].remove()
     }
 
     var listener = function(response, c) {
-        pre.attr('html', response.toHtml())
-        wireLinks(pre)
+        $pre.attr('html', response.toHtml())
+        wireLinks($pre)
         oldform.removeClass('waiting')
         if (callback) callback(response)
 

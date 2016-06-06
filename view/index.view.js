@@ -714,66 +714,64 @@ function addEngineItem(name, path, args) {
     if (!path) path = ''
     if (!args) args = ''
 
-    var ul = $('#preferences .engines-list ul')[0]
-    var li = new Element('li').append(new Element('h3').append(
-        new Element('input', {
-            type: 'text',
-            placeholder: '(Unnamed engine)',
-            value: name
-        })
+    var $ul = $('#preferences .engines-list ul').eq(0)
+    var $li = $('<li/>').append($('<h3/>').append(
+        $('<input/>')
+        .attr('type', 'text')
+        .attr('placeholder', '(Unnamed engine)')
+        .val(name)
     )).append(
-        new Element('p').append(new Element('input', {
-            type: 'text',
-            placeholder: 'Path',
-            value: path
-        })).append(new Element('a.browse', {
-            events: {
-                click: function() {
-                    setIsBusy(true)
+        $('<p/>').append(
+            $('<input/>')
+            .attr('type', 'text')
+            .attr('placeholder', 'Path')
+            .val(path)
+        )).append(
+            $('<a class="browse"/>')
+            .on('click', function() {
+                setIsBusy(true)
 
-                    var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
-                        filters: [{ name: 'All Files', extensions: ['*'] }]
-                    })
+                var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                    filters: [{ name: 'All Files', extensions: ['*'] }]
+                })
 
-                    if (result) {
-                        this.getParent('li')
-                            .find('h3 + p input')
-                            .val(result[0])
-                            .focus()
-                    }
-
-                    setIsBusy(false)
+                if (result) {
+                    this.parents('li').eq(0)
+                        .find('h3 + p input')
+                        .val(result[0])
+                        .focus()
                 }
-            }
-        }).append(new Element('img', {
-            src: '../node_modules/octicons/svg/file-directory.svg',
-            title: 'Browse…',
-            height: 14
-        })))
+
+                setIsBusy(false)
+            })
+        }).append(
+            $('<img/>')
+            .attr('src', '../node_modules/octicons/svg/file-directory.svg')
+            .attr('title', 'Browse…')
+            .attr('height', 14)
+        )))
     ).append(
-        new Element('p').append(new Element('input', {
-            type: 'text',
-            placeholder: 'No arguments',
-            value: args
-        }))
+        $('<p/>').append(
+            $('<input/>')
+            .attr('type', 'text')
+            .attr('placeholder', 'No arguments')
+            .attr('value', args)
+        ))
     ).append(
-        new Element('a.remove', {
-            events: {
-                click: function() {
-                    this.getParent('li').dispose()
-                    $('#preferences .engines-list')[0].data('scrollbar').update()
-                }
-            }
-        }).append(new Element('img', {
-            src: '../node_modules/octicons/svg/x.svg',
-            height: 14
-        }))
+        $('<a class="remove"/>').on('click', function() {
+            this.parents('li').eq(0).remove()
+            $('#preferences .engines-list')[0].data('scrollbar').update()
+        }).append(
+            $('img')
+            .attr('src', '../node_modules/octicons/svg/x.svg')
+            .attr('height', 14)
+        ))
     )
 
-    ul.append(li)
-    li.find('h3 input').focus()
+    $ul.append($li)
+    $li.find('h3 input').focus()
 
-    var enginesScrollbar = $('#preferences .engines-list')[0].data('scrollbar')
+    var enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
@@ -853,19 +851,19 @@ function buildBoard() {
     var hoshi = board.getHandicapPlacement(9)
 
     for (var y = 0; y < board.height; y++) {
-        var ol = new Element('ol.row')
+        var $ol = $('<ol class="row"/>')
 
         for (var x = 0; x < board.width; x++) {
             var vertex = [x, y]
-            var img = new Element('img', { src: '../img/goban/stone_0.svg' })
-            var li = new Element('li')
-                .data('vertex', vertex)
-                .addClass('pos_' + x + '-' + y)
-                .addClass('shift_' + Math.floor(Math.random() * 9))
-                .addClass('random_' + Math.floor(Math.random() * 5))
+            var $img = $('<img/>').attr('src', '../img/goban/stone_0.svg')
+            var $li = $('<li/>')
+            .data('vertex', vertex)
+            .addClass('pos_' + x + '-' + y)
+            .addClass('shift_' + Math.floor(Math.random() * 9))
+            .addClass('random_' + Math.floor(Math.random() * 5))
 
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
-                li.addClass('hoshi')
+                $li.addClass('hoshi')
 
             var getEndTargetVertex = function(e) {
                 var endTarget = document.elementFromPoint(
@@ -874,14 +872,14 @@ function buildBoard() {
                 )
 
                 if (!endTarget) return null
-                var v = endTarget.data('vertex')
-                if (!v) endTarget = endTarget.getParent('li')
-                if (endTarget) v = endTarget.data('vertex')
+                var v = $(endTarget).data('vertex')
+                if (!v) endTarget = $(endTarget).parents('li').get(0)
+                if (endTarget) v = $(endTarget).data('vertex')
 
                 return v
             }
 
-            ol.adopt(li.adopt(new Element('div.stone').adopt(img).adopt(new Element('span')))
+            $ol.append($li.append($('<div class="stone"/>').append($img).append($('<span/>')))
                 .on('mouseup', function(e) {
                     if (!$('#goban').data('mousedown')) return
 
@@ -907,35 +905,35 @@ function buildBoard() {
                 .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
                 })
-                .append(new Element('div.paint'))
+                .append($('<div class="paint"/>'))
             )
         }
 
-        rows.push(ol)
+        rows.push($ol)
     }
 
     var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-    var coordx = new Element('ol.coordx')
-    var coordy = new Element('ol.coordy')
+    var $coordx = $('<ol class="coordx"/>')
+    var $coordy = $('<ol class="coordy"/>')
 
     for (var i = 0; i < board.width; i++) {
-        coordx.adopt(new Element('li', { text: alpha[i] }))
+        $coordx.append($('<li/>').text(alpha[i]))
     }
 
     for (var i = board.height; i > 0; i--) {
-        coordy.adopt(new Element('li', { text: i }))
+        $coordy.append($('<li/>').text(i))
     }
 
-    var goban = $('#goban div')[0]
-    goban.empty().adopt(rows, coordx, coordy)
-    goban.append(coordx.clone(), 'top').append(coordy.clone(), 'top')
+    var $goban = $('#goban div').eq(0)
+    $goban.empty().append(rows).append($coordx).append($coordy)
+    $goban.prepend($coordx.clone()).prepend($coordy.clone())
 
     resizeBoard()
 
     // Readjust shifts
 
-    $('#goban .row li:not(.shift_0)').forEach(function(li) {
-        readjustShifts(li.data('vertex'))
+    $('#goban .row li:not(.shift_0)').get().forEach(function(li) {
+        readjustShifts($(li).data('vertex'))
     })
 }
 
@@ -1026,7 +1024,7 @@ function hideIndicator() {
 }
 
 function clearConsole() {
-    $('#console .inner pre, #console .inner form:not(:last-child)').dispose()
+    $('#console .inner pre, #console .inner form:not(:last-child)').remove()
     $('#console .inner form:last-child input').eq(0).val('').focus()
     $('#console').data('scrollbar').update()
 }
@@ -1282,7 +1280,7 @@ function openGameMenu(element, event) {
                     ['Remove Game', 'Cancel'], 1
                 ) == 1) return
 
-                var index = element.getParent('ol').children('li div').indexOf(element)
+                var index = element.parents('ol').eq(0).children('li div').indexOf(element)
                 trees.splice(index, 1)
 
                 setGameTrees(trees)
@@ -1306,7 +1304,7 @@ function openGameMenu(element, event) {
                     ['Remove Games', 'Cancel'], 1
                 ) == 1) return
 
-                setGameTrees([element.getParent('li').data('gametree')])
+                setGameTrees([element.parents('li').eq(0).data('gametree')])
                 setGameIndex(0)
                 showGameChooser(true)
             }
@@ -1473,7 +1471,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
-        var li = new Element('li')
+        var $li = $('<li/>')
         var tp = gametree.navigate(tree, 0, 30)
         if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
@@ -1481,34 +1479,35 @@ function showGameChooser(restoreScrollbarPos) {
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
-        $('#gamechooser ol')[0].append(li.append(
-            new Element('div', { draggable: true })
-            .append(new Element('span'))
+        $('#gamechooser ol').eq(0).append($li.append(
+            $('<div/>')
+            .attr('draggable', 'true')
+            .append($('<span/>'))
             .append(svg)
-            .append(new Element('span.black', { text: 'Black' }))
-            .append(new Element('span.white', { text: 'White' }))
+            .append($('<span class="black"/>').text('Black'))
+            .append($('<span class="white"/>').text('White'))
         ))
 
-        var gamename = li.find('span')
-        var black = li.find('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
-        var white = li.find('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
+        var $gamename = $li.find('span')
+        var $black = $li.find('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
+        var $white = $li.find('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
 
-        if ('BR' in node) black.attr('title', node.BR[0])
-        if ('WR' in node) white.attr('title', node.WR[0])
-        if ('GN' in node) gamename.attr('text', node.GN[0]).attr('title', node.GN[0])
-        else if ('EV' in node) gamename.attr('text', node.EV[0]).attr('title', node.EV[0])
+        if ('BR' in node) $black.attr('title', node.BR[0])
+        if ('WR' in node) $white.attr('title', node.WR[0])
+        if ('GN' in node) $gamename.attr('text', node.GN[0]).attr('title', node.GN[0])
+        else if ('EV' in node) $gamename.attr('text', node.EV[0]).attr('title', node.EV[0])
 
-        li.data('gametree', tree).find('div').on('click', function() {
+        $li.data('gametree', tree).find('div').on('click', function() {
             var link = this
             closeGameChooser()
             setTimeout(function() {
-                setGameIndex($('#gamechooser ol li div').indexOf(link))
+                setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
         }).on('mouseup', function(e) {
             if (e.event.button != 2) return
             openGameMenu(this, e.event)
         }).on('dragstart', function(e) {
-            $('#gamechooser').data('dragging', this.getParent('li'))
+            $('#gamechooser').data('dragging', $(this).parents('li').eq(0))
         })
     }
 
@@ -1517,7 +1516,7 @@ function showGameChooser(restoreScrollbarPos) {
         if (!$('#gamechooser').data('dragging')) return
 
         var x = e.event.clientX
-        var middle = this.position().left + this.innerWidth() / 2
+        var middle = $(this).position().left + $(this).innerWidth() / 2
 
         if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
@@ -1542,8 +1541,8 @@ function showGameChooser(restoreScrollbarPos) {
         if (afterli) $(afterli).before(dragged)
         if (beforeli) $(beforeli).append(dragged)
 
-        setGameTrees($('#gamechooser ol > li').map(function(x) {
-            return x.data('gametree')
+        setGameTrees($('#gamechooser ol > li').get().map(function(x) {
+            return $(x).data('gametree')
         }))
 
         var newindex = getGameTrees().indexOf(currentTree)
