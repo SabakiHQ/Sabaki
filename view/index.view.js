@@ -203,7 +203,7 @@ function setPropertiesHeight(height) {
 
 function getPlayerName(sign) {
     var el = $('#player_' + sign + ' .name')[0]
-    return [el.get('text'), el.get('title')]
+    return [el.attr('text'), el.attr('title')]
 }
 
 function setPlayerName(sign, name, tooltip) {
@@ -221,8 +221,8 @@ function setShowHotspot(bookmark) {
 
 function getCaptures() {
     return {
-        '-1': +$('#player_-1 .captures')[0].get('text'),
-        '1': +$('#player_1 .captures')[0].get('text')
+        '-1': +$('#player_-1 .captures')[0].attr('text'),
+        '1': +$('#player_1 .captures')[0].attr('text')
     }
 }
 
@@ -234,7 +234,7 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('#.currentplayer')[0].get('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('#.currentplayer')[0].attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
@@ -318,7 +318,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 function getSliderValue() {
     var span = $('#sidebar .slider .inner span')[0]
     var value = parseFloat(span.css('top'))
-    var label = span.get('text')
+    var label = span.attr('text')
 
     return [value, label]
 }
@@ -687,7 +687,7 @@ function prepareGameChooser() {
 
         $('#gamechooser .games-list li:not(.add)').forEach(function(li) {
             if (li.getElements('span').some(function(span) {
-                return span.get('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
+                return span.attr('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) li.removeClass('hide')
             else li.addClass('hide')
         })
@@ -799,7 +799,7 @@ function showMessageBox(message, type, buttons, cancelId) {
 
 function readjustShifts(vertex) {
     var li = $('#goban .pos_' + vertex.join('-'))[0]
-    var direction = li.get('class').split(' ').filter(function(x) {
+    var direction = li.attr('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
         return +x.replace('shift_', '')
@@ -1041,7 +1041,7 @@ function wireLinks(container) {
 
             shell.openExternal(this.href)
         } else if (this.hasClass('movenumber')) {
-            var movenumber = +this.get('text').slice(1)
+            var movenumber = +this.attr('text').slice(1)
             setUndoable(true, 'Go Back')
             goToMainVariation()
 
@@ -1053,7 +1053,7 @@ function wireLinks(container) {
     })
 
     container.getElements('.coord').on('mouseenter', function() {
-        var v = getBoard().coord2vertex(this.get('text'))
+        var v = getBoard().coord2vertex(this.attr('text'))
         showIndicator(v)
     }).on('mouseleave', function() {
         if (!getFindMode()) hideIndicator()

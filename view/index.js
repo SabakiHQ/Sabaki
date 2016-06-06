@@ -171,12 +171,12 @@ function getGraphNode(tree, index) {
 
 function getSelectedTool() {
     var li = $('#edit .selected')[0]
-    var tool = li.get('class').replace('selected', '').replace('-tool', '').trim()
+    var tool = li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return li.getElement('img').get('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+        return li.getElement('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
     } else if (tool == 'line') {
-        return li.getElement('img').get('src').indexOf('line') != -1 ? 'line' : 'arrow'
+        return li.getElement('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -289,12 +289,12 @@ function setScoringMethod(method) {
         tds[4].attr('text', 0)
 
         for (var i = 0; i <= 3; i++) {
-            if (tds[i].hasClass('disabled') || isNaN(+tds[i].get('text'))) continue
-            tds[4].attr('text', +tds[4].get('text') + +tds[i].get('text'))
+            if (tds[i].hasClass('disabled') || isNaN(+tds[i].attr('text'))) continue
+            tds[4].attr('text', +tds[4].attr('text') + +tds[i].attr('text'))
         }
     }
 
-    var results = $('#score tbody td:last-child').get('text')
+    var results = $('#score tbody td:last-child').attr('text')
     var diff = +results[0] - +results[1]
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
@@ -396,11 +396,11 @@ function prepareEditTools() {
             this.getParent().addClass('selected')
         } else if (this.getParent().hasClass('stone-tool')) {
             var img = this.getElement('img')
-            var black = img.get('src') == '../img/edit/stone_1.svg'
+            var black = img.attr('src') == '../img/edit/stone_1.svg'
             img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         } else if (this.getParent().hasClass('line-tool')) {
             var img = this.getElement('img')
-            var line = img.get('src') == '../img/edit/line.svg'
+            var line = img.attr('src') == '../img/edit/line.svg'
             img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
@@ -643,9 +643,9 @@ function prepareGameInfo() {
         })
 
         pikaday.el.getElements('.pika-button').forEach(function(el) {
-            var year = +el.get('data-pika-year')
-            var month = +el.get('data-pika-month')
-            var day = +el.get('data-pika-day')
+            var year = +el.attr('data-pika-year')
+            var month = +el.attr('data-pika-month')
+            var day = +el.attr('data-pika-day')
 
             el.getParent().toggleClass('is-multi-selected', dates.some(function(d) {
                 return helper.equals(d, [year, month + 1, day])
@@ -1592,7 +1592,7 @@ function commitGameInfo() {
 }
 
 function commitScore() {
-    var result = $('#score .result').get('text')
+    var result = $('#score .result').attr('text')
 
     showGameInfo()
     $('#info input[name="result"]').val(result)
