@@ -208,7 +208,7 @@ function getPlayerName(sign) {
 
 function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $('#player_' + sign + ' .name')[0].attr('text', name).attr('title', tooltip)
+    $('#player_' + sign + ' .name')[0].text(name).attr('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -227,9 +227,9 @@ function getCaptures() {
 }
 
 function setCaptures(captures) {
-    $('#player_-1 .captures')[0].attr('text', captures['-1'])
+    $('#player_-1 .captures')[0].text(captures['-1'])
         .css('opacity', captures['-1'] == 0 ? 0 : .7)
-    $('#player_1 .captures')[0].attr('text', captures['1'])
+    $('#player_1 .captures')[0].text(captures['1'])
         .css('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
@@ -262,7 +262,7 @@ function getCommentTitle() {
 function setCommentTitle(text) {
     var input = $('#properties .edit .header input')[0]
 
-    $('#properties .inner .header span')[0].attr('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $('#properties .inner .header span')[0].text(text.trim() != '' ? text : getCurrentMoveInterpretation())
     if (input.val() != text) input.val(text)
 }
 
@@ -316,15 +316,15 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 }
 
 function getSliderValue() {
-    var span = $('#sidebar .slider .inner span')[0]
-    var value = parseFloat(span.css('top'))
-    var label = span.attr('text')
+    var $span = $('#sidebar .slider .inner span').eq(0)
+    var value = parseFloat($span.css('top'))
+    var label = $span.attr('text')
 
     return [value, label]
 }
 
 function setSliderValue(value, label) {
-    $('#sidebar .slider .inner span').css('top', value + '%').attr('text', label)
+    $('#sidebar .slider .inner span').css('top', value + '%').text(label)
 }
 
 function getFindMode() {
@@ -715,18 +715,21 @@ function addEngineItem(name, path, args) {
     if (!args) args = ''
 
     var $ul = $('#preferences .engines-list ul').eq(0)
-    var $li = $('<li/>').append($('<h3/>').append(
-        $('<input/>')
-        .attr('type', 'text')
-        .attr('placeholder', '(Unnamed engine)')
-        .val(name)
-    )).append(
+    var $li = $('<li/>').append(
+        $('<h3/>')
+        .append(
+            $('<input/>')
+            .attr('type', 'text')
+            .attr('placeholder', '(Unnamed engine)')
+            .val(name)
+        )
+    ).append(
         $('<p/>').append(
             $('<input/>')
             .attr('type', 'text')
             .attr('placeholder', 'Path')
             .val(path)
-        )).append(
+        ).append(
             $('<a class="browse"/>')
             .on('click', function() {
                 setIsBusy(true)
@@ -744,19 +747,19 @@ function addEngineItem(name, path, args) {
 
                 setIsBusy(false)
             })
-        }).append(
+        ).append(
             $('<img/>')
             .attr('src', '../node_modules/octicons/svg/file-directory.svg')
             .attr('title', 'Browse…')
             .attr('height', 14)
-        )))
+        )
     ).append(
         $('<p/>').append(
             $('<input/>')
             .attr('type', 'text')
             .attr('placeholder', 'No arguments')
             .attr('value', args)
-        ))
+        )
     ).append(
         $('<a class="remove"/>').on('click', function() {
             this.parents('li').eq(0).remove()
@@ -765,7 +768,7 @@ function addEngineItem(name, path, args) {
             $('img')
             .attr('src', '../node_modules/octicons/svg/x.svg')
             .attr('height', 14)
-        ))
+        )
     )
 
     $ul.append($li)
@@ -827,21 +830,21 @@ function readjustShifts(vertex) {
     }
 
     if (query && removeShifts) {
-        var el = $(query)
-        el.addClass('animate')
-        removeShifts.forEach(function(s) { el.removeClass('shift_' + s) })
-        setTimeout(function() { el.removeClass('animate') }, 200)
+        var $el = $(query)
+        $el.addClass('animate')
+        removeShifts.forEach(function(s) { $el.removeClass('shift_' + s) })
+        setTimeout(function() { $el.removeClass('animate') }, 200)
     }
 }
 
 function updateSidebarLayout() {
-    var container = $('#properties .gm-scroll-view')[0]
-    container.css('opacity', 0)
+    var $container = $('#properties .gm-scroll-view')
+    $container.css('opacity', 0)
 
     setTimeout(function() {
         $('#graph').data('sigma').renderers[0].resize().render()
         $('#properties').data('scrollbar').update()
-        container.css('opacity', 1)
+        $container.css('opacity', 1)
     }, 300)
 }
 
@@ -1418,11 +1421,11 @@ function showScore() {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
         var tds = tr.children('td')
 
-        tds[0].attr('text', score['area_' + sign])
-        tds[1].attr('text', score['territory_' + sign])
-        tds[2].attr('text', score['captures_' + sign])
-        if (sign < 0) tds[3].attr('text', getKomi())
-        tds[4].attr('text', 0)
+        tds[0].text(score['area_' + sign])
+        tds[1].text(score['territory_' + sign])
+        tds[2].text(score['captures_' + sign])
+        if (sign < 0) tds[3].text(getKomi())
+        tds[4].text(0)
 
         setScoringMethod(setting.get('scoring.method'))
     }
@@ -1489,13 +1492,13 @@ function showGameChooser(restoreScrollbarPos) {
         ))
 
         var $gamename = $li.find('span')
-        var $black = $li.find('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
-        var $white = $li.find('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
+        var $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
+        var $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
 
         if ('BR' in node) $black.attr('title', node.BR[0])
         if ('WR' in node) $white.attr('title', node.WR[0])
-        if ('GN' in node) $gamename.attr('text', node.GN[0]).attr('title', node.GN[0])
-        else if ('EV' in node) $gamename.attr('text', node.EV[0]).attr('title', node.EV[0])
+        if ('GN' in node) $gamename.text(node.GN[0]).attr('title', node.GN[0])
+        else if ('EV' in node) $gamename.text(node.EV[0]).attr('title', node.EV[0])
 
         $li.data('gametree', tree).find('div').on('click', function() {
             var link = this

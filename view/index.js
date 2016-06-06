@@ -287,11 +287,11 @@ function setScoringMethod(method) {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
         var tds = tr.children('td')
 
-        tds[4].attr('text', 0)
+        tds[4].text(0)
 
         for (var i = 0; i <= 3; i++) {
             if (tds[i].hasClass('disabled') || isNaN(+tds[i].attr('text'))) continue
-            tds[4].attr('text', +tds[4].attr('text') + +tds[i].attr('text'))
+            tds[4].text(+tds[4].attr('text') + +tds[i].attr('text'))
         }
     }
 
@@ -300,7 +300,7 @@ function setScoringMethod(method) {
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 
-    $('#score .result').attr('text', result)
+    $('#score .result').text(result)
 }
 
 function getKomi() {
