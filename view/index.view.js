@@ -967,18 +967,12 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    var outerWidth = parseFloat($('#main')[0].getStyle('width'))
-    var outerHeight = parseFloat($('#main')[0].getStyle('height'))
+    var outerWidth = $('#main').outerWidth()
+    var outerHeight = $('#main').outerHeight()
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = helper.floorEven(outerWidth - parseFloat($('#goban').getStyle('border-left-width'))
-        - parseFloat($('#goban').getStyle('border-right-width'))
-        - parseFloat($('#goban').getStyle('padding-left'))
-        - parseFloat($('#goban').getStyle('padding-right')))
-    var height = helper.floorEven(outerHeight - parseFloat($('#goban').getStyle('border-top-width'))
-        - parseFloat($('#goban').getStyle('border-bottom-width'))
-        - parseFloat($('#goban').getStyle('padding-top'))
-        - parseFloat($('#goban').getStyle('padding-bottom')))
+    var width = helper.floorEven($('#main').width())
+    var height = helper.floorEven($('#main').height())
 
     if (getShowCoordinates()) {
         boardWidth += 2
