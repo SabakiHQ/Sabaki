@@ -13,12 +13,12 @@ function setIsBusy(busy) {
     clearTimeout(busyTimeout)
 
     if (busy) {
-        document.body.addClass('busy')
+        $('body').addClass('busy')
         return
     }
 
     busyTimeout = setTimeout(function() {
-        document.body.removeClass('busy')
+        $('body').removeClass('busy')
     }, setting.get('app.hide_busy_delay'))
 }
 
@@ -73,7 +73,7 @@ function setShowCoordinates(show) {
 }
 
 function getShowLeftSidebar() {
-    return document.body.hasClass('leftsidebar')
+    return $('body').hasClass('leftsidebar')
 }
 
 function setShowLeftSidebar(show) {
@@ -88,7 +88,7 @@ function setShowLeftSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
     }
 
-    document.body.toggleClass('leftsidebar', show)
+    $('body').toggleClass('leftsidebar', show)
 
     $('#leftsidebar').css('width', setting.get('view.leftsidebar_width'))
     $('#main').css('left', show ? setting.get('view.leftsidebar_width') : 0)
@@ -114,7 +114,7 @@ function getLeftSidebarWidth() {
 }
 
 function getShowSidebar() {
-    return document.body.hasClass('sidebar')
+    return $('body').hasClass('sidebar')
 }
 
 function setShowSidebar(show) {
@@ -129,7 +129,7 @@ function setShowSidebar(show) {
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
     }
 
-    document.body.toggleClass('sidebar', show)
+    $('body').toggleClass('sidebar', show)
 
     $('#sidebar').css('width', setting.get('view.sidebar_width'))
     $('#main').css('right', show ? setting.get('view.sidebar_width') : 0)
@@ -212,11 +212,11 @@ function setPlayerName(sign, name, tooltip) {
 }
 
 function getShowHotspot() {
-    return document.body.hasClass('bookmark')
+    return $('body').hasClass('bookmark')
 }
 
 function setShowHotspot(bookmark) {
-    document.body.toggleClass('bookmark', bookmark)
+    $('body').toggleClass('bookmark', bookmark)
 }
 
 function getCaptures() {
@@ -328,20 +328,20 @@ function setSliderValue(value, label) {
 }
 
 function getFindMode() {
-    return document.body.hasClass('find')
+    return $('body').hasClass('find')
 }
 
 function setFindMode(pickMode) {
     if (pickMode) {
         if (pickMode != getFindMode()) closeDrawers()
-        document.body.addClass('find')
+        $('body').addClass('find')
 
         var input = $('#find').getElement('input')
         input.focus()
         input.select()
     } else {
         hideIndicator()
-        document.body.removeClass('find')
+        $('body').removeClass('find')
         document.activeElement.blur()
     }
 }
@@ -355,37 +355,37 @@ function setFindText(text) {
 }
 
 function getEditMode() {
-    return document.body.hasClass('edit')
+    return $('body').hasClass('edit')
 }
 
 function setEditMode(editMode) {
     if (editMode) {
         closeDrawers()
-        document.body.addClass('edit')
+        $('body').addClass('edit')
 
         $('#properties textarea')[0].scrollTo(0, 0)
     } else {
         $('#goban').data('edittool-data', null)
-        document.body.removeClass('edit')
+        $('body').removeClass('edit')
     }
 }
 
 function getGuessMode() {
-    return document.body.hasClass('guess')
+    return $('body').hasClass('guess')
 }
 
 function setGuessMode(guessMode) {
     if (guessMode) {
         closeDrawers()
-        document.body.addClass('guess')
+        $('body').addClass('guess')
     } else {
-        document.body.removeClass('guess')
+        $('body').removeClass('guess')
         setCurrentTreePosition.apply(null, getCurrentTreePosition())
     }
 }
 
 function getScoringMode() {
-    return document.body.hasClass('scoring')
+    return $('body').hasClass('scoring')
 }
 
 function setScoringMode(mode, estimator) {
@@ -400,7 +400,7 @@ function setScoringMode(mode, estimator) {
         .removeClass('dead')
 
         closeDrawers()
-        document.body.addClass(type)
+        $('body').addClass(type)
 
         var deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
         deadstones.forEach(function(v) {
@@ -409,12 +409,12 @@ function setScoringMode(mode, estimator) {
 
         updateAreaMap(estimator)
     } else {
-        document.body.removeClass(type)
+        $('body').removeClass(type)
     }
 }
 
 function getEstimatorMode() {
-    return document.body.hasClass('estimator')
+    return $('body').hasClass('estimator')
 }
 
 function setEstimatorMode(mode) {
@@ -594,7 +594,7 @@ function prepareScrollbars() {
         createElements: false
     }).create())
 
-    window.on('resize', function() {
+    $(window).on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
         var width = $('#gamechooser .games-list')[0].getWidth() - 20
@@ -622,7 +622,7 @@ function prepareResizers() {
         $('#properties').css('transition', 'none')
     })
 
-    document.body.on('mouseup', function() {
+    $('body').on('mouseup', function() {
         var sidebarInitPosX = $('#sidebar').data('initposx')
         var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
         var initPosY = $('#sidebar').data('initposy')
@@ -1576,10 +1576,10 @@ function closeDrawers() {
  * Main
  */
 
-document.on('domready', function() {
+$(document).ready(function() {
     document.title = app.getName()
 
-    document.body.on('mouseup', function() {
+    $('body').on('mouseup', function() {
         $('#goban').data('mousedown', false)
     })
 

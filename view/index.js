@@ -378,12 +378,12 @@ function loadSettings() {
     $('#goban').toggleClass('siblings', setting.get('view.show_siblings'))
 
     if (setting.get('view.show_leftsidebar')) {
-        document.body.addClass('leftsidebar')
+        $('body').addClass('leftsidebar')
         setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
 
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
-        document.body.addClass('sidebar')
+        $('body').addClass('sidebar')
         setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
         setSidebarWidth(setting.get('view.sidebar_width'))
     }
@@ -502,7 +502,7 @@ function prepareDragDropFiles() {
     Element.NativeEvents.dragstart = 2
     Element.NativeEvents.drop = 2
 
-    document.body.on('dragover', function(e) {
+    $('body').on('dragover', function(e) {
         e.preventDefault()
     }).on('drop', function(e) {
         e.preventDefault()
@@ -695,7 +695,7 @@ function prepareGameInfo() {
     dateInput.data('pikaday', pikaday)
     pikaday.hide()
 
-    document.body.grab(pikaday.el).on('click', function(e) {
+    $('body').grab(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
         && document.activeElement != dateInput
         && e.target != dateInput
@@ -703,7 +703,7 @@ function prepareGameInfo() {
             pikaday.hide()
     })
 
-    window.on('resize', function() { adjustPosition(pikaday) })
+    $(window).on('resize', function() { adjustPosition(pikaday) })
 
     dateInput.on('focus', function() {
         pikaday.show()
@@ -2086,12 +2086,12 @@ function undoBoard() {
  * Main events
  */
 
-document.on('keydown', function(e) {
+$(document).on('keydown', function(e) {
     if (e.code == 27) {
         // Escape key
         closeDrawers()
     }
-}).on('domready', function() {
+}).ready(function() {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
@@ -2108,7 +2108,7 @@ document.on('keydown', function(e) {
     })
 })
 
-window.on('resize', function() {
+$(window).on('resize', function() {
     resizeBoard()
 }).on('beforeunload', function(e) {
     if (!askForSave()) {
@@ -2121,6 +2121,7 @@ window.on('resize', function() {
     var win = remote.getCurrentWindow()
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
-    var size = document.body.getSize()
-    setting.set('window.width', size.x).set('window.height', size.y)
+    setting
+    .set('window.width', $('body').width())
+    .set('window.height', $('body').height())
 })
