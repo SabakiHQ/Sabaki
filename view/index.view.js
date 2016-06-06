@@ -208,7 +208,7 @@ function getPlayerName(sign) {
 
 function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $('#player_' + sign + ' .name')[0].set('text', name).set('title', tooltip)
+    $('#player_' + sign + ' .name')[0].attr('text', name).attr('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -227,9 +227,9 @@ function getCaptures() {
 }
 
 function setCaptures(captures) {
-    $('#player_-1 .captures')[0].set('text', captures['-1'])
+    $('#player_-1 .captures')[0].attr('text', captures['-1'])
         .css('opacity', captures['-1'] == 0 ? 0 : .7)
-    $('#player_1 .captures')[0].set('text', captures['1'])
+    $('#player_1 .captures')[0].attr('text', captures['1'])
         .css('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
@@ -238,7 +238,7 @@ function getCurrentPlayer() {
 }
 
 function setCurrentPlayer(sign) {
-    $('#.currentplayer').set('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('#.currentplayer').attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
 }
 
 function getCommentText() {
@@ -251,7 +251,7 @@ function setCommentText(text) {
     var textarea = $('#properties textarea')[0]
 
     if (textarea.val() != text) textarea.val(text)
-    container.set('html', html)
+    container.attr('html', html)
     wireLinks(container)
 }
 
@@ -262,7 +262,7 @@ function getCommentTitle() {
 function setCommentTitle(text) {
     var input = $('#properties .edit .header input')[0]
 
-    $('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $('#properties .inner .header span')[0].attr('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
     if (input.val() != text) input.val(text)
 }
 
@@ -276,17 +276,17 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     else header.addClass('movestatus')
 
     if (movestatus == -1)
-        img.set('src', '../img/ui/badmove.svg')
-            .set('alt', 'Bad move')
+        img.attr('src', '../img/ui/badmove.svg')
+            .attr('alt', 'Bad move')
     else if (movestatus == 0)
-        img.set('src', '../img/ui/doubtfulmove.svg')
-            .set('alt', 'Doubtful move')
+        img.attr('src', '../img/ui/doubtfulmove.svg')
+            .attr('alt', 'Doubtful move')
     else if (movestatus == 1)
-        img.set('src', '../img/ui/interestingmove.svg')
-            .set('alt', 'Interesting move')
+        img.attr('src', '../img/ui/interestingmove.svg')
+            .attr('alt', 'Interesting move')
     else if (movestatus == 2)
-        img.set('src', '../img/ui/goodmove.svg')
-            .set('alt', 'Good move')
+        img.attr('src', '../img/ui/goodmove.svg')
+            .attr('alt', 'Good move')
 
     if (movevalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
     img.title = img.alt
@@ -299,17 +299,17 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     else header.addClass('positionstatus')
 
     if (posstatus == -1)
-        img.set('src', '../img/ui/white.svg')
-            .set('alt', 'Good for white')
+        img.attr('src', '../img/ui/white.svg')
+            .attr('alt', 'Good for white')
     else if (posstatus == 0)
-        img.set('src', '../img/ui/balance.svg')
-            .set('alt', 'Even position')
+        img.attr('src', '../img/ui/balance.svg')
+            .attr('alt', 'Even position')
     else if (posstatus == 1)
-        img.set('src', '../img/ui/black.svg')
-            .set('alt', 'Good for black')
+        img.attr('src', '../img/ui/black.svg')
+            .attr('alt', 'Good for black')
     else if (posstatus == -2)
-        img.set('src', '../img/ui/unclear.svg')
-            .set('alt', 'Unclear position')
+        img.attr('src', '../img/ui/unclear.svg')
+            .attr('alt', 'Unclear position')
 
     if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
     img.title = img.alt
@@ -324,7 +324,7 @@ function getSliderValue() {
 }
 
 function setSliderValue(value, label) {
-    $('#sidebar .slider .inner span').css('top', value + '%').set('text', label)
+    $('#sidebar .slider .inner span').css('top', value + '%').attr('text', label)
 }
 
 function getFindMode() {
@@ -1402,7 +1402,7 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    info.getElements('input[name^="size-"]').set('disabled', disabled)
+    info.getElements('input[name^="size-"]').attr('disabled', disabled)
     info.toggleClass('disabled', disabled)
 }
 
@@ -1420,11 +1420,11 @@ function showScore() {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
         var tds = tr.getElements('td')
 
-        tds[0].set('text', score['area_' + sign])
-        tds[1].set('text', score['territory_' + sign])
-        tds[2].set('text', score['captures_' + sign])
-        if (sign < 0) tds[3].set('text', getKomi())
-        tds[4].set('text', 0)
+        tds[0].attr('text', score['area_' + sign])
+        tds[1].attr('text', score['territory_' + sign])
+        tds[2].attr('text', score['captures_' + sign])
+        if (sign < 0) tds[3].attr('text', getKomi())
+        tds[4].attr('text', 0)
 
         setScoringMethod(setting.get('scoring.method'))
     }
@@ -1490,13 +1490,13 @@ function showGameChooser(restoreScrollbarPos) {
         ))
 
         var gamename = li.getElement('span')
-        var black = li.getElement('.black').set('text', gametree.getPlayerName(1, tree, 'Black'))
-        var white = li.getElement('.white').set('text', gametree.getPlayerName(-1, tree, 'White'))
+        var black = li.getElement('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
+        var white = li.getElement('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
 
-        if ('BR' in node) black.set('title', node.BR[0])
-        if ('WR' in node) white.set('title', node.WR[0])
-        if ('GN' in node) gamename.set('text', node.GN[0]).set('title', node.GN[0])
-        else if ('EV' in node) gamename.set('text', node.EV[0]).set('title', node.EV[0])
+        if ('BR' in node) black.attr('title', node.BR[0])
+        if ('WR' in node) white.attr('title', node.WR[0])
+        if ('GN' in node) gamename.attr('text', node.GN[0]).attr('title', node.GN[0])
+        else if ('EV' in node) gamename.attr('text', node.EV[0]).attr('title', node.EV[0])
 
         li.data('gametree', tree).getElement('div').on('click', function() {
             var link = this

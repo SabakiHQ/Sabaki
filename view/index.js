@@ -218,7 +218,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.getElement('.stone span').set('title', '')
+            li.getElement('.stone span').attr('title', '')
 
             // Add markups
 
@@ -227,7 +227,7 @@ function setBoard(board) {
                 var type = markup[0], label = markup[1]
 
                 if (type != '') li.addClass(type)
-                if (label != '') li.getElement('.stone span').set('title', label)
+                if (label != '') li.getElement('.stone span').attr('title', label)
                 li.toggleClass('smalllabel', label.length >= 3)
             }
 
@@ -286,11 +286,11 @@ function setScoringMethod(method) {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
         var tds = tr.getElements('td')
 
-        tds[4].set('text', 0)
+        tds[4].attr('text', 0)
 
         for (var i = 0; i <= 3; i++) {
             if (tds[i].hasClass('disabled') || isNaN(+tds[i].get('text'))) continue
-            tds[4].set('text', +tds[4].get('text') + +tds[i].get('text'))
+            tds[4].attr('text', +tds[4].get('text') + +tds[i].get('text'))
         }
     }
 
@@ -299,7 +299,7 @@ function setScoringMethod(method) {
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 
-    $('#score .result').set('text', result)
+    $('#score .result').attr('text', result)
 }
 
 function getKomi() {
@@ -325,7 +325,7 @@ function setUndoable(undoable, tooltip) {
         var position = gametree.getLevel.apply(null, getCurrentTreePosition())
         if (!tooltip) tooltip = 'Undo'
 
-        $('#bar header .undo').set('title', tooltip)
+        $('#bar header .undo').attr('title', tooltip)
         document.body
             .addClass('undoable')
             .data('undodata-root', rootTree)
@@ -369,7 +369,7 @@ function getEmptyGameTree() {
  */
 
 function loadSettings() {
-    $('#head link.userstyle').set('href', setting.stylesPath)
+    $('#head link.userstyle').attr('href', setting.stylesPath)
 
     $('#goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
     $('#goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
@@ -397,11 +397,11 @@ function prepareEditTools() {
         } else if (this.getParent().hasClass('stone-tool')) {
             var img = this.getElement('img')
             var black = img.get('src') == '../img/edit/stone_1.svg'
-            img.set('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
+            img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         } else if (this.getParent().hasClass('line-tool')) {
             var img = this.getElement('img')
             var line = img.get('src') == '../img/edit/line.svg'
-            img.set('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
+            img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
 }
@@ -720,7 +720,7 @@ function prepareGameInfo() {
 
     // Handle size inputs
 
-    $('#info input[name^="size-"]').set('placeholder', setting.get('game.default_board_size'))
+    $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
         $(this).data('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
@@ -1656,7 +1656,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 
     var listener = function(response, c) {
-        pre.set('html', response.toHtml())
+        pre.attr('html', response.toHtml())
         wireLinks(pre)
         oldform.removeClass('waiting')
         if (callback) callback(response)
@@ -2124,6 +2124,6 @@ $(window).on('resize', function() {
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
     setting
-    .set('window.width', $('body').width())
-    .set('window.height', $('body').height())
+    .attr('window.width', $('body').width())
+    .attr('window.height', $('body').height())
 })
