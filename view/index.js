@@ -1,4 +1,4 @@
-var $ = require('cash-dom')
+var $ = require('jquery')
 var fs = require('fs')
 var process = require('process')
 var remote = require('electron').remote
