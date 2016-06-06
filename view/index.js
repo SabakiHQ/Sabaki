@@ -1813,9 +1813,10 @@ function loadFileFromSgf(content, dontask, callback) {
         var win = remote.getCurrentWindow()
         var lastprogress = -1
         var error = false
+        var trees = []
 
         try {
-            var trees = sgf.parse(sgf.tokenize(content), function(progress) {
+            trees = sgf.parse(sgf.tokenize(content), function(progress) {
                 if (progress - lastprogress < 0.05) return
 
                 setProgressIndicator(progress, win)
@@ -1823,17 +1824,19 @@ function loadFileFromSgf(content, dontask, callback) {
             }).subtrees
 
             if (trees.length == 0) throw true
-
-            setGameTrees(trees)
-            setGameIndex(0)
-            updateFileHash()
-
-            if (trees.length > 1)
-                setTimeout(showGameChooser, setting.get('gamechooser.show_delay'))
         } catch(e) {
             showMessageBox('This file is unreadable.', 'warning')
             error = true
         }
+
+        if (trees.length != 0) {
+            setGameTrees(trees)
+            setGameIndex(0)
+            updateFileHash()
+        }
+
+        if (trees.length > 1)
+            setTimeout(showGameChooser, setting.get('gamechooser.show_delay'))
 
         setProgressIndicator(-1, win)
         setIsBusy(false)
