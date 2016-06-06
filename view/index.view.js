@@ -90,8 +90,8 @@ function setShowLeftSidebar(show) {
 
     document.body.toggleClass('leftsidebar', show)
 
-    $('#leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
-    $('#main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
+    $('#leftsidebar').css('width', setting.get('view.leftsidebar_width'))
+    $('#main').css('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     resizeBoard()
     setting.set('view.show_leftsidebar', show)
@@ -105,12 +105,12 @@ function setShowLeftSidebar(show) {
 
 function setLeftSidebarWidth(width) {
     if (!getShowLeftSidebar()) return
-    $('#leftsidebar').setStyle('width', width)
-    $('#main').setStyle('left', width)
+    $('#leftsidebar').css('width', width)
+    $('#main').css('left', width)
 }
 
 function getLeftSidebarWidth() {
-    return parseFloat($('#leftsidebar').getStyle('width'))
+    return parseFloat($('#leftsidebar').width())
 }
 
 function getShowSidebar() {
@@ -131,8 +131,8 @@ function setShowSidebar(show) {
 
     document.body.toggleClass('sidebar', show)
 
-    $('#sidebar').setStyle('width', setting.get('view.sidebar_width'))
-    $('#main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
+    $('#sidebar').css('width', setting.get('view.sidebar_width'))
+    $('#main').css('right', show ? setting.get('view.sidebar_width') : 0)
 
     if (show) {
         updateGraph()
@@ -182,13 +182,13 @@ function getShowComment() {
 }
 
 function getSidebarWidth() {
-    return parseFloat($('#sidebar').getStyle('width'))
+    return parseFloat($('#sidebar').width())
 }
 
 function setSidebarWidth(width) {
     if (!getShowSidebar()) return
-    $('#sidebar').setStyle('width', width)
-    $('#.sidebar #main').setStyle('right', width)
+    $('#sidebar').css('width', width)
+    $('#.sidebar #main').css('right', width)
 }
 
 function getPropertiesHeight() {
@@ -196,8 +196,8 @@ function getPropertiesHeight() {
 }
 
 function setPropertiesHeight(height) {
-    $('#graph').setStyle('height', (100 - height) + '%')
-    $('#properties').setStyle('height', height + '%')
+    $('#graph').css('height', (100 - height) + '%')
+    $('#properties').css('height', height + '%')
     setSliderValue.apply(null, getSliderValue())
 }
 
@@ -228,9 +228,9 @@ function getCaptures() {
 
 function setCaptures(captures) {
     $('#player_-1 .captures')[0].set('text', captures['-1'])
-        .setStyle('opacity', captures['-1'] == 0 ? 0 : .7)
+        .css('opacity', captures['-1'] == 0 ? 0 : .7)
     $('#player_1 .captures')[0].set('text', captures['1'])
-        .setStyle('opacity', captures['1'] == 0 ? 0 : .7)
+        .css('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
 function getCurrentPlayer() {
@@ -317,14 +317,14 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 
 function getSliderValue() {
     var span = $('#sidebar .slider .inner span')[0]
-    var value = parseFloat(span.getStyle('top'))
+    var value = parseFloat(span.css('top'))
     var label = span.get('text')
 
     return [value, label]
 }
 
 function setSliderValue(value, label) {
-    $('#sidebar .slider .inner span').setStyle('top', value + '%').set('text', label)
+    $('#sidebar .slider .inner span').css('top', value + '%').set('text', label)
 }
 
 function getFindMode() {
@@ -605,7 +605,7 @@ function prepareScrollbars() {
         var liwidth = svgs[0].getWidth() + 12 + 20
         var count = Math.floor(width / liwidth)
 
-        $('#gamechooser li').setStyle('width', Math.floor(width / count) - 20)
+        $('#gamechooser li').css('width', Math.floor(width / count) - 20)
         $('#gamechooser .games-list')[0].data('scrollbar').update()
     })
 }
@@ -613,13 +613,13 @@ function prepareScrollbars() {
 function prepareResizers() {
     $('#.verticalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().getStyle('width'))])
+        this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().width())])
     })
 
     $('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
         $('#sidebar').data('initposy', [e.event.screenY, getPropertiesHeight()])
-        $('#properties').setStyle('transition', 'none')
+        $('#properties').css('transition', 'none')
     })
 
     document.body.addEvent('mouseup', function() {
@@ -638,7 +638,7 @@ function prepareResizers() {
             return
         } else if (initPosY) {
             $('#sidebar').data('initposy', null)
-            $('#properties').setStyle('transition', '')
+            $('#properties').css('transition', '')
             setting.set('view.properties_height', getPropertiesHeight())
             setSidebarArrangement(true, true, false)
         }
@@ -838,12 +838,12 @@ function readjustShifts(vertex) {
 
 function updateSidebarLayout() {
     var container = $('#properties .gm-scroll-view')[0]
-    container.setStyle('opacity', 0)
+    container.css('opacity', 0)
 
     setTimeout(function() {
         $('#graph').data('sigma').renderers[0].resize().render()
         $('#properties').data('scrollbar').update()
-        container.setStyle('opacity', 1)
+        container.css('opacity', 1)
     }, 300)
 }
 
@@ -983,21 +983,21 @@ function resizeBoard() {
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
-    $('#goban').setStyle('width', minX + outerWidth - width)
-        .setStyle('height', minY + outerHeight - height)
-        .setStyle('margin-left', -(minX + outerWidth - width) / 2)
-        .setStyle('margin-top', -(minY + outerHeight - height) / 2)
-    $('#goban > div').setStyle('width', minX).setStyle('height', minY)
-        .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
+    $('#goban').css('width', minX + outerWidth - width)
+        .css('height', minY + outerHeight - height)
+        .css('margin-left', -(minX + outerWidth - width) / 2)
+        .css('margin-top', -(minY + outerHeight - height) / 2)
+    $('#goban > div').css('width', minX).css('height', minY)
+        .css('margin-left', -minX / 2).css('margin-top', -minY / 2)
 
-    $('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
-    $('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
+    $('#goban .row, #goban .coordx').css('height', fieldsize).css('line-height', fieldsize)
+    $('#goban .row, #goban .coordx').css('margin-left', getShowCoordinates() ? fieldsize : 0)
 
-    $('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
-    $('#goban .coordy:last-child').setStyle('left', fieldsize * (board.width + 1))
+    $('#goban .coordy').css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize)
+    $('#goban .coordy:last-child').css('left', fieldsize * (board.width + 1))
 
-    $('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
-    $('#goban').setStyle('font-size', fieldsize)
+    $('#goban li').css('width', fieldsize).css('height', fieldsize)
+    $('#goban').css('font-size', fieldsize)
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
@@ -1012,16 +1012,16 @@ function showIndicator(vertex) {
     if (li.length == 0) return
     li = li[0]
 
-    $('#indicator').setStyle('top', li.getPosition().y)
-        .setStyle('left', li.getPosition().x)
-        .setStyle('height', li.getSize().y)
-        .setStyle('width', li.getSize().x)
+    $('#indicator').css('top', li.getPosition().y)
+        .css('left', li.getPosition().x)
+        .css('height', li.getSize().y)
+        .css('width', li.getSize().x)
         .data('vertex', vertex)
 }
 
 function hideIndicator() {
-    $('#indicator').setStyle('top', '')
-        .setStyle('left', '')
+    $('#indicator').css('top', '')
+        .css('left', '')
         .data('vertex', null)
 }
 

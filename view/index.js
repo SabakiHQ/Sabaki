@@ -631,9 +631,9 @@ function prepareGameInfo() {
     var dateInput = $('#info input[name="date"]')[0]
     var adjustPosition = function(pikaday) {
         pikaday.el
-        .setStyle('position', 'absolute')
-        .setStyle('left', dateInput.getPosition().x)
-        .setStyle('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+        .css('position', 'absolute')
+        .css('left', dateInput.getPosition().x)
+        .css('top', dateInput.getPosition().y - pikaday.el.getSize().y)
     }
     var markDates = function(pikaday) {
         var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
