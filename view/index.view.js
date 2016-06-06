@@ -594,7 +594,7 @@ function prepareScrollbars() {
         createElements: false
     }).create())
 
-    window.addEvent('resize', function() {
+    window.on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
         var width = $('#gamechooser .games-list')[0].getWidth() - 20
@@ -611,18 +611,18 @@ function prepareScrollbars() {
 }
 
 function prepareResizers() {
-    $('#.verticalresizer').addEvent('mousedown', function(e) {
+    $('#.verticalresizer').on('mousedown', function(e) {
         if (e.event.button != 0) return
         this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().width())])
     })
 
-    $('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
+    $('#sidebar .horizontalresizer').on('mousedown', function(e) {
         if (e.event.button != 0) return
         $('#sidebar').data('initposy', [e.event.screenY, getPropertiesHeight()])
         $('#properties').css('transition', 'none')
     })
 
-    document.body.addEvent('mouseup', function() {
+    document.body.on('mouseup', function() {
         var sidebarInitPosX = $('#sidebar').data('initposx')
         var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
         var initPosY = $('#sidebar').data('initposy')
@@ -645,7 +645,7 @@ function prepareResizers() {
 
         if ($('#graph').data('sigma'))
             $('#graph').data('sigma').renderers[0].resize().render()
-    }).addEvent('mousemove', function(e) {
+    }).on('mousemove', function(e) {
         var sidebarInitPosX = $('#sidebar').data('initposx')
         var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
         var initPosY = $('#sidebar').data('initposy')
@@ -682,7 +682,7 @@ function prepareResizers() {
 }
 
 function prepareGameChooser() {
-    $('#gamechooser > input').addEvent('input', function() {
+    $('#gamechooser > input').on('input', function() {
         var value = this.value
 
         $('#gamechooser .games-list li:not(.add)').forEach(function(li) {
@@ -882,29 +882,29 @@ function buildBoard() {
             }
 
             ol.adopt(li.adopt(new Element('div.stone').adopt(img).adopt(new Element('span')))
-                .addEvent('mouseup', function(e) {
+                .on('mouseup', function(e) {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
                     vertexClicked(this, e.event)
                 }.bind(vertex))
-                .addEvent('touchend', function(e) {
+                .on('touchend', function(e) {
                     if (getEditMode() && ['line', 'arrow'].indexOf(getSelectedTool()) >= 0) {
                         e.preventDefault()
                         vertexClicked(null, { button: 0 })
                     }
                 })
-                .addEvent('mousemove', function(e) {
+                .on('mousemove', function(e) {
                     if (!$('#goban').data('mousedown')) return
                     if (e.event.buttons == 0) return
 
                     drawLine(this)
                 }.bind(vertex))
-                .addEvent('touchmove', function(e) {
+                .on('touchmove', function(e) {
                     e.preventDefault()
                     drawLine(getEndTargetVertex(e.event))
                 })
-                .addEvent('mousedown', function() {
+                .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
                 })
                 .grab(new Element('div.paint'))
@@ -1032,7 +1032,7 @@ function clearConsole() {
 }
 
 function wireLinks(container) {
-    container.getElements('a').addEvent('click', function() {
+    container.getElements('a').on('click', function() {
         if (this.hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
@@ -1052,10 +1052,10 @@ function wireLinks(container) {
         return false
     })
 
-    container.getElements('.coord').addEvent('mouseenter', function() {
+    container.getElements('.coord').on('mouseenter', function() {
         var v = getBoard().coord2vertex(this.get('text'))
         showIndicator(v)
-    }).addEvent('mouseleave', function() {
+    }).on('mouseleave', function() {
         if (!getFindMode()) hideIndicator()
     })
 }
@@ -1498,21 +1498,21 @@ function showGameChooser(restoreScrollbarPos) {
         if ('GN' in node) gamename.set('text', node.GN[0]).set('title', node.GN[0])
         else if ('EV' in node) gamename.set('text', node.EV[0]).set('title', node.EV[0])
 
-        li.data('gametree', tree).getElement('div').addEvent('click', function() {
+        li.data('gametree', tree).getElement('div').on('click', function() {
             var link = this
             closeGameChooser()
             setTimeout(function() {
                 setGameIndex($('#gamechooser ol li div').indexOf(link))
             }, 500)
-        }).addEvent('mouseup', function(e) {
+        }).on('mouseup', function(e) {
             if (e.event.button != 2) return
             openGameMenu(this, e.event)
-        }).addEvent('dragstart', function(e) {
+        }).on('dragstart', function(e) {
             $('#gamechooser').data('dragging', this.getParent('li'))
         })
     }
 
-    $('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
+    $('#gamechooser ol li').off('dragover').on('dragover', function(e) {
         e.preventDefault()
         if (!$('#gamechooser').data('dragging')) return
 
@@ -1528,7 +1528,7 @@ function showGameChooser(restoreScrollbarPos) {
         }
     })
 
-    $('#gamechooser').removeEvents('drop').addEvent('drop', function(e) {
+    $('#gamechooser').off('drop').on('drop', function(e) {
         var dragged = this.data('dragging')
         this.data('dragging', null)
 
@@ -1576,10 +1576,10 @@ function closeDrawers() {
  * Main
  */
 
-document.addEvent('domready', function() {
+document.on('domready', function() {
     document.title = app.getName()
 
-    document.body.addEvent('mouseup', function() {
+    document.body.on('mouseup', function() {
         $('#goban').data('mousedown', false)
     })
 

@@ -390,7 +390,7 @@ function loadSettings() {
 }
 
 function prepareEditTools() {
-    $('#edit ul a').addEvent('click', function() {
+    $('#edit ul a').on('click', function() {
         if (!this.getParent().hasClass('selected')) {
             $('#edit .selected').removeClass('selected')
             this.getParent().addClass('selected')
@@ -456,25 +456,25 @@ function prepareSlider() {
         updateSlider()
     }
 
-    slider.addEvent('mousedown', function(e) {
+    slider.on('mousedown', function(e) {
         if (e.event.buttons != 1) return
 
         this.data('mousedown', true).addClass('active')
         document.fireEvent('mousemove', e)
-    }).addEvent('touchstart', function() {
+    }).on('touchstart', function() {
         this.addClass('active')
-    }).addEvent('touchmove', function(e) {
+    }).on('touchmove', function(e) {
         var percentage = (e.client.y - slider.getPosition().y) / slider.getSize().y
         changeSlider(percentage)
-    }).addEvent('touchend', function() {
+    }).on('touchend', function() {
         this.removeClass('active')
     })
 
-    document.addEvent('mouseup', function() {
+    document.on('mouseup', function() {
         slider.data('mousedown', false)
             .removeClass('active')
         document.onselectstart = null
-    }).addEvent('mousemove', function(e) {
+    }).on('mousemove', function(e) {
         if (e.event.buttons != 1 || !slider.data('mousedown'))
             return
 
@@ -485,12 +485,12 @@ function prepareSlider() {
 
     // Prepare previous/next buttons
 
-    $('#sidebar .slider a').addEvent('mousedown', function() {
+    $('#sidebar .slider a').on('mousedown', function() {
         this.data('mousedown', true)
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
-    document.addEvent('mouseup', function() {
+    document.on('mouseup', function() {
         $('#sidebar .slider a').data('mousedown', false)
     })
 }
@@ -502,9 +502,9 @@ function prepareDragDropFiles() {
     Element.NativeEvents.dragstart = 2
     Element.NativeEvents.drop = 2
 
-    document.body.addEvent('dragover', function(e) {
+    document.body.on('dragover', function(e) {
         e.preventDefault()
-    }).addEvent('drop', function(e) {
+    }).on('drop', function(e) {
         e.preventDefault()
 
         if (e.event.dataTransfer.files.length == 0) return
@@ -513,7 +513,7 @@ function prepareDragDropFiles() {
 }
 
 function prepareConsole() {
-    $('#console form').addEvent('submit', function(e) {
+    $('#console form').on('submit', function(e) {
         e.preventDefault()
 
         var input = this.getElement('input')
@@ -524,7 +524,7 @@ function prepareConsole() {
         sendGTPCommand(command)
     })
 
-    $('#console form input').addEvent('keydown', function(e) {
+    $('#console form input').on('keydown', function(e) {
         if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
         var inputs = $('#console form input')
 
@@ -569,18 +569,18 @@ function prepareConsole() {
 }
 
 function prepareGameInfo() {
-    $('#info button[type="submit"]').addEvent('click', function() {
+    $('#info button[type="submit"]').on('click', function() {
         commitGameInfo()
         closeGameInfo()
         return false
     })
 
-    $('#info button[type="reset"]').addEvent('click', function() {
+    $('#info button[type="reset"]').on('click', function() {
         closeGameInfo()
         return false
     })
 
-    $('#info .currentplayer').addEvent('click', function() {
+    $('#info .currentplayer').on('click', function() {
         var data = $('#info section input[type="text"]').map(function(el) {
             return el.get('value')
         })
@@ -600,7 +600,7 @@ function prepareGameInfo() {
         $('#info section .menu')[1].data('engineindex', data[0][1])
     })
 
-    $('#info section img.menu').addEvent('click', function() {
+    $('#info section img.menu').on('click', function() {
         var el = this
 
         function selectEngine(engine, i) {
@@ -695,7 +695,7 @@ function prepareGameInfo() {
     dateInput.data('pikaday', pikaday)
     pikaday.hide()
 
-    document.body.grab(pikaday.el).addEvent('click', function(e) {
+    document.body.grab(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
         && document.activeElement != dateInput
         && e.target != dateInput
@@ -703,16 +703,16 @@ function prepareGameInfo() {
             pikaday.hide()
     })
 
-    window.addEvent('resize', function() { adjustPosition(pikaday) })
+    window.on('resize', function() { adjustPosition(pikaday) })
 
-    dateInput.addEvent('focus', function() {
+    dateInput.on('focus', function() {
         pikaday.show()
-    }).addEvent('blur', function() {
+    }).on('blur', function() {
         setTimeout(function() {
             if (document.activeElement.getParents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
-    }).addEvent('input', function() {
+    }).on('input', function() {
         markDates(pikaday)
     })
 
@@ -720,14 +720,14 @@ function prepareGameInfo() {
 
     $('#info input[name^="size-"]').set('placeholder', setting.get('game.default_board_size'))
 
-    $('#info input[name="size-width"]').addEvent('focus', function() {
+    $('#info input[name="size-width"]').on('focus', function() {
         this.data('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
-    }).addEvent('input', function() {
+    }).on('input', function() {
         if (!this.data('link')) return
         this.getParent().getNext('input[name="size-height"]').value = this.value
     })
 
-    $('#info span.size-swap').addEvent('click', function() {
+    $('#info span.size-swap').on('click', function() {
         if ($('#info').hasClass('disabled')) return
 
         var widthInput = $('#info input[name="size-width"]')[0]
@@ -2086,12 +2086,12 @@ function undoBoard() {
  * Main events
  */
 
-document.addEvent('keydown', function(e) {
+document.on('keydown', function(e) {
     if (e.code == 27) {
         // Escape key
         closeDrawers()
     }
-}).addEvent('domready', function() {
+}).on('domready', function() {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
@@ -2102,15 +2102,15 @@ document.addEvent('keydown', function(e) {
     prepareGameInfo()
     newFile()
 
-    $('#main, #graph canvas:last-child, #graph .slider').addEvent('mousewheel', function(e) {
+    $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(e) {
         if (e.wheel < 0) goForward()
         else if (e.wheel > 0) goBack()
     })
 })
 
-window.addEvent('resize', function() {
+window.on('resize', function() {
     resizeBoard()
-}).addEvent('beforeunload', function(e) {
+}).on('beforeunload', function(e) {
     if (!askForSave()) {
         e.event.returnValue = 'false'
         return
