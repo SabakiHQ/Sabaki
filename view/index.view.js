@@ -715,18 +715,18 @@ function addEngineItem(name, path, args) {
     if (!args) args = ''
 
     var ul = $('#preferences .engines-list ul')[0]
-    var li = new Element('li').grab(new Element('h3').grab(
+    var li = new Element('li').append(new Element('h3').append(
         new Element('input', {
             type: 'text',
             placeholder: '(Unnamed engine)',
             value: name
         })
-    )).grab(
-        new Element('p').grab(new Element('input', {
+    )).append(
+        new Element('p').append(new Element('input', {
             type: 'text',
             placeholder: 'Path',
             value: path
-        })).grab(new Element('a.browse', {
+        })).append(new Element('a.browse', {
             events: {
                 click: function() {
                     setIsBusy(true)
@@ -745,18 +745,18 @@ function addEngineItem(name, path, args) {
                     setIsBusy(false)
                 }
             }
-        }).grab(new Element('img', {
+        }).append(new Element('img', {
             src: '../node_modules/octicons/svg/file-directory.svg',
             title: 'Browse…',
             height: 14
         })))
-    ).grab(
-        new Element('p').grab(new Element('input', {
+    ).append(
+        new Element('p').append(new Element('input', {
             type: 'text',
             placeholder: 'No arguments',
             value: args
         }))
-    ).grab(
+    ).append(
         new Element('a.remove', {
             events: {
                 click: function() {
@@ -764,13 +764,13 @@ function addEngineItem(name, path, args) {
                     $('#preferences .engines-list')[0].data('scrollbar').update()
                 }
             }
-        }).grab(new Element('img', {
+        }).append(new Element('img', {
             src: '../node_modules/octicons/svg/x.svg',
             height: 14
         }))
     )
 
-    ul.grab(li)
+    ul.append(li)
     li.find('h3 input').focus()
 
     var enginesScrollbar = $('#preferences .engines-list')[0].data('scrollbar')
@@ -907,7 +907,7 @@ function buildBoard() {
                 .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
                 })
-                .grab(new Element('div.paint'))
+                .append(new Element('div.paint'))
             )
         }
 
@@ -928,7 +928,7 @@ function buildBoard() {
 
     var goban = $('#goban div')[0]
     goban.empty().adopt(rows, coordx, coordy)
-    goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
+    goban.append(coordx.clone(), 'top').append(coordy.clone(), 'top')
 
     resizeBoard()
 
@@ -1481,12 +1481,12 @@ function showGameChooser(restoreScrollbarPos) {
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
-        $('#gamechooser ol')[0].grab(li.grab(
+        $('#gamechooser ol')[0].append(li.append(
             new Element('div', { draggable: true })
-            .grab(new Element('span'))
-            .grab(svg)
-            .grab(new Element('span.black', { text: 'Black' }))
-            .grab(new Element('span.white', { text: 'White' }))
+            .append(new Element('span'))
+            .append(svg)
+            .append(new Element('span.black', { text: 'Black' }))
+            .append(new Element('span.white', { text: 'White' }))
         ))
 
         var gamename = li.find('span')
@@ -1532,15 +1532,15 @@ function showGameChooser(restoreScrollbarPos) {
         var dragged = $(this).data('dragging')
         $(this).data('dragging', null)
 
-        var lis = $('#gamechooser ol li')
-        var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
-        var beforeli = lis.filter(function(x) { return x.hasClass('insertright') })[0]
-        lis.removeClass('insertleft').removeClass('insertright')
+        var $lis = $('#gamechooser ol li')
+        var afterli = $lis.get().filter(function(x) { return $(x).hasClass('insertleft') })[0]
+        var beforeli = $lis.get().filter(function(x) { return $(x).hasClass('insertright') })[0]
+        $lis.removeClass('insertleft').removeClass('insertright')
 
         if (!dragged || !afterli && !beforeli) return
 
-        if (afterli) afterli.grab(dragged, 'before')
-        if (beforeli) beforeli.grab(dragged, 'after')
+        if (afterli) $(afterli).before(dragged)
+        if (beforeli) $(beforeli).append(dragged)
 
         setGameTrees($('#gamechooser ol > li').map(function(x) {
             return x.data('gametree')
@@ -1552,7 +1552,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     $('#gamechooser').addClass('show')
     $(window).trigger('resize')
-    $('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
+    $('#gamechooser .gm-scroll-view').get(0).scrollTo(0, scrollbarPos)
 }
 
 function closeGameChooser() {

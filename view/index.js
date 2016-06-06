@@ -258,7 +258,7 @@ function setBoard(board) {
     $('#goban hr').destroy()
 
     board.lines.forEach(function(line) {
-        $('#goban').grab(
+        $('#goban').append(
             new Element('hr', { class: line[2] ? 'arrow' : 'line' })
             .data('v1', line[0])
             .data('v2', line[1])
@@ -697,7 +697,7 @@ function prepareGameInfo() {
     dateInput.data('pikaday', pikaday)
     pikaday.hide()
 
-    $('body').grab(pikaday.el).on('click', function(e) {
+    $('body').append(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
         && document.activeElement != dateInput
         && e.target != dateInput
@@ -1236,7 +1236,7 @@ function drawLine(vertex) {
 
     if (!$('#goban').data('edittool-data')) {
         var hr = new Element('hr', { class: tool }).data('v1', vertex).data('v2', vertex)
-        $('#goban').grab(hr).data('edittool-data', hr)
+        $('#goban').append(hr).data('edittool-data', hr)
     } else {
         var hr = $('#goban').data('edittool-data')
         hr.data('v2', vertex)
@@ -1645,7 +1645,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 
     form.find('input').val('').cloneEvents(oldform.find('input'))
     oldform.addClass('waiting').find('input').value = command.toString()
-    container.grab(pre).grab(form)
+    container.append(pre).append(form)
     if (getShowLeftSidebar()) form.find('input').focus()
 
     // Cleanup
