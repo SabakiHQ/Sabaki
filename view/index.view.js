@@ -1033,15 +1033,15 @@ function clearConsole() {
 
 function wireLinks($container) {
     $container.children('a').on('click', function() {
-        if (this.hasClass('external'))  {
+        if ($(this).hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
                 return true
             }
 
             shell.openExternal(this.href)
-        } else if (this.hasClass('movenumber')) {
-            var movenumber = +this.attr('text').slice(1)
+        } else if ($(this).hasClass('movenumber')) {
+            var movenumber = +$(this).attr('text').slice(1)
             setUndoable(true, 'Go Back')
             goToMainVariation()
 
@@ -1053,7 +1053,7 @@ function wireLinks($container) {
     })
 
     $container.children('.coord').on('mouseenter', function() {
-        var v = getBoard().coord2vertex(this.attr('text'))
+        var v = getBoard().coord2vertex($(this).attr('text'))
         showIndicator(v)
     }).on('mouseleave', function() {
         if (!getFindMode()) hideIndicator()
@@ -1519,10 +1519,10 @@ function showGameChooser(restoreScrollbarPos) {
         var x = e.event.clientX
         var middle = this.position().left + this.innerWidth() / 2
 
-        if (x <= middle - 10 && !this.hasClass('insertleft')) {
+        if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             $(this).addClass('insertleft')
-        } else if (x > middle + 10 && !this.hasClass('insertright')) {
+        } else if (x > middle + 10 && !$(this).hasClass('insertright')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             $(this).addClass('insertright')
         }

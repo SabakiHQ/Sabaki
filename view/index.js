@@ -489,7 +489,7 @@ function prepareSlider() {
 
     $('#sidebar .slider a').on('mousedown', function() {
         $(this).data('mousedown', true)
-        startAutoScroll(this.hasClass('next') ? 1 : -1)
+        startAutoScroll($(this).hasClass('next') ? 1 : -1)
     })
 
     document.on('mouseup', function() {
