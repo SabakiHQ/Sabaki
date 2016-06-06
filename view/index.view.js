@@ -192,7 +192,7 @@ function setSidebarWidth(width) {
 }
 
 function getPropertiesHeight() {
-    return $('#properties').getSize().y * 100 / $('#sidebar').getSize().y
+    return $('#properties').innerHeight() * 100 / $('#sidebar').innerHeight()
 }
 
 function setPropertiesHeight(height) {
@@ -670,7 +670,7 @@ function prepareResizers() {
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.screenY) * 100 / $('#sidebar').getSize().y,
+                initHeight + (initY - e.event.screenY) * 100 / $('#sidebar').innerHeight(),
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
@@ -954,8 +954,8 @@ function updateBoardLines() {
         var length = Math.sqrt(dx * dx + dy * dy)
 
         line.setStyles({
-            top: (pos1.y + li1.getSize().y / 2 + pos2.y + li2.getSize().y / 2) / 2 - 2,
-            left: (pos1.x + li1.getSize().x / 2 + pos2.x + li2.getSize().x / 2) / 2 - 2,
+            top: (pos1.y + li1.innerHeight() / 2 + pos2.y + li2.innerHeight() / 2) / 2 - 2,
+            left: (pos1.x + li1.innerWidth() / 2 + pos2.x + li2.innerWidth() / 2) / 2 - 2,
             marginLeft: -length / 2,
             width: length,
             transform: 'rotate(' + angle + 'deg)'
@@ -1012,10 +1012,10 @@ function showIndicator(vertex) {
     if (li.length == 0) return
     li = li[0]
 
-    $('#indicator').css('top', li.getPosition().y)
-        .css('left', li.getPosition().x)
-        .css('height', li.getSize().y)
-        .css('width', li.getSize().x)
+    $('#indicator').css('top', li.position().top)
+        .css('left', li.position().left)
+        .css('height', li.innerHeight())
+        .css('width', li.innerWidth())
         .data('vertex', vertex)
 }
 
@@ -1101,7 +1101,7 @@ function openHeaderMenu() {
     menu = Menu.buildFromTemplate(template)
     menu.popup(
         remote.getCurrentWindow(),
-        Math.round($('#headermenu').getPosition().x),
+        Math.round($('#headermenu').position().left),
         Math.round($('#header')[0].getCoordinates().top)
     )
 }
@@ -1357,7 +1357,7 @@ function openAddGameMenu() {
     var menu = Menu.buildFromTemplate(template)
     var button = $('#gamechooser').getElement('button[name="add"]')
     var position = button.getPosition()
-    menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.getSize().y))
+    menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.innerHeight()))
 }
 
 /**
@@ -1517,7 +1517,7 @@ function showGameChooser(restoreScrollbarPos) {
         if (!$('#gamechooser').data('dragging')) return
 
         var x = e.event.clientX
-        var middle = this.getPosition().x + this.getSize().x / 2
+        var middle = this.position().left + this.innerWidth() / 2
 
         if (x <= middle - 10 && !this.hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')

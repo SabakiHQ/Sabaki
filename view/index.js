@@ -460,7 +460,7 @@ function prepareSlider() {
         if (e.event.buttons != 1 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.event.clientY - $slider.getPosition().y) / $slider.getSize().y
+        var percentage = (e.event.clientY - $slider.position().top) / $slider.innerHeight()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
@@ -473,7 +473,7 @@ function prepareSlider() {
     }).on('touchstart', function() {
         this.addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.client.y - $slider.getPosition().y) / $slider.getSize().y
+        var percentage = (e.client.y - $slider.position().top) / $slider.innerHeight()
         changeSlider(percentage)
     }).on('touchend', function() {
         this.removeClass('active')
@@ -634,8 +634,8 @@ function prepareGameInfo() {
     var adjustPosition = function(pikaday) {
         pikaday.el
         .css('position', 'absolute')
-        .css('left', dateInput.getPosition().x)
-        .css('top', dateInput.getPosition().y - pikaday.el.getSize().y)
+        .css('left', dateInput.position().left)
+        .css('top', dateInput.position().top - pikaday.el.innerHeight())
     }
     var markDates = function(pikaday) {
         var dates = (sgf.string2dates(dateInput.value) || []).filter(function(x) {
