@@ -110,7 +110,7 @@ function setLeftSidebarWidth(width) {
 }
 
 function getLeftSidebarWidth() {
-    return $('#leftsidebar').getStyle('width').toInt()
+    return parseFloat($('#leftsidebar').getStyle('width'))
 }
 
 function getShowSidebar() {
@@ -182,7 +182,7 @@ function getShowComment() {
 }
 
 function getSidebarWidth() {
-    return $('#sidebar').getStyle('width').toInt()
+    return parseFloat($('#sidebar').getStyle('width'))
 }
 
 function setSidebarWidth(width) {
@@ -317,7 +317,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 
 function getSliderValue() {
     var span = $('#sidebar .slider .inner span')[0]
-    var value = span.getStyle('top').toInt()
+    var value = parseFloat(span.getStyle('top'))
     var label = span.get('text')
 
     return [value, label]
@@ -613,7 +613,7 @@ function prepareScrollbars() {
 function prepareResizers() {
     $('#.verticalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        this.getParent().data('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
+        this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().getStyle('width'))])
     })
 
     $('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
@@ -967,18 +967,18 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    var outerWidth = $('#main')[0].getStyle('width').toInt()
-    var outerHeight = $('#main')[0].getStyle('height').toInt()
+    var outerWidth = parseFloat($('#main')[0].getStyle('width'))
+    var outerHeight = parseFloat($('#main')[0].getStyle('height'))
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = helper.floorEven(outerWidth - $('#goban').getStyle('border-left-width').toInt()
-        - $('#goban').getStyle('border-right-width').toInt()
-        - $('#goban').getStyle('padding-left').toInt()
-        - $('#goban').getStyle('padding-right').toInt())
-    var height = helper.floorEven(outerHeight - $('#goban').getStyle('border-top-width').toInt()
-        - $('#goban').getStyle('border-bottom-width').toInt()
-        - $('#goban').getStyle('padding-top').toInt()
-        - $('#goban').getStyle('padding-bottom').toInt())
+    var width = helper.floorEven(outerWidth - parseFloat($('#goban').getStyle('border-left-width'))
+        - parseFloat($('#goban').getStyle('border-right-width'))
+        - parseFloat($('#goban').getStyle('padding-left'))
+        - parseFloat($('#goban').getStyle('padding-right')))
+    var height = helper.floorEven(outerHeight - parseFloat($('#goban').getStyle('border-top-width'))
+        - parseFloat($('#goban').getStyle('border-bottom-width'))
+        - parseFloat($('#goban').getStyle('padding-top'))
+        - parseFloat($('#goban').getStyle('padding-bottom')))
 
     if (getShowCoordinates()) {
         boardWidth += 2
