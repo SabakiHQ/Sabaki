@@ -1551,7 +1551,7 @@ function showGameChooser(restoreScrollbarPos) {
     })
 
     $('#gamechooser').addClass('show')
-    window.fireEvent('resize')
+    $(window).trigger('resize')
     $('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
 }
 

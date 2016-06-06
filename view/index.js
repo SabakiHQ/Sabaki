@@ -189,7 +189,7 @@ function setSelectedTool(tool) {
     }
 
     $('#goban').data('edittool-data', null)
-    $('#edit .' + tool + '-tool a').fireEvent('click')
+    $('#edit .' + tool + '-tool a').trigger('click')
 }
 
 function getBoard() {
@@ -439,7 +439,7 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    var slider = $('#sidebar .slider .inner')[0]
+    var $slider = $('#sidebar .slider .inner')
     Element.NativeEvents.touchstart = 2
     Element.NativeEvents.touchmove = 2
     Element.NativeEvents.touchend = 2
@@ -456,32 +456,34 @@ function prepareSlider() {
         updateSlider()
     }
 
-    slider.on('mousedown', function(e) {
+    var mouseMoveHandler = function(e) {
+        if (e.event.buttons != 1 || !$slider.data('mousedown'))
+            return
+
+        var percentage = (e.event.clientY - $slider.getPosition().y) / $slider.getSize().y
+        changeSlider(percentage)
+        document.onselectstart = function() { return false }
+    }
+
+    $slider.on('mousedown', function(e) {
         if (e.event.buttons != 1) return
 
         this.data('mousedown', true).addClass('active')
-        document.fireEvent('mousemove', e)
+        mouseMoveHandler(e)
     }).on('touchstart', function() {
         this.addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.client.y - slider.getPosition().y) / slider.getSize().y
+        var percentage = (e.client.y - $slider.getPosition().y) / $slider.getSize().y
         changeSlider(percentage)
     }).on('touchend', function() {
         this.removeClass('active')
     })
 
-    document.on('mouseup', function() {
-        slider.data('mousedown', false)
+    $(document).on('mouseup', function() {
+        $slider.data('mousedown', false)
             .removeClass('active')
         document.onselectstart = null
-    }).on('mousemove', function(e) {
-        if (e.event.buttons != 1 || !slider.data('mousedown'))
-            return
-
-        var percentage = (e.event.clientY - slider.getPosition().y) / slider.getSize().y
-        changeSlider(percentage)
-        document.onselectstart = function() { return false }
-    })
+    }).on('mousemove', mouseMoveHandler)
 
     // Prepare previous/next buttons
 
