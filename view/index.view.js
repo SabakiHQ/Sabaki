@@ -188,7 +188,7 @@ function getSidebarWidth() {
 function setSidebarWidth(width) {
     if (!getShowSidebar()) return
     $('#sidebar').css('width', width)
-    $('#.sidebar #main').css('right', width)
+    $('.sidebar #main').css('right', width)
 }
 
 function getPropertiesHeight() {
@@ -234,11 +234,11 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('#.currentplayer')[0].attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('.currentplayer').eq(0).attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $('#.currentplayer').attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('.currentplayer').attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
 }
 
 function getCommentText() {
@@ -611,7 +611,7 @@ function prepareScrollbars() {
 }
 
 function prepareResizers() {
-    $('#.verticalresizer').on('mousedown', function(e) {
+    $('.verticalresizer').on('mousedown', function(e) {
         if (e.event.button != 0) return
         this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().width())])
     })
