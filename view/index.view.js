@@ -99,7 +99,7 @@ function setShowLeftSidebar(show) {
     // Update scrollbars
     var view = $('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
-    view.getElement('form:last-child input').focus()
+    view.find('form:last-child input').focus()
     $('#console').data('scrollbar').update()
 }
 
@@ -221,8 +221,8 @@ function setShowHotspot(bookmark) {
 
 function getCaptures() {
     return {
-        '-1': +$('#player_-1 .captures')[0].attr('text'),
-        '1': +$('#player_1 .captures')[0].attr('text')
+        '-1': +$('#player_-1 .captures').attr('text'),
+        '1': +$('#player_1 .captures').attr('text')
     }
 }
 
@@ -234,7 +234,7 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('.currentplayer').eq(0).attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('.currentplayer').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
@@ -242,17 +242,17 @@ function setCurrentPlayer(sign) {
 }
 
 function getCommentText() {
-    return $('#properties textarea').val()[0]
+    return $('#properties textarea').val()
 }
 
 function setCommentText(text) {
     var html = helper.markdown(text)
-    var container = $('#properties .inner .comment')[0]
-    var textarea = $('#properties textarea')[0]
+    var $container = $('#properties .inner .comment')
+    var $textarea = $('#properties textarea')
 
-    if (textarea.val() != text) textarea.val(text)
-    container.attr('html', html)
-    wireLinks(container)
+    if ($textarea.val() != text) $textarea.val(text)
+    $container.attr('html', html)
+    wireLinks($container)
 }
 
 function getCommentTitle() {
@@ -268,7 +268,7 @@ function setCommentTitle(text) {
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     var header = $('#properties .inner .header')[0]
-    var img = header.getElement('img:nth-child(2)')
+    var img = header.find('img:nth-child(2)')
 
     // Set move status
 
@@ -293,7 +293,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 
     // Set positional status
 
-    img = header.getElement('img:nth-child(1)')
+    img = header.find('img:nth-child(1)')
 
     if (posstatus == null) header.removeClass('positionstatus')
     else header.addClass('positionstatus')
@@ -336,7 +336,7 @@ function setFindMode(pickMode) {
         if (pickMode != getFindMode()) closeDrawers()
         $('body').addClass('find')
 
-        var input = $('#find').getElement('input')
+        var input = $('#find').find('input')
         input.focus()
         input.select()
     } else {
@@ -347,11 +347,11 @@ function setFindMode(pickMode) {
 }
 
 function getFindText() {
-    return $('#find').getElement('input').value
+    return $('#find').find('input').value
 }
 
 function setFindText(text) {
-    $('#find').getElement('input').value = text
+    $('#find').find('input').value = text
 }
 
 function getEditMode() {
@@ -432,11 +432,11 @@ function setIndicatorVertex(vertex) {
 
 function setPreferencesTab(tab) {
     $('#preferences .tabs')[0]
-        .getElement('.current')
+        .find('.current')
         .removeClass('current')
-        .getParent()
-        .getElement('.' + tab)
-        .getParent()
+        .parent()
+        .find('.' + tab)
+        .parent()
         .addClass('current')
 
     var form = $('#preferences form')[0]
@@ -613,7 +613,7 @@ function prepareScrollbars() {
 function prepareResizers() {
     $('.verticalresizer').on('mousedown', function(e) {
         if (e.event.button != 0) return
-        this.getParent().data('initposx', [e.event.screenX, parseFloat(this.getParent().width())])
+        this.parent().data('initposx', [e.event.screenX, parseFloat(this.parent().width())])
     })
 
     $('#sidebar .horizontalresizer').on('mousedown', function(e) {
@@ -686,7 +686,7 @@ function prepareGameChooser() {
         var value = this.value
 
         $('#gamechooser .games-list li:not(.add)').forEach(function(li) {
-            if (li.getElements('span').some(function(span) {
+            if (li.children('span').some(function(span) {
                 return span.attr('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) li.removeClass('hide')
             else li.addClass('hide')
@@ -737,7 +737,7 @@ function addEngineItem(name, path, args) {
 
                     if (result) {
                         this.getParent('li')
-                            .getElement('h3 + p input')
+                            .find('h3 + p input')
                             .val(result[0])
                             .focus()
                     }
@@ -771,7 +771,7 @@ function addEngineItem(name, path, args) {
     )
 
     ul.grab(li)
-    li.getElement('h3 input').focus()
+    li.find('h3 input').focus()
 
     var enginesScrollbar = $('#preferences .engines-list')[0].data('scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
@@ -943,8 +943,8 @@ function updateBoardLines() {
     $('#goban hr').forEach(function(line) {
         var v1 = line.data('v1'), v2 = line.data('v2')
         var mirrored = v2[0] < v1[0]
-        var li1 = $('#goban').getElement('.pos_' + v1[0] + '-' + v1[1])
-        var li2 = $('#goban').getElement('.pos_' + v2[0] + '-' + v2[1])
+        var li1 = $('#goban').find('.pos_' + v1[0] + '-' + v1[1])
+        var li2 = $('#goban').find('.pos_' + v2[0] + '-' + v2[1])
         var pos1 = li1.getPosition($('#goban'))
         var pos2 = li2.getPosition($('#goban'))
         var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
@@ -1031,8 +1031,8 @@ function clearConsole() {
     $('#console').data('scrollbar').update()
 }
 
-function wireLinks(container) {
-    container.getElements('a').on('click', function() {
+function wireLinks($container) {
+    $container.children('a').on('click', function() {
         if (this.hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
@@ -1052,7 +1052,7 @@ function wireLinks(container) {
         return false
     })
 
-    container.getElements('.coord').on('mouseenter', function() {
+    $container.children('.coord').on('mouseenter', function() {
         var v = getBoard().coord2vertex(this.attr('text'))
         showIndicator(v)
     }).on('mouseleave', function() {
@@ -1282,7 +1282,7 @@ function openGameMenu(element, event) {
                     ['Remove Game', 'Cancel'], 1
                 ) == 1) return
 
-                var index = element.getParent('ol').getElements('li div').indexOf(element)
+                var index = element.getParent('ol').children('li div').indexOf(element)
                 trees.splice(index, 1)
 
                 setGameTrees(trees)
@@ -1355,7 +1355,7 @@ function openAddGameMenu() {
     ]
 
     var menu = Menu.buildFromTemplate(template)
-    var button = $('#gamechooser').getElement('button[name="add"]')
+    var button = $('#gamechooser').find('button[name="add"]')
     var position = button.getPosition()
     menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.innerHeight()))
 }
@@ -1379,21 +1379,21 @@ function showGameInfo() {
         'result': 'RE'
     }
 
-    info.addClass('show').getElement('input[name="name_1"]').focus()
+    info.addClass('show').find('input[name="name_1"]').focus()
 
     for (var key in data) {
         var value = data[key]
-        info.getElement('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
+        info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    info.getElement('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
-    info.getElement('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
-    info.getElement('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
-    info.getElement('input[name="size-width"]').val(getBoard().width)
-    info.getElement('input[name="size-height"]').val(getBoard().height)
-    info.getElements('section .menu').removeClass('active').data('engineindex', -1)
+    info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
+    info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
+    info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
+    info.find('input[name="size-width"]').val(getBoard().width)
+    info.find('input[name="size-height"]').val(getBoard().height)
+    info.children('section .menu').removeClass('active').data('engineindex', -1)
 
-    var handicap = info.getElement('select[name="handicap"]')
+    var handicap = info.find('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
     else handicap.selectedIndex = 0
 
@@ -1402,7 +1402,7 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    info.getElements('input[name^="size-"]').attr('disabled', disabled)
+    info.children('input[name^="size-"]').attr('disabled', disabled)
     info.toggleClass('disabled', disabled)
 }
 
@@ -1418,7 +1418,7 @@ function showScore() {
 
     for (var sign = -1; sign <= 1; sign += 2) {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.getElements('td')
+        var tds = tr.children('td')
 
         tds[0].attr('text', score['area_' + sign])
         tds[1].attr('text', score['territory_' + sign])
@@ -1489,16 +1489,16 @@ function showGameChooser(restoreScrollbarPos) {
             .grab(new Element('span.white', { text: 'White' }))
         ))
 
-        var gamename = li.getElement('span')
-        var black = li.getElement('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
-        var white = li.getElement('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
+        var gamename = li.find('span')
+        var black = li.find('.black').attr('text', gametree.getPlayerName(1, tree, 'Black'))
+        var white = li.find('.white').attr('text', gametree.getPlayerName(-1, tree, 'White'))
 
         if ('BR' in node) black.attr('title', node.BR[0])
         if ('WR' in node) white.attr('title', node.WR[0])
         if ('GN' in node) gamename.attr('text', node.GN[0]).attr('title', node.GN[0])
         else if ('EV' in node) gamename.attr('text', node.EV[0]).attr('title', node.EV[0])
 
-        li.data('gametree', tree).getElement('div').on('click', function() {
+        li.data('gametree', tree).find('div').on('click', function() {
             var link = this
             closeGameChooser()
             setTimeout(function() {

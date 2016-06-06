@@ -174,9 +174,9 @@ function getSelectedTool() {
     var tool = li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return li.getElement('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+        return li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
     } else if (tool == 'line') {
-        return li.getElement('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
+        return li.find('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -207,7 +207,7 @@ function setBoard(board) {
 
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
-            var li = $('#goban').getElement('.pos_' + x + '-' + y)
+            var li = $('#goban').find('.pos_' + x + '-' + y)
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
@@ -218,7 +218,7 @@ function setBoard(board) {
             types.forEach(function(x) {
                 if (li.hasClass(x)) li.removeClass(x)
             })
-            li.getElement('.stone span').attr('title', '')
+            li.find('.stone span').attr('title', '')
 
             // Add markups
 
@@ -227,7 +227,7 @@ function setBoard(board) {
                 var type = markup[0], label = markup[1]
 
                 if (type != '') li.addClass(type)
-                if (label != '') li.getElement('.stone span').attr('title', label)
+                if (label != '') li.find('.stone span').attr('title', label)
                 li.toggleClass('smalllabel', label.length >= 3)
             }
 
@@ -247,7 +247,7 @@ function setBoard(board) {
 
     board.ghosts.forEach(function(x) {
         var v = x[0], s = x[1], type = x[2]
-        var li = $('#goban').getElement('.pos_' + v.join('-'))
+        var li = $('#goban').find('.pos_' + v.join('-'))
 
         if (type == 'child') li.addClass('ghost_' + s)
         else if (type == 'sibling') li.addClass('siblingghost_' + s)
@@ -284,7 +284,7 @@ function setScoringMethod(method) {
 
     for (var sign = -1; sign <= 1; sign += 2) {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.getElements('td')
+        var tds = tr.children('td')
 
         tds[4].attr('text', 0)
 
@@ -391,15 +391,15 @@ function loadSettings() {
 
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
-        if (!this.getParent().hasClass('selected')) {
+        if (!this.parent().hasClass('selected')) {
             $('#edit .selected').removeClass('selected')
-            this.getParent().addClass('selected')
-        } else if (this.getParent().hasClass('stone-tool')) {
-            var img = this.getElement('img')
+            this.parent().addClass('selected')
+        } else if (this.parent().hasClass('stone-tool')) {
+            var img = this.find('img')
             var black = img.attr('src') == '../img/edit/stone_1.svg'
             img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
-        } else if (this.getParent().hasClass('line-tool')) {
-            var img = this.getElement('img')
+        } else if (this.parent().hasClass('line-tool')) {
+            var img = this.find('img')
             var line = img.attr('src') == '../img/edit/line.svg'
             img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
@@ -518,7 +518,7 @@ function prepareConsole() {
     $('#console form').on('submit', function(e) {
         e.preventDefault()
 
-        var input = this.getElement('input')
+        var input = this.find('input')
         if (input.value.trim() == '') return
         input.blur()
 
@@ -610,17 +610,17 @@ function prepareGameInfo() {
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            this.getParent().getElement('input[name^="name_"]').val(engine ? engine.name : '')
+            this.parent().find('input[name^="name_"]').val(engine ? engine.name : '')
             $(this).data('engineindex', i)
 
             if (engine) {
-                var els = $('#info').getElements('section .menu')
+                var els = $('#info').children('section .menu')
                 var other = els[0] == this ? els[1] : els[0]
                 if (other) selectEngine.call(other, null, -1)
 
                 $(this).addClass('active')
             } else {
-                $('#info').getElements('section .menu')
+                $('#info').children('section .menu')
                 .removeClass('active')
             }
         }
@@ -642,12 +642,12 @@ function prepareGameInfo() {
             return x.length == 3
         })
 
-        pikaday.el.getElements('.pika-button').forEach(function(el) {
+        pikaday.el.children('.pika-button').forEach(function(el) {
             var year = +el.attr('data-pika-year')
             var month = +el.attr('data-pika-month')
             var day = +el.attr('data-pika-day')
 
-            el.getParent().toggleClass('is-multi-selected', dates.some(function(d) {
+            el.parent().toggleClass('is-multi-selected', dates.some(function(d) {
                 return helper.equals(d, [year, month + 1, day])
             }))
         })
@@ -701,7 +701,7 @@ function prepareGameInfo() {
         if (pikaday.isVisible()
         && document.activeElement != dateInput
         && e.target != dateInput
-        && e.target.getParents('.pika-lendar').length == 0)
+        && e.target.parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
@@ -711,7 +711,7 @@ function prepareGameInfo() {
         pikaday.show()
     }).on('blur', function() {
         setTimeout(function() {
-            if (document.activeElement.getParents('.pika-lendar').length == 0)
+            if (document.activeElement.parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
     }).on('input', function() {
@@ -723,10 +723,10 @@ function prepareGameInfo() {
     $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        $(this).data('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
+        $(this).data('link', this.value == this.parent().getNext('input[name="size-height"]').value)
     }).on('input', function() {
         if (!$(this).data('link')) return
-        this.getParent().getNext('input[name="size-height"]').value = this.value
+        this.parent().getNext('input[name="size-height"]').value = this.value
     })
 
     $('#info span.size-swap').on('click', function() {
@@ -1518,7 +1518,7 @@ function commitGameInfo() {
     }
 
     for (var name in data) {
-        var value = info.getElement('input[name="' + name + '"]').val().trim()
+        var value = info.find('input[name="' + name + '"]').val().trim()
         rootNode[data[name]] = [value]
         if (value == '') delete rootNode[data[name]]
     }
@@ -1534,14 +1534,14 @@ function commitGameInfo() {
 
     // Handle komi
 
-    var komi = +info.getElement('input[name="komi"]').val()
+    var komi = +info.find('input[name="komi"]').val()
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
     // Handle size
 
     var size = ['width', 'height'].map(function(x) {
-        var num = parseFloat(info.getElement('input[name="size-' + x + '"]').val())
+        var num = parseFloat(info.find('input[name="size-' + x + '"]').val())
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 3), 25)
     })
@@ -1551,7 +1551,7 @@ function commitGameInfo() {
 
     // Handle handicap stones
 
-    var handicapInput = info.getElement('select[name="handicap"]')
+    var handicapInput = info.find('select[name="handicap"]')
     var handicap = handicapInput.selectedIndex
 
     if (!handicapInput.disabled) {
@@ -1616,12 +1616,12 @@ function commitPreferences() {
     setting.clearEngines()
 
     $('#preferences .engines-list li').forEach(function(li) {
-        var nameinput = li.getElement('h3 input')
+        var nameinput = li.find('h3 input')
 
         setting.addEngine(
             nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
-            li.getElement('h3 + p input').value,
-            li.getElement('h3 + p + p input').value
+            li.find('h3 + p input').value,
+            li.find('h3 + p + p input').value
         )
     })
 
@@ -1639,14 +1639,14 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
 
     var controller = getEngineController()
     var container = $('#console .inner')[0]
-    var oldform = container.getElement('form:last-child')
+    var oldform = container.find('form:last-child')
     var form = oldform.clone().cloneEvents(oldform)
     var pre = new Element('pre', { text: ' ' })
 
-    form.getElement('input').val('').cloneEvents(oldform.getElement('input'))
-    oldform.addClass('waiting').getElement('input').value = command.toString()
+    form.find('input').val('').cloneEvents(oldform.find('input'))
+    oldform.addClass('waiting').find('input').value = command.toString()
     container.grab(pre).grab(form)
-    if (getShowLeftSidebar()) form.getElement('input').focus()
+    if (getShowLeftSidebar()) form.find('input').focus()
 
     // Cleanup
     var forms = $('#console .inner form')
