@@ -1,3 +1,4 @@
+var $ = require('cash-dom')
 var fs = require('fs')
 var process = require('process')
 var remote = require('electron').remote
