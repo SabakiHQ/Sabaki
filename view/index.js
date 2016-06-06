@@ -439,7 +439,7 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    var $slider = $('#sidebar .slider .inner')
+    var $slider = $('#sidebar .slider .inner').eq(0)
     Element.NativeEvents.touchstart = 2
     Element.NativeEvents.touchmove = 2
     Element.NativeEvents.touchend = 2
@@ -468,15 +468,15 @@ function prepareSlider() {
     $slider.on('mousedown', function(e) {
         if (e.event.buttons != 1) return
 
-        this.data('mousedown', true).addClass('active')
+        $(this).data('mousedown', true).addClass('active')
         mouseMoveHandler(e)
     }).on('touchstart', function() {
-        this.addClass('active')
+        $(this).addClass('active')
     }).on('touchmove', function(e) {
         var percentage = (e.client.y - $slider.position().top) / $slider.innerHeight()
         changeSlider(percentage)
     }).on('touchend', function() {
-        this.removeClass('active')
+        $(this).removeClass('active')
     })
 
     $(document).on('mouseup', function() {
@@ -488,7 +488,7 @@ function prepareSlider() {
     // Prepare previous/next buttons
 
     $('#sidebar .slider a').on('mousedown', function() {
-        this.data('mousedown', true)
+        $(this).data('mousedown', true)
         startAutoScroll(this.hasClass('next') ? 1 : -1)
     })
 
@@ -530,8 +530,8 @@ function prepareConsole() {
         if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
         var inputs = $('#console form input')
 
-        if (this.data('index') == null) this.data('index', inputs.indexOf(this))
-        var i = this.data('index')
+        if ($(this).data('index') == null) $(this).data('index', inputs.indexOf(this))
+        var i = $(this).data('index')
         var length = inputs.length
 
         if ([38, 40].indexOf(e.code) != -1) {
@@ -544,7 +544,7 @@ function prepareConsole() {
             }
 
             this.value = i == length - 1 ? '' : inputs[i].value
-            this.data('index', i)
+            $(this).data('index', i)
         } else if (e.code == 9) {
             // Tab
             var tokens = this.value.split(' ')
@@ -584,13 +584,13 @@ function prepareGameInfo() {
 
     $('#info .currentplayer').on('click', function() {
         var data = $('#info section input[type="text"]').map(function(el) {
-            return el.get('value')
+            return el.val()
         })
 
-        $('#info section input[name="rank_1"]')[0].set('value', data[3])
-        $('#info section input[name="rank_-1"]')[0].set('value', data[0])
-        $('#info section input[name="name_1"]')[0].set('value', data[2])
-        $('#info section input[name="name_-1"]')[0].set('value', data[1])
+        $('#info section input[name="rank_1"]').eq(0).val(data[3])
+        $('#info section input[name="rank_-1"]').eq(0).val(data[0])
+        $('#info section input[name="name_1"]').eq(0).val(data[2])
+        $('#info section input[name="name_-1"]').eq(0).val(data[1])
 
         data = $('#info section .menu').map(function(el) {
             return [el.hasClass('active'), el.data('engineindex')]
@@ -606,19 +606,19 @@ function prepareGameInfo() {
         var el = this
 
         function selectEngine(engine, i) {
-            var currentIndex = this.data('engineindex')
+            var currentIndex = $(this).data('engineindex')
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            this.getParent().getElement('input[name^="name_"]').set('value', engine ? engine.name : '')
-            this.data('engineindex', i)
+            this.getParent().getElement('input[name^="name_"]').val(engine ? engine.name : '')
+            $(this).data('engineindex', i)
 
             if (engine) {
                 var els = $('#info').getElements('section .menu')
                 var other = els[0] == this ? els[1] : els[0]
                 if (other) selectEngine.call(other, null, -1)
 
-                this.addClass('active')
+                $(this).addClass('active')
             } else {
                 $('#info').getElements('section .menu')
                 .removeClass('active')
@@ -723,9 +723,9 @@ function prepareGameInfo() {
     $('#info input[name^="size-"]').set('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        this.data('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
+        $(this).data('link', this.value == this.getParent().getNext('input[name="size-height"]').value)
     }).on('input', function() {
-        if (!this.data('link')) return
+        if (!$(this).data('link')) return
         this.getParent().getNext('input[name="size-height"]').value = this.value
     })
 
@@ -1029,7 +1029,7 @@ function makeResign(sign) {
 
     showGameInfo()
     var player = sign > 0 ? 'W' : 'B'
-    $('#info input[name="result"]').set('value', player + '+Resign')
+    $('#info input[name="result"]').val(player + '+Resign')
 }
 
 function useTool(vertex, event) {
@@ -1518,7 +1518,7 @@ function commitGameInfo() {
     }
 
     for (var name in data) {
-        var value = info.getElement('input[name="' + name + '"]').get('value').trim()
+        var value = info.getElement('input[name="' + name + '"]').val().trim()
         rootNode[data[name]] = [value]
         if (value == '') delete rootNode[data[name]]
     }
@@ -1534,14 +1534,14 @@ function commitGameInfo() {
 
     // Handle komi
 
-    var komi = +info.getElement('input[name="komi"]').get('value')
+    var komi = +info.getElement('input[name="komi"]').val()
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
     // Handle size
 
     var size = ['width', 'height'].map(function(x) {
-        var num = parseFloat(info.getElement('input[name="size-' + x + '"]').get('value'))
+        var num = parseFloat(info.getElement('input[name="size-' + x + '"]').val())
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 3), 25)
     })
@@ -1595,7 +1595,7 @@ function commitScore() {
     var result = $('#score .result').get('text')
 
     showGameInfo()
-    $('#info input[name="result"]').set('value', result)
+    $('#info input[name="result"]').val(result)
 
     setUndoable(false)
 }
@@ -1643,7 +1643,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     var form = oldform.clone().cloneEvents(oldform)
     var pre = new Element('pre', { text: ' ' })
 
-    form.getElement('input').set('value', '').cloneEvents(oldform.getElement('input'))
+    form.getElement('input').val('').cloneEvents(oldform.getElement('input'))
     oldform.addClass('waiting').getElement('input').value = command.toString()
     container.grab(pre).grab(form)
     if (getShowLeftSidebar()) form.getElement('input').focus()

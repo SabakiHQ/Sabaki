@@ -242,7 +242,7 @@ function setCurrentPlayer(sign) {
 }
 
 function getCommentText() {
-    return $('#properties textarea').get('value')[0]
+    return $('#properties textarea').val()[0]
 }
 
 function setCommentText(text) {
@@ -250,20 +250,20 @@ function setCommentText(text) {
     var container = $('#properties .inner .comment')[0]
     var textarea = $('#properties textarea')[0]
 
-    if (textarea.get('value') != text) textarea.set('value', text)
+    if (textarea.val() != text) textarea.val(text)
     container.set('html', html)
     wireLinks(container)
 }
 
 function getCommentTitle() {
-    return $('#properties .edit .header input')[0].get('value')
+    return $('#properties .edit .header input').eq(0).val()
 }
 
 function setCommentTitle(text) {
     var input = $('#properties .edit .header input')[0]
 
     $('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
-    if (input.get('value') != text) input.set('value', text)
+    if (input.val() != text) input.val(text)
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
@@ -738,7 +738,7 @@ function addEngineItem(name, path, args) {
                     if (result) {
                         this.getParent('li')
                             .getElement('h3 + p input')
-                            .set('value', result[0])
+                            .val(result[0])
                             .focus()
                     }
 
@@ -1027,7 +1027,7 @@ function hideIndicator() {
 
 function clearConsole() {
     $('#console .inner pre, #console .inner form:not(:last-child)').dispose()
-    $('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('#console .inner form:last-child input').eq(0).val('').focus()
     $('#console').data('scrollbar').update()
 }
 
@@ -1383,14 +1383,14 @@ function showGameInfo() {
 
     for (var key in data) {
         var value = data[key]
-        info.getElement('input[name="' + key + '"]').set('value', value in rootNode ? rootNode[value][0] : '')
+        info.getElement('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    info.getElement('input[name="name_1"]').set('value', gametree.getPlayerName(1, tree, ''))
-    info.getElement('input[name="name_-1"]').set('value', gametree.getPlayerName(-1, tree, ''))
-    info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? +rootNode.KM[0] : '')
-    info.getElement('input[name="size-width"]').set('value', getBoard().width)
-    info.getElement('input[name="size-height"]').set('value', getBoard().height)
+    info.getElement('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
+    info.getElement('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
+    info.getElement('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
+    info.getElement('input[name="size-width"]').val(getBoard().width)
+    info.getElement('input[name="size-height"]').val(getBoard().height)
     info.getElements('section .menu').removeClass('active').data('engineindex', -1)
 
     var handicap = info.getElement('select[name="handicap"]')
@@ -1465,7 +1465,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     closeDrawers()
 
-    $('#gamechooser > input')[0].set('value', '').focus()
+    $('#gamechooser > input').eq(0).val('').focus()
     $('#gamechooser ol')[0].empty()
 
     var trees = getGameTrees()
@@ -1521,16 +1521,16 @@ function showGameChooser(restoreScrollbarPos) {
 
         if (x <= middle - 10 && !this.hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
-            this.addClass('insertleft')
+            $(this).addClass('insertleft')
         } else if (x > middle + 10 && !this.hasClass('insertright')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
-            this.addClass('insertright')
+            $(this).addClass('insertright')
         }
     })
 
     $('#gamechooser').off('drop').on('drop', function(e) {
-        var dragged = this.data('dragging')
-        this.data('dragging', null)
+        var dragged = $(this).data('dragging')
+        $(this).data('dragging', null)
 
         var lis = $('#gamechooser ol li')
         var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
