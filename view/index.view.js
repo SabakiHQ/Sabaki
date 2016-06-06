@@ -5,11 +5,11 @@
 var busyTimeout = null
 
 function getIsBusy() {
-    return document.body.retrieve('busy')
+    return $('body').data('busy')
 }
 
 function setIsBusy(busy) {
-    document.body.store('busy', busy)
+    $('body').data('busy', busy)
     clearTimeout(busyTimeout)
 
     if (busy) {
@@ -27,47 +27,47 @@ function setProgressIndicator(progress, win) {
 }
 
 function getShowNextMoves() {
-    return $('goban').hasClass('variations')
+    return $('#goban').hasClass('variations')
 }
 
 function setShowNextMoves(show) {
-    $('goban').toggleClass('variations', show)
+    $('#goban').toggleClass('variations', show)
     setting.set('view.show_next_moves', show)
 }
 
 function getShowSiblings() {
-    return $('goban').hasClass('siblings')
+    return $('#goban').hasClass('siblings')
 }
 
 function setShowSiblings(show) {
-    $('goban').toggleClass('siblings', show)
+    $('#goban').toggleClass('siblings', show)
     setting.set('view.show_siblings', show)
 }
 
 function getFuzzyStonePlacement() {
-    return $('goban').hasClass('fuzzy')
+    return $('#goban').hasClass('fuzzy')
 }
 
 function setFuzzyStonePlacement(fuzzy) {
-    $('goban').toggleClass('fuzzy', fuzzy)
+    $('#goban').toggleClass('fuzzy', fuzzy)
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
 function getAnimatedStonePlacement() {
-    return $('goban').hasClass('animation')
+    return $('#goban').hasClass('animation')
 }
 
 function setAnimatedStonePlacement(animate) {
-    $('goban').toggleClass('animation', animate)
+    $('#goban').toggleClass('animation', animate)
     setting.set('view.animate_stone_placement', animate)
 }
 
 function getShowCoordinates() {
-    return $('goban').hasClass('coordinates')
+    return $('#goban').hasClass('coordinates')
 }
 
 function setShowCoordinates(show) {
-    $('goban').toggleClass('coordinates', show)
+    $('#goban').toggleClass('coordinates', show)
     setting.set('view.show_coordinates', show)
     resizeBoard()
 }
@@ -90,27 +90,27 @@ function setShowLeftSidebar(show) {
 
     document.body.toggleClass('leftsidebar', show)
 
-    $('leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
-    $('main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
+    $('#leftsidebar').setStyle('width', setting.get('view.leftsidebar_width'))
+    $('#main').setStyle('left', show ? setting.get('view.leftsidebar_width') : 0)
 
     resizeBoard()
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
-    var view = $$('#console .gm-scroll-view')[0]
+    var view = $('#console .gm-scroll-view')[0]
     view.scrollTo(0, view.getScrollSize().y)
     view.getElement('form:last-child input').focus()
-    $('console').retrieve('scrollbar').update()
+    $('#console').data('scrollbar').update()
 }
 
 function setLeftSidebarWidth(width) {
     if (!getShowLeftSidebar()) return
-    $('leftsidebar').setStyle('width', width)
-    $('main').setStyle('left', width)
+    $('#leftsidebar').setStyle('width', width)
+    $('#main').setStyle('left', width)
 }
 
 function getLeftSidebarWidth() {
-    return $('leftsidebar').getStyle('width').toInt()
+    return $('#leftsidebar').getStyle('width').toInt()
 }
 
 function getShowSidebar() {
@@ -131,8 +131,8 @@ function setShowSidebar(show) {
 
     document.body.toggleClass('sidebar', show)
 
-    $('sidebar').setStyle('width', setting.get('view.sidebar_width'))
-    $('main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
+    $('#sidebar').setStyle('width', setting.get('view.sidebar_width'))
+    $('#main').setStyle('right', show ? setting.get('view.sidebar_width') : 0)
 
     if (show) {
         updateGraph()
@@ -140,7 +140,7 @@ function setShowSidebar(show) {
         updateCommentText();
     } else {
         // Clear game graph
-        var s = $('graph').retrieve('sigma')
+        var s = $('#graph').data('sigma')
 
         if (s) {
             s.graph.clear()
@@ -182,33 +182,33 @@ function getShowComment() {
 }
 
 function getSidebarWidth() {
-    return $('sidebar').getStyle('width').toInt()
+    return $('#sidebar').getStyle('width').toInt()
 }
 
 function setSidebarWidth(width) {
     if (!getShowSidebar()) return
-    $('sidebar').setStyle('width', width)
-    $$('.sidebar #main').setStyle('right', width)
+    $('#sidebar').setStyle('width', width)
+    $('#.sidebar #main').setStyle('right', width)
 }
 
 function getPropertiesHeight() {
-    return $('properties').getSize().y * 100 / $('sidebar').getSize().y
+    return $('#properties').getSize().y * 100 / $('#sidebar').getSize().y
 }
 
 function setPropertiesHeight(height) {
-    $('graph').setStyle('height', (100 - height) + '%')
-    $('properties').setStyle('height', height + '%')
+    $('#graph').setStyle('height', (100 - height) + '%')
+    $('#properties').setStyle('height', height + '%')
     setSliderValue.apply(null, getSliderValue())
 }
 
 function getPlayerName(sign) {
-    var el = $$('#player_' + sign + ' .name')[0]
+    var el = $('#player_' + sign + ' .name')[0]
     return [el.get('text'), el.get('title')]
 }
 
 function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $$('#player_' + sign + ' .name')[0].set('text', name).set('title', tooltip)
+    $('#player_' + sign + ' .name')[0].set('text', name).set('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -221,34 +221,34 @@ function setShowHotspot(bookmark) {
 
 function getCaptures() {
     return {
-        '-1': +$$('#player_-1 .captures')[0].get('text'),
-        '1': +$$('#player_1 .captures')[0].get('text')
+        '-1': +$('#player_-1 .captures')[0].get('text'),
+        '1': +$('#player_1 .captures')[0].get('text')
     }
 }
 
 function setCaptures(captures) {
-    $$('#player_-1 .captures')[0].set('text', captures['-1'])
+    $('#player_-1 .captures')[0].set('text', captures['-1'])
         .setStyle('opacity', captures['-1'] == 0 ? 0 : .7)
-    $$('#player_1 .captures')[0].set('text', captures['1'])
+    $('#player_1 .captures')[0].set('text', captures['1'])
         .setStyle('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
 function getCurrentPlayer() {
-    return $$('.currentplayer')[0].get('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('#.currentplayer')[0].get('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $$('.currentplayer').set('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('#.currentplayer').set('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
 }
 
 function getCommentText() {
-    return $$('#properties textarea').get('value')[0]
+    return $('#properties textarea').get('value')[0]
 }
 
 function setCommentText(text) {
     var html = helper.markdown(text)
-    var container = $$('#properties .inner .comment')[0]
-    var textarea = $$('#properties textarea')[0]
+    var container = $('#properties .inner .comment')[0]
+    var textarea = $('#properties textarea')[0]
 
     if (textarea.get('value') != text) textarea.set('value', text)
     container.set('html', html)
@@ -256,18 +256,18 @@ function setCommentText(text) {
 }
 
 function getCommentTitle() {
-    return $$('#properties .edit .header input')[0].get('value')
+    return $('#properties .edit .header input')[0].get('value')
 }
 
 function setCommentTitle(text) {
-    var input = $$('#properties .edit .header input')[0]
+    var input = $('#properties .edit .header input')[0]
 
-    $$('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $('#properties .inner .header span')[0].set('text', text.trim() != '' ? text : getCurrentMoveInterpretation())
     if (input.get('value') != text) input.set('value', text)
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
-    var header = $$('#properties .inner .header')[0]
+    var header = $('#properties .inner .header')[0]
     var img = header.getElement('img:nth-child(2)')
 
     // Set move status
@@ -316,7 +316,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 }
 
 function getSliderValue() {
-    var span = $$('#sidebar .slider .inner span')[0]
+    var span = $('#sidebar .slider .inner span')[0]
     var value = span.getStyle('top').toInt()
     var label = span.get('text')
 
@@ -324,7 +324,7 @@ function getSliderValue() {
 }
 
 function setSliderValue(value, label) {
-    $$('#sidebar .slider .inner span').setStyle('top', value + '%').set('text', label)
+    $('#sidebar .slider .inner span').setStyle('top', value + '%').set('text', label)
 }
 
 function getFindMode() {
@@ -336,7 +336,7 @@ function setFindMode(pickMode) {
         if (pickMode != getFindMode()) closeDrawers()
         document.body.addClass('find')
 
-        var input = $('find').getElement('input')
+        var input = $('#find').getElement('input')
         input.focus()
         input.select()
     } else {
@@ -347,11 +347,11 @@ function setFindMode(pickMode) {
 }
 
 function getFindText() {
-    return $('find').getElement('input').value
+    return $('#find').getElement('input').value
 }
 
 function setFindText(text) {
-    $('find').getElement('input').value = text
+    $('#find').getElement('input').value = text
 }
 
 function getEditMode() {
@@ -363,9 +363,9 @@ function setEditMode(editMode) {
         closeDrawers()
         document.body.addClass('edit')
 
-        $$('#properties textarea')[0].scrollTo(0, 0)
+        $('#properties textarea')[0].scrollTo(0, 0)
     } else {
-        $('goban').store('edittool-data', null)
+        $('#goban').data('edittool-data', null)
         document.body.removeClass('edit')
     }
 }
@@ -393,7 +393,7 @@ function setScoringMode(mode, estimator) {
 
     if (mode) {
         // Clean board
-        $$('#goban .row li')
+        $('#goban .row li')
         .removeClass('area_-1')
         .removeClass('area_0')
         .removeClass('area_1')
@@ -404,7 +404,7 @@ function setScoringMode(mode, estimator) {
 
         var deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
         deadstones.forEach(function(v) {
-            $$('#goban .pos_' + v.join('-')).addClass('dead')
+            $('#goban .pos_' + v.join('-')).addClass('dead')
         })
 
         updateAreaMap(estimator)
@@ -422,7 +422,7 @@ function setEstimatorMode(mode) {
 }
 
 function getIndicatorVertex() {
-    return $('indicator').retrieve('vertex')
+    return $('#indicator').data('vertex')
 }
 
 function setIndicatorVertex(vertex) {
@@ -431,7 +431,7 @@ function setIndicatorVertex(vertex) {
 }
 
 function setPreferencesTab(tab) {
-    $$('#preferences .tabs')[0]
+    $('#preferences .tabs')[0]
         .getElement('.current')
         .removeClass('current')
         .getParent()
@@ -439,29 +439,29 @@ function setPreferencesTab(tab) {
         .getParent()
         .addClass('current')
 
-    var form = $$('#preferences form')[0]
+    var form = $('#preferences form')[0]
     form.className = tab
 
     if (tab == 'engines')
-        $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+        $('#preferences .engines-list')[0].data('scrollbar').update()
 }
 
 function getRepresentedFilename() {
-    return document.body.retrieve('representedfilename')
+    return $('body').data('representedfilename')
 }
 
 function setRepresentedFilename(filename) {
-    document.body.store('representedfilename', filename)
+    $('body').data('representedfilename', filename)
     remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
     updateTitle()
 }
 
 function getShapes() {
-    var shapes = document.body.retrieve('shapes')
+    var shapes = $('body').data('shapes')
 
     if (!shapes) {
         shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
-        document.body.store('shapes', shapes)
+        $('body').data('shapes', shapes)
     }
 
     return shapes
@@ -572,83 +572,83 @@ function getCurrentMoveInterpretation() {
  */
 
 function prepareScrollbars() {
-    $('properties').store('scrollbar', new GeminiScrollbar({
-        element: $('properties'),
+    $('#properties').data('scrollbar', new GeminiScrollbar({
+        element: $('#properties'),
         createElements: false
     }).create())
 
-    $('console').store('scrollbar', new GeminiScrollbar({
-        element: $('console'),
+    $('#console').data('scrollbar', new GeminiScrollbar({
+        element: $('#console'),
         createElements: false
     }).create())
 
-    var enginesList = $$('#preferences .engines-list')[0]
-    enginesList.store('scrollbar', new GeminiScrollbar({
+    var enginesList = $('#preferences .engines-list')[0]
+    enginesList.data('scrollbar', new GeminiScrollbar({
         element: enginesList,
         createElements: false
     }).create())
 
-    var gamesList = $$('#gamechooser .games-list')[0]
-    gamesList.store('scrollbar', new GeminiScrollbar({
+    var gamesList = $('#gamechooser .games-list')[0]
+    gamesList.data('scrollbar', new GeminiScrollbar({
         element: gamesList,
         createElements: false
     }).create())
 
     window.addEvent('resize', function() {
-        if (!$('gamechooser').hasClass('show')) return
+        if (!$('#gamechooser').hasClass('show')) return
 
-        var width = $$('#gamechooser .games-list')[0].getWidth() - 20
-        var svgs = $$('#gamechooser svg')
+        var width = $('#gamechooser .games-list')[0].getWidth() - 20
+        var svgs = $('#gamechooser svg')
 
         if (svgs.length == 0) return
 
         var liwidth = svgs[0].getWidth() + 12 + 20
         var count = Math.floor(width / liwidth)
 
-        $$('#gamechooser li').setStyle('width', Math.floor(width / count) - 20)
-        $$('#gamechooser .games-list')[0].retrieve('scrollbar').update()
+        $('#gamechooser li').setStyle('width', Math.floor(width / count) - 20)
+        $('#gamechooser .games-list')[0].data('scrollbar').update()
     })
 }
 
 function prepareResizers() {
-    $$('.verticalresizer').addEvent('mousedown', function(e) {
+    $('#.verticalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        this.getParent().store('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
+        this.getParent().data('initposx', [e.event.screenX, this.getParent().getStyle('width').toInt()])
     })
 
-    $$('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
+    $('#sidebar .horizontalresizer').addEvent('mousedown', function(e) {
         if (e.event.button != 0) return
-        $('sidebar').store('initposy', [e.event.screenY, getPropertiesHeight()])
-        $('properties').setStyle('transition', 'none')
+        $('#sidebar').data('initposy', [e.event.screenY, getPropertiesHeight()])
+        $('#properties').setStyle('transition', 'none')
     })
 
     document.body.addEvent('mouseup', function() {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
+        var sidebarInitPosX = $('#sidebar').data('initposx')
+        var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
+        var initPosY = $('#sidebar').data('initposy')
 
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
         if (sidebarInitPosX) {
-            $('sidebar').store('initposx', null)
+            $('#sidebar').data('initposx', null)
             setting.set('view.sidebar_width', getSidebarWidth())
         } else if (leftSidebarInitPosX) {
-            $('leftsidebar').store('initposx', null)
+            $('#leftsidebar').data('initposx', null)
             setting.set('view.leftsidebar_width', getLeftSidebarWidth())
             return
         } else if (initPosY) {
-            $('sidebar').store('initposy', null)
-            $('properties').setStyle('transition', '')
+            $('#sidebar').data('initposy', null)
+            $('#properties').setStyle('transition', '')
             setting.set('view.properties_height', getPropertiesHeight())
             setSidebarArrangement(true, true, false)
         }
 
-        if ($('graph').retrieve('sigma'))
-            $('graph').retrieve('sigma').renderers[0].resize().render()
+        if ($('#graph').data('sigma'))
+            $('#graph').data('sigma').renderers[0].resize().render()
     }).addEvent('mousemove', function(e) {
-        var sidebarInitPosX = $('sidebar').retrieve('initposx')
-        var leftSidebarInitPosX = $('leftsidebar').retrieve('initposx')
-        var initPosY = $('sidebar').retrieve('initposy')
+        var sidebarInitPosX = $('#sidebar').data('initposx')
+        var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
+        var initPosY = $('#sidebar').data('initposy')
 
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
@@ -665,35 +665,35 @@ function prepareResizers() {
             setLeftSidebarWidth(newwidth)
             resizeBoard()
 
-            $('console').retrieve('scrollbar').update()
+            $('#console').data('scrollbar').update()
             return
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.screenY) * 100 / $('sidebar').getSize().y,
+                initHeight + (initY - e.event.screenY) * 100 / $('#sidebar').getSize().y,
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
             setPropertiesHeight(newheight)
         }
 
-        $('properties').retrieve('scrollbar').update()
+        $('#properties').data('scrollbar').update()
     })
 }
 
 function prepareGameChooser() {
-    $$('#gamechooser > input').addEvent('input', function() {
+    $('#gamechooser > input').addEvent('input', function() {
         var value = this.value
 
-        $$('#gamechooser .games-list li:not(.add)').forEach(function(li) {
+        $('#gamechooser .games-list li:not(.add)').forEach(function(li) {
             if (li.getElements('span').some(function(span) {
                 return span.get('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) li.removeClass('hide')
             else li.addClass('hide')
         })
 
-        var gamesList = $$('#gamechooser .games-list')[0]
-        gamesList.retrieve('scrollbar').update()
+        var gamesList = $('#gamechooser .games-list')[0]
+        gamesList.data('scrollbar').update()
     })
 }
 
@@ -714,7 +714,7 @@ function addEngineItem(name, path, args) {
     if (!path) path = ''
     if (!args) args = ''
 
-    var ul = $$('#preferences .engines-list ul')[0]
+    var ul = $('#preferences .engines-list ul')[0]
     var li = new Element('li').grab(new Element('h3').grab(
         new Element('input', {
             type: 'text',
@@ -761,7 +761,7 @@ function addEngineItem(name, path, args) {
             events: {
                 click: function() {
                     this.getParent('li').dispose()
-                    $$('#preferences .engines-list')[0].retrieve('scrollbar').update()
+                    $('#preferences .engines-list')[0].data('scrollbar').update()
                 }
             }
         }).grab(new Element('img', {
@@ -773,7 +773,7 @@ function addEngineItem(name, path, args) {
     ul.grab(li)
     li.getElement('h3 input').focus()
 
-    var enginesScrollbar = $$('#preferences .engines-list')[0].retrieve('scrollbar')
+    var enginesScrollbar = $('#preferences .engines-list')[0].data('scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
@@ -798,7 +798,7 @@ function showMessageBox(message, type, buttons, cancelId) {
 }
 
 function readjustShifts(vertex) {
-    var li = $$('#goban .pos_' + vertex.join('-'))[0]
+    var li = $('#goban .pos_' + vertex.join('-'))[0]
     var direction = li.get('class').split(' ').filter(function(x) {
         return x.indexOf('shift_') == 0
     }).map(function(x) {
@@ -829,7 +829,7 @@ function readjustShifts(vertex) {
     }
 
     if (query && removeShifts) {
-        var el = $$(query)
+        var el = $(query)
         el.addClass('animate')
         removeShifts.forEach(function(s) { el.removeClass('shift_' + s) })
         setTimeout(function() { el.removeClass('animate') }, 200)
@@ -837,12 +837,12 @@ function readjustShifts(vertex) {
 }
 
 function updateSidebarLayout() {
-    var container = $$('#properties .gm-scroll-view')[0]
+    var container = $('#properties .gm-scroll-view')[0]
     container.setStyle('opacity', 0)
 
     setTimeout(function() {
-        $('graph').retrieve('sigma').renderers[0].resize().render()
-        $('properties').retrieve('scrollbar').update()
+        $('#graph').data('sigma').renderers[0].resize().render()
+        $('#properties').data('scrollbar').update()
         container.setStyle('opacity', 1)
     }, 300)
 }
@@ -859,7 +859,7 @@ function buildBoard() {
             var vertex = [x, y]
             var img = new Element('img', { src: '../img/goban/stone_0.svg' })
             var li = new Element('li')
-                .store('vertex', vertex)
+                .data('vertex', vertex)
                 .addClass('pos_' + x + '-' + y)
                 .addClass('shift_' + Math.floor(Math.random() * 9))
                 .addClass('random_' + Math.floor(Math.random() * 5))
@@ -874,18 +874,18 @@ function buildBoard() {
                 )
 
                 if (!endTarget) return null
-                var v = endTarget.retrieve('vertex')
+                var v = endTarget.data('vertex')
                 if (!v) endTarget = endTarget.getParent('li')
-                if (endTarget) v = endTarget.retrieve('vertex')
+                if (endTarget) v = endTarget.data('vertex')
 
                 return v
             }
 
             ol.adopt(li.adopt(new Element('div.stone').adopt(img).adopt(new Element('span')))
                 .addEvent('mouseup', function(e) {
-                    if (!$('goban').retrieve('mousedown')) return
+                    if (!$('#goban').data('mousedown')) return
 
-                    $('goban').store('mousedown', false)
+                    $('#goban').data('mousedown', false)
                     vertexClicked(this, e.event)
                 }.bind(vertex))
                 .addEvent('touchend', function(e) {
@@ -895,7 +895,7 @@ function buildBoard() {
                     }
                 })
                 .addEvent('mousemove', function(e) {
-                    if (!$('goban').retrieve('mousedown')) return
+                    if (!$('#goban').data('mousedown')) return
                     if (e.event.buttons == 0) return
 
                     drawLine(this)
@@ -905,7 +905,7 @@ function buildBoard() {
                     drawLine(getEndTargetVertex(e.event))
                 })
                 .addEvent('mousedown', function() {
-                    $('goban').store('mousedown', true)
+                    $('#goban').data('mousedown', true)
                 })
                 .grab(new Element('div.paint'))
             )
@@ -926,7 +926,7 @@ function buildBoard() {
         coordy.adopt(new Element('li', { text: i }))
     }
 
-    var goban = $$('#goban div')[0]
+    var goban = $('#goban div')[0]
     goban.empty().adopt(rows, coordx, coordy)
     goban.grab(coordx.clone(), 'top').grab(coordy.clone(), 'top')
 
@@ -934,19 +934,19 @@ function buildBoard() {
 
     // Readjust shifts
 
-    $$('#goban .row li:not(.shift_0)').forEach(function(li) {
-        readjustShifts(li.retrieve('vertex'))
+    $('#goban .row li:not(.shift_0)').forEach(function(li) {
+        readjustShifts(li.data('vertex'))
     })
 }
 
 function updateBoardLines() {
-    $$('#goban hr').forEach(function(line) {
-        var v1 = line.retrieve('v1'), v2 = line.retrieve('v2')
+    $('#goban hr').forEach(function(line) {
+        var v1 = line.data('v1'), v2 = line.data('v2')
         var mirrored = v2[0] < v1[0]
-        var li1 = $('goban').getElement('.pos_' + v1[0] + '-' + v1[1])
-        var li2 = $('goban').getElement('.pos_' + v2[0] + '-' + v2[1])
-        var pos1 = li1.getPosition($('goban'))
-        var pos2 = li2.getPosition($('goban'))
+        var li1 = $('#goban').getElement('.pos_' + v1[0] + '-' + v1[1])
+        var li2 = $('#goban').getElement('.pos_' + v2[0] + '-' + v2[1])
+        var pos1 = li1.getPosition($('#goban'))
+        var pos2 = li2.getPosition($('#goban'))
         var dy = pos2.y - pos1.y, dx = pos2.x - pos1.x
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
@@ -967,18 +967,18 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    var outerWidth = $$('main')[0].getStyle('width').toInt()
-    var outerHeight = $$('main')[0].getStyle('height').toInt()
+    var outerWidth = $('#main')[0].getStyle('width').toInt()
+    var outerHeight = $('#main')[0].getStyle('height').toInt()
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = helper.floorEven(outerWidth - $('goban').getStyle('border-left-width').toInt()
-        - $('goban').getStyle('border-right-width').toInt()
-        - $('goban').getStyle('padding-left').toInt()
-        - $('goban').getStyle('padding-right').toInt())
-    var height = helper.floorEven(outerHeight - $('goban').getStyle('border-top-width').toInt()
-        - $('goban').getStyle('border-bottom-width').toInt()
-        - $('goban').getStyle('padding-top').toInt()
-        - $('goban').getStyle('padding-bottom').toInt())
+    var width = helper.floorEven(outerWidth - $('#goban').getStyle('border-left-width').toInt()
+        - $('#goban').getStyle('border-right-width').toInt()
+        - $('#goban').getStyle('padding-left').toInt()
+        - $('#goban').getStyle('padding-right').toInt())
+    var height = helper.floorEven(outerHeight - $('#goban').getStyle('border-top-width').toInt()
+        - $('#goban').getStyle('border-bottom-width').toInt()
+        - $('#goban').getStyle('padding-top').toInt()
+        - $('#goban').getStyle('padding-bottom').toInt())
 
     if (getShowCoordinates()) {
         boardWidth += 2
@@ -989,21 +989,21 @@ function resizeBoard() {
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
-    $('goban').setStyle('width', minX + outerWidth - width)
+    $('#goban').setStyle('width', minX + outerWidth - width)
         .setStyle('height', minY + outerHeight - height)
         .setStyle('margin-left', -(minX + outerWidth - width) / 2)
         .setStyle('margin-top', -(minY + outerHeight - height) / 2)
-    $$('#goban > div').setStyle('width', minX).setStyle('height', minY)
+    $('#goban > div').setStyle('width', minX).setStyle('height', minY)
         .setStyle('margin-left', -minX / 2).setStyle('margin-top', -minY / 2)
 
-    $$('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
-    $$('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
+    $('#goban .row, #goban .coordx').setStyle('height', fieldsize).setStyle('line-height', fieldsize)
+    $('#goban .row, #goban .coordx').setStyle('margin-left', getShowCoordinates() ? fieldsize : 0)
 
-    $$('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
-    $$('#goban .coordy:last-child').setStyle('left', fieldsize * (board.width + 1))
+    $('#goban .coordy').setStyle('width', fieldsize).setStyle('top', fieldsize).setStyle('line-height', fieldsize)
+    $('#goban .coordy:last-child').setStyle('left', fieldsize * (board.width + 1))
 
-    $$('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
-    $('goban').setStyle('font-size', fieldsize)
+    $('#goban li').setStyle('width', fieldsize).setStyle('height', fieldsize)
+    $('#goban').setStyle('font-size', fieldsize)
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
@@ -1013,28 +1013,28 @@ function resizeBoard() {
 
 function showIndicator(vertex) {
     var x = vertex[0], y = vertex[1]
-    var li = $$('#goban .pos_' + x + '-' + y)
+    var li = $('#goban .pos_' + x + '-' + y)
 
     if (li.length == 0) return
     li = li[0]
 
-    $('indicator').setStyle('top', li.getPosition().y)
+    $('#indicator').setStyle('top', li.getPosition().y)
         .setStyle('left', li.getPosition().x)
         .setStyle('height', li.getSize().y)
         .setStyle('width', li.getSize().x)
-        .store('vertex', vertex)
+        .data('vertex', vertex)
 }
 
 function hideIndicator() {
-    $('indicator').setStyle('top', '')
+    $('#indicator').setStyle('top', '')
         .setStyle('left', '')
-        .store('vertex', null)
+        .data('vertex', null)
 }
 
 function clearConsole() {
-    $$('#console .inner pre, #console .inner form:not(:last-child)').dispose()
-    $$('#console .inner form:last-child input')[0].set('value', '').focus()
-    $('console').retrieve('scrollbar').update()
+    $('#console .inner pre, #console .inner form:not(:last-child)').dispose()
+    $('#console .inner form:last-child input')[0].set('value', '').focus()
+    $('#console').data('scrollbar').update()
 }
 
 function wireLinks(container) {
@@ -1107,8 +1107,8 @@ function openHeaderMenu() {
     menu = Menu.buildFromTemplate(template)
     menu.popup(
         remote.getCurrentWindow(),
-        Math.round($('headermenu').getPosition().x),
-        Math.round($$('header')[0].getCoordinates().top)
+        Math.round($('#headermenu').getPosition().x),
+        Math.round($('#header')[0].getCoordinates().top)
     )
 }
 
@@ -1209,7 +1209,7 @@ function openCommentMenu() {
         }
     })
 
-    var coord = $$('#properties .edit .header img')[0].getCoordinates()
+    var coord = $('#properties .edit .header img')[0].getCoordinates()
 
     menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
@@ -1218,7 +1218,7 @@ function openCommentMenu() {
 function openEnginesMenu(element, callback) {
     if (!callback) callback = function() {}
 
-    var currentIndex = element.retrieve('engineindex')
+    var currentIndex = element.data('engineindex')
     if (currentIndex == null) currentIndex = -1
 
     var template = [{
@@ -1312,7 +1312,7 @@ function openGameMenu(element, event) {
                     ['Remove Games', 'Cancel'], 1
                 ) == 1) return
 
-                setGameTrees([element.getParent('li').retrieve('gametree')])
+                setGameTrees([element.getParent('li').data('gametree')])
                 setGameIndex(0)
                 showGameChooser(true)
             }
@@ -1361,7 +1361,7 @@ function openAddGameMenu() {
     ]
 
     var menu = Menu.buildFromTemplate(template)
-    var button = $('gamechooser').getElement('button[name="add"]')
+    var button = $('#gamechooser').getElement('button[name="add"]')
     var position = button.getPosition()
     menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.getSize().y))
 }
@@ -1375,7 +1375,7 @@ function showGameInfo() {
 
     var tree = getRootTree()
     var rootNode = tree.nodes[0]
-    var info = $('info')
+    var info = $('#info')
     var data = {
         'rank_1': 'BR',
         'rank_-1': 'WR',
@@ -1397,7 +1397,7 @@ function showGameInfo() {
     info.getElement('input[name="komi"]').set('value', 'KM' in rootNode ? +rootNode.KM[0] : '')
     info.getElement('input[name="size-width"]').set('value', getBoard().width)
     info.getElement('input[name="size-height"]').set('value', getBoard().height)
-    info.getElements('section .menu').removeClass('active').store('engineindex', -1)
+    info.getElements('section .menu').removeClass('active').data('engineindex', -1)
 
     var handicap = info.getElement('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
@@ -1413,17 +1413,17 @@ function showGameInfo() {
 }
 
 function closeGameInfo() {
-    $('info').removeClass('show')
+    $('#info').removeClass('show')
     document.activeElement.blur()
 }
 
 function showScore() {
-    var board = $('goban').retrieve('finalboard')
-    var score = board.getScore($('goban').retrieve('areamap'))
+    var board = $('#goban').data('finalboard')
+    var score = board.getScore($('#goban').data('areamap'))
     var rootNode = getRootTree().nodes[0]
 
     for (var sign = -1; sign <= 1; sign += 2) {
-        var tr = $$('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
+        var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
         var tds = tr.getElements('td')
 
         tds[0].set('text', score['area_' + sign])
@@ -1435,17 +1435,17 @@ function showScore() {
         setScoringMethod(setting.get('scoring.method'))
     }
 
-    $('score').addClass('show')
+    $('#score').addClass('show')
 }
 
 function closeScore() {
-    $('score').removeClass('show')
+    $('#score').removeClass('show')
 }
 
 function showPreferences() {
     // Load preferences
 
-    $$('#preferences input[type="checkbox"]').forEach(function(el) {
+    $('#preferences input[type="checkbox"]').forEach(function(el) {
         el.checked = !!setting.get(el.name)
     })
 
@@ -1455,11 +1455,11 @@ function showPreferences() {
 
     setPreferencesTab('general')
     closeDrawers()
-    $('preferences').addClass('show')
+    $('#preferences').addClass('show')
 }
 
 function closePreferences() {
-    $('preferences').removeClass('show')
+    $('#preferences').removeClass('show')
     document.activeElement.blur()
 }
 
@@ -1467,12 +1467,12 @@ function showGameChooser(restoreScrollbarPos) {
     if (restoreScrollbarPos == null)
         restoreScrollbarPos = true
 
-    var scrollbarPos = restoreScrollbarPos ? $$('#gamechooser .gm-scroll-view')[0].scrollTop : 0
+    var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view')[0].scrollTop : 0
 
     closeDrawers()
 
-    $$('#gamechooser > input')[0].set('value', '').focus()
-    $$('#gamechooser ol')[0].empty()
+    $('#gamechooser > input')[0].set('value', '').focus()
+    $('#gamechooser ol')[0].empty()
 
     var trees = getGameTrees()
     var currentTree = getRootTree()
@@ -1487,7 +1487,7 @@ function showGameChooser(restoreScrollbarPos) {
         var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
-        $$('#gamechooser ol')[0].grab(li.grab(
+        $('#gamechooser ol')[0].grab(li.grab(
             new Element('div', { draggable: true })
             .grab(new Element('span'))
             .grab(svg)
@@ -1504,41 +1504,41 @@ function showGameChooser(restoreScrollbarPos) {
         if ('GN' in node) gamename.set('text', node.GN[0]).set('title', node.GN[0])
         else if ('EV' in node) gamename.set('text', node.EV[0]).set('title', node.EV[0])
 
-        li.store('gametree', tree).getElement('div').addEvent('click', function() {
+        li.data('gametree', tree).getElement('div').addEvent('click', function() {
             var link = this
             closeGameChooser()
             setTimeout(function() {
-                setGameIndex($$('#gamechooser ol li div').indexOf(link))
+                setGameIndex($('#gamechooser ol li div').indexOf(link))
             }, 500)
         }).addEvent('mouseup', function(e) {
             if (e.event.button != 2) return
             openGameMenu(this, e.event)
         }).addEvent('dragstart', function(e) {
-            $('gamechooser').store('dragging', this.getParent('li'))
+            $('#gamechooser').data('dragging', this.getParent('li'))
         })
     }
 
-    $$('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
+    $('#gamechooser ol li').removeEvents('dragover').addEvent('dragover', function(e) {
         e.preventDefault()
-        if (!$('gamechooser').retrieve('dragging')) return
+        if (!$('#gamechooser').data('dragging')) return
 
         var x = e.event.clientX
         var middle = this.getPosition().x + this.getSize().x / 2
 
         if (x <= middle - 10 && !this.hasClass('insertleft')) {
-            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertleft')
         } else if (x > middle + 10 && !this.hasClass('insertright')) {
-            $$('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
+            $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
             this.addClass('insertright')
         }
     })
 
-    $('gamechooser').removeEvents('drop').addEvent('drop', function(e) {
-        var dragged = this.retrieve('dragging')
-        this.store('dragging', null)
+    $('#gamechooser').removeEvents('drop').addEvent('drop', function(e) {
+        var dragged = this.data('dragging')
+        this.data('dragging', null)
 
-        var lis = $$('#gamechooser ol li')
+        var lis = $('#gamechooser ol li')
         var afterli = lis.filter(function(x) { return x.hasClass('insertleft') })[0]
         var beforeli = lis.filter(function(x) { return x.hasClass('insertright') })[0]
         lis.removeClass('insertleft').removeClass('insertright')
@@ -1548,21 +1548,21 @@ function showGameChooser(restoreScrollbarPos) {
         if (afterli) afterli.grab(dragged, 'before')
         if (beforeli) beforeli.grab(dragged, 'after')
 
-        setGameTrees($$('#gamechooser ol > li').map(function(x) {
-            return x.retrieve('gametree')
+        setGameTrees($('#gamechooser ol > li').map(function(x) {
+            return x.data('gametree')
         }))
 
         var newindex = getGameTrees().indexOf(currentTree)
         setGameIndex(newindex)
     })
 
-    $('gamechooser').addClass('show')
+    $('#gamechooser').addClass('show')
     window.fireEvent('resize')
-    $$('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
+    $('#gamechooser .gm-scroll-view')[0].scrollTo(0, scrollbarPos)
 }
 
 function closeGameChooser() {
-    $('gamechooser').removeClass('show')
+    $('#gamechooser').removeClass('show')
     document.activeElement.blur()
 }
 
@@ -1586,7 +1586,7 @@ document.addEvent('domready', function() {
     document.title = app.getName()
 
     document.body.addEvent('mouseup', function() {
-        $('goban').store('mousedown', false)
+        $('#goban').data('mousedown', false)
     })
 
     prepareScrollbars()
