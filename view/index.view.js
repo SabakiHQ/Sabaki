@@ -954,8 +954,8 @@ function updateBoardLines() {
     $('#goban hr').get().forEach(function(line) {
         var v1 = $(line).data('v1'), v2 = $(line).data('v2')
         var mirrored = v2[0] < v1[0]
-        var $li1 = $('#goban').find('.pos_' + v1[0] + '-' + v1[1])
-        var $li2 = $('#goban').find('.pos_' + v2[0] + '-' + v2[1])
+        var $li1 = $('#goban .pos_' + v1.join('-'))
+        var $li2 = $('#goban .pos_' + v2.join('-'))
         var pos1 = $li1.position()
         var pos2 = $li2.position()
         var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left

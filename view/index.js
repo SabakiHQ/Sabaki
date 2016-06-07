@@ -207,7 +207,7 @@ function setBoard(board) {
 
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
-            var li = $('#goban').find('.pos_' + x + '-' + y)
+            var $li = $('#goban .pos_' + x + '-' + y)
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
@@ -215,10 +215,8 @@ function setBoard(board) {
 
             // Clean up
 
-            types.forEach(function(x) {
-                if (li.hasClass(x)) li.removeClass(x)
-            })
-            li.find('.stone span').attr('title', '')
+            types.forEach(function(x) { $li.toggleClass(x, false) })
+            $li.find('.stone span').attr('title', '')
 
             // Add markups
 
@@ -226,20 +224,20 @@ function setBoard(board) {
                 var markup = board.markups[[x, y]]
                 var type = markup[0], label = markup[1]
 
-                if (type != '') li.addClass(type)
-                if (label != '') li.find('.stone span').attr('title', label)
-                li.toggleClass('smalllabel', label.length >= 3)
+                if (type != '') $li.addClass(type)
+                if (label != '') $li.find('.stone span').attr('title', label)
+                $li.toggleClass('smalllabel', label.length >= 3)
             }
 
             // Set stone image
 
-            if (li.hasClass('sign_' + sign)) continue
+            if ($li.hasClass('sign_' + sign)) continue
 
             for (var i = -1; i <= 1; i++) {
-                if (li.hasClass('sign_' + i)) li.removeClass('sign_' + i)
+                $li.toggleClass('sign_' + i, false)
             }
 
-            li.addClass('sign_' + sign)
+            $li.addClass('sign_' + sign)
         }
     }
 
@@ -247,7 +245,7 @@ function setBoard(board) {
 
     board.ghosts.forEach(function(x) {
         var v = x[0], s = x[1], type = x[2]
-        var li = $('#goban').find('.pos_' + v.join('-'))
+        var li = $('#goban .pos_' + v.join('-'))
 
         if (type == 'child') li.addClass('ghost_' + s)
         else if (type == 'sibling') li.addClass('siblingghost_' + s)
@@ -897,7 +895,7 @@ function makeMove(vertex, sendCommand) {
         }
 
         // Randomize shift and readjust
-        var li = $('#goban .pos_' + vertex[0] + '-' + vertex[1])
+        var li = $('#goban .pos_' + vertex.join('-'))
         var direction = Math.floor(Math.random() * 9)
 
         li.addClass('animate')
@@ -1345,7 +1343,7 @@ function vertexClicked(vertex, event) {
             makeMove(vertex)
         } else {
             if (board.arrangement[vertex] != 0) return
-            if ($('#goban .pos_' + vertex[0] + '-' + vertex[1])[0].hasClass('paint_1')) return
+            if ($('#goban .pos_' + vertex.join('-'))[0].hasClass('paint_1')) return
 
             var i = 0
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
