@@ -298,7 +298,7 @@ function setScoringMethod(method) {
         }
     }
 
-    var results = $('#score tbody td:last-child').text()
+    var results = $('#score tbody td:last-child').get().map(function(td) { return $(td).text() })
     var diff = +results[0] - +results[1]
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
