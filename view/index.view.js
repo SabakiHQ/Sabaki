@@ -258,7 +258,7 @@ function setCommentText(text) {
 }
 
 function getCommentTitle() {
-    return $('#properties .edit .header input').eq(0).val()
+    return $('#properties .edit .header input').val()
 }
 
 function setCommentTitle(text) {
@@ -290,12 +290,12 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
         $img.attr('src', '../img/ui/goodmove.svg')
             .attr('alt', 'Good move')
 
-    if (movevalue == 2) $img.alt = 'Very ' + $img.alt.toLowerCase()
-    $img.title = $img.alt
+    if (movevalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
+    $img.attr('title', $img.attr('alt'))
 
     // Set positional status
 
-    img = $header.find('img:nth-child(1)')
+    $img = $header.find('img:nth-child(1)')
 
     if (posstatus == null) $header.removeClass('positionstatus')
     else $header.addClass('positionstatus')
@@ -313,8 +313,8 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
         $img.attr('src', '../img/ui/unclear.svg')
             .attr('alt', 'Unclear position')
 
-    if (posvalue == 2) $img.alt = 'Very ' + $img.alt.toLowerCase()
-    $img.title = $img.alt
+    if (posvalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
+    $img.attr('title', $img.attr('alt'))
 }
 
 function getSliderValue() {
@@ -760,7 +760,7 @@ function addEngineItem(name, path, args) {
             $('<input/>')
             .attr('type', 'text')
             .attr('placeholder', 'No arguments')
-            .attr('value', args)
+            .val(args)
         )
     ).append(
         $('<a class="remove"/>').on('click', function() {
