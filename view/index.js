@@ -517,18 +517,18 @@ function prepareConsole() {
     })
 
     $('#console form input').on('keydown', function(e) {
-        if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
+        if ([40, 38, 9].indexOf(e.keyCode) != -1) e.preventDefault()
         var $inputs = $('#console form input')
 
         if ($(this).data('index') == null) $(this).data('index', $inputs.get().indexOf(this))
         var i = $(this).data('index')
         var length = $inputs.length
 
-        if ([38, 40].indexOf(e.code) != -1) {
-            if (e.code == 38) {
+        if ([38, 40].indexOf(e.keyCode) != -1) {
+            if (e.keyCode == 38) {
                 // Up
                 i = Math.max(i - 1, 0)
-            } else if (e.code == 40) {
+            } else if (e.keyCode == 40) {
                 // Down
                 i = Math.min(i + 1, length - 1)
             }
@@ -536,7 +536,7 @@ function prepareConsole() {
             $(this)
             .val(i == length - 1 ? '' : $inputs.eq(i).val())
             .data('index', i)
-        } else if (e.code == 9) {
+        } else if (e.keyCode == 9) {
             // Tab
             var tokens = $(this).val().split(' ')
             var commands = getEngineCommands()
@@ -2088,7 +2088,7 @@ function undoBoard() {
  */
 
 $(document).on('keydown', function(e) {
-    if (e.code == 27) {
+    if (e.keyCode == 27) {
         // Escape key
         closeDrawers()
     }
