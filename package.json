@@ -19,7 +19,8 @@
     "jquery": "^2.2.4",
     "octicons": "^3.3.0",
     "pikaday": "^1.4.0",
-    "sigma": "^1.0.3"
+    "sigma": "^1.0.3",
+    "sprint-js": "^0.1.0"
   },
   "scripts": {
     "test": "mocha",
