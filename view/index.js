@@ -1,5 +1,5 @@
 var $ = require('jquery')
-var $sprint = require('sprint-js')
+var $$ = require('sprint-js')
 var fs = require('fs')
 var process = require('process')
 var remote = require('electron').remote
@@ -208,7 +208,7 @@ function setBoard(board) {
 
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
-            var $li = $sprint('#goban .pos_' + x + '-' + y)
+            var $li = $$('#goban .pos_' + x + '-' + y)
             var $span = $li.find('.stone span')
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
@@ -244,7 +244,7 @@ function setBoard(board) {
 
     board.ghosts.forEach(function(x) {
         var v = x[0], s = x[1], type = x[2]
-        var $li = $sprint('#goban .pos_' + v.join('-'))
+        var $li = $$('#goban .pos_' + v.join('-'))
 
         if (type == 'child') $li.addClass('ghost_' + s)
         else if (type == 'sibling') $li.addClass('siblingghost_' + s)
@@ -252,7 +252,7 @@ function setBoard(board) {
 
     // Add lines
 
-    $sprint('#goban hr').remove()
+    $$('#goban hr').remove()
 
     board.lines.forEach(function(line) {
         $('#goban').append(
