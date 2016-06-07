@@ -97,9 +97,9 @@ function setShowLeftSidebar(show) {
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
-    var view = $('#console .gm-scroll-view')[0]
-    view.scrollTo(0, view.getScrollSize().y)
-    view.find('form:last-child input').focus()
+    var $view = $('#console .gm-scroll-view')
+    $view.scrollTop($view.get(0).scrollHeight)
+    $view.find('form:last-child input').focus()
     $('#console').data('scrollbar').update()
 }
 
@@ -202,13 +202,13 @@ function setPropertiesHeight(height) {
 }
 
 function getPlayerName(sign) {
-    var el = $('#player_' + sign + ' .name')[0]
-    return [el.attr('text'), el.attr('title')]
+    var $el = $('#player_' + sign + ' .name')
+    return [$el.attr('text'), $el.attr('title')]
 }
 
 function setPlayerName(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
-    $('#player_' + sign + ' .name')[0].text(name).attr('title', tooltip)
+    $('#player_' + sign + ' .name').text(name).attr('title', tooltip)
 }
 
 function getShowHotspot() {
@@ -262,59 +262,59 @@ function getCommentTitle() {
 }
 
 function setCommentTitle(text) {
-    var input = $('#properties .edit .header input')[0]
+    var $input = $('#properties .edit .header input')
 
-    $('#properties .inner .header span')[0].text(text.trim() != '' ? text : getCurrentMoveInterpretation())
-    if (input.val() != text) input.val(text)
+    $('#properties .inner .header span').text(text.trim() != '' ? text : getCurrentMoveInterpretation())
+    if ($input.val() != text) $input.val(text)
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
-    var header = $('#properties .inner .header')[0]
-    var img = header.find('img:nth-child(2)')
+    var $header = $('#properties .inner .header')
+    var $img = $header.find('img:nth-child(2)')
 
     // Set move status
 
-    if (movestatus == null) header.removeClass('movestatus')
-    else header.addClass('movestatus')
+    if (movestatus == null) $header.removeClass('movestatus')
+    else $header.addClass('movestatus')
 
     if (movestatus == -1)
-        img.attr('src', '../img/ui/badmove.svg')
+        $img.attr('src', '../img/ui/badmove.svg')
             .attr('alt', 'Bad move')
     else if (movestatus == 0)
-        img.attr('src', '../img/ui/doubtfulmove.svg')
+        $img.attr('src', '../img/ui/doubtfulmove.svg')
             .attr('alt', 'Doubtful move')
     else if (movestatus == 1)
-        img.attr('src', '../img/ui/interestingmove.svg')
+        $img.attr('src', '../img/ui/interestingmove.svg')
             .attr('alt', 'Interesting move')
     else if (movestatus == 2)
-        img.attr('src', '../img/ui/goodmove.svg')
+        $img.attr('src', '../img/ui/goodmove.svg')
             .attr('alt', 'Good move')
 
-    if (movevalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
-    img.title = img.alt
+    if (movevalue == 2) $img.alt = 'Very ' + $img.alt.toLowerCase()
+    $img.title = $img.alt
 
     // Set positional status
 
-    img = header.find('img:nth-child(1)')
+    img = $header.find('img:nth-child(1)')
 
-    if (posstatus == null) header.removeClass('positionstatus')
-    else header.addClass('positionstatus')
+    if (posstatus == null) $header.removeClass('positionstatus')
+    else $header.addClass('positionstatus')
 
     if (posstatus == -1)
-        img.attr('src', '../img/ui/white.svg')
+        $img.attr('src', '../img/ui/white.svg')
             .attr('alt', 'Good for white')
     else if (posstatus == 0)
-        img.attr('src', '../img/ui/balance.svg')
+        $img.attr('src', '../img/ui/balance.svg')
             .attr('alt', 'Even position')
     else if (posstatus == 1)
-        img.attr('src', '../img/ui/black.svg')
+        $img.attr('src', '../img/ui/black.svg')
             .attr('alt', 'Good for black')
     else if (posstatus == -2)
-        img.attr('src', '../img/ui/unclear.svg')
+        $img.attr('src', '../img/ui/unclear.svg')
             .attr('alt', 'Unclear position')
 
-    if (posvalue == 2) img.alt = 'Very ' + img.alt.toLowerCase()
-    img.title = img.alt
+    if (posvalue == 2) $img.alt = 'Very ' + $img.alt.toLowerCase()
+    $img.title = $img.alt
 }
 
 function getSliderValue() {
@@ -365,7 +365,7 @@ function setEditMode(editMode) {
         closeDrawers()
         $('body').addClass('edit')
 
-        $('#properties textarea')[0].scrollTo(0, 0)
+        $('#properties textarea').eq(0).scrollTop(0)
     } else {
         $('#goban').data('edittool-data', null)
         $('body').removeClass('edit')
@@ -614,13 +614,13 @@ function prepareScrollbars() {
 
 function prepareResizers() {
     $('.verticalresizer').on('mousedown', function(e) {
-        if (e.event.button != 0) return
-        this.parent().data('initposx', [e.event.screenX, parseFloat(this.parent().width())])
+        if (e.button != 0) return
+        $(this).parent().data('initposx', [e.screenX, parseFloat($(this).parent().width())])
     })
 
     $('#sidebar .horizontalresizer').on('mousedown', function(e) {
-        if (e.event.button != 0) return
-        $('#sidebar').data('initposy', [e.event.screenY, getPropertiesHeight()])
+        if (e.button != 0) return
+        $('#sidebar').data('initposy', [e.screenY, getPropertiesHeight()])
         $('#properties').css('transition', 'none')
     })
 
@@ -656,13 +656,13 @@ function prepareResizers() {
 
         if (sidebarInitPosX) {
             var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - e.event.screenX + initX, setting.get('view.sidebar_minwidth'))
+            var newwidth = Math.max(initWidth - e.screenX + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
             var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + e.event.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+            var newwidth = Math.max(initWidth + e.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
             resizeBoard()
@@ -672,7 +672,7 @@ function prepareResizers() {
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - e.event.screenY) * 100 / $('#sidebar').innerHeight(),
+                initHeight + (initY - e.screenY) * 100 / $('#sidebar').innerHeight(),
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
@@ -767,7 +767,7 @@ function addEngineItem(name, path, args) {
             this.parents('li').eq(0).remove()
             $('#preferences .engines-list')[0].data('scrollbar').update()
         }).append(
-            $('img')
+            $('<img/>')
             .attr('src', '../node_modules/octicons/svg/x.svg')
             .attr('height', 14)
         )
@@ -862,10 +862,10 @@ function buildBoard() {
             var vertex = [x, y]
             var $img = $('<img/>').attr('src', '../img/goban/stone_0.svg')
             var $li = $('<li/>')
-            .data('vertex', vertex)
-            .addClass('pos_' + x + '-' + y)
-            .addClass('shift_' + Math.floor(Math.random() * 9))
-            .addClass('random_' + Math.floor(Math.random() * 5))
+                .data('vertex', vertex)
+                .addClass('pos_' + x + '-' + y)
+                .addClass('shift_' + Math.floor(Math.random() * 9))
+                .addClass('random_' + Math.floor(Math.random() * 5))
 
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 $li.addClass('hoshi')
@@ -889,7 +889,7 @@ function buildBoard() {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    vertexClicked(this, e.event)
+                    vertexClicked(this, e)
                 }.bind(vertex))
                 .on('touchend', function(e) {
                     if (getEditMode() && ['line', 'arrow'].indexOf(getSelectedTool()) >= 0) {
@@ -899,13 +899,13 @@ function buildBoard() {
                 })
                 .on('mousemove', function(e) {
                     if (!$('#goban').data('mousedown')) return
-                    if (e.event.buttons == 0) return
+                    if (e.button != 0) return
 
                     drawLine(this)
                 }.bind(vertex))
                 .on('touchmove', function(e) {
                     e.preventDefault()
-                    drawLine(getEndTargetVertex(e.event))
+                    drawLine(getEndTargetVertex(e))
                 })
                 .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
@@ -974,8 +974,8 @@ function resizeBoard() {
     var outerHeight = $('#main').outerHeight()
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = helper.floorEven($('#main').width())
-    var height = helper.floorEven($('#main').height())
+    var width = helper.floorEven(outerWidth - $('#goban').outerWidth() + $('#goban').width())
+    var height = helper.floorEven(outerHeight - $('#goban').outerHeight() + $('#goban').height())
 
     if (getShowCoordinates()) {
         boardWidth += 2
@@ -993,10 +993,10 @@ function resizeBoard() {
     $('#goban > div').css('width', minX).css('height', minY)
         .css('margin-left', -minX / 2).css('margin-top', -minY / 2)
 
-    $('#goban .row, #goban .coordx').css('height', fieldsize).css('line-height', fieldsize)
+    $('#goban .row, #goban .coordx').css('height', fieldsize).css('line-height', fieldsize + 'px')
     $('#goban .row, #goban .coordx').css('margin-left', getShowCoordinates() ? fieldsize : 0)
 
-    $('#goban .coordy').css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize)
+    $('#goban .coordy').css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
     $('#goban .coordy:last-child').css('left', fieldsize * (board.width + 1))
 
     $('#goban li').css('width', fieldsize).css('height', fieldsize)
@@ -1023,8 +1023,8 @@ function showIndicator(vertex) {
 
 function hideIndicator() {
     $('#indicator')
-    .css('top', ' ')
-    .css('left', ' ')
+    .css('top', '')
+    .css('left', '')
     .data('vertex', null)
 }
 
@@ -1420,14 +1420,14 @@ function showScore() {
     var rootNode = getRootTree().nodes[0]
 
     for (var sign = -1; sign <= 1; sign += 2) {
-        var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.children('td')
+        var $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
+        var $tds = $tr.children('td')
 
-        tds[0].text(score['area_' + sign])
-        tds[1].text(score['territory_' + sign])
-        tds[2].text(score['captures_' + sign])
-        if (sign < 0) tds[3].text(getKomi())
-        tds[4].text(0)
+        $tds.eq(0).text(score['area_' + sign])
+        $tds.eq(1).text(score['territory_' + sign])
+        $tds.eq(2).text(score['captures_' + sign])
+        if (sign < 0) $tds.eq(3).text(getKomi())
+        $tds.eq(4).text(0)
 
         setScoringMethod(setting.get('scoring.method'))
     }
@@ -1509,8 +1509,8 @@ function showGameChooser(restoreScrollbarPos) {
                 setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
         }).on('mouseup', function(e) {
-            if (e.event.button != 2) return
-            openGameMenu(this, e.event)
+            if (e.button != 2) return
+            openGameMenu(this, e)
         }).on('dragstart', function(e) {
             $('#gamechooser').data('dragging', $(this).parents('li').eq(0))
         })
@@ -1520,7 +1520,7 @@ function showGameChooser(restoreScrollbarPos) {
         e.preventDefault()
         if (!$('#gamechooser').data('dragging')) return
 
-        var x = e.event.clientX
+        var x = e.clientX
         var middle = $(this).position().left + $(this).innerWidth() / 2
 
         if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
@@ -1556,7 +1556,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     $('#gamechooser').addClass('show')
     $(window).trigger('resize')
-    $('#gamechooser .gm-scroll-view').get(0).scrollTo(0, scrollbarPos)
+    $('#gamechooser .gm-scroll-view').scrollTop(scrollbarPos)
 }
 
 function closeGameChooser() {

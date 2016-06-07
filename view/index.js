@@ -170,13 +170,13 @@ function getGraphNode(tree, index) {
 }
 
 function getSelectedTool() {
-    var li = $('#edit .selected')[0]
-    var tool = li.attr('class').replace('selected', '').replace('-tool', '').trim()
+    var $li = $('#edit .selected')
+    var tool = $li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+        return $li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
     } else if (tool == 'line') {
-        return li.find('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
+        return $li.find('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -327,15 +327,15 @@ function setUndoable(undoable, tooltip) {
         if (!tooltip) tooltip = 'Undo'
 
         $('#bar header .undo').attr('title', tooltip)
-        document.body
-            .addClass('undoable')
-            .data('undodata-root', rootTree)
-            .data('undodata-pos', position)
+        $('body')
+        .addClass('undoable')
+        .data('undodata-root', rootTree)
+        .data('undodata-pos', position)
     } else {
-        document.body
-            .removeClass('undoable')
-            .data('undodata-root', null)
-            .data('undodata-pos', null)
+        $('body')
+        .removeClass('undoable')
+        .data('undodata-root', null)
+        .data('undodata-pos', null)
     }
 }
 
@@ -392,17 +392,17 @@ function loadSettings() {
 
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
-        if (!this.parent().hasClass('selected')) {
+        var $img = $(this).find('img')
+
+        if (!$(this).parent().hasClass('selected')) {
             $('#edit .selected').removeClass('selected')
-            this.parent().addClass('selected')
-        } else if (this.parent().hasClass('stone-tool')) {
-            var img = this.find('img')
-            var black = img.attr('src') == '../img/edit/stone_1.svg'
-            img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
-        } else if (this.parent().hasClass('line-tool')) {
-            var img = this.find('img')
-            var line = img.attr('src') == '../img/edit/line.svg'
-            img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
+            $(this).parent().addClass('selected')
+        } else if ($(this).parent().hasClass('stone-tool')) {
+            var black = $img.attr('src').indexOf('_1') >= 0
+            $img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
+        } else if ($(this).parent().hasClass('line-tool')) {
+            var line = $img.attr('src').indexOf('line') >= 0
+            $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
 }
@@ -440,7 +440,7 @@ function prepareGameGraph() {
 }
 
 function prepareSlider() {
-    var $slider = $('#sidebar .slider .inner').eq(0)
+    var $slider = $('#sidebar .slider .inner')
 
     var changeSlider = function(percentage) {
         percentage = Math.min(1, Math.max(0, percentage))
@@ -455,23 +455,23 @@ function prepareSlider() {
     }
 
     var mouseMoveHandler = function(e) {
-        if (e.event.buttons != 1 || !$slider.data('mousedown'))
+        if (e.button != 0 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.event.clientY - $slider.position().top) / $slider.innerHeight()
+        var percentage = (e.originalEvent.clientY - $slider.position().top) / $slider.innerHeight()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
 
     $slider.on('mousedown', function(e) {
-        if (e.event.buttons != 1) return
+        if (e.button != 0) return
 
         $(this).data('mousedown', true).addClass('active')
         mouseMoveHandler(e)
     }).on('touchstart', function() {
         $(this).addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.client.y - $slider.position().top) / $slider.innerHeight()
+        var percentage = (e.originalEvent.client.y - $slider.position().top) / $slider.innerHeight()
         changeSlider(percentage)
     }).on('touchend', function() {
         $(this).removeClass('active')
@@ -501,8 +501,8 @@ function prepareDragDropFiles() {
     }).on('drop', function(e) {
         e.preventDefault()
 
-        if (e.event.dataTransfer.files.length == 0) return
-        loadFile(e.event.dataTransfer.files[0].path)
+        if (e.originalEvent.dataTransfer.files.length == 0) return
+        loadFile(e.originalEvent.dataTransfer.files[0].path)
     })
 }
 
@@ -510,7 +510,7 @@ function prepareConsole() {
     $('#console form').on('submit', function(e) {
         e.preventDefault()
 
-        var input = this.find('input')
+        var input = $(this).find('input')
         if (input.value.trim() == '') return
         input.blur()
 
@@ -602,7 +602,7 @@ function prepareGameInfo() {
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            this.parent().find('input[name^="name_"]').val(engine ? engine.name : '')
+            $(this).parent().find('input[name^="name_"]').val(engine ? engine.name : '')
             $(this).data('engineindex', i)
 
             if (engine) {
@@ -715,10 +715,10 @@ function prepareGameInfo() {
     $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        $(this).data('link', this.value == this.parent().getNext('input[name="size-height"]').value)
+        $(this).data('link', this.value == $(this).parent().next('input[name="size-height"]').value)
     }).on('input', function() {
         if (!$(this).data('link')) return
-        this.parent().getNext('input[name="size-height"]').value = this.value
+        $(this).parent().next('input[name="size-height"]').value = this.value
     })
 
     $('#info span.size-swap').on('click', function() {
@@ -1443,7 +1443,7 @@ function updateCommentText() {
         return [null, null]
     })()))
 
-    $('#properties .gm-scroll-view')[0].scrollTo(0, 0)
+    $('#properties .gm-scroll-view').eq(0).scrollTop(0)
     $('#properties').data('scrollbar').update()
 }
 
@@ -1640,10 +1640,10 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     if (getShowLeftSidebar()) $form.find('input').focus()
 
     // Cleanup
-    var forms = $('#console .inner form')
-    if (forms.length > setting.get('console.max_history_count')) {
-        forms[0].getNext('pre').remove()
-        forms[0].remove()
+    var $forms = $('#console .inner form')
+    if ($forms.length > setting.get('console.max_history_count')) {
+        $forms.eq(0).next('pre').remove()
+        $forms.eq(0).remove()
     }
 
     var listener = function(response, c) {
@@ -1653,10 +1653,10 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
         if (callback) callback(response)
 
         // Update scrollbars
-        var view = $('#console .gm-scroll-view')[0]
+        var $view = $('#console .gm-scroll-view')
         var scrollbar = $('#console').data('scrollbar')
 
-        view.scrollTo(0, view.getScrollSize().y)
+        $view.scrollTop($view.get(0).scrollHeight)
         if (scrollbar) scrollbar.update()
     }
 
@@ -1743,20 +1743,20 @@ function askForSave() {
 }
 
 function startAutoScroll(direction, delay) {
-    if (direction > 0 && !$('#sidebar .slider a.next')[0].data('mousedown')
-    || direction < 0 && !$('#sidebar .slider a.prev')[0].data('mousedown')) return
+    if (direction > 0 && !$('#sidebar .slider a.next').data('mousedown')
+    || direction < 0 && !$('#sidebar .slider a.prev').data('mousedown')) return
 
     if (delay == null) delay = setting.get('autoscroll.max_interval')
     delay = Math.max(setting.get('autoscroll.min_interval'), delay)
 
-    var slider = $('#sidebar .slider')[0]
-    clearTimeout(slider.data('autoscrollid'))
+    var $slider = $('#sidebar .slider')
+    clearTimeout($slider.data('autoscrollid'))
 
     if (direction > 0) goForward()
     else goBack()
     updateSlider()
 
-    slider.data('autoscrollid', setTimeout(function() {
+    $slider.data('autoscrollid', setTimeout(function() {
         startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
     }, delay))
 }
@@ -2096,18 +2096,15 @@ $(document).on('keydown', function(e) {
     newFile()
 
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(e) {
-        if (e.wheel < 0) goForward()
-        else if (e.wheel > 0) goBack()
+        if (e.originalEvent.wheelDelta < 0) goForward()
+        else if (e.originalEvent.wheelDelta > 0) goBack()
     })
 })
 
 $(window).on('resize', function() {
     resizeBoard()
 }).on('beforeunload', function(e) {
-    if (!askForSave()) {
-        e.event.returnValue = 'false'
-        return
-    }
+    if (!askForSave()) return 'false'
 
     detachEngine()
 
@@ -2115,6 +2112,6 @@ $(window).on('resize', function() {
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
     setting
-    .attr('window.width', $('body').width())
-    .attr('window.height', $('body').height())
+    .set('window.width', $('body').width())
+    .set('window.height', $('body').height())
 })
