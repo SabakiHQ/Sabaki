@@ -802,8 +802,9 @@ function attachEngine(exec, args, genMove) {
 function detachEngine() {
     sendGTPCommand(new gtp.Command(null, 'quit'), true)
 
-    $('#console').data('controller', null)
-        .data('boardhash', null)
+    $('#console')
+    .data('controller', null)
+    .data('boardhash', null)
 
     setIsBusy(false)
 }
@@ -903,13 +904,13 @@ function makeMove(vertex, sendCommand) {
         }
 
         // Randomize shift and readjust
-        var li = $('#goban .pos_' + vertex.join('-'))
+        var $li = $('#goban .pos_' + vertex.join('-'))
         var direction = Math.floor(Math.random() * 9)
 
-        li.addClass('animate')
-        for (var i = 0; i < 9; i++) li.removeClass('shift_' + i)
-        li.addClass('shift_' + direction)
-        setTimeout(function() { li.removeClass('animate') }, 200)
+        $li.addClass('animate')
+        for (var i = 0; i < 9; i++) $li.removeClass('shift_' + i)
+        $li.addClass('shift_' + direction)
+        setTimeout(function() { $li.removeClass('animate') }, 200)
 
         readjustShifts(vertex)
     }
@@ -1305,7 +1306,7 @@ function vertexClicked(vertex, event) {
         if (event.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
-        var dead = !$('#goban .pos_' + vertex.join('-'))[0].hasClass('dead')
+        var dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
         var stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
 
         stones.forEach(function(v) {
@@ -1351,7 +1352,7 @@ function vertexClicked(vertex, event) {
             makeMove(vertex)
         } else {
             if (board.arrangement[vertex] != 0) return
-            if ($('#goban .pos_' + vertex.join('-'))[0].hasClass('paint_1')) return
+            if ($('#goban .pos_' + vertex.join('-')).hasClass('paint_1')) return
 
             var i = 0
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
