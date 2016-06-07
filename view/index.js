@@ -1633,32 +1633,32 @@ function commitPreferences() {
 
 function sendGTPCommand(command, ignoreBlocked, callback) {
     if (!getEngineController()) {
-        $('#console form:last-child input')[0].value = ''
+        $('#console form:last-child input').val('')
         return
     }
 
     var controller = getEngineController()
-    var container = $('#console .inner')[0]
-    var oldform = container.find('form:last-child')
-    var $form = oldform.clone(true, true)
+    var $container = $('#console .inner')
+    var $oldform = $container.find('form:last-child')
+    var $form = $oldform.clone(true, true)
     var $pre = $('<pre/>').text(' ')
 
     $form.find('input').val('')
-    oldform.addClass('waiting').find('input').value = command.toString()
-    container.append($pre).append($form)
+    $oldform.addClass('waiting').find('input').val(command.toString())
+    $container.append($pre).append($form)
     if (getShowLeftSidebar()) $form.find('input').focus()
 
     // Cleanup
     var $forms = $('#console .inner form')
     if ($forms.length > setting.get('console.max_history_count')) {
-        $forms.eq(0).nextAll('pre').remove()
+        $forms.eq(0).siblings('pre').remove()
         $forms.eq(0).remove()
     }
 
     var listener = function(response, c) {
         $pre.html(response.toHtml())
         wireLinks($pre)
-        oldform.removeClass('waiting')
+        $oldform.removeClass('waiting')
         if (callback) callback(response)
 
         // Update scrollbars
