@@ -208,6 +208,7 @@ function setBoard(board) {
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
             var $li = $('#goban .pos_' + x + '-' + y)
+            var $span = $li.find('.stone span')
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
@@ -215,8 +216,11 @@ function setBoard(board) {
 
             // Clean up
 
-            types.forEach(function(x) { $li.toggleClass(x, false) })
-            $li.find('.stone span').attr('title', '')
+            types.forEach(function(x) {
+                if ($li.hasClass(x)) $li.removeClass(x)
+            })
+
+            $span.attr('title', '')
 
             // Add markups
 
@@ -225,7 +229,7 @@ function setBoard(board) {
                 var type = markup[0], label = markup[1]
 
                 if (type != '') $li.addClass(type)
-                if (label != '') $li.find('.stone span').attr('title', label)
+                if (label != '') $span.attr('title', label)
                 $li.toggleClass('smalllabel', label.length >= 3)
             }
 
@@ -234,7 +238,7 @@ function setBoard(board) {
             if ($li.hasClass('sign_' + sign)) continue
 
             for (var i = -1; i <= 1; i++) {
-                $li.toggleClass('sign_' + i, false)
+                if ($li.hasClass('sign_' + i)) $li.removeClass('sign_' + i)
             }
 
             $li.addClass('sign_' + sign)
