@@ -978,8 +978,12 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    var outerWidth = parseFloat($('main').css('width'))
-    var outerHeight = parseFloat($('main').css('height'))
+    $('main').css('width', '').css('height', '')
+    var outerWidth = Math.round($('main').width())
+    var outerHeight = Math.round($('main').height())
+    if ((outerWidth - outerHeight) % 2 != 0)
+        $('main').css('width', outerWidth + 1)
+
     var boardWidth = board.width
     var boardHeight = board.height
     var width = helper.floorEven(outerWidth - $('#goban').outerWidth() + $('#goban').width())

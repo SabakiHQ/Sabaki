@@ -2112,6 +2112,6 @@ $(window).on('resize', function() {
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
     setting
-    .set('window.width', $('body').width())
-    .set('window.height', $('body').height())
+    .set('window.width', Math.round($('body').width()))
+    .set('window.height', Math.round($('body').height()))
 })
