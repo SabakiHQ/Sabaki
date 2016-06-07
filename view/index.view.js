@@ -863,10 +863,10 @@ function buildBoard() {
             var vertex = [x, y]
             var $img = $('<img/>').attr('src', '../img/goban/stone_0.svg')
             var $li = $('<li/>')
-                .data('vertex', vertex)
-                .addClass('pos_' + x + '-' + y)
-                .addClass('shift_' + Math.floor(Math.random() * 9))
-                .addClass('random_' + Math.floor(Math.random() * 5))
+            .data('vertex', vertex)
+            .addClass('pos_' + x + '-' + y)
+            .addClass('shift_' + Math.floor(Math.random() * 9))
+            .addClass('random_' + Math.floor(Math.random() * 5))
 
             if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
                 $li.addClass('hoshi')
@@ -1018,8 +1018,8 @@ function showIndicator(vertex) {
 
     if ($li.length == 0) return
 
-    $('#indicator').css('top', $li.position().top)
-    .css('left', $li.position().left)
+    $('#indicator').css('top', $li.offset().top)
+    .css('left', $li.offset().left)
     .css('height', $li.innerHeight())
     .css('width', $li.innerWidth())
     .data('vertex', vertex)
