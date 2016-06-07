@@ -1108,8 +1108,8 @@ function openHeaderMenu() {
     menu = Menu.buildFromTemplate(template)
     menu.popup(
         remote.getCurrentWindow(),
-        Math.round($('#headermenu').position().left),
-        Math.round($('#header')[0].getCoordinates().top)
+        Math.round($('#headermenu').offset().left),
+        Math.round($('header').offset().top)
     )
 }
 
@@ -1210,10 +1210,14 @@ function openCommentMenu() {
         }
     })
 
-    var coord = $('#properties .edit .header img')[0].getCoordinates()
-
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+    var $el = $('#properties .edit .header img')
+    
+    menu.popup(
+        remote.getCurrentWindow(),
+        Math.round($el.offset().left),
+        Math.round($el.offset().top + $el.height())
+    )
 }
 
 function openEnginesMenu(element, callback) {
