@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.15.0",
+  "version": "0.15.1",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen",
   "main": "main.js",
@@ -22,8 +22,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.15.0 --build-version=0.15.0 --version=1.2.1 --out=./bin --overwrite --icon=./data/icon.ico --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.CompanyName=\"Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\" --ignore=^test$ --asar",
-    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.15.0 --build-version=0.15.0 --version=1.2.1 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --ignore=^test$ --asar",
-    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.15.0 --build-version=0.15.0 --version=1.2.1 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --icon=./data/icon.icns --app-category-type=public.app-category.games --extend-info=./data/extra-info.plist --ignore=^test$ --asar"
+    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.15.1 --build-version=0.15.1 --version=1.2.1 --out=./bin --overwrite --icon=./data/icon.ico --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --version-string.CompanyName=\"Yichuan Shen\" --version-string.FileDescription=\"Sabaki\" --version-string.OriginalFilename=\"sabaki.exe\" --version-string.ProductName=\"Sabaki\" --version-string.InternalName=\"sabaki.exe\" --ignore=^test$ --asar",
+    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.15.1 --build-version=0.15.1 --version=1.2.1 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --ignore=^test$ --asar",
+    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.15.1 --build-version=0.15.1 --version=1.2.1 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015/2016 Yichuan Shen\" --icon=./data/icon.icns --app-category-type=public.app-category.games --extend-info=./data/extra-info.plist --ignore=^test$ --asar"
   }
 }
