@@ -599,16 +599,16 @@ function prepareScrollbars() {
     $(window).on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
-        var width = $('#gamechooser .games-list')[0].getWidth() - 20
-        var svgs = $('#gamechooser svg')
+        var width = $('#gamechooser .games-list').width() - 20
+        var $svgs = $('#gamechooser svg')
 
-        if (svgs.length == 0) return
+        if ($svgs.length == 0) return
 
-        var liwidth = svgs[0].getWidth() + 12 + 20
+        var liwidth = $svgs.eq(0).width() + 12 + 20
         var count = Math.floor(width / liwidth)
 
         $('#gamechooser li').css('width', Math.floor(width / count) - 20)
-        $('#gamechooser .games-list')[0].data('scrollbar').update()
+        $('#gamechooser .games-list').data('scrollbar').update()
     })
 }
 
@@ -943,13 +943,16 @@ function buildBoard() {
 }
 
 function updateBoardLines() {
+    var tx = parseFloat($('#goban').css('border-left-width'))
+    var ty = parseFloat($('#goban').css('border-top-width'))
+
     $('#goban hr').get().forEach(function(line) {
         var v1 = $(line).data('v1'), v2 = $(line).data('v2')
         var mirrored = v2[0] < v1[0]
         var $li1 = $('#goban').find('.pos_' + v1[0] + '-' + v1[1])
         var $li2 = $('#goban').find('.pos_' + v2[0] + '-' + v2[1])
-        var pos1 = $li1.position($('#goban'))
-        var pos2 = $li2.position($('#goban'))
+        var pos1 = $li1.position()
+        var pos2 = $li2.position()
         var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
@@ -957,8 +960,8 @@ function updateBoardLines() {
         var length = Math.sqrt(dx * dx + dy * dy)
 
         $(line).css({
-            top: (pos1.top + $li1.innerHeight() / 2 + pos2.top + $li2.innerHeight() / 2) / 2 - 2,
-            left: (pos1.left + $li1.innerWidth() / 2 + pos2.left + $li2.innerWidth() / 2) / 2 - 2,
+            top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty,
+            left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + tx,
             marginLeft: -length / 2,
             width: length,
             transform: 'rotate(' + angle + 'deg)'
@@ -970,8 +973,8 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    var outerWidth = $('main').width()
-    var outerHeight = $('main').height()
+    var outerWidth = helper.floorEven($('main').width())
+    var outerHeight = helper.floorEven($('main').height())
     var boardWidth = board.width
     var boardHeight = board.height
     var width = helper.floorEven(outerWidth - $('#goban').outerWidth() + $('#goban').width())
@@ -1469,7 +1472,7 @@ function showGameChooser(restoreScrollbarPos) {
     closeDrawers()
 
     $('#gamechooser > input').eq(0).val('').focus()
-    $('#gamechooser ol')[0].empty()
+    $('#gamechooser ol').eq(0).empty()
 
     var trees = getGameTrees()
     var currentTree = getRootTree()
@@ -1493,7 +1496,7 @@ function showGameChooser(restoreScrollbarPos) {
             .append($('<span class="white"/>').text('White'))
         ))
 
-        var $gamename = $li.find('span')
+        var $gamename = $li.find('span').eq(0)
         var $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
         var $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
 
