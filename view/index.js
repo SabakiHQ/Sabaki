@@ -1450,7 +1450,7 @@ function updateCommentText() {
         return [null, null]
     })()))
 
-    $('#properties .gm-scroll-view').eq(0).scrollTop(0)
+    $('#properties .gm-scroll-view').scrollTop(0)
     $('#properties').data('scrollbar').update()
 }
 
@@ -1467,8 +1467,9 @@ function updateAreaMap(useEstimateMap) {
     var map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
 
     $('#goban .row li').get().forEach(function(li) {
-        $(li).removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[$(li).data('vertex')])
+        $(li)
+        .removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+        .addClass('area_' + map[$(li).data('vertex')])
     })
 
     if (!useEstimateMap) {
@@ -1480,8 +1481,9 @@ function updateAreaMap(useEstimateMap) {
         }
     }
 
-    $('#goban').data('areamap', map)
-        .data('finalboard', board)
+    $('#goban')
+    .data('areamap', map)
+    .data('finalboard', board)
 }
 
 function commitCommentText() {
@@ -1502,7 +1504,7 @@ function commitCommentText() {
 
 function commitGameInfo() {
     var rootNode = getRootTree().nodes[0]
-    var info = $('#info')
+    var $info = $('#info')
 
     var data = {
         'rank_1': 'BR',
@@ -1516,7 +1518,7 @@ function commitGameInfo() {
     }
 
     for (var name in data) {
-        var value = info.find('input[name="' + name + '"]').val().trim()
+        var value = $info.find('input[name="' + name + '"]').val().trim()
         rootNode[data[name]] = [value]
         if (value == '') delete rootNode[data[name]]
     }
@@ -1532,14 +1534,14 @@ function commitGameInfo() {
 
     // Handle komi
 
-    var komi = +info.find('input[name="komi"]').val()
+    var komi = +$info.find('input[name="komi"]').val()
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
     // Handle size
 
     var size = ['width', 'height'].map(function(x) {
-        var num = parseFloat(info.find('input[name="size-' + x + '"]').val())
+        var num = parseFloat($info.find('input[name="size-' + x + '"]').val())
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 3), 25)
     })
@@ -1549,10 +1551,10 @@ function commitGameInfo() {
 
     // Handle handicap stones
 
-    var handicapInput = info.find('select[name="handicap"]')
-    var handicap = handicapInput.selectedIndex
+    var $handicapInput = $info.find('select[name="handicap"]')
+    var handicap = $handicapInput.get(0).selectedIndex
 
-    if (!handicapInput.disabled) {
+    if (!$handicapInput.get(0).disabled) {
         setCurrentTreePosition(getRootTree(), 0)
 
         if (handicap == 0) {
@@ -1574,7 +1576,7 @@ function commitGameInfo() {
 
     // Start engine
 
-    if (!$('#info').hasClass('disabled')) {
+    if (!$info.hasClass('disabled')) {
         var engines = setting.getEngines()
         var indices = $('#info section .menu').map(function(x) { return x.data('engineindex') })
         var max = Math.max.apply(null, indices)
