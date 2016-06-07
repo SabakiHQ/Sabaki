@@ -873,8 +873,8 @@ function buildBoard() {
 
             var getEndTargetVertex = function(e) {
                 var endTarget = document.elementFromPoint(
-                    e.touches[0].pageX,
-                    e.touches[0].pageY
+                    e.originalEvent.touches[0].pageX,
+                    e.originalEvent.touches[0].pageY
                 )
 
                 if (!endTarget) return null
@@ -885,7 +885,10 @@ function buildBoard() {
                 return v
             }
 
-            $ol.append($li.append($('<div class="stone"/>').append($img).append($('<span/>')))
+            $ol.append(
+                $li.append(
+                    $('<div class="stone"/>').append($img).append($('<span/>'))
+                )
                 .on('mouseup', function(e) {
                     if (!$('#goban').data('mousedown')) return
 
@@ -893,10 +896,11 @@ function buildBoard() {
                     vertexClicked(this, e)
                 }.bind(vertex))
                 .on('touchend', function(e) {
-                    if (getEditMode() && ['line', 'arrow'].indexOf(getSelectedTool()) >= 0) {
-                        e.preventDefault()
-                        vertexClicked(null, { button: 0 })
-                    }
+                    if (!getEditMode() || ['line', 'arrow'].indexOf(getSelectedTool()) < 0)
+                        return
+
+                    e.preventDefault()
+                    vertexClicked(null, { button: 0 })
                 })
                 .on('mousemove', function(e) {
                     if (!$('#goban').data('mousedown')) return
