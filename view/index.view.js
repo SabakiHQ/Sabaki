@@ -1212,18 +1212,18 @@ function openCommentMenu() {
 
     menu = Menu.buildFromTemplate(template)
     var $el = $('#properties .edit .header img')
-    
+
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($el.offset().left),
-        Math.round($el.offset().top + $el.height())
+        Math.round($el.offset().top + $el.innerHeight())
     )
 }
 
-function openEnginesMenu(element, callback) {
+function openEnginesMenu($element, callback) {
     if (!callback) callback = function() {}
 
-    var currentIndex = element.data('engineindex')
+    var currentIndex = $element.data('engineindex')
     if (currentIndex == null) currentIndex = -1
 
     var template = [{
@@ -1256,10 +1256,12 @@ function openEnginesMenu(element, callback) {
         }
     })
 
-    var coord = element.getCoordinates()
-
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), Math.round(coord.left), Math.round(coord.bottom))
+    menu.popup(
+        remote.getCurrentWindow(),
+        Math.round($element.offset().left),
+        Math.round($element.offset().top + $element.innerHeight())
+    )
 }
 
 function openNodeMenu(tree, index, event) {
@@ -1280,7 +1282,7 @@ function openNodeMenu(tree, index, event) {
     menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
 }
 
-function openGameMenu(element, event) {
+function openGameMenu($element, event) {
     var template = [
         {
             label: '&Remove Game',
@@ -1293,9 +1295,11 @@ function openGameMenu(element, event) {
                     ['Remove Game', 'Cancel'], 1
                 ) == 1) return
 
-                var index = element.parents('ol').eq(0).find('li div').indexOf(element)
-                trees.splice(index, 1)
+                var index = $element.parents('ol').eq(0)
+                .find('li div').get()
+                .indexOf($element.get(0))
 
+                trees.splice(index, 1)
                 setGameTrees(trees)
 
                 if (trees.length == 0) {
@@ -1317,7 +1321,7 @@ function openGameMenu(element, event) {
                     ['Remove Games', 'Cancel'], 1
                 ) == 1) return
 
-                setGameTrees([element.parents('li').eq(0).data('gametree')])
+                setGameTrees([$element.parents('li').eq(0).data('gametree')])
                 setGameIndex(0)
                 showGameChooser(true)
             }
@@ -1366,9 +1370,12 @@ function openAddGameMenu() {
     ]
 
     var menu = Menu.buildFromTemplate(template)
-    var button = $('#gamechooser').find('button[name="add"]')
-    var position = button.getPosition()
-    menu.popup(remote.getCurrentWindow(), Math.round(position.x), Math.round(position.y + button.innerHeight()))
+    var $button = $('#gamechooser').find('button[name="add"]')
+    menu.popup(
+        remote.getCurrentWindow(),
+        Math.round($button.offset().left),
+        Math.round($button.offset().top + $button.innerHeight())
+    )
 }
 
 /**
@@ -1380,7 +1387,7 @@ function showGameInfo() {
 
     var tree = getRootTree()
     var rootNode = tree.nodes[0]
-    var info = $('#info')
+    var $info = $('#info')
     var data = {
         'rank_1': 'BR',
         'rank_-1': 'WR',
@@ -1390,21 +1397,21 @@ function showGameInfo() {
         'result': 'RE'
     }
 
-    info.addClass('show').find('input[name="name_1"]').focus()
+    $info.addClass('show').find('input[name="name_1"]').focus()
 
     for (var key in data) {
         var value = data[key]
-        info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
+        $info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
-    info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
-    info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
-    info.find('input[name="size-width"]').val(getBoard().width)
-    info.find('input[name="size-height"]').val(getBoard().height)
-    info.find('section .menu').removeClass('active').data('engineindex', -1)
+    $info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
+    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
+    $info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
+    $info.find('input[name="size-width"]').val(getBoard().width)
+    $info.find('input[name="size-height"]').val(getBoard().height)
+    $info.find('section .menu').removeClass('active').data('engineindex', -1)
 
-    var handicap = info.find('select[name="handicap"]')
+    var handicap = $info.find('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
     else handicap.selectedIndex = 0
 
@@ -1413,8 +1420,8 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    info.find('input[name^="size-"]').attr('disabled', disabled)
-    info.toggleClass('disabled', disabled)
+    $info.find('input[name^="size-"]').attr('disabled', disabled)
+    $info.toggleClass('disabled', disabled)
 }
 
 function closeGameInfo() {
@@ -1472,7 +1479,7 @@ function showGameChooser(restoreScrollbarPos) {
     if (restoreScrollbarPos == null)
         restoreScrollbarPos = true
 
-    var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view')[0].scrollTop : 0
+    var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view').scrollTop() : 0
 
     closeDrawers()
 
@@ -1518,7 +1525,7 @@ function showGameChooser(restoreScrollbarPos) {
             }, 500)
         }).on('mouseup', function(e) {
             if (e.button != 2) return
-            openGameMenu(this, e)
+            openGameMenu($(this), e)
         }).on('dragstart', function(e) {
             $('#gamechooser').data('dragging', $(this).parents('li').eq(0))
         })
@@ -1552,7 +1559,7 @@ function showGameChooser(restoreScrollbarPos) {
         if (!dragged || !afterli && !beforeli) return
 
         if (afterli) $(afterli).before(dragged)
-        if (beforeli) $(beforeli).append(dragged)
+        if (beforeli) $(beforeli).after(dragged)
 
         setGameTrees($('#gamechooser ol > li').get().map(function(x) {
             return $(x).data('gametree')
