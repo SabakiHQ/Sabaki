@@ -687,11 +687,11 @@ function prepareGameChooser() {
     $('#gamechooser > input').on('input', function() {
         var value = this.value
 
-        $('#gamechooser .games-list li:not(.add)').forEach(function(li) {
-            if (li.children('span').some(function(span) {
+        $('#gamechooser .games-list li:not(.add)').get().forEach(function(li) {
+            if ($(li).children('span').some(function(span) {
                 return span.attr('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
-            })) li.removeClass('hide')
-            else li.addClass('hide')
+            })) $(li).removeClass('hide')
+            else $(li).addClass('hide')
         })
 
         var gamesList = $('#gamechooser .games-list')[0]
@@ -1442,7 +1442,7 @@ function closeScore() {
 function showPreferences() {
     // Load preferences
 
-    $('#preferences input[type="checkbox"]').forEach(function(el) {
+    $('#preferences input[type="checkbox"]').get().forEach(function(el) {
         el.checked = !!setting.get(el.name)
     })
 

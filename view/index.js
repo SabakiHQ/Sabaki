@@ -1203,8 +1203,8 @@ function useTool(vertex, event) {
 
         // Update SGF
 
-        $('#goban .row li').forEach(function(li) {
-            var v = li.data('vertex')
+        $('#goban .row li').get().forEach(function(li) {
+            var v = $(li).data('vertex')
             if (!(v in board.markups)) return
 
             var id = dictionary[board.markups[v][0]]
@@ -1450,25 +1450,25 @@ function updateCommentText() {
 function updateAreaMap(useEstimateMap) {
     var board = getBoard().clone()
 
-    $('#goban .row li.dead').forEach(function(li) {
-        if (li.hasClass('sign_1')) board.captures['-1']++
-        else if (li.hasClass('sign_-1')) board.captures['1']++
+    $('#goban .row li.dead').get().forEach(function(li) {
+        if ($(li).hasClass('sign_1')) board.captures['-1']++
+        else if ($(li).hasClass('sign_-1')) board.captures['1']++
 
-        board.arrangement[li.data('vertex')] = 0
+        board.arrangement[$(li).data('vertex')] = 0
     })
 
     var map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
 
-    $('#goban .row li').forEach(function(li) {
-        li.removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-            .addClass('area_' + map[li.data('vertex')])
+    $('#goban .row li').get().forEach(function(li) {
+        $(li).removeClass('area_-1').removeClass('area_0').removeClass('area_1')
+            .addClass('area_' + map[$(li).data('vertex')])
     })
 
     if (!useEstimateMap) {
-        var falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
+        var $falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
-        if (falsedead.length > 0) {
-            falsedead.removeClass('dead')
+        if ($falsedead.length > 0) {
+            $falsedead.removeClass('dead')
             return updateAreaMap()
         }
     }
@@ -1594,7 +1594,7 @@ function commitScore() {
 function commitPreferences() {
     // Save general preferences
 
-    $('#preferences input[type="checkbox"]').forEach(function(el) {
+    $('#preferences input[type="checkbox"]').get().forEach(function(el) {
         setting.set(el.name, el.checked)
     })
 
@@ -1606,13 +1606,13 @@ function commitPreferences() {
 
     setting.clearEngines()
 
-    $('#preferences .engines-list li').forEach(function(li) {
-        var nameinput = li.find('h3 input')
+    $('#preferences .engines-list li').get().forEach(function(li) {
+        var nameinput = $(li).find('h3 input')
 
         setting.addEngine(
             nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
-            li.find('h3 + p input').value,
-            li.find('h3 + p + p input').value
+            $(li).find('h3 + p input').value,
+            $(li).find('h3 + p + p input').value
         )
     })
 
