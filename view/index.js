@@ -1254,7 +1254,7 @@ function findPosition(step, condition) {
         var iterator = gametree.makeNodeIterator.apply(null, pos)
 
         while (true) {
-            pos = step >= 0 ? iterator.nextAll() : iterator.prev()
+            pos = step >= 0 ? iterator.next() : iterator.prev()
 
             if (!pos) {
                 var root = getRootTree()
