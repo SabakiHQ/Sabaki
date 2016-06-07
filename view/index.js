@@ -245,10 +245,10 @@ function setBoard(board) {
 
     board.ghosts.forEach(function(x) {
         var v = x[0], s = x[1], type = x[2]
-        var li = $('#goban .pos_' + v.join('-'))
+        var $li = $('#goban .pos_' + v.join('-'))
 
-        if (type == 'child') li.addClass('ghost_' + s)
-        else if (type == 'sibling') li.addClass('siblingghost_' + s)
+        if (type == 'child') $li.addClass('ghost_' + s)
+        else if (type == 'sibling') $li.addClass('siblingghost_' + s)
     })
 
     // Add lines
@@ -268,7 +268,7 @@ function setBoard(board) {
 }
 
 function getScoringMethod() {
-    return $('#score .tabs .territory')[0].hasClass('current') ? 'territory' : 'area'
+    return $('#score .tabs .territory').hasClass('current') ? 'territory' : 'area'
 }
 
 function setScoringMethod(method) {
@@ -282,14 +282,14 @@ function setScoringMethod(method) {
     // Update UI
 
     for (var sign = -1; sign <= 1; sign += 2) {
-        var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.find('td')
+        var $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
+        var $tds = $tr.find('td')
 
-        tds[4].text(0)
+        $tds.eq(4).text(0)
 
         for (var i = 0; i <= 3; i++) {
-            if (tds[i].hasClass('disabled') || isNaN(+tds[i].text())) continue
-            tds[4].text(+tds[4].text() + +tds[i].text())
+            if ($tds.eq(i).hasClass('disabled') || isNaN(+$tds.eq(i).text())) continue
+            $tds.eq(4).text(+$tds.eq(4).text() + +$tds.eq(i).text())
         }
     }
 
@@ -1353,7 +1353,7 @@ function vertexClicked(vertex, event) {
                 for (var y = 0; y < board.height; y++) {
                     var z = i == 0 ? x : y
                     if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
-                        $('#goban .pos_' + x + '-' + y)[0].addClass('paint_1')
+                        $('#goban .pos_' + x + '-' + y).addClass('paint_1')
                 }
             }
         }
