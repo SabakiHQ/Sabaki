@@ -290,12 +290,12 @@ function setScoringMethod(method) {
         tds[4].text(0)
 
         for (var i = 0; i <= 3; i++) {
-            if (tds[i].hasClass('disabled') || isNaN(+tds[i].attr('text'))) continue
-            tds[4].text(+tds[4].attr('text') + +tds[i].attr('text'))
+            if (tds[i].hasClass('disabled') || isNaN(+tds[i].text())) continue
+            tds[4].text(+tds[4].text() + +tds[i].text())
         }
     }
 
-    var results = $('#score tbody td:last-child').attr('text')
+    var results = $('#score tbody td:last-child').text()
     var diff = +results[0] - +results[1]
     var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
@@ -1583,7 +1583,7 @@ function commitGameInfo() {
 }
 
 function commitScore() {
-    var result = $('#score .result').attr('text')
+    var result = $('#score .result').text()
 
     showGameInfo()
     $('#info input[name="result"]').val(result)

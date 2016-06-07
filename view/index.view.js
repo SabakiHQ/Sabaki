@@ -110,7 +110,7 @@ function setLeftSidebarWidth(width) {
 }
 
 function getLeftSidebarWidth() {
-    return parseFloat($('#leftsidebar').width())
+    return parseFloat($('#leftsidebar').css('width'))
 }
 
 function getShowSidebar() {
@@ -140,11 +140,11 @@ function setShowSidebar(show) {
         updateCommentText();
     } else {
         // Clear game graph
-        var s = $('#graph').data('sigma')
+        var sigma = $('#graph').data('sigma')
 
-        if (s) {
-            s.graph.clear()
-            s.refresh()
+        if (sigma) {
+            sigma.graph.clear()
+            sigma.refresh()
         }
     }
 
@@ -182,7 +182,7 @@ function getShowComment() {
 }
 
 function getSidebarWidth() {
-    return parseFloat($('#sidebar').width())
+    return parseFloat($('#sidebar').css('width'))
 }
 
 function setSidebarWidth(width) {
@@ -203,7 +203,7 @@ function setPropertiesHeight(height) {
 
 function getPlayerName(sign) {
     var $el = $('#player_' + sign + ' .name')
-    return [$el.attr('text'), $el.attr('title')]
+    return [$el.text(), $el.attr('title')]
 }
 
 function setPlayerName(sign, name, tooltip) {
@@ -221,8 +221,8 @@ function setShowHotspot(bookmark) {
 
 function getCaptures() {
     return {
-        '-1': +$('#player_-1 .captures').attr('text'),
-        '1': +$('#player_1 .captures').attr('text')
+        '-1': +$('#player_-1 .captures').text(),
+        '1': +$('#player_1 .captures').text()
     }
 }
 
@@ -320,7 +320,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 function getSliderValue() {
     var $span = $('#sidebar .slider .inner span').eq(0)
     var value = parseFloat($span.css('top'))
-    var label = $span.attr('text')
+    var label = $span.text()
 
     return [value, label]
 }
@@ -689,7 +689,7 @@ function prepareGameChooser() {
 
         $('#gamechooser .games-list li:not(.add)').get().forEach(function(li) {
             if ($(li).children('span').some(function(span) {
-                return span.attr('text').toLowerCase().indexOf(value.toLowerCase()) >= 0
+                return span.text().toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
         })
@@ -1047,7 +1047,7 @@ function wireLinks($container) {
 
             shell.openExternal(this.href)
         } else if ($(this).hasClass('movenumber')) {
-            var movenumber = +$(this).attr('text').slice(1)
+            var movenumber = +$(this).text().slice(1)
             setUndoable(true, 'Go Back')
             goToMainVariation()
 
@@ -1059,7 +1059,7 @@ function wireLinks($container) {
     })
 
     $container.children('.coord').on('mouseenter', function() {
-        var v = getBoard().coord2vertex($(this).attr('text'))
+        var v = getBoard().coord2vertex($(this).text())
         showIndicator(v)
     }).on('mouseleave', function() {
         if (!getFindMode()) hideIndicator()
