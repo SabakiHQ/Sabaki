@@ -253,7 +253,7 @@ function setCommentText(text) {
     var $textarea = $('#properties textarea')
 
     if ($textarea.val() != text) $textarea.val(text)
-    $container.attr('html', html)
+    $container.html(html)
     wireLinks($container)
 }
 

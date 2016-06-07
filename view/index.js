@@ -1647,7 +1647,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 
     var listener = function(response, c) {
-        $pre.attr('html', response.toHtml())
+        $pre.html(response.toHtml())
         wireLinks($pre)
         oldform.removeClass('waiting')
         if (callback) callback(response)
