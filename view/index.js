@@ -285,7 +285,7 @@ function setScoringMethod(method) {
 
     for (var sign = -1; sign <= 1; sign += 2) {
         var tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))[0]
-        var tds = tr.children('td')
+        var tds = tr.find('td')
 
         tds[4].text(0)
 
@@ -606,13 +606,13 @@ function prepareGameInfo() {
             $(this).data('engineindex', i)
 
             if (engine) {
-                var els = $('#info').children('section .menu')
+                var els = $('#info').find('section .menu')
                 var other = els[0] == this ? els[1] : els[0]
                 if (other) selectEngine.call(other, null, -1)
 
                 $(this).addClass('active')
             } else {
-                $('#info').children('section .menu')
+                $('#info').find('section .menu')
                 .removeClass('active')
             }
         }
@@ -634,7 +634,7 @@ function prepareGameInfo() {
             return x.length == 3
         })
 
-        $(pikaday.el).children('.pika-button').get().forEach(function(el) {
+        $(pikaday.el).find('.pika-button').get().forEach(function(el) {
             var year = +$(el).attr('data-pika-year')
             var month = +$(el).attr('data-pika-month')
             var day = +$(el).attr('data-pika-day')

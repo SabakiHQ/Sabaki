@@ -338,7 +338,7 @@ function setFindMode(pickMode) {
         if (pickMode != getFindMode()) closeDrawers()
         $('body').addClass('find')
 
-        var input = $('#find').find('input')
+        var input = $('#find input').get(0)
         input.focus()
         input.select()
     } else {
@@ -349,11 +349,11 @@ function setFindMode(pickMode) {
 }
 
 function getFindText() {
-    return $('#find').find('input').value
+    return $('#find input').val()
 }
 
 function setFindText(text) {
-    $('#find').find('input').value = text
+    $('#find input').val(text)
 }
 
 function getEditMode() {
@@ -433,7 +433,7 @@ function setIndicatorVertex(vertex) {
 }
 
 function setPreferencesTab(tab) {
-    $('#preferences .tabs')[0]
+    $('#preferences .tabs')
         .find('.current')
         .removeClass('current')
         .parent()
@@ -441,11 +441,11 @@ function setPreferencesTab(tab) {
         .parent()
         .addClass('current')
 
-    var form = $('#preferences form')[0]
-    form.className = tab
+    var $form = $('#preferences form')
+    $form.attr('class', tab)
 
     if (tab == 'engines')
-        $('#preferences .engines-list')[0].data('scrollbar').update()
+        $('#preferences .engines-list').data('scrollbar').update()
 }
 
 function getRepresentedFilename() {
@@ -615,7 +615,7 @@ function prepareScrollbars() {
 function prepareResizers() {
     $('.verticalresizer').on('mousedown', function(e) {
         if (e.button != 0) return
-        $(this).parent().data('initposx', [e.screenX, parseFloat($(this).parent().width())])
+        $(this).parent().data('initposx', [e.screenX, parseFloat($(this).parent().css('width'))])
     })
 
     $('#sidebar .horizontalresizer').on('mousedown', function(e) {
@@ -688,14 +688,14 @@ function prepareGameChooser() {
         var value = this.value
 
         $('#gamechooser .games-list li:not(.add)').get().forEach(function(li) {
-            if ($(li).children('span').some(function(span) {
-                return span.text().toLowerCase().indexOf(value.toLowerCase()) >= 0
+            if ($(li).find('span').get().some(function(span) {
+                return $(span).text().toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
         })
 
-        var gamesList = $('#gamechooser .games-list')[0]
-        gamesList.data('scrollbar').update()
+        var $gamesList = $('#gamechooser .games-list')
+        $gamesList.data('scrollbar').update()
     })
 }
 
@@ -741,19 +741,20 @@ function addEngineItem(name, path, args) {
                 })
 
                 if (result) {
-                    this.parents('li').eq(0)
-                        .find('h3 + p input')
-                        .val(result[0])
-                        .focus()
+                    $(this).parents('li').eq(0)
+                    .find('h3 + p input')
+                    .val(result[0])
+                    .focus()
                 }
 
                 setIsBusy(false)
             })
-        ).append(
-            $('<img/>')
-            .attr('src', '../node_modules/octicons/svg/file-directory.svg')
-            .attr('title', 'Browse…')
-            .attr('height', 14)
+            .append(
+                $('<img/>')
+                .attr('src', '../node_modules/octicons/svg/file-directory.svg')
+                .attr('title', 'Browse…')
+                .attr('height', 14)
+            )
         )
     ).append(
         $('<p/>').append(
@@ -764,7 +765,7 @@ function addEngineItem(name, path, args) {
         )
     ).append(
         $('<a class="remove"/>').on('click', function() {
-            this.parents('li').eq(0).remove()
+            $(this).parents('li').eq(0).remove()
             $('#preferences .engines-list')[0].data('scrollbar').update()
         }).append(
             $('<img/>')
@@ -1038,7 +1039,7 @@ function clearConsole() {
 }
 
 function wireLinks($container) {
-    $container.children('a').on('click', function() {
+    $container.find('a').on('click', function() {
         if ($(this).hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
@@ -1058,7 +1059,7 @@ function wireLinks($container) {
         return false
     })
 
-    $container.children('.coord').on('mouseenter', function() {
+    $container.find('.coord').on('mouseenter', function() {
         var v = getBoard().coord2vertex($(this).text())
         showIndicator(v)
     }).on('mouseleave', function() {
@@ -1288,7 +1289,7 @@ function openGameMenu(element, event) {
                     ['Remove Game', 'Cancel'], 1
                 ) == 1) return
 
-                var index = element.parents('ol').eq(0).children('li div').indexOf(element)
+                var index = element.parents('ol').eq(0).find('li div').indexOf(element)
                 trees.splice(index, 1)
 
                 setGameTrees(trees)
@@ -1397,7 +1398,7 @@ function showGameInfo() {
     info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
     info.find('input[name="size-width"]').val(getBoard().width)
     info.find('input[name="size-height"]').val(getBoard().height)
-    info.children('section .menu').removeClass('active').data('engineindex', -1)
+    info.find('section .menu').removeClass('active').data('engineindex', -1)
 
     var handicap = info.find('select[name="handicap"]')
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
@@ -1408,7 +1409,7 @@ function showGameInfo() {
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
     handicap.disabled = disabled
-    info.children('input[name^="size-"]').attr('disabled', disabled)
+    info.find('input[name^="size-"]').attr('disabled', disabled)
     info.toggleClass('disabled', disabled)
 }
 
@@ -1424,7 +1425,7 @@ function showScore() {
 
     for (var sign = -1; sign <= 1; sign += 2) {
         var $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
-        var $tds = $tr.children('td')
+        var $tds = $tr.find('td')
 
         $tds.eq(0).text(score['area_' + sign])
         $tds.eq(1).text(score['territory_' + sign])
