@@ -217,7 +217,9 @@ function setBoard(board) {
 
             // Clean up
 
-            types.forEach(function(x) { $li.removeClass(x) })
+            types.forEach(function(x) {
+                if ($li.hasClass(x)) $li.removeClass(x)
+            })
 
             $span.attr('title', '')
 
@@ -235,7 +237,11 @@ function setBoard(board) {
             // Set stone image
 
             if ($li.hasClass('sign_' + sign)) continue
-            for (var i = -1; i <= 1; i++) $li.removeClass('sign_' + i)
+
+            for (var i = -1; i <= 1; i++) {
+                if ($li.hasClass('sign_' + i)) $li.removeClass('sign_' + i)
+            }
+
             $li.addClass('sign_' + sign)
         }
     }
