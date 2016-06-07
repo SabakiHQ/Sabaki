@@ -390,15 +390,16 @@ function loadSettings() {
 
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
-        var $img = $(this).find('img')
+        var $a = $(this)
+        var $img = $a.find('img')
 
-        if (!$(this).parent().hasClass('selected')) {
+        if (!$a.parent().hasClass('selected')) {
             $('#edit .selected').removeClass('selected')
-            $(this).parent().addClass('selected')
-        } else if ($(this).parent().hasClass('stone-tool')) {
+            $a.parent().addClass('selected')
+        } else if ($a.parent().hasClass('stone-tool')) {
             var black = $img.attr('src').indexOf('_1') >= 0
             $img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
-        } else if ($(this).parent().hasClass('line-tool')) {
+        } else if ($a.parent().hasClass('line-tool')) {
             var line = $img.attr('src').indexOf('line') >= 0
             $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
@@ -508,21 +509,21 @@ function prepareConsole() {
     $('#console form').on('submit', function(e) {
         e.preventDefault()
 
-        var input = $(this).find('input')
-        if (input.value.trim() == '') return
-        input.blur()
+        var $input = $(this).find('input')
+        if ($input.val().trim() == '') return
+        $input.blur()
 
-        var command = gtp.parseCommand(input.value)
+        var command = gtp.parseCommand($input.val())
         sendGTPCommand(command)
     })
 
     $('#console form input').on('keydown', function(e) {
         if ([40, 38, 9].indexOf(e.code) != -1) e.preventDefault()
-        var inputs = $('#console form input')
+        var $inputs = $('#console form input')
 
-        if ($(this).data('index') == null) $(this).data('index', inputs.indexOf(this))
+        if ($(this).data('index') == null) $(this).data('index', $inputs.get().indexOf(this))
         var i = $(this).data('index')
-        var length = inputs.length
+        var length = $inputs.length
 
         if ([38, 40].indexOf(e.code) != -1) {
             if (e.code == 38) {
@@ -533,11 +534,12 @@ function prepareConsole() {
                 i = Math.min(i + 1, length - 1)
             }
 
-            this.value = i == length - 1 ? '' : inputs[i].value
-            $(this).data('index', i)
+            $(this)
+            .val(i == length - 1 ? '' : $inputs.eq(i).val())
+            .data('index', i)
         } else if (e.code == 9) {
             // Tab
-            var tokens = this.value.split(' ')
+            var tokens = $(this).val().split(' ')
             var commands = getEngineCommands()
             if (!commands) return
 
@@ -573,23 +575,26 @@ function prepareGameInfo() {
     })
 
     $('#info .currentplayer').on('click', function() {
-        var data = $('#info section input[type="text"]').map(function(el) {
-            return el.val()
+        var data = $('#info section input[type="text"]').get().map(function(el) {
+            return $(el).val()
         })
 
-        $('#info section input[name="rank_1"]').eq(0).val(data[3])
-        $('#info section input[name="rank_-1"]').eq(0).val(data[0])
-        $('#info section input[name="name_1"]').eq(0).val(data[2])
-        $('#info section input[name="name_-1"]').eq(0).val(data[1])
+        $('#info section input[name="rank_1"]').val(data[3])
+        $('#info section input[name="rank_-1"]').val(data[0])
+        $('#info section input[name="name_1"]').val(data[2])
+        $('#info section input[name="name_-1"]').val(data[1])
 
-        data = $('#info section .menu').map(function(el) {
-            return [el.hasClass('active'), el.data('engineindex')]
+        data = $('#info section .menu').get().map(function(el) {
+            return [$(el).hasClass('active'), $(el).data('engineindex')]
         })
 
-        $('#info section .menu')[0].toggleClass('active', data[1][0])
-        $('#info section .menu')[0].data('engineindex', data[1][1])
-        $('#info section .menu')[1].toggleClass('active', data[0][0])
-        $('#info section .menu')[1].data('engineindex', data[0][1])
+        $('#info section .menu').eq(0)
+        .toggleClass('active', data[1][0])
+        .data('engineindex', data[1][1])
+
+        $('#info section .menu').eq(1)
+        .toggleClass('active', data[0][0])
+        .data('engineindex', data[0][1])
     })
 
     $('#info section img.menu').on('click', function() {
@@ -620,7 +625,7 @@ function prepareGameInfo() {
 
     // Prepare date input
 
-    var $dateInput = $('#info input[name="date"]').eq(0)
+    var $dateInput = $('#info input[name="date"]')
     var adjustPosition = function(pikaday) {
         $(pikaday.el)
         .css('position', 'absolute')
@@ -690,21 +695,24 @@ function prepareGameInfo() {
     $('body').append(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
         && document.activeElement != $dateInput.get(0)
-        && e.target != $dateInput.get(0)
-        && e.target.parents('.pika-lendar').length == 0)
+        && e.originalEvent.target != $dateInput.get(0)
+        && e.originalEvent.target.parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
     $(window).on('resize', function() { adjustPosition(pikaday) })
 
-    $dateInput.on('focus', function() {
+    $dateInput
+    .on('focus', function() {
         pikaday.show()
-    }).on('blur', function() {
+    })
+    .on('blur', function() {
         setTimeout(function() {
             if (document.activeElement.parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
-    }).on('input', function() {
+    })
+    .on('input', function() {
         markDates(pikaday)
     })
 
@@ -713,20 +721,20 @@ function prepareGameInfo() {
     $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        $(this).data('link', this.value == $(this).parent().next('input[name="size-height"]').value)
+        $(this).data('link', this.value == $(this).parent().nextAll('input[name="size-height"]').val())
     }).on('input', function() {
         if (!$(this).data('link')) return
-        $(this).parent().next('input[name="size-height"]').value = this.value
+        $(this).parent().nextAll('input[name="size-height"]').val(this.value)
     })
 
     $('#info span.size-swap').on('click', function() {
         if ($('#info').hasClass('disabled')) return
 
-        var widthInput = $('#info input[name="size-width"]')[0]
-        var heightInput = $('#info input[name="size-height"]')[0]
-        var data = [widthInput.value, heightInput.value]
-        widthInput.value = data[1]
-        heightInput.value = data[0]
+        var $widthInput = $('#info input[name="size-width"]')
+        var $heightInput = $('#info input[name="size-height"]')
+        var data = [$widthInput.val(), $heightInput.val()]
+        $widthInput.val(data[1])
+        $heightInput.val(data[0])
     })
 }
 
@@ -1245,7 +1253,7 @@ function findPosition(step, condition) {
         var iterator = gametree.makeNodeIterator.apply(null, pos)
 
         while (true) {
-            pos = step >= 0 ? iterator.next() : iterator.prev()
+            pos = step >= 0 ? iterator.nextAll() : iterator.prev()
 
             if (!pos) {
                 var root = getRootTree()
@@ -1640,7 +1648,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     // Cleanup
     var $forms = $('#console .inner form')
     if ($forms.length > setting.get('console.max_history_count')) {
-        $forms.eq(0).next('pre').remove()
+        $forms.eq(0).nextAll('pre').remove()
         $forms.eq(0).remove()
     }
 
