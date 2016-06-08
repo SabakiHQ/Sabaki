@@ -956,8 +956,8 @@ function updateBoardLines() {
         var mirrored = v2[0] < v1[0]
         var $li1 = $('#goban .pos_' + v1.join('-'))
         var $li2 = $('#goban .pos_' + v2.join('-'))
-        var pos1 = $li1.position()
-        var pos2 = $li2.position()
+        var pos1 = $li1.offset()
+        var pos2 = $li2.offset()
         var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
@@ -1026,10 +1026,10 @@ function showIndicator(vertex) {
 
     if ($li.length == 0) return
 
-    $('#indicator').css('top', $li.offset().top)
-    .css('left', $li.offset().left)
-    .css('height', $li.height())
-    .css('width', $li.width())
+    $('#indicator').css('top', Math.round($li.offset().top))
+    .css('left', Math.round($li.offset().left))
+    .css('height', Math.round($li.height()))
+    .css('width', Math.round($li.width()))
     .data('vertex', vertex)
 }
 
@@ -1544,7 +1544,7 @@ function showGameChooser(restoreScrollbarPos) {
         if (!$('#gamechooser').data('dragging')) return
 
         var x = e.clientX
-        var middle = $(this).position().left + $(this).width() / 2
+        var middle = $(this).offset().left + $(this).width() / 2
 
         if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
