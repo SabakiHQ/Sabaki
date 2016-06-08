@@ -192,7 +192,7 @@ function setSidebarWidth(width) {
 }
 
 function getPropertiesHeight() {
-    return $('#properties').innerHeight() * 100 / $('#sidebar').innerHeight()
+    return $('#properties').height() * 100 / $('#sidebar').height()
 }
 
 function setPropertiesHeight(height) {
@@ -672,7 +672,7 @@ function prepareResizers() {
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
             var newheight = Math.min(Math.max(
-                initHeight + (initY - e.screenY) * 100 / $('#sidebar').innerHeight(),
+                initHeight + (initY - e.screenY) * 100 / $('#sidebar').height(),
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
@@ -978,16 +978,27 @@ function resizeBoard() {
     var board = getBoard()
     if (!board) return
 
-    $('main').css('width', '').css('height', '')
-    var outerWidth = Math.round($('main').width())
-    var outerHeight = Math.round($('main').height())
-    if ((outerWidth - outerHeight) % 2 != 0)
-        $('main').css('width', outerWidth + 1)
+    var $main = $('main')
+    var $goban = $('#goban')
+
+    $main.css('width', '').css('height', '')
+    var outerWidth = Math.round($main.width())
+    var outerHeight = Math.round($main.height())
+
+    if (outerWidth % 2 != 0) outerWidth++
+    if (outerHeight % 2 != 0) outerHeight++
+    $main.css('width', outerWidth).css('height', outerHeight)
 
     var boardWidth = board.width
     var boardHeight = board.height
-    var width = helper.floorEven(outerWidth - $('#goban').outerWidth() + $('#goban').width())
-    var height = helper.floorEven(outerHeight - $('#goban').outerHeight() + $('#goban').height())
+    var width = helper.floorEven(outerWidth - parseFloat($goban.css('padding-left'))
+        - parseFloat($goban.css('padding-right'))
+        - parseFloat($goban.css('border-left-width'))
+        - parseFloat($goban.css('border-right-width')))
+    var height = helper.floorEven(outerHeight - parseFloat($goban.css('padding-top'))
+        - parseFloat($goban.css('padding-bottom'))
+        - parseFloat($goban.css('border-top-width'))
+        - parseFloat($goban.css('border-bottom-width')))
 
     if (getShowCoordinates()) {
         boardWidth += 2
@@ -998,21 +1009,24 @@ function resizeBoard() {
     var minX = fieldsize * boardWidth
     var minY = fieldsize * boardHeight
 
-    $('#goban').css('width', minX + outerWidth - width)
+    $goban.css('width', minX + outerWidth - width)
         .css('height', minY + outerHeight - height)
-        .css('margin-left', -(minX + outerWidth - width) / 2)
-        .css('margin-top', -(minY + outerHeight - height) / 2)
-    $('#goban > div').css('width', minX).css('height', minY)
-        .css('margin-left', -minX / 2).css('margin-top', -minY / 2)
+        .css('margin-left', -(minX + outerWidth - width) / 2 + 'px')
+        .css('margin-top', -(minY + outerHeight - height) / 2 + 'px')
+    $goban.children('div').css('width', minX).css('height', minY)
+        .css('margin-left', -minX / 2 + 'px').css('margin-top', -minY / 2 + 'px')
 
-    $('#goban .row, #goban .coordx').css('height', fieldsize).css('line-height', fieldsize + 'px')
-    $('#goban .row, #goban .coordx').css('margin-left', getShowCoordinates() ? fieldsize : 0)
+    $goban.find('.row, .coordx')
+    .css('height', fieldsize).css('line-height', fieldsize + 'px')
+    .css('margin-left', getShowCoordinates() ? fieldsize : 0)
 
-    $('#goban .coordy').css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
-    $('#goban .coordy:last-child').css('left', fieldsize * (board.width + 1))
+    $goban.find('.coordy')
+    .css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
+    .last()
+    .css('left', fieldsize * (board.width + 1))
 
-    $('#goban li').css('width', fieldsize).css('height', fieldsize)
-    $('#goban').css('font-size', fieldsize)
+    $goban.find('li').css('width', fieldsize).css('height', fieldsize)
+    $goban.css('font-size', fieldsize)
 
     setSliderValue.apply(null, getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
@@ -1224,7 +1238,7 @@ function openCommentMenu() {
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($el.offset().left),
-        Math.round($el.offset().top + $el.innerHeight())
+        Math.round($el.offset().top + $el.height())
     )
 }
 
@@ -1268,7 +1282,7 @@ function openEnginesMenu($element, callback) {
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($element.offset().left),
-        Math.round($element.offset().top + $element.innerHeight())
+        Math.round($element.offset().top + $element.height())
     )
 }
 
@@ -1382,7 +1396,7 @@ function openAddGameMenu() {
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($button.offset().left),
-        Math.round($button.offset().top + $button.innerHeight())
+        Math.round($button.offset().top + $button.height())
     )
 }
 
