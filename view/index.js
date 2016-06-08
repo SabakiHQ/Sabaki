@@ -1621,10 +1621,10 @@ function commitPreferences() {
     setting.clearEngines()
 
     $('#preferences .engines-list li').get().forEach(function(li) {
-        var nameinput = $(li).find('h3 input')
+        var $nameinput = $(li).find('h3 input')
 
         setting.addEngine(
-            nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
+            $nameinput.val().trim() == '' ? $nameinput.attr('placeholder') : $nameinput.val(),
             $(li).find('h3 + p input').val(),
             $(li).find('h3 + p + p input').val()
         )
