@@ -1349,7 +1349,7 @@
       }
       return this.each(function() {
         getEventsToRemove(this, event).forEach(function(matchedEvent) {
-          this.dispatchEvent(new CustomEvent(matchedEvent, {
+          this.dispatchEvent(new window.CustomEvent(matchedEvent, {
             bubbles: true,
             cancelable: true
           }))
