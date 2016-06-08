@@ -873,8 +873,8 @@ function buildBoard() {
 
             var getEndTargetVertex = function(e) {
                 var endTarget = document.elementFromPoint(
-                    e.originalEvent.touches[0].pageX,
-                    e.originalEvent.touches[0].pageY
+                    e.touches[0].pageX,
+                    e.touches[0].pageY
                 )
 
                 if (!endTarget) return null

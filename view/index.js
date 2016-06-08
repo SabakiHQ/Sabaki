@@ -462,7 +462,7 @@ function prepareSlider() {
         if (e.button != 0 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.originalEvent.clientY - $slider.offset().top) / $slider.height()
+        var percentage = (e.clientY - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
@@ -475,7 +475,7 @@ function prepareSlider() {
     }).on('touchstart', function() {
         $(this).addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.originalEvent.client.y - $slider.offset().top) / $slider.height()
+        var percentage = (e.client.y - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
     }).on('touchend', function() {
         $(this).removeClass('active')
@@ -505,8 +505,8 @@ function prepareDragDropFiles() {
     }).on('drop', function(e) {
         e.preventDefault()
 
-        if (e.originalEvent.dataTransfer.files.length == 0) return
-        loadFile(e.originalEvent.dataTransfer.files[0].path)
+        if (e.dataTransfer.files.length == 0) return
+        loadFile(e.dataTransfer.files[0].path)
     })
 }
 
@@ -700,8 +700,8 @@ function prepareGameInfo() {
     $('body').append(pikaday.el).on('click', function(e) {
         if (pikaday.isVisible()
         && document.activeElement != $dateInput.get(0)
-        && e.originalEvent.target != $dateInput.get(0)
-        && $(e.originalEvent.target).parents('.pika-lendar').length == 0)
+        && e.target != $dateInput.get(0)
+        && $(e.target).parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
@@ -2110,8 +2110,8 @@ $(document).on('keydown', function(e) {
     newFile()
 
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(e) {
-        if (e.originalEvent.wheelDelta < 0) goForward()
-        else if (e.originalEvent.wheelDelta > 0) goBack()
+        if (e.wheelDelta < 0) goForward()
+        else if (e.wheelDelta > 0) goBack()
     })
 })
 
