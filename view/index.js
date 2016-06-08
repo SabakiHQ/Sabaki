@@ -701,7 +701,7 @@ function prepareGameInfo() {
         if (pikaday.isVisible()
         && document.activeElement != $dateInput.get(0)
         && e.originalEvent.target != $dateInput.get(0)
-        && e.originalEvent.target.parents('.pika-lendar').length == 0)
+        && $(e.originalEvent.target).parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
@@ -713,7 +713,7 @@ function prepareGameInfo() {
     })
     .on('blur', function() {
         setTimeout(function() {
-            if (document.activeElement.parents('.pika-lendar').length == 0)
+            if ($(document.activeElement).parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
     })
