@@ -462,7 +462,7 @@ function prepareSlider() {
         if (e.button != 0 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.originalEvent.clientY - $slider.position().top) / $slider.height()
+        var percentage = (e.originalEvent.clientY - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
@@ -475,7 +475,7 @@ function prepareSlider() {
     }).on('touchstart', function() {
         $(this).addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.originalEvent.client.y - $slider.position().top) / $slider.height()
+        var percentage = (e.originalEvent.client.y - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
     }).on('touchend', function() {
         $(this).removeClass('active')
