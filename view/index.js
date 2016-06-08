@@ -462,7 +462,7 @@ function prepareSlider() {
         if (e.button != 0 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.originalEvent.clientY - $slider.position().top) / $slider.innerHeight()
+        var percentage = (e.originalEvent.clientY - $slider.position().top) / $slider.height()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
@@ -475,7 +475,7 @@ function prepareSlider() {
     }).on('touchstart', function() {
         $(this).addClass('active')
     }).on('touchmove', function(e) {
-        var percentage = (e.originalEvent.client.y - $slider.position().top) / $slider.innerHeight()
+        var percentage = (e.originalEvent.client.y - $slider.position().top) / $slider.height()
         changeSlider(percentage)
     }).on('touchend', function() {
         $(this).removeClass('active')
@@ -635,7 +635,7 @@ function prepareGameInfo() {
         $(pikaday.el)
         .css('position', 'absolute')
         .css('left', $dateInput.position().left)
-        .css('top', $dateInput.position().top - $(pikaday.el).innerHeight())
+        .css('top', $dateInput.position().top - $(pikaday.el).height())
     }
     var markDates = function(pikaday) {
         var dates = (sgf.string2dates($dateInput.value) || []).filter(function(x) {
@@ -677,7 +677,7 @@ function prepareGameInfo() {
             adjustPosition(pikaday)
             markDates(pikaday)
 
-            $dateInput.focus()
+            $dateInput.get(0).focus()
         },
         onSelect: function() {
             var dates = sgf.string2dates($dateInput.val()) || []
@@ -1651,7 +1651,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     $form.find('input').val('')
     $oldform.addClass('waiting').find('input').val(command.toString())
     $container.append($pre).append($form)
-    if (getShowLeftSidebar()) $form.find('input').focus()
+    if (getShowLeftSidebar()) $form.find('input').get(0).focus()
 
     // Cleanup
     var $forms = $('#console .inner form')

@@ -99,7 +99,7 @@ function setShowLeftSidebar(show) {
     // Update scrollbars
     var $view = $('#console .gm-scroll-view')
     $view.scrollTop($view.get(0).scrollHeight)
-    $view.find('form:last-child input').focus()
+    $view.find('form:last-child input').get(0).focus()
     $('#console').data('scrollbar').update()
 }
 
@@ -744,7 +744,7 @@ function addEngineItem(name, path, args) {
                     $(this).parents('li').eq(0)
                     .find('h3 + p input')
                     .val(result[0])
-                    .focus()
+                    .get(0).focus()
                 }
 
                 setIsBusy(false)
@@ -1028,8 +1028,8 @@ function showIndicator(vertex) {
 
     $('#indicator').css('top', $li.offset().top)
     .css('left', $li.offset().left)
-    .css('height', $li.innerHeight())
-    .css('width', $li.innerWidth())
+    .css('height', $li.height())
+    .css('width', $li.width())
     .data('vertex', vertex)
 }
 
@@ -1042,7 +1042,7 @@ function hideIndicator() {
 
 function clearConsole() {
     $('#console .inner pre, #console .inner form:not(:last-child)').remove()
-    $('#console .inner form:last-child input').eq(0).val('').focus()
+    $('#console .inner form:last-child input').eq(0).val('').get(0).focus()
     $('#console').data('scrollbar').update()
 }
 
@@ -1405,7 +1405,7 @@ function showGameInfo() {
         'result': 'RE'
     }
 
-    $info.addClass('show').find('input[name="name_1"]').focus()
+    $info.addClass('show').find('input[name="name_1"]').get(0).focus()
 
     for (var key in data) {
         var value = data[key]
@@ -1491,7 +1491,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     closeDrawers()
 
-    $('#gamechooser > input').eq(0).val('').focus()
+    $('#gamechooser > input').eq(0).val('').get(0).focus()
     $('#gamechooser ol').eq(0).empty()
 
     var trees = getGameTrees()
@@ -1544,7 +1544,7 @@ function showGameChooser(restoreScrollbarPos) {
         if (!$('#gamechooser').data('dragging')) return
 
         var x = e.clientX
-        var middle = $(this).position().left + $(this).innerWidth() / 2
+        var middle = $(this).position().left + $(this).width() / 2
 
         if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
