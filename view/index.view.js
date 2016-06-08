@@ -1061,15 +1061,18 @@ function clearConsole() {
 }
 
 function wireLinks($container) {
-    $container.find('a').on('click', function() {
+    $container.find('a').on('click', function(e) {
         if ($(this).hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
                 return true
             }
 
+            e.preventDefault()
             shell.openExternal(this.href)
         } else if ($(this).hasClass('movenumber')) {
+            e.preventDefault()
+
             var movenumber = +$(this).text().slice(1)
             setUndoable(true, 'Go Back')
             goToMainVariation()
@@ -1077,8 +1080,6 @@ function wireLinks($container) {
             var tp = gametree.navigate(getRootTree(), 0, movenumber)
             if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
         }
-
-        return false
     })
 
     $container.find('.coord').on('mouseenter', function() {
@@ -1569,7 +1570,7 @@ function showGameChooser(restoreScrollbarPos) {
         }
     })
 
-    $('#gamechooser').off('drop').on('drop', function(e) {
+    $('#gamechooser').off('drop').on('drop', function() {
         var dragged = $(this).data('dragging')
         $(this).data('dragging', null)
 

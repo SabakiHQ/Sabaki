@@ -568,15 +568,15 @@ function prepareConsole() {
 }
 
 function prepareGameInfo() {
-    $('#info button[type="submit"]').on('click', function() {
+    $('#info button[type="submit"]').on('click', function(e) {
+        e.preventDefault()
         commitGameInfo()
         closeGameInfo()
-        return false
     })
 
-    $('#info button[type="reset"]').on('click', function() {
+    $('#info button[type="reset"]').on('click', function(e) {
+        e.preventDefault()
         closeGameInfo()
-        return false
     })
 
     $('#info .currentplayer').on('click', function() {
@@ -2110,6 +2110,7 @@ $(document).on('keydown', function(e) {
     newFile()
 
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(e) {
+        e.preventDefault()
         if (e.wheelDelta < 0) goForward()
         else if (e.wheelDelta > 0) goBack()
     })
