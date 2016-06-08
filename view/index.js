@@ -638,7 +638,7 @@ function prepareGameInfo() {
         .css('top', $dateInput.position().top - $(pikaday.el).height())
     }
     var markDates = function(pikaday) {
-        var dates = (sgf.string2dates($dateInput.value) || []).filter(function(x) {
+        var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
             return x.length == 3
         })
 
@@ -1625,8 +1625,8 @@ function commitPreferences() {
 
         setting.addEngine(
             nameinput.value.trim() == '' ? nameinput.placeholder : nameinput.value,
-            $(li).find('h3 + p input').value,
-            $(li).find('h3 + p + p input').value
+            $(li).find('h3 + p input').val(),
+            $(li).find('h3 + p + p input').val()
         )
     })
 
