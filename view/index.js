@@ -516,7 +516,7 @@ function prepareConsole() {
 
         var $input = $(this).find('input')
         if ($input.val().trim() == '') return
-        $input.blur()
+        $input.get(0).blur()
 
         var command = gtp.parseCommand($input.val())
         sendGTPCommand(command)
@@ -1645,7 +1645,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     var controller = getEngineController()
     var $container = $('#console .inner')
     var $oldform = $container.find('form:last-child')
-    var $form = $oldform.clone(true, true)
+    var $form = $oldform.clone(true)
     var $pre = $('<pre/>').text(' ')
 
     $form.find('input').val('')
