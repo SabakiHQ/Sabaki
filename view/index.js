@@ -1799,7 +1799,7 @@ function newFile(playSound) {
 function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
 
-    $('fileinput').set('value', '').removeEvents('change').addEvent('change', function(evt) {
+    $('#fileinput').val().off('change').on('change', function(evt) {
         var f = evt.target.files[0]
 
         if (f) {
@@ -1816,7 +1816,7 @@ function loadFile(filename) {
         } else {
             alert('Failed to load file.')
         }
-    }).click()
+    }).get(0).click()
 
     return
 
