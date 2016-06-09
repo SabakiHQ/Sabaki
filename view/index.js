@@ -2118,7 +2118,7 @@ $(document).on('keydown', function(e) {
 $(window).on('resize', function() {
     resizeBoard()
 }).on('beforeunload', function(e) {
-    if (!askForSave()) return 'false'
+    if (!askForSave()) e.returnValue = 'false'
 
     detachEngine()
 
