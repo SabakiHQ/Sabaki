@@ -33,14 +33,14 @@ Menu.hide = function() {
 
 Menu.show = function($menu, x, y) {
     $('body').append(
-        $('<div id="popupmenu-overlay"/>')
-        .on('click', Menu.hide)
+        $('<div id="popupmenu-overlay"/>').on('click', Menu.hide)
     ).append($menu)
 
-    var menuWidth = $menu.width()
-    var menuHeight = $menu.height() + 6
-    var bodyWidth = $('body').width()
-    var bodyHeight = $('body').height()
+    var menuWidth = Math.round($menu.width())
+    var menuHeight = Math.round($menu.height())
+    var bodyWidth = Math.round($('body').width())
+    var bodyHeight = Math.round($('body').height())
+
     $menu.css('left', x).css('top', y)
 
     if (y + menuHeight > bodyHeight) $menu.css('top', Math.max(0, y - menuHeight))
