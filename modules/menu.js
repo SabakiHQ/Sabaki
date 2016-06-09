@@ -4,49 +4,49 @@ var Menu = {}
 
 Menu.buildFromTemplate = function(template) {
     var menu = {}
-    var element = new Element('ul.popupmenu')
+    var $element = $('<ul class="popupmenu"/>')
 
     template.forEach(function(item) {
         if (item.type == 'separator') {
-            element.grab(new Element('li.separator'))
+            $element.append(new Element('li.separator'))
             return
         }
 
-        var li = new Element('li', {
-            text: item.label.replace(/&/g, ''),
-            events: {
-                click: function() {
-                    item.click()
-                    Menu.hide()
-                }
-            }
+        var $li = $('<li/>')
+        .text(item.label.replace(/&/g, ''))
+        .on('click', function() {
+            item.click()
+            Menu.hide()
         })
 
-        if (item.checked) li.addClass('checked')
-        element.grab(li)
+        if (item.checked) $li.addClass('checked')
+        $element.append($li)
     })
 
-    menu.popup = function(_, x, y) { Menu.show(element, x, y) }
+    menu.popup = function(_, x, y) { Menu.show($element, x, y) }
     return menu
 }
 
 Menu.hide = function() {
-    $$('ul.popupmenu, #popupmenu-overlay').dispose()
+    $('ul.popupmenu, #popupmenu-overlay').remove()
 }
 
-Menu.show = function(menu, x, y) {
-    document.body.grab(new Element('div#popupmenu-overlay', {
-        events: { click: Menu.hide }
-    })).grab(menu)
+Menu.show = function($menu, x, y) {
+    $('body').append(
+        $('<div id="popupmenu-overlay"/>')
+        .on('click', Menu.hide)
+    ).append($menu)
 
-    var menuSize = menu.getSize()
-    var bodySize = document.body.getSize()
-    menu.setStyle('left', x).setStyle('top', y)
+    var menuWidth = $menu.width()
+    var menuHeight = $menu.height() + 6
+    var bodyWidth = $('body').width()
+    var bodyHeight = $('body').height()
+    $menu.css('left', x).css('top', y)
 
-    if (y + menuSize.y > bodySize.y) menu.setStyle('top', Math.max(0, y - menuSize.y))
-    if (x + menuSize.x > bodySize.x) menu.setStyle('left', Math.max(0, x - menuSize.x))
+    if (y + menuHeight > bodyHeight) $menu.css('top', Math.max(0, y - menuHeight))
+    if (x + menuWidth > bodyWidth) $menu.css('left', Math.max(0, x - menuWidth))
 
-    menu.addClass('show')
+    $menu.addClass('show')
 }
 
 window.Menu = Menu
