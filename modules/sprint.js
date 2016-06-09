@@ -795,6 +795,7 @@
     },
     data: function(name, value) {
       if (value === undefined) {
+        if (this.length == 0) return null
         var el = this.get(0)
         if (!('sprint_data' in el)) el.sprint_data = {}
         return el.sprint_data[name]
