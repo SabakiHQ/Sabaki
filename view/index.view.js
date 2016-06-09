@@ -453,7 +453,7 @@ function getRepresentedFilename() {
 }
 
 function setRepresentedFilename(filename) {
-    document.body.store('representedfilename', filename)
+    $('body').data('representedfilename', filename)
     updateTitle()
 }
 
