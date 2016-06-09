@@ -32,8 +32,8 @@ This project is licensed under the [MIT license](https://github.com/yishn/Sabaki
 
 * [Electron](http://electron.atom.io/)
   ([MIT License](https://github.com/atom/electron/blob/master/LICENSE))
-* [MooTools](http://mootools.net/)
-  ([MIT License](https://github.com/mootools/mootools-core/blob/master/Source/license.txt))
+* [Sprint](https://github.com/philpl/sprint/)
+  ([MIT License](https://github.com/philpl/sprint/blob/master/LICENSE.txt))
 * [sigma](http://sigmajs.org/)
   ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
 * [marked](https://github.com/chjj/marked)
