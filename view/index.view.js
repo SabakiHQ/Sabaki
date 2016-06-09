@@ -1094,27 +1094,27 @@ function openHeaderMenu() {
         {
             label: 'About Sabaki…',
             click: function() {
-                var link = new Element('a', {
-                    href: 'http://sabaki.yichuanshen.de',
-                    target: '_blank',
-                    css: { display: 'none' }
-                })
-                document.body.grab(link)
-                link.click()
-                link.dispose()
+                var $link = $('<a/>')
+                .attr('href', 'http://sabaki.yichuanshen.de')
+                .attr('target', '_blank')
+                .css('display', 'none')
+
+                $('body').append($link)
+                $link.get(0).click()
+                $link.remove()
             }
         },
         {
             label: 'Report Issue…',
             click: function() {
-                var link = new Element('a', {
-                    href: 'https://github.com/yishn/Sabaki/issues',
-                    target: '_blank',
-                    css: { display: 'none' }
-                })
-                document.body.grab(link)
-                link.click()
-                link.dispose()
+                var $link = $('<a/>')
+                .attr('href', 'https://github.com/yishn/Sabaki/issues')
+                .attr('target', '_blank')
+                .css('display', 'none')
+
+                $('body').append($link)
+                $link.get(0).click()
+                $link.remove()
             }
         },
         { type: 'separator' },
