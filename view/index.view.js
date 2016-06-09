@@ -1434,7 +1434,7 @@ function showGameInfo() {
     $info.find('input[name="size-height"]').val(getBoard().height)
     $info.find('section .menu').removeClass('active').data('engineindex', -1)
 
-    var handicap = $info.find('select[name="handicap"]')
+    var handicap = $info.find('select[name="handicap"]').get(0)
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
     else handicap.selectedIndex = 0
 
@@ -1442,8 +1442,7 @@ function showGameInfo() {
         || tree.subtrees.length > 0
         || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
 
-    handicap.disabled = disabled
-    $info.find('input[name^="size-"]').attr('disabled', disabled)
+    $info.find('input[name^="size-"]').add(handicap).prop('disabled', disabled)
     $info.toggleClass('disabled', disabled)
 }
 

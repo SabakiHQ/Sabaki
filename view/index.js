@@ -436,7 +436,6 @@ function prepareGameGraph() {
     s.bind('clickNode', function(e) {
         setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        console.log(e)
         openNodeMenu.apply(null, getTreePos(e).concat([e.data.captor]))
     })
 
@@ -1583,7 +1582,7 @@ function commitGameInfo() {
 
     if (!$info.hasClass('disabled')) {
         var engines = setting.getEngines()
-        var indices = $('#info section .menu').map(function(x) { return x.data('engineindex') })
+        var indices = $('#info section .menu').get().map(function(x) { return $(x).data('engineindex') })
         var max = Math.max.apply(null, indices)
         var sign = indices.indexOf(max) == 0 ? 1 : -1
 
