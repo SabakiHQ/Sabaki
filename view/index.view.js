@@ -1569,7 +1569,9 @@ function showGameChooser(restoreScrollbarPos) {
         }
     })
 
-    $('#gamechooser').off('drop').on('drop', function() {
+    $('#gamechooser').off('drop').on('dragover', function(e) {
+        e.preventDefault()
+    }).on('drop', function() {
         var dragged = $(this).data('dragging')
         $(this).data('dragging', null)
 
