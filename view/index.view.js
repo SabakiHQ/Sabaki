@@ -319,7 +319,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 
 function getSliderValue() {
     var $span = $('#sidebar .slider .inner span').eq(0)
-    var value = parseFloat($span.css('top'))
+    var value = parseFloat($span.get(0).style.top)
     var label = $span.text()
 
     return [value, label]
