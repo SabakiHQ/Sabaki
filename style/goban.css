@@ -279,8 +279,8 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
         border-left: .3em solid transparent;
         border-right: .3em solid transparent;
         border-bottom: .5em solid;
-        margin-left: -.3em;
-        margin-top: -.35em;
+        margin-left: calc(-.3em - 1px);
+        margin-top: calc(-.33em - 1px);
         background: none;
     }
     .goban .row li.triangle .stone span::after {
@@ -290,8 +290,8 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
         border-left: calc(.3em - 3px) solid transparent;
         border-right: calc(.3em - 3px) solid transparent;
         border-bottom: calc(.5em - 6px) solid #EFB65D;
-        margin-left: calc(-.3em + 3px);
-        margin-top: calc(-.35em + 4px);
+        margin-left: calc(-.3em + 2px);
+        margin-top: calc(-.33em + 3px);
         background: none;
         box-shadow: none;
     }
