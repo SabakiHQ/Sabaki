@@ -264,7 +264,10 @@ function getCommentTitle() {
 function setCommentTitle(text) {
     var $input = $('#properties .edit .header input')
 
-    $('#properties .inner .header span').text(text.trim() != '' ? text : getCurrentMoveInterpretation())
+    if (text.trim() == '' && !!setting.get('comments.show_move_interpretation'))
+        text = getCurrentMoveInterpretation()
+
+    $('#properties .inner .header span').text(text)
     if ($input.val() != text) $input.val(text)
 }
 

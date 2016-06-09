@@ -42,6 +42,7 @@ var defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
+    'comments.show_move_interpretation': true,
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
         'genmove', 'undo', 'fixed_handicap',
