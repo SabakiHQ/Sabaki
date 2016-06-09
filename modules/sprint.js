@@ -5,6 +5,7 @@
  * - $.data()
  *
  * Fixed functions:
+ * - $.position()
  * - $.trigger()
  */
 
@@ -1196,7 +1197,7 @@
     position: function() {
       var pos = {
         first: this.offset(),
-        prt: this.parent().offset()
+        prt: this.offsetParent().offset()
       }
       if (!pos.first) return
       return {
