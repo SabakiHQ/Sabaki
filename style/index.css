@@ -727,8 +727,8 @@ header, #edit, #scoring, #estimator, #find, #guess {
         bottom: -440px;
         height: 400px;
     }
-    #preferences form ul { margin: 1.5em 0; }
-    #preferences form ul li { margin: 7px 0; }
+    #preferences form ul { margin: 0 0 1.5em; }
+    #preferences form ul li { margin: 0 0 7px; }
     #preferences form > p:last-child {
         position: absolute;
         right: 20px;
