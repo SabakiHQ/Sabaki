@@ -1,4 +1,14 @@
 /*
+ * This is a slightly altered version of Sprint.
+ *
+ * Added functions:
+ * - $.data()
+ *
+ * Fixed functions:
+ * - $.trigger()
+ */
+
+/*
  * Sprint JavaScript Library v0.9.2
  * http://sprintjs.com
  *
