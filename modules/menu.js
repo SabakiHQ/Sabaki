@@ -8,7 +8,7 @@ Menu.buildFromTemplate = function(template) {
 
     template.forEach(function(item) {
         if (item.type == 'separator') {
-            $element.append(new Element('li.separator'))
+            $element.append('<li class="separator"/>')
             return
         }
 
