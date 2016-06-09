@@ -2124,22 +2124,22 @@ $(document).on('keydown', function(e) {
     if (['input', 'textarea'].indexOf(document.activeElement.tagName.toLowerCase()) >= 0)
         return
 
-    if (e.code == 36) {
+    if (e.keyCode == 36) {
         // Home
         goToBeginning()
-    } else if (e.code == 35) {
+    } else if (e.keyCode == 35) {
         // End
         goToEnd()
-    } else if (e.code == 38) {
+    } else if (e.keyCode == 38) {
         // Up
         goBack()
-    } else if (e.code == 40) {
+    } else if (e.keyCode == 40) {
         // Down
         goForward()
-    } else if (e.code == 37) {
+    } else if (e.keyCode == 37) {
         // Left
         goToPreviousVariation()
-    } else if (e.code == 39) {
+    } else if (e.keyCode == 39) {
         // Right
         goToNextVariation()
     }
