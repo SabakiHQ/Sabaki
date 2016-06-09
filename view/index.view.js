@@ -956,8 +956,8 @@ function updateBoardLines() {
         var mirrored = v2[0] < v1[0]
         var $li1 = $('#goban .pos_' + v1.join('-'))
         var $li2 = $('#goban .pos_' + v2.join('-'))
-        var pos1 = $li1.offset()
-        var pos2 = $li2.offset()
+        var pos1 = $li1.position()
+        var pos2 = $li2.position()
         var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
         var angle = Math.atan(dy / dx) * 180 / Math.PI
@@ -965,10 +965,10 @@ function updateBoardLines() {
         var length = Math.sqrt(dx * dx + dy * dy)
 
         $(line).css({
-            top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty,
-            left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + tx,
-            marginLeft: -length / 2,
-            width: length,
+            top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty + 'px',
+            left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + tx + 'px',
+            marginLeft: -length / 2 + 'px',
+            width: length + 'px',
             transform: 'rotate(' + angle + 'deg)'
         })
     })
