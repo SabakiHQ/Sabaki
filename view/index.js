@@ -1799,7 +1799,7 @@ function newFile(playSound) {
 function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
 
-    $('#fileinput').val().off('change').on('change', function(evt) {
+    $('#fileinput').val('').off('change').on('change', function(evt) {
         var f = evt.target.files[0]
 
         if (f) {
@@ -1881,15 +1881,14 @@ function saveFile() {
 
     var sgf = saveFileToSgf()
     var link = 'data:application/x-go-sgf;charset=utf-8,' + encodeURIComponent(sgf)
-    var el = new Element('a', {
-        download: getRepresentedFilename() || 'game.sgf',
-        href: link,
-        css: { display: 'none' }
-    })
+    var $el = $('<a/>')
+    .attr('download', getRepresentedFilename() || 'game.sgf')
+    .attr('href', link)
+    .css('display', 'none')
 
-    document.body.grab(el)
-    el.click()
-    el.destroy()
+    $('body').append($el)
+    $el.get(0).click()
+    $el.remove()
 
     updateFileHash()
 }
