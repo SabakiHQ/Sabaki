@@ -248,13 +248,13 @@
             { "type": "separator" },
             {
                 "label": "Generate &Move",
-                "accelerator": "F10",
+                "accelerator": "F5",
                 "action": "generatemove"
             },
             { "type": "separator" },
             {
                 "label": "Toggle &GTP Console",
-                "accelerator": "CmdOrCtrl+Alt+C",
+                "accelerator": "CmdOrCtrl+Shift+C",
                 "action": "gtpconsole"
             },
             {
