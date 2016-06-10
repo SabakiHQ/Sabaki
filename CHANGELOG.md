@@ -4,8 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to turn off automatic move titles in the preferences
+
 **Changed**
 
+* Change keyboard shortcut for 'Generate Move' to `F5`
+* Change keyboard shortcut for 'GTP console' to `CmdOrCtrl+Shift+C`
+* Press `Esc` to exit full screen mode
 * Update to Electron v1.2.2
 
 ## [Sabaki v0.15.1][v0.15.1] (2016-06-07)
