@@ -2095,7 +2095,9 @@ function undoBoard() {
 $(document).on('keydown', function(e) {
     if (e.keyCode == 27) {
         // Escape key
-        closeDrawers()
+
+        if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
+            setFullScreen(false)
     }
 }).ready(function() {
     loadSettings()

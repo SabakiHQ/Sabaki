@@ -22,6 +22,17 @@ function setIsBusy(busy) {
     }, setting.get('app.hide_busy_delay'))
 }
 
+function getFullScreen() {
+    return remote.getCurrentWindow().isFullScreen()
+}
+
+function setFullScreen(fullscreen) {
+    var win = remote.getCurrentWindow()
+    win.setFullScreen(fullscreen)
+    win.setMenuBarVisibility(!fullscreen)
+    win.setAutoHideMenuBar(fullscreen)
+}
+
 function setProgressIndicator(progress, win) {
     if (win) win.setProgressBar(progress)
 }
@@ -1607,6 +1618,8 @@ function closeGameChooser() {
 }
 
 function closeDrawers() {
+    var old = $('body').attr('class')
+
     closeGameInfo()
     closeScore()
     closePreferences()
@@ -1616,6 +1629,8 @@ function closeDrawers() {
     setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
+
+    return old != $('body').attr('class')
 }
 
 /**

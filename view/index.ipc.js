@@ -59,12 +59,7 @@ var menudata = {
     "toggleshowsiblings": function() { setShowSiblings(!getShowSiblings()) },
     "togglegamegraph": function() { setSidebarArrangement(!getShowGraph(), getShowComment()) },
     "togglecomments": function() { setSidebarArrangement(getShowGraph(), !getShowComment()) },
-    "togglefullscreen": function() {
-        var win = remote.getCurrentWindow()
-        win.setFullScreen(!win.isFullScreen())
-        win.setMenuBarVisibility(!win.isFullScreen())
-        win.setAutoHideMenuBar(win.isFullScreen())
-    },
+    "togglefullscreen": function() { setFullScreen(!getFullScreen()) },
 
     "checkforupdates": function() { ipcRenderer.send('check-for-updates', true) },
     "github": function() { shell.openExternal('https://github.com/yishn/' + app.getName()) },
