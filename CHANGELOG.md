@@ -7,11 +7,12 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to turn off automatic move titles in the preferences
+* Add keyboard shortcut for 'Show Coordinates'
 
 **Changed**
 
 * Change keyboard shortcut for 'Generate Move' to `F5`
-* Change keyboard shortcut for 'GTP console' to `CmdOrCtrl+Shift+C`
+* Remove keyboard shortcut for 'GTP console'
 * Press `Esc` to exit full screen mode
 * Update to Electron v1.2.2
 

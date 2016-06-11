@@ -254,7 +254,6 @@
             { "type": "separator" },
             {
                 "label": "Toggle &GTP Console",
-                "accelerator": "CmdOrCtrl+Shift+C",
                 "action": "gtpconsole"
             },
             {
@@ -278,6 +277,7 @@
             { "type": "separator" },
             {
                 "label": "Show &Coordinates",
+                "accelerator": "CmdOrCtrl+Shift+C",
                 "checked": "view.show_coordinates",
                 "action": "togglecoordinates"
             },
