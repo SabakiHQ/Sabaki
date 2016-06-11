@@ -1619,6 +1619,7 @@ function closeGameChooser() {
 
 function closeDrawers() {
     var old = $('body').attr('class')
+    var drawersOpen = $('.drawer.show').length > 0
 
     closeGameInfo()
     closeScore()
@@ -1630,7 +1631,7 @@ function closeDrawers() {
     setFindMode(false)
     setGuessMode(false)
 
-    return old != $('body').attr('class')
+    return old != $('body').attr('class') || drawersOpen
 }
 
 /**
