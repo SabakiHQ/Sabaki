@@ -1,4 +1,4 @@
-(;GM[1]AP[Sabaki:0.11.5]CA[UTF-8]SZ[19]
+(;GM[1]AP[Sabaki:0.15.1]CA[UTF-8]SZ[19]
 (;AB[dd][kc][qd]CR[aa:se][as]N[Low Chinese opening]
 )(;AB[dd][kd][qd]CR[aa:se][as]N[High Chinese opening]
 )(;AB[dd][pc][qe]CR[aa:sf][as]N[Orthodox opening]
@@ -9,6 +9,7 @@
 )(;AB[pd][jd][dd]CR[aa:se][as]N[Sanrensei opening]
 )(;AB[dd][pd]CR[aa:se][as]N[Nirensei opening]
 )(;AB[qd][pq][cp][pe]AW[dc][oc][qo]CR[aa:ss]N[Shūsaku opening]
+)(;AE[oc][qd]AB[qc]CR[aa][qa:sc][ss]N[3-3 point]
 )(;AW[qd]AB[oc]CR[ba][ss][na:se]N[Low approach]
 )(;AW[qd]AB[od]CR[ba][ss][na:se]N[High approach]
 )(;AB[oc][qd]CR[ba][ss][na:se]N[Low enclosure]
