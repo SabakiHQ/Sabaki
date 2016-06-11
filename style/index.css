@@ -563,7 +563,7 @@ header, #edit, #scoring, #estimator, #find, #guess {
     z-index: 3;
 }
 
-#info, #score, #preferences, #gamechooser {
+.drawer {
         position: fixed;
         left: 0;
         right: 0;
@@ -576,30 +576,24 @@ header, #edit, #scoring, #estimator, #find, #guess {
         transition: bottom .5s;
         z-index: 15;
     }
-    #info.show, #score.show, #preferences.show, #gamechooser.show {
+    .drawer.show {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
-    #info input, #info select, button,
-    #preferences input, #preferences select,
-    #gamechooser input {
+    .drawer input, .drawer select, button {
         background: #111;
         color: #eee;
     }
-    #info input:focus, #info select:focus,
-    button:hover:not([class^="pika-"]), button:focus:not([class^="pika-"]),
-    #preferences input:focus, #preferences select:focus,
-    #gamechooser input:focus {
+    .drawer input:focus, .drawer select:focus,
+    button:hover:not([class^="pika-"]), button:focus:not([class^="pika-"]) {
         background: #1a1a1a;
-    }
-    #preferences input[type="checkbox"]:focus {
-        background: #111;
     }
     button:active {
         position: relative;
         top: 2px;
-    }
-    #info section {
+}
+
+#info section {
         text-align: center;
         margin-bottom: 20px;
     }
@@ -727,6 +721,8 @@ header, #edit, #scoring, #estimator, #find, #guess {
         bottom: -440px;
         height: 400px;
     }
+    #preferences.show { bottom: 0; }
+    #preferences input[type="checkbox"]:focus { background: #111; }
     #preferences form ul { margin: 0 0 1.5em; }
     #preferences form ul li { margin: 0 0 7px; }
     #preferences form > p:last-child {
@@ -761,6 +757,7 @@ header, #edit, #scoring, #estimator, #find, #guess {
         bottom: -100%;
         padding: 0;
     }
+    #gamechooser.show { bottom: 0; }
     #gamechooser > input {
         position: absolute;
         top: 23px;
