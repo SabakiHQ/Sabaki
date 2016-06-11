@@ -47,7 +47,7 @@ var defaults = {
         'boardsize', 'clear_board', 'play',
         'genmove', 'undo', 'fixed_handicap',
         'place_free_handicap', 'set_free_handicap',
-        'loadsgf'
+        'loadsgf', 'komi'
     ],
     'console.max_history_count': 30,
     'debug.dev_tools': false,
@@ -76,6 +76,7 @@ var defaults = {
     'graph.node_size': 4,
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
+    'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
@@ -96,7 +97,7 @@ var defaults = {
     'view.sidebar_width': 200,
     'view.sidebar_minwidth': 100,
     'window.height': 604,
-    'window.minheight': 590,
+    'window.minheight': 200,
     'window.minwidth': 550,
     'window.width': 564
 }
