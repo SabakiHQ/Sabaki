@@ -14,7 +14,7 @@ main {
         box-shadow: 0 5px 20px rgba(20, 0, 15, .8);
 }
 
-header, #edit, #scoring, #estimator, #find, #guess {
+header, #bar .bar {
         position: absolute;
         left: 0;
         right: 0;
@@ -136,20 +136,31 @@ header, #edit, #scoring, #estimator, #find, #guess {
         line-height: 40px;
         transition: background .2s;
     }
+    #bar .bar { top: -40px; }
+    #bar .bar a.close {
+        display: block;
+        position: absolute;
+        right: 4px;
+        top: 0;
+        height: 40px;
+        width: 35px;
+        background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
+        opacity: .5;
+    }
+    #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+    }
+    #bar .bar a.close:active { opacity: .7; }
     .edit #bar { background: #C4BD64; }
     .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
     .guess #bar { background: #823499; }
-    .edit #edit, .scoring #scoring, .estimator #estimator, .find #find, .guess #guess {
-        top: 0;
-    }
-    .edit header, .scoring header, .estimator header, .find header, .guess header {
-        top: 40px;
-    }
+    .edit #edit, .scoring #scoring, .estimator #estimator,
+    .find #find, .guess #guess { top: 0; }
+    .edit header, .scoring header, .estimator header,
+    .find header, .guess header { top: 40px; }
     #edit { color: #333; }
-    #edit, #scoring, #estimator, #find, #guess {
-        top: -40px;
-    }
     #scoring button, #estimator button, #find button {
         position: absolute;
         left: 10px;
@@ -182,25 +193,7 @@ header, #edit, #scoring, #estimator, #find, #guess {
         transform: translateY(-50%);
 }
 
-#edit a.close, #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
-        display: block;
-        position: absolute;
-        right: 4px;
-        top: 0;
-        height: 40px;
-        width: 35px;
-        background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
-        opacity: .5;
-    }
-    #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
-    }
-    #edit a.close:active, #scoring a.close:active, #estimator a.close:active
-    #find a.close:active, #guess a.close:active {
-        opacity: .7;
-    }
-    #edit ul {
+#edit ul {
         display: table;
         margin: 0 auto;
         overflow: hidden;

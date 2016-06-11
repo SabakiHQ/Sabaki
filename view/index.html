@@ -29,7 +29,7 @@
     </main>
 
     <section id="bar">
-        <section id="edit">
+        <section id="edit" class="bar">
             <ul>
                 <li class="selected stone-tool">
                     <a href="#" title="Stone Tool"><img src="../img/edit/stone_1.svg" /></a>
@@ -59,24 +59,24 @@
             <a class="close" href="#" onclick="setEditMode(false)"></a>
         </section>
 
-        <section id="guess">
+        <section id="guess" class="bar">
             Guess the next move.
             <a class="close" href="#" onclick="setGuessMode(false)"></a>
         </section>
 
-        <section id="scoring">
+        <section id="scoring" class="bar">
             <button onclick="showScore()">Done</button>
             Please select dead stones.
             <a class="close" href="#" onclick="setScoringMode(false)"></a>
         </section>
 
-        <section id="estimator">
+        <section id="estimator" class="bar">
             <button onclick="showScore()">Estimate</button>
             Toggle group status.
             <a class="close" href="#" onclick="setEstimatorMode(false)"></a>
         </section>
 
-        <section id="find">
+        <section id="find" class="bar">
             <form>
                 <input type="text" placeholder="Find" />
 
