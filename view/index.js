@@ -1662,7 +1662,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     // Cleanup
     var $forms = $('#console .inner form')
     if ($forms.length > setting.get('console.max_history_count')) {
-        $forms.eq(0).siblings('pre').remove()
+        $forms.eq(0).next('pre').remove()
         $forms.eq(0).remove()
     }
 
