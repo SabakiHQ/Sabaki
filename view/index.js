@@ -1578,8 +1578,10 @@ function commitGameInfo() {
     setUndoable(false)
     updateSidebar()
 
+    // Update engine
+
     if (!$info.hasClass('disabled')) {
-        // Update engine
+        // Attach/detach engine
 
         var engines = setting.getEngines()
         var indices = $('#info section .menu').get().map(function(x) { return $(x).data('engineindex') })
@@ -1593,6 +1595,8 @@ function commitGameInfo() {
             detachEngine()
         }
     } else {
+        // Update komi
+
         var command = new gtp.Command(null, 'komi', [komi])
         sendGTPCommand(command, true)
     }
