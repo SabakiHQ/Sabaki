@@ -16,6 +16,10 @@ All notable changes to this project will be documented in this file.
 * Press `Esc` to exit full screen mode
 * Update to Electron v1.2.2
 
+**Fixed**
+
+* Fix komi not updated for GTP engine
+
 ## [Sabaki v0.15.1][v0.15.1] (2016-06-07)
 
 **Added**

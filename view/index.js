@@ -1578,9 +1578,9 @@ function commitGameInfo() {
     setUndoable(false)
     updateSidebar()
 
-    // Start engine
-
     if (!$info.hasClass('disabled')) {
+        // Update engine
+
         var engines = setting.getEngines()
         var indices = $('#info section .menu').get().map(function(x) { return $(x).data('engineindex') })
         var max = Math.max.apply(null, indices)
@@ -1592,6 +1592,9 @@ function commitGameInfo() {
         } else {
             detachEngine()
         }
+    } else {
+        var command = new gtp.Command(null, 'komi', [komi])
+        sendGTPCommand(command, true)
     }
 }
 
