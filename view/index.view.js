@@ -275,11 +275,12 @@ function getCommentTitle() {
 function setCommentTitle(text) {
     var $input = $('#properties .edit .header input')
 
-    if (text.trim() == '' && !!setting.get('comments.show_move_interpretation'))
-        text = getCurrentMoveInterpretation()
-
-    $('#properties .inner .header span').text(text)
+    $header = $('#properties .inner .header span')
+    $header.text(text)
     if ($input.val() != text) $input.val(text)
+
+    if (text.trim() == '' && !!setting.get('comments.show_move_interpretation'))
+        $header.text(getCurrentMoveInterpretation())
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
