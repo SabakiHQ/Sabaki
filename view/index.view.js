@@ -22,6 +22,17 @@ function setIsBusy(busy) {
     }, setting.get('app.hide_busy_delay'))
 }
 
+function getFullScreen() {
+    return remote.getCurrentWindow().isFullScreen()
+}
+
+function setFullScreen(fullscreen) {
+    var win = remote.getCurrentWindow()
+    win.setFullScreen(fullscreen)
+    win.setMenuBarVisibility(!fullscreen)
+    win.setAutoHideMenuBar(fullscreen)
+}
+
 function setProgressIndicator(progress, win) {
     if (win) win.setProgressBar(progress)
 }
@@ -264,8 +275,12 @@ function getCommentTitle() {
 function setCommentTitle(text) {
     var $input = $('#properties .edit .header input')
 
-    $('#properties .inner .header span').text(text.trim() != '' ? text : getCurrentMoveInterpretation())
+    $header = $('#properties .inner .header span')
+    $header.text(text)
     if ($input.val() != text) $input.val(text)
+
+    if (text.trim() == '' && !!setting.get('comments.show_move_interpretation'))
+        $header.text(getCurrentMoveInterpretation())
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
@@ -1636,6 +1651,9 @@ function closeGameChooser() {
 }
 
 function closeDrawers() {
+    var old = $('body').attr('class')
+    var drawersOpen = $('.drawer.show').length > 0
+
     closeGameInfo()
     closeScore()
     closePreferences()
@@ -1645,6 +1663,8 @@ function closeDrawers() {
     setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
+
+    return old != $('body').attr('class') || drawersOpen
 }
 
 /**

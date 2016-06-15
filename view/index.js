@@ -1581,9 +1581,11 @@ function commitGameInfo() {
     setUndoable(false)
     updateSidebar()
 
-    // Start engine
+    // Update engine
 
     if (!$info.hasClass('disabled')) {
+        // Attach/detach engine
+
         var engines = setting.getEngines()
         var indices = $('#info section .menu').get().map(function(x) { return $(x).data('engineindex') })
         var max = Math.max.apply(null, indices)
@@ -1595,6 +1597,11 @@ function commitGameInfo() {
         } else {
             detachEngine()
         }
+    } else {
+        // Update komi
+
+        var command = new gtp.Command(null, 'komi', [komi])
+        sendGTPCommand(command, true)
     }
 }
 
@@ -1658,7 +1665,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     // Cleanup
     var $forms = $('#console .inner form')
     if ($forms.length > setting.get('console.max_history_count')) {
-        $forms.eq(0).siblings('pre').remove()
+        $forms.eq(0).next('pre').remove()
         $forms.eq(0).remove()
     }
 
@@ -2117,7 +2124,9 @@ function undoBoard() {
 $(document).on('keydown', function(e) {
     if (e.keyCode == 27) {
         // Escape key
-        closeDrawers()
+
+        if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
+            setFullScreen(false)
     }
 
     if (['input', 'textarea'].indexOf(document.activeElement.tagName.toLowerCase()) >= 0)

@@ -43,7 +43,7 @@
     </main>
 
     <section id="bar">
-        <section id="edit">
+        <section id="edit" class="bar">
             <ul>
                 <li class="selected stone-tool">
                     <a href="#" title="Stone Tool"><img src="../img/edit/stone_1.svg" /></a>
@@ -73,24 +73,24 @@
             <a class="close" href="#" onclick="setEditMode(false)"></a>
         </section>
 
-        <section id="guess">
+        <section id="guess" class="bar">
             Guess the next move.
             <a class="close" href="#" onclick="setGuessMode(false)"></a>
         </section>
 
-        <section id="scoring">
+        <section id="scoring" class="bar">
             <button onclick="showScore()">Done</button>
             Please select dead stones.
             <a class="close" href="#" onclick="setScoringMode(false)"></a>
         </section>
 
-        <section id="estimator">
+        <section id="estimator" class="bar">
             <button onclick="showScore()">Estimate</button>
             Toggle group status.
             <a class="close" href="#" onclick="setEstimatorMode(false)"></a>
         </section>
 
-        <section id="find">
+        <section id="find" class="bar">
             <form>
                 <input type="text" placeholder="Find" />
 
@@ -188,7 +188,7 @@
     </section>
 </section>
 
-<section id="info">
+<section id="info" class="drawer">
     <form>
         <section>
             <span>
@@ -260,7 +260,7 @@
     </form>
 </section>
 
-<section id="score">
+<section id="score" class="drawer">
     <h2>Score</h2>
 
     <ul class="tabs">
@@ -316,7 +316,7 @@
     </form>
 </section>
 
-<section id="preferences">
+<section id="preferences" class="drawer">
     <ul class="tabs">
         <li class="current">
             <a href="#" onclick="return setPreferencesTab('general')" class="general">General</a>
@@ -344,6 +344,8 @@
             </ul>
 
             <ul>
+                <li><label><input type="checkbox" name="comments.show_move_interpretation" />
+                    Show automatic move title</label></li>
                 <li><label><input type="checkbox" name="game.show_ko_warning" />
                     Show ko warning</label></li>
                 <li><label><input type="checkbox" name="game.show_suicide_warning" />
@@ -376,7 +378,7 @@
     </form>
 </section>
 
-<section id="gamechooser">
+<section id="gamechooser" class="drawer">
     <h2>Manage Games</h2>
 
     <input type="search" name="filter" placeholder="Filter" />

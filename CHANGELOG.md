@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.15.2][v0.15.2] (2016-06-15)
+
+**Added**
+
+* Ability to turn off automatic move titles in the preferences
+* Add keyboard shortcut for 'Show Coordinates'
 
 **Changed**
 
+* Change keyboard shortcut for 'Generate Move' to `F5`
+* Remove keyboard shortcut for 'GTP console'
+* Press `Esc` to exit full screen mode
 * Update to Electron v1.2.2
+
+**Fixed**
+
+* Fix komi not updated for GTP engine
 
 ## [Sabaki v0.15.1][v0.15.1] (2016-06-07)
 
@@ -362,7 +374,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.15.1...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.15.2...master
+[v0.15.2]: https://github.com/yishn/Sabaki/compare/v0.15.1...v0.15.2
 [v0.15.1]: https://github.com/yishn/Sabaki/compare/v0.15.0...v0.15.1
 [v0.15.0]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.0
 [v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0
