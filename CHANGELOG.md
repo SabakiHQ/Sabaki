@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased] (2016-06-16)
+
+**Fixed**
+
+* Fix userstyles not working
+
 ## [Sabaki v0.15.2][v0.15.2] (2016-06-15)
 
 **Added**

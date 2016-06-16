@@ -373,7 +373,7 @@ function getEmptyGameTree() {
  */
 
 function loadSettings() {
-    $('#head link.userstyle').attr('href', setting.stylesPath)
+    $('head link.userstyle').attr('href', setting.stylesPath)
 
     $('#goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
     $('#goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
