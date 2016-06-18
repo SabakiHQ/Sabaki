@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* `Ctrl`-click position to insert coordinates when in edit mode
+
 ## [Sabaki v0.15.3][v0.15.3] (2016-06-16)
 
 **Fixed**
