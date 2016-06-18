@@ -1319,7 +1319,14 @@ function vertexClicked(vertex, event) {
 
         updateAreaMap(getEstimatorMode())
     } else if (getEditMode()) {
-        useTool(vertex, event)
+        if (event.ctrlKey) {
+            var coord = getBoard().vertex2coord(vertex)
+
+            setCommentText([getCommentText(), coord].join(' ').trim())
+            commitCommentText()
+        } else {
+            useTool(vertex, event)
+        }
     } else if (getFindMode()) {
         if (event.button != 0) return
 

@@ -953,6 +953,10 @@ function buildBoard() {
     $goban.empty().append(rows).append($coordx).append($coordy)
     $goban.prepend($coordx.clone()).prepend($coordy.clone())
 
+    $goban.off('mousemove').on('mousemove', function(e) {
+        $('#goban').toggleClass('crosshair', getEditMode() && e.ctrlKey)
+    })
+
     resizeBoard()
 
     // Readjust shifts

@@ -10,6 +10,7 @@
         color: #5E2E0C;
         text-shadow: 0 1px 0 #D28D32;
     }
+    .goban.crosshair { cursor: crosshair; }
     .goban > div {
         position: absolute;
         left: 50%;
