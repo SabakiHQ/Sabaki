@@ -1322,7 +1322,7 @@ function vertexClicked(vertex, event) {
         if (event.ctrlKey) {
             var coord = getBoard().vertex2coord(vertex)
 
-            setCommentText([getCommentText(), coord].join(' ').trim())
+            setCommentText([getCommentText().trim(), coord].join(' ').trim())
             commitCommentText()
         } else {
             useTool(vertex, event)
