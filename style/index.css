@@ -147,7 +147,7 @@ header, #bar .bar {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
-    #scoring .close, #estimator .close, #find .close, 
+    #scoring .close, #estimator .close, #find .close,
     #guess .close, #autoplay .close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
@@ -161,7 +161,7 @@ header, #bar .bar {
     .edit #edit, .scoring #scoring, .estimator #estimator,
     .find #find, .guess #guess, .autoplay #autoplay { top: 0; }
     .edit header, .scoring header, .estimator header,
-    .find header, .guess header { top: 40px; }
+    .find header, .guess header, .autoplay header { top: 40px; }
     #edit { color: #333; }
     #scoring button, #estimator button, #find button {
         position: absolute;
