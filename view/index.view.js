@@ -1647,6 +1647,7 @@ function closeDrawers() {
     setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
+    setAutoplayMode(false)
 
     return old != $('body').attr('class') || drawersOpen
 }
