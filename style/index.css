@@ -137,7 +137,7 @@ header, #bar .bar {
         transition: background .2s;
     }
     #bar .bar { top: -40px; }
-    #bar .bar a.close {
+    #bar .bar .close {
         display: block;
         position: absolute;
         right: 4px;
@@ -147,17 +147,19 @@ header, #bar .bar {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
-    #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
+    #scoring .close, #estimator .close, #find .close, 
+    #guess .close, #autoplay .close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #bar .bar a.close:active { opacity: .7; }
+    #bar .bar .close:active { opacity: .7; }
     .edit #bar { background: #C4BD64; }
     .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
     .guess #bar { background: #823499; }
+    .autoplay #bar { background: #823499; }
     .edit #edit, .scoring #scoring, .estimator #estimator,
-    .find #find, .guess #guess { top: 0; }
+    .find #find, .guess #guess, .autoplay #autoplay { top: 0; }
     .edit header, .scoring header, .estimator header,
     .find header, .guess header { top: 40px; }
     #edit { color: #333; }
