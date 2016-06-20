@@ -397,7 +397,19 @@ function setGuessMode(guessMode) {
         $('body').addClass('guess')
     } else {
         $('body').removeClass('guess')
-        setCurrentTreePosition.apply(null, getCurrentTreePosition())
+    }
+}
+
+function getAutoplayMode() {
+    return $('body').hasClass('autoplay')
+}
+
+function setAutoplayMode(autoplayMode) {
+    if (autoplayMode) {
+        closeDrawers()
+        $('body').addClass('autoplay')
+    } else {
+        $('body').removeClass('autoplay')
     }
 }
 
