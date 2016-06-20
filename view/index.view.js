@@ -1635,8 +1635,12 @@ function closeGameChooser() {
 }
 
 function closeDrawers() {
-    var old = $('body').attr('class')
     var drawersOpen = $('.drawer.show').length > 0
+    var modeOpen = $('#bar .bar').get().map(function(x) {
+        return $(x).attr('id')
+    }).some(function(x) {
+        return $('body').hasClass(x)
+    })
 
     closeGameInfo()
     closeScore()
@@ -1649,7 +1653,7 @@ function closeDrawers() {
     setGuessMode(false)
     setAutoplayMode(false)
 
-    return old != $('body').attr('class') || drawersOpen
+    return modeOpen || drawersOpen
 }
 
 /**
