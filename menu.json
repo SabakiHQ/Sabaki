@@ -270,6 +270,10 @@
                 "action": "toggleguessmode"
             },
             {
+                "label": "Toggle Auto&play Mode",
+                "action": "toggleautoplaymode"
+            },
+            {
                 "label": "Toggle &Full Screen",
                 "accelerator": "CmdOrCtrl+Shift+F",
                 "action": "togglefullscreen"
