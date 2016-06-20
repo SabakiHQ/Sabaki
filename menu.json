@@ -266,12 +266,12 @@
         "label": "&View",
         "submenu": [
             {
-                "label": "Toggle G&uess Mode",
-                "action": "toggleguessmode"
-            },
-            {
                 "label": "Toggle Auto&play Mode",
                 "action": "toggleautoplaymode"
+            },
+            {
+                "label": "Toggle G&uess Mode",
+                "action": "toggleguessmode"
             },
             {
                 "label": "Toggle &Full Screen",
