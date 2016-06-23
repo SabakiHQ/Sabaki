@@ -105,7 +105,9 @@ function buildMenu(noWindows) {
 
     // Load engines
 
-    var engineMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Engine' })[0]
+    var engineMenu = template.filter(function(x) {
+        return x.label && x.label.replace('&', '') == 'Engine'
+    })[0]
 
     if (engineMenu) {
         var attachMenu = engineMenu.submenu[0].submenu
