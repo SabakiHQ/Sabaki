@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * `Ctrl`-click position to insert coordinates when in edit mode
 
+**Changed**
+
+* Update to Electron v1.2.5
+
 ## [Sabaki v0.15.3][v0.15.3] (2016-06-16)
 
 **Fixed**
