@@ -52,10 +52,7 @@ function buildMenu(noWindows) {
     // Create app menu for OS X
 
     if (process.platform == 'darwin') {
-        var appMenu = [{
-            label: 'About {name}',
-            role: 'about'
-        }]
+        var appMenu = [{ role: 'about' }]
 
         // Remove original 'Check for Updates' menu item
 
@@ -75,28 +72,12 @@ function buildMenu(noWindows) {
             { type: 'separator' },
             preferenceItem,
             { type: 'separator' },
-            {
-                label: 'Services',
-                submenu: [],
-                role: 'services'
-            },
+            { submenu: [], role: 'services' },
             { type: 'separator' },
-            {
-                label: 'Hide {name}',
-                accelerator: 'CmdOrCtrl+H',
-                role: 'hide'
-            },
-            {
-                label: 'Hide Others',
-                accelerator: 'CmdOrCtrl+Alt+H',
-                role: 'hideothers'
-            },
+            { role: 'hide' },
+            { role: 'hideothers' },
             { type: 'separator' },
-            {
-                label: 'Quit',
-                accelerator: 'CmdOrCtrl+Q',
-                click: function() { app.quit() }
-            }
+            { role: 'quit' }
         ])
 
         template.unshift({
@@ -109,22 +90,14 @@ function buildMenu(noWindows) {
         // Add 'Window' menu
 
         template.splice(noWindows ? template.length : template.length - 1, 0, {
-            label: 'Window',
             submenu: [
                 {
                     label: 'New Window',
                     click: newWindow.bind(null, null)
                 },
-                {
-                    label: 'Minimize',
-                    role: 'minimize',
-                    accelerator: 'CmdOrCtrl+M'
-                },
+                { role: 'minimize' },
                 { type: 'separator' },
-                {
-                    label: 'Bring All to Front',
-                    role: 'front'
-                }
+                { role: 'front' }
             ],
             role: 'window'
         })
