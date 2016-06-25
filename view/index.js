@@ -374,8 +374,35 @@ function getAutoplaying() {
 }
 
 function setAutoplaying(playing) {
-    if (playing) setAutoplayMode(playing)
-    $('#autoplay').toggleClass('playing', playing)
+    var autoplay = function() {
+        if (!getAutoplaying()) return
+
+        var tp = getCurrentTreePosition()
+        var ntp = gametree.navigate.apply(null, tp.concat([1]))
+        if (!ntp) {
+            setAutoplaying(false)
+            return
+        }
+
+        var node = ntp[0].nodes[ntp[1]]
+
+        if (!node.B && !node.W) {
+            setCurrentTreePosition.apply(null, ntp)
+        } else {
+            var vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+            makeMove(vertex, false, true)
+        }
+
+        setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
+    }
+
+    if (playing) {
+        setAutoplayMode(playing)
+        $('#autoplay').addClass('playing')
+        autoplay()
+    } else {
+        $('#autoplay').removeClass('playing')
+    }
 }
 
 /**
