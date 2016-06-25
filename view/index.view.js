@@ -407,6 +407,7 @@ function getAutoplayMode() {
 function setAutoplayMode(autoplayMode) {
     if (autoplayMode) {
         closeDrawers()
+        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
         $('body').addClass('autoplay')
     } else {
         $('body').removeClass('autoplay')

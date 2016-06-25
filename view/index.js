@@ -411,6 +411,14 @@ function prepareEditTools() {
     })
 }
 
+function prepareAutoplay() {
+    $('#autoplay input').on('input', function() {
+        var value = $(this).val()
+        console.log(value)
+        setting.set('autoplay.sec_per_move', +value)
+    })
+}
+
 function prepareGameGraph() {
     var $container = $('#graph')
     var s = new sigma({
@@ -2118,6 +2126,7 @@ $(document).on('keydown', function(e) {
     loadEngines()
     prepareDragDropFiles()
     prepareEditTools()
+    prepareAutoplay()
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
