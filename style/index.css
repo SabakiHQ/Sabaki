@@ -147,12 +147,12 @@ header, #bar .bar {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
+    #bar .bar .close:active { opacity: .7; }
     #scoring .close, #estimator .close, #find .close,
     #guess .close, #autoplay .close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #bar .bar .close:active { opacity: .7; }
     .edit #bar { background: #C4BD64; }
     .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
@@ -162,9 +162,14 @@ header, #bar .bar {
     .find #find, .guess #guess, .autoplay #autoplay { top: 0; }
     .edit header, .scoring header, .estimator header,
     .find header, .guess header, .autoplay header { top: 40px; }
-    #edit { color: #333; }
+    #bar .bar input {
+        box-sizing: border-box;
+        height: 32px;
+    }
     #scoring button, #estimator button, #find button {
+        box-sizing: border-box;
         position: absolute;
+        height: 32px;
         left: 10px;
         top: 50%;
         background: #400000;
@@ -172,9 +177,11 @@ header, #bar .bar {
     }
     #scoring button:hover, #scoring button:focus,
     #estimator button:hover, #estimator button:focus { background: #600000; }
-    #scoring button:active, #estimator button:active,
-    #find button:active { transform: translateY(-46%); }
-    #find button {
+    #bar .bar button:active {
+        transform: translateY(-46%);
+}
+
+#find button {
         left: 178px;
         padding-left: 7px;
         padding-right: 7px;
@@ -188,14 +195,19 @@ header, #bar .bar {
     }
     #find button:nth-child(2) { left: 212px; }
     #find input {
+        width: 173px;
+    }
+    #find form {
         position: absolute;
         left: 10px;
         top: 50%;
-        width: 143px;
         transform: translateY(-50%);
 }
 
-#edit ul {
+#edit {
+        color: #333;
+    }
+    #edit ul {
         display: table;
         margin: 0 auto;
         overflow: hidden;
@@ -227,7 +239,21 @@ header, #bar .bar {
         margin-top: -10px;
 }
 
-#autoplay .play, #autoplay .pause {
+#autoplay {
+        color: rgba(255, 255, 255, .5);
+        text-align: left;
+    }
+    #autoplay form {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    #autoplay input {
+        width: 4em;
+        margin-right: 5px;
+    }
+    #autoplay .play, #autoplay .pause {
         display: block;
         position: absolute;
         left: 50%;
