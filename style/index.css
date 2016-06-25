@@ -251,8 +251,10 @@ header, #bar .bar {
     #autoplay input {
         width: 4em;
         margin-right: 5px;
-        text-align: right;
+        background-color: #26292C;
+        color: white;
     }
+    #autoplay input:focus { background-color: #484B4E; }
     #autoplay .play {
         display: block;
         position: absolute;
