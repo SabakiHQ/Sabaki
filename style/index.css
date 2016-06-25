@@ -227,6 +227,28 @@ header, #bar .bar {
         margin-top: -10px;
 }
 
+#autoplay .play, #autoplay .pause {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: 40px;
+        width: 35px;
+        background: url('../node_modules/octicons/svg/triangle-right.svg') center / auto 20px no-repeat;
+        transform: translateX(-50%);
+        -webkit-filter: invert(100%);
+        filter: invert(100%);
+    }
+    #autoplay .pause {
+        background-image: url('../node_modules/octicons/svg/primitive-square.svg');
+    }
+    #autoplay .play:hover, #autoplay .pause:hover {
+        background-color: rgba(255, 255, 255, .2);
+    }
+    #autoplay .play:active, #autoplay .pause:active {
+        background-color: rgba(255, 255, 255, .3);
+}
+
 #leftsidebar {
         display: none;
         position: absolute;
