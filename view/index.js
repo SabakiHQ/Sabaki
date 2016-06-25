@@ -422,9 +422,8 @@ function prepareEditTools() {
 
 function prepareAutoplay() {
     $('#autoplay input').on('input', function() {
-        var value = $(this).val()
-        console.log(value)
-        setting.set('autoplay.sec_per_move', +value)
+        var value = Math.max(1, +$(this).val())
+        setting.set('autoplay.sec_per_move', value)
     })
 }
 
