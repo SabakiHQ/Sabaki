@@ -368,6 +368,15 @@ function getEmptyGameTree() {
     return sgf.parse(sgf.tokenize(buffer))
 }
 
+function getAutoplaying() {
+    return getAutoplayMode() && $('#autoplay').hasClass('playing')
+}
+
+function setAutoplaying(playing) {
+    if (playing) setAutoplayMode(playing)
+    $('#autoplay').toggleClass('playing', playing)
+}
+
 /**
  * Methods
  */

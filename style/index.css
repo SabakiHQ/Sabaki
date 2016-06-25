@@ -267,6 +267,7 @@ header, #bar .bar {
         transition: background-image .2s;
     }
     #autoplay.playing .play {
+        background-color: rgba(255, 255, 255, .3);
         background-image: url('../node_modules/octicons/svg/primitive-square.svg');
     }
     #autoplay .play:hover {
@@ -274,6 +275,12 @@ header, #bar .bar {
     }
     #autoplay .play:active {
         background-color: rgba(255, 255, 255, .3);
+    }
+    #autoplay.playing .play:hover {
+        background-color: rgba(255, 255, 255, .4);
+    }
+    #autoplay.playing .play:active {
+        background-color: rgba(255, 255, 255, .5);
 }
 
 #leftsidebar {

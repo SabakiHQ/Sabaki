@@ -411,6 +411,7 @@ function setAutoplayMode(autoplayMode) {
         $('body').addClass('autoplay')
     } else {
         $('body').removeClass('autoplay')
+        setAutoplaying(false)
     }
 }
 
