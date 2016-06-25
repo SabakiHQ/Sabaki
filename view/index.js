@@ -1405,13 +1405,12 @@ function vertexClicked(vertex, event) {
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
+            closeDrawers()
         } else if (vertex in board.markups
         && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
             removeNode.apply(null, getCurrentTreePosition())
         }
-
-        closeDrawers()
     }
 }
 
