@@ -423,6 +423,7 @@ function prepareEditTools() {
 function prepareAutoplay() {
     $('#autoplay input').on('input', function() {
         var value = Math.min(10, Math.max(1, +$(this).val()))
+        value = Math.floor(value * 10) / 10
         setting.set('autoplay.sec_per_move', value)
     }).on('blur', function() {
         $(this).val(setting.get('autoplay.sec_per_move'))
