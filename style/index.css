@@ -137,7 +137,7 @@ header, #bar .bar {
         transition: background .2s;
     }
     #bar .bar { top: -40px; }
-    #bar .bar a.close {
+    #bar .bar .close {
         display: block;
         position: absolute;
         right: 4px;
@@ -147,22 +147,28 @@ header, #bar .bar {
         background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
-    #scoring a.close, #estimator a.close, #find a.close, #guess a.close {
+    #bar .bar .close:active { opacity: .7; }
+    #scoring .close, #estimator .close, #find .close,
+    #guess .close, #autoplay .close {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    #bar .bar a.close:active { opacity: .7; }
     .edit #bar { background: #C4BD64; }
     .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
     .guess #bar { background: #823499; }
     .edit #edit, .scoring #scoring, .estimator #estimator,
-    .find #find, .guess #guess { top: 0; }
+    .find #find, .guess #guess, .autoplay #autoplay { top: 0; }
     .edit header, .scoring header, .estimator header,
-    .find header, .guess header { top: 40px; }
-    #edit { color: #333; }
+    .find header, .guess header, .autoplay header { top: 40px; }
+    #bar .bar input {
+        box-sizing: border-box;
+        height: 32px;
+    }
     #scoring button, #estimator button, #find button {
+        box-sizing: border-box;
         position: absolute;
+        height: 32px;
         left: 10px;
         top: 50%;
         background: #400000;
@@ -170,9 +176,11 @@ header, #bar .bar {
     }
     #scoring button:hover, #scoring button:focus,
     #estimator button:hover, #estimator button:focus { background: #600000; }
-    #scoring button:active, #estimator button:active,
-    #find button:active { transform: translateY(-46%); }
-    #find button {
+    #bar .bar button:active {
+        transform: translateY(-46%);
+}
+
+#find button {
         left: 178px;
         padding-left: 7px;
         padding-right: 7px;
@@ -186,14 +194,19 @@ header, #bar .bar {
     }
     #find button:nth-child(2) { left: 212px; }
     #find input {
+        width: 173px;
+    }
+    #find form {
         position: absolute;
         left: 10px;
         top: 50%;
-        width: 143px;
         transform: translateY(-50%);
 }
 
-#edit ul {
+#edit {
+        color: #333;
+    }
+    #edit ul {
         display: table;
         margin: 0 auto;
         overflow: hidden;
@@ -223,6 +236,58 @@ header, #bar .bar {
         height: 20px;
         margin-left: -10px;
         margin-top: -10px;
+}
+
+#autoplay {
+        color: rgba(255, 255, 255, .5);
+        text-align: left;
+    }
+    #autoplay form {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    #autoplay input {
+        width: 4em;
+        margin-right: 5px;
+        background-color: #26292C;
+        color: white;
+    }
+    #autoplay input:focus { background-color: #484B4E; }
+    #autoplay .play {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 0;
+        height: 40px;
+        width: 35px;
+        background: url('../node_modules/octicons/svg/triangle-right.svg') center / 20px 20px no-repeat;
+        transform: translateX(-50%);
+        -webkit-filter: invert(100%);
+        filter: invert(100%);
+        transition: background-image .2s;
+    }
+    #autoplay.playing .play {
+        background-color: rgba(255, 255, 255, .3);
+        background-image: url('../node_modules/octicons/svg/primitive-square.svg');
+        animation: playing-glowing 2.3s infinite;
+    }
+    @keyframes playing-glowing {
+        0% { box-shadow: none; }
+        50% { box-shadow: 0 0 40px rgba(0, 0, 0, .5); }
+    }
+    #autoplay .play:hover {
+        background-color: rgba(255, 255, 255, .2);
+    }
+    #autoplay .play:active {
+        background-color: rgba(255, 255, 255, .3);
+    }
+    #autoplay.playing .play:hover {
+        background-color: rgba(255, 255, 255, .4);
+    }
+    #autoplay.playing .play:active {
+        background-color: rgba(255, 255, 255, .5);
 }
 
 #leftsidebar {

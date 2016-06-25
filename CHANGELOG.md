@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Autoplay mode
 * `Ctrl`-click position to insert coordinates when in edit mode
 
 **Changed**

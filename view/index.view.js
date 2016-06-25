@@ -397,7 +397,21 @@ function setGuessMode(guessMode) {
         $('body').addClass('guess')
     } else {
         $('body').removeClass('guess')
-        setCurrentTreePosition.apply(null, getCurrentTreePosition())
+    }
+}
+
+function getAutoplayMode() {
+    return $('body').hasClass('autoplay')
+}
+
+function setAutoplayMode(autoplayMode) {
+    if (autoplayMode) {
+        closeDrawers()
+        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
+        $('body').addClass('autoplay')
+    } else {
+        $('body').removeClass('autoplay')
+        setAutoplaying(false)
     }
 }
 
@@ -1639,6 +1653,7 @@ function closeDrawers() {
     setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
+    setAutoplayMode(false)
 
     return modeOpen || drawersOpen
 }

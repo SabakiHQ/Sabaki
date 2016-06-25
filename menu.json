@@ -266,6 +266,10 @@
         "label": "&View",
         "submenu": [
             {
+                "label": "Toggle Auto&play Mode",
+                "action": "toggleautoplaymode"
+            },
+            {
                 "label": "Toggle G&uess Mode",
                 "action": "toggleguessmode"
             },
