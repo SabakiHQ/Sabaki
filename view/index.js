@@ -111,9 +111,9 @@ function getCurrentTreePosition() {
     return $('#goban').data('position')
 }
 
-function setCurrentTreePosition(tree, index, now, redraw) {
+function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
     if (!tree || getScoringMode() || getEstimatorMode()) return
-    if (getAutoplaying()) setAutoplaying(false)
+    if (!ignoreAutoplay && getAutoplaying()) setAutoplaying(false)
 
     // Remove old graph node color
 
@@ -871,7 +871,7 @@ function syncEngine() {
     setIsBusy(false)
 }
 
-function makeMove(vertex, sendCommand) {
+function makeMove(vertex, sendCommand, ignoreAutoplay) {
     if (sendCommand == null) sendCommand = getEngineController() != null
 
     var pass = !getBoard().hasVertex(vertex)
@@ -945,7 +945,7 @@ function makeMove(vertex, sendCommand) {
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
 
-        setCurrentTreePosition(tree, tree.nodes.length - 1)
+        setCurrentTreePosition(tree, tree.nodes.length - 1, null, null, ignoreAutoplay)
     } else {
         if (index != tree.nodes.length - 1) {
             // Search for next move
@@ -955,7 +955,7 @@ function makeMove(vertex, sendCommand) {
                 && helper.equals(sgf.point2vertex(nextNode[color][0]), vertex)
 
             if (moveExists) {
-                setCurrentTreePosition(tree, index + 1)
+                setCurrentTreePosition(tree, index + 1, null, null, ignoreAutoplay)
                 createNode = false
             }
         } else {
@@ -968,7 +968,7 @@ function makeMove(vertex, sendCommand) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(gametree.addBoard(variations[0]), 0)
+                setCurrentTreePosition(gametree.addBoard(variations[0]), 0, null, null, ignoreAutoplay)
                 createNode = false
             }
         }
@@ -988,7 +988,7 @@ function makeMove(vertex, sendCommand) {
 
             gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) setRootTree(splitted)
-            setCurrentTreePosition(newtree, 0)
+            setCurrentTreePosition(newtree, 0, null, null, ignoreAutoplay)
         }
     }
 
