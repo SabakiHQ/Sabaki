@@ -252,6 +252,7 @@ header, #bar .bar {
     #autoplay input {
         width: 4em;
         margin-right: 5px;
+        text-align: right;
     }
     #autoplay .play, #autoplay .pause {
         display: block;
