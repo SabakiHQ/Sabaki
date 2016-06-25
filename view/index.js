@@ -393,7 +393,8 @@ function setAutoplaying(playing) {
             makeMove(vertex, false, true)
         }
 
-        setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
+        var id = setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
+        $('#autoplay').data('timeoutid', id)
     }
 
     if (playing) {
@@ -401,6 +402,7 @@ function setAutoplaying(playing) {
         $('#autoplay').addClass('playing')
         autoplay()
     } else {
+        clearTimeout($('#autoplay').data('timeoutid'))
         $('#autoplay').removeClass('playing')
     }
 }
