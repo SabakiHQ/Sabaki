@@ -113,6 +113,7 @@ function getCurrentTreePosition() {
 
 function setCurrentTreePosition(tree, index, now, redraw) {
     if (!tree || getScoringMode() || getEstimatorMode()) return
+    if (getAutoplaying()) setAutoplaying(false)
 
     // Remove old graph node color
 
