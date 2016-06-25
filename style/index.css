@@ -271,6 +271,11 @@ header, #bar .bar {
     #autoplay.playing .play {
         background-color: rgba(255, 255, 255, .3);
         background-image: url('../node_modules/octicons/svg/primitive-square.svg');
+        animation: playing-glowing 2s infinite;
+    }
+    @keyframes playing-glowing {
+        0% { box-shadow: none; }
+        50% { box-shadow: 0 0 40px rgba(0, 0, 0, .5); }
     }
     #autoplay .play:hover {
         background-color: rgba(255, 255, 255, .2);
