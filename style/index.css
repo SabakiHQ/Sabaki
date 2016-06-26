@@ -238,9 +238,8 @@ header, #bar .bar {
         margin-top: -10px;
 }
 
-#autoplay {
+#autoplay label {
         color: rgba(255, 255, 255, .5);
-        text-align: left;
     }
     #autoplay form {
         position: absolute;
