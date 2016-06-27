@@ -195,9 +195,14 @@ function checkForUpdates(showNoUpdatesDialog) {
         if (err) return
 
         require('https').get(url, function(response) {
-            response.once('data', function(chunk) {
-                chunk = '' + chunk
-                var hasUpdates = chunk.indexOf('v' + app.getVersion()) == -1
+            var content = ''
+
+            response.on('data', function(chunk) {
+                content += chunk
+            })
+
+            response.on('end', function() {
+                var hasUpdates = content.indexOf('/tag/v' + app.getVersion()) == -1
 
                 if (hasUpdates) {
                     dialog.showMessageBox({
