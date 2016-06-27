@@ -78,6 +78,18 @@
             <a class="close" href="#" onclick="setGuessMode(false)"></a>
         </section>
 
+        <section id="autoplay" class="bar">
+            <form>
+                <label>
+                    <input type="number" name="duration" value="1" min="1" max="10" step="any" />
+                    sec per move
+                </label>
+            </form>
+
+            <a class="play" href="#" onclick="setAutoplaying(!getAutoplaying())"></a>
+            <a class="close" href="#" onclick="setAutoplayMode(false)"></a>
+        </section>
+
         <section id="scoring" class="bar">
             <button onclick="showScore()">Done</button>
             Please select dead stones.

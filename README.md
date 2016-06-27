@@ -21,6 +21,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 - Position & move annotations
 - [GTP engines](https://github.com/yishn/Sabaki/wiki/Engines) support
 - Guess mode
+- Autoplay games
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
 

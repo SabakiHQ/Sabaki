@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.16.0][v0.16.0] (2016-06-27)
+
+**Added**
+
+* Autoplay mode
+* `Ctrl`-click position to insert coordinates when in edit mode
+
+**Changed**
+
+* Update to Electron v1.2.5
+
+## [Sabaki v0.15.3][v0.15.3] (2016-06-16)
+
+**Fixed**
+
+* Fix userstyles not working
+
 ## [Sabaki v0.15.2][v0.15.2] (2016-06-15)
 
 **Added**
@@ -374,7 +391,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.15.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.16.0...master
+[v0.16.0]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.16.0
+[v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.15.2...v0.15.3
 [v0.15.2]: https://github.com/yishn/Sabaki/compare/v0.15.1...v0.15.2
 [v0.15.1]: https://github.com/yishn/Sabaki/compare/v0.15.0...v0.15.1
 [v0.15.0]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.0

@@ -39,6 +39,7 @@ var defaults = {
     'app.startup_check_updates_delay': 100,
     'app.loadgame_delay': 100,
     'app.hide_busy_delay': 200,
+    'autoplay.sec_per_move': 1,
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,

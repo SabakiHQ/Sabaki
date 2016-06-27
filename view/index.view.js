@@ -397,7 +397,21 @@ function setGuessMode(guessMode) {
         $('body').addClass('guess')
     } else {
         $('body').removeClass('guess')
-        setCurrentTreePosition.apply(null, getCurrentTreePosition())
+    }
+}
+
+function getAutoplayMode() {
+    return $('body').hasClass('autoplay')
+}
+
+function setAutoplayMode(autoplayMode) {
+    if (autoplayMode) {
+        closeDrawers()
+        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
+        $('body').addClass('autoplay')
+    } else {
+        $('body').removeClass('autoplay')
+        setAutoplaying(false)
     }
 }
 
@@ -947,6 +961,10 @@ function buildBoard() {
     var $goban = $('#goban div').eq(0)
     $goban.empty().append(rows).append($coordx).append($coordy)
     $goban.prepend($coordx.clone()).prepend($coordy.clone())
+
+    $goban.off('mousemove').on('mousemove', function(e) {
+        $('#goban').toggleClass('crosshair', getEditMode() && e.ctrlKey)
+    })
 
     resizeBoard()
 
@@ -1651,8 +1669,12 @@ function closeGameChooser() {
 }
 
 function closeDrawers() {
-    var old = $('body').attr('class')
     var drawersOpen = $('.drawer.show').length > 0
+    var modeOpen = $('#bar .bar').get().map(function(x) {
+        return $(x).attr('id')
+    }).some(function(x) {
+        return $('body').hasClass(x)
+    })
 
     closeGameInfo()
     closeScore()
@@ -1663,8 +1685,9 @@ function closeDrawers() {
     setEstimatorMode(false)
     setFindMode(false)
     setGuessMode(false)
+    setAutoplayMode(false)
 
-    return old != $('body').attr('class') || drawersOpen
+    return modeOpen || drawersOpen
 }
 
 /**

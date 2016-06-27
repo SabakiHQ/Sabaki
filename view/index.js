@@ -110,8 +110,9 @@ function getCurrentTreePosition() {
     return $('#goban').data('position')
 }
 
-function setCurrentTreePosition(tree, index, now, redraw) {
+function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
     if (!tree || getScoringMode() || getEstimatorMode()) return
+    if (!ignoreAutoplay && getAutoplaying()) setAutoplaying(false)
 
     // Remove old graph node color
 
@@ -367,12 +368,50 @@ function getEmptyGameTree() {
     return sgf.parse(sgf.tokenize(buffer))
 }
 
+function getAutoplaying() {
+    return getAutoplayMode() && $('#autoplay').hasClass('playing')
+}
+
+function setAutoplaying(playing) {
+    var autoplay = function() {
+        if (!getAutoplaying()) return
+
+        var tp = getCurrentTreePosition()
+        var ntp = gametree.navigate.apply(null, tp.concat([1]))
+        if (!ntp) {
+            setAutoplaying(false)
+            return
+        }
+
+        var node = ntp[0].nodes[ntp[1]]
+
+        if (!node.B && !node.W) {
+            setCurrentTreePosition.apply(null, ntp)
+        } else {
+            var vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+            makeMove(vertex, false, true)
+        }
+
+        var id = setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
+        $('#autoplay').data('timeoutid', id)
+    }
+
+    if (playing) {
+        setAutoplayMode(playing)
+        $('#autoplay').addClass('playing')
+        autoplay()
+    } else {
+        clearTimeout($('#autoplay').data('timeoutid'))
+        $('#autoplay').removeClass('playing')
+    }
+}
+
 /**
  * Methods
  */
 
 function loadSettings() {
-    $('#head link.userstyle').attr('href', setting.stylesPath)
+    $('head link.userstyle').attr('href', setting.stylesPath)
 
     $('#goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
     $('#goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
@@ -407,6 +446,16 @@ function prepareEditTools() {
             var line = $img.attr('src').indexOf('line') >= 0
             $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
+    })
+}
+
+function prepareAutoplay() {
+    $('#autoplay input').on('input', function() {
+        var value = Math.min(10, Math.max(1, +$(this).val()))
+        value = Math.floor(value * 10) / 10
+        setting.set('autoplay.sec_per_move', value)
+    }).on('blur', function() {
+        $(this).val(setting.get('autoplay.sec_per_move'))
     })
 }
 
@@ -854,7 +903,7 @@ function syncEngine() {
     setIsBusy(false)
 }
 
-function makeMove(vertex, sendCommand) {
+function makeMove(vertex, sendCommand, ignoreAutoplay) {
     if (sendCommand == null) sendCommand = getEngineController() != null
 
     var pass = !getBoard().hasVertex(vertex)
@@ -928,7 +977,7 @@ function makeMove(vertex, sendCommand) {
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
 
-        setCurrentTreePosition(tree, tree.nodes.length - 1)
+        setCurrentTreePosition(tree, tree.nodes.length - 1, null, null, ignoreAutoplay)
     } else {
         if (index != tree.nodes.length - 1) {
             // Search for next move
@@ -938,7 +987,7 @@ function makeMove(vertex, sendCommand) {
                 && helper.equals(sgf.point2vertex(nextNode[color][0]), vertex)
 
             if (moveExists) {
-                setCurrentTreePosition(tree, index + 1)
+                setCurrentTreePosition(tree, index + 1, null, null, ignoreAutoplay)
                 createNode = false
             }
         } else {
@@ -951,7 +1000,7 @@ function makeMove(vertex, sendCommand) {
             })
 
             if (variations.length > 0) {
-                setCurrentTreePosition(gametree.addBoard(variations[0]), 0)
+                setCurrentTreePosition(gametree.addBoard(variations[0]), 0, null, null, ignoreAutoplay)
                 createNode = false
             }
         }
@@ -971,7 +1020,7 @@ function makeMove(vertex, sendCommand) {
 
             gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) setRootTree(splitted)
-            setCurrentTreePosition(newtree, 0)
+            setCurrentTreePosition(newtree, 0, null, null, ignoreAutoplay)
         }
     }
 
@@ -1322,7 +1371,14 @@ function vertexClicked(vertex, event) {
 
         updateAreaMap(getEstimatorMode())
     } else if (getEditMode()) {
-        useTool(vertex, event)
+        if (event.ctrlKey) {
+            var coord = getBoard().vertex2coord(vertex)
+
+            setCommentText([getCommentText().trim(), coord].join(' ').trim())
+            commitCommentText()
+        } else {
+            useTool(vertex, event)
+        }
     } else if (getFindMode()) {
         if (event.button != 0) return
 
@@ -1381,13 +1437,12 @@ function vertexClicked(vertex, event) {
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
+            closeDrawers()
         } else if (vertex in board.markups
         && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
             removeNode.apply(null, getCurrentTreePosition())
         }
-
-        closeDrawers()
     }
 }
 
@@ -2156,6 +2211,7 @@ $(document).on('keydown', function(e) {
     loadEngines()
     prepareDragDropFiles()
     prepareEditTools()
+    prepareAutoplay()
     prepareGameGraph()
     prepareSlider()
     prepareConsole()
