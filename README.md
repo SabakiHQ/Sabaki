@@ -23,7 +23,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Guess mode
 - Autoplay games
 
-For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki).
+For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You can support this project by [donating some money](https://paypal.me/yishn/4).
 
 ## Web Version
 
