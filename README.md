@@ -27,7 +27,9 @@ For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You
 
 ## Web Version
 
-Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a [working demo](http://sabaki.yichuanshen.de/web/).
+Sabaki has a `web` branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a [working demo here](http://sabaki.yichuanshen.de/web/).
+
+If you're looking for the code of the [website](http://sabaki.yichuanshen.de/), you can find it in [this repository](https://github.com/yishn/sabaki-website).
 
 ## Building & Tests
 
