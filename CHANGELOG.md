@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Update to Electron v1.2.6
 
+**Fixed**
+
+* Fix games vanishing in 'Manage Games...' when dragging
+
 ## [Sabaki v0.16.0][v0.16.0] (2016-06-27)
 
 **Added**
