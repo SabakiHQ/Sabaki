@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix games vanishing in 'Manage Games...' when dragging
+* Fix unresponsiveness when cancelling adding files to games
 
 ## [Sabaki v0.16.0][v0.16.0] (2016-06-27)
 
