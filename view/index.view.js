@@ -1410,15 +1410,15 @@ function openAddGameMenu() {
                     filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
                 })
 
-                if (!filenames) return
+                if (filenames) {
+                    filenames.forEach(function(filename) {
+                        var trees = sgf.parseFile(filename).subtrees
 
-                filenames.forEach(function(filename) {
-                    var trees = sgf.parseFile(filename).subtrees
-
-                    setGameTrees(getGameTrees().concat(trees))
-                    setGameIndex(getGameIndex())
-                    showGameChooser(true)
-                })
+                        setGameTrees(getGameTrees().concat(trees))
+                        setGameIndex(getGameIndex())
+                        showGameChooser(true)
+                    })
+                }
 
                 setIsBusy(false)
             }
