@@ -1860,6 +1860,7 @@ function loadFile(filename) {
 
     if (!filename) {
         var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+            properties: ['openFile'],
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
 

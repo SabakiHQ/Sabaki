@@ -766,6 +766,7 @@ function addEngineItem(name, path, args) {
                 setIsBusy(true)
 
                 var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                    properties: ['openFile'],
                     filters: [{ name: 'All Files', extensions: ['*'] }]
                 })
 
@@ -1406,7 +1407,7 @@ function openAddGameMenu() {
                 setIsBusy(true)
 
                 var filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
-                    properties: ['multiSelections'],
+                    properties: ['openFile', 'multiSelections'],
                     filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
                 })
 
