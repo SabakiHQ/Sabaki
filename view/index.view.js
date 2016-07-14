@@ -758,6 +758,7 @@ function addEngineItem(name, path, args) {
                 setIsBusy(true)
 
                 var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                    properties: ['openFile'],
                     filters: [{ name: 'All Files', extensions: ['*'] }]
                 })
 
@@ -1614,7 +1615,7 @@ function showGameChooser(restoreScrollbarPos) {
             if (e.button != 2) return
             openGameMenu($(this), e)
         }).on('dragstart', function(e) {
-            $('#gamechooser').data('dragging', $(this).parents('li').eq(0))
+            $('#gamechooser').data('dragging', $(this).parents('li').get(0))
         })
     }
 
@@ -1634,7 +1635,7 @@ function showGameChooser(restoreScrollbarPos) {
         }
     })
 
-    $('#gamechooser').off('drop').on('dragover', function(e) {
+    $('#gamechooser').off('dragover').off('drop').on('dragover', function(e) {
         e.preventDefault()
     }).on('drop', function() {
         var dragged = $(this).data('dragging')
@@ -1647,8 +1648,8 @@ function showGameChooser(restoreScrollbarPos) {
 
         if (!dragged || !afterli && !beforeli) return
 
-        if (afterli) $(afterli).before(dragged)
-        if (beforeli) $(beforeli).after(dragged)
+        if (afterli && afterli != dragged) $(afterli).before(dragged)
+        if (beforeli && beforeli != dragged) $(beforeli).after(dragged)
 
         setGameTrees($('#gamechooser ol > li').get().map(function(x) {
             return $(x).data('gametree')

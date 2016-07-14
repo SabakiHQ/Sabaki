@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
+
+**Changed**
+
+* Update to Electron v1.2.7
+
+**Fixed**
+
+* Fix games vanishing in 'Manage Games...' when dragging
+* Fix unresponsiveness when cancelling adding files to games
+* Fix adding files to games being impossible under Mac
+* Fix GTP console being unusable under Mac when native overlay scrollbars are turned on
+
 ## [Sabaki v0.16.0][v0.16.0] (2016-06-27)
 
 **Added**
@@ -391,7 +404,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.16.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.16.1...master
+[v0.16.1]: https://github.com/yishn/Sabaki/compare/v0.16.0...v0.16.1
 [v0.16.0]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.16.0
 [v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.15.2...v0.15.3
 [v0.15.2]: https://github.com/yishn/Sabaki/compare/v0.15.1...v0.15.2

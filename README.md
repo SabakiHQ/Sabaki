@@ -25,6 +25,8 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You can support this project by [donating some money](https://paypal.me/yishn/4).
 
+If you're looking for the code of the [website](http://sabaki.yichuanshen.de/), you can find it in [this repository](https://github.com/yishn/sabaki-website).
+
 ## License
 
 This project is licensed under the [MIT license](https://github.com/yishn/Sabaki/blob/master/LICENSE.md).
