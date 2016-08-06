@@ -116,18 +116,18 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 
     // Remove old graph node color
 
-    var oldNode = getCurrentGraphNode()
+    var oldGraphNode = getCurrentGraphNode()
     var oldPos = getCurrentTreePosition()
-    var node = getGraphNode(tree, index)
+    var graphNode = getGraphNode(tree, index)
 
-    if (oldNode && oldNode != node)
-        oldNode.color = oldNode.originalColor
+    if (oldGraphNode && oldGraphNode != graphNode)
+        oldGraphNode.color = oldGraphNode.originalColor
 
     // Store new position
 
     $('#goban').data('position', [tree, index])
     redraw = !!redraw
-        || !node
+        || !graphNode
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed
 
@@ -141,19 +141,22 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 
     // Update bookmark, graph, slider and comment text
 
+    var node = tree.nodes[index]
+
     updateSidebar(redraw, now)
-    setShowHotspot('HO' in tree.nodes[index])
+    setShowHotspot('HO' in node)
     gametree.addBoard(tree, index)
-    setBoard(tree.nodes[index].board)
+    setBoard(node.board)
 
     // Determine current player
 
     var currentplayer = 1
 
-    if ('B' in tree.nodes[index]
-    || 'PL' in tree.nodes[index] && tree.nodes[index].PL[0] == 'W'
-    || 'HA' in tree.nodes[index] && +tree.nodes[index].HA[0] >= 1)
+    if ('B' in node || 'HA' in node && +node.HA[0] >= 1)
         currentplayer = -1
+
+    if ('PL' in node)
+        currentplayer = node.PL[0] == 'W' ? -1 : 1
 
     setCurrentPlayer(currentplayer)
 }
