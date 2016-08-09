@@ -1,5 +1,4 @@
 var fs = require('fs')
-var process = require('process')
 var remote = require('electron').remote
 var ipcRenderer = require('electron').ipcRenderer
 var clipboard = require('electron').clipboard

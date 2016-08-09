@@ -1,4 +1,3 @@
-var process = require('process')
 var app = require('electron').app
 var shell = require('electron').shell
 var dialog = require('electron').dialog
