@@ -681,12 +681,14 @@ function prepareGameInfo() {
     // Prepare date input
 
     var $dateInput = $('#info input[name="date"]')
+
     var adjustPosition = function(pikaday) {
         $(pikaday.el)
         .css('position', 'absolute')
         .css('left', Math.round($dateInput.offset().left))
         .css('top', Math.round($dateInput.offset().top - $(pikaday.el).height()))
     }
+
     var markDates = function(pikaday) {
         var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
             return x.length == 3
@@ -702,6 +704,7 @@ function prepareGameInfo() {
             }))
         })
     }
+
     var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
@@ -757,17 +760,14 @@ function prepareGameInfo() {
 
     $(window).on('resize', function() { adjustPosition(pikaday) })
 
-    $dateInput
-    .on('focus', function() {
+    $dateInput.on('focus', function() {
         pikaday.show()
-    })
-    .on('blur', function() {
+    }).on('blur', function() {
         setTimeout(function() {
             if ($(document.activeElement).parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
-    })
-    .on('input', function() {
+    }).on('input', function() {
         markDates(pikaday)
     })
 
