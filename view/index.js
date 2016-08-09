@@ -629,7 +629,7 @@ function prepareGameInfo() {
         closeGameInfo()
     })
 
-    $('#info .currentplayer').on('click', function() {
+    $('#info #current-player').on('click', function() {
         var data = $('#info section input[type="text"]').get().map(function(el) {
             return $(el).val()
         })
