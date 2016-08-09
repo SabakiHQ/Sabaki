@@ -1141,7 +1141,7 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Pass',
-            accelerator: 'CmdOrCtrl+P',
+            accelerator: 'CmdOrCtrl+Space',
             click: function() { makeMove([-1, -1]) }
         },
         {

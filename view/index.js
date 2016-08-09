@@ -2166,8 +2166,8 @@ $(document).on('keydown', function(e) {
 
         if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
             setFullScreen(false)
-    } else if (e.keyCode == 80 && (e.ctrlKey && !osx || e.metaKey)) {
-        // CmdOrCtrl+P
+    } else if (e.keyCode == 32 && (e.ctrlKey && !osx || e.metaKey)) {
+        // CmdOrCtrl+Space
 
         makeMove([-1, -1])
     }
