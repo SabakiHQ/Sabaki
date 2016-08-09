@@ -903,6 +903,7 @@ function syncEngine() {
 }
 
 function makeMove(vertex, sendCommand, ignoreAutoplay) {
+    if (!getPlayMode()) return
     if (sendCommand == null) sendCommand = getEngineController() != null
 
     var pass = !getBoard().hasVertex(vertex)
