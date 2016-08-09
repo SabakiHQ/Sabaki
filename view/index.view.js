@@ -802,7 +802,7 @@ function addEngineItem(name, path, args) {
     ).append(
         $('<a class="remove"/>').on('click', function() {
             $(this).parents('li').eq(0).remove()
-            $('#preferences .engines-list')[0].data('scrollbar').update()
+            $('#preferences .engines-list').data('scrollbar').update()
         }).append(
             $('<img/>')
             .attr('src', '../node_modules/octicons/build/svg/x.svg')

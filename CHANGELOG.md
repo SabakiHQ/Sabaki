@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix `PL[B]` not working
+* Fix scrollbar in engines list not updating correctly
 
 ## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
 
