@@ -53,11 +53,11 @@
                 "action": "score"
             },
             {
-                "label": "Est&imate",
+                "label": "&Estimate",
                 "action": "estimate"
             },
             {
-                "label": "In&fo",
+                "label": "&Info",
                 "accelerator": "CmdOrCtrl+I",
                 "action": "gameinfo"
             },
@@ -121,6 +121,16 @@
                 "label": "&Number Tool",
                 "accelerator": "CmdOrCtrl+8",
                 "action": "numbertool"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Pass",
+                "accelerator": "CmdOrCtrl+P",
+                "action": "pass"
+            },
+            {
+                "label": "Resi&gn",
+                "action": "resign"
             },
             { "type": "separator" },
             {

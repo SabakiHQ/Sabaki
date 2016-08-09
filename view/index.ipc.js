@@ -25,6 +25,8 @@ var menudata = {
     "linetool": function() { setSelectedTool('line') },
     "labeltool": function() { setSelectedTool('label') },
     "numbertool": function() { setSelectedTool('number') },
+    "pass": function() { makeMove([-1, -1]) },
+    "resign": function() { makeResign() },
     "removenode": function() { removeNode.apply(null, getCurrentTreePosition()) },
     "makemainvariation": function() { makeMainVariation.apply(null, getCurrentTreePosition()) },
 
