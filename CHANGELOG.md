@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Update to Electron v1.3.2
+* Bump gemini-scrollbar v1.4.3
 
 **Fixed**
 

@@ -705,7 +705,6 @@ function prepareResizers() {
             setLeftSidebarWidth(newwidth)
             resizeBoard()
 
-            $('#console').data('scrollbar').update()
             return
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
@@ -716,8 +715,6 @@ function prepareResizers() {
 
             setPropertiesHeight(newheight)
         }
-
-        $('#properties').data('scrollbar').update()
     })
 }
 
