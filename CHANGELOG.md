@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.17.0][v0.17.0] (Unreleased)
+
+**Added**
+
+* Add keyboard shortcut for 'Pass'
+
+**Changed**
+
+* Update to Electron v1.3.2
+
+**Fixed**
+
+* Fix `PL[B]` not working
+
 ## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
 
 **Changed**
