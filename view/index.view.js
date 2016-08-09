@@ -251,7 +251,9 @@ function getCurrentPlayer() {
 }
 
 function setCurrentPlayer(sign) {
-    $('.currentplayer').attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('.currentplayer')
+    .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
 
 function getCommentText() {
