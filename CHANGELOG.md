@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Add keyboard shortcut for 'Pass' (`Ctrl+Space` or `Command+Space`)
+* Add keyboard shortcut for 'Pass' (`Ctrl+P` or `Command+P`)
 
 **Changed**
 
