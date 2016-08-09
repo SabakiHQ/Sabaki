@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.17.0][v0.17.0] (Unreleased)
+## [Sabaki v0.17.0][unreleased] (Unreleased)
 
 **Added**
 
