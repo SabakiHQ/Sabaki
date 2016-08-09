@@ -1132,6 +1132,7 @@ function openHeaderMenu() {
     var template = [
         {
             label: '&Pass',
+            accelerator: 'CmdOrCtrl+P',
             click: function() { makeMove([-1, -1]) }
         },
         {
@@ -1149,15 +1150,18 @@ function openHeaderMenu() {
         },
         {
             label: '&Edit',
+            accelerator: 'CmdOrCtrl+E',
             click: function() { setEditMode(true) }
         },
         {
             label: '&Find',
+            accelerator: 'CmdOrCtrl+F',
             click: function() { setFindMode(true) }
         },
         { type: 'separator' },
         {
             label: '&Info',
+            accelerator: 'CmdOrCtrl+I',
             click: function() { showGameInfo() }
         }
     ]
