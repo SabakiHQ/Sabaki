@@ -247,11 +247,13 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('.currentplayer').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('#current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $('.currentplayer').attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('#current-player')
+    .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
 
 function getCommentText() {
@@ -342,6 +344,15 @@ function getSliderValue() {
 
 function setSliderValue(value, label) {
     $('#sidebar .slider .inner span').css('top', value + '%').text(label)
+}
+
+function getPlayMode() {
+    return !getFindMode()
+        && !getEditMode()
+        && !getGuessMode()
+        && !getAutoplayMode()
+        && !getScoringMode()
+        && !getEstimatorMode()
 }
 
 function getFindMode() {
@@ -688,7 +699,6 @@ function prepareResizers() {
             setLeftSidebarWidth(newwidth)
             resizeBoard()
 
-            $('#console').data('scrollbar').update()
             return
         } else if (initPosY) {
             var initY = initPosY[0], initHeight = initPosY[1]
@@ -699,8 +709,6 @@ function prepareResizers() {
 
             setPropertiesHeight(newheight)
         }
-
-        $('#properties').data('scrollbar').update()
     })
 }
 
@@ -773,7 +781,7 @@ function addEngineItem(name, path, args) {
             })
             .append(
                 $('<img/>')
-                .attr('src', '../node_modules/octicons/svg/file-directory.svg')
+                .attr('src', '../node_modules/octicons/build/svg/file-directory.svg')
                 .attr('title', 'Browse…')
                 .attr('height', 14)
             )
@@ -788,10 +796,10 @@ function addEngineItem(name, path, args) {
     ).append(
         $('<a class="remove"/>').on('click', function() {
             $(this).parents('li').eq(0).remove()
-            $('#preferences .engines-list')[0].data('scrollbar').update()
+            $('#preferences .engines-list').data('scrollbar').update()
         }).append(
             $('<img/>')
-            .attr('src', '../node_modules/octicons/svg/x.svg')
+            .attr('src', '../node_modules/octicons/build/svg/x.svg')
             .attr('height', 14)
         )
     )

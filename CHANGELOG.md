@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.17.0][unreleased] (Unreleased)
+
+**Added**
+
+* Add keyboard shortcut for 'Pass' (`Ctrl+P` or `Command+P`)
+
+**Changed**
+
+* Clicking on the current player indicator switches current player without passing
+* Update to Electron v1.3.2
+* Bump gemini-scrollbar@v1.4.3
+* Bump octicons@v4.3.0
+
+**Fixed**
+
+* Fix `PL[B]` not working
+* Fix scrollbar in engines list not updating correctly
+
 ## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
 
 **Changed**

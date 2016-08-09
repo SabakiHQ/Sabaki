@@ -107,10 +107,10 @@
                 <input type="text" placeholder="Find" />
 
                 <button onclick="findMove(getIndicatorVertex(), getFindText(), 1); return false" type="submit">
-                    <img src="../node_modules/octicons/svg/chevron-down.svg" height="20" alt="Down" />
+                    <img src="../node_modules/octicons/build/svg/chevron-down.svg" height="20" alt="Down" />
                 </button>
                 <button onclick="findMove(getIndicatorVertex(), getFindText(), -1); return false">
-                    <img src="../node_modules/octicons/svg/chevron-up.svg" height="20" alt="Up" />
+                    <img src="../node_modules/octicons/build/svg/chevron-up.svg" height="20" alt="Up" />
                 </button>
             </form>
 
@@ -121,17 +121,16 @@
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
 
-            <img src="../img/ui/blacktoplay.svg" class="currentplayer"
-                height="22" onclick="makeMove([-1, -1])" title="Pass" />
+            <img src="../img/ui/blacktoplay.svg" id="current-player" height="22" />
 
             <div class="bookmark" title="Hotspot"></div>
 
             <a class="undo" onclick="undoBoard()" title="Undo">
-                <img src="../node_modules/octicons/svg/mail-reply.svg" height="21" />
+                <img src="../node_modules/octicons/build/svg/mail-reply.svg" height="21" />
             </a>
 
             <a id="headermenu" onclick="openHeaderMenu()">
-                <img src="../node_modules/octicons/svg/three-bars.svg" height="21" />
+                <img src="../node_modules/octicons/build/svg/three-bars.svg" height="21" />
             </a>
         </header>
     </section>
@@ -174,7 +173,7 @@
                 <p class="header">
                     <img width="16" height="16" class="positionstatus" />
                     <img width="16" height="16" class="movestatus" />
-                    <img src="../node_modules/octicons/svg/pencil.svg" class="editbutton"
+                    <img src="../node_modules/octicons/build/svg/pencil.svg" class="editbutton"
                         title="Edit" width="16" height="16" onclick="setEditMode(true)" />
 
                     <span></span>
@@ -187,7 +186,7 @@
             <div class="header">
                 <img
                     onclick="openCommentMenu()"
-                    src="../node_modules/octicons/svg/chevron-down.svg"
+                    src="../node_modules/octicons/build/svg/chevron-down.svg"
                     width="16"
                     height="16"
                 />
@@ -204,7 +203,7 @@
     <form>
         <section>
             <span>
-                <img src="../node_modules/octicons/svg/chevron-down.svg"
+                <img src="../node_modules/octicons/build/svg/chevron-down.svg"
                     width="16" height="16" class="menu" />
 
                 <input type="text" name="rank_1" placeholder="Rank" />
@@ -217,7 +216,7 @@
                 <input type="text" name="name_-1" placeholder="White" />
                 <input type="text" name="rank_-1" placeholder="Rank" />
 
-                <img src="../node_modules/octicons/svg/chevron-down.svg"
+                <img src="../node_modules/octicons/build/svg/chevron-down.svg"
                     width="16" height="16" class="menu" />
             </span>
         </section>
@@ -379,7 +378,7 @@
             </div>
 
             <p>
-                <button type="button" onclick="addEngineItem(); return false">Add…</button>
+                <button type="button" onclick="addEngineItem(); return false">Add</button>
             </p>
         </div>
 

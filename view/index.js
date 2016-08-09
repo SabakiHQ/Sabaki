@@ -434,6 +434,24 @@ function loadSettings() {
     }
 }
 
+function prepareBar() {
+    $('#current-player').on('click', function() {
+        var tp = getCurrentTreePosition()
+        var tree = tp[0], index = tp[1]
+        var node = tree.nodes[index]
+        var intendedSign = 'B' in node ? -1 : +('W' in node)
+        var sign = -getCurrentPlayer()
+
+        if (intendedSign == sign) {
+            delete node.PL
+        } else {
+            node.PL = [sign > 0 ? 'B' : 'W']
+        }
+
+        setCurrentPlayer(sign)
+    })
+}
+
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
         var $a = $(this)
@@ -630,7 +648,7 @@ function prepareGameInfo() {
         closeGameInfo()
     })
 
-    $('#info .currentplayer').on('click', function() {
+    $('#info #current-player').on('click', function() {
         var data = $('#info section input[type="text"]').get().map(function(el) {
             return $(el).val()
         })
@@ -682,12 +700,14 @@ function prepareGameInfo() {
     // Prepare date input
 
     var $dateInput = $('#info input[name="date"]')
+
     var adjustPosition = function(pikaday) {
         $(pikaday.el)
         .css('position', 'absolute')
         .css('left', Math.round($dateInput.offset().left))
         .css('top', Math.round($dateInput.offset().top - $(pikaday.el).height()))
     }
+
     var markDates = function(pikaday) {
         var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
             return x.length == 3
@@ -703,6 +723,7 @@ function prepareGameInfo() {
             }))
         })
     }
+
     var pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
@@ -758,17 +779,14 @@ function prepareGameInfo() {
 
     $(window).on('resize', function() { adjustPosition(pikaday) })
 
-    $dateInput
-    .on('focus', function() {
+    $dateInput.on('focus', function() {
         pikaday.show()
-    })
-    .on('blur', function() {
+    }).on('blur', function() {
         setTimeout(function() {
             if ($(document.activeElement).parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
-    })
-    .on('input', function() {
+    }).on('input', function() {
         markDates(pikaday)
     })
 
@@ -907,6 +925,7 @@ function syncEngine() {
 }
 
 function makeMove(vertex, sendCommand, ignoreAutoplay) {
+    if (!getPlayMode()) return
     if (sendCommand == null) sendCommand = getEngineController() != null
 
     var pass = !getBoard().hasVertex(vertex)
@@ -2182,7 +2201,7 @@ function undoBoard() {
 
 $(document).on('keydown', function(e) {
     if (e.keyCode == 27) {
-        // Escape key
+        // Escape
 
         if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
             setFullScreen(false)
@@ -2214,6 +2233,7 @@ $(document).on('keydown', function(e) {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
+    prepareBar()
     prepareEditTools()
     prepareAutoplay()
     prepareGameGraph()
