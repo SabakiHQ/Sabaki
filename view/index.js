@@ -2158,11 +2158,17 @@ function undoBoard() {
  */
 
 $(document).on('keydown', function(e) {
+    var osx = process.platform == 'darwin'
+
     if (e.keyCode == 27) {
-        // Escape key
+        // Escape
 
         if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
             setFullScreen(false)
+    } else if (e.keyCode == 80 && (e.ctrlKey && !osx || e.metaKey)) {
+        // CmdOrCtrl+P
+
+        makeMove([-1, -1])
     }
 }).ready(function() {
     loadSettings()
