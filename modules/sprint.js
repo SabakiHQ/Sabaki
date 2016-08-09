@@ -5,6 +5,7 @@
  * - $.data()
  *
  * Fixed functions:
+ * - $.attr()
  * - $.position()
  * - $.trigger()
  */
@@ -703,7 +704,7 @@
       if (attrValue == null) {
         return undefined
       }
-      if (!attrValue) {
+      if (!attrValue && attrValue != '') {
         return name
       }
       return attrValue
