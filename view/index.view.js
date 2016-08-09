@@ -344,6 +344,15 @@ function setSliderValue(value, label) {
     $('#sidebar .slider .inner span').css('top', value + '%').text(label)
 }
 
+function getPlayMode() {
+    return !getFindMode()
+        && !getEditMode()
+        && !getGuessMode()
+        && !getAutoplayMode()
+        && !getScoringMode()
+        && !getEstimatorMode()
+}
+
 function getFindMode() {
     return $('body').hasClass('find')
 }
