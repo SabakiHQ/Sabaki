@@ -434,6 +434,24 @@ function loadSettings() {
     }
 }
 
+function prepareBar() {
+    $('#current-player').on('click', function() {
+        var tp = getCurrentTreePosition()
+        var tree = tp[0], index = tp[1]
+        var node = tree.nodes[index]
+        var intendedSign = 'B' in node ? -1 : +('W' in node)
+        var sign = -getCurrentPlayer()
+
+        if (intendedSign == sign) {
+            delete node.PL
+        } else {
+            node.PL = [sign > 0 ? 'B' : 'W']
+        }
+
+        setCurrentPlayer(sign)
+    })
+}
+
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
         var $a = $(this)
@@ -2175,6 +2193,7 @@ $(document).on('keydown', function(e) {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
+    prepareBar()
     prepareEditTools()
     prepareAutoplay()
     prepareGameGraph()
