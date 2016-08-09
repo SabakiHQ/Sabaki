@@ -787,7 +787,7 @@ function addEngineItem(name, path, args) {
             })
             .append(
                 $('<img/>')
-                .attr('src', '../node_modules/octicons/svg/file-directory.svg')
+                .attr('src', '../node_modules/octicons/build/svg/file-directory.svg')
                 .attr('title', 'Browse…')
                 .attr('height', 14)
             )
@@ -805,7 +805,7 @@ function addEngineItem(name, path, args) {
             $('#preferences .engines-list')[0].data('scrollbar').update()
         }).append(
             $('<img/>')
-            .attr('src', '../node_modules/octicons/svg/x.svg')
+            .attr('src', '../node_modules/octicons/build/svg/x.svg')
             .attr('height', 14)
         )
     )

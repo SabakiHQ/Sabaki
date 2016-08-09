@@ -144,7 +144,7 @@ header, #bar .bar {
         top: 0;
         height: 40px;
         width: 35px;
-        background: url('../node_modules/octicons/svg/x.svg') center / auto 21px no-repeat;
+        background: url('../node_modules/octicons/build/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
     #bar .bar .close:active { opacity: .7; }
@@ -261,7 +261,7 @@ header, #bar .bar {
         top: 0;
         height: 40px;
         width: 35px;
-        background: url('../node_modules/octicons/svg/triangle-right.svg') center / 20px 20px no-repeat;
+        background: url('../node_modules/octicons/build/svg/triangle-right.svg') center / 20px 20px no-repeat;
         transform: translateX(-50%);
         -webkit-filter: invert(100%);
         filter: invert(100%);
@@ -269,7 +269,7 @@ header, #bar .bar {
     }
     #autoplay.playing .play {
         background-color: rgba(255, 255, 255, .3);
-        background-image: url('../node_modules/octicons/svg/primitive-square.svg');
+        background-image: url('../node_modules/octicons/build/svg/primitive-square.svg');
         animation: playing-glowing 2.3s infinite;
     }
     @keyframes playing-glowing {
