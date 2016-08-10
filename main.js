@@ -1,19 +1,15 @@
-var app = require('electron').app
-var shell = require('electron').shell
-var dialog = require('electron').dialog
-var ipcMain = require('electron').ipcMain
-var setting = require('./modules/setting')
+const {app, shell, dialog, ipcMain} = require('electron')
+const {BrowserWindow, Menu} = require('electron')
+const setting = require('./modules/setting')
+const updater = require('./modules/updater')
 
-var BrowserWindow = require('electron').BrowserWindow
-var Menu = require('electron').Menu
-
-var windows = []
-var openfile = null
-var isReady = false
+let windows = []
+let openfile = null
+let isReady = false
 
 function newWindow(path) {
-    var window = new BrowserWindow({
-        icon: process.platform == 'linux' ? __dirname + '/logo.png' : null,
+    let window = new BrowserWindow({
+        icon: process.platform == 'linux' ? `${__dirname}/logo.png` : null,
         title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
@@ -27,17 +23,17 @@ function newWindow(path) {
     buildMenu()
 
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
-    window.webContents.on('did-finish-load', function() {
+    window.webContents.on('did-finish-load', () => {
         if (path) window.webContents.send('load-file', path)
-    }).on('new-window', function(e) {
+    }).on('new-window', e => {
         e.preventDefault()
     })
 
-    window.on('closed', function() {
+    window.on('closed', () => {
         window = null
     })
 
-    window.loadURL('file://' + __dirname + '/view/index.html')
+    window.loadURL(`file://${__dirname}/view/index.html`)
 
     if (setting.get('debug.dev_tools'))
         window.toggleDevTools()
@@ -46,37 +42,37 @@ function newWindow(path) {
 }
 
 function buildMenu(noWindows) {
-    var template = JSON.parse(JSON.stringify(require('./menu.json')))
+    let template = JSON.parse(JSON.stringify(require('./menu.json')))
 
     // Create app menu for OS X
 
     if (process.platform == 'darwin') {
-        var appMenu = [{ role: 'about' }]
+        let appMenu = [{role: 'about'}]
 
         // Remove original 'Check for Updates' menu item
 
-        var helpMenu = template.filter(function(x) { return x.label.replace('&', '') == 'Help' })[0]
-        var items = helpMenu.submenu.splice(0, 3)
+        let helpMenu = template.find(x => x.label.replace('&', '') == 'Help')
+        let items = helpMenu.submenu.splice(0, 3)
 
         appMenu.push.apply(appMenu, items.slice(0, noWindows ? 1 : 2))
 
         // Remove original 'Preferences' menu item
 
-        var fileMenu = template.filter(function(x) { return x.label.replace('&', '') == 'File' })[0]
-        var preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
+        let fileMenu = template.find(x => x.label.replace('&', '') == 'File')
+        let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
 
         if (noWindows) preferenceItem.enabled = false
 
         appMenu.push.apply(appMenu, [
-            { type: 'separator' },
+            {type: 'separator'},
             preferenceItem,
-            { type: 'separator' },
-            { submenu: [], role: 'services' },
-            { type: 'separator' },
-            { role: 'hide' },
-            { role: 'hideothers' },
-            { type: 'separator' },
-            { role: 'quit' }
+            {type: 'separator'},
+            {submenu: [], role: 'services'},
+            {type: 'separator'},
+            {role: 'hide'},
+            {role: 'hideothers'},
+            {type: 'separator'},
+            {role: 'quit'}
         ])
 
         template.unshift({
@@ -94,9 +90,9 @@ function buildMenu(noWindows) {
                     label: 'New Window',
                     click: newWindow.bind(null, null)
                 },
-                { role: 'minimize' },
-                { type: 'separator' },
-                { role: 'front' }
+                {role: 'minimize'},
+                {type: 'separator'},
+                {role: 'front'}
             ],
             role: 'window'
         })
@@ -104,21 +100,19 @@ function buildMenu(noWindows) {
 
     // Load engines
 
-    var engineMenu = template.filter(function(x) {
-        return x.label && x.label.replace('&', '') == 'Engine'
-    })[0]
+    let engineMenu = template.find(x => x.label && x.label.replace('&', '') == 'Engine')
 
     if (engineMenu) {
-        var attachMenu = engineMenu.submenu[0].submenu
+        let attachMenu = engineMenu.submenu[0].submenu
 
         attachMenu.length = 0
 
         setting.load()
-        setting.getEngines().forEach(function(engine) {
+        setting.getEngines().forEach(engine => {
             attachMenu.push({
                 label: engine.name,
-                click: function() {
-                    var window = BrowserWindow.getFocusedWindow()
+                click: () => {
+                    let window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
                     window.webContents.send('attach-engine', engine.path, engine.args)
@@ -127,7 +121,7 @@ function buildMenu(noWindows) {
         })
 
         if (setting.getEngines().length != 0) {
-            attachMenu.push({ type: 'separator' })
+            attachMenu.push({type: 'separator'})
         }
 
         attachMenu.push({
@@ -138,8 +132,8 @@ function buildMenu(noWindows) {
 
     // Handle clicks
 
-    var processMenu = function(items) {
-        items.forEach(function(item) {
+    let processMenu = items => {
+        items.forEach(item => {
             if ('label' in item) {
                 item.label = item.label
                 .replace('{name}', app.getName())
@@ -147,10 +141,10 @@ function buildMenu(noWindows) {
             }
 
             if ('action' in item) {
-                var action = item.action
+                let action = item.action
 
-                item.click = function() {
-                    var window = BrowserWindow.getFocusedWindow()
+                item.click = () => {
+                    let window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
                     window.webContents.send('menu-click', action)
@@ -187,51 +181,36 @@ function buildMenu(noWindows) {
 }
 
 function checkForUpdates(showNoUpdatesDialog) {
-    var url = 'https://github.com/yishn/' + app.getName() + '/releases/latest'
+    let repo = `yishn/${app.getName()}`
 
-    // Check internet connection first
-    require('dns').lookup('github.com', function(err) {
+    updater.check(repo, (err, hasUpdates, url) => {
         if (err) return
 
-        require('https').get(url, function(response) {
-            var content = ''
-
-            response.on('data', function(chunk) {
-                content += chunk
-            })
-
-            response.on('end', function() {
-                var hasUpdates = content.indexOf('/tag/v' + app.getVersion()) == -1
-
-                if (hasUpdates) {
-                    dialog.showMessageBox({
-                        type: 'info',
-                        buttons: ['Download Update', 'Not Now'],
-                        title: app.getName(),
-                        message: 'There is a new version of ' + app.getName() + ' available.',
-                        noLink: true,
-                        cancelId: 1
-                    }, function(response) {
-                        if (response == 0) shell.openExternal(url)
-                    })
-                } else if (showNoUpdatesDialog) {
-                    dialog.showMessageBox({
-                        type: 'info',
-                        buttons: ['OK'],
-                        title: app.getName(),
-                        message: 'There are no updates available.'
-                    }, function() {})
-                }
-            })
-        }).on('error', function(e) {})
+        if (hasUpdates) {
+            dialog.showMessageBox({
+                type: 'info',
+                buttons: ['Download Update', 'Not Now'],
+                title: app.getName(),
+                message: 'There is a new version of ' + app.getName() + ' available.',
+                noLink: true,
+                cancelId: 1
+            }, response => response == 0 ? shell.openExternal(url) : null)
+        } else if (showNoUpdatesDialog) {
+            dialog.showMessageBox({
+                type: 'info',
+                buttons: ['OK'],
+                title: app.getName(),
+                message: 'There are no updates available.'
+            }, () => {})
+        }
     })
 }
 
-ipcMain.on('new-window', function(e, path) { newWindow(path) })
-ipcMain.on('build-menu', function(e) { buildMenu() })
-ipcMain.on('check-for-updates', function(e, showNoUpdatesDialog) { checkForUpdates(showNoUpdatesDialog) })
+ipcMain.on('new-window', (e, path) => newWindow(path))
+ipcMain.on('build-menu', e => buildMenu())
+ipcMain.on('check-for-updates', (e, showNoUpdatesDialog) => checkForUpdates(showNoUpdatesDialog))
 
-app.on('window-all-closed', function() {
+app.on('window-all-closed', () => {
     if (process.platform != 'darwin') {
         app.quit()
     } else {
@@ -239,7 +218,7 @@ app.on('window-all-closed', function() {
     }
 })
 
-app.on('ready', function() {
+app.on('ready', () => {
     isReady = true
 
     if (!openfile && process.argv.length >= 2)
@@ -248,17 +227,15 @@ app.on('ready', function() {
     newWindow(openfile)
 
     if (setting.get('app.startup_check_updates')) {
-        setTimeout(function() {
-            checkForUpdates()
-        }, setting.get('app.startup_check_updates_delay'))
+        setTimeout(checkForUpdates, setting.get('app.startup_check_updates_delay'))
     }
 })
 
-app.on('activate', function(e, hasVisibleWindows) {
+app.on('activate', (e, hasVisibleWindows) => {
     if (!hasVisibleWindows) newWindow()
 })
 
-app.on('open-file', function(e, path) {
+app.on('open-file', (e, path) => {
     e.preventDefault()
 
     if (!isReady) {
@@ -268,13 +245,13 @@ app.on('open-file', function(e, path) {
     }
 })
 
-process.on('uncaughtException', function(err) {
-    dialog.showErrorBox(app.getName() + ' v' + app.getVersion(), [
+process.on('uncaughtException', err => {
+    dialog.showErrorBox(`${app.getName()} v${app.getVersion()}`, [
         'Something weird happened. ',
         app.getName(),
         ' will shut itself down. ',
         'If possible, please report this on ',
-        app.getName() + '’s repository on GitHub.\n\n',
+        `${app.getName()}’s repository on GitHub.\n\n`,
         err.stack
     ].join(''))
 
