@@ -704,9 +704,6 @@
       if (attrValue == null) {
         return undefined
       }
-      if (!attrValue && attrValue != '') {
-        return name
-      }
       return attrValue
     },
     before: function() {
