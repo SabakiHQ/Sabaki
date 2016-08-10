@@ -25,8 +25,8 @@ function newWindow(path) {
     window.webContents.setAudioMuted(!setting.get('sound.enable'))
     window.webContents.on('did-finish-load', () => {
         if (path) window.webContents.send('load-file', path)
-    }).on('new-window', e => {
-        e.preventDefault()
+    }).on('new-window', evt => {
+        evt.preventDefault()
     })
 
     window.on('closed', () => {
@@ -206,9 +206,9 @@ function checkForUpdates(showNoUpdatesDialog) {
     })
 }
 
-ipcMain.on('new-window', (e, path) => newWindow(path))
-ipcMain.on('build-menu', e => buildMenu())
-ipcMain.on('check-for-updates', (e, showNoUpdatesDialog) => checkForUpdates(showNoUpdatesDialog))
+ipcMain.on('new-window', (evt, path) => newWindow(path))
+ipcMain.on('build-menu', () => buildMenu())
+ipcMain.on('check-for-updates', (evt, showNoUpdatesDialog) => checkForUpdates(showNoUpdatesDialog))
 
 app.on('window-all-closed', () => {
     if (process.platform != 'darwin') {
@@ -231,12 +231,12 @@ app.on('ready', () => {
     }
 })
 
-app.on('activate', (e, hasVisibleWindows) => {
+app.on('activate', (evt, hasVisibleWindows) => {
     if (!hasVisibleWindows) newWindow()
 })
 
-app.on('open-file', (e, path) => {
-    e.preventDefault()
+app.on('open-file', (evt, path) => {
+    evt.preventDefault()
 
     if (!isReady) {
         openfile = path
