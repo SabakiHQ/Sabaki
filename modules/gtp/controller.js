@@ -1,19 +1,17 @@
-const child_process = require('child_process')
-const path = require('path')
+const {spawn} = require('child_process')
+const {dirname} = require('path')
 const EventEmitter = require('events')
 
 const gtp = require('./index')
 
 class Controller extends EventEmitter {
-    constructor(exec, args) {
+    constructor(path, args) {
         super()
-        
+
         this._buffer = ''
         this.commands = []
         this.error = false
-        this.process = child_process.execFile(exec, args, {
-            cwd: path.dirname(exec)
-        })
+        this.process = spawn(path, args, {cwd: dirname(path)})
 
         this.process.on('error', () => {
             this.error = true
