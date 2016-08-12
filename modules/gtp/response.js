@@ -1,22 +1,22 @@
-var helper = require('../helper')
+const helper = require('../helper')
 
-var Response = function(id, content, error, internal) {
-    this.id = parseFloat(id)
-    this.content = content
-    this.error = !!error
-    this.internal = !!internal
-}
+class Response {
+    constructor(id, content, error, internal) {
+        this.id = parseFloat(id)
+        this.content = content
+        this.error = !!error
+        this.internal = !!internal
+    }
 
-Response.prototype = {
-    toString: function() {
+    toString() {
         return (this.error ? '?' : '=') + (!isNaN(this.id) ? this.id : '') + ' ' + this.content
-    },
+    }
 
-    toHtml: function() {
+    toHtml() {
         if (!helper) return this.toString()
 
         if (!this.internal) {
-            var c = this.error ? 'error' : 'success'
+            let c = this.error ? 'error' : 'success'
             return '<span class="' + c + '">' + (this.error ? '?' : '=') + '</span>'
                 + (!isNaN(this.id) ? '<span class="id">' + this.id + '</span>' : '')
                 + ' ' + helper.htmlify(this.content)
