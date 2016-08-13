@@ -1,6 +1,18 @@
+const {exec} = require('child_process')
+
 exports.Command = require('./command.js')
 exports.Response = require('./response.js')
 exports.Controller = require('./controller.js')
+
+// System paths are not inherited in macOS
+// This is a quick & dirty fix
+
+if (process.platform == 'darwin') {
+    exec('echo $PATH', (err, result) => {
+        if (err) return
+        process.env.PATH = result
+    })
+}
 
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
