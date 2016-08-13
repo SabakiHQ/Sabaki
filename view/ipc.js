@@ -1,4 +1,5 @@
 const {ipcRenderer, clipboard, shell} = require('electron')
+const setting = require('../modules/setting')
 
 let menudata = {
     newfile: () => newFile(true),
