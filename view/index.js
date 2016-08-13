@@ -1,3 +1,5 @@
+require('./index.ipc')
+
 var fs = require('fs')
 var remote = require('electron').remote
 var ipcRenderer = require('electron').ipcRenderer
