@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.17.1][unreleased] (Unreleased)
+
+**Fixed**
+
+* Fix regression where autoplay is not working
+* Fix system paths not being honored in macOS
+
 ## [Sabaki v0.17.0][v0.17.0] (2016-08-10)
 
 **Added**
