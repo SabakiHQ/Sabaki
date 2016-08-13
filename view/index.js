@@ -1,4 +1,4 @@
-require('./index.ipc')
+require('./ipc')
 
 var fs = require('fs')
 var remote = require('electron').remote
