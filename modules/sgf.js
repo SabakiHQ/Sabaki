@@ -10,10 +10,20 @@ if (typeof require != 'undefined') {
     gametree = require('./gametree')
     setting = require('./setting')
     helper = require('./helper')
+    iconv = require('iconv-lite')
 }
 
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
 var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+/* The default encoding and list of properties that should be interpreted as
+ * being encoded by the file's CA[] property is defined in the SGF spec at
+ * http://www.red-bean.com/sgf/properties.html#CA
+ */
+var default_encoding = 'ISO-8859-1'
+var encoded_properties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
+                          'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
+                          'US', 'WR', 'WT', 'GC']
 
 context.meta = {
     name: 'Smart Game Format',
@@ -54,10 +64,11 @@ context.tokenize = function(input) {
     return tokens
 }
 
-context.parse = function(tokens, callback, start, depth) {
+context.parse = function(tokens, callback, start, depth, encoding) {
     if (!callback) callback = function(progress) {}
     if (!start) start = [0]
     if (isNaN(depth)) depth = 0
+    if (!encoding) encoding = default_encoding
 
     var i = start[0]
     var node, property, tree = gametree.new()
@@ -83,7 +94,16 @@ context.parse = function(tokens, callback, start, depth) {
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            property.push(context.unescapeString(value.substr(1, value.length - 2)))
+            var encoded_value = value.substr(1, value.length - 2)
+            if (id == 'CA' && iconv.encodingExists(encoded_value)) {
+                encoding = encoded_value
+                property.push(encoded_value)
+            } else if (encoded_properties.indexOf(id) > -1 && encoding != default_encoding) {
+                decoded_value = iconv.decode(Buffer.from(encoded_value, 'binary'), encoding)
+                property.push(context.unescapeString(decoded_value))
+            } else {
+                property.push(context.unescapeString(encoded_value))
+            }
         }
 
         start[0] = ++i
@@ -93,7 +113,7 @@ context.parse = function(tokens, callback, start, depth) {
         if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') {
             start[0] = i + 1
 
-            t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1))
+            t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
 
             if (t.nodes.length > 0) {
                 t.parent = tree
@@ -117,7 +137,7 @@ context.parse = function(tokens, callback, start, depth) {
 context.parseFile = function(filename, callback) {
     if (!fs) return null
 
-    var input = fs.readFileSync(filename, { encoding: 'utf8' })
+    var input = fs.readFileSync(filename, { encoding: 'binary' })
     var tokens = context.tokenize(input)
 
     return context.parse(tokens, callback)

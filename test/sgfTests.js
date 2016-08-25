@@ -147,6 +147,22 @@ describe('sgf', function() {
         })
     })
 
+    describe('encoding', function() {
+        it('should be able to read out the CA property', function() {
+            assert.equal(
+                sgf.parse(sgf.tokenize('(;CA[UTF-8])')).subtrees[0].nodes[0].CA[0],
+                'UTF-8')
+        })
+        it('should be able to decode non-UTF-8 text nodes', function() {
+            assert.equal(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[0].C[0],
+                '围棋 is fun'
+            )
+        })
+    })
+
     describe('string2dates', function() {
         it('should parse comma-separated dates', function() {
             assert.deepEqual(sgf.string2dates('1996-12-27,1997-01-03'), [
