@@ -391,9 +391,10 @@ function setAutoplaying(playing) {
         var node = ntp[0].nodes[ntp[1]]
 
         if (!node.B && !node.W) {
-            setCurrentTreePosition.apply(null, ntp)
+            setCurrentTreePosition.apply(null, ntp.concat([false, false, true]))
         } else {
             var vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+            setCurrentPlayer(node.B ? 1 : -1)
             makeMove(vertex, false, true)
         }
 
