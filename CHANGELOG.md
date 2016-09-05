@@ -36,6 +36,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
 
+**Added**
+
+* Autoplay mode
+* `Ctrl`-click position to insert coordinates when in edit mode
+
 **Changed**
 
 * Update to Electron v1.2.7
@@ -47,58 +52,7 @@ All notable changes to this project will be documented in this file.
 * Fix adding files to games being impossible under Mac
 * Fix GTP console being unusable under Mac when native overlay scrollbars are turned on
 
-## [Sabaki v0.16.0][v0.16.0] (2016-06-27)
-
-**Added**
-
-* Autoplay mode
-* `Ctrl`-click position to insert coordinates when in edit mode
-
-**Changed**
-
-* Update to Electron v1.2.5
-
 ## [Sabaki v0.15.3][v0.15.3] (2016-06-16)
-
-**Fixed**
-
-* Fix userstyles not working
-
-## [Sabaki v0.15.2][v0.15.2] (2016-06-15)
-
-**Added**
-
-* Ability to turn off automatic move titles in the preferences
-* Add keyboard shortcut for 'Show Coordinates'
-
-**Changed**
-
-* Change keyboard shortcut for 'Generate Move' to `F5`
-* Remove keyboard shortcut for 'GTP console'
-* Press `Esc` to exit full screen mode
-* Update to Electron v1.2.2
-
-**Fixed**
-
-* Fix komi not updated for GTP engine
-
-## [Sabaki v0.15.1][v0.15.1] (2016-06-07)
-
-**Added**
-
-* Score estimator
-* Ability to select multiple existing files to add to SGF collection
-
-**Changed**
-
-* Doesn't leave scoring mode when closing score table
-* Update to Electron v1.2.1
-
-**Fixed**
-
-* Fix sending invalid GTP command when passing
-
-## [Sabaki v0.15.0][v0.15.0] (2016-06-01)
 
 **Added**
 
@@ -106,17 +60,27 @@ All notable changes to this project will be documented in this file.
 * Ability to animate fuzzy placement of stones
 * Ability to add existing files to SGF collection
 * 'Resign' menu item under 'Pass'
+* Ability to turn off automatic move titles in the preferences
+* Add keyboard shortcut for 'Show Coordinates'
+* Score estimator
+* Ability to select multiple existing files to add to SGF collection
 
 **Changed**
 
 * Board adapts size, looking more natural
 * Current stone markers resize with board
 * Change 'Go To Beginning' and 'Go To End' keyboard shortcuts to `Home`/`End`
-* Update to Electron v1.1.3
+* Doesn't leave scoring mode when closing score table
+* Change keyboard shortcut for 'Generate Move' to `F5`
+* Remove keyboard shortcut for 'GTP console'
+* Press `Esc` to exit full screen mode
+* Update to Electron v1.2.2
 
 **Fixed**
 
 * Fix rounding errors regarding hoshi points
+* Fix komi not updated for GTP engine
+* Fix sending invalid GTP command when passing
 
 ## [Sabaki v0.14.0][v0.14.0] (2016-05-14)
 
@@ -439,12 +403,8 @@ First release
 [unreleased]: https://github.com/yishn/Sabaki/compare/v0.17.1...master
 [v0.17.1]: https://github.com/yishn/Sabaki/compare/v0.17.0...v0.17.1
 [v0.17.0]: https://github.com/yishn/Sabaki/compare/v0.16.1...v0.17.0
-[v0.16.1]: https://github.com/yishn/Sabaki/compare/v0.16.0...v0.16.1
-[v0.16.0]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.16.0
-[v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.15.2...v0.15.3
-[v0.15.2]: https://github.com/yishn/Sabaki/compare/v0.15.1...v0.15.2
-[v0.15.1]: https://github.com/yishn/Sabaki/compare/v0.15.0...v0.15.1
-[v0.15.0]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.0
+[v0.16.1]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.16.1
+[v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.3
 [v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0
 [v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
 [v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
