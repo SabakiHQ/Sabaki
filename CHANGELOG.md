@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.18.0][unreleased] (Unreleased)
 
+**Changed**
+
+* Update to Electron v1.3.5
+
 **Fixed**
 
 * Fix autoplay stopping at non-move nodes
