@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.18.0][v0.18.0] (Unreleased)
+
+**Fixed**
+
+* Fix autoplay stopping at non-move nodes
+* Fix autoplay not working with non-alternating color moves
+
 ## [Sabaki v0.17.1][v0.17.1] (2016-08-14)
 
 **Fixed**
