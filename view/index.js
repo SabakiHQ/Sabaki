@@ -438,7 +438,7 @@ function loadSettings() {
 }
 
 function prepareBar() {
-    $('#current-player').on('click', function() {
+    $('.current-player').on('click', function() {
         var tp = getCurrentTreePosition()
         var tree = tp[0], index = tp[1]
         var node = tree.nodes[index]
@@ -650,7 +650,7 @@ function prepareGameInfo() {
         closeGameInfo()
     })
 
-    $('#info #current-player').on('click', function() {
+    $('#info .current-player').on('click', function() {
         var data = $('#info section input[type="text"]').get().map(function(el) {
             return $(el).val()
         })

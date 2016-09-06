@@ -247,11 +247,11 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('#current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('.current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $('#current-player')
+    $('.current-player')
     .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
     .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
