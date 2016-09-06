@@ -1406,7 +1406,7 @@ function openAddGameMenu() {
 
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
-                showGameChooser(true)
+                showGameChooser('bottom')
             }
         },
         {
@@ -1425,7 +1425,7 @@ function openAddGameMenu() {
 
                         setGameTrees(getGameTrees().concat(trees))
                         setGameIndex(getGameIndex())
-                        showGameChooser(true)
+                        showGameChooser('bottom')
                     })
                 }
 
@@ -1544,6 +1544,11 @@ function showGameChooser(restoreScrollbarPos) {
         restoreScrollbarPos = true
 
     var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view').scrollTop() : 0
+
+    if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
+        scrollbarPos = 0
+    else if (restoreScrollbarPos == 'bottom')
+        scrollbarPos = $('#gamechooser .gm-scroll-view').get(0).scrollHeight
 
     closeDrawers()
 
