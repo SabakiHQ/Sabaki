@@ -108,7 +108,7 @@ function setShowLeftSidebar(show) {
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
-    var $view = $('#console, #console .gm-scroll-view')
+    var $view = $('#console').hasClass('gm-prevented') ? $('#console') : $('#console .gm-scroll-view')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
     $('#console').data('scrollbar').update()
