@@ -640,11 +640,11 @@ function prepareScrollbars() {
         if (!$('#gamechooser').hasClass('show')) return
 
         var width = $('#gamechooser .games-list').width() - 20
-        var $lis = $('#gamechooser ol li')
+        var $svgs = $('#gamechooser ol li svg')
 
-        if ($lis.length == 0) return
+        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
 
-        var liwidth = $lis.eq(0).width() + 12 + 20
+        var liwidth = $svgs.width() + 12 + 20
         var count = Math.floor(width / liwidth)
 
         $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
@@ -1638,7 +1638,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     var updateSVG = function() {
         var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
-        
+
         var updateElements = $('#gamechooser ol li').get().filter(function(el) {
             var bounds = el.getBoundingClientRect()
 
