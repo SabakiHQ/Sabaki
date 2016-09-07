@@ -640,14 +640,14 @@ function prepareScrollbars() {
         if (!$('#gamechooser').hasClass('show')) return
 
         var width = $('#gamechooser .games-list').width() - 20
-        var $svgs = $('#gamechooser svg')
+        var $lis = $('#gamechooser ol li')
 
-        if ($svgs.length == 0) return
+        if ($lis.length == 0) return
 
-        var liwidth = $svgs.eq(0).width() + 12 + 20
+        var liwidth = $lis.eq(0).width() + 12 + 20
         var count = Math.floor(width / liwidth)
 
-        $('#gamechooser li').css('width', Math.floor(width / count) - 20)
+        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
         $('#gamechooser .games-list').data('scrollbar').update()
     })
 }
@@ -1560,7 +1560,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
-        var $li = $('<li/>')
+        var $li = $('<li/>').data('tree', tree)
         var node = tree.nodes[0]
 
         $('#gamechooser ol').eq(0).append($li.append(
@@ -1634,9 +1634,33 @@ function showGameChooser(restoreScrollbarPos) {
         setGameIndex(newindex)
     })
 
+    // Load SVG images on the fly
+
+    var updateSVG = function() {
+        var updateElements = $('#gamechooser ol li').get().filter(function(el) {
+            var bounds = el.getBoundingClientRect()
+            var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
+
+            return !$(el).find('svg').length
+                && bounds.top < listBounds.bottom
+                && bounds.top + $(el).height() > listBounds.top
+        })
+
+        updateElements.forEach(function(el) {
+            var tree = $(el).data('tree')
+            var tp = gametree.navigate(tree, 0, 30)
+            if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+
+            var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
+            var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
+
+            $(svg).insertAfter($(el).find('span').eq(0))
+        })
+    }
+
     $('#gamechooser').addClass('show')
-    $(window).trigger('resize')
-    $('#gamechooser .gm-scroll-view').scrollTop(scrollbarPos)
+    $(window).on('resize', updateSVG).trigger('resize')
+    $('#gamechooser .gm-scroll-view').on('scroll', updateSVG).scrollTop(scrollbarPos)
 }
 
 function closeGameChooser() {
