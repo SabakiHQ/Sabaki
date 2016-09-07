@@ -1543,12 +1543,16 @@ function showGameChooser(restoreScrollbarPos) {
     if (restoreScrollbarPos == null)
         restoreScrollbarPos = true
 
-    var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view').scrollTop() : 0
+    var $scrollContainer = $('#gamechooser .games-list')
+    if ($scrollContainer.hasClass('gm-scrollbar-container'))
+        $scrollContainer = $scrollContainer.find('.gm-scroll-view')
+
+    var scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
 
     if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
         scrollbarPos = 0
     else if (restoreScrollbarPos == 'bottom')
-        scrollbarPos = $('#gamechooser .gm-scroll-view').get(0).scrollHeight
+        scrollbarPos = $scrollContainer.get(0).scrollHeight
 
     closeDrawers()
 
@@ -1661,7 +1665,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     $('#gamechooser').addClass('show')
     $(window).on('resize', updateSVG).trigger('resize')
-    $('#gamechooser .gm-scroll-view').on('scroll', updateSVG).scrollTop(scrollbarPos)
+    $scrollContainer.on('scroll', updateSVG).scrollTop(scrollbarPos)
 }
 
 function closeGameChooser() {
