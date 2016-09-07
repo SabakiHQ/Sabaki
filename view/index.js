@@ -1535,7 +1535,7 @@ function updateCommentText() {
         return [null, null]
     })()))
 
-    $('#properties .gm-scroll-view').scrollTop(0)
+    $('#properties, #properties .gm-scroll-view').scrollTop(0)
     $('#properties').data('scrollbar').update()
 }
 
