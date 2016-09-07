@@ -1637,9 +1637,10 @@ function showGameChooser(restoreScrollbarPos) {
     // Load SVG images on the fly
 
     var updateSVG = function() {
+        var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
+        
         var updateElements = $('#gamechooser ol li').get().filter(function(el) {
             var bounds = el.getBoundingClientRect()
-            var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
 
             return !$(el).find('svg').length
                 && bounds.top < listBounds.bottom
