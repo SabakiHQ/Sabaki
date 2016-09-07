@@ -1561,18 +1561,12 @@ function showGameChooser(restoreScrollbarPos) {
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
         var $li = $('<li/>')
-        var tp = gametree.navigate(tree, 0, 30)
-        if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
-
-        var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
-        var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
         $('#gamechooser ol').eq(0).append($li.append(
             $('<div/>')
             .attr('draggable', 'true')
             .append($('<span/>'))
-            .append(svg)
             .append($('<span class="black"/>').text('Black'))
             .append($('<span class="white"/>').text('White'))
         ))
