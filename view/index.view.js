@@ -1560,7 +1560,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
-        var $li = $('<li/>').data('tree', tree)
+        var $li = $('<li/>')
         var node = tree.nodes[0]
 
         $('#gamechooser ol').eq(0).append($li.append(
@@ -1647,7 +1647,7 @@ function showGameChooser(restoreScrollbarPos) {
         })
 
         updateElements.forEach(function(el) {
-            var tree = $(el).data('tree')
+            var tree = $(el).data('gametree')
             var tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
