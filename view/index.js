@@ -203,17 +203,19 @@ function getBoard() {
 }
 
 function setBoard(board) {
+    var $goban = $('#goban')
+
     if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
-        $('#goban').data('board', board)
+        $goban.data('board', board)
         buildBoard()
     }
 
-    $('#goban').data('board', board)
+    $goban.data('board', board)
     setCaptures(board.captures)
 
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
-            var $li = $('#goban .pos_' + x + '-' + y)
+            var $li = $goban.find('.pos_' + x + '-' + y)
             var $span = $li.find('.stone span')
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
@@ -266,7 +268,7 @@ function setBoard(board) {
     $('#goban hr').remove()
 
     board.lines.forEach(function(line) {
-        $('#goban').append(
+        $goban.append(
             $('<hr/>')
             .addClass(line[2] ? 'arrow' : 'line')
             .data('v1', line[0])

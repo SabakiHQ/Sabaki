@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 * Fix autoplay stopping at non-move nodes
 * Fix autoplay not working with non-alternating color moves
 * Fix regression where swapping player names wouldn't work
+* Fix performance issue where a huge amount of games inside a SGF collection can slow down Sabaki
 
 ## [Sabaki v0.17.1][v0.17.1] (2016-08-14)
 
