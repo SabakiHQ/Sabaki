@@ -1754,7 +1754,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
         if (callback) callback(response)
 
         // Update scrollbars
-        var $view = $('#console .gm-scroll-view')
+        var $view = $('#console').hasClass('gm-prevented') ? $('#console') : $('#console .gm-scroll-view')
         var scrollbar = $('#console').data('scrollbar')
 
         $view.scrollTop($view.get(0).scrollHeight)
