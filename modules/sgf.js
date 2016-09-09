@@ -95,9 +95,21 @@ context.parse = function(tokens, callback, start, depth, encoding) {
             }
         } else if (type == 'c_value_type') {
             var encoded_value = value.substr(1, value.length - 2)
-            if (id == 'CA' && iconv.encodingExists(encoded_value)) {
+            if (id == 'CA' && iconv.encodingExists(encoded_value) && encoded_value != default_encoding) {
                 encoding = encoded_value
                 property.push(encoded_value)
+                /* We may have already incorrectly parsed some values in this root node
+                 * already, so we have to go back and re-parse them now.
+                 */
+                for (k in node) {
+                    if (k != 'CA' && encoded_properties.indexOf(k) > -1) {
+                        decoded_values = []
+                        for (v in node[k]) {
+                            decoded_values.push(iconv.decode(Buffer.from(node[k][v], 'binary'), encoding))
+                        }
+                        node[k] = decoded_values
+                    }
+                }
             } else if (encoded_properties.indexOf(id) > -1 && encoding != default_encoding) {
                 decoded_value = iconv.decode(Buffer.from(encoded_value, 'binary'), encoding)
                 property.push(context.unescapeString(decoded_value))

@@ -161,6 +161,20 @@ describe('sgf', function() {
                 '围棋 is fun'
             )
         })
+        it('should be able to go back and re-parse attributes set before CA', function() {
+            assert.equal(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[0].PW[0],
+                '柯洁'
+            )
+            assert.equal(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[0].PB[0],
+                '古力'
+            )
+        })
     })
 
     describe('string2dates', function() {
