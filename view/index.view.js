@@ -724,7 +724,7 @@ function prepareGameChooser() {
     $('#gamechooser > input').on('input', function() {
         var value = this.value
 
-        $('#gamechooser .games-list li:not(.add)').get().forEach(function(li) {
+        $('#gamechooser .games-list li').get().forEach(function(li) {
             if ($(li).find('span').get().some(function(span) {
                 return $(span).text().toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) $(li).removeClass('hide')
@@ -733,6 +733,13 @@ function prepareGameChooser() {
 
         var $gamesList = $('#gamechooser .games-list')
         $gamesList.data('scrollbar').update()
+
+        var $scrollContainer = $([
+            '#gamechooser .games-list.gm-scrollbar-container',
+            '#gamechooser .games-list.gm-prevented .gm-scroll-view'
+        ].join(', '))
+
+        $scrollContainer.scrollTop(0).trigger('scroll')
     })
 }
 
@@ -1543,9 +1550,10 @@ function showGameChooser(restoreScrollbarPos) {
     if (restoreScrollbarPos == null)
         restoreScrollbarPos = true
 
-    var $scrollContainer = $('#gamechooser .games-list')
-    if ($scrollContainer.hasClass('gm-scrollbar-container'))
-        $scrollContainer = $scrollContainer.find('.gm-scroll-view')
+    var $scrollContainer = $([
+        '#gamechooser .games-list.gm-prevented',
+        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
+    ].join(', '))
 
     var scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
 
