@@ -1,5 +1,6 @@
 var assert = require('assert')
 var fs = require('fs')
+var tmp = require('tmp')
 var sgf = require('../modules/sgf')
 var gametree = require('../modules/gametree')
 
@@ -178,9 +179,13 @@ describe('sgf', function() {
         it('should save SGFs back to UTF-8 regardless of input encoding', function() {
             var parsed_sgf = sgf.parse(sgf.tokenize(
                 fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
-            var saved_sgf = sgf.stringify(parsed_sgf)
-            assert.equal('GB2312', parsed_sgf.subtrees[0].nodes[0].CA[0])
-            assert.equal('UTF-8', sgf.parse(sgf.tokenize(saved_sgf)).subtrees[0].nodes[0].CA[0])
+            var saved_sgf_name = tmp.tmpNameSync()
+            fs.writeFileSync(saved_sgf_name, sgf.stringify(parsed_sgf))
+            var saved_sgf = sgf.parse(sgf.tokenize(
+                fs.readFileSync(saved_sgf_name, {encoding: 'binary'})))
+            assert.equal(parsed_sgf.subtrees[0].nodes[0].CA[0], 'GB2312')
+            assert.equal(saved_sgf.subtrees[0].nodes[0].CA[0], 'UTF-8')
+            assert.equal(saved_sgf.subtrees[0].nodes[2].C[0], '围棋 is fun')
         })
     })
 

@@ -19,7 +19,8 @@
     "iconv-lite": "^0.4.13",
     "octicons": "^4.3.0",
     "pikaday": "^1.4.0",
-    "sigma": "^1.0.3"
+    "sigma": "^1.0.3",
+    "tmp": "0.0.28"
   },
   "scripts": {
     "test": "mocha",
