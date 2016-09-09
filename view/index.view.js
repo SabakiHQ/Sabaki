@@ -108,7 +108,7 @@ function setShowLeftSidebar(show) {
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
-    
+
     var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
@@ -722,6 +722,41 @@ function prepareResizers() {
 }
 
 function prepareGameChooser() {
+    var $scrollContainer = $([
+        '#gamechooser .games-list.gm-prevented',
+        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
+    ].join(', '))
+
+    // Load SVG images on the fly
+
+    var updateSVG = function() {
+        var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
+
+        var updateElements = $('#gamechooser ol li').get().filter(function(el) {
+            var bounds = el.getBoundingClientRect()
+
+            return !$(el).find('svg').length
+                && bounds.top < listBounds.bottom
+                && bounds.top + $(el).height() > listBounds.top
+        })
+
+        updateElements.forEach(function(el) {
+            var tree = $(el).data('gametree')
+            var tp = gametree.navigate(tree, 0, 30)
+            if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+
+            var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
+            var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
+
+            $(svg).insertAfter($(el).find('span').eq(0))
+        })
+    }
+
+    $(window).on('resize', updateSVG)
+    $scrollContainer.on('scroll', updateSVG)
+
+    // Filtering
+
     $('#gamechooser > input').on('input', function() {
         var value = this.value
 
@@ -734,13 +769,9 @@ function prepareGameChooser() {
 
         var $gamesList = $('#gamechooser .games-list')
         $gamesList.data('scrollbar').update()
+        $scrollContainer.scrollTop(0)
 
-        var $scrollContainer = $([
-            '#gamechooser .games-list.gm-scrollbar-container',
-            '#gamechooser .games-list.gm-prevented .gm-scroll-view'
-        ].join(', '))
-
-        $scrollContainer.scrollTop(0).trigger('scroll')
+        updateSVG()
     })
 }
 
@@ -1647,34 +1678,9 @@ function showGameChooser(restoreScrollbarPos) {
         setGameIndex(newindex)
     })
 
-    // Load SVG images on the fly
-
-    var updateSVG = function() {
-        var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
-
-        var updateElements = $('#gamechooser ol li').get().filter(function(el) {
-            var bounds = el.getBoundingClientRect()
-
-            return !$(el).find('svg').length
-                && bounds.top < listBounds.bottom
-                && bounds.top + $(el).height() > listBounds.top
-        })
-
-        updateElements.forEach(function(el) {
-            var tree = $(el).data('gametree')
-            var tp = gametree.navigate(tree, 0, 30)
-            if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
-
-            var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
-            var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
-
-            $(svg).insertAfter($(el).find('span').eq(0))
-        })
-    }
-
     $('#gamechooser').addClass('show')
-    $(window).on('resize', updateSVG).trigger('resize')
-    $scrollContainer.on('scroll', updateSVG).scrollTop(scrollbarPos)
+    $(window).trigger('resize')
+    $scrollContainer.scrollTop(scrollbarPos)
 }
 
 function closeGameChooser() {
