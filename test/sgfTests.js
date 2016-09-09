@@ -175,6 +175,13 @@ describe('sgf', function() {
                 '古力'
             )
         })
+        it('should save SGFs back to UTF-8 regardless of input encoding', function() {
+            var parsed_sgf = sgf.parse(sgf.tokenize(
+                fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+            var saved_sgf = sgf.stringify(parsed_sgf)
+            assert.equal('GB2312', parsed_sgf.subtrees[0].nodes[0].CA[0])
+            assert.equal('UTF-8', sgf.parse(sgf.tokenize(saved_sgf)).subtrees[0].nodes[0].CA[0])
+        })
     })
 
     describe('string2dates', function() {

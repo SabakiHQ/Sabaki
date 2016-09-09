@@ -249,6 +249,13 @@ context.stringify = function(tree) {
 
         for (var id in node) {
             if (id.toUpperCase() != id) continue
+            if (id == 'CA') {
+                /* Since we are outputting UTF8-encoded strings no matter what the input
+                 * encoding was, we need to intercept the CA property and reset it.
+                 */
+                output += 'CA[UTF-8]'
+                continue;
+            }
             output += id + '[' + node[id].map(context.escapeString).join('][') + ']'
         }
 
