@@ -200,6 +200,15 @@ describe('sgf', function() {
                 '古力'
             )
         })
+
+        it('should ignore unknown encodings', function() {
+            assert.notEqual(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/japanese_bad.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[2].C[0],
+                util.format('%s is fun', language_map['japanese'])
+            )
+        })
     })
 
     describe('string2dates', function() {
