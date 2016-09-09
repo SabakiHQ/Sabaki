@@ -157,7 +157,7 @@ describe('sgf', function() {
             assert.equal(
                 sgf.parse(sgf.tokenize(
                     fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
-                    .subtrees[0].nodes[0].C[0],
+                    .subtrees[0].nodes[2].C[0],
                 '围棋 is fun'
             )
         })
