@@ -20,8 +20,8 @@ var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
  * being encoded by the file's CA[] property is defined in the SGF spec at
  * http://www.red-bean.com/sgf/properties.html#CA
  */
-var default_encoding = 'ISO-8859-1'
-var encoded_properties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
+var defaultEncoding = 'ISO-8859-1'
+var encodedProperties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
                           'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
                           'US', 'WR', 'WT', 'GC']
 
@@ -68,7 +68,7 @@ context.parse = function(tokens, callback, start, depth, encoding) {
     if (!callback) callback = function(progress) {}
     if (!start) start = [0]
     if (isNaN(depth)) depth = 0
-    if (!encoding) encoding = default_encoding
+    if (!encoding) encoding = defaultEncoding
 
     var i = start[0]
     var node, property, tree = gametree.new()
@@ -94,27 +94,27 @@ context.parse = function(tokens, callback, start, depth, encoding) {
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            var encoded_value = value.substr(1, value.length - 2)
-            if (id == 'CA' && iconv.encodingExists(encoded_value) && encoded_value != default_encoding) {
-                encoding = encoded_value
-                property.push(encoded_value)
+            var encodedValue = value.substr(1, value.length - 2)
+            if (id == 'CA' && iconv.encodingExists(encodedValue) && encodedValue != defaultEncoding) {
+                encoding = encodedValue
+                property.push(encodedValue)
                 /* We may have already incorrectly parsed some values in this root node
                  * already, so we have to go back and re-parse them now.
                  */
                 for (k in node) {
-                    if (k != 'CA' && encoded_properties.indexOf(k) > -1) {
-                        decoded_values = []
+                    if (k != 'CA' && encodedProperties.indexOf(k) > -1) {
+                        decodedValues = []
                         for (v in node[k]) {
-                            decoded_values.push(iconv.decode(Buffer.from(node[k][v], 'binary'), encoding))
+                            decodedValues.push(iconv.decode(Buffer.from(node[k][v], 'binary'), encoding))
                         }
-                        node[k] = decoded_values
+                        node[k] = decodedValues
                     }
                 }
-            } else if (encoded_properties.indexOf(id) > -1 && encoding != default_encoding) {
-                decoded_value = iconv.decode(Buffer.from(encoded_value, 'binary'), encoding)
-                property.push(context.unescapeString(decoded_value))
+            } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
+                decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
+                property.push(context.unescapeString(decodedValue))
             } else {
-                property.push(context.unescapeString(encoded_value))
+                property.push(context.unescapeString(encodedValue))
             }
         }
 
