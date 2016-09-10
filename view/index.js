@@ -1895,7 +1895,7 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'utf8' }), true, function(error) {
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, function(error) {
             if (!error) setRepresentedFilename(filename)
         })
     }

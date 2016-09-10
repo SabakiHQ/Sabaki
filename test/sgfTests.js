@@ -1,5 +1,7 @@
 var assert = require('assert')
 var fs = require('fs')
+var tmp = require('tmp')
+var util = require('util')
 var sgf = require('../modules/sgf')
 var gametree = require('../modules/gametree')
 
@@ -143,6 +145,68 @@ describe('sgf', function() {
                         }
                     ]
                 })
+            )
+        })
+    })
+
+    describe('encoding', function() {
+        var languageMap = {
+            'chinese': '围棋',
+            'japanese': '囲碁',
+            'korean': '바둑'
+        }
+
+        it('should be able to read out the CA property', function() {
+            assert.equal(
+                sgf.parse(sgf.tokenize('(;CA[UTF-8])')).subtrees[0].nodes[0].CA[0],
+                'UTF-8')
+        })
+
+        for (language in languageMap) {
+            it('should be able to decode non-UTF-8 text nodes', function() {
+                assert.equal(
+                    sgf.parse(sgf.tokenize(
+                        fs.readFileSync(util.format('%s/%s.sgf', __dirname, language),
+                                        {encoding: 'binary'})))
+                        .subtrees[0].nodes[2].C[0],
+                    util.format('%s is fun', languageMap[language])
+                )
+            })
+            it('should save SGFs back to UTF-8 regardless of input encoding', function() {
+                var parsedSgf = sgf.parse(sgf.tokenize(
+                    fs.readFileSync(util.format('%s/%s.sgf', __dirname, language),
+                                    {encoding: 'binary'})))
+                var savedSgfName = tmp.tmpNameSync()
+                fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
+                var savedSgf = sgf.parse(sgf.tokenize(
+                    fs.readFileSync(savedSgfName, {encoding: 'binary'})))
+                assert.equal(savedSgf.subtrees[0].nodes[0].CA[0], 'UTF-8')
+                assert.equal(savedSgf.subtrees[0].nodes[2].C[0],
+                             util.format('%s is fun', languageMap[language]))
+            })
+        }
+
+        it('should be able to go back and re-parse attributes set before CA', function() {
+            assert.equal(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[0].PW[0],
+                '柯洁'
+            )
+            assert.equal(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[0].PB[0],
+                '古力'
+            )
+        })
+
+        it('should ignore unknown encodings', function() {
+            assert.notEqual(
+                sgf.parse(sgf.tokenize(
+                    fs.readFileSync(__dirname + '/japanese_bad.sgf', {encoding: 'binary'})))
+                    .subtrees[0].nodes[2].C[0],
+                util.format('%s is fun', languageMap['japanese'])
             )
         })
     })
