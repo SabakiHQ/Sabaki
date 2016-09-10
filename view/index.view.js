@@ -108,7 +108,8 @@ function setShowLeftSidebar(show) {
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
-    var $view = $('#console .gm-scroll-view')
+
+    var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
     $('#console').data('scrollbar').update()
@@ -247,11 +248,11 @@ function setCaptures(captures) {
 }
 
 function getCurrentPlayer() {
-    return $('#current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
+    return $('.current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
 function setCurrentPlayer(sign) {
-    $('#current-player')
+    $('.current-player')
     .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
     .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
@@ -632,14 +633,14 @@ function prepareScrollbars() {
         if (!$('#gamechooser').hasClass('show')) return
 
         var width = $('#gamechooser .games-list').width() - 20
-        var $svgs = $('#gamechooser svg')
+        var $svgs = $('#gamechooser ol li svg')
 
-        if ($svgs.length == 0) return
+        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
 
-        var liwidth = $svgs.eq(0).width() + 12 + 20
+        var liwidth = $svgs.width() + 12 + 20
         var count = Math.floor(width / liwidth)
 
-        $('#gamechooser li').css('width', Math.floor(width / count) - 20)
+        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
         $('#gamechooser .games-list').data('scrollbar').update()
     })
 }
@@ -713,10 +714,45 @@ function prepareResizers() {
 }
 
 function prepareGameChooser() {
+    var $scrollContainer = $([
+        '#gamechooser .games-list.gm-prevented',
+        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
+    ].join(', '))
+
+    // Load SVG images on the fly
+
+    var updateSVG = function() {
+        var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
+
+        var updateElements = $('#gamechooser ol li').get().filter(function(el) {
+            var bounds = el.getBoundingClientRect()
+
+            return !$(el).find('svg').length
+                && bounds.top < listBounds.bottom
+                && bounds.top + $(el).height() > listBounds.top
+        })
+
+        updateElements.forEach(function(el) {
+            var tree = $(el).data('gametree')
+            var tp = gametree.navigate(tree, 0, 30)
+            if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
+
+            var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
+            var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
+
+            $(svg).insertAfter($(el).find('span').eq(0))
+        })
+    }
+
+    $(window).on('resize', updateSVG)
+    $scrollContainer.on('scroll', updateSVG)
+
+    // Filtering
+
     $('#gamechooser > input').on('input', function() {
         var value = this.value
 
-        $('#gamechooser .games-list li:not(.add)').get().forEach(function(li) {
+        $('#gamechooser .games-list li').get().forEach(function(li) {
             if ($(li).find('span').get().some(function(span) {
                 return $(span).text().toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) $(li).removeClass('hide')
@@ -725,6 +761,9 @@ function prepareGameChooser() {
 
         var $gamesList = $('#gamechooser .games-list')
         $gamesList.data('scrollbar').update()
+        $scrollContainer.scrollTop(0)
+
+        updateSVG()
     })
 }
 
@@ -1461,7 +1500,7 @@ function openAddGameMenu() {
 
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
-                showGameChooser(true)
+                showGameChooser('bottom')
             }
         }
     ]
@@ -1575,7 +1614,17 @@ function showGameChooser(restoreScrollbarPos) {
     if (restoreScrollbarPos == null)
         restoreScrollbarPos = true
 
-    var scrollbarPos = restoreScrollbarPos ? $('#gamechooser .gm-scroll-view').scrollTop() : 0
+    var $scrollContainer = $([
+        '#gamechooser .games-list.gm-prevented',
+        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
+    ].join(', '))
+
+    var scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
+
+    if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
+        scrollbarPos = 0
+    else if (restoreScrollbarPos == 'bottom')
+        scrollbarPos = $scrollContainer.get(0).scrollHeight
 
     closeDrawers()
 
@@ -1588,18 +1637,12 @@ function showGameChooser(restoreScrollbarPos) {
     for (var i = 0; i < trees.length; i++) {
         var tree = trees[i]
         var $li = $('<li/>')
-        var tp = gametree.navigate(tree, 0, 30)
-        if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
-
-        var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
-        var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
         var node = tree.nodes[0]
 
         $('#gamechooser ol').eq(0).append($li.append(
             $('<div/>')
             .attr('draggable', 'true')
             .append($('<span/>'))
-            .append(svg)
             .append($('<span class="black"/>').text('Black'))
             .append($('<span class="white"/>').text('White'))
         ))
@@ -1669,7 +1712,7 @@ function showGameChooser(restoreScrollbarPos) {
 
     $('#gamechooser').addClass('show')
     $(window).trigger('resize')
-    $('#gamechooser .gm-scroll-view').scrollTop(scrollbarPos)
+    $scrollContainer.scrollTop(scrollbarPos)
 }
 
 function closeGameChooser() {

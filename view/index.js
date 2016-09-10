@@ -201,17 +201,19 @@ function getBoard() {
 }
 
 function setBoard(board) {
+    var $goban = $('#goban')
+
     if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
-        $('#goban').data('board', board)
+        $goban.data('board', board)
         buildBoard()
     }
 
-    $('#goban').data('board', board)
+    $goban.data('board', board)
     setCaptures(board.captures)
 
     for (var x = 0; x < board.width; x++) {
         for (var y = 0; y < board.height; y++) {
-            var $li = $('#goban .pos_' + x + '-' + y)
+            var $li = $goban.find('.pos_' + x + '-' + y)
             var $span = $li.find('.stone span')
             var sign = board.arrangement[[x, y]]
             var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
@@ -264,7 +266,7 @@ function setBoard(board) {
     $('#goban hr').remove()
 
     board.lines.forEach(function(line) {
-        $('#goban').append(
+        $goban.append(
             $('<hr/>')
             .addClass(line[2] ? 'arrow' : 'line')
             .data('v1', line[0])
@@ -389,9 +391,10 @@ function setAutoplaying(playing) {
         var node = ntp[0].nodes[ntp[1]]
 
         if (!node.B && !node.W) {
-            setCurrentTreePosition.apply(null, ntp)
+            setCurrentTreePosition.apply(null, ntp.concat([false, false, true]))
         } else {
             var vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+            setCurrentPlayer(node.B ? 1 : -1)
             makeMove(vertex, false, true)
         }
 
@@ -435,7 +438,7 @@ function loadSettings() {
 }
 
 function prepareBar() {
-    $('#current-player').on('click', function() {
+    $('.current-player').on('click', function() {
         var tp = getCurrentTreePosition()
         var tree = tp[0], index = tp[1]
         var node = tree.nodes[index]
@@ -648,7 +651,7 @@ function prepareGameInfo() {
         closeGameInfo()
     })
 
-    $('#info #current-player').on('click', function() {
+    $('#info .current-player').on('click', function() {
         var data = $('#info section input[type="text"]').get().map(function(el) {
             return $(el).val()
         })
@@ -1534,7 +1537,7 @@ function updateCommentText() {
         return [null, null]
     })()))
 
-    $('#properties .gm-scroll-view').scrollTop(0)
+    $('#properties, #properties .gm-scroll-view').scrollTop(0)
     $('#properties').data('scrollbar').update()
 }
 
@@ -1753,7 +1756,8 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
         if (callback) callback(response)
 
         // Update scrollbars
-        var $view = $('#console .gm-scroll-view')
+        
+        var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
         var scrollbar = $('#console').data('scrollbar')
 
         $view.scrollTop($view.get(0).scrollHeight)
