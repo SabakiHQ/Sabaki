@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.18.0][unreleased] (Unreleased)
+
+**Added**
+
+* Add support for non-UTF8 encodings
+
 ## [Sabaki v0.17.2][v0.17.2] (2016-09-10)
 
 **Changed**
