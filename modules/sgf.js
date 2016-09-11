@@ -16,14 +16,14 @@ if (typeof require != 'undefined') {
 var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
 var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-/* The default encoding and list of properties that should be interpreted as
- * being encoded by the file's CA[] property is defined in the SGF spec at
- * http://www.red-bean.com/sgf/properties.html#CA
- */
+// The default encoding and list of properties that should be interpreted as
+// being encoded by the file's CA[] property is defined in the SGF spec at
+// http://www.red-bean.com/sgf/properties.html#CA
+
 var defaultEncoding = 'ISO-8859-1'
 var encodedProperties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
-                          'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
-                          'US', 'WR', 'WT', 'GC']
+                         'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
+                         'US', 'WR', 'WT', 'GC']
 
 context.meta = {
     name: 'Smart Game Format',
@@ -94,15 +94,17 @@ context.parse = function(tokens, callback, start, depth, encoding) {
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            var encodedValue = value.substr(1, value.length - 2)
+            var encodedValue = context.unescapeString(value.substr(1, value.length - 2))
+
             if (id == 'CA' && iconv.encodingExists(encodedValue) && encodedValue != defaultEncoding) {
                 encoding = encodedValue
                 property.push(encodedValue)
-                /* We may have already incorrectly parsed some values in this root node
-                 * already, so we have to go back and re-parse them now.
-                 */
+
+                // We may have already incorrectly parsed some values in this root node
+                // already, so we have to go back and re-parse them now.
+
                 for (k in node) {
-                    if (k != 'CA' && encodedProperties.indexOf(k) > -1) {
+                    if (encodedProperties.indexOf(k) >= 0) {
                         decodedValues = []
                         for (v in node[k]) {
                             decodedValues.push(iconv.decode(Buffer.from(node[k][v], 'binary'), encoding))
@@ -112,9 +114,9 @@ context.parse = function(tokens, callback, start, depth, encoding) {
                 }
             } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
                 decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
-                property.push(context.unescapeString(decodedValue))
+                property.push(decodedValue)
             } else {
-                property.push(context.unescapeString(encodedValue))
+                property.push(encodedValue)
             }
         }
 
@@ -249,13 +251,15 @@ context.stringify = function(tree) {
 
         for (var id in node) {
             if (id.toUpperCase() != id) continue
+
             if (id == 'CA') {
-                /* Since we are outputting UTF8-encoded strings no matter what the input
-                 * encoding was, we need to intercept the CA property and reset it.
-                 */
+                // Since we are outputting UTF8-encoded strings no matter what the input
+                // encoding was, we need to intercept the CA property and reset it.
+
                 output += 'CA[UTF-8]'
-                continue;
+                continue
             }
+
             output += id + '[' + node[id].map(context.escapeString).join('][') + ']'
         }
 
