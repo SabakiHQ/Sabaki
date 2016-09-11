@@ -73,7 +73,6 @@ function buildMenu(noWindows) {
             {role: 'cut'},
             {role: 'copy'},
             {role: 'paste'},
-            {role: 'delete'},
             {role: 'selectall'},
             {type: 'separator'},
             {submenu: [], role: 'services'},
