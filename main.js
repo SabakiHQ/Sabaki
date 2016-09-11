@@ -67,15 +67,19 @@ function buildMenu(noWindows) {
             {type: 'separator'},
             preferenceItem,
             {type: 'separator'},
-            {role: 'undo'},
-            {role: 'redo'},
-            {type: 'separator'},
-            {role: 'cut'},
-            {role: 'copy'},
-            {role: 'paste'},
-            {role: 'selectall'},
-            {type: 'separator'},
             {submenu: [], role: 'services'},
+            {
+                label: 'Text',
+                submenu: [
+                    {role: 'undo'},
+                    {role: 'redo'},
+                    {type: 'separator'},
+                    {role: 'cut'},
+                    {role: 'copy'},
+                    {role: 'paste'},
+                    {role: 'selectall'}
+                ],
+            },
             {type: 'separator'},
             {role: 'hide'},
             {role: 'hideothers'},
@@ -96,7 +100,7 @@ function buildMenu(noWindows) {
             submenu: [
                 {
                     label: 'New Window',
-                    click: newWindow.bind(null, null)
+                    click: () => newWindow()
                 },
                 {role: 'minimize'},
                 {type: 'separator'},
