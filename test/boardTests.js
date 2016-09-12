@@ -215,20 +215,52 @@ describe('Board', () => {
         })
         it('should remove captured stones', () => {
             let board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
+            let white = [[1, 1], [2, 1]]
+
+            black.forEach(x => board.arrangement[x] = 1)
+            white.forEach(x => board.arrangement[x] = -1)
+
             let move = board.makeMove(1, [3, 1])
-            assert.equal(move.arrangement[[1, 1]], 0)
-            assert.equal(move.arrangement[[2, 1]], 0)
+
             assert.equal(move.arrangement[[3, 1]], 1)
-            assert.equal(move.arrangement[[1, 2]], 1)
+            black.forEach(x => assert.equal(move.arrangement[x], 1))
+            white.forEach(x => assert.equal(move.arrangement[x], 0))
+
+            // Edge capture
 
             board = new Board()
-            ;[[0, 1]].forEach(x => board.arrangement[x] = 1)
-            ;[[0, 0]].forEach(x => board.arrangement[x] = -1)
+
+            board.arrangement[[0, 1]] = 1
+            board.arrangement[[0, 0]] = -1
+
             move = board.makeMove(1, [1, 0])
+
             assert.equal(move.arrangement[[0, 0]], 0)
             assert.equal(move.arrangement[[1, 0]], 1)
+            assert.equal(move.arrangement[[0, 1]], 1)
+        })
+        it('should count captures correctly', () => {
+            let board = new Board()
+            let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
+            let white = [[1, 1], [2, 1]]
+
+            black.forEach(x => board.arrangement[x] = 1)
+            white.forEach(x => board.arrangement[x] = -1)
+
+            let move = board.makeMove(1, [3, 1])
+            assert.equal(move.captures[-1], 0)
+            assert.equal(move.captures[1], white.length)
+
+            board = new Board()
+
+            board.arrangement[[0, 1]] = 1
+            board.arrangement[[0, 0]] = -1
+
+            move = board.makeMove(1, [1, 0])
+
+            assert.equal(move.captures[-1], 0)
+            assert.equal(move.captures[1], 1)
         })
         it('should handle suicide correctly', () => {
             let board = new Board()

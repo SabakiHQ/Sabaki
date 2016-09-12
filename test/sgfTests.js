@@ -171,7 +171,6 @@ describe('sgf', () => {
                     util.format('%s is fun', languageMap[language])
                 )
             })
-
             it('should save SGFs back to UTF-8 regardless of input encoding', () => {
                 let parsedSgf = sgf.parseFile(util.format('%s/%s.sgf', __dirname, language))
                 let savedSgfName = tmp.tmpNameSync()
@@ -184,7 +183,7 @@ describe('sgf', () => {
                 assert.equal(savedSgf.subtrees[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
             })
         }
-
+        
         it('should be able to go back and re-parse attributes set before CA', () => {
             assert.equal(
                 sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PW[0],
@@ -195,7 +194,6 @@ describe('sgf', () => {
                 '古力'
             )
         })
-
         it('should ignore unknown encodings', () => {
             assert.notEqual(
                 sgf.parseFile(__dirname + '/japanese_bad.sgf').subtrees[0].nodes[2].C[0],
