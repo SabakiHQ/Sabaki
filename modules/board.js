@@ -5,8 +5,8 @@ class Board {
     constructor(width = 19, height = 19, arrangement = {}, captures = {'-1': 0, '1': 0}) {
         this.width = width
         this.height = height
-        this.arrangement = arrangement
         this.captures = captures
+        this.arrangement = {}
         this.markups = {}
         this.ghosts = []
         this.lines = []
@@ -14,7 +14,7 @@ class Board {
         // Initialize arrangement
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                this.arrangement[[x, y]] = arrangement ? arrangement[[x, y]] : 0
+                this.arrangement[[x, y]] = [x, y] in arrangement ? arrangement[[x, y]] : 0
             }
         }
     }
