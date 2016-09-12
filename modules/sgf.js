@@ -1,40 +1,30 @@
-(function(root) {
+const fs = require('fs')
+const iconv = require('iconv-lite')
+const gametree = require('./gametree')
+const setting = require('./setting')
+const helper = require('./helper')
 
-var fs = null
-var gametree = root.gametree
-var setting = root.setting
-var helper = root.helper
-
-if (typeof require != 'undefined') {
-    fs = require('fs')
-    gametree = require('./gametree')
-    setting = require('./setting')
-    helper = require('./helper')
-    iconv = require('iconv-lite')
-}
-
-var context = typeof module != 'undefined' ? module.exports : (window.sgf = {})
-var alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 // The default encoding and list of properties that should be interpreted as
 // being encoded by the file's CA[] property is defined in the SGF spec at
 // http://www.red-bean.com/sgf/properties.html#CA
 
-var defaultEncoding = 'ISO-8859-1'
-var encodedProperties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
-                         'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
-                         'US', 'WR', 'WT', 'GC']
+const defaultEncoding = 'ISO-8859-1'
+const encodedProperties = ['C', 'N', 'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN',
+                           'ON', 'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO',
+                           'US', 'WR', 'WT', 'GC']
 
-context.meta = {
+exports.meta = {
     name: 'Smart Game Format',
     extensions: ['sgf']
 }
 
-context.tokenize = function(input) {
+exports.tokenize = function(input) {
     input = helper.normalizeEndings(input)
 
-    var tokens = []
-    var rules = {
+    let tokens = []
+    let rules = {
         ignore: /^\s+/,
         parenthesis: /^(\(|\))/,
         semicolon: /^;/,
@@ -43,14 +33,14 @@ context.tokenize = function(input) {
     }
 
     while (input.length > 0) {
-        var token = null
-        var length = 1
+        let token = null
+        let length = 1
 
-        for (var type in rules) {
-            var matches = rules[type].exec(input)
+        for (let type in rules) {
+            let matches = rules[type].exec(input)
             if (!matches) continue
 
-            var value = matches[0]
+            let value = matches[0]
             length = value.length
             token = [type, value]
 
@@ -64,37 +54,31 @@ context.tokenize = function(input) {
     return tokens
 }
 
-context.parse = function(tokens, callback, start, depth, encoding) {
-    if (!callback) callback = function(progress) {}
-    if (!start) start = [0]
-    if (isNaN(depth)) depth = 0
-    if (!encoding) encoding = defaultEncoding
+exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, encoding = defaultEncoding) {
+    let i = start[0]
+    let tree = gametree.new(), node, property, id
 
-    var i = start[0]
-    var node, property, tree = gametree.new()
     tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
         && depth > setting.get('graph.collapse_min_depth')
 
     while (i < tokens.length) {
-        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') break
-        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == ')') return tree
+        let [type, value] = tokens[i]
 
-        var type = tokens[i][0], value = tokens[i][1]
+        if (type == 'parenthesis' && value == '(') break
+        if (type == 'parenthesis' && value == ')') return tree
 
         if (type == 'semicolon') {
             node = {}
             tree.nodes.push(node)
         } else if (type == 'prop_ident') {
-            var id = value.split('').filter(function(x) {
-                return x.toUpperCase() == x
-            }).join('')
+            id = value.split('').filter(x => x.toUpperCase() == x).join('')
 
             if (id != '') {
                 node[id] = []
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            var encodedValue = context.unescapeString(value.substr(1, value.length - 2))
+            let encodedValue = exports.unescapeString(value.substr(1, value.length - 2))
 
             if (id == 'CA' && iconv.encodingExists(encodedValue) && encodedValue != defaultEncoding) {
                 encoding = encodedValue
@@ -103,13 +87,9 @@ context.parse = function(tokens, callback, start, depth, encoding) {
                 // We may have already incorrectly parsed some values in this root node
                 // already, so we have to go back and re-parse them now.
 
-                for (k in node) {
+                for (let k in node) {
                     if (encodedProperties.indexOf(k) >= 0) {
-                        decodedValues = []
-                        for (v in node[k]) {
-                            decodedValues.push(iconv.decode(Buffer.from(node[k][v], 'binary'), encoding))
-                        }
-                        node[k] = decodedValues
+                        node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
                     }
                 }
             } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
@@ -124,10 +104,12 @@ context.parse = function(tokens, callback, start, depth, encoding) {
     }
 
     while (i < tokens.length) {
-        if (tokens[i][0] == 'parenthesis' && tokens[i][1] == '(') {
+        let [type, value] = tokens[i]
+
+        if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            t = context.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
+            t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
 
             if (t.nodes.length > 0) {
                 t.parent = tree
@@ -136,7 +118,7 @@ context.parse = function(tokens, callback, start, depth, encoding) {
             }
 
             i = start[0]
-        } else if (tokens[i][0] == 'parenthesis' && tokens[i][1] == ')') {
+        } else if (type == 'parenthesis' && value == ')') {
             start[0] = i
             callback(i / tokens.length)
             break
@@ -148,28 +130,24 @@ context.parse = function(tokens, callback, start, depth, encoding) {
     return tree
 }
 
-context.parseFile = function(filename, callback) {
-    if (!fs) return null
+exports.parseFile = function(filename, callback) {
+    let input = fs.readFileSync(filename, {encoding: 'binary'})
+    let tokens = exports.tokenize(input)
 
-    var input = fs.readFileSync(filename, { encoding: 'binary' })
-    var tokens = context.tokenize(input)
-
-    return context.parse(tokens, callback)
+    return exports.parse(tokens, callback)
 }
 
-context.string2dates = function(input) {
+exports.string2dates = function(input) {
     if (!input.match(/^(\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}|(\d{4}-)?\d{1,2}(-\d{1,2})?))*)?$/))
         return null
     if (input.trim() == '')
         return []
 
-    var dates = input.split(',').map(function(x) {
-        return x.trim().split('-')
-    })
+    let dates = input.split(',').map(x => x.trim().split('-'))
 
-    for (var i = 1; i < dates.length; i++) {
-        var date = dates[i]
-        var prev = dates[i - 1]
+    for (let i = 1; i < dates.length; i++) {
+        let date = dates[i]
+        let prev = dates[i - 1]
 
         if (date[0].length != 4) {
             // No year
@@ -184,22 +162,20 @@ context.string2dates = function(input) {
         }
     }
 
-    return dates.map(function(x) {
-        return x.map(function(y) { return +y })
-    })
+    return dates.map(x => x.map(y => +y))
 }
 
-context.dates2string = function(dates) {
+exports.dates2string = function(dates) {
     if (dates.length == 0) return ''
 
-    var datesCopy = [dates[0].slice()]
+    let datesCopy = [dates[0].slice()]
 
-    for (var i = 1; i < dates.length; i++) {
-        var date = dates[i]
-        var prev = dates[i - 1]
+    for (let i = 1; i < dates.length; i++) {
+        let date = dates[i]
+        let prev = dates[i - 1]
+        let k = 0
 
-        var k = 0
-        for (var j = 0; j < date.length; j++) {
+        for (let j = 0; j < date.length; j++) {
             if (date[j] == prev[j] && k == j) k++
             else break
         }
@@ -207,35 +183,32 @@ context.dates2string = function(dates) {
         datesCopy.push(date.slice(k))
     }
 
-    return datesCopy.map(function(x) {
-        return x.map(function(y) {
-            return y > 9 ? '' + y : '0' + y
-        }).join('-')
+    return datesCopy.map(x => {
+        return x.map(y => y > 9 ? '' + y : '0' + y).join('-')
     }).join(',')
 }
 
-context.point2vertex = function(point) {
+exports.point2vertex = function(point) {
     if (point.length != 2) return [-1, -1]
-    return point.split('').map(function(x) { return alpha.indexOf(x) })
+    return point.split('').map(x => alpha.indexOf(x))
 }
 
-context.vertex2point = function(vertex) {
-    var x = vertex[0], y = vertex[1]
+exports.vertex2point = function([x, y]) {
     if (Math.min(x, y) < 0 || Math.max(x, y) >= alpha.length)
         return ''
     return alpha[x] + alpha[y]
 }
 
-context.compressed2list = function(compressed) {
-    var colon = compressed.indexOf(':')
-    if (colon < 0) return [context.point2vertex(compressed)]
+exports.compressed2list = function(compressed) {
+    let colon = compressed.indexOf(':')
+    if (colon < 0) return [exports.point2vertex(compressed)]
 
-    var v1 = context.point2vertex(compressed.slice(0, colon))
-    var v2 = context.point2vertex(compressed.slice(colon + 1))
-    var list = []
+    let v1 = exports.point2vertex(compressed.slice(0, colon))
+    let v2 = exports.point2vertex(compressed.slice(colon + 1))
+    let list = []
 
-    for (var i = Math.min(v1[0], v2[0]); i <= Math.max(v1[0], v2[0]); i++) {
-        for (var j = Math.min(v1[1], v2[1]); j <= Math.max(v1[1], v2[1]); j++) {
+    for (let i = Math.min(v1[0], v2[0]); i <= Math.max(v1[0], v2[0]); i++) {
+        for (let j = Math.min(v1[1], v2[1]); j <= Math.max(v1[1], v2[1]); j++) {
             list.push([i, j])
         }
     }
@@ -243,13 +216,13 @@ context.compressed2list = function(compressed) {
     return list
 }
 
-context.stringify = function(tree) {
-    var output = ''
+exports.stringify = function(tree) {
+    let output = ''
 
     tree.nodes.forEach(function(node) {
         output += ';'
 
-        for (var id in node) {
+        for (let id in node) {
             if (id.toUpperCase() != id) continue
 
             if (id == 'CA') {
@@ -260,30 +233,30 @@ context.stringify = function(tree) {
                 continue
             }
 
-            output += id + '[' + node[id].map(context.escapeString).join('][') + ']'
+            output += id + '[' + node[id].map(exports.escapeString).join('][') + ']'
         }
 
         output += '\n'
     })
 
-    for (var i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + context.stringify(tree.subtrees[i]) + ')'
+    for (let i = 0; i < tree.subtrees.length; i++) {
+        output += '(' + exports.stringify(tree.subtrees[i]) + ')'
     }
 
     return output
 }
 
-context.escapeString = function(input) {
+exports.escapeString = function(input) {
     return input.toString().replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
 }
 
-context.unescapeString = function(input) {
-    var result = ''
-    var inBackslash = false
+exports.unescapeString = function(input) {
+    let result = ''
+    let inBackslash = false
 
     input = helper.normalizeEndings(input)
 
-    for (var i = 0; i < input.length; i++) {
+    for (let i = 0; i < input.length; i++) {
         if (!inBackslash) {
             if (input[i] != '\\')
                 result += input[i]
@@ -299,5 +272,3 @@ context.unescapeString = function(input) {
 
     return result
 }
-
-}).call(null, typeof module != 'undefined' ? module : window)
