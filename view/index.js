@@ -510,8 +510,8 @@ function prepareGameGraph() {
     s.bind('clickNode', function(e) {
         setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        let pos = [Math.round(e.data.captor.clientX), Math.round(e.data.captor.clientY)]
-        openNodeMenu(...getTreePos(e), pos)
+        let pos = [e.data.captor.clientX, e.data.captor.clientY]
+        openNodeMenu(...getTreePos(e), pos.map(x => Math.round(x)))
     })
 
     $container.data('sigma', s)

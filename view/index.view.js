@@ -1607,8 +1607,8 @@ function showGameChooser(restoreScrollbarPos = true) {
             }, 500)
         }).on('mouseup', function(evt) {
             if (evt.button != 2) return
-            let position = [Math.round(evt.clientX), Math.round(evt.clientY)]
-            openGameMenu($(this), position)
+            let pos = [evt.clientX, evt.clientY]
+            openGameMenu($(this), pos.map(x => Math.round(x)))
         }).on('dragstart', function() {
             $('#gamechooser').data('dragging', $(this).parents('li').get(0))
         })
