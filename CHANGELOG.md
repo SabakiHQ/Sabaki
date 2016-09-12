@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Add support for non-UTF8 encodings
 * Add basic text editing keyboard shortcuts when editing/writing comments
 
+**Fixed**
+
+* Fix removing nodes resulting in invalid game graphs sometimes
+
 ## [Sabaki v0.17.2][v0.17.2] (2016-09-10)
 
 **Changed**
