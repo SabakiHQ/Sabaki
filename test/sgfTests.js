@@ -1,13 +1,14 @@
-var assert = require('assert')
-var fs = require('fs')
-var tmp = require('tmp')
-var util = require('util')
-var sgf = require('../modules/sgf')
-var gametree = require('../modules/gametree')
+const assert = require('assert')
+const fs = require('fs')
+const util = require('util')
+const tmp = require('tmp')
 
-describe('sgf', function() {
-    describe('tokenize', function() {
-        it('should work on multiple nodes', function() {
+const sgf = require('../modules/sgf')
+const gametree = require('../modules/gametree')
+
+describe('sgf', () => {
+    describe('tokenize', () => {
+        it('should work on multiple nodes', () => {
             assert.deepEqual(sgf.tokenize('(;B[aa]SZ[19];AB[cc][dd:ee])'), [
                 ['parenthesis', '('],
                 ['semicolon', ';'],
@@ -18,7 +19,7 @@ describe('sgf', function() {
                 ['parenthesis', ')']
             ])
         })
-        it('should take escaping values into account', function() {
+        it('should take escaping values into account', () => {
             assert.deepEqual(sgf.tokenize('(;C[hello\\]world];C[hello\\\\];C[hello])'), [
                 ['parenthesis', '('],
                 ['semicolon', ';'],
@@ -38,7 +39,7 @@ describe('sgf', function() {
                 ['parenthesis', ')']
             ])
         })
-        it('should allow lower case properties', function() {
+        it('should allow lower case properties', () => {
             assert.deepEqual(sgf.tokenize('(;CoPyright[blah])'), [
                 ['parenthesis', '('],
                 ['semicolon', ';'],
@@ -48,8 +49,8 @@ describe('sgf', function() {
         })
     })
 
-    describe('parse', function() {
-        it('should parse multiple nodes', function() {
+    describe('parse', () => {
+        it('should parse multiple nodes', () => {
             assert.equal(gametree.getJson(sgf.parse([
                 ['parenthesis', '('],
                 ['semicolon', ';'],
@@ -63,29 +64,29 @@ describe('sgf', function() {
                 subtrees: [
                     {
                         nodes: [
-                            { B: ['aa'], SZ: ['19'] },
-                            { AB: ['cc', 'dd:ee'] }
+                            {B: ['aa'], SZ: ['19']},
+                            {AB: ['cc', 'dd:ee']}
                         ],
                         subtrees: []
                     }
                 ]
             }))
         })
-        it('should parse variations', function() {
+        it('should parse variations', () => {
             assert.equal(
                 gametree.getJson(sgf.parse(sgf.tokenize('(;B[hh](;W[ii])(;W[hi]C[h]))'))),
                 gametree.getJson({
                     nodes: [],
                     subtrees: [
                         {
-                            nodes: [{ B: ['hh'] }],
+                            nodes: [{B: ['hh']}],
                             subtrees: [
                                 {
-                                    nodes: [{ W: ['ii'] }],
+                                    nodes: [{W: ['ii']}],
                                     subtrees: []
                                 },
                                 {
-                                    nodes: [{ W: ['hi'], C: ['h'] }],
+                                    nodes: [{W: ['hi'], C: ['h']}],
                                     subtrees: []
                                 }
                             ]
@@ -94,21 +95,21 @@ describe('sgf', function() {
                 })
             )
         })
-        it('should convert lower case properties', function() {
+        it('should convert lower case properties', () => {
             assert.equal(
                 gametree.getJson(sgf.parse(sgf.tokenize('(;CoPyright[hello](;White[ii])(;White[hi]Comment[h]))'))),
                 gametree.getJson({
                     nodes: [],
                     subtrees: [
                         {
-                            nodes: [{ CP: ['hello'] }],
+                            nodes: [{CP: ['hello']}],
                             subtrees: [
                                 {
-                                    nodes: [{ W: ['ii'] }],
+                                    nodes: [{W: ['ii']}],
                                     subtrees: []
                                 },
                                 {
-                                    nodes: [{ W: ['hi'], C: ['h'] }],
+                                    nodes: [{W: ['hi'], C: ['h']}],
                                     subtrees: []
                                 }
                             ]
@@ -117,28 +118,28 @@ describe('sgf', function() {
                 })
             )
         })
-        it('should parse a relatively complex file', function() {
-            var contents = fs.readFileSync(__dirname + '/complex.sgf', 'utf8')
-            var tokens = sgf.tokenize(contents)
-            var tree = sgf.parse(tokens)
+        it('should parse a relatively complex file', () => {
+            let contents = fs.readFileSync(__dirname + '/complex.sgf', 'utf8')
+            let tokens = sgf.tokenize(contents)
+            let tree = sgf.parse(tokens)
 
             assert.equal(tree.subtrees.length, 1)
         })
-        it('should ignore empty subtrees', function() {
+        it('should ignore empty subtrees', () => {
             assert.equal(
                 gametree.getJson(sgf.parse(sgf.tokenize('(;B[hh]()(;W[ii])()(;W[hi]C[h]))'))),
                 gametree.getJson({
                     nodes: [],
                     subtrees: [
                         {
-                            nodes: [{ B: ['hh'] }],
+                            nodes: [{B: ['hh']}],
                             subtrees: [
                                 {
-                                    nodes: [{ W: ['ii'] }],
+                                    nodes: [{W: ['ii']}],
                                     subtrees: []
                                 },
                                 {
-                                    nodes: [{ W: ['hi'], C: ['h'] }],
+                                    nodes: [{W: ['hi'], C: ['h']}],
                                     subtrees: []
                                 }
                             ]
@@ -149,78 +150,70 @@ describe('sgf', function() {
         })
     })
 
-    describe('encoding', function() {
-        var languageMap = {
+    describe('encoding', () => {
+        let languageMap = {
             'chinese': '围棋',
             'japanese': '囲碁',
             'korean': '바둑'
         }
 
-        it('should be able to read out the CA property', function() {
+        it('should be able to read out the CA property', () => {
             assert.equal(
                 sgf.parse(sgf.tokenize('(;CA[UTF-8])')).subtrees[0].nodes[0].CA[0],
-                'UTF-8')
+                'UTF-8'
+            )
         })
 
         for (language in languageMap) {
-            it('should be able to decode non-UTF-8 text nodes', function() {
+            it('should be able to decode non-UTF-8 text nodes', () => {
                 assert.equal(
-                    sgf.parse(sgf.tokenize(
-                        fs.readFileSync(util.format('%s/%s.sgf', __dirname, language),
-                                        {encoding: 'binary'})))
-                        .subtrees[0].nodes[2].C[0],
+                    sgf.parseFile(util.format('%s/%s.sgf', __dirname, language)).subtrees[0].nodes[2].C[0],
                     util.format('%s is fun', languageMap[language])
                 )
             })
-            it('should save SGFs back to UTF-8 regardless of input encoding', function() {
-                var parsedSgf = sgf.parse(sgf.tokenize(
-                    fs.readFileSync(util.format('%s/%s.sgf', __dirname, language),
-                                    {encoding: 'binary'})))
-                var savedSgfName = tmp.tmpNameSync()
+
+            it('should save SGFs back to UTF-8 regardless of input encoding', () => {
+                let parsedSgf = sgf.parseFile(util.format('%s/%s.sgf', __dirname, language))
+                let savedSgfName = tmp.tmpNameSync()
+
                 fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
-                var savedSgf = sgf.parse(sgf.tokenize(
-                    fs.readFileSync(savedSgfName, {encoding: 'binary'})))
+
+                let savedSgf = sgf.parseFile(savedSgfName)
+
                 assert.equal(savedSgf.subtrees[0].nodes[0].CA[0], 'UTF-8')
-                assert.equal(savedSgf.subtrees[0].nodes[2].C[0],
-                             util.format('%s is fun', languageMap[language]))
+                assert.equal(savedSgf.subtrees[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
             })
         }
 
-        it('should be able to go back and re-parse attributes set before CA', function() {
+        it('should be able to go back and re-parse attributes set before CA', () => {
             assert.equal(
-                sgf.parse(sgf.tokenize(
-                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
-                    .subtrees[0].nodes[0].PW[0],
+                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PW[0],
                 '柯洁'
             )
             assert.equal(
-                sgf.parse(sgf.tokenize(
-                    fs.readFileSync(__dirname + '/chinese.sgf', {encoding: 'binary'})))
-                    .subtrees[0].nodes[0].PB[0],
+                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PB[0],
                 '古力'
             )
         })
 
-        it('should ignore unknown encodings', function() {
+        it('should ignore unknown encodings', () => {
             assert.notEqual(
-                sgf.parse(sgf.tokenize(
-                    fs.readFileSync(__dirname + '/japanese_bad.sgf', {encoding: 'binary'})))
-                    .subtrees[0].nodes[2].C[0],
+                sgf.parseFile(__dirname + '/japanese_bad.sgf').subtrees[0].nodes[2].C[0],
                 util.format('%s is fun', languageMap['japanese'])
             )
         })
     })
 
-    describe('string2dates', function() {
-        it('should parse comma-separated dates', function() {
+    describe('string2dates', () => {
+        it('should parse comma-separated dates', () => {
             assert.deepEqual(sgf.string2dates('1996-12-27,1997-01-03'), [
                 [1996, 12, 27], [1997, 1, 3]
             ])
         })
-        it('should be able to handle empty strings', function() {
+        it('should be able to handle empty strings', () => {
             assert.deepEqual(sgf.string2dates(''), [])
         })
-        it('should handle short-hand notation', function() {
+        it('should handle short-hand notation', () => {
             assert.deepEqual(sgf.string2dates('1996-05,06'), [
                 [1996, 5], [1996, 6]
             ])
@@ -242,8 +235,8 @@ describe('sgf', function() {
         })
     })
 
-    describe('dates2string', function() {
-        it('should work', function() {
+    describe('dates2string', () => {
+        it('should work', () => {
             assert.equal(sgf.dates2string([
                 [1996, 5], [1996, 6]
             ]), '1996-05,06')
@@ -263,10 +256,10 @@ describe('sgf', function() {
                 [1996, 12, 27], [1996, 12, 28], [1997, 1, 3], [1997, 1, 4]
             ]), '1996-12-27,28,1997-01-03,04')
         })
-        it('should be able to handle empty strings', function() {
+        it('should be able to handle empty strings', () => {
             assert.equal(sgf.dates2string([]), '')
         })
-        it('should be inverse to string2dates', function() {
+        it('should be inverse to string2dates', () => {
             assert.deepEqual(sgf.string2dates(sgf.dates2string([
                 [1996, 5], [1996, 6]
             ])), [
@@ -295,13 +288,13 @@ describe('sgf', function() {
         })
     })
 
-    describe('point2vertex', function() {
-        it('should return [-1, -1] when passing string with length > 2', function() {
+    describe('point2vertex', () => {
+        it('should return [-1, -1] when passing string with length > 2', () => {
             assert.deepEqual(sgf.point2vertex(''), [-1, -1])
             assert.deepEqual(sgf.point2vertex('d'), [-1, -1])
             assert.deepEqual(sgf.point2vertex('blah'), [-1, -1])
         })
-        it('should work', function() {
+        it('should work', () => {
             assert.deepEqual(sgf.point2vertex('bb'), [1, 1])
             assert.deepEqual(sgf.point2vertex('jj'), [9, 9])
             assert.deepEqual(sgf.point2vertex('jf'), [9, 5])
@@ -309,24 +302,24 @@ describe('sgf', function() {
             assert.deepEqual(sgf.point2vertex('fA'), [5, 26])
             assert.deepEqual(sgf.point2vertex('AB'), [26, 27])
         })
-        it('should be left inverse to vertex2point', function() {
-            var tests = [[-1, -1], [10, 5], [9, 28], [30, 27], [0, 0]]
+        it('should be left inverse to vertex2point', () => {
+            let tests = [[-1, -1], [10, 5], [9, 28], [30, 27], [0, 0]]
             tests.forEach(test => assert.deepEqual(sgf.point2vertex(sgf.vertex2point(test)), test))
         })
     })
 
-    describe('vertex2point', function() {
-        it('should return empty string when passing negative values', function() {
+    describe('vertex2point', () => {
+        it('should return empty string when passing negative values', () => {
             assert.equal(sgf.vertex2point([-4, -5]), '')
             assert.equal(sgf.vertex2point([-4, 5]), '')
             assert.equal(sgf.vertex2point([4, -5]), '')
         })
-        it('should return empty string when passing too big values', function() {
+        it('should return empty string when passing too big values', () => {
             assert.equal(sgf.vertex2point([100, 100]), '')
             assert.equal(sgf.vertex2point([100, 1]), '')
             assert.equal(sgf.vertex2point([1, 100]), '')
         })
-        it('should work', function() {
+        it('should work', () => {
             assert.equal(sgf.vertex2point([1, 1]), 'bb')
             assert.equal(sgf.vertex2point([9, 9]), 'jj')
             assert.equal(sgf.vertex2point([9, 5]), 'jf')
@@ -334,45 +327,45 @@ describe('sgf', function() {
             assert.equal(sgf.vertex2point([5, 26]), 'fA')
             assert.equal(sgf.vertex2point([26, 27]), 'AB')
         })
-        it('should be left inverse to point2vertex', function() {
-            var tests = ['', 'df', 'AB', 'fA', 'fa']
+        it('should be left inverse to point2vertex', () => {
+            let tests = ['', 'df', 'AB', 'fA', 'fa']
             tests.forEach(test => assert.equal(sgf.vertex2point(sgf.point2vertex(test)), test))
         })
     })
 
-    describe('compressed2list', function() {
-        it('should handle points normally', function() {
+    describe('compressed2list', () => {
+        it('should handle points normally', () => {
             assert.deepEqual(sgf.compressed2list('ce'), [sgf.point2vertex('ce')])
             assert.deepEqual(sgf.compressed2list('aa'), [sgf.point2vertex('aa')])
             assert.deepEqual(sgf.compressed2list('Az'), [sgf.point2vertex('Az')])
         })
-        it('should handle one point compressions', function() {
+        it('should handle one point compressions', () => {
             assert.deepEqual(sgf.compressed2list('ce:ce'), [sgf.point2vertex('ce')])
             assert.deepEqual(sgf.compressed2list('aa:aa'), [sgf.point2vertex('aa')])
             assert.deepEqual(sgf.compressed2list('Az:Az'), [sgf.point2vertex('Az')])
         })
-        it('should handle compressions', function() {
+        it('should handle compressions', () => {
             assert.deepEqual(sgf.compressed2list('aa:bb'), [[0, 0], [0, 1], [1, 0], [1, 1]])
             assert.deepEqual(sgf.compressed2list('bb:aa'), [[0, 0], [0, 1], [1, 0], [1, 1]])
         })
     })
 
-    describe('stringify', function() {
-        it('should produce some sgf', function() {
-            var gametree = {
+    describe('stringify', () => {
+        it('should produce some sgf', () => {
+            let gametree = {
                 nodes: [],
                 subtrees: [
                     {
                         nodes: [
-                            { B: ['ee'], SZ: [19] },
-                            { W: ['dd'] }
+                            {B: ['ee'], SZ: [19]},
+                            {W: ['dd']}
                         ],
                         subtrees: []
                     }
                 ]
             }
 
-            var content = [
+            let content = [
                 '(;B[ee]SZ[19]',
                 ';W[dd]',
                 ')'
@@ -380,12 +373,12 @@ describe('sgf', function() {
 
             assert.equal(sgf.stringify(gametree), content)
         })
-        it('should handle empty properties', function() {
-            var gametree = {
+        it('should handle empty properties', () => {
+            let gametree = {
                 nodes: [],
                 subtrees: [
                     {
-                        nodes: [{ HS: [] }],
+                        nodes: [{HS: []}],
                         subtrees: []
                     }
                 ]
@@ -393,19 +386,19 @@ describe('sgf', function() {
 
             assert.equal(sgf.stringify(gametree), '(;HS[]\n)')
         })
-        it('should handle variations', function() {
-            var gametree = {
+        it('should handle variations', () => {
+            let gametree = {
                 nodes: [],
                 subtrees: [
                     {
-                        nodes: [{ B: ['hh'] }],
+                        nodes: [{B: ['hh']}],
                         subtrees: [
                             {
-                                nodes: [{ W: ['ii'] }],
+                                nodes: [{W: ['ii']}],
                                 subtrees: []
                             },
                             {
-                                nodes: [{ W: ['hi'], C: ['h'] }],
+                                nodes: [{W: ['hi'], C: ['h']}],
                                 subtrees: []
                             }
                         ]
@@ -413,7 +406,7 @@ describe('sgf', function() {
                 ]
             }
 
-            var content = [
+            let content = [
                 '(;B[hh]',
                 '(;W[ii]',
                 ')(;W[hi]C[h]',
@@ -424,42 +417,42 @@ describe('sgf', function() {
         })
     })
 
-    describe('escapeString', function() {
-        it('should escape backslashes', function() {
+    describe('escapeString', () => {
+        it('should escape backslashes', () => {
             assert.equal(sgf.escapeString('hello\\world'), 'hello\\\\world')
         })
-        it('should escape right brackets', function() {
+        it('should escape right brackets', () => {
             assert.equal(sgf.escapeString('hello]world'), 'hello\\]world')
         })
-        it('should not escape left brackets', function() {
+        it('should not escape left brackets', () => {
             assert.equal(sgf.escapeString('hello[world'), 'hello[world')
         })
     })
 
-    describe('unescapeString', function() {
-        it('should ignore escaped linebreaks', function() {
+    describe('unescapeString', () => {
+        it('should ignore escaped linebreaks', () => {
             assert.equal(sgf.unescapeString('hello\\\nworld'), 'helloworld')
             assert.equal(sgf.unescapeString('hello\\\rworld'), 'helloworld')
             assert.equal(sgf.unescapeString('hello\\\n\rworld'), 'helloworld')
             assert.equal(sgf.unescapeString('hello\\\r\nworld'), 'helloworld')
         })
-        it('should unescape backslashes and right brackets', function() {
+        it('should unescape backslashes and right brackets', () => {
             assert.equal(sgf.unescapeString('hello wor\\]ld'), 'hello wor]ld')
             assert.equal(sgf.unescapeString('hello wor\\\\ld'), 'hello wor\\ld')
             assert.equal(sgf.unescapeString('he\\]llo wor\\\\ld'), 'he]llo wor\\ld')
         })
-        it('should ignore other backslashes', function() {
+        it('should ignore other backslashes', () => {
             assert.equal(sgf.unescapeString('h\\e\\llo world'), 'hello world')
             assert.equal(sgf.unescapeString('hello\\ world'), 'hello world')
         })
-        it('should normalize line endings', function() {
+        it('should normalize line endings', () => {
             assert.equal(sgf.unescapeString('hello\nworld'), 'hello\nworld')
             assert.equal(sgf.unescapeString('hello\r\nworld'), 'hello\nworld')
             assert.equal(sgf.unescapeString('hello\n\rworld'), 'hello\nworld')
             assert.equal(sgf.unescapeString('hello\rworld'), 'hello\nworld')
         })
-        it('should be left inverse to escapeString', function() {
-            var texts = [
+        it('should be left inverse to escapeString', () => {
+            let texts = [
                 'He()llo Wor\\\\[Foo;Bar]ld\\',
                 'Hello\\! []World!'
             ]
