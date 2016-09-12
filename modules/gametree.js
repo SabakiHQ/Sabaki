@@ -439,23 +439,14 @@ exports.addBoard = function(tree, index = 0, baseboard = null) {
         })
     }
 
-    if ('LN' in node) {
-        node.LN.forEach(composed => {
+    ;['AR', 'LN'].filter(type => type in node).forEach(type => {
+        node[type].forEach(composed => {
             let sep = composed.indexOf(':')
             let p1 = composed.slice(0, sep)
             let p2 = composed.slice(sep + 1)
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), false])
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
         })
-    }
-
-    if ('AR' in node) {
-        node.AR.forEach(composed => {
-            let sep = composed.indexOf(':')
-            let p1 = composed.slice(0, sep)
-            let p2 = composed.slice(sep + 1)
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), true])
-        })
-    }
+    })
 
     node.board = board
 

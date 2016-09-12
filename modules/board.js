@@ -23,8 +23,7 @@ class Board {
         return this.makeMove(0)
     }
 
-    hasVertex(vertex) {
-        let x = vertex[0], y = vertex[1]
+    hasVertex([x, y]) {
         return 0 <= x && x < this.width && 0 <= y && y < this.height
     }
 
@@ -267,7 +266,7 @@ class Board {
         let getVertex = v => {
             if (this.hasVertex(v)) return v
 
-            let x = v[0], y = v[1]
+            let [x, y] = v
 
             if (x < 0)
                 x = -x - 1
