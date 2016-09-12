@@ -1,24 +1,16 @@
-(function(root) {
+const marked = require('./marked')
 
-var marked = root.marked
+let id = 0
 
-if (typeof require != 'undefined') {
-    marked = require('./marked')
-}
-
-var context = typeof module != 'undefined' ? module.exports : (window.helper = {})
-
-var id = 0
-
-context.getId = function() {
+exports.getId = function() {
     return ++id
 }
 
-context.hash = function(str) {
-    var hash = 0, chr
+exports.hash = function(str) {
+    let hash = 0, chr
     if (str.length == 0) return hash
 
-    for (var i = 0; i < str.length; i++) {
+    for (let i = 0; i < str.length; i++) {
         chr = str.charCodeAt(i)
         hash = ((hash << 5) - hash) + chr
         hash = hash & hash
@@ -27,33 +19,33 @@ context.hash = function(str) {
     return hash
 }
 
-context.floorEven = function(float) {
-    var value = Math.floor(float)
+exports.floorEven = function(float) {
+    let value = Math.floor(float)
     return value % 2 == 0 ? value : value - 1
 }
 
-context.equals = function(a, b) {
+exports.equals = function(a, b) {
     if (a === b) return true
     if (a == null || b == null) return a == b
 
-    var t = Object.prototype.toString.call(a)
+    let t = Object.prototype.toString.call(a)
     if (t !== Object.prototype.toString.call(b)) return false
 
-    var aa = t === '[object Array]'
-    var ao = t === '[object Object]'
+    let aa = t === '[object Array]'
+    let ao = t === '[object Object]'
 
     if (aa) {
         if (a.length !== b.length) return false
-        for (var i = 0; i < a.length; i++)
-            if (!context.equals(a[i], b[i])) return false
+        for (let i = 0; i < a.length; i++)
+            if (!exports.equals(a[i], b[i])) return false
         return true
     } else if (ao) {
-        var kk = Object.keys(a)
+        let kk = Object.keys(a)
         if (kk.length !== Object.keys(b).length) return false
-        for (var i = 0; i < kk.length; i++) {
+        for (let i = 0; i < kk.length; i++) {
             k = kk[i]
             if (!(k in b)) return false
-            if (!context.equals(a[k], b[k])) return false
+            if (!exports.equals(a[k], b[k])) return false
         }
         return true
     }
@@ -61,14 +53,14 @@ context.equals = function(a, b) {
     return false
 }
 
-context.lexicalCompare = function(a, b) {
+exports.lexicalCompare = function(a, b) {
     if (!a.length || !b.length) return a.length - b.length
-    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : context.lexicalCompare(a.slice(1), b.slice(1))
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : exports.lexicalCompare(a.slice(1), b.slice(1))
 }
 
-context.getSymmetries = function(tuple) {
-    var reversed = [tuple[1], tuple[0]]
-    var s = function(v) {
+exports.getSymmetries = function(tuple) {
+    let reversed = [tuple[1], tuple[0]]
+    let s = v => {
         return [
             [-v[0], v[1]],
             [v[0], -v[1]],
@@ -79,22 +71,22 @@ context.getSymmetries = function(tuple) {
     return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
 }
 
-context.normalizeEndings = function(input) {
+exports.normalizeEndings = function(input) {
     return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
 
-context.markdown = function(input) {
-    return marked(context.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
+exports.markdown = function(input) {
+    return marked(exports.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
 }
 
-context.htmlify = function(input) {
-    urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
-    emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-    coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
-    movenumberRegex = '\\B#\\d+\\b'
-    totalRegex = '(' + [urlRegex, emailRegex, coordRegex, movenumberRegex].join('|') + ')'
+exports.htmlify = function(input) {
+    let urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
+    let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
+    let coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
+    let movenumberRegex = '\\B#\\d+\\b'
+    let totalRegex = '(' + [urlRegex, emailRegex, coordRegex, movenumberRegex].join('|') + ')'
 
-    input = input.replace(new RegExp(totalRegex, 'g'), function(match) {
+    input = input.replace(new RegExp(totalRegex, 'g'), match => {
         if (new RegExp(urlRegex).test(match))
             return '<a href="' + match + '" class="external">' + match + '</a>'
         if (new RegExp(emailRegex).test(match))
@@ -107,5 +99,3 @@ context.htmlify = function(input) {
 
     return input
 }
-
-}).call(null, typeof module != 'undefined' ? module : window)
