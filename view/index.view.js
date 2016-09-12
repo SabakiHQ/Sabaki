@@ -2,7 +2,7 @@
  * Getter & setter
  */
 
-var busyTimeout = null
+let busyTimeout = null
 
 function getIsBusy() {
     return $('body').data('busy')
@@ -17,7 +17,7 @@ function setIsBusy(busy) {
         return
     }
 
-    busyTimeout = setTimeout(function() {
+    busyTimeout = setTimeout(() => {
         $('body').removeClass('busy')
     }, setting.get('app.hide_busy_delay'))
 }
@@ -27,7 +27,7 @@ function getFullScreen() {
 }
 
 function setFullScreen(fullscreen) {
-    var win = remote.getCurrentWindow()
+    let win = remote.getCurrentWindow()
     win.setFullScreen(fullscreen)
     win.setMenuBarVisibility(!fullscreen)
     win.setAutoHideMenuBar(fullscreen)
@@ -91,9 +91,9 @@ function setShowLeftSidebar(show) {
     if (getShowLeftSidebar() == show) return
 
     // Resize window
-    var win = remote.getCurrentWindow()
+    let win = remote.getCurrentWindow()
     if (win) {
-        var size = win.getContentSize()
+        let size = win.getContentSize()
 
         if (!win.isMaximized())
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
@@ -109,7 +109,7 @@ function setShowLeftSidebar(show) {
 
     // Update scrollbars
 
-    var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
+    let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
     $('#console').data('scrollbar').update()
@@ -133,9 +133,9 @@ function setShowSidebar(show) {
     if (getShowSidebar() == show) return
 
     // Resize window
-    var win = remote.getCurrentWindow()
+    let win = remote.getCurrentWindow()
     if (win) {
-        var size = win.getContentSize()
+        let size = win.getContentSize()
 
         if (!win.isMaximized())
             win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
@@ -152,7 +152,7 @@ function setShowSidebar(show) {
         updateCommentText();
     } else {
         // Clear game graph
-        var sigma = $('#graph').data('sigma')
+        let sigma = $('#graph').data('sigma')
 
         if (sigma) {
             sigma.graph.clear()
@@ -210,11 +210,11 @@ function getPropertiesHeight() {
 function setPropertiesHeight(height) {
     $('#graph').css('height', (100 - height) + '%')
     $('#properties').css('height', height + '%')
-    setSliderValue.apply(null, getSliderValue())
+    setSliderValue(null, getSliderValue())
 }
 
 function getPlayerName(sign) {
-    var $el = $('#player_' + sign + ' .name')
+    let $el = $('#player_' + sign + ' .name')
     return [$el.text(), $el.attr('title')]
 }
 
@@ -262,9 +262,9 @@ function getCommentText() {
 }
 
 function setCommentText(text) {
-    var html = helper.markdown(text)
-    var $container = $('#properties .inner .comment')
-    var $textarea = $('#properties textarea')
+    let html = helper.markdown(text)
+    let $container = $('#properties .inner .comment')
+    let $textarea = $('#properties textarea')
 
     if ($textarea.val() != text) $textarea.val(text)
     $container.html(html)
@@ -276,7 +276,7 @@ function getCommentTitle() {
 }
 
 function setCommentTitle(text) {
-    var $input = $('#properties .edit .header input')
+    let $input = $('#properties .edit .header input')
 
     $header = $('#properties .inner .header span')
     $header.text(text)
@@ -287,8 +287,8 @@ function setCommentTitle(text) {
 }
 
 function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
-    var $header = $('#properties .inner .header')
-    var $img = $header.find('img:nth-child(2)')
+    let $header = $('#properties .inner .header')
+    let $img = $header.find('img:nth-child(2)')
 
     // Set move status
 
@@ -336,9 +336,9 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
 }
 
 function getSliderValue() {
-    var $span = $('#sidebar .slider .inner span').eq(0)
-    var value = parseFloat($span.get(0).style.top)
-    var label = $span.text()
+    let $span = $('#sidebar .slider .inner span').eq(0)
+    let value = parseFloat($span.get(0).style.top)
+    let label = $span.text()
 
     return [value, label]
 }
@@ -365,7 +365,7 @@ function setFindMode(pickMode) {
         if (pickMode != getFindMode()) closeDrawers()
         $('body').addClass('find')
 
-        var input = $('#find input').get(0)
+        let input = $('#find input').get(0)
         input.focus()
         input.select()
     } else {
@@ -432,7 +432,7 @@ function getScoringMode() {
 }
 
 function setScoringMode(mode, estimator) {
-    var type = estimator ? 'estimator' : 'scoring'
+    let type = estimator ? 'estimator' : 'scoring'
 
     if (mode) {
         // Clean board
@@ -445,10 +445,8 @@ function setScoringMode(mode, estimator) {
         closeDrawers()
         $('body').addClass(type)
 
-        var deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
-        deadstones.forEach(function(v) {
-            $('#goban .pos_' + v.join('-')).addClass('dead')
-        })
+        let deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
+        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
 
         updateAreaMap(estimator)
     } else {
@@ -482,7 +480,7 @@ function setPreferencesTab(tab) {
         .parent()
         .addClass('current')
 
-    var $form = $('#preferences form')
+    let $form = $('#preferences form')
     $form.attr('class', tab)
 
     if (tab == 'engines')
@@ -500,7 +498,7 @@ function setRepresentedFilename(filename) {
 }
 
 function getShapes() {
-    var shapes = $('body').data('shapes')
+    let shapes = $('body').data('shapes')
 
     if (!shapes) {
         shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
@@ -511,31 +509,31 @@ function getShapes() {
 }
 
 function getCurrentMoveInterpretation() {
-    var board = getBoard()
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
+    let board = getBoard()
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
 
     // Determine root node
 
-    if (!tp[0].parent && tp[1] == 0) {
-        var result = []
+    if (!tree.parent && index == 0) {
+        let result = []
 
         if ('EV' in node) result.push(node.EV[0])
         if ('GN' in node) result.push(node.GN[0])
 
-        result = result.filter(function(x) { return x.trim() != '' }).join(' — ')
+        result = result.filter(x => x.trim() != '').join(' — ')
         if (result != '')
             return result
 
-        var today = new Date()
+        let today = new Date()
         if (today.getDate() == 25 && today.getMonth() == 3)
             return 'Happy Birthday, Sabaki!'
     }
 
     // Determine end of main variation
 
-    if (gametree.onMainTrack(tp[0]) && !gametree.navigate(tp[0], tp[1], 1)) {
-        var rootNode = getRootTree().nodes[0]
+    if (gametree.onMainTrack(tree) && !gametree.navigate(tree, index, 1)) {
+        let rootNode = getRootTree().nodes[0]
 
         if ('RE' in rootNode && rootNode.RE[0].trim() != '')
             return 'Result: ' + rootNode.RE[0]
@@ -543,10 +541,10 @@ function getCurrentMoveInterpretation() {
 
     // Determine capture
 
-    var ptp = gametree.navigate(tp[0], tp[1], -1)
+    let ptp = gametree.navigate(tree, index, -1)
 
     if (ptp) {
-        var prevBoard = ptp[0].nodes[ptp[1]].board
+        let prevBoard = ptp[0].nodes[ptp[1]].board
 
         if (!helper.equals(prevBoard.captures, board.captures))
             return 'Take'
@@ -554,7 +552,7 @@ function getCurrentMoveInterpretation() {
 
     // Get current vertex
 
-    var vertex
+    let vertex
 
     if ('B' in node && node.B[0] != '')
         vertex = sgf.point2vertex(node.B[0])
@@ -567,26 +565,25 @@ function getCurrentMoveInterpretation() {
 
     if (!board.hasVertex(vertex)) return 'Pass'
 
-    var sign = board.arrangement[vertex]
-    var neighbors = board.getNeighbors(vertex)
+    let sign = board.arrangement[vertex]
+    let neighbors = board.getNeighbors(vertex)
 
     // Check atari
 
-    if (neighbors.some(function(v) {
-        return board.arrangement[v] == -sign && board.getLiberties(v).length == 1
-    })) return 'Atari'
+    if (neighbors.some(v => board.arrangement[v] == -sign && board.getLiberties(v).length == 1))
+        return 'Atari'
 
     // Check connection
 
-    var friendly = neighbors.filter(function(v) { return board.arrangement[v] == sign})
+    let friendly = neighbors.filter(v => board.arrangement[v] == sign)
     if (friendly.length == neighbors.length) return 'Fill'
     if (friendly.length >= 2) return 'Connect'
 
     // Match shape
 
-    var shapes = getShapes()
+    let shapes = getShapes()
 
-    for (var i = 0; i < shapes.length; i++) {
+    for (let i = 0; i < shapes.length; i++) {
         if (boardmatcher.shapeMatch(shapes[i], board, vertex))
             return shapes[i].name
     }
@@ -598,9 +595,9 @@ function getCurrentMoveInterpretation() {
     if (vertex[0] == (board.width - 1) / 2 && vertex[1] == (board.height - 1) / 2)
         return 'Tengen'
 
-    var diff = board.getCanonicalVertex(vertex).map(function(x) { return x + 1 })
+    let diff = board.getCanonicalVertex(vertex).map(x => x + 1)
 
-    if ((diff[0] != 4 || diff[1] != 4) && board.getHandicapPlacement(9).some(function(v) {
+    if ((diff[0] != 4 || diff[1] != 4) && board.getHandicapPlacement(9).some(v => {
         return v[0] == vertex[0] && v[1] == vertex[1]
     })) return 'Hoshi'
 
@@ -625,13 +622,13 @@ function prepareScrollbars() {
         createElements: false
     }).create())
 
-    var $enginesList = $('#preferences .engines-list')
+    let $enginesList = $('#preferences .engines-list')
     $enginesList.data('scrollbar', new GeminiScrollbar({
         element: $enginesList.get(0),
         createElements: false
     }).create())
 
-    var $gamesList = $('#gamechooser .games-list')
+    let $gamesList = $('#gamechooser .games-list')
     $gamesList.data('scrollbar', new GeminiScrollbar({
         element: $gamesList.get(0),
         createElements: false
@@ -640,13 +637,13 @@ function prepareScrollbars() {
     $(window).on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
-        var width = $('#gamechooser .games-list').width() - 20
-        var $svgs = $('#gamechooser ol li svg')
+        let width = $('#gamechooser .games-list').width() - 20
+        let $svgs = $('#gamechooser ol li svg')
 
         if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
 
-        var liwidth = $svgs.width() + 12 + 20
-        var count = Math.floor(width / liwidth)
+        let svgWidth = $svgs.width() + 12 + 20
+        let count = Math.floor(width / svgWidth)
 
         $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
         $('#gamechooser .games-list').data('scrollbar').update()
@@ -656,7 +653,7 @@ function prepareScrollbars() {
 function prepareResizers() {
     $('.verticalresizer').on('mousedown', function(e) {
         if (e.button != 0) return
-        $(this).parent().data('initposx', [e.screenX, parseFloat($(this).parent().css('width'))])
+        $(this).parent().data('initposx', [e.screenX, +$(this).parent().css('width')])
     })
 
     $('#sidebar .horizontalresizer').on('mousedown', function(e) {
@@ -666,9 +663,9 @@ function prepareResizers() {
     })
 
     $('body').on('mouseup', function() {
-        var sidebarInitPosX = $('#sidebar').data('initposx')
-        var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
-        var initPosY = $('#sidebar').data('initposy')
+        let sidebarInitPosX = $('#sidebar').data('initposx')
+        let leftSidebarInitPosX = $('#leftsidebar').data('initposx')
+        let initPosY = $('#sidebar').data('initposy')
 
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
@@ -689,29 +686,29 @@ function prepareResizers() {
         if ($('#graph').data('sigma'))
             $('#graph').data('sigma').renderers[0].resize().render()
     }).on('mousemove', function(e) {
-        var sidebarInitPosX = $('#sidebar').data('initposx')
-        var leftSidebarInitPosX = $('#leftsidebar').data('initposx')
-        var initPosY = $('#sidebar').data('initposy')
+        let sidebarInitPosX = $('#sidebar').data('initposx')
+        let leftSidebarInitPosX = $('#leftsidebar').data('initposx')
+        let initPosY = $('#sidebar').data('initposy')
 
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
         if (sidebarInitPosX) {
-            var initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            var newwidth = Math.max(initWidth - e.screenX + initX, setting.get('view.sidebar_minwidth'))
+            let initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
+            let newwidth = Math.max(initWidth - e.screenX + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
-            var initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            var newwidth = Math.max(initWidth + e.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+            let initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
+            let newwidth = Math.max(initWidth + e.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
             resizeBoard()
 
             return
         } else if (initPosY) {
-            var initY = initPosY[0], initHeight = initPosY[1]
-            var newheight = Math.min(Math.max(
+            let initY = initPosY[0], initHeight = initPosY[1]
+            let newheight = Math.min(Math.max(
                 initHeight + (initY - e.screenY) * 100 / $('#sidebar').height(),
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
@@ -722,31 +719,31 @@ function prepareResizers() {
 }
 
 function prepareGameChooser() {
-    var $scrollContainer = $([
+    let $scrollContainer = $([
         '#gamechooser .games-list.gm-prevented',
         '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
     ].join(', '))
 
     // Load SVG images on the fly
 
-    var updateSVG = function() {
-        var listBounds = $('#gamechooser').get(0).getBoundingClientRect()
+    let updateSVG = () => {
+        let listBounds = $('#gamechooser').get(0).getBoundingClientRect()
 
-        var updateElements = $('#gamechooser ol li').get().filter(function(el) {
-            var bounds = el.getBoundingClientRect()
+        let updateElements = $('#gamechooser ol li').get().filter(el => {
+            let bounds = el.getBoundingClientRect()
 
             return !$(el).find('svg').length
                 && bounds.top < listBounds.bottom
                 && bounds.top + $(el).height() > listBounds.top
         })
 
-        updateElements.forEach(function(el) {
-            var tree = $(el).data('gametree')
-            var tp = gametree.navigate(tree, 0, 30)
+        updateElements.forEach(el => {
+            let tree = $(el).data('gametree')
+            let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
-            var board = gametree.addBoard.apply(null, tp).nodes[tp[1]].board
-            var svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
+            let board = gametree.addBoard(...tp).nodes[tp[1]].board
+            let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))
         })
@@ -758,16 +755,16 @@ function prepareGameChooser() {
     // Filtering
 
     $('#gamechooser > input').on('input', function() {
-        var value = this.value
+        let value = this.value
 
-        $('#gamechooser .games-list li').get().forEach(function(li) {
-            if ($(li).find('span').get().some(function(span) {
+        $('#gamechooser .games-list li').get().forEach(li => {
+            if ($(li).find('span').get().some(span => {
                 return $(span).text().toLowerCase().indexOf(value.toLowerCase()) >= 0
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
         })
 
-        var $gamesList = $('#gamechooser .games-list')
+        let $gamesList = $('#gamechooser .games-list')
         $gamesList.data('scrollbar').update()
         $scrollContainer.scrollTop(0)
 
@@ -776,9 +773,9 @@ function prepareGameChooser() {
 }
 
 function updateTitle() {
-    var basename = require('path').basename
-    var title = app.getName()
-    var filename = getRepresentedFilename()
+    let basename = require('path').basename
+    let title = app.getName()
+    let filename = getRepresentedFilename()
 
     if (filename) title = basename(filename)
     if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
@@ -787,13 +784,9 @@ function updateTitle() {
     document.title = title
 }
 
-function addEngineItem(name, path, args) {
-    if (!name) name = ''
-    if (!path) path = ''
-    if (!args) args = ''
-
-    var $ul = $('#preferences .engines-list ul').eq(0)
-    var $li = $('<li/>').append(
+function addEngineItem(name = '', path = '', args = '') {
+    let $ul = $('#preferences .engines-list ul').eq(0)
+    let $li = $('<li/>').append(
         $('<h3/>')
         .append(
             $('<input/>')
@@ -812,9 +805,9 @@ function addEngineItem(name, path, args) {
             .on('click', function() {
                 setIsBusy(true)
 
-                var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
                     properties: ['openFile'],
-                    filters: [{ name: 'All Files', extensions: ['*'] }]
+                    filters: [{name: 'All Files', extensions: ['*']}]
                 })
 
                 if (result) {
@@ -854,18 +847,14 @@ function addEngineItem(name, path, args) {
     $ul.append($li)
     $li.find('h3 input').get(0).focus()
 
-    var enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
+    let enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
-function showMessageBox(message, type, buttons, cancelId) {
+function showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     setIsBusy(true)
 
-    if (!type) type = 'info'
-    if (!buttons) buttons = ['OK']
-    if (isNaN(cancelId)) cancelId = 0
-
-    var result = dialog.showMessageBox(remote.getCurrentWindow(), {
+    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
         type: type,
         buttons: buttons,
         title: app.getName(),
@@ -879,17 +868,15 @@ function showMessageBox(message, type, buttons, cancelId) {
 }
 
 function readjustShifts(vertex) {
-    var $li = $('#goban .pos_' + vertex.join('-'))
-    var direction = $li.attr('class').split(' ').filter(function(x) {
-        return x.indexOf('shift_') == 0
-    }).map(function(x) {
-        return +x.replace('shift_', '')
-    })
+    let $li = $('#goban .pos_' + vertex.join('-'))
+    let direction = $li.attr('class').split(' ')
+        .filter(x => x.indexOf('shift_') == 0)
+        .map(x => +x.replace('shift_', ''))
 
     if (direction.length == 0) return
     direction = direction[0]
 
-    var query, removeShifts
+    let query, removeShifts
 
     if (direction == 1 || direction == 5 || direction == 8) {
         // Left
@@ -910,18 +897,18 @@ function readjustShifts(vertex) {
     }
 
     if (query && removeShifts) {
-        var $el = $('#goban .pos_' + query)
+        let $el = $('#goban .pos_' + query)
         $el.addClass('animate')
-        removeShifts.forEach(function(s) { $el.removeClass('shift_' + s) })
-        setTimeout(function() { $el.removeClass('animate') }, 200)
+        removeShifts.forEach(s => $el.removeClass('shift_' + s))
+        setTimeout(() => $el.removeClass('animate'), 200)
     }
 }
 
 function updateSidebarLayout() {
-    var $container = $('#properties .gm-scroll-view')
+    let $container = $('#properties .gm-scroll-view')
     $container.css('opacity', 0)
 
-    setTimeout(function() {
+    setTimeout(() => {
         $('#graph').data('sigma').renderers[0].resize().render()
         $('#properties').data('scrollbar').update()
         $container.css('opacity', 1)
@@ -929,33 +916,33 @@ function updateSidebarLayout() {
 }
 
 function buildBoard() {
-    var board = getBoard()
-    var rows = []
-    var hoshi = board.getHandicapPlacement(9)
+    let board = getBoard()
+    let rows = []
+    let hoshi = board.getHandicapPlacement(9)
 
-    for (var y = 0; y < board.height; y++) {
-        var $ol = $('<ol class="row"/>')
+    for (let y = 0; y < board.height; y++) {
+        let $ol = $('<ol class="row"/>')
 
-        for (var x = 0; x < board.width; x++) {
-            var vertex = [x, y]
-            var $img = $('<img/>').attr('src', '../img/goban/stone_0.svg')
-            var $li = $('<li/>')
-            .data('vertex', vertex)
-            .addClass('pos_' + x + '-' + y)
-            .addClass('shift_' + Math.floor(Math.random() * 9))
-            .addClass('random_' + Math.floor(Math.random() * 5))
+        for (let x = 0; x < board.width; x++) {
+            let vertex = [x, y]
+            let $img = $('<img/>').attr('src', '../img/goban/stone_0.svg')
+            let $li = $('<li/>')
+                .data('vertex', vertex)
+                .addClass('pos_' + x + '-' + y)
+                .addClass('shift_' + Math.floor(Math.random() * 9))
+                .addClass('random_' + Math.floor(Math.random() * 5))
 
-            if (hoshi.some(function(v) { return helper.equals(v, vertex) }))
+            if (hoshi.some(v => helper.equals(v, vertex)))
                 $li.addClass('hoshi')
 
-            var getEndTargetVertex = function(e) {
-                var endTarget = document.elementFromPoint(
-                    e.touches[0].pageX,
-                    e.touches[0].pageY
+            let getEndTargetVertex = evt => {
+                let endTarget = document.elementFromPoint(
+                    evt.touches[0].pageX,
+                    evt.touches[0].pageY
                 )
 
                 if (!endTarget) return null
-                var v = $(endTarget).data('vertex')
+                let v = $(endTarget).data('vertex')
                 if (!v) endTarget = $(endTarget).parents('li').get(0)
                 if (endTarget) v = $(endTarget).data('vertex')
 
@@ -966,28 +953,28 @@ function buildBoard() {
                 $li.append(
                     $('<div class="stone"/>').append($img).append($('<span/>'))
                 )
-                .on('mouseup', function(e) {
+                .on('mouseup', function(evt) {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    vertexClicked(this, e)
+                    vertexClicked(this, evt)
                 }.bind(vertex))
-                .on('touchend', function(e) {
+                .on('touchend', function(evt) {
                     if (!getEditMode() || ['line', 'arrow'].indexOf(getSelectedTool()) < 0)
                         return
 
-                    e.preventDefault()
+                    evt.preventDefault()
                     vertexClicked(null, { button: 0 })
                 })
-                .on('mousemove', function(e) {
+                .on('mousemove', function(evt) {
                     if (!$('#goban').data('mousedown')) return
-                    if (e.button != 0) return
+                    if (evt.button != 0) return
 
                     drawLine(this)
                 }.bind(vertex))
-                .on('touchmove', function(e) {
+                .on('touchmove', function(evt) {
                     e.preventDefault()
-                    drawLine(getEndTargetVertex(e))
+                    drawLine(getEndTargetVertex(evt))
                 })
                 .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
@@ -999,51 +986,49 @@ function buildBoard() {
         rows.push($ol)
     }
 
-    var alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-    var $coordx = $('<ol class="coordx"/>')
-    var $coordy = $('<ol class="coordy"/>')
+    let alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+    let $coordx = $('<ol class="coordx"/>')
+    let $coordy = $('<ol class="coordy"/>')
 
-    for (var i = 0; i < board.width; i++) {
+    for (let i = 0; i < board.width; i++) {
         $coordx.append($('<li/>').text(alpha[i]))
     }
 
-    for (var i = board.height; i > 0; i--) {
+    for (let i = board.height; i > 0; i--) {
         $coordy.append($('<li/>').text(i))
     }
 
-    var $goban = $('#goban div').eq(0)
+    let $goban = $('#goban div').eq(0)
     $goban.empty().append(rows).append($coordx).append($coordy)
     $goban.prepend($coordx.clone()).prepend($coordy.clone())
 
-    $goban.off('mousemove').on('mousemove', function(e) {
-        $('#goban').toggleClass('crosshair', getEditMode() && e.ctrlKey)
+    $goban.off('mousemove').on('mousemove', function(evt) {
+        $('#goban').toggleClass('crosshair', getEditMode() && evt.ctrlKey)
     })
 
     resizeBoard()
 
     // Readjust shifts
 
-    $('#goban .row li:not(.shift_0)').get().forEach(function(li) {
-        readjustShifts($(li).data('vertex'))
-    })
+    $('#goban .row li:not(.shift_0)').get().forEach(li => readjustShifts($(li).data('vertex')))
 }
 
 function updateBoardLines() {
-    var tx = parseFloat($('#goban').css('border-left-width'))
-    var ty = parseFloat($('#goban').css('border-top-width'))
+    let tx = parseFloat($('#goban').css('border-left-width'))
+    let ty = parseFloat($('#goban').css('border-top-width'))
 
-    $('#goban hr').get().forEach(function(line) {
-        var v1 = $(line).data('v1'), v2 = $(line).data('v2')
-        var mirrored = v2[0] < v1[0]
-        var $li1 = $('#goban .pos_' + v1.join('-'))
-        var $li2 = $('#goban .pos_' + v2.join('-'))
-        var pos1 = $li1.position()
-        var pos2 = $li2.position()
-        var dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
+    $('#goban hr').get().forEach(line => {
+        let v1 = $(line).data('v1'), v2 = $(line).data('v2')
+        let mirrored = v2[0] < v1[0]
+        let $li1 = $('#goban .pos_' + v1.join('-'))
+        let $li2 = $('#goban .pos_' + v2.join('-'))
+        let pos1 = $li1.position()
+        let pos2 = $li2.position()
+        let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
-        var angle = Math.atan(dy / dx) * 180 / Math.PI
+        let angle = Math.atan(dy / dx) * 180 / Math.PI
         if (mirrored) angle += 180
-        var length = Math.sqrt(dx * dx + dy * dy)
+        let length = Math.sqrt(dx * dx + dy * dy)
 
         $(line).css({
             top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty + 'px',
@@ -1056,27 +1041,27 @@ function updateBoardLines() {
 }
 
 function resizeBoard() {
-    var board = getBoard()
+    let board = getBoard()
     if (!board) return
 
-    var $main = $('main')
-    var $goban = $('#goban')
+    let $main = $('main')
+    let $goban = $('#goban')
 
     $main.css('width', '').css('height', '')
-    var outerWidth = Math.round($main.width())
-    var outerHeight = Math.round($main.height())
+    let outerWidth = Math.round($main.width())
+    let outerHeight = Math.round($main.height())
 
     if (outerWidth % 2 != 0) outerWidth++
     if (outerHeight % 2 != 0) outerHeight++
     $main.css('width', outerWidth).css('height', outerHeight)
 
-    var boardWidth = board.width
-    var boardHeight = board.height
-    var width = helper.floorEven(outerWidth - parseFloat($goban.css('padding-left'))
+    let boardWidth = board.width
+    let boardHeight = board.height
+    let width = helper.floorEven(outerWidth - parseFloat($goban.css('padding-left'))
         - parseFloat($goban.css('padding-right'))
         - parseFloat($goban.css('border-left-width'))
         - parseFloat($goban.css('border-right-width')))
-    var height = helper.floorEven(outerHeight - parseFloat($goban.css('padding-top'))
+    let height = helper.floorEven(outerHeight - parseFloat($goban.css('padding-top'))
         - parseFloat($goban.css('padding-bottom'))
         - parseFloat($goban.css('border-top-width'))
         - parseFloat($goban.css('border-bottom-width')))
@@ -1086,9 +1071,9 @@ function resizeBoard() {
         boardHeight += 2
     }
 
-    var fieldsize = helper.floorEven(Math.min(width / boardWidth, height / boardHeight, 150))
-    var minX = fieldsize * boardWidth
-    var minY = fieldsize * boardHeight
+    let fieldsize = helper.floorEven(Math.min(width / boardWidth, height / boardHeight, 150))
+    let minX = fieldsize * boardWidth
+    let minY = fieldsize * boardHeight
 
     $goban.css('width', minX + outerWidth - width)
         .css('height', minY + outerHeight - height)
@@ -1098,27 +1083,25 @@ function resizeBoard() {
         .css('margin-left', -minX / 2 + 'px').css('margin-top', -minY / 2 + 'px')
 
     $goban.find('.row, .coordx')
-    .css('height', fieldsize).css('line-height', fieldsize + 'px')
-    .css('margin-left', getShowCoordinates() ? fieldsize : 0)
+        .css('height', fieldsize).css('line-height', fieldsize + 'px')
+        .css('margin-left', getShowCoordinates() ? fieldsize : 0)
 
     $goban.find('.coordy')
-    .css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
-    .last()
-    .css('left', fieldsize * (board.width + 1))
+        .css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
+        .last()
+        .css('left', fieldsize * (board.width + 1))
 
     $goban.find('li').css('width', fieldsize).css('height', fieldsize)
     $goban.css('font-size', fieldsize)
 
-    setSliderValue.apply(null, getSliderValue())
+    setSliderValue(...getSliderValue())
     if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
 
     updateBoardLines()
 }
 
 function showIndicator(vertex) {
-    var x = vertex[0], y = vertex[1]
-    var $li = $('#goban .pos_' + x + '-' + y)
-
+    let $li = $('#goban .pos_' + vertex.join('-'))
     if ($li.length == 0) return
 
     $('#indicator').css('top', Math.round($li.offset().top))
@@ -1142,29 +1125,29 @@ function clearConsole() {
 }
 
 function wireLinks($container) {
-    $container.find('a').on('click', function(e) {
+    $container.find('a').on('click', function(evt) {
         if ($(this).hasClass('external'))  {
             if (!shell) {
                 this.target = '_blank'
                 return true
             }
 
-            e.preventDefault()
+            evt.preventDefault()
             shell.openExternal(this.href)
         } else if ($(this).hasClass('movenumber')) {
-            e.preventDefault()
+            evt.preventDefault()
 
-            var movenumber = +$(this).text().slice(1)
+            let movenumber = +$(this).text().slice(1)
             setUndoable(true, 'Go Back')
             goToMainVariation()
 
-            var tp = gametree.navigate(getRootTree(), 0, movenumber)
-            if (tp) setCurrentTreePosition.apply(null, tp.concat([true, true]))
+            let tp = gametree.navigate(getRootTree(), 0, movenumber)
+            if (tp) setCurrentTreePosition(...tp, true, true)
         }
     })
 
     $container.find('.coord').on('mouseenter', function() {
-        var v = getBoard().coord2vertex($(this).text())
+        let v = getBoard().coord2vertex($(this).text())
         showIndicator(v)
     }).on('mouseleave', function() {
         if (!getFindMode()) hideIndicator()
@@ -1176,36 +1159,36 @@ function wireLinks($container) {
  */
 
 function openHeaderMenu() {
-    var template = [
+    let template = [
         {
             label: '&Pass',
-            click: function() { makeMove([-1, -1]) }
+            click: () => makeMove([-1, -1])
         },
         {
             label: '&Resign',
-            click: function() { makeResign() }
+            click: () => makeResign()
         },
         { type: 'separator' },
         {
             label: '&Score',
-            click: function() { setScoringMode(true) }
+            click: () => setScoringMode(true)
         },
         {
             label: 'Es&timate',
-            click: function() { setEstimatorMode(true) }
+            click: () => setEstimatorMode(true)
         },
         {
             label: '&Edit',
-            click: function() { setEditMode(true) }
+            click: () => setEditMode(true)
         },
         {
             label: '&Find',
-            click: function() { setFindMode(true) }
+            click: () => setFindMode(true)
         },
         { type: 'separator' },
         {
             label: '&Info',
-            click: function() { showGameInfo() }
+            click: () => showGameInfo()
         }
     ]
 
@@ -1218,26 +1201,24 @@ function openHeaderMenu() {
 }
 
 function openCommentMenu() {
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
+    let tp = getCurrentTreePosition()
+    let node = tp[0].nodes[tp[1]]
 
-    var clearProperties = function(properties) {
-        properties.forEach(function(p) { delete node[p] })
-    }
-    var clearPosAnnotations = clearProperties.bind(null, ['UC', 'GW', 'DM', 'GB'])
-    var clearMoveAnnotations = clearProperties.bind(null, ['BM', 'TE', 'DO', 'IT'])
-    var clearHotspot = clearProperties.bind(null, ['HO'])
+    let clearProperties = properties => properties.forEach(p => delete node[p])
+    let clearPosAnnotations = () => clearProperties(['UC', 'GW', 'DM', 'GB'])
+    let clearMoveAnnotations = () => clearProperties(['BM', 'TE', 'DO', 'IT'])
+    let clearHotspot = () => clearProperties(['HO'])
 
-    var template = [
+    let template = [
         {
             label: '&Clear Annotations',
-            click: function() {
+            click: () => {
                 clearPosAnnotations()
                 clearMoveAnnotations()
                 updateSidebar(true, true)
             }
         },
-        { type: 'separator' },
+        {type: 'separator'},
         {
             label: 'Good for &Black',
             type: 'checkbox',
@@ -1261,8 +1242,8 @@ function openCommentMenu() {
     ]
 
     if ('B' in node || 'W' in node) {
-        template.push.apply(template, [
-            { type: 'separator' },
+        template.push(
+            {type: 'separator'},
             {
                 label: '&Good Move',
                 type: 'checkbox',
@@ -1283,26 +1264,26 @@ function openCommentMenu() {
                 type: 'checkbox',
                 data: ['BM', clearMoveAnnotations, 1]
             }
-        ])
+        )
     }
 
-    template.push.apply(template, [
-        { type: 'separator' },
+    template.push(
+        {type: 'separator'},
         {
             label: '&Hotspot',
             type: 'checkbox',
             data: ['HO', clearHotspot, 1]
         }
-    ])
+    )
 
-    template.forEach(function(item) {
+    template.forEach(item => {
         if (!('data' in item)) return
 
-        var p = item.data[0], clear = item.data[1], value = item.data[2]
-
+        let [p, clear, value] = item.data
         delete item.data
+
         item.checked = p in node
-        item.click = function() {
+        item.click = () => {
             if (p in node) {
                 clear()
             } else {
@@ -1310,12 +1291,12 @@ function openCommentMenu() {
                 node[p] = [value]
             }
 
-            setCurrentTreePosition.apply(null, getCurrentTreePosition().concat([true, true]))
+            setCurrentTreePosition(...getCurrentTreePosition(), true, true)
         }
     })
 
     menu = Menu.buildFromTemplate(template)
-    var $el = $('#properties .edit .header img')
+    let $el = $('#properties .edit .header img')
 
     menu.popup(
         remote.getCurrentWindow(),
@@ -1324,37 +1305,35 @@ function openCommentMenu() {
     )
 }
 
-function openEnginesMenu($element, callback) {
-    if (!callback) callback = function() {}
-
-    var currentIndex = $element.data('engineindex')
+function openEnginesMenu($element, callback = () => {}) {
+    let currentIndex = $element.data('engineindex')
     if (currentIndex == null) currentIndex = -1
 
-    var template = [{
+    let template = [{
         label: '&Manual',
         type: 'checkbox',
         checked: currentIndex < 0,
-        click: function() { callback(null, -1) }
+        click: () => callback(null, -1)
     }]
 
-    var engineItems = setting.getEngines().map(function(engine, i) {
+    let engineItems = setting.getEngines().map((engine, i) => {
         return {
             label: engine.name,
             type: 'checkbox',
             checked: currentIndex == i,
-            click: function() { callback(engine, i) }
+            click: () => callback(engine, i)
         }
     })
 
     if (engineItems.length > 0) {
-        template.push({ type: 'separator' })
-        template.push.apply(template, engineItems)
+        template.push({type: 'separator'})
+        template.push(...engineItems)
     }
 
-    template.push({ type: 'separator'})
+    template.push({type: 'separator'})
     template.push({
         label: 'Manage &Engines…',
-        click: function() {
+        click: () => {
             showPreferences()
             setPreferencesTab('engines')
         }
@@ -1368,30 +1347,30 @@ function openEnginesMenu($element, callback) {
     )
 }
 
-function openNodeMenu(tree, index, event) {
+function openNodeMenu(tree, index, position) {
     if (getScoringMode()) return
 
-    var template = [
+    let template = [
         {
             label: 'Make &Main Variation',
-            click: function() { makeMainVariation(tree, index) }
+            click: () => makeMainVariation(tree, index)
         },
         {
             label: '&Remove',
-            click: function() { removeNode(tree, index) }
+            click: () => removeNode(tree, index)
         }
     ]
 
     menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
+    menu.popup(remote.getCurrentWindow(), ...position)
 }
 
-function openGameMenu($element, event) {
-    var template = [
+function openGameMenu($element, position) {
+    let template = [
         {
             label: '&Remove Game',
-            click: function() {
-                var trees = getGameTrees()
+            click: () => {
+                let trees = getGameTrees()
 
                 if (showMessageBox(
                     'Do you really want to remove this game permanently?',
@@ -1399,9 +1378,9 @@ function openGameMenu($element, event) {
                     ['Remove Game', 'Cancel'], 1
                 ) == 1) return
 
-                var index = $element.parents('ol').eq(0)
-                .find('li div').get()
-                .indexOf($element.get(0))
+                let index = $element.parents('ol').eq(0)
+                    .find('li div').get()
+                    .indexOf($element.get(0))
 
                 trees.splice(index, 1)
                 setGameTrees(trees)
@@ -1418,7 +1397,7 @@ function openGameMenu($element, event) {
         },
         {
             label: 'Remove &Other Games',
-            click: function() {
+            click: () => {
                 if (showMessageBox(
                     'Do you really want to remove all other games permanently?',
                     'warning',
@@ -1432,16 +1411,16 @@ function openGameMenu($element, event) {
         }
     ]
 
-    var menu = Menu.buildFromTemplate(template)
-    menu.popup(remote.getCurrentWindow(), Math.round(event.clientX), Math.round(event.clientY))
+    let menu = Menu.buildFromTemplate(template)
+    menu.popup(remote.getCurrentWindow(), ...position)
 }
 
 function openAddGameMenu() {
-    var template = [
+    let template = [
         {
             label: 'Add &New Game',
-            click: function() {
-                var tree = getEmptyGameTree()
+            click: () => {
+                let tree = getEmptyGameTree()
 
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
@@ -1450,17 +1429,17 @@ function openAddGameMenu() {
         },
         {
             label: 'Add &Existing File…',
-            click: function() {
+            click: () => {
                 setIsBusy(true)
 
-                var filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
                     properties: ['openFile', 'multiSelections'],
                     filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
                 })
 
                 if (filenames) {
-                    filenames.forEach(function(filename) {
-                        var trees = sgf.parseFile(filename).subtrees
+                    filenames.forEach(filename => {
+                        let trees = sgf.parseFile(filename).subtrees
 
                         setGameTrees(getGameTrees().concat(trees))
                         setGameIndex(getGameIndex())
@@ -1473,8 +1452,8 @@ function openAddGameMenu() {
         }
     ]
 
-    var menu = Menu.buildFromTemplate(template)
-    var $button = $('#gamechooser').find('button[name="add"]')
+    let menu = Menu.buildFromTemplate(template)
+    let $button = $('#gamechooser').find('button[name="add"]')
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($button.offset().left),
@@ -1489,10 +1468,10 @@ function openAddGameMenu() {
 function showGameInfo() {
     closeDrawers()
 
-    var tree = getRootTree()
-    var rootNode = tree.nodes[0]
-    var $info = $('#info')
-    var data = {
+    let tree = getRootTree()
+    let rootNode = tree.nodes[0]
+    let $info = $('#info')
+    let data = {
         'rank_1': 'BR',
         'rank_-1': 'WR',
         'name': 'GN',
@@ -1503,8 +1482,8 @@ function showGameInfo() {
 
     $info.addClass('show').find('input[name="name_1"]').get(0).focus()
 
-    for (var key in data) {
-        var value = data[key]
+    for (let key in data) {
+        let value = data[key]
         $info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
@@ -1515,13 +1494,13 @@ function showGameInfo() {
     $info.find('input[name="size-height"]').val(getBoard().height)
     $info.find('section .menu').removeClass('active').data('engineindex', -1)
 
-    var handicap = $info.find('select[name="handicap"]').get(0)
+    let handicap = $info.find('select[name="handicap"]').get(0)
     if ('HA' in rootNode) handicap.selectedIndex = Math.max(0, +rootNode.HA[0] - 1)
     else handicap.selectedIndex = 0
 
-    var disabled = tree.nodes.length > 1
+    let disabled = tree.nodes.length > 1
         || tree.subtrees.length > 0
-        || ['AB', 'AW', 'W', 'B'].some(function(x) { return x in rootNode })
+        || ['AB', 'AW', 'W', 'B'].some(x => x in rootNode)
 
     $info.find('input[name^="size-"]').add(handicap).prop('disabled', disabled)
     $info.toggleClass('disabled', disabled)
@@ -1533,13 +1512,13 @@ function closeGameInfo() {
 }
 
 function showScore() {
-    var board = $('#goban').data('finalboard')
-    var score = board.getScore($('#goban').data('areamap'))
-    var rootNode = getRootTree().nodes[0]
+    let board = $('#goban').data('finalboard')
+    let score = board.getScore($('#goban').data('areamap'))
+    let rootNode = getRootTree().nodes[0]
 
-    for (var sign = -1; sign <= 1; sign += 2) {
-        var $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
-        var $tds = $tr.find('td')
+    for (let sign = -1; sign <= 1; sign += 2) {
+        let $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
+        let $tds = $tr.find('td')
 
         $tds.eq(0).text(score['area_' + sign])
         $tds.eq(1).text(score['territory_' + sign])
@@ -1560,9 +1539,8 @@ function closeScore() {
 function showPreferences() {
     // Load preferences
 
-    $('#preferences input[type="checkbox"]').get().forEach(function(el) {
-        el.checked = !!setting.get(el.name)
-    })
+    $('#preferences input[type="checkbox"]').get()
+        .forEach(el => el.checked = !!setting.get(el.name))
 
     loadEngines()
 
@@ -1578,16 +1556,13 @@ function closePreferences() {
     document.activeElement.blur()
 }
 
-function showGameChooser(restoreScrollbarPos) {
-    if (restoreScrollbarPos == null)
-        restoreScrollbarPos = true
-
-    var $scrollContainer = $([
+function showGameChooser(restoreScrollbarPos = true) {
+    let $scrollContainer = $([
         '#gamechooser .games-list.gm-prevented',
         '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
     ].join(', '))
 
-    var scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
+    let scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
 
     if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
         scrollbarPos = 0
@@ -1599,13 +1574,13 @@ function showGameChooser(restoreScrollbarPos) {
     $('#gamechooser > input').eq(0).val('').get(0).focus()
     $('#gamechooser ol').eq(0).empty()
 
-    var trees = getGameTrees()
-    var currentTree = getRootTree()
+    let trees = getGameTrees()
+    let currentTree = getRootTree()
 
-    for (var i = 0; i < trees.length; i++) {
-        var tree = trees[i]
-        var $li = $('<li/>')
-        var node = tree.nodes[0]
+    for (let i = 0; i < trees.length; i++) {
+        let tree = trees[i]
+        let $li = $('<li/>')
+        let node = tree.nodes[0]
 
         $('#gamechooser ol').eq(0).append($li.append(
             $('<div/>')
@@ -1615,9 +1590,9 @@ function showGameChooser(restoreScrollbarPos) {
             .append($('<span class="white"/>').text('White'))
         ))
 
-        var $gamename = $li.find('span').eq(0)
-        var $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
-        var $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
+        let $gamename = $li.find('span').eq(0)
+        let $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
+        let $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
 
         if ('BR' in node) $black.attr('title', node.BR[0])
         if ('WR' in node) $white.attr('title', node.WR[0])
@@ -1625,25 +1600,26 @@ function showGameChooser(restoreScrollbarPos) {
         else if ('EV' in node) $gamename.text(node.EV[0]).attr('title', node.EV[0])
 
         $li.data('gametree', tree).find('div').on('click', function() {
-            var link = this
+            let link = this
             closeGameChooser()
             setTimeout(function() {
                 setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
-        }).on('mouseup', function(e) {
-            if (e.button != 2) return
-            openGameMenu($(this), e)
-        }).on('dragstart', function(e) {
+        }).on('mouseup', function(evt) {
+            if (evt.button != 2) return
+            let position = [Math.round(evt.clientX), Math.round(evt.clientY)]
+            openGameMenu($(this), position)
+        }).on('dragstart', function() {
             $('#gamechooser').data('dragging', $(this).parents('li').get(0))
         })
     }
 
-    $('#gamechooser ol li').off('dragover').on('dragover', function(e) {
-        e.preventDefault()
+    $('#gamechooser ol li').off('dragover').on('dragover', function(evt) {
+        evt.preventDefault()
         if (!$('#gamechooser').data('dragging')) return
 
-        var x = e.clientX
-        var middle = $(this).offset().left + $(this).width() / 2
+        let x = evt.clientX
+        let middle = $(this).offset().left + $(this).width() / 2
 
         if (x <= middle - 10 && !$(this).hasClass('insertleft')) {
             $('#gamechooser ol li').removeClass('insertleft').removeClass('insertright')
@@ -1654,15 +1630,15 @@ function showGameChooser(restoreScrollbarPos) {
         }
     })
 
-    $('#gamechooser').off('dragover').off('drop').on('dragover', function(e) {
-        e.preventDefault()
+    $('#gamechooser').off('dragover').off('drop').on('dragover', function(evt) {
+        evt.preventDefault()
     }).on('drop', function() {
-        var dragged = $(this).data('dragging')
+        let dragged = $(this).data('dragging')
         $(this).data('dragging', null)
 
-        var $lis = $('#gamechooser ol li')
-        var afterli = $lis.get().filter(function(x) { return $(x).hasClass('insertleft') })[0]
-        var beforeli = $lis.get().filter(function(x) { return $(x).hasClass('insertright') })[0]
+        let $lis = $('#gamechooser ol li')
+        let afterli = $lis.get().filter(x => $(x).hasClass('insertleft'))[0]
+        let beforeli = $lis.get().filter(x => $(x).hasClass('insertright'))[0]
         $lis.removeClass('insertleft').removeClass('insertright')
 
         if (!dragged || !afterli && !beforeli) return
@@ -1670,11 +1646,9 @@ function showGameChooser(restoreScrollbarPos) {
         if (afterli && afterli != dragged) $(afterli).before(dragged)
         if (beforeli && beforeli != dragged) $(beforeli).after(dragged)
 
-        setGameTrees($('#gamechooser ol > li').get().map(function(x) {
-            return $(x).data('gametree')
-        }))
+        setGameTrees($('#gamechooser ol > li').get().map(x => $(x).data('gametree')))
 
-        var newindex = getGameTrees().indexOf(currentTree)
+        let newindex = getGameTrees().indexOf(currentTree)
         setGameIndex(newindex)
     })
 
@@ -1689,12 +1663,10 @@ function closeGameChooser() {
 }
 
 function closeDrawers() {
-    var drawersOpen = $('.drawer.show').length > 0
-    var modeOpen = $('#bar .bar').get().map(function(x) {
-        return $(x).attr('id')
-    }).some(function(x) {
-        return $('body').hasClass(x)
-    })
+    let drawersOpen = $('.drawer.show').length > 0
+    let modeOpen = $('#bar .bar').get()
+        .map(x => $(x).attr('id'))
+        .some(x => $('body').hasClass(x))
 
     closeGameInfo()
     closeScore()

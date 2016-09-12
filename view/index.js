@@ -510,7 +510,8 @@ function prepareGameGraph() {
     s.bind('clickNode', function(e) {
         setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
     }).bind('rightClickNode', function(e) {
-        openNodeMenu.apply(null, getTreePos(e).concat([e.data.captor]))
+        let pos = [Math.round(e.data.captor.clientX), Math.round(e.data.captor.clientY)]
+        openNodeMenu(...getTreePos(e), pos)
     })
 
     $container.data('sigma', s)
@@ -1754,7 +1755,7 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
         if (callback) callback(response)
 
         // Update scrollbars
-        
+
         var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
         var scrollbar = $('#console').data('scrollbar')
 
