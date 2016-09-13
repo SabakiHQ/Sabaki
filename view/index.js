@@ -1,40 +1,33 @@
 require('./ipc')
 
-var fs = require('fs')
-var remote = require('electron').remote
-var ipcRenderer = require('electron').ipcRenderer
-var clipboard = require('electron').clipboard
-var shell = require('electron').shell
-var app = remote.app
-var dialog = remote.dialog
+const fs = require('fs')
+const {clipboard, ipcRenderer, shell, remote} = require('electron')
+const {app, dialog, Menu, MenuItem} = remote
 
-var $ = require('../modules/sprint')
-var sgf = require('../modules/sgf')
-var boardmatcher = require('../modules/boardmatcher')
-var fuzzyfinder = require('../modules/fuzzyfinder')
-var gametree = require('../modules/gametree')
-var sound = require('../modules/sound')
-var helper = require('../modules/helper')
-var setting = require('../modules/setting')
-var gtp = require('../modules/gtp')
-
-var Pikaday = require('pikaday')
-var GeminiScrollbar = require('gemini-scrollbar')
-var Board = require('../modules/board')
-var Menu = remote.Menu
-var MenuItem = remote.MenuItem
+const $ = require('../modules/sprint')
+const sgf = require('../modules/sgf')
+const boardmatcher = require('../modules/boardmatcher')
+const fuzzyfinder = require('../modules/fuzzyfinder')
+const gametree = require('../modules/gametree')
+const sound = require('../modules/sound')
+const helper = require('../modules/helper')
+const setting = require('../modules/setting')
+const gtp = require('../modules/gtp')
+const Pikaday = require('pikaday')
+const GeminiScrollbar = require('gemini-scrollbar')
+const Board = require('../modules/board')
 
 /**
  * Getter & setter
  */
 
 function getGameTrees() {
-    var trees = $('body').data('gametrees')
+    let trees = $('body').data('gametrees')
     return trees ? trees : [getRootTree()]
 }
 
 function setGameTrees(trees) {
-    trees.forEach(function(tree) { tree.parent = null })
+    trees.forEach(tree => { tree.parent = null })
     $('body').data('gametrees', trees)
 }
 
@@ -43,7 +36,7 @@ function getGameIndex() {
 }
 
 function setGameIndex(index) {
-    var trees = getGameTrees()
+    let trees = getGameTrees()
     $('body').data('gameindex', index)
 
     setGameTrees(trees)
@@ -61,7 +54,7 @@ function getRootTree() {
 function setRootTree(tree) {
     if (tree.nodes.length == 0) return
 
-    var trees = getGameTrees()
+    let trees = getGameTrees()
     trees[getGameIndex()] = tree
     setGameTrees(trees)
 
@@ -89,7 +82,7 @@ function getGraphMatrixDict() {
 function setGraphMatrixDict(matrixdict) {
     if (!getShowSidebar()) return
 
-    var s, graph
+    let s, graph
 
     try {
         s = $('#graph').data('sigma')
@@ -118,9 +111,9 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 
     // Remove old graph node color
 
-    var oldGraphNode = getCurrentGraphNode()
-    var oldPos = getCurrentTreePosition()
-    var graphNode = getGraphNode(tree, index)
+    let oldGraphNode = getCurrentGraphNode()
+    let oldPos = getCurrentTreePosition()
+    let graphNode = getGraphNode(tree, index)
 
     if (oldGraphNode && oldGraphNode != graphNode)
         oldGraphNode.color = oldGraphNode.originalColor
@@ -133,7 +126,7 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
         || !gametree.onCurrentTrack(tree)
         || tree.collapsed
 
-    var t = tree
+    let t = tree
     t.collapsed = false
     while (t.parent && t.parent.collapsed) {
         redraw = true
@@ -143,7 +136,7 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 
     // Update bookmark, graph, slider and comment text
 
-    var node = tree.nodes[index]
+    let node = tree.nodes[index]
 
     updateSidebar(redraw, now)
     setShowHotspot('HO' in node)
@@ -152,7 +145,7 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 
     // Determine current player
 
-    var currentplayer = 1
+    let currentplayer = 1
 
     if ('B' in node || 'HA' in node && +node.HA[0] >= 1)
         currentplayer = -1
@@ -164,20 +157,20 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
 }
 
 function getCurrentGraphNode() {
-    var pos = getCurrentTreePosition()
+    let pos = getCurrentTreePosition()
     if (!pos) return null
     return getGraphNode(pos[0], pos[1])
 }
 
 function getGraphNode(tree, index) {
-    var id = typeof tree === 'object' ? tree.id + '-' + index : tree
-    var s = $('#graph').data('sigma')
+    let id = typeof tree === 'object' ? tree.id + '-' + index : tree
+    let s = $('#graph').data('sigma')
     return s.graph.nodes(id)
 }
 
 function getSelectedTool() {
-    var $li = $('#edit .selected')
-    var tool = $li.attr('class').replace('selected', '').replace('-tool', '').trim()
+    let $li = $('#edit .selected')
+    let tool = $li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
         return $li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
@@ -191,7 +184,7 @@ function getSelectedTool() {
 function setSelectedTool(tool) {
     if (!getEditMode()) {
         setEditMode(true)
-        if (getSelectedTool().indexOf(tool) != -1) return
+        if (getSelectedTool().indexOf(tool) >= 0) return
     }
 
     $('#goban').data('edittool-data', null)
@@ -203,7 +196,7 @@ function getBoard() {
 }
 
 function setBoard(board) {
-    var $goban = $('#goban')
+    let $goban = $('#goban')
 
     if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
         $goban.data('board', board)
@@ -213,28 +206,25 @@ function setBoard(board) {
     $goban.data('board', board)
     setCaptures(board.captures)
 
-    for (var x = 0; x < board.width; x++) {
-        for (var y = 0; y < board.height; y++) {
-            var $li = $goban.find('.pos_' + x + '-' + y)
-            var $span = $li.find('.stone span')
-            var sign = board.arrangement[[x, y]]
-            var types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let $li = $goban.find('.pos_' + x + '-' + y)
+            let $span = $li.find('.stone span')
+            let sign = board.arrangement[[x, y]]
+            let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
                 'dimmed', 'paint_1', 'paint_-1']
 
             // Clean up
 
-            types.forEach(function(x) {
-                if ($li.hasClass(x)) $li.removeClass(x)
-            })
-
+            types.forEach(x => $li.hasClass(x) ? $li.removeClass(x) : null)
             $span.attr('title', '')
 
             // Add markups
 
             if ([x, y] in board.markups) {
-                var markup = board.markups[[x, y]]
-                var type = markup[0], label = markup[1]
+                let markup = board.markups[[x, y]]
+                let type = markup[0], label = markup[1]
 
                 if (type != '') $li.addClass(type)
                 if (label != '') $span.attr('title', label)
@@ -245,7 +235,7 @@ function setBoard(board) {
 
             if ($li.hasClass('sign_' + sign)) continue
 
-            for (var i = -1; i <= 1; i++) {
+            for (let i = -1; i <= 1; i++) {
                 if ($li.hasClass('sign_' + i)) $li.removeClass('sign_' + i)
             }
 
@@ -255,9 +245,9 @@ function setBoard(board) {
 
     // Add ghosts
 
-    board.ghosts.forEach(function(x) {
-        var v = x[0], s = x[1], type = x[2]
-        var $li = $('#goban .pos_' + v.join('-'))
+    board.ghosts.forEach(x => {
+        let [v, s, type] = x
+        let $li = $('#goban .pos_' + v.join('-'))
 
         if (type == 'child') $li.addClass('ghost_' + s)
         else if (type == 'sibling') $li.addClass('siblingghost_' + s)
@@ -267,7 +257,7 @@ function setBoard(board) {
 
     $('#goban hr').remove()
 
-    board.lines.forEach(function(line) {
+    board.lines.forEach(line => {
         $goban.append(
             $('<hr/>')
             .addClass(line[2] ? 'arrow' : 'line')
@@ -293,28 +283,28 @@ function setScoringMethod(method) {
 
     // Update UI
 
-    for (var sign = -1; sign <= 1; sign += 2) {
-        var $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
-        var $tds = $tr.find('td')
+    for (let sign = -1; sign <= 1; sign += 2) {
+        let $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
+        let $tds = $tr.find('td')
 
         $tds.eq(4).text(0)
 
-        for (var i = 0; i <= 3; i++) {
+        for (let i = 0; i <= 3; i++) {
             if ($tds.eq(i).hasClass('disabled') || isNaN(+$tds.eq(i).text())) continue
             $tds.eq(4).text(+$tds.eq(4).text() + +$tds.eq(i).text())
         }
     }
 
-    var results = $('#score tbody td:last-child').get().map(function(td) { return $(td).text() })
-    var diff = +results[0] - +results[1]
-    var result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
+    let results = $('#score tbody td:last-child').get().map(td => $(td).text())
+    let diff = +results[0] - +results[1]
+    let result = diff > 0 ? 'B+' :  diff < 0 ? 'W+' : 'Draw'
     if (diff != 0) result = result + Math.abs(diff)
 
     $('#score .result').text(result)
 }
 
 function getKomi() {
-    var rootNode = getRootTree().nodes[0]
+    let rootNode = getRootTree().nodes[0]
     return 'KM' in rootNode ? +rootNode.KM[0] : 0
 }
 
@@ -332,8 +322,8 @@ function getEngineCommands() {
 
 function setUndoable(undoable, tooltip) {
     if (undoable) {
-        var rootTree = gametree.clone(getRootTree())
-        var position = gametree.getLevel.apply(null, getCurrentTreePosition())
+        let rootTree = gametree.clone(getRootTree())
+        let position = gametree.getLevel(...getCurrentTreePosition())
         if (!tooltip) tooltip = 'Undo'
 
         $('#bar header .undo').attr('title', tooltip)
@@ -350,15 +340,15 @@ function setUndoable(undoable, tooltip) {
 }
 
 function getHotspot() {
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
 
     return 'HO' in node
 }
 
 function setHotspot(bookmark) {
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
 
     if (bookmark) node.HO = [1]
     else delete node.HO
@@ -368,8 +358,8 @@ function setHotspot(bookmark) {
 }
 
 function getEmptyGameTree() {
-    var buffer = ';GM[1]FF[4]AP[' + app.getName() + ':' + app.getVersion() + ']'
-    buffer += 'CA[UTF-8]KM[' + setting.get('game.default_komi')
+    let buffer = ';GM[1]FF[4]AP[' + app.getName() + ':' + app.getVersion() + ']'
+        + 'CA[UTF-8]KM[' + setting.get('game.default_komi')
         + ']SZ[' + setting.get('game.default_board_size') + ']'
 
     return sgf.parse(sgf.tokenize(buffer))
@@ -380,27 +370,26 @@ function getAutoplaying() {
 }
 
 function setAutoplaying(playing) {
-    var autoplay = function() {
+    let autoplay = () => {
         if (!getAutoplaying()) return
 
-        var tp = getCurrentTreePosition()
-        var ntp = gametree.navigate.apply(null, tp.concat([1]))
+        let ntp = gametree.navigate(...getCurrentTreePosition(), 1)
         if (!ntp) {
             setAutoplaying(false)
             return
         }
 
-        var node = ntp[0].nodes[ntp[1]]
+        let node = ntp[0].nodes[ntp[1]]
 
         if (!node.B && !node.W) {
-            setCurrentTreePosition.apply(null, ntp.concat([false, false, true]))
+            setCurrentTreePosition(...ntp, false, false, true)
         } else {
-            var vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+            let vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
             setCurrentPlayer(node.B ? 1 : -1)
             makeMove(vertex, false, true)
         }
 
-        var id = setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
+        let id = setTimeout(autoplay, setting.get('autoplay.sec_per_move') * 1000)
         $('#autoplay').data('timeoutid', id)
     }
 
@@ -441,11 +430,10 @@ function loadSettings() {
 
 function prepareBar() {
     $('.current-player').on('click', function() {
-        var tp = getCurrentTreePosition()
-        var tree = tp[0], index = tp[1]
-        var node = tree.nodes[index]
-        var intendedSign = 'B' in node ? -1 : +('W' in node)
-        var sign = -getCurrentPlayer()
+        let [tree, index] = getCurrentTreePosition()
+        let node = tree.nodes[index]
+        let intendedSign = 'B' in node ? -1 : +('W' in node)
+        let sign = -getCurrentPlayer()
 
         if (intendedSign == sign) {
             delete node.PL
@@ -459,17 +447,17 @@ function prepareBar() {
 
 function prepareEditTools() {
     $('#edit ul a').on('click', function() {
-        var $a = $(this)
-        var $img = $a.find('img')
+        let $a = $(this)
+        let $img = $a.find('img')
 
         if (!$a.parent().hasClass('selected')) {
             $('#edit .selected').removeClass('selected')
             $a.parent().addClass('selected')
         } else if ($a.parent().hasClass('stone-tool')) {
-            var black = $img.attr('src').indexOf('_1') >= 0
+            let black = $img.attr('src').indexOf('_1') >= 0
             $img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         } else if ($a.parent().hasClass('line-tool')) {
-            var line = $img.attr('src').indexOf('line') >= 0
+            let line = $img.attr('src').indexOf('line') >= 0
             $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
@@ -477,7 +465,7 @@ function prepareEditTools() {
 
 function prepareAutoplay() {
     $('#autoplay input').on('input', function() {
-        var value = Math.min(10, Math.max(1, +$(this).val()))
+        let value = Math.min(10, Math.max(1, +$(this).val()))
         value = Math.floor(value * 10) / 10
         setting.set('autoplay.sec_per_move', value)
     }).on('blur', function() {
@@ -486,8 +474,8 @@ function prepareAutoplay() {
 }
 
 function prepareGameGraph() {
-    var $container = $('#graph')
-    var s = new sigma({
+    let $container = $('#graph')
+    let s = new sigma({
         renderer: {
             container: $container.get(0),
             type: 'canvas'
@@ -505,26 +493,26 @@ function prepareGameGraph() {
         }
     })
 
-    var getTreePos = function(e) { return [e.data.node.data[0], e.data.node.data[1]] }
+    let getTreePos = evt => [evt.data.node.data[0], evt.data.node.data[1]]
 
-    s.bind('clickNode', function(e) {
-        setCurrentTreePosition.apply(null, getTreePos(e).concat([true]))
-    }).bind('rightClickNode', function(e) {
-        let pos = [e.data.captor.clientX, e.data.captor.clientY]
-        openNodeMenu(...getTreePos(e), pos.map(x => Math.round(x)))
+    s.bind('clickNode', function(evt) {
+        setCurrentTreePosition.apply(null, getTreePos(evt).concat([true]))
+    }).bind('rightClickNode', function(evt) {
+        let pos = [evt.data.captor.clientX, evt.data.captor.clientY]
+        openNodeMenu(...getTreePos(evt), pos.map(x => Math.round(x)))
     })
 
     $container.data('sigma', s)
 }
 
 function prepareSlider() {
-    var $slider = $('#sidebar .slider .inner')
+    let $slider = $('#sidebar .slider .inner')
 
-    var changeSlider = function(percentage) {
+    let changeSlider = percentage => {
         percentage = Math.min(1, Math.max(0, percentage))
 
-        var level = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
-        var pos = gametree.navigate(getRootTree(), 0, level)
+        let level = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
+        let pos = gametree.navigate(getRootTree(), 0, level)
         if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()) - 1)
 
         if (helper.equals(pos, getCurrentTreePosition())) return
@@ -532,24 +520,24 @@ function prepareSlider() {
         updateSlider()
     }
 
-    var mouseMoveHandler = function(e) {
-        if (e.button != 0 || !$slider.data('mousedown'))
+    let mouseMoveHandler = evt => {
+        if (evt.button != 0 || !$slider.data('mousedown'))
             return
 
-        var percentage = (e.clientY - $slider.offset().top) / $slider.height()
+        let percentage = (evt.clientY - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
         document.onselectstart = function() { return false }
     }
 
-    $slider.on('mousedown', function(e) {
-        if (e.button != 0) return
+    $slider.on('mousedown', function(evt) {
+        if (evt.button != 0) return
 
         $(this).data('mousedown', true).addClass('active')
-        mouseMoveHandler(e)
+        mouseMoveHandler(evt)
     }).on('touchstart', function() {
         $(this).addClass('active')
-    }).on('touchmove', function(e) {
-        var percentage = (e.client.y - $slider.offset().top) / $slider.height()
+    }).on('touchmove', function(evt) {
+        let percentage = (evt.client.y - $slider.offset().top) / $slider.height()
         changeSlider(percentage)
     }).on('touchend', function() {
         $(this).removeClass('active')
@@ -574,41 +562,41 @@ function prepareSlider() {
 }
 
 function prepareDragDropFiles() {
-    $('body').on('dragover', function(e) {
-        e.preventDefault()
-    }).on('drop', function(e) {
-        e.preventDefault()
+    $('body').on('dragover', function(evt) {
+        evt.preventDefault()
+    }).on('drop', function(evt) {
+        evt.preventDefault()
 
-        if (e.dataTransfer.files.length == 0) return
-        loadFile(e.dataTransfer.files[0].path)
+        if (evt.dataTransfer.files.length == 0) return
+        loadFile(evt.dataTransfer.files[0].path)
     })
 }
 
 function prepareConsole() {
-    $('#console form').on('submit', function(e) {
-        e.preventDefault()
+    $('#console form').on('submit', function(evt) {
+        evt.preventDefault()
 
-        var $input = $(this).find('input')
+        let $input = $(this).find('input')
         if ($input.val().trim() == '') return
         $input.get(0).blur()
 
-        var command = gtp.parseCommand($input.val())
+        let command = gtp.parseCommand($input.val())
         sendGTPCommand(command)
     })
 
-    $('#console form input').on('keydown', function(e) {
-        if ([40, 38, 9].indexOf(e.keyCode) != -1) e.preventDefault()
-        var $inputs = $('#console form input')
+    $('#console form input').on('keydown', function(evt) {
+        if ([40, 38, 9].indexOf(evt.keyCode) != -1) evt.preventDefault()
+        let $inputs = $('#console form input')
 
         if ($(this).data('index') == null) $(this).data('index', $inputs.get().indexOf(this))
-        var i = $(this).data('index')
-        var length = $inputs.length
+        let i = $(this).data('index')
+        let length = $inputs.length
 
-        if ([38, 40].indexOf(e.keyCode) != -1) {
-            if (e.keyCode == 38) {
+        if ([38, 40].indexOf(evt.keyCode) != -1) {
+            if (evt.keyCode == 38) {
                 // Up
                 i = Math.max(i - 1, 0)
-            } else if (e.keyCode == 40) {
+            } else if (evt.keyCode == 40) {
                 // Down
                 i = Math.min(i + 1, length - 1)
             }
@@ -616,24 +604,24 @@ function prepareConsole() {
             $(this)
             .val(i == length - 1 ? '' : $inputs.eq(i).val())
             .data('index', i)
-        } else if (e.keyCode == 9) {
+        } else if (evt.keyCode == 9) {
             // Tab
-            var tokens = $(this).val().split(' ')
-            var commands = getEngineCommands()
+            let tokens = $(this).val().split(' ')
+            let commands = getEngineCommands()
             if (!commands) return
 
-            var i = 0
-            var selection = this.selectionStart
+            let i = 0
+            let selection = this.selectionStart
             while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
                 selection -= tokens[i++].length + 1
 
-            var result = fuzzyfinder.find(tokens[i], getEngineCommands())
+            let result = fuzzyfinder.find(tokens[i], getEngineCommands())
             if (!result) return
             tokens[i] = result
 
             this.value = tokens.join(' ')
-            this.selectionStart = this.selectionEnd = (function() {
-                var sum = 0
+            this.selectionStart = this.selectionEnd = (() => {
+                let sum = 0
                 while (i >= 0) sum += tokens[i--].length + 1
                 return sum - 1
             })()
@@ -642,28 +630,26 @@ function prepareConsole() {
 }
 
 function prepareGameInfo() {
-    $('#info button[type="submit"]').on('click', function(e) {
-        e.preventDefault()
+    $('#info button[type="submit"]').on('click', function(evt) {
+        evt.preventDefault()
         commitGameInfo()
         closeGameInfo()
     })
 
-    $('#info button[type="reset"]').on('click', function(e) {
-        e.preventDefault()
+    $('#info button[type="reset"]').on('click', function(evt) {
+        evt.preventDefault()
         closeGameInfo()
     })
 
     $('#info .current-player').on('click', function() {
-        var data = $('#info section input[type="text"]').get().map(function(el) {
-            return $(el).val()
-        })
+        let data = $('#info section input[type="text"]').get().map(el => $(el).val())
 
         $('#info section input[name="rank_1"]').val(data[3])
         $('#info section input[name="rank_-1"]').val(data[0])
         $('#info section input[name="name_1"]').val(data[2])
         $('#info section input[name="name_-1"]').val(data[1])
 
-        data = $('#info section .menu').get().map(function(el) {
+        data = $('#info section .menu').get().map(el => {
             return [$(el).hasClass('active'), $(el).data('engineindex')]
         })
 
@@ -677,10 +663,10 @@ function prepareGameInfo() {
     })
 
     $('#info section img.menu').on('click', function() {
-        var $el = $(this)
+        let $el = $(this)
 
-        function selectEngine(engine, i) {
-            var currentIndex = $(this).data('engineindex')
+        let selectEngine = (engine, i) => {
+            let currentIndex = $(this).data('engineindex')
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
@@ -688,8 +674,8 @@ function prepareGameInfo() {
             $(this).data('engineindex', i)
 
             if (engine) {
-                var els = $('#info section .menu').get()
-                var other = els[0] == this ? els[1] : els[0]
+                let els = $('#info section .menu').get()
+                let other = els[0] == this ? els[1] : els[0]
                 if (other) selectEngine.call(other, null, -1)
 
                 $(this).addClass('active')
@@ -704,67 +690,61 @@ function prepareGameInfo() {
 
     // Prepare date input
 
-    var $dateInput = $('#info input[name="date"]')
+    let $dateInput = $('#info input[name="date"]')
 
-    var adjustPosition = function(pikaday) {
+    let adjustPosition = pikaday => {
         $(pikaday.el)
         .css('position', 'absolute')
         .css('left', Math.round($dateInput.offset().left))
         .css('top', Math.round($dateInput.offset().top - $(pikaday.el).height()))
     }
 
-    var markDates = function(pikaday) {
-        var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
-            return x.length == 3
-        })
+    let markDates = pikaday => {
+        let dates = (sgf.string2dates($dateInput.val()) || []).filter(x => x.length == 3)
 
-        $(pikaday.el).find('.pika-button').get().forEach(function(el) {
-            var year = +$(el).attr('data-pika-year')
-            var month = +$(el).attr('data-pika-month')
-            var day = +$(el).attr('data-pika-day')
+        $(pikaday.el).find('.pika-button').get().forEach(el => {
+            let year = +$(el).attr('data-pika-year')
+            let month = +$(el).attr('data-pika-month')
+            let day = +$(el).attr('data-pika-day')
 
-            $(el).parent().toggleClass('is-multi-selected', dates.some(function(d) {
+            $(el).parent().toggleClass('is-multi-selected', dates.some(d => {
                 return helper.equals(d, [year, month + 1, day])
             }))
         })
     }
 
-    var pikaday = new Pikaday({
+    let pikaday = new Pikaday({
         position: 'top left',
         firstDay: 1,
         yearRange: 6,
         onOpen: function() {
-            if (!pikaday) return
-
-            var dates = (sgf.string2dates($dateInput.val()) || []).filter(function(x) {
-                return x.length == 3
-            })
+            let dates = (sgf.string2dates($dateInput.val()) || []).filter(x => x.length == 3)
 
             if (dates.length > 0) {
-                pikaday.setDate(dates[0].join('-'), true)
+                this.setDate(dates[0].join('-'), true)
             } else {
-                pikaday.gotoToday()
+                this.gotoToday()
             }
 
-            adjustPosition(pikaday)
+            adjustPosition(this)
         },
         onDraw: function() {
-            if (!pikaday.isVisible()) return
+            if (!this.isVisible()) return
 
-            adjustPosition(pikaday)
-            markDates(pikaday)
+            adjustPosition(this)
+            markDates(this)
 
             $dateInput.get(0).focus()
         },
         onSelect: function() {
-            var dates = sgf.string2dates($dateInput.val()) || []
-            var date = pikaday.getDate()
+            let dates = sgf.string2dates($dateInput.val()) || []
+            let date = this.getDate()
             date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
-            if (!dates.some(function(x) { return helper.equals(x, date) })) {
+            if (!dates.some(x => helper.equals(x, date))) {
                 dates.push(date)
             } else {
-                dates = dates.filter(function(x) { return !helper.equals(x, date) })
+                dates = dates.filter(x => !helper.equals(x, date))
             }
 
             $dateInput.val(sgf.dates2string(dates.sort(helper.lexicalCompare)))
@@ -774,11 +754,11 @@ function prepareGameInfo() {
     $dateInput.data('pikaday', pikaday)
     pikaday.hide()
 
-    $('body').append(pikaday.el).on('click', function(e) {
+    $('body').append(pikaday.el).on('click', function(evt) {
         if (pikaday.isVisible()
         && document.activeElement != $dateInput.get(0)
-        && e.target != $dateInput.get(0)
-        && $(e.target).parents('.pika-lendar').length == 0)
+        && evt.target != $dateInput.get(0)
+        && $(evt.target).parents('.pika-lendar').length == 0)
             pikaday.hide()
     })
 
@@ -787,7 +767,7 @@ function prepareGameInfo() {
     $dateInput.on('focus', function() {
         pikaday.show()
     }).on('blur', function() {
-        setTimeout(function() {
+        setTimeout(() => {
             if ($(document.activeElement).parents('.pika-lendar').length == 0)
                 pikaday.hide()
         }, 50)
@@ -809,19 +789,19 @@ function prepareGameInfo() {
     $('#info span.size-swap').on('click', function() {
         if ($('#info').hasClass('disabled')) return
 
-        var $widthInput = $('#info input[name="size-width"]')
-        var $heightInput = $('#info input[name="size-height"]')
-        var data = [$widthInput.val(), $heightInput.val()]
+        let $widthInput = $('#info input[name="size-width"]')
+        let $heightInput = $('#info input[name="size-height"]')
+        let data = [$widthInput.val(), $heightInput.val()]
         $widthInput.val(data[1])
         $heightInput.val(data[0])
     })
 }
 
 function generateFileHash() {
-    var trees = getGameTrees()
-    var hash = ''
+    let trees = getGameTrees()
+    let hash = ''
 
-    for (var i = 0; i < trees.length; i++) {
+    for (let i = 0; i < trees.length; i++) {
         hash += gametree.getHash(trees[i])
     }
 
@@ -837,7 +817,7 @@ function loadEngines() {
 
     $('#preferences .engines-list ul').empty()
 
-    setting.getEngines().forEach(function(engine) {
+    setting.getEngines().forEach(engine => {
         addEngineItem(engine.name, engine.path, engine.args)
     })
 }
@@ -847,8 +827,8 @@ function attachEngine(exec, args, genMove) {
     setIsBusy(true)
 
     setTimeout(function() {
-        var split = require('argv-split')
-        var controller = new gtp.Controller(exec, split(args))
+        let split = require('argv-split')
+        let controller = new gtp.Controller(exec, split(args))
 
         if (controller.error) {
             showMessageBox('There was an error attaching the engine.', 'error')
@@ -889,7 +869,7 @@ function detachEngine() {
 }
 
 function syncEngine() {
-    var board = getBoard()
+    let board = getBoard()
 
     if (!getEngineController() || $('#console').data('boardhash') == board.getHash())
         return
@@ -909,14 +889,14 @@ function syncEngine() {
     sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
 
     // Replay
-    for (var i = 0; i < board.width; i++) {
-        for (var j = 0; j < board.height; j++) {
-            var v = [i, j]
-            var sign = board.arrangement[v]
+    for (let i = 0; i < board.width; i++) {
+        for (let j = 0; j < board.height; j++) {
+            let v = [i, j]
+            let sign = board.arrangement[v]
             if (sign == 0) continue
 
-            var color = sign > 0 ? 'B' : 'W'
-            var point = board.vertex2coord(v)
+            let color = sign > 0 ? 'B' : 'W'
+            let point = board.vertex2coord(v)
 
             sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
         }
@@ -926,30 +906,30 @@ function syncEngine() {
     setIsBusy(false)
 }
 
-function makeMove(vertex, sendCommand, ignoreAutoplay) {
+function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!getPlayMode() && !getAutoplayMode()) return
     if (sendCommand == null) sendCommand = getEngineController() != null
 
-    var pass = !getBoard().hasVertex(vertex)
+    let pass = !getBoard().hasVertex(vertex)
     if (!pass && getBoard().arrangement[vertex] != 0) return
 
-    var position = getCurrentTreePosition()
-    var tree = position[0], index = position[1]
-    var sign = getCurrentPlayer()
-    var color = sign > 0 ? 'B' : 'W'
-    var capture = false, suicide = false
-    var createNode = true
+    let position = getCurrentTreePosition()
+    let tree = position[0], index = position[1]
+    let sign = getCurrentPlayer()
+    let color = sign > 0 ? 'B' : 'W'
+    let capture = false, suicide = false
+    let createNode = true
 
     if (sendCommand) syncEngine()
 
     if (!pass) {
         // Check for ko
         if (setting.get('game.show_ko_warning')) {
-            var tp = gametree.navigate(tree, index, -1)
-            var ko = false
+            let tp = gametree.navigate(tree, index, -1)
+            let ko = false
 
             if (tp) {
-                var hash = getBoard().makeMove(sign, vertex).getHash()
+                let hash = getBoard().makeMove(sign, vertex).getHash()
                 ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
@@ -961,18 +941,16 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
             ) != 0) return
         }
 
-        // Check for suicide
-        capture = getBoard().getNeighbors(vertex).some(function(v) {
-            return getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1
-        })
+        let vertexNeighbors = getBoard().getNeighbors(vertex)
 
-        suicide = !capture && getBoard().getNeighbors(vertex).filter(function(v) {
-            return getBoard().arrangement[v] == sign
-        }).every(function(v) {
-            return getBoard().getLiberties(v).length == 1
-        }) && getBoard().getNeighbors(vertex).filter(function(v) {
-            return getBoard().arrangement[v] == 0
-        }).length == 0
+        // Check for suicide
+        capture = vertexNeighbors
+            .some(v => getBoard().arrangement[v] == -sign && getBoard().getLiberties(v).length == 1)
+
+        suicide = !capture
+        && vertexNeighbors.filter(v => getBoard().arrangement[v] == sign)
+            .every(v =>getBoard().getLiberties(v).length == 1)
+        && vertexNeighbors.filter(v => getBoard().arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
             if (showMessageBox(
@@ -984,20 +962,20 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
         }
 
         // Randomize shift and readjust
-        var $li = $('#goban .pos_' + vertex.join('-'))
-        var direction = Math.floor(Math.random() * 9)
+        let $li = $('#goban .pos_' + vertex.join('-'))
+        let direction = Math.floor(Math.random() * 9)
 
         $li.addClass('animate')
-        for (var i = 0; i < 9; i++) $li.removeClass('shift_' + i)
+        for (let i = 0; i < 9; i++) $li.removeClass('shift_' + i)
         $li.addClass('shift_' + direction)
-        setTimeout(function() { $li.removeClass('animate') }, 200)
+        setTimeout(() => $li.removeClass('animate'), 200)
 
         readjustShifts(vertex)
     }
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
-        var node = {}
+        let node = {}
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
 
@@ -1006,8 +984,8 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
         if (index != tree.nodes.length - 1) {
             // Search for next move
 
-            var nextNode = tree.nodes[index + 1]
-            var moveExists = color in nextNode
+            let nextNode = tree.nodes[index + 1]
+            let moveExists = color in nextNode
                 && helper.equals(sgf.point2vertex(nextNode[color][0]), vertex)
 
             if (moveExists) {
@@ -1017,7 +995,7 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
         } else {
             // Search for variation
 
-            var variations = tree.subtrees.filter(function(subtree) {
+            let variations = tree.subtrees.filter(subtree => {
                 return subtree.nodes.length > 0
                     && color in subtree.nodes[0]
                     && helper.equals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
@@ -1032,10 +1010,12 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
         if (createNode) {
             // Create variation
 
-            var updateRoot = tree == getRootTree()
-            var splitted = gametree.splitTree(tree, index)
-            var node = {}; node[color] = [sgf.vertex2point(vertex)]
-            var newtree = gametree.new()
+            let updateRoot = tree == getRootTree()
+            let splitted = gametree.splitTree(tree, index)
+            let newtree = gametree.new()
+            let node = {}
+
+            node[color] = [sgf.vertex2point(vertex)]
             newtree.nodes = [node]
             newtree.parent = splitted
 
@@ -1051,12 +1031,11 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
     // Play sounds
 
     if (!pass) {
-        var delay = setting.get('sound.capture_delay_min')
+        let delay = setting.get('sound.capture_delay_min')
         delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
 
-        if (capture || suicide) setTimeout(function() {
-            sound.playCapture()
-        }, delay)
+        if (capture || suicide)
+            setTimeout(() => sound.playCapture(), delay)
 
         sound.playPachi()
     } else {
@@ -1069,16 +1048,16 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
 
     // Enter scoring mode when two consecutive passes
 
-    var enterScoring = false
+    let enterScoring = false
 
     if (pass && createNode) {
-        var tp = getCurrentTreePosition()
-        var ptp = gametree.navigate(tp[0], tp[1], -1)
+        let tp = getCurrentTreePosition()
+        let ptp = gametree.navigate(...tp, -1)
 
         if (ptp) {
-            var prevNode = ptp[0].nodes[ptp[1]]
-            var prevColor = sign > 0 ? 'W' : 'B'
-            var prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+            let prevNode = ptp[0].nodes[ptp[1]]
+            let prevColor = sign > 0 ? 'W' : 'B'
+            let prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
             if (prevPass) {
                 enterScoring = true
@@ -1090,15 +1069,13 @@ function makeMove(vertex, sendCommand, ignoreAutoplay) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        var command = new gtp.Command(null, 'play', [color, pass ? 'pass' : getBoard().vertex2coord(vertex)])
+        let command = new gtp.Command(null, 'play', [color, pass ? 'pass' : getBoard().vertex2coord(vertex)])
         sendGTPCommand(command, true)
 
         $('#console').data('boardhash', getBoard().getHash())
 
         setIsBusy(true)
-        setTimeout(function() {
-            generateMove(true)
-        }, setting.get('gtp.move_delay'))
+        setTimeout(() => generateMove(true), setting.get('gtp.move_delay'))
     }
 }
 
@@ -1106,17 +1083,16 @@ function makeResign(sign) {
     if (!sign) sign = getCurrentPlayer()
 
     showGameInfo()
-    var player = sign > 0 ? 'W' : 'B'
+    let player = sign > 0 ? 'W' : 'B'
     $('#info input[name="result"]').val(player + '+Resign')
 }
 
-function useTool(vertex, event) {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-    var node = tree.nodes[index]
-    var tool = getSelectedTool()
-    var board = getBoard()
-    var dictionary = {
+function useTool(vertex, evt) {
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
+    let tool = getSelectedTool()
+    let board = getBoard()
+    let dictionary = {
         cross: 'MA',
         triangle: 'TR',
         circle: 'CR',
@@ -1129,8 +1105,8 @@ function useTool(vertex, event) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
             // New variation needed
 
-            var updateRoot = tree == getRootTree()
-            var splitted = gametree.splitTree(tree, index)
+            let updateRoot = tree == getRootTree()
+            let splitted = gametree.splitTree(tree, index)
 
             if (splitted != tree || splitted.subtrees.length != 0) {
                 tree = gametree.new()
@@ -1138,32 +1114,30 @@ function useTool(vertex, event) {
                 splitted.subtrees.push(tree)
             }
 
-            node = { PL: getCurrentPlayer() > 0 ? ['B'] : ['W'] }
+            node = {PL: getCurrentPlayer() > 0 ? ['B'] : ['W']}
             index = tree.nodes.length
             tree.nodes.push(node)
 
             if (updateRoot) setRootTree(splitted)
         }
 
-        var sign = tool.indexOf('_1') != -1 ? 1 : -1
-        if (event.button == 2) sign = -sign
+        let sign = tool.indexOf('_1') != -1 ? 1 : -1
+        if (evt.button == 2) sign = -sign
 
-        var oldSign = board.arrangement[vertex]
-        var ids = ['AW', 'AE', 'AB']
-        var id = ids[sign + 1]
-        var point = sgf.vertex2point(vertex)
+        let oldSign = board.arrangement[vertex]
+        let ids = ['AW', 'AE', 'AB']
+        let id = ids[sign + 1]
+        let point = sgf.vertex2point(vertex)
 
-        for (var i = 0; i <= 2; i++) {
+        for (let i = 0; i <= 2; i++) {
             if (!(ids[i] in node)) continue
 
             // Resolve compressed lists
 
-            if (node[ids[i]].some(function(x) { return x.indexOf(':') >= 0 })) {
-                node[ids[i]] = node[ids[i]].map(function(value) {
-                    return sgf.compressed2list(value).map(sgf.vertex2point)
-                }).reduce(function(list, x) {
-                    return list.concat(x)
-                })
+            if (node[ids[i]].some(x => x.indexOf(':') >= 0)) {
+                node[ids[i]] = node[ids[i]]
+                .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
+                .reduce((list, x) => list.concat(x))
             }
 
             // Remove residue
@@ -1187,13 +1161,13 @@ function useTool(vertex, event) {
     } else if (tool == 'line' || tool == 'arrow') {
         // Check whether to remove a line
 
-        var $hr = $('#goban').data('edittool-data')
+        let $hr = $('#goban').data('edittool-data')
 
         if ($hr) {
-            var v1 = $hr.data('v1'), v2 = $hr.data('v2')
-            var toDelete = $('#goban hr').get().filter(function(x) {
-                var w1 = $(x).data('v1'), w2 = $(x).data('v2')
-                var result = x != $hr.get(0)
+            let v1 = $hr.data('v1'), v2 = $hr.data('v2')
+            let toDelete = $('#goban hr').get().filter(x => {
+                let w1 = $(x).data('v1'), w2 = $(x).data('v2')
+                let result = x != $hr.get(0)
                     && w1[0] == v1[0] && w1[1] == v1[1]
                     && w2[0] == v2[0] && w2[1] == v2[1]
 
@@ -1216,9 +1190,9 @@ function useTool(vertex, event) {
         node.AR = []
         board.lines = []
 
-        $('#goban hr').get().forEach(function(hr) {
-            var p1 = sgf.vertex2point($(hr).data('v1'))
-            var p2 = sgf.vertex2point($(hr).data('v2'))
+        $('#goban hr').get().forEach(hr => {
+            let p1 = sgf.vertex2point($(hr).data('v1'))
+            let p2 = sgf.vertex2point($(hr).data('v2'))
 
             if (p1 == p2) return
 
@@ -1229,7 +1203,7 @@ function useTool(vertex, event) {
         if (node.LN.length == 0) delete node.LN
         if (node.AR.length == 0) delete node.AR
     } else {
-        if (event.button != 0) return
+        if (evt.button != 0) return
 
         if (tool != 'label' && tool != 'number') {
             if (vertex in board.markups && board.markups[vertex][0] == tool) {
@@ -1241,17 +1215,15 @@ function useTool(vertex, event) {
             if (vertex in board.markups && board.markups[vertex][0] == 'label') {
                 delete board.markups[vertex]
             } else {
-                var number = 1
+                let number = 1
 
                 if ('LB' in node) {
-                    var list = node.LB.map(function(x) {
-                        return parseFloat(x.substr(3))
-                    }).filter(function(x) {
-                        return !isNaN(x)
-                    })
-                    list.sort(function(a, b) { return a - b })
+                    let list = node.LB
+                        .map(x => parseFloat(x.substr(3)))
+                        .filter(x => !isNaN(x))
+                    list.sort((a, b) => a - b)
 
-                    for (var i = 0; i <= list.length; i++) {
+                    for (let i = 0; i <= list.length; i++) {
                         if (i < list.length && i + 1 == list[i]) continue
                         number = i + 1
                         break
@@ -1264,18 +1236,17 @@ function useTool(vertex, event) {
             if (vertex in board.markups && board.markups[vertex][0] == 'label') {
                 delete board.markups[vertex]
             } else {
-                var alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                var k = 0
+                let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                let k = 0
 
                 if ('LB' in node) {
-                    var list = node.LB.filter(function(x) {
-                        return x.length == 4
-                    }).map(function(x) {
-                        return alpha.indexOf(x[3])
-                    }).filter(function(x) { return x >= 0 })
-                    list.sort(function(a, b) { return a - b })
+                    let list = node.LB
+                        .filter(x => x.length == 4)
+                        .map(x => alpha.indexOf(x[3]))
+                        .filter(x => x >= 0)
+                    list.sort((a, b) => a - b)
 
-                    for (var i = 0; i <= list.length; i++) {
+                    for (let i = 0; i <= list.length; i++) {
                         if (i < list.length && i == list[i]) continue
                         k = Math.min(i, alpha.length - 1)
                         break
@@ -1286,16 +1257,16 @@ function useTool(vertex, event) {
             }
         }
 
-        for (var id in dictionary) delete node[dictionary[id]]
+        for (let id in dictionary) delete node[dictionary[id]]
 
         // Update SGF
 
-        $('#goban .row li').get().forEach(function(li) {
-            var v = $(li).data('vertex')
+        $('#goban .row li').get().forEach(li => {
+            let v = $(li).data('vertex')
             if (!(v in board.markups)) return
 
-            var id = dictionary[board.markups[v][0]]
-            var pt = sgf.vertex2point(v)
+            let id = dictionary[board.markups[v][0]]
+            let pt = sgf.vertex2point(v)
             if (id == 'LB') pt += ':' + board.markups[v][1]
 
             if (id in node) node[id].push(pt)
@@ -1308,15 +1279,15 @@ function useTool(vertex, event) {
 }
 
 function drawLine(vertex) {
-    var tool = getSelectedTool()
+    let tool = getSelectedTool()
 
     if (!vertex || !getEditMode() || tool != 'line' && tool != 'arrow') return
 
     if (!$('#goban').data('edittool-data')) {
-        var $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
+        let $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
         $('#goban').append($hr).data('edittool-data', $hr)
     } else {
-        var $hr = $('#goban').data('edittool-data')
+        let $hr = $('#goban').data('edittool-data')
         $hr.data('v2', vertex)
     }
 
@@ -1329,65 +1300,62 @@ function findPosition(step, condition) {
 
     setIsBusy(true)
 
-    setTimeout(function() {
-        var pos = getCurrentTreePosition()
-        var iterator = gametree.makeNodeIterator.apply(null, pos)
+    setTimeout(() => {
+        let tp = getCurrentTreePosition()
+        let iterator = gametree.makeNodeIterator(...tp)
 
         while (true) {
-            pos = step >= 0 ? iterator.next() : iterator.prev()
+            tp = step >= 0 ? iterator.next() : iterator.prev()
 
-            if (!pos) {
-                var root = getRootTree()
+            if (!tp) {
+                let root = getRootTree()
 
                 if (step == 1) {
-                    pos = [root, 0]
+                    tp = [root, 0]
                 } else {
-                    var sections = gametree.getSection(root, gametree.getHeight(root) - 1)
-                    pos = sections[sections.length - 1]
+                    let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
+                    tp = sections[sections.length - 1]
                 }
 
-                iterator = gametree.makeNodeIterator.apply(null, pos)
+                iterator = gametree.makeNodeIterator(...tp)
             }
 
-            if (helper.equals(pos, getCurrentTreePosition()) || condition.apply(null, pos)) break
+            if (helper.equals(tp, getCurrentTreePosition()) || condition(...tp)) break
         }
 
-        setCurrentTreePosition.apply(null, pos)
+        setCurrentTreePosition(...tp)
         setIsBusy(false)
     }, setting.get('find.delay'))
 }
 
 function findBookmark(step) {
-    findPosition(step, function(tree, index) {
-        return 'HO' in tree.nodes[index]
-    })
+    findPosition(step, (tree, index) => 'HO' in tree.nodes[index])
 }
 
 function findMove(vertex, text, step) {
     if (vertex == null && text.trim() == '') return
-    var point = vertex ? sgf.vertex2point(vertex) : null
+    let point = vertex ? sgf.vertex2point(vertex) : null
 
-    findPosition(step, function(tree, index) {
-        var node = tree.nodes[index]
-        var cond = function(prop, value) {
-            return prop in node && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
-        }
+    findPosition(step, (tree, index) => {
+        let node = tree.nodes[index]
+        let cond = (prop, value) => prop in node
+            && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
 
-        return (!point || ['B', 'W'].some(function(x) { return cond(x, point) }))
+        return (!point || ['B', 'W'].some(x => cond(x, point)))
             && (!text || cond('C', text) || cond('N', text))
     })
 }
 
-function vertexClicked(vertex, event) {
+function vertexClicked(vertex, evt) {
     closeGameInfo()
 
     if (getScoringMode() || getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
-        if (event.button != 0) return
+        if (evt.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
-        var dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
-        var stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
+        let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
+        let stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
 
         stones.forEach(function(v) {
             $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
@@ -1395,29 +1363,29 @@ function vertexClicked(vertex, event) {
 
         updateAreaMap(getEstimatorMode())
     } else if (getEditMode()) {
-        if (event.ctrlKey) {
-            var coord = getBoard().vertex2coord(vertex)
+        if (evt.ctrlKey) {
+            let coord = getBoard().vertex2coord(vertex)
 
             setCommentText([getCommentText().trim(), coord].join(' ').trim())
             commitCommentText()
         } else {
-            useTool(vertex, event)
+            useTool(vertex, evt)
         }
     } else if (getFindMode()) {
-        if (event.button != 0) return
+        if (evt.button != 0) return
 
         setIndicatorVertex(vertex)
         findMove(getIndicatorVertex(), getFindText(), 1)
     } else if (getGuessMode()) {
-        if (event.button != 0) return
+        if (evt.button != 0) return
 
-        var tp = gametree.navigate.apply(null, getCurrentTreePosition().concat([1]))
+        let tp = gametree.navigate(...getCurrentTreePosition(), 1)
         if (!tp) {
             setGuessMode(false)
             return
         }
 
-        var nextNode = tp[0].nodes[tp[1]]
+        let nextNode = tp[0].nodes[tp[1]]
 
         if ('B' in nextNode) setCurrentPlayer(1)
         else if ('W' in nextNode) setCurrentPlayer(-1)
@@ -1426,9 +1394,9 @@ function vertexClicked(vertex, event) {
             return
         }
 
-        var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-        var nextVertex = sgf.point2vertex(nextNode[color][0])
-        var board = getBoard()
+        let color = getCurrentPlayer() > 0 ? 'B' : 'W'
+        let nextVertex = sgf.point2vertex(nextNode[color][0])
+        let board = getBoard()
 
         if (!board.hasVertex(nextVertex)) {
             setGuessMode(false)
@@ -1441,13 +1409,13 @@ function vertexClicked(vertex, event) {
             if (board.arrangement[vertex] != 0) return
             if ($('#goban .pos_' + vertex.join('-')).hasClass('paint_1')) return
 
-            var i = 0
+            let i = 0
             if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
                 i = 1
 
-            for (var x = 0; x < board.width; x++) {
-                for (var y = 0; y < board.height; y++) {
-                    var z = i == 0 ? x : y
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    let z = i == 0 ? x : y
                     if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
                         $('#goban .pos_' + x + '-' + y).addClass('paint_1')
                 }
@@ -1456,8 +1424,8 @@ function vertexClicked(vertex, event) {
     } else {
         // Playing mode
 
-        if (event.button != 0) return
-        var board = getBoard()
+        if (evt.button != 0) return
+        let board = getBoard()
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
@@ -1465,24 +1433,23 @@ function vertexClicked(vertex, event) {
         } else if (vertex in board.markups
         && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
-            removeNode.apply(null, getCurrentTreePosition())
+            removeNode(...getCurrentTreePosition())
         }
     }
 }
 
-function updateSidebar(redraw, now) {
+function updateSidebar(redraw = false, now = false) {
     clearTimeout($('#sidebar').data('updatesidebarid'))
 
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
 
-    $('#sidebar').data('updatesidebarid', setTimeout(function() {
+    $('#sidebar').data('updatesidebarid', setTimeout(() => {
         if (!helper.equals(getCurrentTreePosition(), [tree, index]))
             return
 
         // Set current path
 
-        var t = tree
+        let t = tree
         while (t.parent) {
             t.parent.current = t.parent.subtrees.indexOf(t)
             t = t.parent
@@ -1507,59 +1474,58 @@ function updateGraph() {
 function updateSlider() {
     if (!getShowSidebar()) return
 
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-    var total = gametree.getHeight(getRootTree()) - 1
-    var relative = gametree.getLevel(tree, index)
+    let [tree, index] = getCurrentTreePosition()
+    let total = gametree.getHeight(getRootTree()) - 1
+    let relative = gametree.getLevel(tree, index)
 
     setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
 }
 
 function updateCommentText() {
-    var tp = getCurrentTreePosition()
-    var node = tp[0].nodes[tp[1]]
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
 
     setCommentText('C' in node ? node.C[0] : '')
     setCommentTitle('N' in node ? node.N[0] : '')
 
-    setAnnotations.apply(null, (function() {
+    setAnnotations(...(function() {
         if ('UC' in node) return [-2, node.UC[0]]
         if ('GW' in node) return [-1, node.GW[0]]
         if ('DM' in node) return [0, node.DM[0]]
         if ('GB' in node) return [1, node.GB[0]]
         return [null, null]
-    })().concat((function() {
+    })(), ...(function() {
         if ('BM' in node) return [-1, node.BM[0]]
         if ('TE' in node) return [2, node.TE[0]]
         if ('DO' in node) return [0, 1]
         if ('IT' in node) return [1, 1]
         return [null, null]
-    })()))
+    })())
 
     $('#properties, #properties .gm-scroll-view').scrollTop(0)
     $('#properties').data('scrollbar').update()
 }
 
 function updateAreaMap(useEstimateMap) {
-    var board = getBoard().clone()
+    let board = getBoard().clone()
 
-    $('#goban .row li.dead').get().forEach(function(li) {
+    $('#goban .row li.dead').get().forEach(li => {
         if ($(li).hasClass('sign_1')) board.captures['-1']++
         else if ($(li).hasClass('sign_-1')) board.captures['1']++
 
         board.arrangement[$(li).data('vertex')] = 0
     })
 
-    var map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
+    let map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
 
-    $('#goban .row li').get().forEach(function(li) {
+    $('#goban .row li').get().forEach(li => {
         $(li)
         .removeClass('area_-1').removeClass('area_0').removeClass('area_1')
         .addClass('area_' + map[$(li).data('vertex')])
     })
 
     if (!useEstimateMap) {
-        var $falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
+        let $falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
         if ($falsedead.length > 0) {
             $falsedead.removeClass('dead')
@@ -1573,26 +1539,26 @@ function updateAreaMap(useEstimateMap) {
 }
 
 function commitCommentText() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-    var title = getCommentTitle()
-    var comment = getCommentText()
+    let [tree, index] = getCurrentTreePosition()
+    let node = tree.nodes[index]
+    let title = getCommentTitle()
+    let comment = getCommentText()
 
-    if (comment != '') tree.nodes[index].C = [comment]
-    else delete tree.nodes[index].C
+    if (comment != '') node.C = [comment]
+    else delete node.C
 
-    if (title != '') tree.nodes[index].N = [title]
-    else delete tree.nodes[index].N
+    if (title != '') node.N = [title]
+    else delete node.N
 
     updateSidebar(true)
     setUndoable(false)
 }
 
 function commitGameInfo() {
-    var rootNode = getRootTree().nodes[0]
-    var $info = $('#info')
+    let rootNode = getRootTree().nodes[0]
+    let $info = $('#info')
 
-    var data = {
+    let data = {
         'rank_1': 'BR',
         'rank_-1': 'WR',
         'name_1': 'PB',
@@ -1603,8 +1569,8 @@ function commitGameInfo() {
         'date': 'DT'
     }
 
-    for (var name in data) {
-        var value = $info.find('input[name="' + name + '"]').val().trim()
+    for (let name in data) {
+        let value = $info.find('input[name="' + name + '"]').val().trim()
         rootNode[data[name]] = [value]
         if (value == '') delete rootNode[data[name]]
     }
@@ -1620,14 +1586,14 @@ function commitGameInfo() {
 
     // Handle komi
 
-    var komi = +$info.find('input[name="komi"]').val()
+    let komi = +$info.find('input[name="komi"]').val()
     if (isNaN(komi)) komi = 0
     rootNode.KM = ['' + komi]
 
     // Handle size
 
-    var size = ['width', 'height'].map(function(x) {
-        var num = parseFloat($info.find('input[name="size-' + x + '"]').val())
+    let size = ['width', 'height'].map(x => {
+        let num = parseFloat($info.find('input[name="size-' + x + '"]').val())
         if (isNaN(num)) num = setting.get('game.default_board_size')
         return Math.min(Math.max(num, 3), 25)
     })
@@ -1637,8 +1603,8 @@ function commitGameInfo() {
 
     // Handle handicap stones
 
-    var $handicapInput = $info.find('select[name="handicap"]')
-    var handicap = $handicapInput.get(0).selectedIndex
+    let $handicapInput = $info.find('select[name="handicap"]')
+    let handicap = $handicapInput.get(0).selectedIndex
 
     if (!$handicapInput.get(0).disabled) {
         setCurrentTreePosition(getRootTree(), 0)
@@ -1647,8 +1613,8 @@ function commitGameInfo() {
             delete rootNode.AB
             delete rootNode.HA
         } else {
-            var board = getBoard()
-            var stones = board.getHandicapPlacement(handicap + 1)
+            let board = getBoard()
+            let stones = board.getHandicapPlacement(handicap + 1)
 
             rootNode.HA = ['' + stones.length]
             rootNode.AB = stones.map(sgf.vertex2point)
@@ -1665,13 +1631,13 @@ function commitGameInfo() {
     if (!$info.hasClass('disabled')) {
         // Attach/detach engine
 
-        var engines = setting.getEngines()
-        var indices = $('#info section .menu').get().map(function(x) { return $(x).data('engineindex') })
-        var max = Math.max.apply(null, indices)
-        var sign = indices.indexOf(max) == 0 ? 1 : -1
+        let engines = setting.getEngines()
+        let indices = $('#info section .menu').get().map(x => $(x).data('engineindex'))
+        let max = Math.max(...indices)
+        let sign = indices.indexOf(max) == 0 ? 1 : -1
 
         if (max >= 0) {
-            var engine = engines[max]
+            let engine = engines[max]
             attachEngine(engine.path, engine.args, getCurrentPlayer() == sign)
         } else {
             detachEngine()
@@ -1679,13 +1645,13 @@ function commitGameInfo() {
     } else {
         // Update komi
 
-        var command = new gtp.Command(null, 'komi', [komi])
+        let command = new gtp.Command(null, 'komi', [komi])
         sendGTPCommand(command, true)
     }
 }
 
 function commitScore() {
-    var result = $('#score .result').text()
+    let result = $('#score .result').text()
 
     showGameInfo()
     $('#info input[name="result"]').val(result)
@@ -1696,9 +1662,8 @@ function commitScore() {
 function commitPreferences() {
     // Save general preferences
 
-    $('#preferences input[type="checkbox"]').get().forEach(function(el) {
-        setting.set(el.name, el.checked)
-    })
+    $('#preferences input[type="checkbox"]').get()
+        .forEach(el => setting.set(el.name, el.checked))
 
     remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
     setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
@@ -1708,8 +1673,8 @@ function commitPreferences() {
 
     setting.clearEngines()
 
-    $('#preferences .engines-list li').get().forEach(function(li) {
-        var $nameinput = $(li).find('h3 input')
+    $('#preferences .engines-list li').get().forEach(li => {
+        let $nameinput = $(li).find('h3 input')
 
         setting.addEngine(
             $nameinput.val().trim() == '' ? $nameinput.attr('placeholder') : $nameinput.val(),
@@ -1724,17 +1689,17 @@ function commitPreferences() {
     ipcRenderer.send('build-menu')
 }
 
-function sendGTPCommand(command, ignoreBlocked, callback) {
+function sendGTPCommand(command, ignoreBlocked = false, callback = () => {}) {
     if (!getEngineController()) {
         $('#console form:last-child input').val('')
         return
     }
 
-    var controller = getEngineController()
-    var $container = $('#console .inner')
-    var $oldform = $container.find('form:last-child')
-    var $form = $oldform.clone(true)
-    var $pre = $('<pre/>').text(' ')
+    let controller = getEngineController()
+    let $container = $('#console .inner')
+    let $oldform = $container.find('form:last-child')
+    let $form = $oldform.clone(true)
+    let $pre = $('<pre/>').text(' ')
 
     $form.find('input').val('')
     $oldform.addClass('waiting').find('input').val(command.toString())
@@ -1742,22 +1707,22 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     if (getShowLeftSidebar()) $form.find('input').get(0).focus()
 
     // Cleanup
-    var $forms = $('#console .inner form')
+    let $forms = $('#console .inner form')
     if ($forms.length > setting.get('console.max_history_count')) {
         $forms.eq(0).next('pre').remove()
         $forms.eq(0).remove()
     }
 
-    var listener = function(response, c) {
+    let listener = (response, c) => {
         $pre.html(response.toHtml())
         wireLinks($pre)
         $oldform.removeClass('waiting')
-        if (callback) callback(response)
+        callback(response)
 
         // Update scrollbars
 
-        var $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
-        var scrollbar = $('#console').data('scrollbar')
+        let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
+        let scrollbar = $('#console').data('scrollbar')
 
         $view.scrollTop($view.get(0).scrollHeight)
         if (scrollbar) scrollbar.update()
@@ -1771,17 +1736,17 @@ function sendGTPCommand(command, ignoreBlocked, callback) {
     }
 }
 
-function generateMove(ignoreBusy) {
+function generateMove(ignoreBusy = false) {
     if (!getEngineController() || !ignoreBusy && getIsBusy()) return
 
     closeDrawers()
     syncEngine()
     setIsBusy(true)
 
-    var color = getCurrentPlayer() > 0 ? 'B' : 'W'
-    var opponent = getCurrentPlayer() > 0 ? 'W' : 'B'
+    let color = getCurrentPlayer() > 0 ? 'B' : 'W'
+    let opponent = getCurrentPlayer() > 0 ? 'W' : 'B'
 
-    sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, function(r) {
+    sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, r => {
         setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
             showMessageBox(getEngineName() + ' has resigned.')
@@ -1789,7 +1754,7 @@ function generateMove(ignoreBusy) {
             return
         }
 
-        var v = [-1, -1]
+        let v = [-1, -1]
         if (r.content.toLowerCase() != 'pass')
             v = getBoard().coord2vertex(r.content)
 
@@ -1801,17 +1766,17 @@ function generateMove(ignoreBusy) {
 function centerGraphCameraAt(node) {
     if (!getShowSidebar() || !node) return
 
-    var s = $('#graph').data('sigma')
+    let s = $('#graph').data('sigma')
     s.renderers[0].resize().render()
 
-    var matrixdict = getGraphMatrixDict()
-    var y = matrixdict[1][node.id][1]
+    let matrixdict = getGraphMatrixDict()
+    let y = matrixdict[1][node.id][1]
 
-    var wp = gametree.getSectionWidth(y, matrixdict[0])
-    var width = wp[0], padding = wp[1]
-    var x = matrixdict[1][node.id][0] - padding
-    var relX = width == 1 ? 0 : x / (width - 1)
-    var diff = (width - 1) * setting.get('graph.grid_size') / 2
+    let wp = gametree.getSectionWidth(y, matrixdict[0])
+    let width = wp[0], padding = wp[1]
+    let x = matrixdict[1][node.id][0] - padding
+    let relX = width == 1 ? 0 : x / (width - 1)
+    let diff = (width - 1) * setting.get('graph.grid_size') / 2
     diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
     node.color = setting.get('graph.node_active_color')
@@ -1823,16 +1788,16 @@ function centerGraphCameraAt(node) {
             x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
             y: node[s.camera.readPrefix + 'y']
         },
-        { duration: setting.get('graph.delay') }
+        {duration: setting.get('graph.delay')}
     )
 }
 
 function askForSave() {
     if (!getRootTree()) return true
-    var hash = generateFileHash()
+    let hash = generateFileHash()
 
     if (hash != getFileHash()) {
-        var answer = showMessageBox(
+        let answer = showMessageBox(
             'Your changes will be lost if you close this file without saving.',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
@@ -1852,14 +1817,14 @@ function startAutoScroll(direction, delay) {
     if (delay == null) delay = setting.get('autoscroll.max_interval')
     delay = Math.max(setting.get('autoscroll.min_interval'), delay)
 
-    var $slider = $('#sidebar .slider')
+    let $slider = $('#sidebar .slider')
     clearTimeout($slider.data('autoscrollid'))
 
     if (direction > 0) goForward()
     else goBack()
     updateSlider()
 
-    $slider.data('autoscrollid', setTimeout(function() {
+    $slider.data('autoscrollid', setTimeout(() => {
         startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
     }, delay))
 }
@@ -1887,7 +1852,7 @@ function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
 
     if (!filename) {
-        var result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
             properties: ['openFile'],
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
@@ -1896,25 +1861,25 @@ function loadFile(filename) {
     }
 
     if (filename) {
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, function(error) {
-            if (!error) setRepresentedFilename(filename)
+        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, err => {
+            if (!err) setRepresentedFilename(filename)
         })
     }
 }
 
-function loadFileFromSgf(content, dontask, callback) {
+function loadFileFromSgf(content, dontask = false, callback = () => {}) {
     if (getIsBusy() || !dontask && !askForSave()) return
     setIsBusy(true)
     closeDrawers()
 
-    setTimeout(function() {
-        var win = remote.getCurrentWindow()
-        var lastprogress = -1
-        var error = false
-        var trees = []
+    setTimeout(() => {
+        let win = remote.getCurrentWindow()
+        let lastprogress = -1
+        let error = false
+        let trees = []
 
         try {
-            trees = sgf.parse(sgf.tokenize(content), function(progress) {
+            trees = sgf.parse(sgf.tokenize(content), progress => {
                 if (progress - lastprogress < 0.05) return
 
                 setProgressIndicator(progress, win)
@@ -1938,8 +1903,7 @@ function loadFileFromSgf(content, dontask, callback) {
 
         setProgressIndicator(-1, win)
         setIsBusy(false)
-
-        if (callback) callback(error)
+        callback(error)
     }, setting.get('app.loadgame_delay'))
 }
 
@@ -1963,10 +1927,10 @@ function saveFile(filename) {
 }
 
 function saveFileToSgf() {
-    var trees = getGameTrees()
-    var text = ''
+    let trees = getGameTrees()
+    let text = ''
 
-    for (var i = 0; i < trees.length; i++) {
+    for (let i = 0; i < trees.length; i++) {
         trees[i].nodes[0].AP = [app.getName() + ':' + app.getVersion()]
         text += '(' + sgf.stringify(trees[i]) + ')\n\n'
     }
@@ -1976,17 +1940,13 @@ function saveFileToSgf() {
 
 function clearMarkup() {
     closeDrawers()
-    var markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
+    let markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
     setUndoable(true, 'Restore Markup')
 
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
-
-    markupIds.forEach(function(id) {
-        delete tree.nodes[index][id]
-    })
+    let [tree, index] = getCurrentTreePosition()
+    markupIds.forEach(id => delete tree.nodes[index][id])
 
     setCurrentTreePosition(tree, index)
 }
@@ -1994,34 +1954,30 @@ function clearMarkup() {
 function goBack() {
     if (getGuessMode()) return
 
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
     setCurrentTreePosition.apply(null, gametree.navigate(tree, index, -1))
 }
 
 function goForward() {
     if (getGuessMode()) return
 
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
     setCurrentTreePosition.apply(null, gametree.navigate(tree, index, 1))
 }
 
 function goToNextFork() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
 
     if (index != tree.nodes.length - 1)
         setCurrentTreePosition(tree, tree.nodes.length - 1)
     else if (tree.current != null) {
-        var subtree = tree.subtrees[tree.current]
+        let subtree = tree.subtrees[tree.current]
         setCurrentTreePosition(subtree, subtree.nodes.length - 1)
     }
 }
 
 function goToPreviousFork() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
 
     if (tree.parent == null || tree.parent.nodes.length == 0) {
         if (index != 0) setCurrentTreePosition(tree, 0)
@@ -2031,61 +1987,59 @@ function goToPreviousFork() {
 }
 
 function goToComment(step) {
-    var tp = getCurrentTreePosition()
+    let tp = getCurrentTreePosition()
 
     while (true) {
-        tp = gametree.navigate.apply(null, tp.concat([step]))
-        if (!tp) break
+        ntp = gametree.navigate(...tp, step)
+        if (!ntp) break
 
-        var node = tp[0].nodes[tp[1]]
+        tp = ntp
+        let node = tp[0].nodes[tp[1]]
 
-        if (setting.get('sgf.comment_properties').some(function(p) {
-            return p in node
-        })) break
+        if (setting.get('sgf.comment_properties').some(p => p in node))
+            break
     }
 
-    setCurrentTreePosition.apply(null, tp)
+    setCurrentTreePosition(...tp)
 }
 
 function goToBeginning() {
-    var tree = getRootTree()
+    let tree = getRootTree()
     if (tree.nodes.length == 0) return
     setCurrentTreePosition(tree, 0)
 }
 
 function goToEnd() {
-    var tree = getRootTree()
-    setCurrentTreePosition.apply(null, gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
+    let tree = getRootTree()
+    setCurrentTreePosition(...gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
 }
 
 function goToNextVariation() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0], index = tp[1]
+    let [tree, index] = getCurrentTreePosition()
 
     if (!tree.parent) return
 
-    var mod = tree.parent.subtrees.length
-    var i = (tree.parent.current + 1) % mod
+    let mod = tree.parent.subtrees.length
+    let i = (tree.parent.current + 1) % mod
 
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function goToPreviousVariation() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0]
+    let [tree, index] = getCurrentTreePosition()
 
     if (!tree.parent) return
 
-    var mod = tree.parent.subtrees.length
-    var i = (tree.parent.current + mod - 1) % mod
+    let mod = tree.parent.subtrees.length
+    let i = (tree.parent.current + mod - 1) % mod
 
     setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 function goToMainVariation() {
-    var tp = getCurrentTreePosition()
-    var tree = tp[0]
-    var root = getRootTree()
+    let tp = getCurrentTreePosition()
+    let tree = tp[0]
+    let root = getRootTree()
 
     while (!gametree.onMainTrack(tree)) {
         tree = tree.parent
@@ -2107,9 +2061,9 @@ function makeMainVariation(tree, index) {
     setUndoable(true, 'Restore Main Variation')
     closeDrawers()
 
-    var root = getRootTree()
-    var level = gametree.getLevel(tree, index)
-    var t = tree
+    let root = getRootTree()
+    let level = gametree.getLevel(tree, index)
+    let t = tree
 
     while (t.parent != null) {
         t.parent.subtrees.splice(t.parent.subtrees.indexOf(t), 1)
@@ -2141,15 +2095,15 @@ function removeNode(tree, index) {
     // Remove node
 
     closeDrawers()
-    var prev = gametree.navigate(tree, index, -1)
+    let prev = gametree.navigate(tree, index, -1)
 
     if (index != 0) {
         tree.nodes.splice(index, tree.nodes.length)
         tree.current = null
         tree.subtrees.length = 0
     } else {
-        var parent = tree.parent
-        var i = parent.subtrees.indexOf(tree)
+        let parent = tree.parent
+        let i = parent.subtrees.indexOf(tree)
 
         parent.subtrees.splice(i, 1)
         if (parent.current >= 1) parent.current--
@@ -2158,7 +2112,7 @@ function removeNode(tree, index) {
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     if (getCurrentGraphNode()) prev = getCurrentTreePosition()
-    setCurrentTreePosition.apply(null, prev)
+    setCurrentTreePosition(...prev)
 }
 
 function undoBoard() {
@@ -2168,11 +2122,11 @@ function undoBoard() {
 
     setIsBusy(true)
 
-    setTimeout(function() {
+    setTimeout(() => {
         setRootTree($('body').data('undodata-root'))
 
-        var pos = gametree.navigate(getRootTree(), 0, $('body').data('undodata-pos'))
-        setCurrentTreePosition.apply(null, pos.concat([true, true]))
+        let pos = gametree.navigate(getRootTree(), 0, $('body').data('undodata-pos'))
+        setCurrentTreePosition(...pos, true, true)
 
         setUndoable(false)
         setIsBusy(false)
@@ -2183,8 +2137,8 @@ function undoBoard() {
  * Main events
  */
 
-$(document).on('keydown', function(e) {
-    if (e.keyCode == 27) {
+$(document).on('keydown', function(evt) {
+    if (evt.keyCode == 27) {
         // Escape
 
         if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
@@ -2203,21 +2157,21 @@ $(document).on('keydown', function(e) {
     prepareGameInfo()
     newFile()
 
-    $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(e) {
-        e.preventDefault()
-        if (e.wheelDelta < 0) goForward()
-        else if (e.wheelDelta > 0) goBack()
+    $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(evt) {
+        evt.preventDefault()
+        if (evt.wheelDelta < 0) goForward()
+        else if (evt.wheelDelta > 0) goBack()
     })
 })
 
 $(window).on('resize', function() {
     resizeBoard()
-}).on('beforeunload', function(e) {
-    if (!askForSave()) e.returnValue = 'false'
+}).on('beforeunload', function(evt) {
+    if (!askForSave()) evt.returnValue = 'false'
 
     detachEngine()
 
-    var win = remote.getCurrentWindow()
+    let win = remote.getCurrentWindow()
     if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
     setting
