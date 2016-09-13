@@ -19,7 +19,7 @@ if (process.platform == 'darwin') {
 
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
-    let inputs = input.split(' ').filter(function(x) { return x != '' })
+    let inputs = input.split(' ').filter(x => x != '')
     let id = parseFloat(inputs[0])
 
     if (!isNaN(id)) inputs.splice(0, 1)

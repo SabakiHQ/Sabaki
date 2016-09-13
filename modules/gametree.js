@@ -94,7 +94,7 @@ exports.makeNodeIterator = function(tree, index) {
     let j = sections.map(x => x[0]).indexOf(tree)
 
     return {
-        navigate: function(step) {
+        navigate(step) {
             if (j + step >= 0 && j + step < sections.length) {
                 j = j + step
             } else if (j + step >= sections.length) {
@@ -109,14 +109,14 @@ exports.makeNodeIterator = function(tree, index) {
                 if (sections.length != 0) this.navigate(step)
             }
         },
-        value: function() {
+        value() {
             return j < sections.length && j >= 0 ? sections[j] : null
         },
-        next: function() {
+        next() {
             this.navigate(1)
             return this.value()
         },
-        prev: function() {
+        prev() {
             this.navigate(-1)
             return this.value()
         }
@@ -197,13 +197,13 @@ exports.getSectionWidth = function(y, matrix) {
         .map(i => parseFloat(i) + y - 4)
         .filter(i => i >= 0 && i < matrix.length)
 
-    let padding = Math.min.apply(null, keys.map(i => {
+    let padding = Math.min(...keys.map(i => {
         for (let j = 0; j < matrix[i].length; j++)
             if (matrix[i][j] != null) return j
         return 0
     }))
 
-    let width = Math.max.apply(null, keys.map(i => matrix[i].length)) - padding
+    let width = Math.max(...keys.map(i => matrix[i].length)) - padding
 
     return [width, padding]
 }
@@ -257,7 +257,7 @@ exports.matrixdict2graph = function(matrixdict) {
     let graph = { nodes: [], edges: [] }
     let currentTrack = []
     let notCurrentTrack = []
-    let width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
+    let width = Math.max(...matrix.map(x => x.length))
     let gridSize = setting.get('graph.grid_size')
 
     for (let y = 0; y < matrix.length; y++) {
@@ -294,7 +294,7 @@ exports.matrixdict2graph = function(matrixdict) {
 
             // Set color
 
-            if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
+            if (commentproperties.some(x => x in tree.nodes[index]))
                 node.originalColor = setting.get('graph.node_comment_color')
             if ('HO' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')

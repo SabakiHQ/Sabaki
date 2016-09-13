@@ -1602,7 +1602,7 @@ function showGameChooser(restoreScrollbarPos = true) {
         $li.data('gametree', tree).find('div').on('click', function() {
             let link = this
             closeGameChooser()
-            setTimeout(function() {
+            setTimeout(() => {
                 setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
         }).on('mouseup', function(evt) {

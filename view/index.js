@@ -717,7 +717,7 @@ function prepareGameInfo() {
         position: 'top left',
         firstDay: 1,
         yearRange: 6,
-        onOpen: function() {
+        onOpen() {
             let dates = (sgf.string2dates($dateInput.val()) || []).filter(x => x.length == 3)
 
             if (dates.length > 0) {
@@ -728,7 +728,7 @@ function prepareGameInfo() {
 
             adjustPosition(this)
         },
-        onDraw: function() {
+        onDraw() {
             if (!this.isVisible()) return
 
             adjustPosition(this)
@@ -736,7 +736,7 @@ function prepareGameInfo() {
 
             $dateInput.get(0).focus()
         },
-        onSelect: function() {
+        onSelect() {
             let dates = sgf.string2dates($dateInput.val()) || []
             let date = this.getDate()
             date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
@@ -1488,13 +1488,13 @@ function updateCommentText() {
     setCommentText('C' in node ? node.C[0] : '')
     setCommentTitle('N' in node ? node.N[0] : '')
 
-    setAnnotations(...(function() {
+    setAnnotations(...(() => {
         if ('UC' in node) return [-2, node.UC[0]]
         if ('GW' in node) return [-1, node.GW[0]]
         if ('DM' in node) return [0, node.DM[0]]
         if ('GB' in node) return [1, node.GB[0]]
         return [null, null]
-    })(), ...(function() {
+    })(), ...(() => {
         if ('BM' in node) return [-1, node.BM[0]]
         if ('TE' in node) return [2, node.TE[0]]
         if ('DO' in node) return [0, 1]

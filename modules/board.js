@@ -107,7 +107,7 @@ class Board {
         let liberties = []
 
         chain.forEach(c => {
-            liberties.push.apply(liberties, this.getNeighbors(c).filter(n => {
+            liberties.push(...this.getNeighbors(c).filter(n => {
                 return this.arrangement[n] == 0
                 && !liberties.some(v => v[0] == n[0] && v[1] == n[1])
             }))
@@ -293,7 +293,7 @@ class Board {
                 visited[v] = true
                 map[getVertex(v)] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
-                stack.push.apply(stack, this.getNeighbors(v, true).filter(x => {
+                stack.push(...this.getNeighbors(v, true).filter(x => {
                     return d + 1 <= distance
                     && this.arrangement[x] != -sign
                     && !(x in visited)
@@ -467,7 +467,7 @@ class Board {
             if (area.length >= 8) continue
 
             area.forEach(v => { map[v] = -sign })
-            result.push.apply(result, area.filter(v => this.arrangement[v] != 0))
+            result.push(...area.filter(v => this.arrangement[v] != 0))
         }
 
         return result
@@ -519,7 +519,7 @@ class Board {
                 }
 
                 actualArea.forEach(v => { done[v] = 1 })
-                result.push.apply(result, actualDead)
+                result.push(...actualDead)
             }
         }
 
