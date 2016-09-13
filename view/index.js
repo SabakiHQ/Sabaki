@@ -496,7 +496,7 @@ function prepareGameGraph() {
     let getTreePos = evt => [evt.data.node.data[0], evt.data.node.data[1]]
 
     s.bind('clickNode', function(evt) {
-        setCurrentTreePosition.apply(null, getTreePos(evt).concat([true]))
+        setCurrentTreePosition(...getTreePos(evt), true)
     }).bind('rightClickNode', function(evt) {
         let pos = [evt.data.captor.clientX, evt.data.captor.clientY]
         openNodeMenu(...getTreePos(evt), pos.map(x => Math.round(x)))
@@ -516,7 +516,7 @@ function prepareSlider() {
         if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()) - 1)
 
         if (helper.equals(pos, getCurrentTreePosition())) return
-        setCurrentTreePosition.apply(null, pos)
+        setCurrentTreePosition(...pos)
         updateSlider()
     }
 
@@ -1955,14 +1955,14 @@ function goBack() {
     if (getGuessMode()) return
 
     let [tree, index] = getCurrentTreePosition()
-    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, -1))
+    setCurrentTreePosition(...gametree.navigate(tree, index, -1))
 }
 
 function goForward() {
     if (getGuessMode()) return
 
     let [tree, index] = getCurrentTreePosition()
-    setCurrentTreePosition.apply(null, gametree.navigate(tree, index, 1))
+    setCurrentTreePosition(...gametree.navigate(tree, index, 1))
 }
 
 function goToNextFork() {
