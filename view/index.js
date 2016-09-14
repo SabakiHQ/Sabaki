@@ -665,27 +665,27 @@ function prepareGameInfo() {
     $('#info section img.menu').on('click', function() {
         let $el = $(this)
 
-        let selectEngine = (engine, i) => {
+        let selectEngine = (el, engine, i) => {
             let currentIndex = $(this).data('engineindex')
             if (currentIndex == null) currentIndex = -1
             if (i == currentIndex) return
 
-            $(this).parent().find('input[name^="name_"]').val(engine ? engine.name : '')
-            $(this).data('engineindex', i)
+            $(el).parent().find('input[name^="name_"]').val(engine ? engine.name : '')
+            $(el).data('engineindex', i)
 
             if (engine) {
                 let els = $('#info section .menu').get()
-                let other = els[0] == this ? els[1] : els[0]
-                if (other) selectEngine.call(other, null, -1)
+                let other = els[0] == el ? els[1] : els[0]
+                if (other) selectEngine(other, null, -1)
 
-                $(this).addClass('active')
+                $(el).addClass('active')
             } else {
                 $('#info').find('section .menu')
                 .removeClass('active')
             }
         }
 
-        openEnginesMenu($el, selectEngine.bind($el.get(0)))
+        openEnginesMenu($el, selectEngine.bind(null, $el.get(0)))
     })
 
     // Prepare date input
