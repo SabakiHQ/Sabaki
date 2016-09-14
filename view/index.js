@@ -1990,17 +1990,16 @@ function goToComment(step) {
     let tp = getCurrentTreePosition()
 
     while (true) {
-        ntp = gametree.navigate(...tp, step)
-        if (!ntp) break
+        tp = gametree.navigate(...tp, step)
+        if (!tp) break
 
-        tp = ntp
         let node = tp[0].nodes[tp[1]]
 
         if (setting.get('sgf.comment_properties').some(p => p in node))
             break
     }
 
-    setCurrentTreePosition(...tp)
+    if (tp) setCurrentTreePosition(...tp)
 }
 
 function goToBeginning() {
