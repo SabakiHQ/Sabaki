@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Add support for non-UTF8 encodings
 * Add basic text editing keyboard shortcuts when editing/writing comments
 
+**Changed**
+
+* Update to Electron v1.3.6
+
 **Fixed**
 
 * Fix removing nodes resulting in invalid game graphs sometimes
