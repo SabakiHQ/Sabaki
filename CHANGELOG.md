@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix removing nodes resulting in invalid game graphs sometimes
+* Fix regression where guess mode stopped working
 
 ## [Sabaki v0.17.2][v0.17.2] (2016-09-10)
 
