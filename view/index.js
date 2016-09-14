@@ -685,7 +685,7 @@ function prepareGameInfo() {
             }
         }
 
-        openEnginesMenu($el, selectEngine.bind(null, $el.get(0)))
+        openEnginesMenu($el, (engine, i) => selectEngine($el.get(0), engine, i))
     })
 
     // Prepare date input

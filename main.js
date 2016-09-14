@@ -187,7 +187,7 @@ function buildMenu(noWindows) {
     if (process.platform == 'darwin') {
         app.dock.setMenu(Menu.buildFromTemplate([{
             label: 'New Window',
-            click: newWindow.bind(null, null)
+            click: () => newWindow()
         }]))
     }
 }
