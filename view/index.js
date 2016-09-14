@@ -3,6 +3,8 @@ require('./ipc')
 const fs = require('fs')
 const {clipboard, ipcRenderer, shell, remote} = require('electron')
 const {app, dialog, Menu, MenuItem} = remote
+const Pikaday = require('pikaday')
+const GeminiScrollbar = require('gemini-scrollbar')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -13,8 +15,6 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
-const Pikaday = require('pikaday')
-const GeminiScrollbar = require('gemini-scrollbar')
 const Board = require('../modules/board')
 
 /**
