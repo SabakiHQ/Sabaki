@@ -512,11 +512,11 @@ function prepareSlider() {
         percentage = Math.min(1, Math.max(0, percentage))
 
         let level = Math.round((gametree.getHeight(getRootTree()) - 1) * percentage)
-        let pos = gametree.navigate(getRootTree(), 0, level)
-        if (!pos) pos = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()) - 1)
+        let tp = gametree.navigate(getRootTree(), 0, level)
+        if (!tp) tp = gametree.navigate(getRootTree(), 0, gametree.getCurrentHeight(getRootTree()) - 1)
 
-        if (helper.equals(pos, getCurrentTreePosition())) return
-        setCurrentTreePosition(...pos)
+        if (helper.equals(tp, getCurrentTreePosition())) return
+        setCurrentTreePosition(...tp)
         updateSlider()
     }
 
@@ -1951,18 +1951,20 @@ function clearMarkup() {
     setCurrentTreePosition(tree, index)
 }
 
-function goBack() {
+function goStep(step) {
     if (getGuessMode()) return
 
     let [tree, index] = getCurrentTreePosition()
-    setCurrentTreePosition(...gametree.navigate(tree, index, -1))
+    let tp = gametree.navigate(tree, index, step)
+    if (tp) setCurrentTreePosition(...tp)
+}
+
+function goBack() {
+    goStep(-1)
 }
 
 function goForward() {
-    if (getGuessMode()) return
-
-    let [tree, index] = getCurrentTreePosition()
-    setCurrentTreePosition(...gametree.navigate(tree, index, 1))
+    goStep(1)
 }
 
 function goToNextFork() {
@@ -2110,7 +2112,7 @@ function removeNode(tree, index) {
     }
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
-    if (getCurrentGraphNode()) prev = getCurrentTreePosition()
+    if (!prev || getCurrentGraphNode()) prev = getCurrentTreePosition()
     setCurrentTreePosition(...prev)
 }
 
@@ -2124,8 +2126,8 @@ function undoBoard() {
     setTimeout(() => {
         setRootTree($('body').data('undodata-root'))
 
-        let pos = gametree.navigate(getRootTree(), 0, $('body').data('undodata-pos'))
-        setCurrentTreePosition(...pos, true, true)
+        let tp = gametree.navigate(getRootTree(), 0, $('body').data('undodata-pos'))
+        setCurrentTreePosition(...tp, true, true)
 
         setUndoable(false)
         setIsBusy(false)
