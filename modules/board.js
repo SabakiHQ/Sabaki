@@ -5,7 +5,7 @@ class Board {
     constructor(width = 19, height = 19, arrangement = {}, captures = {'-1': 0, '1': 0}) {
         this.width = width
         this.height = height
-        this.captures = captures
+        this.captures = {'-1': captures['-1'], '1': captures['1']}
         this.arrangement = {}
         this.markups = {}
         this.ghosts = []
