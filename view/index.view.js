@@ -651,14 +651,14 @@ function prepareScrollbars() {
 }
 
 function prepareResizers() {
-    $('.verticalresizer').on('mousedown', function(e) {
-        if (e.button != 0) return
-        $(this).parent().data('initposx', [e.screenX, +$(this).parent().css('width')])
+    $('.verticalresizer').on('mousedown', function(evt) {
+        if (evt.button != 0) return
+        $(this).parent().data('initposx', [evt.screenX, parseFloat($(this).parent().css('width'))])
     })
 
-    $('#sidebar .horizontalresizer').on('mousedown', function(e) {
-        if (e.button != 0) return
-        $('#sidebar').data('initposy', [e.screenY, getPropertiesHeight()])
+    $('#sidebar .horizontalresizer').on('mousedown', function(evt) {
+        if (evt.button != 0) return
+        $('#sidebar').data('initposy', [evt.screenY, getPropertiesHeight()])
         $('#properties').css('transition', 'none')
     })
 
@@ -685,7 +685,7 @@ function prepareResizers() {
 
         if ($('#graph').data('sigma'))
             $('#graph').data('sigma').renderers[0].resize().render()
-    }).on('mousemove', function(e) {
+    }).on('mousemove', function(evt) {
         let sidebarInitPosX = $('#sidebar').data('initposx')
         let leftSidebarInitPosX = $('#leftsidebar').data('initposx')
         let initPosY = $('#sidebar').data('initposy')
@@ -694,13 +694,13 @@ function prepareResizers() {
 
         if (sidebarInitPosX) {
             let initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
-            let newwidth = Math.max(initWidth - e.screenX + initX, setting.get('view.sidebar_minwidth'))
+            let newwidth = Math.max(initWidth - evt.screenX + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
             let initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
-            let newwidth = Math.max(initWidth + e.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+            let newwidth = Math.max(initWidth + evt.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
             resizeBoard()
@@ -709,7 +709,7 @@ function prepareResizers() {
         } else if (initPosY) {
             let initY = initPosY[0], initHeight = initPosY[1]
             let newheight = Math.min(Math.max(
-                initHeight + (initY - e.screenY) * 100 / $('#sidebar').height(),
+                initHeight + (initY - evt.screenY) * 100 / $('#sidebar').height(),
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
