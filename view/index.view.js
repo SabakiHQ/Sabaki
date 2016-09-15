@@ -210,7 +210,7 @@ function getPropertiesHeight() {
 function setPropertiesHeight(height) {
     $('#graph').css('height', (100 - height) + '%')
     $('#properties').css('height', height + '%')
-    setSliderValue(null, getSliderValue())
+    setSliderValue(...getSliderValue())
 }
 
 function getPlayerName(sign) {
