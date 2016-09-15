@@ -693,13 +693,13 @@ function prepareResizers() {
         if (!sidebarInitPosX && !leftSidebarInitPosX && !initPosY) return
 
         if (sidebarInitPosX) {
-            let initX = sidebarInitPosX[0], initWidth = sidebarInitPosX[1]
+            let [initX, initWidth] = sidebarInitPosX
             let newwidth = Math.max(initWidth - evt.screenX + initX, setting.get('view.sidebar_minwidth'))
 
             setSidebarWidth(newwidth)
             resizeBoard()
         } else if (leftSidebarInitPosX) {
-            let initX = leftSidebarInitPosX[0], initWidth = leftSidebarInitPosX[1]
+            let [initX, initWidth] = leftSidebarInitPosX
             let newwidth = Math.max(initWidth + evt.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
             setLeftSidebarWidth(newwidth)
@@ -707,7 +707,7 @@ function prepareResizers() {
 
             return
         } else if (initPosY) {
-            let initY = initPosY[0], initHeight = initPosY[1]
+            let [initY, initHeight] = initPosY
             let newheight = Math.min(Math.max(
                 initHeight + (initY - evt.screenY) * 100 / $('#sidebar').height(),
                 setting.get('view.properties_minheight')
