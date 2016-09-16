@@ -54,7 +54,7 @@ function buildMenu(noWindows) {
         let helpMenu = template.find(x => x.label.replace('&', '') == 'Help')
         let items = helpMenu.submenu.splice(0, 3)
 
-        appMenu.push.apply(appMenu, items.slice(0, noWindows ? 1 : 2))
+        appMenu.push(...items.slice(0, noWindows ? 1 : 2))
 
         // Remove original 'Preferences' menu item
 
@@ -63,7 +63,7 @@ function buildMenu(noWindows) {
 
         if (noWindows) preferenceItem.enabled = false
 
-        appMenu.push.apply(appMenu, [
+        appMenu.push(
             {type: 'separator'},
             preferenceItem,
             {type: 'separator'},
@@ -85,7 +85,7 @@ function buildMenu(noWindows) {
             {role: 'hideothers'},
             {type: 'separator'},
             {role: 'quit'}
-        ])
+        )
 
         template.unshift({
             label: '{name}',
@@ -187,7 +187,7 @@ function buildMenu(noWindows) {
     if (process.platform == 'darwin') {
         app.dock.setMenu(Menu.buildFromTemplate([{
             label: 'New Window',
-            click: newWindow.bind(null, null)
+            click: () => newWindow()
         }]))
     }
 }

@@ -1,20 +1,9 @@
-(function(root) {
+const Board = require('./board')
 
-var Board = root.Board
+const helper = require('./helper')
+const setting = require('./setting')
 
-var helper = root.helper
-var setting = root.setting
-
-if (typeof require != 'undefined') {
-    Board = require('./board')
-
-    helper = require('./helper')
-    setting = require('./setting')
-}
-
-var context = typeof module != 'undefined' ? module.exports : (window.gametree = {})
-
-context.new = function() {
+exports.new = function() {
     return {
         id: helper.getId(),
         nodes: [],
@@ -25,10 +14,8 @@ context.new = function() {
     }
 }
 
-context.clone = function(tree, parent) {
-    if (!parent) parent = null
-
-    var c = {
+exports.clone = function(tree, parent = null) {
+    let c = {
         id: tree.id,
         nodes: [],
         subtrees: [],
@@ -37,16 +24,16 @@ context.clone = function(tree, parent) {
         collapsed: tree.collapsed
     }
 
-    tree.nodes.forEach(function(node) {
-        var cn = {}
+    tree.nodes.forEach(node => {
+        let cn = {}
 
-        for (var key in node) {
+        for (let key in node) {
             if (key == 'board') continue
 
             if (Object.prototype.toString.call(node[key]) == '[object Array]') {
                 cn[key] = []
 
-                for (var i = 0; i < node[key].length; i++) {
+                for (let i = 0; i < node[key].length; i++) {
                     cn[key].push(node[key][i])
                 }
             } else {
@@ -57,92 +44,92 @@ context.clone = function(tree, parent) {
         c.nodes.push(cn)
     })
 
-    tree.subtrees.forEach(function(subtree) {
-        c.subtrees.push(context.clone(subtree, c))
+    tree.subtrees.forEach(subtree => {
+        c.subtrees.push(exports.clone(subtree, c))
     })
 
     return c
 }
 
-context.getRoot = function(tree) {
+exports.getRoot = function(tree) {
     while (tree.parent != null) tree = tree.parent
     return tree
 }
 
-context.getPlayerName = function(sign, tree, fallback) {
-    tree = context.getRoot(tree)
-    var color = sign > 0 ? 'B' : 'W'
+exports.getPlayerName = function(sign, tree, fallback) {
+    tree = exports.getRoot(tree)
+    let color = sign > 0 ? 'B' : 'W'
 
     if (tree.nodes.length == 0) return fallback
 
-    var result = ''
+    let result = ''
     if (('P' + color) in tree.nodes[0]) result = tree.nodes[0]['P' + color][0]
     else if ((color + 'T') in tree.nodes[0]) result = tree.nodes[0][color + 'T'][0]
 
     return result.trim() == '' ? fallback : result
 }
 
-context.navigate = function(tree, index, step) {
+exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
     } else if (index + step < 0 && tree.parent != null) {
-        var prev = tree.parent
-        var newstep = index + step + 1
+        let prev = tree.parent
+        let newstep = index + step + 1
 
-        return context.navigate(prev, prev.nodes.length - 1, newstep)
+        return exports.navigate(prev, prev.nodes.length - 1, newstep)
     } else if (index + step >= tree.nodes.length && tree.current != null) {
-        var next = tree.subtrees[tree.current]
-        var newstep = index + step - tree.nodes.length
+        let next = tree.subtrees[tree.current]
+        let newstep = index + step - tree.nodes.length
 
-        return context.navigate(next, 0, newstep)
+        return exports.navigate(next, 0, newstep)
     }
 
     return null
 }
 
-context.makeNodeIterator = function(tree, index) {
-    var root = context.getRoot(tree)
-    var level = context.getLevel(tree, index, root)
-    var sections = context.getSection(root, level)
-    var j = sections.map(function(x) { return x[0] }).indexOf(tree)
+exports.makeNodeIterator = function(tree, index) {
+    let root = exports.getRoot(tree)
+    let level = exports.getLevel(tree, index, root)
+    let sections = exports.getSection(root, level)
+    let j = sections.map(x => x[0]).indexOf(tree)
 
     return {
-        navigate: function(step) {
+        navigate(step) {
             if (j + step >= 0 && j + step < sections.length) {
                 j = j + step
             } else if (j + step >= sections.length) {
                 step = j + step - sections.length
-                sections = context.getSection(root, ++level)
+                sections = exports.getSection(root, ++level)
                 j = 0
                 if (sections.length != 0) this.navigate(step)
             } else if (j + step < 0) {
                 step = j + step + 1
-                sections = context.getSection(root, --level)
+                sections = exports.getSection(root, --level)
                 j = sections.length - 1
                 if (sections.length != 0) this.navigate(step)
             }
         },
-        value: function() {
+        value() {
             return j < sections.length && j >= 0 ? sections[j] : null
         },
-        next: function() {
+        next() {
             this.navigate(1)
             return this.value()
         },
-        prev: function() {
+        prev() {
             this.navigate(-1)
             return this.value()
         }
     }
 }
 
-context.splitTree = function(tree, index) {
+exports.splitTree = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return tree
 
-    var newnodes = tree.nodes.slice(0, index + 1)
+    let newnodes = tree.nodes.slice(0, index + 1)
     tree.nodes = tree.nodes.slice(index + 1)
 
-    var newtree = context.new()
+    let newtree = exports.new()
     newtree.nodes = newnodes
     newtree.subtrees = [tree]
     newtree.parent = tree.parent
@@ -155,85 +142,80 @@ context.splitTree = function(tree, index) {
     return newtree
 }
 
-context.reduceTree = function(tree) {
+exports.reduceTree = function(tree) {
     if (tree.subtrees.length != 1) return tree
 
     tree.nodes = tree.nodes.concat(tree.subtrees[0].nodes)
     tree.current = tree.subtrees[0].current
     tree.subtrees = tree.subtrees[0].subtrees
 
-    tree.subtrees.forEach(function(subtree) {
+    tree.subtrees.forEach(subtree => {
         subtree.parent = tree
     })
 
     return tree
 }
 
-context.getHeight = function(tree) {
-    var height = 0
+exports.getHeight = function(tree) {
+    let height = 0
 
-    tree.subtrees.forEach(function(subtree) {
-        height = Math.max(context.getHeight(subtree), height)
+    tree.subtrees.forEach(subtree => {
+        height = Math.max(exports.getHeight(subtree), height)
     })
 
     return height + tree.nodes.length
 }
 
-context.getCurrentHeight = function(tree) {
-    var height = tree.nodes.length
+exports.getCurrentHeight = function(tree) {
+    let height = tree.nodes.length
 
     if (tree.current != null)
-        height += context.getCurrentHeight(tree.subtrees[tree.current])
+        height += exports.getCurrentHeight(tree.subtrees[tree.current])
 
     return height
 }
 
-context.getLevel = function(tree, index) {
-    return index + (tree.parent ? context.getLevel(tree.parent, tree.parent.nodes.length) : 0)
+exports.getLevel = function(tree, index) {
+    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
 
-context.getSection = function(tree, level) {
+exports.getSection = function(tree, level) {
     if (level < 0) return []
     if (level < tree.nodes.length) return [[tree, level]]
 
-    var sections = []
+    let sections = []
 
-    tree.subtrees.forEach(function(subtree) {
-        sections = sections.concat(context.getSection(subtree, level - tree.nodes.length))
+    tree.subtrees.forEach(subtree => {
+        sections = sections.concat(exports.getSection(subtree, level - tree.nodes.length))
     })
 
     return sections
 }
 
-context.getSectionWidth = function(y, matrix) {
-    var keys = Object.keys(new Int8Array(10)).map(function(i) {
-        return parseFloat(i) + y - 4
-    }).filter(function(i) { return i >= 0 && i < matrix.length })
+exports.getSectionWidth = function(y, matrix) {
+    let keys = Object.keys(new Int8Array(10))
+        .map(i => parseFloat(i) + y - 4)
+        .filter(i => i >= 0 && i < matrix.length)
 
-    var padding = Math.min.apply(null, keys.map(function(i) {
-        for (var j = 0; j < matrix[i].length; j++)
+    let padding = Math.min(...keys.map(i => {
+        for (let j = 0; j < matrix[i].length; j++)
             if (matrix[i][j] != null) return j
         return 0
     }))
 
-    var width = Math.max.apply(null, keys.map(function(i) {
-        return matrix[i].length
-    })) - padding
+    let width = Math.max(...keys.map(i => matrix[i].length)) - padding
 
     return [width, padding]
 }
 
-context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
-    if (!matrix) matrix = Array.apply(null, new Array(context.getHeight(tree))).map(function() { return [] });
-    if (!dict) dict = {}
-    if (!xshift) xshift = 0
-    if (!yshift) yshift = 0
+exports.tree2matrixdict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0) {
+    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
 
-    var hasCollisions = true
+    let hasCollisions = true
     while (hasCollisions) {
         hasCollisions = false
 
-        for (var y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
             if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
 
             hasCollisions = true
@@ -242,7 +224,7 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
         }
     }
 
-    for (var y = 0; y < tree.nodes.length; y++) {
+    for (let y = 0; y < tree.nodes.length; y++) {
         while (xshift >= matrix[yshift + y].length) {
             matrix[yshift + y].push(null)
         }
@@ -252,40 +234,41 @@ context.tree2matrixdict = function(tree, matrix, dict, xshift, yshift) {
     }
 
     if (!tree.collapsed) {
-        for (var k = 0; k < tree.subtrees.length; k++) {
-            var subtree = tree.subtrees[k]
-            context.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+        for (let k = 0; k < tree.subtrees.length; k++) {
+            let subtree = tree.subtrees[k]
+            exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
         }
     }
 
     return [matrix, dict]
 }
 
-context.onCurrentTrack = function(tree) {
-    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && context.onCurrentTrack(tree.parent)
+exports.onCurrentTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && exports.onCurrentTrack(tree.parent)
 }
 
-context.onMainTrack = function(tree) {
-    return !tree.parent || tree.parent.subtrees[0] == tree && context.onMainTrack(tree.parent)
+exports.onMainTrack = function(tree) {
+    return !tree.parent || tree.parent.subtrees[0] == tree && exports.onMainTrack(tree.parent)
 }
 
-context.matrixdict2graph = function(matrixdict) {
-    var matrix = matrixdict[0]
-    var dict = matrixdict[1]
-    var graph = { nodes: [], edges: [] }
-    var currentTrack = []
-    var notCurrentTrack = []
-    var width = Math.max.apply(null, matrix.map(function(x) { return x.length }))
-    var gridSize = setting.get('graph.grid_size')
+exports.matrixdict2graph = function(matrixdict) {
+    let matrix = matrixdict[0]
+    let dict = matrixdict[1]
+    let graph = { nodes: [], edges: [] }
+    let currentTrack = []
+    let notCurrentTrack = []
+    let width = Math.max(...matrix.map(x => x.length))
+    let gridSize = setting.get('graph.grid_size')
 
-    for (var y = 0; y < matrix.length; y++) {
-        for (var x = 0; x < width; x++) {
+    for (let y = 0; y < matrix.length; y++) {
+        for (let x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
-            var tree = matrix[y][x][0]
-            var index = matrix[y][x][1]
-            var id = tree.id + '-' + index
-            var node = {
+            let tree = matrix[y][x][0]
+            let index = matrix[y][x][1]
+            let id = tree.id + '-' + index
+            let commentproperties = setting.get('sgf.comment_properties')
+            let node = {
                 id: id,
                 x: x * gridSize,
                 y: y * gridSize,
@@ -293,7 +276,6 @@ context.matrixdict2graph = function(matrixdict) {
                 data: matrix[y][x],
                 originalColor: setting.get('graph.node_color')
             }
-            var commentproperties = setting.get('sgf.comment_properties')
 
             // Show passes as squares
 
@@ -312,7 +294,7 @@ context.matrixdict2graph = function(matrixdict) {
 
             // Set color
 
-            if (commentproperties.some(function(x) { return x in tree.nodes[index] }))
+            if (commentproperties.some(x => x in tree.nodes[index]))
                 node.originalColor = setting.get('graph.node_comment_color')
             if ('HO' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
@@ -320,7 +302,7 @@ context.matrixdict2graph = function(matrixdict) {
             if (currentTrack.indexOf(tree.id) != -1) {
                 node.color = node.originalColor
             } else if (notCurrentTrack.indexOf(tree.id) == -1) {
-                if (context.onCurrentTrack(tree)) {
+                if (exports.onCurrentTrack(tree)) {
                     currentTrack.push(tree.id)
                     node.color = node.originalColor
                 } else {
@@ -335,10 +317,10 @@ context.matrixdict2graph = function(matrixdict) {
 
             // Add helper nodes & edges
 
-            var prev = context.navigate(tree, index, -1)
+            let prev = exports.navigate(tree, index, -1)
             if (!prev) continue
-            var prevId = prev[0].id + '-' + prev[1]
-            var prevPos = dict[prevId]
+            let prevId = prev[0].id + '-' + prev[1]
+            let prevPos = dict[prevId]
 
             if (prevPos[0] != x) {
                 graph.nodes.push({
@@ -372,21 +354,20 @@ context.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
-context.addBoard = function(tree, index, baseboard) {
-    if (isNaN(index)) index = 0
+exports.addBoard = function(tree, index = 0, baseboard = null) {
     if (index >= tree.nodes.length) return tree
 
-    var node = tree.nodes[index]
-    var vertex = null
-    var board = null
+    let node = tree.nodes[index]
+    let vertex = null
+    let board = null
 
     // Get base board
 
     if (!baseboard) {
-        var prev = context.navigate(tree, index, -1)
+        let prev = exports.navigate(tree, index, -1)
 
         if (!prev) {
-            var size = [19, 19]
+            let size = [19, 19]
 
             if ('SZ' in node) {
                 size = node.SZ[0]
@@ -394,14 +375,14 @@ context.addBoard = function(tree, index, baseboard) {
                 if (size.indexOf(':') >= 0) size = size.split(':')
                 else size = [size, size]
 
-                size = size.map(function(x) { return +x })
+                size = size.map(x => +x)
             }
 
-            baseboard = new Board(size[0], size[1])
+            baseboard = new Board(...size)
         } else {
-            var prevNode = prev[0].nodes[prev[1]]
+            let prevNode = prev[0].nodes[prev[1]]
 
-            if (!prevNode.board) context.addBoard(prev[0], prev[1])
+            if (!prevNode.board) exports.addBoard(...prev)
             baseboard = prevNode.board
         }
     }
@@ -420,13 +401,13 @@ context.addBoard = function(tree, index, baseboard) {
 
     // Add markup
 
-    var ids = ['AW', 'AE', 'AB']
+    let ids = ['AW', 'AE', 'AB']
 
-    for (var i = 0; i < ids.length; i++) {
+    for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(function(value) {
-            sgf.compressed2list(value).forEach(function(vertex) {
+        node[ids[i]].forEach(value => {
+            sgf.compressed2list(value).forEach(vertex => {
                 board.arrangement[vertex] = i - 1
             })
         })
@@ -436,52 +417,43 @@ context.addBoard = function(tree, index, baseboard) {
         board.markups[vertex] = ['point', '']
     }
 
-    var ids = ['CR', 'MA', 'SQ', 'TR']
-    var classes = ['circle', 'cross', 'square', 'triangle']
+    ids = ['CR', 'MA', 'SQ', 'TR']
+    let classes = ['circle', 'cross', 'square', 'triangle']
 
-    for (var i = 0; i < ids.length; i++) {
+    for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(function(value) {
-            sgf.compressed2list(value).forEach(function(vertex) {
+        node[ids[i]].forEach(value => {
+            sgf.compressed2list(value).forEach(vertex => {
                 board.markups[vertex] = [classes[i], '']
             })
         })
     }
 
     if ('LB' in node) {
-        node.LB.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var point = composed.slice(0, sep)
-            var label = composed.slice(sep + 1).replace(/\s+/, ' ')
+        node.LB.forEach(composed => {
+            let sep = composed.indexOf(':')
+            let point = composed.slice(0, sep)
+            let label = composed.slice(sep + 1).replace(/\s+/, ' ')
             board.markups[sgf.point2vertex(point)] = ['label', label]
         })
     }
 
-    if ('LN' in node) {
-        node.LN.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var p1 = composed.slice(0, sep)
-            var p2 = composed.slice(sep + 1)
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), false])
+    ;['AR', 'LN'].filter(type => type in node).forEach(type => {
+        node[type].forEach(composed => {
+            let sep = composed.indexOf(':')
+            let p1 = composed.slice(0, sep)
+            let p2 = composed.slice(sep + 1)
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
         })
-    }
-
-    if ('AR' in node) {
-        node.AR.forEach(function(composed) {
-            var sep = composed.indexOf(':')
-            var p1 = composed.slice(0, sep)
-            var p2 = composed.slice(sep + 1)
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), true])
-        })
-    }
+    })
 
     node.board = board
 
     // Add variation overlays
 
-    var addOverlay = function(node, type) {
-        var v, sign
+    let addOverlay = (node, type) => {
+        let v, sign
 
         if ('B' in node) {
             v = sgf.point2vertex(node.B[0])
@@ -498,14 +470,14 @@ context.addBoard = function(tree, index, baseboard) {
     }
 
     if (index == 0 && tree.parent) {
-        tree.parent.subtrees.forEach(function(subtree) {
+        tree.parent.subtrees.forEach(subtree => {
             if (subtree.nodes.length == 0) return
             addOverlay(subtree.nodes[0], 'sibling')
         })
     }
 
     if (index == tree.nodes.length - 1) {
-        tree.subtrees.forEach(function(subtree) {
+        tree.subtrees.forEach(subtree => {
             if (subtree.nodes.length == 0) return
             addOverlay(subtree.nodes[0], 'child')
         })
@@ -516,21 +488,21 @@ context.addBoard = function(tree, index, baseboard) {
     return tree
 }
 
-context.getJson = function(tree) {
-    return JSON.stringify(tree, function(name, val) {
-        var list = ['id', 'board', 'parent', 'collapsed', 'current']
+exports.getJson = function(tree) {
+    return JSON.stringify(tree, (name, val) => {
+        let list = ['id', 'board', 'parent', 'collapsed', 'current']
         return list.indexOf(name) >= 0 ? undefined : val
     })
 }
 
-context.fromJson = function(json) {
-    var addInformation = function(tree) {
+exports.fromJson = function(json) {
+    let addInformation = tree => {
         tree.id = helper.getId()
         tree.collapsed = false
 
         if (tree.subtrees.length > 0) tree.current = 0
 
-        for (var i = 0; i < tree.subtrees.length; i++) {
+        for (let i = 0; i < tree.subtrees.length; i++) {
             tree.subtrees[i].parent = tree
             addInformation(tree.subtrees[i])
         }
@@ -538,14 +510,12 @@ context.fromJson = function(json) {
         return tree
     }
 
-    var tree = JSON.parse(json)
+    let tree = JSON.parse(json)
     tree.parent = null
     return addInformation(tree)
 }
 
-context.getHash = function(tree) {
-    var sgf = typeof require == 'undefined' ? root.sgf : require('./sgf')
+exports.getHash = function(tree) {
+    let sgf = require('./sgf')
     return helper.hash(sgf.stringify(tree))
 }
-
-}).call(null, typeof module != 'undefined' ? module : window)

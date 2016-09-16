@@ -1,22 +1,14 @@
-(function(root) {
+let lastPachiIndex = -1
+let lastCaptureIndex = -1
 
-var context = typeof module != 'undefined' ? module.exports : (window.sound = {})
-var lastPachiIndex = -1
-var lastCaptureIndex = -1
+let captureSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`../sound/capture${x}.mp3`))
+let pachiSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`../sound/${x}.mp3`))
 
-var captureSounds = Object.keys(new Int8Array(5)).map(function(x) {
-    return new Audio('../sound/capture' + x + '.mp3')
-})
+let newGameSound = new Audio('../sound/newgame.mp3')
+let passSound = new Audio('../sound/pass.mp3')
 
-var pachiSounds = Object.keys(new Int8Array(5)).map(function(x) {
-    return new Audio('../sound/' + x + '.mp3')
-})
-
-var newGameSound = new Audio('../sound/newgame.mp3')
-var passSound = new Audio('../sound/pass.mp3')
-
-context.playCapture = function() {
-    var index = lastCaptureIndex
+exports.playCapture = function() {
+    let index = lastCaptureIndex
 
     while (index == lastCaptureIndex) {
         index = Math.floor(Math.random() * captureSounds.length)
@@ -26,8 +18,8 @@ context.playCapture = function() {
     captureSounds[index].play()
 }
 
-context.playPachi = function() {
-    var index = lastPachiIndex
+exports.playPachi = function() {
+    let index = lastPachiIndex
 
     while (index == lastPachiIndex) {
         index = Math.floor(Math.random() * pachiSounds.length)
@@ -37,7 +29,5 @@ context.playPachi = function() {
     pachiSounds[index].play()
 }
 
-context.playNewGame = function() { newGameSound.play() }
-context.playPass = function() { passSound.play() }
-
-}).call(null, typeof module != 'undefined' ? module : window)
+exports.playNewGame = function() { newGameSound.play() }
+exports.playPass = function() { passSound.play() }

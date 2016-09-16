@@ -183,7 +183,7 @@ describe('sgf', () => {
                 assert.equal(savedSgf.subtrees[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
             })
         }
-        
+
         it('should be able to go back and re-parse attributes set before CA', () => {
             assert.equal(
                 sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PW[0],
@@ -455,7 +455,7 @@ describe('sgf', () => {
                 'Hello\\! []World!'
             ]
 
-            texts.forEach(function(text) {
+            texts.forEach(text => {
                 assert.equal(sgf.unescapeString(sgf.escapeString(text)), text)
             })
         })
