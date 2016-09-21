@@ -1,34 +1,35 @@
-var assert = require('assert')
-var helper = require('../modules/helper')
-var Board = require('../modules/board')
+const assert = require('assert')
+const helper = require('../modules/helper')
+const Board = require('../modules/board')
 
-describe('Board', function() {
-    describe('constructor', function() {
-        it('should create an empty board', function() {
-            var board = new Board()
-            for (var x = 0; x < board.width; x++) {
-                for (var y = 0; y < board.height; y++) {
+describe('Board', () => {
+    describe('constructor', () => {
+        it('should create an empty board', () => {
+            let board = new Board()
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
                     assert.equal(board.arrangement[[x, y]], 0)
                 }
             }
         })
-        it('should have no capture information', function() {
-            var board = new Board()
-            assert.deepEqual(board.captures, { '-1': 0, '1': 0 })
+        it('should have no capture information', () => {
+            let board = new Board()
+            assert.deepEqual(board.captures, {'-1': 0, '1': 0})
         })
-        it('should have no markups and lines', function() {
-            var board = new Board()
+        it('should have no markups and lines', () => {
+            let board = new Board()
             assert.deepEqual(board.lines, [])
             assert.deepEqual(board.markups, {})
         })
     })
 
-    describe('clone', function() {
-        it('should clone board arrangement', function() {
-            var board = new Board()
+    describe('clone', () => {
+        it('should clone board arrangement', () => {
+            let board = new Board()
             ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
-            var clone = board.clone()
+            let clone = board.clone()
 
             assert.deepEqual(board.arrangement, clone.arrangement)
 
@@ -37,15 +38,15 @@ describe('Board', function() {
         })
     })
 
-    describe('hasVertex', function() {
-        it('should return true when vertex is on board', function() {
-            var board = new Board()
+    describe('hasVertex', () => {
+        it('should return true when vertex is on board', () => {
+            let board = new Board()
             assert(board.hasVertex([0, 0]))
             assert(board.hasVertex([13, 18]))
             assert(board.hasVertex([5, 4]))
         })
-        it('should return false when vertex is not on board', function() {
-            var board = new Board()
+        it('should return false when vertex is not on board', () => {
+            let board = new Board()
             assert(!board.hasVertex([-1, -1]))
             assert(!board.hasVertex([5, -1]))
             assert(!board.hasVertex([board.width, 0]))
@@ -53,9 +54,9 @@ describe('Board', function() {
         })
     })
 
-    describe('clear', function() {
-        it('should clear the stones on the board', function() {
-            var board = new Board(9, 9)
+    describe('clear', () => {
+        it('should clear the stones on the board', () => {
+            let board = new Board(9, 9)
             board.arrangement[[0, 0]] = 1
             board.arrangement[[1, 1]] = -1
             board.arrangement[[3, 5]] = 1
@@ -63,9 +64,9 @@ describe('Board', function() {
             board.clear()
             assert.deepEqual(board.arrangement, new Board(9, 9).arrangement)
         })
-        it('should not clear markups or lines', function() {
-            var board = new Board(9, 9)
-            var lines = [
+        it('should not clear markups or lines', () => {
+            let board = new Board(9, 9)
+            let lines = [
                 [[0, 0], [8, 8], false],
                 [[8, 8], [0, 0], true]
             ]
@@ -78,17 +79,17 @@ describe('Board', function() {
         })
     })
 
-    describe('getDistance', function() {
-        it('should return the Manhattan distance between two vertices', function() {
-            var board = new Board()
+    describe('getDistance', () => {
+        it('should return the Manhattan distance between two vertices', () => {
+            let board = new Board()
             assert.equal(board.getDistance([1, 2], [8, 4]), 9)
             assert.equal(board.getDistance([-1, -2], [8, 4]), 15)
         })
     })
 
-    describe('getCanonicalVertex', function() {
-        it('should work', function() {
-            var board = new Board()
+    describe('getCanonicalVertex', () => {
+        it('should work', () => {
+            let board = new Board()
             assert.deepEqual(board.getCanonicalVertex([3, 4]), [3, 4])
             assert.deepEqual(board.getCanonicalVertex([4, 3]), [3, 4])
             assert.deepEqual(board.getCanonicalVertex([18, 3]), [0, 3])
@@ -96,9 +97,9 @@ describe('Board', function() {
         })
     })
 
-    describe('getSymmetries', function() {
-        it('should work', function() {
-            var board = new Board()
+    describe('getSymmetries', () => {
+        it('should work', () => {
+            let board = new Board()
 
             assert.deepEqual(
                 board.getSymmetries([3, 4]).sort(helper.lexicalCompare),
@@ -119,28 +120,28 @@ describe('Board', function() {
         })
     })
 
-    describe('getNeighbors', function() {
-        it('should return neighbors for vertices in the middle', function() {
-            var board = new Board()
+    describe('getNeighbors', () => {
+        it('should return neighbors for vertices in the middle', () => {
+            let board = new Board()
             assert.deepEqual(board.getNeighbors([1, 1]), [[0, 1], [2, 1], [1, 0], [1, 2]])
         })
-        it('should return neighbors for vertices on the side', function() {
-            var board = new Board()
+        it('should return neighbors for vertices on the side', () => {
+            let board = new Board()
             assert.deepEqual(board.getNeighbors([1, 0]), [[0, 0], [2, 0], [1, 1]])
         })
-        it('should return neighbors for vertices in the corner', function() {
-            var board = new Board()
+        it('should return neighbors for vertices in the corner', () => {
+            let board = new Board()
             assert.deepEqual(board.getNeighbors([0, 0]), [[1, 0], [0, 1]])
         })
-        it('should return empty list for vertices not on board', function() {
-            var board = new Board()
+        it('should return empty list for vertices not on board', () => {
+            let board = new Board()
             assert.deepEqual(board.getNeighbors([-1, -1]), [])
         })
     })
 
-    describe('getConnectedComponent', function() {
-        it('should be able to return the chain of a vertex', function() {
-            var board = new Board()
+    describe('getConnectedComponent', () => {
+        it('should be able to return the chain of a vertex', () => {
+            let board = new Board()
             ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
 
@@ -149,8 +150,8 @@ describe('Board', function() {
                 [[1, 1], [2, 1]]
             )
         })
-        it('should be able to return the stone connected component of a vertex', function() {
-            var board = new Board()
+        it('should be able to return the stone connected component of a vertex', () => {
+            let board = new Board()
             ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
 
@@ -161,9 +162,9 @@ describe('Board', function() {
         })
     })
 
-    describe('getLiberties', function() {
-        it('should return the liberties of the chain of the given vertex', function() {
-            var board = new Board()
+    describe('getLiberties', () => {
+        it('should return the liberties of the chain of the given vertex', () => {
+            let board = new Board()
             ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
 
             assert.deepEqual(
@@ -172,23 +173,23 @@ describe('Board', function() {
             )
             assert.deepEqual(board.getLiberties([1, 2]), [])
         })
-        it('should return empty list for a vertex not on the board', function() {
-            var board = new Board()
+        it('should return empty list for a vertex not on the board', () => {
+            let board = new Board()
             assert.deepEqual(board.getLiberties([-1, -1]), [])
         })
     })
 
-    describe('isValid', function() {
-        it('should return true for valid board arrangements', function() {
-            var board = new Board()
+    describe('isValid', () => {
+        it('should return true for valid board arrangements', () => {
+            let board = new Board()
             assert(board.isValid())
 
             board.arrangement[[1, 1]] = 1
             board.arrangement[[1, 2]] = -1
             assert(board.isValid())
         })
-        it('should return false for non-valid board arrangements', function() {
-            var board = new Board()
+        it('should return false for non-valid board arrangements', () => {
+            let board = new Board()
             ;[[1, 0], [0, 1]].forEach(x => board.arrangement[x] = 1)
             ;[[0, 0]].forEach(x => board.arrangement[x] = -1)
             assert(!board.isValid())
@@ -200,47 +201,79 @@ describe('Board', function() {
         })
     })
 
-    describe('makeMove', function() {
-        it('should not mutate board', function() {
-            var board = new Board()
+    describe('makeMove', () => {
+        it('should not mutate board', () => {
+            let board = new Board()
             board.makeMove(1, [5, 5])
             assert.deepEqual(board.arrangement, new Board().arrangement)
         })
-        it('should make a move', function() {
-            var board = new Board()
-            var move = board.makeMove(1, [5, 5])
+        it('should make a move', () => {
+            let board = new Board()
+            let move = board.makeMove(1, [5, 5])
             board.arrangement[[5, 5]] = 1
             assert.deepEqual(board.arrangement, move.arrangement)
         })
-        it('should remove captured stones', function() {
-            var board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
-            var move = board.makeMove(1, [3, 1])
-            assert.equal(move.arrangement[[1, 1]], 0)
-            assert.equal(move.arrangement[[2, 1]], 0)
+        it('should remove captured stones', () => {
+            let board = new Board()
+            let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
+            let white = [[1, 1], [2, 1]]
+
+            black.forEach(x => board.arrangement[x] = 1)
+            white.forEach(x => board.arrangement[x] = -1)
+
+            let move = board.makeMove(1, [3, 1])
+
             assert.equal(move.arrangement[[3, 1]], 1)
-            assert.equal(move.arrangement[[1, 2]], 1)
+            black.forEach(x => assert.equal(move.arrangement[x], 1))
+            white.forEach(x => assert.equal(move.arrangement[x], 0))
+
+            // Edge capture
 
             board = new Board()
-            ;[[0, 1]].forEach(x => board.arrangement[x] = 1)
-            ;[[0, 0]].forEach(x => board.arrangement[x] = -1)
+
+            board.arrangement[[0, 1]] = 1
+            board.arrangement[[0, 0]] = -1
+
             move = board.makeMove(1, [1, 0])
+
             assert.equal(move.arrangement[[0, 0]], 0)
             assert.equal(move.arrangement[[1, 0]], 1)
+            assert.equal(move.arrangement[[0, 1]], 1)
         })
-        it('should handle suicide correctly', function() {
-            var board = new Board()
+        it('should count captures correctly', () => {
+            let board = new Board()
+            let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
+            let white = [[1, 1], [2, 1]]
+
+            black.forEach(x => board.arrangement[x] = 1)
+            white.forEach(x => board.arrangement[x] = -1)
+
+            let move = board.makeMove(1, [3, 1])
+            assert.equal(move.captures[-1], 0)
+            assert.equal(move.captures[1], white.length)
+
+            board = new Board()
+
+            board.arrangement[[0, 1]] = 1
+            board.arrangement[[0, 0]] = -1
+
+            move = board.makeMove(1, [1, 0])
+
+            assert.equal(move.captures[-1], 0)
+            assert.equal(move.captures[1], 1)
+        })
+        it('should handle suicide correctly', () => {
+            let board = new Board()
             ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.arrangement[x] = 1)
             ;[[1, 1]].forEach(x => board.arrangement[x] = -1)
-            var move = board.makeMove(-1, [2, 1])
+            let move = board.makeMove(-1, [2, 1])
             assert.equal(move.arrangement[[1, 1]], 0)
             assert.equal(move.arrangement[[2, 1]], 0)
             assert.equal(move.arrangement[[3, 1]], 1)
             assert.equal(move.arrangement[[1, 2]], 1)
         })
-        it('should make a pass', function() {
-            var board = new Board()
+        it('should make a pass', () => {
+            let board = new Board()
             assert.deepEqual(board.makeMove(1, [-1, -1]).arrangement, board.arrangement)
             board.arrangement[[1, 1]] = -1
             assert.deepEqual(board.makeMove(1, [-1, -1]).arrangement, board.arrangement)

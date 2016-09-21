@@ -1,25 +1,17 @@
-(function(root) {
+let app
+const fs = require('fs')
+const path = require('path')
 
-var fs = null
-var path = null
-var app = null
+try {
+    let remote = require('electron').remote
+    app = remote ? remote.app : require('electron').app
+} catch(err) {}
 
-if (typeof require != 'undefined') {
-    fs = require('fs')
-    path = require('path')
-
-    try {
-        var remote = require('electron').remote
-        app = remote ? remote.app : require('electron').app
-    } catch(e) {}
-}
-
-var context = typeof module != 'undefined' ? module.exports : (window.setting = {})
-var namesort = function(x, y) { return x.name < y.name ? -1 : +(x.name != y.name) }
+let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
 
 if (app && path) {
-    var directory = app.getPath('userData')
-    try { fs.mkdirSync(directory) } catch(e) {}
+    let directory = app.getPath('userData')
+    try { fs.mkdirSync(directory) } catch(err) {}
 
     exports.settingsPath = path.join(directory, 'settings.json')
     exports.stylesPath = path.join(directory, 'styles.css')
@@ -31,10 +23,10 @@ if (app && path) {
     }
 }
 
-var settings = {}
-var engines = []
+let settings = {}
+let engines = []
 
-var defaults = {
+let defaults = {
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 100,
     'app.loadgame_delay': 100,
@@ -104,18 +96,18 @@ var defaults = {
     'window.width': 564
 }
 
-context.load = function() {
+exports.load = function() {
     if (!app) return settings = defaults
 
     try {
-        settings = JSON.parse(fs.readFileSync(exports.settingsPath, { encoding: 'utf8' }))
+        settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
     } catch(e) {
         settings = {}
     }
 
     // Load default settings
 
-    for (var key in defaults) {
+    for (let key in defaults) {
         if (key in settings) continue
         settings[key] = defaults[key]
     }
@@ -125,59 +117,57 @@ context.load = function() {
 
     // Overwrite settings
 
-    for (var overwriteKey in settings) {
+    for (let overwriteKey in settings) {
         if (overwriteKey.indexOf('setting.overwrite.') != 0) continue
 
-        var overwrites = settings[overwriteKey]
+        let overwrites = settings[overwriteKey]
         if (!overwrites.length) continue
 
-        for (var i = 0; i < overwrites.length; i++) {
+        for (let i = 0; i < overwrites.length; i++) {
             settings[overwrites[i]] = defaults[overwrites[i]]
         }
 
         settings[overwriteKey] = []
     }
 
-    return context.save()
+    return exports.save()
 }
 
-context.save = function() {
-    if (!app) return context
+exports.save = function() {
+    if (!app) return exports
 
     fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
-    return context
+    return exports
 }
 
-context.get = function(key) {
+exports.get = function(key) {
     if (key in settings) return settings[key]
     if (key in defaults) return defaults[key]
     return null
 }
 
-context.set = function(key, value) {
+exports.set = function(key, value) {
     settings[key] = value
-    return context.save()
+    return exports.save()
 }
 
-context.addEngine = function(name, path, args) {
+exports.addEngine = function(name, path, args) {
     engines.push({
         name: name,
         path: path,
         args: args
     })
     engines.sort(namesort)
-    return context
+    return exports
 }
 
-context.getEngines = function() {
+exports.getEngines = function() {
     return engines.slice(0)
 }
 
-context.clearEngines = function() {
+exports.clearEngines = function() {
     engines.length = 0
-    return context
+    return exports
 }
 
-context.load()
-
-}).call(null, typeof module != 'undefined' ? module : window)
+exports.load()

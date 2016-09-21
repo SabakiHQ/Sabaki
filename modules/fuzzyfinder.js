@@ -1,30 +1,22 @@
-(function(root) {
+const helper = require('./helper')
 
-var helper = root.helper
+exports.filter = function(needle, haystack) {
+    let result = []
 
-if (typeof require != 'undefined') {
-    helper = require('./helper')
-}
-
-var context = typeof module != 'undefined' ? module.exports : (window.fuzzyfinder = {})
-
-context.filter = function(needle, haystack) {
-    var result = []
-
-    for (var i = 0; i < haystack.length; i++) {
-        var v = generateVector(needle, haystack[i])
+    for (let i = 0; i < haystack.length; i++) {
+        let v = generateVector(needle, haystack[i])
         if (v) result.push(v)
     }
 
     result.sort(helper.lexicalCompare)
-    return result.map(function(x) { return x[x.length - 1] })
+    return result.map(x => x[x.length - 1])
 }
 
-context.find = function(needle, haystack) {
-    var min = null
+exports.find = function(needle, haystack) {
+    let min = null
 
-    for (var i = 0; i < haystack.length; i++) {
-        var v = generateVector(needle, haystack[i])
+    for (let i = 0; i < haystack.length; i++) {
+        let v = generateVector(needle, haystack[i])
         if (v && (!min || helper.lexicalCompare(v, min) < 0)) min = v
     }
 
@@ -39,12 +31,12 @@ function generateVector(needle, hay) {
     needle = needle.toLowerCase()
     hay = hay.toLowerCase()
 
-    var indices = [-1]
-    var v = [0, 0, 0, hay.length, hay]
+    let indices = [-1]
+    let v = [0, 0, 0, hay.length, hay]
 
-    for (var i = 0; i < needle.length; i++) {
-        var last = indices[indices.length - 1]
-        var index = hay.indexOf(needle[i], last + 1)
+    for (let i = 0; i < needle.length; i++) {
+        let last = indices[indices.length - 1]
+        let index = hay.indexOf(needle[i], last + 1)
         if (index == -1) return null
         if (index - last == 1) v[0]--
 
@@ -56,5 +48,3 @@ function generateVector(needle, hay) {
 
     return v
 }
-
-}).call(null, typeof module != 'undefined' ? module : window)

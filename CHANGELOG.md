@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.18.0][v0.18.0] (2016-09-18)
+
+**Added**
+
+* Add support for non-UTF8 encodings (Thanks to @apetresc)
+* Add basic text editing keyboard shortcuts when editing/writing comments on macOS
+
+**Changed**
+
+* Update to Electron v1.3.6
+
+**Fixed**
+
+* Fix removing nodes resulting in invalid game graphs sometimes
+* Fix regression where guess mode stopped working
+
 ## [Sabaki v0.17.2][v0.17.2] (2016-09-10)
 
 **Changed**
@@ -406,7 +422,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.17.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.0...master
+[v0.18.0]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.0
 [v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.17.1...v0.17.2
 [v0.17.1]: https://github.com/yishn/Sabaki/compare/v0.17.0...v0.17.1
 [v0.17.0]: https://github.com/yishn/Sabaki/compare/v0.16.1...v0.17.0
