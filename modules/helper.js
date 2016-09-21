@@ -2,17 +2,6 @@ const marked = require('./marked')
 
 let id = 0
 
-gtp = {
-    point2vertex: function(point, size) {
-        var alpha = 'abcdefghjklmnopqrstuvwxyz'
-        var x = alpha.indexOf(point[0].toLowerCase())
-        var y = size - parseFloat(point.substr(1))
-        return [x, y]
-    }
-}
-
-var id = 0
-
 exports.getId = function() {
     return ++id
 }

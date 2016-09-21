@@ -1,45 +1,41 @@
-(function() {
+exports.buildFromTemplate = function(template) {
+    let menu = {}
+    let $element = $('<ul class="popupmenu"/>')
 
-var Menu = {}
-
-Menu.buildFromTemplate = function(template) {
-    var menu = {}
-    var $element = $('<ul class="popupmenu"/>')
-
-    template.forEach(function(item) {
+    template.forEach(item => {
         if (item.type == 'separator') {
             $element.append('<li class="separator"/>')
             return
         }
 
-        var $li = $('<li/>')
+        let $li = $('<li/>')
         .text(item.label.replace(/&/g, ''))
         .on('click', function() {
             item.click()
-            Menu.hide()
+            exports.hide()
         })
 
         if (item.checked) $li.addClass('checked')
         $element.append($li)
     })
 
-    menu.popup = function(_, x, y) { Menu.show($element, x, y) }
+    menu.popup = (_, x, y) => exports.show($element, x, y)
     return menu
 }
 
-Menu.hide = function() {
+exports.hide = function() {
     $('ul.popupmenu, #popupmenu-overlay').remove()
 }
 
-Menu.show = function($menu, x, y) {
+exports.show = function($menu, x, y) {
     $('body').append(
-        $('<div id="popupmenu-overlay"/>').on('click', Menu.hide)
+        $('<div id="popupmenu-overlay"/>').on('click', exports.hide)
     ).append($menu)
 
-    var menuWidth = Math.round($menu.width())
-    var menuHeight = Math.round($menu.height())
-    var bodyWidth = Math.round($('body').width())
-    var bodyHeight = Math.round($('body').height())
+    let menuWidth = Math.round($menu.width())
+    let menuHeight = Math.round($menu.height())
+    let bodyWidth = Math.round($('body').width())
+    let bodyHeight = Math.round($('body').height())
 
     $menu.css('left', x).css('top', y)
 
@@ -48,7 +44,3 @@ Menu.show = function($menu, x, y) {
 
     $menu.addClass('show')
 }
-
-window.Menu = Menu
-
-})()

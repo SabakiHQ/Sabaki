@@ -765,7 +765,7 @@ function prepareGameChooser() {
 }
 
 function updateTitle() {
-    var basename = function(x) { return x }
+    let basename = x => x
     let title = app.getName()
     let filename = getRepresentedFilename()
 
@@ -844,7 +844,7 @@ function addEngineItem(name = '', path = '', args = '') {
 }
 
 function showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-    var result = confirm(message)
+    let result = confirm(message)
     return result ? 0 : cancelId
 
     setIsBusy(true)
@@ -1158,7 +1158,7 @@ function openHeaderMenu() {
         {
             label: 'About Sabaki…',
             click: function() {
-                var $link = $('<a/>')
+                let $link = $('<a/>')
                 .attr('href', 'http://sabaki.yichuanshen.de')
                 .attr('target', '_blank')
                 .css('display', 'none')
@@ -1171,7 +1171,7 @@ function openHeaderMenu() {
         {
             label: 'Report Issue…',
             click: function() {
-                var $link = $('<a/>')
+                let $link = $('<a/>')
                 .attr('href', 'https://github.com/yishn/Sabaki/issues')
                 .attr('target', '_blank')
                 .css('display', 'none')

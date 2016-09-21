@@ -1,15 +1,13 @@
-var fs = null
-var process = { argv: { length: -1 }, platform: 'web' }
-var remote = { getCurrentWindow: function() {} }
-var ipcRenderer = { send: function() {} }
-var clipboard = null
-var shell = null
-var app = { getName: function() { return 'Sabaki' }, getVersion: function() { return 'web' } }
-var dialog = { showMessageBox: function() {} }
-
-const fs = require('fs')
-const {clipboard, ipcRenderer, shell, remote} = require('electron')
-const {app, dialog, Menu, MenuItem} = remote
+const fs = null
+const process = {argv: {length: -1}, platform: 'web'}
+const remote = {getCurrentWindow: () => null}
+const ipcRenderer = {send: () => {}}
+const clipboard = null
+const shell = null
+const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
+const dialog = {showMessageBox: () => {}}
+const Menu = require('../modules/menu')
+const MenuItem = null
 const Pikaday = require('pikaday')
 const GeminiScrollbar = require('gemini-scrollbar')
 
