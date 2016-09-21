@@ -443,7 +443,7 @@ function prepareBars() {
 
     // Handle autoplay bar
 
-    $('#autoplay .play').on('click', () => view.setAutoplaying(!view.getAutoplaying()))
+    $('#autoplay .play').on('click', () => setAutoplaying(!getAutoplaying()))
 
     // Handle scoring/estimator bar and drawer
 
