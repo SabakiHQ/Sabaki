@@ -789,7 +789,7 @@ exports.prepareGameChooser = function() {
 }
 
 exports.prepareIndicator = function() {
-    $('#indicator').on('click', () => hideIndicator())
+    $('#indicator').on('click', () => exports.hideIndicator())
 }
 
 exports.updateTitle = function() {
