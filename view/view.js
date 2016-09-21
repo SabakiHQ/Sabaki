@@ -825,7 +825,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
             .on('click', function() {
                 exports.setIsBusy(true)
 
-                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let result = dialog.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -1452,7 +1452,7 @@ exports.openAddGameMenu = function() {
             click: () => {
                 exports.setIsBusy(true)
 
-                let filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let filenames = dialog.showOpenDialog({
                     properties: ['openFile', 'multiSelections'],
                     filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
                 })
