@@ -517,8 +517,12 @@ function prepareAutoplay() {
 }
 
 function prepareSidebar() {
+    // Prepare comments section
+
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
     $('#properties .edit .header img').on('click', () => view.openCommentMenu())
+
+    $('#properties .edit .header input, #properties .edit textarea').on('input', () => commitCommentText())
 
     // Prepare game graph
 

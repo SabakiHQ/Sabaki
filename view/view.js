@@ -781,6 +781,15 @@ exports.prepareGameChooser = function() {
 
         updateSVG()
     })
+
+    // Buttons
+
+    $('#gamechooser button[name="add"]').on('click', () => exports.openAddGameMenu())
+    $('#gamechooser button[name="close"]').on('click', () => exports.closeGameChooser())
+}
+
+exports.prepareIndicator = function() {
+    $('#indicator').on('click', () => hideIndicator())
 }
 
 exports.updateTitle = function() {
@@ -1707,4 +1716,5 @@ $(document).ready(function() {
     exports.prepareScrollbars()
     exports.prepareResizers()
     exports.prepareGameChooser()
+    exports.prepareIndicator()
 })

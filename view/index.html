@@ -174,10 +174,10 @@
                     height="16"
                 />
                 <div>
-                    <input oninput="commitCommentText()" type="text" name="title" value="" placeholder="Title">
+                    <input type="text" name="title" value="" placeholder="Title">
                 </div>
             </div>
-            <textarea oninput="commitCommentText()" placeholder="Comment"></textarea>
+            <textarea placeholder="Comment"></textarea>
         </div>
     </section>
 </section>
@@ -386,13 +386,13 @@
     </div>
 
     <p>
-        <button type="button" class="dropdown" name="add" onclick="openAddGameMenu()">Add</button>
-        <button type="button" onclick="closeGameChooser()">Close</button>
+        <button type="button" class="dropdown" name="add">Add</button>
+        <button type="button" name="close">Close</button>
     </p>
 </section>
 
 <section id="busy"></section>
-<div id="indicator" onclick="hideIndicator()"></div>
+<div id="indicator"></div>
 
 </body>
 </html>
