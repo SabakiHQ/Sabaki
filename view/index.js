@@ -1,21 +1,19 @@
 require('./ipc')
 
 const fs = require('fs')
-const {clipboard, ipcRenderer, shell, remote} = require('electron')
-const {app, dialog, Menu, MenuItem} = remote
+const {ipcRenderer, remote} = require('electron')
+const {app, dialog, Menu} = remote
 const Pikaday = require('pikaday')
-const GeminiScrollbar = require('gemini-scrollbar')
 
+const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
-const boardmatcher = require('../modules/boardmatcher')
 const fuzzyfinder = require('../modules/fuzzyfinder')
 const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
-const Board = require('../modules/board')
 
 /**
  * Getter & setter
