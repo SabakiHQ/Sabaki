@@ -504,7 +504,7 @@ exports.getRepresentedFilename = function() {
 
 exports.setRepresentedFilename = function(filename) {
     $('body').data('representedfilename', filename)
-    remote.getCurrentWindow().exports.setRepresentedFilename(filename ? filename : '')
+    remote.getCurrentWindow().setRepresentedFilename(filename ? filename : '')
     exports.updateTitle()
 }
 
@@ -865,7 +865,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     exports.setIsBusy(true)
 
-    let result = dialog.exports.showMessageBox(remote.getCurrentWindow(), {
+    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
         type: type,
         buttons: buttons,
         title: app.getName(),
@@ -1498,8 +1498,8 @@ exports.showGameInfo = function() {
         $info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    $info.find('input[name="name_1"]').val(gametree.exports.getPlayerName(1, tree, ''))
-    $info.find('input[name="name_-1"]').val(gametree.exports.getPlayerName(-1, tree, ''))
+    $info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
+    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
     $info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
     $info.find('input[name="size-width"]').val(getBoard().width)
     $info.find('input[name="size-height"]').val(getBoard().height)
@@ -1602,8 +1602,8 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
         ))
 
         let $gamename = $li.find('span').eq(0)
-        let $black = $li.find('.black').text(gametree.exports.getPlayerName(1, tree, 'Black'))
-        let $white = $li.find('.white').text(gametree.exports.getPlayerName(-1, tree, 'White'))
+        let $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
+        let $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
 
         if ('BR' in node) $black.attr('title', node.BR[0])
         if ('WR' in node) $white.attr('title', node.WR[0])

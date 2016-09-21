@@ -60,11 +60,11 @@ function setRootTree(tree) {
     setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
     view.setPlayerName(1,
-        gametree.view.getPlayerName(1, tree, 'Black'),
+        gametree.getPlayerName(1, tree, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.view.getPlayerName(-1, tree, 'White'),
+        gametree.getPlayerName(-1, tree, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
@@ -202,7 +202,7 @@ function setBoard(board) {
     }
 
     $goban.data('board', board)
-    setCaptures(board.captures)
+    view.setCaptures(board.captures)
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
@@ -822,7 +822,7 @@ function loadEngines() {
 
 function attachEngine(exec, args, genMove) {
     detachEngine()
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     setTimeout(function() {
         let split = require('argv-split')
@@ -835,7 +835,7 @@ function attachEngine(exec, args, genMove) {
 
         controller.on('quit', function() {
             $('#console').data('controller', null)
-            setIsBusy(false)
+            view.setIsBusy(false)
         })
 
         $('#console').data('controller', controller)
@@ -850,7 +850,7 @@ function attachEngine(exec, args, genMove) {
         })
 
         syncEngine()
-        setIsBusy(false)
+        view.setIsBusy(false)
 
         if (!!genMove) generateMove()
     }, setting.get('gtp.attach_delay'))
@@ -863,7 +863,7 @@ function detachEngine() {
     .data('controller', null)
     .data('boardhash', null)
 
-    setIsBusy(false)
+    view.setIsBusy(false)
 }
 
 function syncEngine() {
@@ -880,7 +880,7 @@ function syncEngine() {
         return detachEngine()
     }
 
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
     sendGTPCommand(new gtp.Command(null, 'boardsize', [board.width]), true)
@@ -901,7 +901,7 @@ function syncEngine() {
     }
 
     $('#console').data('boardhash', board.getHash())
-    setIsBusy(false)
+    view.setIsBusy(false)
 }
 
 function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
@@ -1072,7 +1072,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
 
         $('#console').data('boardhash', getBoard().getHash())
 
-        setIsBusy(true)
+        view.setIsBusy(true)
         setTimeout(() => generateMove(true), setting.get('gtp.move_delay'))
     }
 }
@@ -1296,7 +1296,7 @@ function findPosition(step, condition) {
     if (isNaN(step)) step = 1
     else step = step >= 0 ? 1 : -1
 
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     setTimeout(() => {
         let tp = getCurrentTreePosition()
@@ -1322,7 +1322,7 @@ function findPosition(step, condition) {
         }
 
         setCurrentTreePosition(...tp)
-        setIsBusy(false)
+        view.setIsBusy(false)
     }, setting.get('find.delay'))
 }
 
@@ -1574,11 +1574,11 @@ function commitGameInfo() {
     }
 
     view.setPlayerName(1,
-        gametree.view.getPlayerName(1, getRootTree(), 'Black'),
+        gametree.getPlayerName(1, getRootTree(), 'Black'),
         'BR' in rootNode ? rootNode.BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.view.getPlayerName(-1, getRootTree(), 'White'),
+        gametree.getPlayerName(-1, getRootTree(), 'White'),
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
@@ -1739,13 +1739,13 @@ function generateMove(ignoreBusy = false) {
 
     view.closeDrawers()
     syncEngine()
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
     let opponent = view.getCurrentPlayer() > 0 ? 'W' : 'B'
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, r => {
-        setIsBusy(false)
+        view.setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
             view.showMessageBox(getEngineName() + ' has resigned.')
             getRootTree().nodes[0].RE = [opponent + '+Resign']
@@ -1867,7 +1867,7 @@ function loadFile(filename) {
 
 function loadFileFromSgf(content, dontask = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !askForSave()) return
-    setIsBusy(true)
+    view.setIsBusy(true)
     view.closeDrawers()
 
     setTimeout(() => {
@@ -1900,14 +1900,14 @@ function loadFileFromSgf(content, dontask = false, callback = () => {}) {
             setTimeout(view.showGameChooser, setting.get('gamechooser.show_delay'))
 
         view.setProgressIndicator(-1, win)
-        setIsBusy(false)
+        view.setIsBusy(false)
         callback(error)
     }, setting.get('app.loadgame_delay'))
 }
 
 function saveFile(filename) {
     if (view.getIsBusy()) return
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     if (!filename) {
         filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
@@ -1921,7 +1921,7 @@ function saveFile(filename) {
         view.setRepresentedFilename(filename)
     }
 
-    setIsBusy(false)
+    view.setIsBusy(false)
 }
 
 function saveFileToSgf() {
@@ -2119,7 +2119,7 @@ function undoBoard() {
     || $('body').data('undodata-pos') == null)
         return
 
-    setIsBusy(true)
+    view.setIsBusy(true)
 
     setTimeout(() => {
         setRootTree($('body').data('undodata-root'))
@@ -2128,7 +2128,7 @@ function undoBoard() {
         setCurrentTreePosition(...tp, true, true)
 
         setUndoable(false)
-        setIsBusy(false)
+        view.setIsBusy(false)
     }, setting.get('edit.undo_delay'))
 }
 
