@@ -426,7 +426,43 @@ function loadSettings() {
     }
 }
 
-function prepareBar() {
+function prepareBars() {
+    // Handle close buttons
+
+    let bars = ['edit', 'guess', 'autoplay', 'scoring', 'estimator', 'find']
+
+    bars.forEach(id => {
+        let funcName = 'set' + id[0].toUpperCase() + id.slice(1) + 'Mode'
+        $(`#${id} > .close`).on('click', () => view[funcName](false))
+    })
+
+    // Handle header bar
+
+    $('header .undo').on('click', () => undoBoard())
+    $('#headermenu').on('click', () => view.openHeaderMenu())
+
+    // Handle autoplay bar
+
+    $('#autoplay .play').on('click', () => setAutoplaying(!getAutoplaying()))
+
+    // Handle scoring/estimator bar
+
+    $('#scoring button, #estimator button').on('click', evt => {
+        evt.preventDefault()
+        showScore()
+    })
+
+    // Handle find bar
+
+    $('#find button').get().forEach((el, i) => {
+        $(el).on('click', evt => {
+            evt.preventDefault()
+            findMove(view.getIndicatorVertex(), view.getFindText(), 1 - i * 2)
+        })
+    })
+
+    // Handle current player toggler
+
     $('.current-player').on('click', function() {
         let [tree, index] = getCurrentTreePosition()
         let node = tree.nodes[index]
@@ -1372,7 +1408,7 @@ function vertexClicked(vertex, evt) {
     } else if (view.getFindMode()) {
         if (evt.button != 0) return
 
-        setIndicatorVertex(vertex)
+        view.setIndicatorVertex(vertex)
         findMove(view.getIndicatorVertex(), view.getFindText(), 1)
     } else if (view.getGuessMode()) {
         if (evt.button != 0) return
@@ -2147,7 +2183,7 @@ $(document).on('keydown', function(evt) {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
-    prepareBar()
+    prepareBars()
     prepareEditTools()
     prepareAutoplay()
     prepareGameGraph()

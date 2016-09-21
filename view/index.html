@@ -54,12 +54,12 @@
                     <a href="#" title="Number Tool"><img src="../img/edit/number.svg" /></a>
                 </li>
             </ul>
-            <a class="close" href="#" onclick="setEditMode(false)"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <section id="guess" class="bar">
             Guess the next move.
-            <a class="close" href="#" onclick="setGuessMode(false)"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <section id="autoplay" class="bar">
@@ -70,35 +70,35 @@
                 </label>
             </form>
 
-            <a class="play" href="#" onclick="setAutoplaying(!getAutoplaying())"></a>
-            <a class="close" href="#" onclick="setAutoplayMode(false)"></a>
+            <a class="play" href="#"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <section id="scoring" class="bar">
-            <button onclick="showScore()">Done</button>
+            <button>Done</button>
             Please select dead stones.
-            <a class="close" href="#" onclick="setScoringMode(false)"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <section id="estimator" class="bar">
-            <button onclick="showScore()">Estimate</button>
+            <button>Estimate</button>
             Toggle group status.
-            <a class="close" href="#" onclick="setEstimatorMode(false)"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <section id="find" class="bar">
             <form>
                 <input type="text" placeholder="Find" />
 
-                <button onclick="findMove(getIndicatorVertex(), getFindText(), 1); return false" type="submit">
+                <button type="submit">
                     <img src="../node_modules/octicons/build/svg/chevron-down.svg" height="20" alt="Down" />
                 </button>
-                <button onclick="findMove(getIndicatorVertex(), getFindText(), -1); return false">
+                <button>
                     <img src="../node_modules/octicons/build/svg/chevron-up.svg" height="20" alt="Up" />
                 </button>
             </form>
 
-            <a class="close" href="#" onclick="setFindMode(false)"></a>
+            <a class="close" href="#"></a>
         </section>
 
         <header>
@@ -109,11 +109,11 @@
 
             <div class="bookmark" title="Hotspot"></div>
 
-            <a class="undo" onclick="undoBoard()" title="Undo">
+            <a class="undo" title="Undo">
                 <img src="../node_modules/octicons/build/svg/mail-reply.svg" height="21" />
             </a>
 
-            <a id="headermenu" onclick="openHeaderMenu()">
+            <a id="headermenu">
                 <img src="../node_modules/octicons/build/svg/three-bars.svg" height="21" />
             </a>
         </header>
