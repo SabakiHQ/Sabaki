@@ -39,7 +39,7 @@ function setGameIndex(index) {
 
     setGameTrees(trees)
     setRootTree(trees[index])
-    updateTitle()
+    view.updateTitle()
     setUndoable(false)
     if (setting.get('game.goto_end_after_loading')) goToEnd()
 }
@@ -59,12 +59,12 @@ function setRootTree(tree) {
     tree.parent = null
     setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
-    setPlayerName(1,
-        gametree.getPlayerName(1, tree, 'Black'),
+    view.setPlayerName(1,
+        gametree.view.getPlayerName(1, tree, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
-    setPlayerName(-1,
-        gametree.getPlayerName(-1, tree, 'White'),
+    view.setPlayerName(-1,
+        gametree.view.getPlayerName(-1, tree, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
@@ -78,7 +78,7 @@ function getGraphMatrixDict() {
 }
 
 function setGraphMatrixDict(matrixdict) {
-    if (!getShowSidebar()) return
+    if (!view.getShowSidebar()) return
 
     let s, graph
 
@@ -104,7 +104,7 @@ function getCurrentTreePosition() {
 }
 
 function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
-    if (!tree || getScoringMode() || getEstimatorMode()) return
+    if (!tree || view.getScoringMode() || view.getEstimatorMode()) return
     if (!ignoreAutoplay && getAutoplaying()) setAutoplaying(false)
 
     // Remove old graph node color
@@ -137,7 +137,7 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
     let node = tree.nodes[index]
 
     updateSidebar(redraw, now)
-    setShowHotspot('HO' in node)
+    view.setShowHotspot('HO' in node)
     gametree.addBoard(tree, index)
     setBoard(node.board)
 
@@ -151,7 +151,7 @@ function setCurrentTreePosition(tree, index, now, redraw, ignoreAutoplay) {
     if ('PL' in node)
         currentplayer = node.PL[0] == 'W' ? -1 : 1
 
-    setCurrentPlayer(currentplayer)
+    view.setCurrentPlayer(currentplayer)
 }
 
 function getCurrentGraphNode() {
@@ -180,8 +180,8 @@ function getSelectedTool() {
 }
 
 function setSelectedTool(tool) {
-    if (!getEditMode()) {
-        setEditMode(true)
+    if (!view.getEditMode()) {
+        view.setEditMode(true)
         if (getSelectedTool().indexOf(tool) >= 0) return
     }
 
@@ -198,7 +198,7 @@ function setBoard(board) {
 
     if (!getBoard() || getBoard().width != board.width || getBoard().height != board.height) {
         $goban.data('board', board)
-        buildBoard()
+        view.buildBoard()
     }
 
     $goban.data('board', board)
@@ -264,7 +264,7 @@ function setBoard(board) {
         )
     })
 
-    updateBoardLines()
+    view.updateBoardLines()
 }
 
 function getScoringMethod() {
@@ -352,7 +352,7 @@ function setHotspot(bookmark) {
     else delete node.HO
 
     updateGraph()
-    setShowHotspot(bookmark)
+    view.setShowHotspot(bookmark)
 }
 
 function getEmptyGameTree() {
@@ -364,7 +364,7 @@ function getEmptyGameTree() {
 }
 
 function getAutoplaying() {
-    return getAutoplayMode() && $('#autoplay').hasClass('playing')
+    return view.getAutoplayMode() && $('#autoplay').hasClass('playing')
 }
 
 function setAutoplaying(playing) {
@@ -383,7 +383,7 @@ function setAutoplaying(playing) {
             setCurrentTreePosition(...ntp, false, false, true)
         } else {
             let vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
-            setCurrentPlayer(node.B ? 1 : -1)
+            view.setCurrentPlayer(node.B ? 1 : -1)
             makeMove(vertex, false, true)
         }
 
@@ -392,7 +392,7 @@ function setAutoplaying(playing) {
     }
 
     if (playing) {
-        setAutoplayMode(playing)
+        view.setAutoplayMode(playing)
         $('#autoplay').addClass('playing')
         autoplay()
     } else {
@@ -416,13 +416,13 @@ function loadSettings() {
 
     if (setting.get('view.show_leftsidebar')) {
         $('body').addClass('leftsidebar')
-        setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
+        view.setLeftSidebarWidth(setting.get('view.leftsidebar_width'))
     }
 
     if (setting.get('view.show_graph') || setting.get('view.show_comments')) {
         $('body').addClass('sidebar')
-        setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
-        setSidebarWidth(setting.get('view.sidebar_width'))
+        view.setSidebarArrangement(setting.get('view.show_graph'), setting.get('view.show_comments'))
+        view.setSidebarWidth(setting.get('view.sidebar_width'))
     }
 }
 
@@ -431,7 +431,7 @@ function prepareBar() {
         let [tree, index] = getCurrentTreePosition()
         let node = tree.nodes[index]
         let intendedSign = 'B' in node ? -1 : +('W' in node)
-        let sign = -getCurrentPlayer()
+        let sign = -view.getCurrentPlayer()
 
         if (intendedSign == sign) {
             delete node.PL
@@ -439,7 +439,7 @@ function prepareBar() {
             node.PL = [sign > 0 ? 'B' : 'W']
         }
 
-        setCurrentPlayer(sign)
+        view.setCurrentPlayer(sign)
     })
 }
 
@@ -497,7 +497,7 @@ function prepareGameGraph() {
         setCurrentTreePosition(...getTreePos(evt), true)
     }).bind('rightClickNode', function(evt) {
         let pos = [evt.data.captor.clientX, evt.data.captor.clientY]
-        openNodeMenu(...getTreePos(evt), pos.map(x => Math.round(x)))
+        view.openNodeMenu(...getTreePos(evt), pos.map(x => Math.round(x)))
     })
 
     $container.data('sigma', s)
@@ -631,12 +631,12 @@ function prepareGameInfo() {
     $('#info button[type="submit"]').on('click', function(evt) {
         evt.preventDefault()
         commitGameInfo()
-        closeGameInfo()
+        view.closeGameInfo()
     })
 
     $('#info button[type="reset"]').on('click', function(evt) {
         evt.preventDefault()
-        closeGameInfo()
+        view.closeGameInfo()
     })
 
     $('#info .current-player').on('click', function() {
@@ -683,7 +683,7 @@ function prepareGameInfo() {
             }
         }
 
-        openEnginesMenu($el, (engine, i) => selectEngine($el.get(0), engine, i))
+        view.openEnginesMenu($el, (engine, i) => selectEngine($el.get(0), engine, i))
     })
 
     // Prepare date input
@@ -816,7 +816,7 @@ function loadEngines() {
     $('#preferences .engines-list ul').empty()
 
     setting.getEngines().forEach(engine => {
-        addEngineItem(engine.name, engine.path, engine.args)
+        view.addEngineItem(engine.name, engine.path, engine.args)
     })
 }
 
@@ -829,7 +829,7 @@ function attachEngine(exec, args, genMove) {
         let controller = new gtp.Controller(exec, split(args))
 
         if (controller.error) {
-            showMessageBox('There was an error attaching the engine.', 'error')
+            view.showMessageBox('There was an error attaching the engine.', 'error')
             return
         }
 
@@ -873,10 +873,10 @@ function syncEngine() {
         return
 
     if (!board.isSquare()) {
-        showMessageBox('GTP engines don’t support non-square boards.', 'warning')
+        view.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
         return detachEngine()
     } else if (!board.isValid()) {
-        showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+        view.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
         return detachEngine()
     }
 
@@ -905,7 +905,7 @@ function syncEngine() {
 }
 
 function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
-    if (!getPlayMode() && !getAutoplayMode() && !getGuessMode()) return
+    if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
     if (sendCommand == null) sendCommand = getEngineController() != null
 
     let pass = !getBoard().hasVertex(vertex)
@@ -913,7 +913,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     let position = getCurrentTreePosition()
     let tree = position[0], index = position[1]
-    let sign = getCurrentPlayer()
+    let sign = view.getCurrentPlayer()
     let color = sign > 0 ? 'B' : 'W'
     let capture = false, suicide = false
     let createNode = true
@@ -931,7 +931,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
                 ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
-            if (ko && showMessageBox(
+            if (ko && view.showMessageBox(
                 ['You are about to play a move which repeats a previous board position.',
                 'This is invalid in some rulesets.'].join('\n'),
                 'info',
@@ -951,7 +951,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
         && vertexNeighbors.filter(v => getBoard().arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
-            if (showMessageBox(
+            if (view.showMessageBox(
                 ['You are about to play a suicide move.',
                 'This is invalid in some rulesets.'].join('\n'),
                 'info',
@@ -968,7 +968,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
         $li.addClass('shift_' + direction)
         setTimeout(() => $li.removeClass('animate'), 200)
 
-        readjustShifts(vertex)
+        view.readjustShifts(vertex)
     }
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
@@ -1059,7 +1059,7 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
 
             if (prevPass) {
                 enterScoring = true
-                setScoringMode(true)
+                view.setScoringMode(true)
             }
         }
     }
@@ -1078,9 +1078,9 @@ function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
 }
 
 function makeResign(sign) {
-    if (!sign) sign = getCurrentPlayer()
+    if (!sign) sign = view.getCurrentPlayer()
 
-    showGameInfo()
+    view.showGameInfo()
     let player = sign > 0 ? 'W' : 'B'
     $('#info input[name="result"]').val(player + '+Resign')
 }
@@ -1112,7 +1112,7 @@ function useTool(vertex, evt) {
                 splitted.subtrees.push(tree)
             }
 
-            node = {PL: getCurrentPlayer() > 0 ? ['B'] : ['W']}
+            node = {PL: view.getCurrentPlayer() > 0 ? ['B'] : ['W']}
             index = tree.nodes.length
             tree.nodes.push(node)
 
@@ -1279,7 +1279,7 @@ function useTool(vertex, evt) {
 function drawLine(vertex) {
     let tool = getSelectedTool()
 
-    if (!vertex || !getEditMode() || tool != 'line' && tool != 'arrow') return
+    if (!vertex || !view.getEditMode() || tool != 'line' && tool != 'arrow') return
 
     if (!$('#goban').data('edittool-data')) {
         let $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
@@ -1289,7 +1289,7 @@ function drawLine(vertex) {
         $hr.data('v2', vertex)
     }
 
-    updateBoardLines()
+    view.updateBoardLines()
 }
 
 function findPosition(step, condition) {
@@ -1345,59 +1345,59 @@ function findMove(vertex, text, step) {
 }
 
 function vertexClicked(vertex, evt) {
-    closeGameInfo()
+    view.closeGameInfo()
 
-    if (getScoringMode() || getEstimatorMode()) {
+    if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
         if (evt.button != 0) return
         if (getBoard().arrangement[vertex] == 0) return
 
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
-        let stones = getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
+        let stones = view.getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
 
         stones.forEach(function(v) {
             $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
         })
 
-        updateAreaMap(getEstimatorMode())
-    } else if (getEditMode()) {
+        updateAreaMap(view.getEstimatorMode())
+    } else if (view.getEditMode()) {
         if (evt.ctrlKey) {
             let coord = getBoard().vertex2coord(vertex)
 
-            setCommentText([getCommentText().trim(), coord].join(' ').trim())
+            view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
             commitCommentText()
         } else {
             useTool(vertex, evt)
         }
-    } else if (getFindMode()) {
+    } else if (view.getFindMode()) {
         if (evt.button != 0) return
 
         setIndicatorVertex(vertex)
-        findMove(getIndicatorVertex(), getFindText(), 1)
-    } else if (getGuessMode()) {
+        findMove(view.getIndicatorVertex(), view.getFindText(), 1)
+    } else if (view.getGuessMode()) {
         if (evt.button != 0) return
 
         let tp = gametree.navigate(...getCurrentTreePosition(), 1)
         if (!tp) {
-            setGuessMode(false)
+            view.setGuessMode(false)
             return
         }
 
         let nextNode = tp[0].nodes[tp[1]]
 
-        if ('B' in nextNode) setCurrentPlayer(1)
-        else if ('W' in nextNode) setCurrentPlayer(-1)
+        if ('B' in nextNode) view.setCurrentPlayer(1)
+        else if ('W' in nextNode) view.setCurrentPlayer(-1)
         else {
-            setGuessMode(false)
+            view.setGuessMode(false)
             return
         }
 
-        let color = getCurrentPlayer() > 0 ? 'B' : 'W'
+        let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
         let nextVertex = sgf.point2vertex(nextNode[color][0])
         let board = getBoard()
 
         if (!board.hasVertex(nextVertex)) {
-            setGuessMode(false)
+            view.setGuessMode(false)
             return
         }
 
@@ -1427,7 +1427,7 @@ function vertexClicked(vertex, evt) {
 
         if (board.arrangement[vertex] == 0) {
             makeMove(vertex)
-            closeDrawers()
+            view.closeDrawers()
         } else if (vertex in board.markups
         && board.markups[vertex][0] == 'point'
         && setting.get('edit.click_currentvertex_to_remove')) {
@@ -1463,30 +1463,30 @@ function updateSidebar(redraw = false, now = false) {
 }
 
 function updateGraph() {
-    if (!getShowSidebar() || !getCurrentTreePosition()) return
+    if (!view.getShowSidebar() || !getCurrentTreePosition()) return
 
     setGraphMatrixDict(gametree.tree2matrixdict(getRootTree()))
     centerGraphCameraAt(getCurrentGraphNode())
 }
 
 function updateSlider() {
-    if (!getShowSidebar()) return
+    if (!view.getShowSidebar()) return
 
     let [tree, index] = getCurrentTreePosition()
     let total = gametree.getHeight(getRootTree()) - 1
     let relative = gametree.getLevel(tree, index)
 
-    setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
+    view.setSliderValue(total == 0 ? 0 : relative * 100 / total, relative)
 }
 
 function updateCommentText() {
     let [tree, index] = getCurrentTreePosition()
     let node = tree.nodes[index]
 
-    setCommentText('C' in node ? node.C[0] : '')
-    setCommentTitle('N' in node ? node.N[0] : '')
+    view.setCommentText('C' in node ? node.C[0] : '')
+    view.setCommentTitle('N' in node ? node.N[0] : '')
 
-    setAnnotations(...(() => {
+    view.setAnnotations(...(() => {
         if ('UC' in node) return [-2, node.UC[0]]
         if ('GW' in node) return [-1, node.GW[0]]
         if ('DM' in node) return [0, node.DM[0]]
@@ -1539,8 +1539,8 @@ function updateAreaMap(useEstimateMap) {
 function commitCommentText() {
     let [tree, index] = getCurrentTreePosition()
     let node = tree.nodes[index]
-    let title = getCommentTitle()
-    let comment = getCommentText()
+    let title = view.getCommentTitle()
+    let comment = view.getCommentText()
 
     if (comment != '') node.C = [comment]
     else delete node.C
@@ -1573,12 +1573,12 @@ function commitGameInfo() {
         if (value == '') delete rootNode[data[name]]
     }
 
-    setPlayerName(1,
-        gametree.getPlayerName(1, getRootTree(), 'Black'),
+    view.setPlayerName(1,
+        gametree.view.getPlayerName(1, getRootTree(), 'Black'),
         'BR' in rootNode ? rootNode.BR[0] : ''
     )
-    setPlayerName(-1,
-        gametree.getPlayerName(-1, getRootTree(), 'White'),
+    view.setPlayerName(-1,
+        gametree.view.getPlayerName(-1, getRootTree(), 'White'),
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
@@ -1636,7 +1636,7 @@ function commitGameInfo() {
 
         if (max >= 0) {
             let engine = engines[max]
-            attachEngine(engine.path, engine.args, getCurrentPlayer() == sign)
+            attachEngine(engine.path, engine.args, view.getCurrentPlayer() == sign)
         } else {
             detachEngine()
         }
@@ -1651,7 +1651,7 @@ function commitGameInfo() {
 function commitScore() {
     let result = $('#score .result').text()
 
-    showGameInfo()
+    view.showGameInfo()
     $('#info input[name="result"]').val(result)
 
     setUndoable(false)
@@ -1664,8 +1664,8 @@ function commitPreferences() {
         .forEach(el => setting.set(el.name, el.checked))
 
     remote.getCurrentWindow().webContents.setAudioMuted(!setting.get('sound.enable'))
-    setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
-    setAnimatedStonePlacement(setting.get('view.animated_stone_placement'))
+    view.setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
+    view.setAnimatedStonePlacement(setting.get('view.animated_stone_placement'))
 
     // Save engines
 
@@ -1702,7 +1702,7 @@ function sendGTPCommand(command, ignoreBlocked = false, callback = () => {}) {
     $form.find('input').val('')
     $oldform.addClass('waiting').find('input').val(command.toString())
     $container.append($pre).append($form)
-    if (getShowLeftSidebar()) $form.find('input').get(0).focus()
+    if (view.getShowLeftSidebar()) $form.find('input').get(0).focus()
 
     // Cleanup
     let $forms = $('#console .inner form')
@@ -1713,7 +1713,7 @@ function sendGTPCommand(command, ignoreBlocked = false, callback = () => {}) {
 
     let listener = (response, c) => {
         $pre.html(response.toHtml())
-        wireLinks($pre)
+        view.wireLinks($pre)
         $oldform.removeClass('waiting')
         callback(response)
 
@@ -1735,19 +1735,19 @@ function sendGTPCommand(command, ignoreBlocked = false, callback = () => {}) {
 }
 
 function generateMove(ignoreBusy = false) {
-    if (!getEngineController() || !ignoreBusy && getIsBusy()) return
+    if (!getEngineController() || !ignoreBusy && view.getIsBusy()) return
 
-    closeDrawers()
+    view.closeDrawers()
     syncEngine()
     setIsBusy(true)
 
-    let color = getCurrentPlayer() > 0 ? 'B' : 'W'
-    let opponent = getCurrentPlayer() > 0 ? 'W' : 'B'
+    let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
+    let opponent = view.getCurrentPlayer() > 0 ? 'W' : 'B'
 
     sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, r => {
         setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
-            showMessageBox(getEngineName() + ' has resigned.')
+            view.showMessageBox(getEngineName() + ' has resigned.')
             getRootTree().nodes[0].RE = [opponent + '+Resign']
             return
         }
@@ -1756,13 +1756,13 @@ function generateMove(ignoreBusy = false) {
         if (r.content.toLowerCase() != 'pass')
             v = getBoard().coord2vertex(r.content)
 
-        $('#console').data('boardhash', getBoard().makeMove(getCurrentPlayer(), v).getHash())
+        $('#console').data('boardhash', getBoard().makeMove(view.getCurrentPlayer(), v).getHash())
         makeMove(v, false)
     })
 }
 
 function centerGraphCameraAt(node) {
-    if (!getShowSidebar() || !node) return
+    if (!view.getShowSidebar() || !node) return
 
     let s = $('#graph').data('sigma')
     s.renderers[0].resize().render()
@@ -1795,13 +1795,13 @@ function askForSave() {
     let hash = generateFileHash()
 
     if (hash != getFileHash()) {
-        let answer = showMessageBox(
+        let answer = view.showMessageBox(
             'Your changes will be lost if you close this file without saving.',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) saveFile(getRepresentedFilename())
+        if (answer == 0) saveFile(view.getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -1832,22 +1832,22 @@ function startAutoScroll(direction, delay) {
  */
 
 function newFile(playSound) {
-    if (getIsBusy() || !askForSave()) return
+    if (view.getIsBusy() || !askForSave()) return
 
-    closeDrawers()
+    view.closeDrawers()
     setGameTrees([getEmptyGameTree()])
-    setRepresentedFilename(null)
+    view.setRepresentedFilename(null)
     setGameIndex(0)
     updateFileHash()
 
     if (playSound) {
         sound.playNewGame()
-        showGameInfo()
+        view.showGameInfo()
     }
 }
 
 function loadFile(filename) {
-    if (getIsBusy() || !askForSave()) return
+    if (view.getIsBusy() || !askForSave()) return
 
     if (!filename) {
         let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
@@ -1860,15 +1860,15 @@ function loadFile(filename) {
 
     if (filename) {
         loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, err => {
-            if (!err) setRepresentedFilename(filename)
+            if (!err) view.setRepresentedFilename(filename)
         })
     }
 }
 
 function loadFileFromSgf(content, dontask = false, callback = () => {}) {
-    if (getIsBusy() || !dontask && !askForSave()) return
+    if (view.getIsBusy() || !dontask && !askForSave()) return
     setIsBusy(true)
-    closeDrawers()
+    view.closeDrawers()
 
     setTimeout(() => {
         let win = remote.getCurrentWindow()
@@ -1880,13 +1880,13 @@ function loadFileFromSgf(content, dontask = false, callback = () => {}) {
             trees = sgf.parse(sgf.tokenize(content), progress => {
                 if (progress - lastprogress < 0.05) return
 
-                setProgressIndicator(progress, win)
+                view.setProgressIndicator(progress, win)
                 lastprogress = progress
             }).subtrees
 
             if (trees.length == 0) throw true
         } catch(e) {
-            showMessageBox('This file is unreadable.', 'warning')
+            view.showMessageBox('This file is unreadable.', 'warning')
             error = true
         }
 
@@ -1897,16 +1897,16 @@ function loadFileFromSgf(content, dontask = false, callback = () => {}) {
         }
 
         if (trees.length > 1)
-            setTimeout(showGameChooser, setting.get('gamechooser.show_delay'))
+            setTimeout(view.showGameChooser, setting.get('gamechooser.show_delay'))
 
-        setProgressIndicator(-1, win)
+        view.setProgressIndicator(-1, win)
         setIsBusy(false)
         callback(error)
     }, setting.get('app.loadgame_delay'))
 }
 
 function saveFile(filename) {
-    if (getIsBusy()) return
+    if (view.getIsBusy()) return
     setIsBusy(true)
 
     if (!filename) {
@@ -1918,7 +1918,7 @@ function saveFile(filename) {
     if (filename) {
         fs.writeFileSync(filename, saveFileToSgf())
         updateFileHash()
-        setRepresentedFilename(filename)
+        view.setRepresentedFilename(filename)
     }
 
     setIsBusy(false)
@@ -1937,7 +1937,7 @@ function saveFileToSgf() {
 }
 
 function clearMarkup() {
-    closeDrawers()
+    view.closeDrawers()
     let markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
 
     // Save undo information
@@ -1950,7 +1950,7 @@ function clearMarkup() {
 }
 
 function goStep(step) {
-    if (getGuessMode()) return
+    if (view.getGuessMode()) return
 
     let [tree, index] = getCurrentTreePosition()
     let tp = gametree.navigate(tree, index, step)
@@ -2058,7 +2058,7 @@ function goToMainVariation() {
 
 function makeMainVariation(tree, index) {
     setUndoable(true, 'Restore Main Variation')
-    closeDrawers()
+    view.closeDrawers()
 
     let root = getRootTree()
     let level = gametree.getLevel(tree, index)
@@ -2077,11 +2077,11 @@ function makeMainVariation(tree, index) {
 
 function removeNode(tree, index) {
     if (!tree.parent && index == 0) {
-        showMessageBox('The root node cannot be removed.', 'warning')
+        view.showMessageBox('The root node cannot be removed.', 'warning')
         return
     }
 
-    if (setting.get('edit.show_removenode_warning') && showMessageBox(
+    if (setting.get('edit.show_removenode_warning') && view.showMessageBox(
         'Do you really want to remove this node?',
         'warning',
         ['Remove Node', 'Cancel'], 1
@@ -2093,7 +2093,7 @@ function removeNode(tree, index) {
 
     // Remove node
 
-    closeDrawers()
+    view.closeDrawers()
     let prev = gametree.navigate(tree, index, -1)
 
     if (index != 0) {
@@ -2140,8 +2140,8 @@ $(document).on('keydown', function(evt) {
     if (evt.keyCode == 27) {
         // Escape
 
-        if (!closeDrawers() && remote.getCurrentWindow().isFullScreen())
-            setFullScreen(false)
+        if (!view.closeDrawers() && remote.getCurrentWindow().isFullScreen())
+            view.setFullScreen(false)
     }
 }).ready(function() {
     loadSettings()
@@ -2164,7 +2164,7 @@ $(document).on('keydown', function(evt) {
 })
 
 $(window).on('resize', function() {
-    resizeBoard()
+    view.resizeBoard()
 }).on('beforeunload', function(evt) {
     if (!askForSave()) evt.returnValue = 'false'
 
