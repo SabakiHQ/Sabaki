@@ -445,11 +445,20 @@ function prepareBars() {
 
     $('#autoplay .play').on('click', () => view.setAutoplaying(!view.getAutoplaying()))
 
-    // Handle scoring/estimator bar
+    // Handle scoring/estimator bar and drawer
 
     $('#scoring button, #estimator button').on('click', evt => {
         evt.preventDefault()
         view.showScore()
+    })
+
+    $('#score .tabs .area a').on('click', () => view.setScoringMethod('area'))
+    $('#score .tabs .territory a').on('click', () => view.setScoringMethod('territory'))
+    $('#score button[type="reset"]').on('click', () => view.closeScore())
+    $('#score button[type="submit"]').on('click', evt => {
+        evt.preventDefault()
+        commitScore()
+        view.closeScore()
     })
 
     // Handle find bar
@@ -507,7 +516,12 @@ function prepareAutoplay() {
     })
 }
 
-function prepareGameGraph() {
+function prepareSidebar() {
+    $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
+    $('#properties .edit .header img').on('click', () => view.openCommentMenu())
+
+    // Prepare game graph
+
     let $container = $('#graph')
     let s = new sigma({
         renderer: {
@@ -829,6 +843,24 @@ function prepareGameInfo() {
         $widthInput.val(data[1])
         $heightInput.val(data[0])
     })
+}
+
+function preparePreferences() {
+    $('#preferences .tabs .general').on('click', () => view.setPreferencesTab('general'))
+    $('#preferences .tabs .engines').on('click', () => view.setPreferencesTab('engines'))
+
+    $('#preferences form .engines button').on('click', evt => {
+        evt.preventDefault()
+        view.addEngineItem()
+    })
+
+    $('#preferences button[type="submit"]').on('click', evt => {
+        evt.preventDefault()
+        commitPreferences()
+        view.closePreferences()
+    })
+
+    $('#preferences button[type="reset"]').on('click', () => view.closePreferences())
 }
 
 function generateFileHash() {
@@ -2172,24 +2204,18 @@ function undoBoard() {
  * Main events
  */
 
-$(document).on('keydown', function(evt) {
-    if (evt.keyCode == 27) {
-        // Escape
-
-        if (!view.closeDrawers() && remote.getCurrentWindow().isFullScreen())
-            view.setFullScreen(false)
-    }
-}).ready(function() {
+$(document).ready(function() {
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
     prepareBars()
     prepareEditTools()
     prepareAutoplay()
-    prepareGameGraph()
+    prepareSidebar()
     prepareSlider()
     prepareConsole()
     prepareGameInfo()
+    preparePreferences()
     newFile()
 
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(evt) {
@@ -2197,6 +2223,13 @@ $(document).on('keydown', function(evt) {
         if (evt.wheelDelta < 0) goForward()
         else if (evt.wheelDelta > 0) goBack()
     })
+}).on('keydown', function(evt) {
+    if (evt.keyCode == 27) {
+        // Escape
+
+        if (!view.closeDrawers() && remote.getCurrentWindow().isFullScreen())
+            view.setFullScreen(false)
+    }
 })
 
 $(window).on('resize', function() {

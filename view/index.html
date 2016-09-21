@@ -157,8 +157,8 @@
                 <p class="header">
                     <img width="16" height="16" class="positionstatus" />
                     <img width="16" height="16" class="movestatus" />
-                    <img src="../node_modules/octicons/build/svg/pencil.svg" class="editbutton"
-                        title="Edit" width="16" height="16" onclick="setEditMode(true)" />
+                    <img src="../node_modules/octicons/build/svg/pencil.svg" class="edit-button"
+                        title="Edit" width="16" height="16" />
 
                     <span></span>
                 </p>
@@ -169,7 +169,6 @@
         <div class="edit">
             <div class="header">
                 <img
-                    onclick="openCommentMenu()"
                     src="../node_modules/octicons/build/svg/chevron-down.svg"
                     width="16"
                     height="16"
@@ -260,9 +259,9 @@
 
     <ul class="tabs">
         <li class="area">
-            <a href="#" onclick="setScoringMethod('area')">Area</a>
+            <a href="#">Area</a>
         </li><li class="current territory">
-            <a href="#" onclick="setScoringMethod('territory')">Territory</a>
+            <a href="#">Territory</a>
         </li>
     </ul>
 
@@ -305,8 +304,8 @@
         <p>
             Result:
             <span class="result"></span>
-            <button type="submit" onclick="commitScore(); closeScore(); return false">Update Result</button>
-            <button type="submit" onclick="closeScore(); return false">Cancel</button>
+            <button type="submit">Update Result</button>
+            <button type="reset">Cancel</button>
         </p>
     </form>
 </section>
@@ -314,9 +313,9 @@
 <section id="preferences" class="drawer">
     <ul class="tabs">
         <li class="current">
-            <a href="#" onclick="return setPreferencesTab('general')" class="general">General</a>
+            <a href="#" class="general">General</a>
         </li><li>
-            <a href="#" onclick="return setPreferencesTab('engines')" class="engines">Engines</a>
+            <a href="#" class="engines">Engines</a>
         </li>
     </ul>
 
@@ -362,13 +361,13 @@
             </div>
 
             <p>
-                <button type="button" onclick="addEngineItem(); return false">Add</button>
+                <button type="button">Add</button>
             </p>
         </div>
 
         <p>
-            <button type="submit" onclick="commitPreferences(); closePreferences(); return false">Save</button>
-            <button type="reset" onclick="closePreferences(); return false">Cancel</button>
+            <button type="submit">Save</button>
+            <button type="reset">Cancel</button>
         </p>
     </form>
 </section>
