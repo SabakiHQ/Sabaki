@@ -33,11 +33,10 @@ function newWindow(path) {
         window = null
     })
 
-    window.loadURL(`file://${__dirname}/browser/index.html`)
+    window.loadURL(`file://${__dirname}/view/index.html`)
 
-    if (setting.get('debug.dev_tools')) {
+    if (setting.get('debug.dev_tools'))
         window.toggleDevTools()
-    }
 
     return window
 }
