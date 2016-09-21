@@ -1852,7 +1852,7 @@ function loadFile(filename) {
     if (getIsBusy() || !askForSave()) return
 
     if (!filename) {
-        let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        let result = dialog.showOpenDialog({
             properties: ['openFile'],
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
@@ -1912,7 +1912,7 @@ function saveFile(filename) {
     setIsBusy(true)
 
     if (!filename) {
-        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
+        filename = dialog.showSaveDialog({
             filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
         })
     }
