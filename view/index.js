@@ -1427,7 +1427,7 @@ function vertexClicked(vertex, evt) {
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
         let stones = view.getEstimatorMode() ? getBoard().getChain(vertex) : getBoard().getRelatedChains(vertex)
 
-        stones.forEach(function(v) {
+        stones.forEach(v => {
             $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
         })
 
