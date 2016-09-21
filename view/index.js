@@ -443,13 +443,13 @@ function prepareBars() {
 
     // Handle autoplay bar
 
-    $('#autoplay .play').on('click', () => setAutoplaying(!getAutoplaying()))
+    $('#autoplay .play').on('click', () => view.setAutoplaying(!view.getAutoplaying()))
 
     // Handle scoring/estimator bar
 
     $('#scoring button, #estimator button').on('click', evt => {
         evt.preventDefault()
-        showScore()
+        view.showScore()
     })
 
     // Handle find bar
