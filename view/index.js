@@ -452,8 +452,8 @@ function prepareBars() {
         view.showScore()
     })
 
-    $('#score .tabs .area a').on('click', () => view.setScoringMethod('area'))
-    $('#score .tabs .territory a').on('click', () => view.setScoringMethod('territory'))
+    $('#score .tabs .area a').on('click', () => setScoringMethod('area'))
+    $('#score .tabs .territory a').on('click', () => setScoringMethod('territory'))
     $('#score button[type="reset"]').on('click', () => view.closeScore())
     $('#score button[type="submit"]').on('click', evt => {
         evt.preventDefault()
