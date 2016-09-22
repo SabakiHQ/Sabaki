@@ -866,20 +866,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     let result = confirm(message)
     return result ? 0 : cancelId
-
-    exports.setIsBusy(true)
-
-    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
-        type: type,
-        buttons: buttons,
-        title: app.getName(),
-        message: message,
-        cancelId: cancelId,
-        noLink: true
-    })
-
-    exports.setIsBusy(false)
-    return result
 }
 
 exports.readjustShifts = function(vertex) {
