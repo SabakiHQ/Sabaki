@@ -793,7 +793,7 @@ exports.prepareIndicator = function() {
 }
 
 exports.updateTitle = function() {
-    let basename = require('path').basename
+    let {basename} = require('path')
     let title = app.getName()
     let filename = exports.getRepresentedFilename()
 
