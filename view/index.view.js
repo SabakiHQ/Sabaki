@@ -1,14 +1,25 @@
+const {shell, remote} = require('electron')
+const {app, dialog, Menu} = remote
+const GeminiScrollbar = require('gemini-scrollbar')
+
+const $ = require('../modules/sprint')
+const sgf = require('../modules/sgf')
+const boardmatcher = require('../modules/boardmatcher')
+const gametree = require('../modules/gametree')
+const helper = require('../modules/helper')
+const setting = require('../modules/setting')
+
 /**
  * Getter & setter
  */
 
 let busyTimeout = null
 
-function getIsBusy() {
+exports.getIsBusy = function() {
     return $('body').data('busy')
 }
 
-function setIsBusy(busy) {
+exports.setIsBusy = function(busy) {
     $('body').data('busy', busy)
     clearTimeout(busyTimeout)
 
@@ -22,73 +33,73 @@ function setIsBusy(busy) {
     }, setting.get('app.hide_busy_delay'))
 }
 
-function getFullScreen() {
+exports.getFullScreen = function() {
     return remote.getCurrentWindow().isFullScreen()
 }
 
-function setFullScreen(fullscreen) {
+exports.setFullScreen = function(fullscreen) {
     let win = remote.getCurrentWindow()
     win.setFullScreen(fullscreen)
     win.setMenuBarVisibility(!fullscreen)
     win.setAutoHideMenuBar(fullscreen)
 }
 
-function setProgressIndicator(progress, win) {
+exports.setProgressIndicator = function(progress, win) {
     if (win) win.setProgressBar(progress)
 }
 
-function getShowNextMoves() {
+exports.getShowNextMoves = function() {
     return $('#goban').hasClass('variations')
 }
 
-function setShowNextMoves(show) {
+exports.setShowNextMoves = function(show) {
     $('#goban').toggleClass('variations', show)
     setting.set('view.show_next_moves', show)
 }
 
-function getShowSiblings() {
+exports.getShowSiblings = function() {
     return $('#goban').hasClass('siblings')
 }
 
-function setShowSiblings(show) {
+exports.setShowSiblings = function(show) {
     $('#goban').toggleClass('siblings', show)
     setting.set('view.show_siblings', show)
 }
 
-function getFuzzyStonePlacement() {
+exports.getFuzzyStonePlacement = function() {
     return $('#goban').hasClass('fuzzy')
 }
 
-function setFuzzyStonePlacement(fuzzy) {
+exports.setFuzzyStonePlacement = function(fuzzy) {
     $('#goban').toggleClass('fuzzy', fuzzy)
     setting.set('view.fuzzy_stone_placement', fuzzy)
 }
 
-function getAnimatedStonePlacement() {
+exports.getAnimatedStonePlacement = function() {
     return $('#goban').hasClass('animation')
 }
 
-function setAnimatedStonePlacement(animate) {
+exports.setAnimatedStonePlacement = function(animate) {
     $('#goban').toggleClass('animation', animate)
     setting.set('view.animate_stone_placement', animate)
 }
 
-function getShowCoordinates() {
+exports.getShowCoordinates = function() {
     return $('#goban').hasClass('coordinates')
 }
 
-function setShowCoordinates(show) {
+exports.setShowCoordinates = function(show) {
     $('#goban').toggleClass('coordinates', show)
     setting.set('view.show_coordinates', show)
-    resizeBoard()
+    exports.resizeBoard()
 }
 
-function getShowLeftSidebar() {
+exports.getShowLeftSidebar = function() {
     return $('body').hasClass('leftsidebar')
 }
 
-function setShowLeftSidebar(show) {
-    if (getShowLeftSidebar() == show) return
+exports.setShowLeftSidebar = function(show) {
+    if (exports.getShowLeftSidebar() == show) return
 
     // Resize window
     let win = remote.getCurrentWindow()
@@ -104,7 +115,7 @@ function setShowLeftSidebar(show) {
     $('#leftsidebar').css('width', setting.get('view.leftsidebar_width'))
     $('#main').css('left', show ? setting.get('view.leftsidebar_width') : 0)
 
-    resizeBoard()
+    exports.resizeBoard()
     setting.set('view.show_leftsidebar', show)
 
     // Update scrollbars
@@ -115,22 +126,22 @@ function setShowLeftSidebar(show) {
     $('#console').data('scrollbar').update()
 }
 
-function setLeftSidebarWidth(width) {
-    if (!getShowLeftSidebar()) return
+exports.setLeftSidebarWidth = function(width) {
+    if (!exports.getShowLeftSidebar()) return
     $('#leftsidebar').css('width', width)
     $('#main').css('left', width)
 }
 
-function getLeftSidebarWidth() {
+exports.getLeftSidebarWidth = function() {
     return parseFloat($('#leftsidebar').css('width'))
 }
 
-function getShowSidebar() {
+exports.getShowSidebar = function() {
     return $('body').hasClass('sidebar')
 }
 
-function setShowSidebar(show) {
-    if (getShowSidebar() == show) return
+exports.setShowSidebar = function(show) {
+    if (exports.getShowSidebar() == show) return
 
     // Resize window
     let win = remote.getCurrentWindow()
@@ -160,85 +171,85 @@ function setShowSidebar(show) {
         }
     }
 
-    resizeBoard()
+    exports.resizeBoard()
 }
 
-function getSidebarArrangement() {
+exports.getSidebarArrangement = function() {
     return [
-        getShowSidebar() && getPropertiesHeight() != 100,
-        getShowSidebar() && getPropertiesHeight() != 0
+        exports.getShowSidebar() && exports.getPropertiesHeight() != 100,
+        exports.getShowSidebar() && exports.getPropertiesHeight() != 0
     ]
 }
 
-function setSidebarArrangement(graph, comment, updateLayout) {
-    if (updateLayout == null || updateLayout) updateSidebarLayout()
+exports.setSidebarArrangement = function(graph, comment, updateLayout) {
+    if (updateLayout == null || updateLayout) exports.updateSidebarLayout()
 
-    if (!graph && !comment) setShowSidebar(false)
+    if (!graph && !comment) exports.setShowSidebar(false)
     else {
-        if (!graph && comment) setPropertiesHeight(100)
-        else if (comment) setPropertiesHeight(setting.get('view.properties_height'))
-        else if (!comment) setPropertiesHeight(0)
-        setShowSidebar(true)
+        if (!graph && comment) exports.setPropertiesHeight(100)
+        else if (comment) exports.setPropertiesHeight(setting.get('view.properties_height'))
+        else if (!comment) exports.setPropertiesHeight(0)
+        exports.setShowSidebar(true)
     }
 
     setting.set('view.show_graph', graph)
     setting.set('view.show_comments', comment)
 }
 
-function getShowGraph() {
-    return getSidebarArrangement()[0]
+exports.getShowGraph = function() {
+    return exports.getSidebarArrangement()[0]
 }
 
-function getShowComment() {
-    return getSidebarArrangement()[1]
+exports.getShowComment = function() {
+    return exports.getSidebarArrangement()[1]
 }
 
-function getSidebarWidth() {
+exports.getSidebarWidth = function() {
     return parseFloat($('#sidebar').css('width'))
 }
 
-function setSidebarWidth(width) {
-    if (!getShowSidebar()) return
+exports.setSidebarWidth = function(width) {
+    if (!exports.getShowSidebar()) return
     $('#sidebar').css('width', width)
     $('.sidebar #main').css('right', width)
 }
 
-function getPropertiesHeight() {
+exports.getPropertiesHeight = function() {
     return $('#properties').height() * 100 / $('#sidebar').height()
 }
 
-function setPropertiesHeight(height) {
+exports.setPropertiesHeight = function(height) {
     $('#graph').css('height', (100 - height) + '%')
     $('#properties').css('height', height + '%')
-    setSliderValue(...getSliderValue())
+    exports.setSliderValue(...exports.getSliderValue())
 }
 
-function getPlayerName(sign) {
+exports.getPlayerName = function(sign) {
     let $el = $('#player_' + sign + ' .name')
     return [$el.text(), $el.attr('title')]
 }
 
-function setPlayerName(sign, name, tooltip) {
+exports.setPlayerName = function(sign, name, tooltip) {
     if (name.trim() == '') name = sign > 0 ? 'Black' : 'White'
     $('#player_' + sign + ' .name').text(name).attr('title', tooltip)
 }
 
-function getShowHotspot() {
+exports.getShowHotspot = function() {
     return $('body').hasClass('bookmark')
 }
 
-function setShowHotspot(bookmark) {
+exports.setShowHotspot = function(bookmark) {
     $('body').toggleClass('bookmark', bookmark)
 }
 
-function getCaptures() {
+exports.getCaptures = function() {
     return {
         '-1': +$('#player_-1 .captures').text(),
         '1': +$('#player_1 .captures').text()
     }
 }
 
-function setCaptures(captures) {
+exports.setCaptures = function(captures) {
     $('#player_-1 .captures')
         .text(captures['-1'])
         .css('opacity', captures['-1'] == 0 ? 0 : .7)
@@ -247,35 +258,35 @@ function setCaptures(captures) {
         .css('opacity', captures['1'] == 0 ? 0 : .7)
 }
 
-function getCurrentPlayer() {
+exports.getCurrentPlayer = function() {
     return $('.current-player').attr('src') == '../img/ui/blacktoplay.svg' ? 1 : -1
 }
 
-function setCurrentPlayer(sign) {
+exports.setCurrentPlayer = function(sign) {
     $('.current-player')
     .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
     .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
 
-function getCommentText() {
+exports.getCommentText = function() {
     return $('#properties textarea').val()
 }
 
-function setCommentText(text) {
+exports.setCommentText = function(text) {
     let html = helper.markdown(text)
     let $container = $('#properties .inner .comment')
     let $textarea = $('#properties textarea')
 
     if ($textarea.val() != text) $textarea.val(text)
     $container.html(html)
-    wireLinks($container)
+    exports.wireLinks($container)
 }
 
-function getCommentTitle() {
+exports.getCommentTitle = function() {
     return $('#properties .edit .header input').val()
 }
 
-function setCommentTitle(text) {
+exports.setCommentTitle = function(text) {
     let $input = $('#properties .edit .header input')
 
     $header = $('#properties .inner .header span')
@@ -283,10 +294,10 @@ function setCommentTitle(text) {
     if ($input.val() != text) $input.val(text)
 
     if (text.trim() == '' && !!setting.get('comments.show_move_interpretation'))
-        $header.text(getCurrentMoveInterpretation())
+        $header.text(exports.getCurrentMoveInterpretation())
 }
 
-function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
+exports.setAnnotations = function(posstatus, posvalue, movestatus, movevalue) {
     let $header = $('#properties .inner .header')
     let $img = $header.find('img:nth-child(2)')
 
@@ -335,7 +346,7 @@ function setAnnotations(posstatus, posvalue, movestatus, movevalue) {
     $img.attr('title', $img.attr('alt'))
 }
 
-function getSliderValue() {
+exports.getSliderValue = function() {
     let $span = $('#sidebar .slider .inner span').eq(0)
     let value = parseFloat($span.get(0).style.top)
     let label = $span.text()
@@ -343,53 +354,53 @@ function getSliderValue() {
     return [value, label]
 }
 
-function setSliderValue(value, label) {
+exports.setSliderValue = function(value, label) {
     $('#sidebar .slider .inner span').css('top', value + '%').text(label)
 }
 
-function getPlayMode() {
-    return !getFindMode()
-        && !getEditMode()
-        && !getGuessMode()
-        && !getAutoplayMode()
-        && !getScoringMode()
-        && !getEstimatorMode()
+exports.getPlayMode = function() {
+    return !exports.getFindMode()
+        && !exports.getEditMode()
+        && !exports.getGuessMode()
+        && !exports.getAutoplayMode()
+        && !exports.getScoringMode()
+        && !exports.getEstimatorMode()
 }
 
-function getFindMode() {
+exports.getFindMode = function() {
     return $('body').hasClass('find')
 }
 
-function setFindMode(pickMode) {
+exports.setFindMode = function(pickMode) {
     if (pickMode) {
-        if (pickMode != getFindMode()) closeDrawers()
+        if (pickMode != exports.getFindMode()) exports.closeDrawers()
         $('body').addClass('find')
 
         let input = $('#find input').get(0)
         input.focus()
         input.select()
     } else {
-        hideIndicator()
+        exports.hideIndicator()
         $('body').removeClass('find')
         document.activeElement.blur()
     }
 }
 
-function getFindText() {
+exports.getFindText = function() {
     return $('#find input').val()
 }
 
-function setFindText(text) {
+exports.setFindText = function(text) {
     $('#find input').val(text)
 }
 
-function getEditMode() {
+exports.getEditMode = function() {
     return $('body').hasClass('edit')
 }
 
-function setEditMode(editMode) {
+exports.setEditMode = function(editMode) {
     if (editMode) {
-        closeDrawers()
+        exports.closeDrawers()
         $('body').addClass('edit')
 
         $('#properties textarea').eq(0).scrollTop(0)
@@ -399,26 +410,26 @@ function setEditMode(editMode) {
     }
 }
 
-function getGuessMode() {
+exports.getGuessMode = function() {
     return $('body').hasClass('guess')
 }
 
-function setGuessMode(guessMode) {
+exports.setGuessMode = function(guessMode) {
     if (guessMode) {
-        closeDrawers()
+        exports.closeDrawers()
         $('body').addClass('guess')
     } else {
         $('body').removeClass('guess')
     }
 }
 
-function getAutoplayMode() {
+exports.getAutoplayMode = function() {
     return $('body').hasClass('autoplay')
 }
 
-function setAutoplayMode(autoplayMode) {
+exports.setAutoplayMode = function(autoplayMode) {
     if (autoplayMode) {
-        closeDrawers()
+        exports.closeDrawers()
         $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
         $('body').addClass('autoplay')
     } else {
@@ -427,11 +438,11 @@ function setAutoplayMode(autoplayMode) {
     }
 }
 
-function getScoringMode() {
+exports.getScoringMode = function() {
     return $('body').hasClass('scoring')
 }
 
-function setScoringMode(mode, estimator) {
+exports.setScoringMode = function(mode, estimator) {
     let type = estimator ? 'estimator' : 'scoring'
 
     if (mode) {
@@ -442,7 +453,7 @@ function setScoringMode(mode, estimator) {
         .removeClass('area_1')
         .removeClass('dead')
 
-        closeDrawers()
+        exports.closeDrawers()
         $('body').addClass(type)
 
         let deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
@@ -454,24 +465,24 @@ function setScoringMode(mode, estimator) {
     }
 }
 
-function getEstimatorMode() {
+exports.getEstimatorMode = function() {
     return $('body').hasClass('estimator')
 }
 
-function setEstimatorMode(mode) {
-    setScoringMode(mode, true)
+exports.setEstimatorMode = function(mode) {
+    exports.setScoringMode(mode, true)
 }
 
-function getIndicatorVertex() {
+exports.getIndicatorVertex = function() {
     return $('#indicator').data('vertex')
 }
 
-function setIndicatorVertex(vertex) {
-    if (vertex) showIndicator(vertex)
-    else hideIndicator()
+exports.setIndicatorVertex = function(vertex) {
+    if (vertex) exports.showIndicator(vertex)
+    else exports.hideIndicator()
 }
 
-function setPreferencesTab(tab) {
+exports.setPreferencesTab = function(tab) {
     $('#preferences .tabs')
         .find('.current')
         .removeClass('current')
@@ -487,20 +498,20 @@ function setPreferencesTab(tab) {
         $('#preferences .engines-list').data('scrollbar').update()
 }
 
-function getRepresentedFilename() {
+exports.getRepresentedFilename = function() {
     return $('body').data('representedfilename')
 }
 
-function setRepresentedFilename(filename) {
+exports.setRepresentedFilename = function(filename) {
     $('body').data('representedfilename', filename)
-    updateTitle()
+    exports.updateTitle()
 }
 
 function getShapes() {
     return [{"name":"Low Chinese opening","points":[[3,3,1],[10,2,1],[16,3,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[10,0,0],[10,1,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[3,3],[10,2],[16,3]]},{"name":"High Chinese opening","points":[[3,3,1],[10,3,1],[16,3,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[3,3],[10,3],[16,3]]},{"name":"Orthodox opening","points":[[3,3,1],[15,2,1],[16,4,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[3,0,0],[3,1,0],[3,2,0],[3,4,0],[3,5,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[4,5,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[5,5,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[6,5,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[7,5,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[8,5,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[9,5,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[10,5,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[11,5,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[12,5,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[13,5,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[14,5,0],[15,0,0],[15,1,0],[15,3,0],[15,4,0],[15,5,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,5,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[17,5,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[18,5,0],[0,18,0]],"candidates":[[3,3],[15,2],[16,4]]},{"name":"Orthodox opening","points":[[2,3,1],[15,2,1],[16,4,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[2,0,0],[2,1,0],[2,2,0],[2,4,0],[2,5,0],[3,0,0],[3,1,0],[3,2,0],[3,3,0],[3,4,0],[3,5,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[4,5,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[5,5,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[6,5,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[7,5,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[8,5,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[9,5,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[10,5,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[11,5,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[12,5,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[13,5,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[14,5,0],[15,0,0],[15,1,0],[15,3,0],[15,4,0],[15,5,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,5,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[17,5,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[18,5,0],[0,18,0]],"candidates":[[2,3],[15,2],[16,4]]},{"name":"Kobayashi opening","points":[[3,2,1],[13,2,1],[9,3,1],[15,3,-1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[3,0,0],[3,1,0],[3,3,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[3,2],[13,2],[9,3]]},{"name":"Small Chinese opening","points":[[2,3,1],[13,2,1],[8,2,1],[15,3,-1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,3,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[2,3],[13,2],[8,2]]},{"name":"Micro Chinese opening","points":[[2,3,1],[7,2,1],[13,2,1],[15,3,-1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,3,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[2,3],[7,2],[13,2]]},{"name":"Sanrensei opening","points":[[15,3,1],[9,3,1],[3,3,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[15,3],[9,3],[3,3]]},{"name":"Nirensei opening","points":[[3,3,1],[15,3,1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[3,0,0],[3,1,0],[3,2,0],[3,4,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,3,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[0,18,0]],"candidates":[[3,3],[15,3]]},{"name":"Shūsaku opening","points":[[16,3,1],[15,16,1],[2,15,1],[15,4,1],[3,2,-1],[14,2,-1],[16,14,-1],[0,0,0],[0,1,0],[0,2,0],[0,3,0],[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[1,0,0],[1,1,0],[1,2,0],[1,3,0],[1,4,0],[1,5,0],[1,6,0],[1,7,0],[1,8,0],[1,9,0],[1,10,0],[1,11,0],[1,12,0],[1,13,0],[1,14,0],[1,15,0],[1,16,0],[1,17,0],[1,18,0],[2,0,0],[2,1,0],[2,2,0],[2,3,0],[2,4,0],[2,5,0],[2,6,0],[2,7,0],[2,8,0],[2,9,0],[2,10,0],[2,11,0],[2,12,0],[2,13,0],[2,14,0],[2,16,0],[2,17,0],[2,18,0],[3,0,0],[3,1,0],[3,3,0],[3,4,0],[3,5,0],[3,6,0],[3,7,0],[3,8,0],[3,9,0],[3,10,0],[3,11,0],[3,12,0],[3,13,0],[3,14,0],[3,15,0],[3,16,0],[3,17,0],[3,18,0],[4,0,0],[4,1,0],[4,2,0],[4,3,0],[4,4,0],[4,5,0],[4,6,0],[4,7,0],[4,8,0],[4,9,0],[4,10,0],[4,11,0],[4,12,0],[4,13,0],[4,14,0],[4,15,0],[4,16,0],[4,17,0],[4,18,0],[5,0,0],[5,1,0],[5,2,0],[5,3,0],[5,4,0],[5,5,0],[5,6,0],[5,7,0],[5,8,0],[5,9,0],[5,10,0],[5,11,0],[5,12,0],[5,13,0],[5,14,0],[5,15,0],[5,16,0],[5,17,0],[5,18,0],[6,0,0],[6,1,0],[6,2,0],[6,3,0],[6,4,0],[6,5,0],[6,6,0],[6,7,0],[6,8,0],[6,9,0],[6,10,0],[6,11,0],[6,12,0],[6,13,0],[6,14,0],[6,15,0],[6,16,0],[6,17,0],[6,18,0],[7,0,0],[7,1,0],[7,2,0],[7,3,0],[7,4,0],[7,5,0],[7,6,0],[7,7,0],[7,8,0],[7,9,0],[7,10,0],[7,11,0],[7,12,0],[7,13,0],[7,14,0],[7,15,0],[7,16,0],[7,17,0],[7,18,0],[8,0,0],[8,1,0],[8,2,0],[8,3,0],[8,4,0],[8,5,0],[8,6,0],[8,7,0],[8,8,0],[8,9,0],[8,10,0],[8,11,0],[8,12,0],[8,13,0],[8,14,0],[8,15,0],[8,16,0],[8,17,0],[8,18,0],[9,0,0],[9,1,0],[9,2,0],[9,3,0],[9,4,0],[9,5,0],[9,6,0],[9,7,0],[9,8,0],[9,9,0],[9,10,0],[9,11,0],[9,12,0],[9,13,0],[9,14,0],[9,15,0],[9,16,0],[9,17,0],[9,18,0],[10,0,0],[10,1,0],[10,2,0],[10,3,0],[10,4,0],[10,5,0],[10,6,0],[10,7,0],[10,8,0],[10,9,0],[10,10,0],[10,11,0],[10,12,0],[10,13,0],[10,14,0],[10,15,0],[10,16,0],[10,17,0],[10,18,0],[11,0,0],[11,1,0],[11,2,0],[11,3,0],[11,4,0],[11,5,0],[11,6,0],[11,7,0],[11,8,0],[11,9,0],[11,10,0],[11,11,0],[11,12,0],[11,13,0],[11,14,0],[11,15,0],[11,16,0],[11,17,0],[11,18,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[12,5,0],[12,6,0],[12,7,0],[12,8,0],[12,9,0],[12,10,0],[12,11,0],[12,12,0],[12,13,0],[12,14,0],[12,15,0],[12,16,0],[12,17,0],[12,18,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[13,5,0],[13,6,0],[13,7,0],[13,8,0],[13,9,0],[13,10,0],[13,11,0],[13,12,0],[13,13,0],[13,14,0],[13,15,0],[13,16,0],[13,17,0],[13,18,0],[14,0,0],[14,1,0],[14,3,0],[14,4,0],[14,5,0],[14,6,0],[14,7,0],[14,8,0],[14,9,0],[14,10,0],[14,11,0],[14,12,0],[14,13,0],[14,14,0],[14,15,0],[14,16,0],[14,17,0],[14,18,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,5,0],[15,6,0],[15,7,0],[15,8,0],[15,9,0],[15,10,0],[15,11,0],[15,12,0],[15,13,0],[15,14,0],[15,15,0],[15,17,0],[15,18,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[16,5,0],[16,6,0],[16,7,0],[16,8,0],[16,9,0],[16,10,0],[16,11,0],[16,12,0],[16,13,0],[16,15,0],[16,16,0],[16,17,0],[16,18,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[17,5,0],[17,6,0],[17,7,0],[17,8,0],[17,9,0],[17,10,0],[17,11,0],[17,12,0],[17,13,0],[17,14,0],[17,15,0],[17,16,0],[17,17,0],[17,18,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0],[18,5,0],[18,6,0],[18,7,0],[18,8,0],[18,9,0],[18,10,0],[18,11,0],[18,12,0],[18,13,0],[18,14,0],[18,15,0],[18,16,0],[18,17,0],[18,18,0]],"candidates":[[16,3],[15,16],[2,15],[15,4]]},{"name":"Low approach","points":[[14,2,1],[16,3,-1],[1,0,0],[18,18,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[14,2]]},{"name":"High approach","points":[[14,3,1],[16,3,-1],[1,0,0],[18,18,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[14,3]]},{"name":"Low enclosure","points":[[14,2,1],[16,3,1],[1,0,0],[18,18,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[14,2],[16,3]]},{"name":"High enclosure","points":[[14,3,1],[16,3,1],[1,0,0],[18,18,0],[13,0,0],[13,1,0],[13,2,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[14,3],[16,3]]},{"name":"Low enclosure","points":[[13,2,1],[16,3,1],[1,0,0],[18,18,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,3,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[13,2],[16,3]]},{"name":"High enclosure","points":[[13,3,1],[16,3,1],[1,0,0],[18,18,0],[12,0,0],[12,1,0],[12,2,0],[12,3,0],[12,4,0],[13,0,0],[13,1,0],[13,2,0],[13,4,0],[14,0,0],[14,1,0],[14,2,0],[14,3,0],[14,4,0],[15,0,0],[15,1,0],[15,2,0],[15,3,0],[15,4,0],[16,0,0],[16,1,0],[16,2,0],[16,4,0],[17,0,0],[17,1,0],[17,2,0],[17,3,0],[17,4,0],[18,0,0],[18,1,0],[18,2,0],[18,3,0],[18,4,0]],"candidates":[[13,3],[16,3]]},{"name":"Mouth shape","points":[[3,3,1],[3,4,1],[4,5,1],[5,5,1],[5,3,1],[4,2,0],[4,3,0],[5,4,0],[6,4,0]],"candidates":[[3,3],[3,4],[4,5],[5,5],[5,3]]},{"name":"Table shape","points":[[3,3,1],[3,4,1],[5,3,1],[5,5,1],[4,3,0],[4,4,0],[5,4,0],[6,4,0]],"candidates":[[3,3],[3,4],[5,3],[5,5]]},{"name":"Tippy table","points":[[3,3,1],[4,3,1],[3,5,1],[5,6,1],[3,4,0],[4,4,0],[4,5,0],[5,5,0]],"candidates":[[3,3],[4,3],[3,5],[5,6]]},{"name":"Bamboo joint","points":[[3,3,1],[4,3,1],[3,5,1],[4,5,1],[3,4,0],[4,4,0]],"candidates":[[3,3],[4,3],[3,5],[4,5]]},{"name":"Trapezium","points":[[3,3,1],[3,4,1],[5,3,1],[6,4,1],[4,3,0],[6,3,0],[4,4,0],[5,4,0],[5,5,0]],"candidates":[[3,3],[3,4],[5,3],[6,4]]},{"name":"Diamond","points":[[3,3,1],[2,4,1],[4,4,1],[3,5,1],[3,4,0]],"candidates":[[3,3],[2,4],[4,4],[3,5]]},{"name":"Tiger’s mouth","points":[[3,3,1],[4,4,1],[5,3,1],[4,2,0],[4,3,0]],"candidates":[[3,3],[4,4],[5,3]]},{"name":"Empty triangle","points":[[3,3,1],[3,4,1],[4,3,1],[4,4,0]],"candidates":[[3,3],[3,4],[4,3]]},{"name":"Stretch","points":[[3,3,1],[3,4,1]],"candidates":[[3,3],[3,4]]},{"name":"Diagonal","points":[[3,3,1],[4,4,1],[4,3,0],[3,4,0]],"candidates":[[3,3],[4,4]]},{"name":"Wedge","points":[[3,3,1],[4,3,-1],[2,3,-1],[3,2,0],[3,4,0]],"candidates":[[3,3]]},{"name":"Hane","points":[[3,3,1],[4,4,1],[4,3,-1],[3,4,0]],"candidates":[[3,3],[4,4]]},{"name":"Cut","points":[[3,3,1],[4,4,1],[4,3,-1],[3,4,-1]],"candidates":[[3,3],[4,4]]},{"name":"Square","points":[[3,3,1],[5,3,1],[5,5,1],[3,5,1],[4,4,0]],"candidates":[[3,3],[5,3],[5,5],[3,5]]},{"name":"Parallelogram","points":[[3,3,1],[5,4,1],[3,5,1],[5,6,1],[4,4,0],[4,5,0]],"candidates":[[3,3],[5,4],[3,5],[5,6]]},{"name":"Dog’s head","points":[[3,3,1],[3,5,1],[5,4,1],[4,3,0],[3,4,0],[4,4,0],[4,5,0]],"candidates":[[3,3],[3,5],[5,4]]},{"name":"Horse’s head","points":[[3,3,1],[3,5,1],[6,4,1],[4,3,0],[3,4,0],[4,4,0],[5,4,0],[4,5,0]],"candidates":[[3,3],[3,5],[6,4]]},{"name":"Attachment","points":[[3,3,1],[4,3,-1],[3,2,0],[4,2,0],[3,4,0],[4,4,0]],"candidates":[[3,3]]},{"name":"One-point jump","points":[[3,3,1],[5,3,1],[4,3,0]],"candidates":[[3,3],[5,3]]},{"name":"Big bulge","points":[[3,3,1],[5,4,1],[4,6,1],[4,4,0],[4,5,0]],"candidates":[[3,3],[5,4],[4,6]]},{"name":"Small knight","points":[[3,3,1],[5,4,1],[4,3,0],[4,4,0]],"candidates":[[3,3],[5,4]]},{"name":"Two-point jump","points":[[3,3,1],[6,3,1],[4,3,0],[5,3,0]],"candidates":[[3,3],[6,3]]},{"name":"Large knight","points":[[3,3,1],[6,4,1],[4,3,0],[5,3,0],[4,4,0],[5,4,0]],"candidates":[[3,3],[6,4]]},{"name":"Shoulder hit","points":[[3,3,1],[4,4,-1],[2,2,0],[3,2,0],[4,2,0],[2,3,0],[4,3,0],[2,4,0],[3,4,0]],"candidates":[[3,3]]},{"name":"Diagonal jump","points":[[3,3,1],[5,5,1],[4,3,0],[3,4,0],[4,4,0],[5,4,0],[4,5,0]],"candidates":[[3,3],[5,5]]}]
 }
 
-function getCurrentMoveInterpretation() {
+exports.getCurrentMoveInterpretation = function() {
     let board = getBoard()
     let [tree, index] = getCurrentTreePosition()
     let node = tree.nodes[index]
@@ -573,7 +584,7 @@ function getCurrentMoveInterpretation() {
 
     // Match shape
 
-    let shapes = getShapes()
+    let shapes = exports.getShapes()
 
     for (let i = 0; i < shapes.length; i++) {
         if (boardmatcher.shapeMatch(shapes[i], board, vertex))
@@ -603,7 +614,7 @@ function getCurrentMoveInterpretation() {
  * Methods
  */
 
-function prepareScrollbars() {
+exports.prepareScrollbars = function() {
     $('#properties').data('scrollbar', new GeminiScrollbar({
         element: $('#properties').get(0),
         createElements: false
@@ -642,7 +653,7 @@ function prepareScrollbars() {
     })
 }
 
-function prepareResizers() {
+exports.prepareResizers = function() {
     $('.verticalresizer').on('mousedown', function(evt) {
         if (evt.button != 0) return
         $(this).parent().data('initposx', [evt.screenX, parseFloat($(this).parent().css('width'))])
@@ -650,7 +661,7 @@ function prepareResizers() {
 
     $('#sidebar .horizontalresizer').on('mousedown', function(evt) {
         if (evt.button != 0) return
-        $('#sidebar').data('initposy', [evt.screenY, getPropertiesHeight()])
+        $('#sidebar').data('initposy', [evt.screenY, exports.getPropertiesHeight()])
         $('#properties').css('transition', 'none')
     })
 
@@ -663,16 +674,16 @@ function prepareResizers() {
 
         if (sidebarInitPosX) {
             $('#sidebar').data('initposx', null)
-            setting.set('view.sidebar_width', getSidebarWidth())
+            setting.set('view.sidebar_width', exports.getSidebarWidth())
         } else if (leftSidebarInitPosX) {
             $('#leftsidebar').data('initposx', null)
-            setting.set('view.leftsidebar_width', getLeftSidebarWidth())
+            setting.set('view.leftsidebar_width', exports.getLeftSidebarWidth())
             return
         } else if (initPosY) {
             $('#sidebar').data('initposy', null)
             $('#properties').css('transition', '')
-            setting.set('view.properties_height', getPropertiesHeight())
-            setSidebarArrangement(true, true, false)
+            setting.set('view.properties_height', exports.getPropertiesHeight())
+            exports.setSidebarArrangement(true, true, false)
         }
 
         if ($('#graph').data('sigma'))
@@ -688,14 +699,14 @@ function prepareResizers() {
             let [initX, initWidth] = sidebarInitPosX
             let newwidth = Math.max(initWidth - evt.screenX + initX, setting.get('view.sidebar_minwidth'))
 
-            setSidebarWidth(newwidth)
-            resizeBoard()
+            exports.setSidebarWidth(newwidth)
+            exports.resizeBoard()
         } else if (leftSidebarInitPosX) {
             let [initX, initWidth] = leftSidebarInitPosX
             let newwidth = Math.max(initWidth + evt.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
-            setLeftSidebarWidth(newwidth)
-            resizeBoard()
+            exports.setLeftSidebarWidth(newwidth)
+            exports.resizeBoard()
 
             return
         } else if (initPosY) {
@@ -705,12 +716,12 @@ function prepareResizers() {
                 setting.get('view.properties_minheight')
             ), 100 - setting.get('view.properties_minheight'))
 
-            setPropertiesHeight(newheight)
+            exports.setPropertiesHeight(newheight)
         }
     })
 }
 
-function prepareGameChooser() {
+exports.prepareGameChooser = function() {
     let $scrollContainer = $([
         '#gamechooser .games-list.gm-prevented',
         '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
@@ -762,12 +773,21 @@ function prepareGameChooser() {
 
         updateSVG()
     })
+
+    // Buttons
+
+    $('#gamechooser button[name="add"]').on('click', () => exports.openAddGameMenu())
+    $('#gamechooser button[name="close"]').on('click', () => exports.closeGameChooser())
 }
 
-function updateTitle() {
+exports.prepareIndicator = function() {
+    $('#indicator').on('click', () => exports.hideIndicator())
+}
+
+exports.updateTitle = function() {
     let basename = x => x
     let title = app.getName()
-    let filename = getRepresentedFilename()
+    let filename = exports.getRepresentedFilename()
 
     if (filename) title = basename(filename)
     if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
@@ -776,7 +796,7 @@ function updateTitle() {
     document.title = title
 }
 
-function addEngineItem(name = '', path = '', args = '') {
+exports.addEngineItem = function(name = '', path = '', args = '') {
     let $ul = $('#preferences .engines-list ul').eq(0)
     let $li = $('<li/>').append(
         $('<h3/>')
@@ -795,9 +815,9 @@ function addEngineItem(name = '', path = '', args = '') {
         ).append(
             $('<a class="browse"/>')
             .on('click', function() {
-                setIsBusy(true)
+                exports.setIsBusy(true)
 
-                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let result = dialog.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -809,7 +829,7 @@ function addEngineItem(name = '', path = '', args = '') {
                     .get(0).focus()
                 }
 
-                setIsBusy(false)
+                exports.setIsBusy(false)
             })
             .append(
                 $('<img/>')
@@ -843,11 +863,11 @@ function addEngineItem(name = '', path = '', args = '') {
     if (enginesScrollbar) enginesScrollbar.update()
 }
 
-function showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
+exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     let result = confirm(message)
     return result ? 0 : cancelId
 
-    setIsBusy(true)
+    exports.setIsBusy(true)
 
     let result = dialog.showMessageBox(remote.getCurrentWindow(), {
         type: type,
@@ -858,11 +878,11 @@ function showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) 
         noLink: true
     })
 
-    setIsBusy(false)
+    exports.setIsBusy(false)
     return result
 }
 
-function readjustShifts(vertex) {
+exports.readjustShifts = function(vertex) {
     let $li = $('#goban .pos_' + vertex.join('-'))
     let direction = $li.attr('class').split(' ')
         .filter(x => x.indexOf('shift_') == 0)
@@ -899,7 +919,7 @@ function readjustShifts(vertex) {
     }
 }
 
-function updateSidebarLayout() {
+exports.updateSidebarLayout = function() {
     let $container = $('#properties .gm-scroll-view')
     $container.css('opacity', 0)
 
@@ -910,7 +930,7 @@ function updateSidebarLayout() {
     }, 300)
 }
 
-function buildBoard() {
+exports.buildBoard = function() {
     let board = getBoard()
     let rows = []
     let hoshi = board.getHandicapPlacement(9)
@@ -955,7 +975,7 @@ function buildBoard() {
                     vertexClicked(this, evt)
                 }.bind(vertex))
                 .on('touchend', function(evt) {
-                    if (!getEditMode() || ['line', 'arrow'].indexOf(getSelectedTool()) < 0)
+                    if (!exports.getEditMode() || ['line', 'arrow'].indexOf(getSelectedTool()) < 0)
                         return
 
                     evt.preventDefault()
@@ -998,17 +1018,17 @@ function buildBoard() {
     $goban.prepend($coordx.clone()).prepend($coordy.clone())
 
     $goban.off('mousemove').on('mousemove', function(evt) {
-        $('#goban').toggleClass('crosshair', getEditMode() && evt.ctrlKey)
+        $('#goban').toggleClass('crosshair', exports.getEditMode() && evt.ctrlKey)
     })
 
-    resizeBoard()
+    exports.resizeBoard()
 
     // Readjust shifts
 
-    $('#goban .row li:not(.shift_0)').get().forEach(li => readjustShifts($(li).data('vertex')))
+    $('#goban .row li:not(.shift_0)').get().forEach(li => exports.readjustShifts($(li).data('vertex')))
 }
 
-function updateBoardLines() {
+exports.updateBoardLines = function() {
     let tx = parseFloat($('#goban').css('border-left-width'))
     let ty = parseFloat($('#goban').css('border-top-width'))
 
@@ -1035,7 +1055,7 @@ function updateBoardLines() {
     })
 }
 
-function resizeBoard() {
+exports.resizeBoard = function() {
     let board = getBoard()
     if (!board) return
 
@@ -1061,7 +1081,7 @@ function resizeBoard() {
         - parseFloat($goban.css('border-top-width'))
         - parseFloat($goban.css('border-bottom-width')))
 
-    if (getShowCoordinates()) {
+    if (exports.getShowCoordinates()) {
         boardWidth += 2
         boardHeight += 2
     }
@@ -1079,7 +1099,7 @@ function resizeBoard() {
 
     $goban.find('.row, .coordx')
         .css('height', fieldsize).css('line-height', fieldsize + 'px')
-        .css('margin-left', getShowCoordinates() ? fieldsize : 0)
+        .css('margin-left', exports.getShowCoordinates() ? fieldsize : 0)
 
     $goban.find('.coordy')
         .css('width', fieldsize).css('top', fieldsize).css('line-height', fieldsize + 'px')
@@ -1089,13 +1109,13 @@ function resizeBoard() {
     $goban.find('li').css('width', fieldsize).css('height', fieldsize)
     $goban.css('font-size', fieldsize)
 
-    setSliderValue(...getSliderValue())
-    if (getIndicatorVertex()) showIndicator(getIndicatorVertex())
+    exports.setSliderValue(...exports.getSliderValue())
+    if (exports.getIndicatorVertex()) exports.showIndicator(exports.getIndicatorVertex())
 
-    updateBoardLines()
+    exports.updateBoardLines()
 }
 
-function showIndicator(vertex) {
+exports.showIndicator = function(vertex) {
     let $li = $('#goban .pos_' + vertex.join('-'))
     if ($li.length == 0) return
 
@@ -1106,20 +1126,20 @@ function showIndicator(vertex) {
     .data('vertex', vertex)
 }
 
-function hideIndicator() {
+exports.hideIndicator = function() {
     $('#indicator')
     .css('top', '')
     .css('left', '')
     .data('vertex', null)
 }
 
-function clearConsole() {
+exports.clearConsole = function() {
     $('#console .inner pre, #console .inner form:not(:last-child)').remove()
     $('#console .inner form:last-child input').eq(0).val('').get(0).focus()
     $('#console').data('scrollbar').update()
 }
 
-function wireLinks($container) {
+exports.wireLinks = function($container) {
     $container.find('a').on('click', function(evt) {
         if ($(this).hasClass('external'))  {
             if (!shell) {
@@ -1143,9 +1163,9 @@ function wireLinks($container) {
 
     $container.find('.coord').on('mouseenter', function() {
         let v = getBoard().coord2vertex($(this).text())
-        showIndicator(v)
+        exports.showIndicator(v)
     }).on('mouseleave', function() {
-        if (!getFindMode()) hideIndicator()
+        if (!exports.getFindMode()) exports.hideIndicator()
     })
 }
 
@@ -1153,7 +1173,7 @@ function wireLinks($container) {
  * Menus
  */
 
-function openHeaderMenu() {
+exports.openHeaderMenu = function() {
     let template = [
         {
             label: 'About Sabaki…',
@@ -1226,24 +1246,24 @@ function openHeaderMenu() {
         { type: 'separator' },
         {
             label: '&Score',
-            click: () => setScoringMode(true)
+            click: () => exports.setScoringMode(true)
         },
         {
             label: 'Es&timate',
-            click: () => setEstimatorMode(true)
+            click: () => exports.setEstimatorMode(true)
         },
         {
             label: '&Edit',
-            click: () => setEditMode(true)
+            click: () => exports.setEditMode(true)
         },
         {
             label: '&Find',
-            click: () => setFindMode(true)
+            click: () => exports.setFindMode(true)
         },
         { type: 'separator' },
         {
             label: '&Info',
-            click: () => showGameInfo()
+            click: () => exports.showGameInfo()
         }
     ]
 
@@ -1255,7 +1275,7 @@ function openHeaderMenu() {
     )
 }
 
-function openCommentMenu() {
+exports.openCommentMenu = function() {
     let tp = getCurrentTreePosition()
     let node = tp[0].nodes[tp[1]]
 
@@ -1360,7 +1380,7 @@ function openCommentMenu() {
     )
 }
 
-function openEnginesMenu($element, callback = () => {}) {
+exports.openEnginesMenu = function($element, callback = () => {}) {
     let currentIndex = $element.data('engineindex')
     if (currentIndex == null) currentIndex = -1
 
@@ -1389,8 +1409,8 @@ function openEnginesMenu($element, callback = () => {}) {
     template.push({
         label: 'Manage &Engines…',
         click: () => {
-            showPreferences()
-            setPreferencesTab('engines')
+            exports.showPreferences()
+            exports.setPreferencesTab('engines')
         }
     })
 
@@ -1402,8 +1422,8 @@ function openEnginesMenu($element, callback = () => {}) {
     )
 }
 
-function openNodeMenu(tree, index, position) {
-    if (getScoringMode()) return
+exports.openNodeMenu = function(tree, index, position) {
+    if (exports.getScoringMode()) return
 
     let template = [
         {
@@ -1420,14 +1440,14 @@ function openNodeMenu(tree, index, position) {
     menu.popup(remote.getCurrentWindow(), ...position)
 }
 
-function openGameMenu($element, position) {
+exports.openGameMenu = function($element, position) {
     let template = [
         {
             label: '&Remove Game',
             click: () => {
                 let trees = getGameTrees()
 
-                if (showMessageBox(
+                if (exports.showMessageBox(
                     'Do you really want to remove this game permanently?',
                     'warning',
                     ['Remove Game', 'Cancel'], 1
@@ -1443,17 +1463,17 @@ function openGameMenu($element, position) {
                 if (trees.length == 0) {
                     trees.push(getEmptyGameTree())
                     setGameIndex(0)
-                    closeGameChooser()
+                    exports.closeGameChooser()
                 } else {
                     setGameIndex(0)
-                    showGameChooser(true)
+                    exports.showGameChooser(true)
                 }
             }
         },
         {
             label: 'Remove &Other Games',
             click: () => {
-                if (showMessageBox(
+                if (exports.showMessageBox(
                     'Do you really want to remove all other games permanently?',
                     'warning',
                     ['Remove Games', 'Cancel'], 1
@@ -1461,7 +1481,7 @@ function openGameMenu($element, position) {
 
                 setGameTrees([$element.parents('li').eq(0).data('gametree')])
                 setGameIndex(0)
-                showGameChooser(true)
+                exports.showGameChooser(true)
             }
         }
     ]
@@ -1470,7 +1490,7 @@ function openGameMenu($element, position) {
     menu.popup(remote.getCurrentWindow(), ...position)
 }
 
-function openAddGameMenu() {
+exports.openAddGameMenu = function() {
     let template = [
         {
             label: 'Add &New Game',
@@ -1479,7 +1499,7 @@ function openAddGameMenu() {
 
                 setGameTrees(getGameTrees().concat([tree]))
                 setGameIndex(getGameTrees().length - 1)
-                showGameChooser('bottom')
+                exports.showGameChooser('bottom')
             }
         }
     ]
@@ -1497,8 +1517,8 @@ function openAddGameMenu() {
  * Drawers
  */
 
-function showGameInfo() {
-    closeDrawers()
+exports.showGameInfo = function() {
+    exports.closeDrawers()
 
     let tree = getRootTree()
     let rootNode = tree.nodes[0]
@@ -1538,12 +1558,12 @@ function showGameInfo() {
     $info.toggleClass('disabled', disabled)
 }
 
-function closeGameInfo() {
+exports.closeGameInfo = function() {
     $('#info').removeClass('show')
     document.activeElement.blur()
 }
 
-function showScore() {
+exports.showScore = function() {
     let board = $('#goban').data('finalboard')
     let score = board.getScore($('#goban').data('areamap'))
     let rootNode = getRootTree().nodes[0]
@@ -1564,11 +1584,11 @@ function showScore() {
     $('#score').addClass('show')
 }
 
-function closeScore() {
+exports.closeScore = function() {
     $('#score').removeClass('show')
 }
 
-function showPreferences() {
+exports.showPreferences = function() {
     // Load preferences
 
     $('#preferences input[type="checkbox"]').get()
@@ -1578,17 +1598,17 @@ function showPreferences() {
 
     // Show preferences
 
-    setPreferencesTab('general')
-    closeDrawers()
+    exports.setPreferencesTab('general')
+    exports.closeDrawers()
     $('#preferences').addClass('show')
 }
 
-function closePreferences() {
+exports.closePreferences = function() {
     $('#preferences').removeClass('show')
     document.activeElement.blur()
 }
 
-function showGameChooser(restoreScrollbarPos = true) {
+exports.showGameChooser = function(restoreScrollbarPos = true) {
     let $scrollContainer = $([
         '#gamechooser .games-list.gm-prevented',
         '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
@@ -1601,7 +1621,7 @@ function showGameChooser(restoreScrollbarPos = true) {
     else if (restoreScrollbarPos == 'bottom')
         scrollbarPos = $scrollContainer.get(0).scrollHeight
 
-    closeDrawers()
+    exports.closeDrawers()
 
     $('#gamechooser > input').eq(0).val('').get(0).focus()
     $('#gamechooser ol').eq(0).empty()
@@ -1633,14 +1653,14 @@ function showGameChooser(restoreScrollbarPos = true) {
 
         $li.data('gametree', tree).find('div').on('click', function() {
             let link = this
-            closeGameChooser()
+            exports.closeGameChooser()
             setTimeout(() => {
                 setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
         }).on('mouseup', function(evt) {
             if (evt.button != 2) return
             let pos = [evt.clientX, evt.clientY]
-            openGameMenu($(this), pos.map(x => Math.round(x)))
+            exports.openGameMenu($(this), pos.map(x => Math.round(x)))
         }).on('dragstart', function() {
             $('#gamechooser').data('dragging', $(this).parents('li').get(0))
         })
@@ -1689,27 +1709,27 @@ function showGameChooser(restoreScrollbarPos = true) {
     $scrollContainer.scrollTop(scrollbarPos)
 }
 
-function closeGameChooser() {
+exports.closeGameChooser = function() {
     $('#gamechooser').removeClass('show')
     document.activeElement.blur()
 }
 
-function closeDrawers() {
+exports.closeDrawers = function() {
     let drawersOpen = $('.drawer.show').length > 0
     let modeOpen = $('#bar .bar').get()
         .map(x => $(x).attr('id'))
         .some(x => $('body').hasClass(x))
 
-    closeGameInfo()
-    closeScore()
-    closePreferences()
-    closeGameChooser()
-    setEditMode(false)
-    setScoringMode(false)
-    setEstimatorMode(false)
-    setFindMode(false)
-    setGuessMode(false)
-    setAutoplayMode(false)
+    exports.closeGameInfo()
+    exports.closeScore()
+    exports.closePreferences()
+    exports.closeGameChooser()
+    exports.setEditMode(false)
+    exports.setScoringMode(false)
+    exports.setEstimatorMode(false)
+    exports.setFindMode(false)
+    exports.setGuessMode(false)
+    exports.setAutoplayMode(false)
 
     return modeOpen || drawersOpen
 }
@@ -1725,7 +1745,8 @@ $(document).ready(function() {
         $('#goban').data('mousedown', false)
     })
 
-    prepareScrollbars()
-    prepareResizers()
-    prepareGameChooser()
+    exports.prepareScrollbars()
+    exports.prepareResizers()
+    exports.prepareGameChooser()
+    exports.prepareIndicator()
 })
