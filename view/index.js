@@ -625,63 +625,7 @@ function prepareDragDropFiles() {
     })
 }
 
-function prepareConsole() {
-    return
-    $('#console form').on('submit', function(evt) {
-        evt.preventDefault()
-
-        let $input = $(this).find('input')
-        if ($input.val().trim() == '') return
-        $input.get(0).blur()
-
-        let command = gtp.parseCommand($input.val())
-        sendGTPCommand(command)
-    })
-
-    $('#console form input').on('keydown', function(evt) {
-        if ([40, 38, 9].indexOf(evt.keyCode) != -1) evt.preventDefault()
-        let $inputs = $('#console form input')
-
-        if ($(this).data('index') == null) $(this).data('index', $inputs.get().indexOf(this))
-        let i = $(this).data('index')
-        let length = $inputs.length
-
-        if ([38, 40].indexOf(evt.keyCode) != -1) {
-            if (evt.keyCode == 38) {
-                // Up
-                i = Math.max(i - 1, 0)
-            } else if (evt.keyCode == 40) {
-                // Down
-                i = Math.min(i + 1, length - 1)
-            }
-
-            $(this)
-            .val(i == length - 1 ? '' : $inputs.eq(i).val())
-            .data('index', i)
-        } else if (evt.keyCode == 9) {
-            // Tab
-            let tokens = $(this).val().split(' ')
-            let commands = getEngineCommands()
-            if (!commands) return
-
-            let i = 0
-            let selection = this.selectionStart
-            while (selection > tokens[i].length && selection.length != 0 && i < tokens.length - 1)
-                selection -= tokens[i++].length + 1
-
-            let result = fuzzyfinder.find(tokens[i], getEngineCommands())
-            if (!result) return
-            tokens[i] = result
-
-            this.value = tokens.join(' ')
-            this.selectionStart = this.selectionEnd = (() => {
-                let sum = 0
-                while (i >= 0) sum += tokens[i--].length + 1
-                return sum - 1
-            })()
-        }
-    })
-}
+function prepareConsole() {}
 
 function prepareGameInfo() {
     $('#info button[type="submit"]').on('click', function(evt) {
@@ -894,92 +838,11 @@ function loadEngines() {
     })
 }
 
-function attachEngine(exec, args, genMove) {
-    return
-    detachEngine()
-    view.setIsBusy(true)
+function attachEngine(exec, args, genMove) {}
 
-    setTimeout(function() {
-        let split = require('argv-split')
-        let controller = new gtp.Controller(exec, split(args))
+function detachEngine() {}
 
-        if (controller.error) {
-            view.showMessageBox('There was an error attaching the engine.', 'error')
-            return
-        }
-
-        controller.on('quit', function() {
-            $('#console').data('controller', null)
-            view.setIsBusy(false)
-        })
-
-        $('#console').data('controller', controller)
-
-        sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
-            $('#console').data('enginename', response.content)
-        })
-        sendGTPCommand(new gtp.Command(null, 'version'))
-        sendGTPCommand(new gtp.Command(null, 'protocol_version'))
-        sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
-            $('#console').data('commands', response.content.split('\n'))
-        })
-
-        syncEngine()
-        view.setIsBusy(false)
-
-        if (!!genMove) generateMove()
-    }, setting.get('gtp.attach_delay'))
-}
-
-function detachEngine() {
-    return
-    sendGTPCommand(new gtp.Command(null, 'quit'), true)
-
-    $('#console')
-    .data('controller', null)
-    .data('boardhash', null)
-
-    view.setIsBusy(false)
-}
-
-function syncEngine() {
-    return
-    let board = getBoard()
-
-    if (!getEngineController() || $('#console').data('boardhash') == board.getHash())
-        return
-
-    if (!board.isSquare()) {
-        view.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
-        return detachEngine()
-    } else if (!board.isValid()) {
-        view.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
-        return detachEngine()
-    }
-
-    view.setIsBusy(true)
-
-    sendGTPCommand(new gtp.Command(null, 'clear_board'), true)
-    sendGTPCommand(new gtp.Command(null, 'boardsize', [board.width]), true)
-    sendGTPCommand(new gtp.Command(null, 'komi', [getKomi()]), true)
-
-    // Replay
-    for (let i = 0; i < board.width; i++) {
-        for (let j = 0; j < board.height; j++) {
-            let v = [i, j]
-            let sign = board.arrangement[v]
-            if (sign == 0) continue
-
-            let color = sign > 0 ? 'B' : 'W'
-            let point = board.vertex2coord(v)
-
-            sendGTPCommand(new gtp.Command(null, 'play', [color, point]), true)
-        }
-    }
-
-    $('#console').data('boardhash', board.getHash())
-    view.setIsBusy(false)
-}
+function syncEngine() {}
 
 function makeMove(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
@@ -1811,33 +1674,7 @@ function sendGTPCommand(command, ignoreBlocked = false, callback = () => {}) {
     }
 }
 
-function generateMove(ignoreBusy = false) {
-    return
-    if (!getEngineController() || !ignoreBusy && view.getIsBusy()) return
-
-    view.closeDrawers()
-    syncEngine()
-    view.setIsBusy(true)
-
-    let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
-    let opponent = view.getCurrentPlayer() > 0 ? 'W' : 'B'
-
-    sendGTPCommand(new gtp.Command(null, 'genmove', [color]), true, r => {
-        view.setIsBusy(false)
-        if (r.content.toLowerCase() == 'resign') {
-            view.showMessageBox(getEngineName() + ' has resigned.')
-            getRootTree().nodes[0].RE = [opponent + '+Resign']
-            return
-        }
-
-        let v = [-1, -1]
-        if (r.content.toLowerCase() != 'pass')
-            v = getBoard().coord2vertex(r.content)
-
-        $('#console').data('boardhash', getBoard().makeMove(view.getCurrentPlayer(), v).getHash())
-        makeMove(v, false)
-    })
-}
+function generateMove(ignoreBusy = false) {}
 
 function centerGraphCameraAt(node) {
     if (!view.getShowSidebar() || !node) return
@@ -1944,23 +1781,6 @@ function loadFile(filename) {
             alert('Failed to load file.')
         }
     }).get(0).click()
-
-    return
-
-    if (!filename) {
-        let result = dialog.showOpenDialog({
-            properties: ['openFile'],
-            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
-        })
-
-        if (result) filename = result[0]
-    }
-
-    if (filename) {
-        loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, err => {
-            if (!err) view.setRepresentedFilename(filename)
-        })
-    }
 }
 
 function loadFileFromSgf(content, dontask = false, callback = () => {}) {
@@ -2287,14 +2107,4 @@ $(window).on('resize', function() {
     view.resizeBoard()
 }).on('beforeunload', function(evt) {
     if (!askForSave()) evt.returnValue = 'false'
-
-    return
-    detachEngine()
-
-    let win = remote.getCurrentWindow()
-    if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
-
-    setting
-    .set('window.width', Math.round($('body').width()))
-    .set('window.height', Math.round($('body').height()))
 })
