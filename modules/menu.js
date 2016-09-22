@@ -1,3 +1,5 @@
+const $ = require('./sprint')
+
 exports.buildFromTemplate = function(template) {
     let menu = {}
     let $element = $('<ul class="popupmenu"/>')
