@@ -597,7 +597,7 @@ header, #bar .bar {
     #properties .inner .header.movestatus img.movestatus {
         display: inline;
     }
-    #properties .inner .header img.editbutton {
+    #properties .inner .header .edit-button {
         position: relative;
         top: -1px;
         right: -1px;
@@ -609,7 +609,7 @@ header, #bar .bar {
         opacity: .5;
         transition: background .2s;
     }
-    #properties .inner .header img.editbutton:hover {
+    #properties .inner .header .edit-button:hover {
         background: white;
 }
 
