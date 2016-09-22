@@ -1769,10 +1769,11 @@ function loadFile(filename) {
         if (f) {
             let r = new FileReader()
 
-            r.onload = function(e) {
+            r.onload = e => {
                 let contents = e.target.result
-                loadFileFromSgf(contents, true, function(error) {
-                    if (!error) setRepresentedFilename(f.name)
+
+                loadFileFromSgf(contents, true, err => {
+                    if (!err) view.setRepresentedFilename(f.name)
                 })
             }
 
@@ -1824,12 +1825,12 @@ function loadFileFromSgf(content, dontask = false, callback = () => {}) {
 }
 
 function saveFile() {
-    if (getIsBusy()) return
+    if (view.getIsBusy()) return
 
     let sgf = saveFileToSgf()
     let link = 'data:application/x-go-sgf;charset=utf-8,' + encodeURIComponent(sgf)
     let $el = $('<a/>')
-    .attr('download', getRepresentedFilename() || 'game.sgf')
+    .attr('download', view.getRepresentedFilename() || 'game.sgf')
     .attr('href', link)
     .css('display', 'none')
 

@@ -1163,7 +1163,7 @@ exports.openHeaderMenu = function() {
     let template = [
         {
             label: 'About Sabaki…',
-            click: function() {
+            click: () => {
                 let $link = $('<a/>')
                 .attr('href', 'http://sabaki.yichuanshen.de')
                 .attr('target', '_blank')
@@ -1176,7 +1176,7 @@ exports.openHeaderMenu = function() {
         },
         {
             label: 'Report Issue…',
-            click: function() {
+            click: () => {
                 let $link = $('<a/>')
                 .attr('href', 'https://github.com/yishn/Sabaki/issues')
                 .attr('target', '_blank')
@@ -1190,35 +1190,35 @@ exports.openHeaderMenu = function() {
         { type: 'separator' },
         {
             label: 'New File',
-            click: function() { newFile(true) }
+            click: () => newFile(true)
         },
         {
             label: 'Open File…',
-            click: function() { loadFile() }
+            click: () => loadFile()
         },
         {
             label: 'Download SGF',
-            click: function() { saveFile() }
+            click: () => saveFile()
         },
         { type: 'separator' },
         {
             label: 'Show Coordinates',
             checked: getShowCoordinates(),
-            click: function() { setShowCoordinates(!getShowCoordinates()) }
+            click: () => setShowCoordinates(!getShowCoordinates())
         },
         {
             label: 'Show Next Moves',
             checked: getShowNextMoves(),
-            click: function() { setShowNextMoves(!getShowNextMoves()) }
+            click: () => setShowNextMoves(!getShowNextMoves())
         },
         {
             label: 'Show Sibling Variations',
             checked: getShowSiblings(),
-            click: function() { setShowSiblings(!getShowSiblings()) }
+            click: () => setShowSiblings(!getShowSiblings())
         },
         {
             label: 'Manage Games…',
-            click: function() { showGameChooser() }
+            click: () => showGameChooser()
         },
         { type: 'separator' },
         {
