@@ -1,4 +1,4 @@
-window.sabaki = sabaki = {}
+window.sabaki = {}
 
 const fs = null
 const remote = {getCurrentWindow: () => null}

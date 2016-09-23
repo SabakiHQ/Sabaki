@@ -291,8 +291,8 @@ exports.getCommentTitle = function() {
 
 exports.setCommentTitle = function(text) {
     let $input = $('#properties .edit .header input')
+    let $header = $('#properties .inner .header span')
 
-    $header = $('#properties .inner .header span')
     $header.text(text)
     if ($input.val() != text) $input.val(text)
 
