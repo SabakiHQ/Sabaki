@@ -158,9 +158,9 @@ exports.setShowSidebar = function(show) {
     $('#main').css('right', show ? setting.get('view.sidebar_width') : 0)
 
     if (show) {
-        updateGraph()
-        updateSlider()
-        updateCommentText();
+        sabaki.updateGraph()
+        sabaki.updateSlider()
+        sabaki.updateCommentText();
     } else {
         // Clear game graph
         let sigma = $('#graph').data('sigma')
@@ -434,7 +434,7 @@ exports.setAutoplayMode = function(autoplayMode) {
         $('body').addClass('autoplay')
     } else {
         $('body').removeClass('autoplay')
-        setAutoplaying(false)
+        sabaki.setAutoplaying(false)
     }
 }
 
@@ -456,10 +456,10 @@ exports.setScoringMode = function(mode, estimator) {
         exports.closeDrawers()
         $('body').addClass(type)
 
-        let deadstones = estimator ? getBoard().guessDeadStones() : getBoard().determineDeadStones()
+        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
         deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
 
-        updateAreaMap(estimator)
+        sabaki.updateAreaMap(estimator)
     } else {
         $('body').removeClass(type)
     }
@@ -520,8 +520,8 @@ exports.getShapes = function() {
 }
 
 exports.getCurrentMoveInterpretation = function() {
-    let board = getBoard()
-    let [tree, index] = getCurrentTreePosition()
+    let board = sabaki.getBoard()
+    let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
 
     // Determine root node
@@ -544,7 +544,7 @@ exports.getCurrentMoveInterpretation = function() {
     // Determine end of main variation
 
     if (gametree.onMainTrack(tree) && !gametree.navigate(tree, index, 1)) {
-        let rootNode = getRootTree().nodes[0]
+        let rootNode = sabaki.getRootTree().nodes[0]
 
         if ('RE' in rootNode && rootNode.RE[0].trim() != '')
             return 'Result: ' + rootNode.RE[0]
@@ -798,7 +798,7 @@ exports.updateTitle = function() {
     let filename = exports.getRepresentedFilename()
 
     if (filename) title = basename(filename)
-    if (getGameTrees().length > 1) title += ' — Game ' + (getGameIndex() + 1)
+    if (sabaki.getGameTrees().length > 1) title += ' — Game ' + (sabaki.getGameIndex() + 1)
     if (filename && process.platform != 'darwin') title += ' — ' + app.getName()
 
     document.title = title
@@ -936,7 +936,7 @@ exports.updateSidebarLayout = function() {
 }
 
 exports.buildBoard = function() {
-    let board = getBoard()
+    let board = sabaki.getBoard()
     let rows = []
     let hoshi = board.getHandicapPlacement(9)
 
@@ -977,24 +977,24 @@ exports.buildBoard = function() {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    vertexClicked(this, evt)
+                    sabaki.vertexClicked(this, evt)
                 }.bind(vertex))
                 .on('touchend', function(evt) {
-                    if (!exports.getEditMode() || ['line', 'arrow'].indexOf(getSelectedTool()) < 0)
+                    if (!exports.getEditMode() || ['line', 'arrow'].indexOf(sabaki.getSelectedTool()) < 0)
                         return
 
                     evt.preventDefault()
-                    vertexClicked(null, { button: 0 })
+                    sabaki.vertexClicked(null, { button: 0 })
                 })
                 .on('mousemove', function(evt) {
                     if (!$('#goban').data('mousedown')) return
                     if (evt.button != 0) return
 
-                    drawLine(this)
+                    sabaki.drawLine(this)
                 }.bind(vertex))
                 .on('touchmove', function(evt) {
                     e.preventDefault()
-                    drawLine(getEndTargetVertex(evt))
+                    sabaki.drawLine(getEndTargetVertex(evt))
                 })
                 .on('mousedown', function() {
                     $('#goban').data('mousedown', true)
@@ -1061,7 +1061,7 @@ exports.updateBoardLines = function() {
 }
 
 exports.resizeBoard = function() {
-    let board = getBoard()
+    let board = sabaki.getBoard()
     if (!board) return
 
     let $main = $('main')
@@ -1158,16 +1158,16 @@ exports.wireLinks = function($container) {
             evt.preventDefault()
 
             let movenumber = +$(this).text().slice(1)
-            setUndoable(true, 'Go Back')
-            goToMainVariation()
+            sabaki.setUndoable(true, 'Go Back')
+            sabaki.goToMainVariation()
 
-            let tp = gametree.navigate(getRootTree(), 0, movenumber)
-            if (tp) setCurrentTreePosition(...tp, true, true)
+            let tp = gametree.navigate(sabaki.getRootTree(), 0, movenumber)
+            if (tp) sabaki.setCurrentTreePosition(...tp, true, true)
         }
     })
 
     $container.find('.coord').on('mouseenter', function() {
-        let v = getBoard().coord2vertex($(this).text())
+        let v = sabaki.getBoard().coord2vertex($(this).text())
         exports.showIndicator(v)
     }).on('mouseleave', function() {
         if (!exports.getFindMode()) exports.hideIndicator()
@@ -1182,11 +1182,11 @@ exports.openHeaderMenu = function() {
     let template = [
         {
             label: '&Pass',
-            click: () => makeMove([-1, -1])
+            click: () => sabaki.makeMove([-1, -1])
         },
         {
             label: '&Resign',
-            click: () => makeResign()
+            click: () => sabaki.makeResign()
         },
         { type: 'separator' },
         {
@@ -1221,7 +1221,7 @@ exports.openHeaderMenu = function() {
 }
 
 exports.openCommentMenu = function() {
-    let tp = getCurrentTreePosition()
+    let tp = sabaki.getCurrentTreePosition()
     let node = tp[0].nodes[tp[1]]
 
     let clearProperties = properties => properties.forEach(p => delete node[p])
@@ -1235,7 +1235,7 @@ exports.openCommentMenu = function() {
             click: () => {
                 clearPosAnnotations()
                 clearMoveAnnotations()
-                updateSidebar(true, true)
+                sabaki.updateSidebar(true, true)
             }
         },
         {type: 'separator'},
@@ -1311,7 +1311,7 @@ exports.openCommentMenu = function() {
                 node[p] = [value]
             }
 
-            setCurrentTreePosition(...getCurrentTreePosition(), true, true)
+            sabaki.setCurrentTreePosition(...sabaki.getCurrentTreePosition(), true, true)
         }
     })
 
@@ -1373,11 +1373,11 @@ exports.openNodeMenu = function(tree, index, position) {
     let template = [
         {
             label: 'Make &Main Variation',
-            click: () => makeMainVariation(tree, index)
+            click: () => sabaki.makeMainVariation(tree, index)
         },
         {
             label: '&Remove',
-            click: () => removeNode(tree, index)
+            click: () => sabaki.removeNode(tree, index)
         }
     ]
 
@@ -1390,7 +1390,7 @@ exports.openGameMenu = function($element, position) {
         {
             label: '&Remove Game',
             click: () => {
-                let trees = getGameTrees()
+                let trees = sabaki.getGameTrees()
 
                 if (exports.showMessageBox(
                     'Do you really want to remove this game permanently?',
@@ -1403,14 +1403,14 @@ exports.openGameMenu = function($element, position) {
                     .indexOf($element.get(0))
 
                 trees.splice(index, 1)
-                setGameTrees(trees)
+                sabaki.setGameTrees(trees)
 
                 if (trees.length == 0) {
-                    trees.push(getEmptyGameTree())
-                    setGameIndex(0)
+                    trees.push(sabaki.getEmptyGameTree())
+                    sabaki.setGameIndex(0)
                     exports.closeGameChooser()
                 } else {
-                    setGameIndex(0)
+                    sabaki.setGameIndex(0)
                     exports.showGameChooser(true)
                 }
             }
@@ -1424,8 +1424,8 @@ exports.openGameMenu = function($element, position) {
                     ['Remove Games', 'Cancel'], 1
                 ) == 1) return
 
-                setGameTrees([$element.parents('li').eq(0).data('gametree')])
-                setGameIndex(0)
+                sabaki.setGameTrees([$element.parents('li').eq(0).data('gametree')])
+                sabaki.setGameIndex(0)
                 exports.showGameChooser(true)
             }
         }
@@ -1440,10 +1440,10 @@ exports.openAddGameMenu = function() {
         {
             label: 'Add &New Game',
             click: () => {
-                let tree = getEmptyGameTree()
+                let tree = sabaki.getEmptyGameTree()
 
-                setGameTrees(getGameTrees().concat([tree]))
-                setGameIndex(getGameTrees().length - 1)
+                sabaki.setGameTrees(sabaki.getGameTrees().concat([tree]))
+                sabaki.setGameIndex(sabaki.getGameTrees().length - 1)
                 exports.showGameChooser('bottom')
             }
         },
@@ -1461,8 +1461,8 @@ exports.openAddGameMenu = function() {
                     filenames.forEach(filename => {
                         let trees = sgf.parseFile(filename).subtrees
 
-                        setGameTrees(getGameTrees().concat(trees))
-                        setGameIndex(getGameIndex())
+                        sabaki.setGameTrees(sabaki.getGameTrees().concat(trees))
+                        sabaki.setGameIndex(sabaki.getGameIndex())
                         exports.showGameChooser('bottom')
                     })
                 }
@@ -1488,7 +1488,7 @@ exports.openAddGameMenu = function() {
 exports.showGameInfo = function() {
     exports.closeDrawers()
 
-    let tree = getRootTree()
+    let tree = sabaki.getRootTree()
     let rootNode = tree.nodes[0]
     let $info = $('#info')
     let data = {
@@ -1510,8 +1510,8 @@ exports.showGameInfo = function() {
     $info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
     $info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
     $info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
-    $info.find('input[name="size-width"]').val(getBoard().width)
-    $info.find('input[name="size-height"]').val(getBoard().height)
+    $info.find('input[name="size-width"]').val(sabaki.getBoard().width)
+    $info.find('input[name="size-height"]').val(sabaki.getBoard().height)
     $info.find('section .menu').removeClass('active').data('engineindex', -1)
 
     let handicap = $info.find('select[name="handicap"]').get(0)
@@ -1534,7 +1534,7 @@ exports.closeGameInfo = function() {
 exports.showScore = function() {
     let board = $('#goban').data('finalboard')
     let score = board.getScore($('#goban').data('areamap'))
-    let rootNode = getRootTree().nodes[0]
+    let rootNode = sabaki.getRootTree().nodes[0]
 
     for (let sign = -1; sign <= 1; sign += 2) {
         let $tr = $('#score tbody tr' + (sign < 0 ? ':last-child' : ''))
@@ -1543,10 +1543,10 @@ exports.showScore = function() {
         $tds.eq(0).text(score['area_' + sign])
         $tds.eq(1).text(score['territory_' + sign])
         $tds.eq(2).text(score['captures_' + sign])
-        if (sign < 0) $tds.eq(3).text(getKomi())
+        if (sign < 0) $tds.eq(3).text(sabaki.getKomi())
         $tds.eq(4).text(0)
 
-        setScoringMethod(setting.get('scoring.method'))
+        sabaki.setScoringMethod(setting.get('scoring.method'))
     }
 
     $('#score').addClass('show')
@@ -1562,7 +1562,7 @@ exports.showPreferences = function() {
     $('#preferences input[type="checkbox"]').get()
         .forEach(el => el.checked = !!setting.get(el.name))
 
-    loadEngines()
+    sabaki.loadEngines()
 
     // Show preferences
 
@@ -1594,8 +1594,8 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
     $('#gamechooser > input').eq(0).val('').get(0).focus()
     $('#gamechooser ol').eq(0).empty()
 
-    let trees = getGameTrees()
-    let currentTree = getRootTree()
+    let trees = sabaki.getGameTrees()
+    let currentTree = sabaki.getRootTree()
 
     for (let i = 0; i < trees.length; i++) {
         let tree = trees[i]
@@ -1623,7 +1623,7 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
             let link = this
             exports.closeGameChooser()
             setTimeout(() => {
-                setGameIndex($('#gamechooser ol li div').get().indexOf(link))
+                sabaki.setGameIndex($('#gamechooser ol li div').get().indexOf(link))
             }, 500)
         }).on('mouseup', function(evt) {
             if (evt.button != 2) return
@@ -1666,10 +1666,10 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
         if (afterli && afterli != dragged) $(afterli).before(dragged)
         if (beforeli && beforeli != dragged) $(beforeli).after(dragged)
 
-        setGameTrees($('#gamechooser ol > li').get().map(x => $(x).data('gametree')))
+        sabaki.setGameTrees($('#gamechooser ol > li').get().map(x => $(x).data('gametree')))
 
-        let newindex = getGameTrees().indexOf(currentTree)
-        setGameIndex(newindex)
+        let newindex = sabaki.getGameTrees().indexOf(currentTree)
+        sabaki.setGameIndex(newindex)
     })
 
     $('#gamechooser').addClass('show')
