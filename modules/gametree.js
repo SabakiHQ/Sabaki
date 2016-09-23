@@ -2,6 +2,7 @@ const Board = require('./board')
 
 const helper = require('./helper')
 const setting = require('./setting')
+const sgf = require('./sgf')
 
 exports.new = function() {
     return {

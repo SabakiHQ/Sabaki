@@ -43,7 +43,7 @@ exports.equals = function(a, b) {
         let kk = Object.keys(a)
         if (kk.length !== Object.keys(b).length) return false
         for (let i = 0; i < kk.length; i++) {
-            k = kk[i]
+            let k = kk[i]
             if (!(k in b)) return false
             if (!exports.equals(a[k], b[k])) return false
         }
