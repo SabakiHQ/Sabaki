@@ -1769,20 +1769,20 @@ sabaki.loadFile = function(filename) {
     if (view.getIsBusy() || !sabaki.askForSave()) return
 
     $('#fileinput').val('').off('change').on('change', function(evt) {
-        let f = evt.target.files[0]
+        let file = evt.target.files[0]
 
-        if (f) {
-            let r = new FileReader()
+        if (file) {
+            let reader = new FileReader()
 
-            r.onload = e => {
+            reader.onload = e => {
                 let contents = e.target.result
 
                 sabaki.loadFileFromSgf(contents, true, err => {
-                    if (!err) view.setRepresentedFilename(f.name)
+                    if (!err) view.setRepresentedFilename(file.name)
                 })
             }
 
-            r.readAsText(f)
+            reader.readAsBinaryString(file)
         } else {
             alert('Failed to load file.')
         }
