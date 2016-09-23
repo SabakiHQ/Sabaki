@@ -14,7 +14,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "argv-split": "^1.0.0",
     "gemini-scrollbar": "^1.4.3",
     "octicons": "^4.3.0",
     "pikaday": "^1.4.0",
@@ -30,7 +29,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "build:dev": "browserify ./browser/index.js -t [ babelify --presets es2015 ] > ./browser/build.js",
-    "build:web": "browserify ./browser/index.js -t [ babelify --presets es2015 ] | uglifyjs -mt --lift-vars > ./browser/build.js"
+    "build:dev": "browserify -t [ babelify --presets es2015 ] -x moment ./browser/index.js > ./browser/build.js",
+    "build:web": "browserify -t [ babelify --presets es2015 ] -x moment ./browser/index.js | uglifyjs -mt --lift-vars > ./browser/build.js"
   }
 }
