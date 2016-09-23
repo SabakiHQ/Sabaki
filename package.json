@@ -26,10 +26,12 @@
     "babel-preset-es2015": "^6.14.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.0",
-    "tmp": "^0.0.28"
+    "tmp": "^0.0.28",
+    "uglify-js": "^2.7.3"
   },
   "scripts": {
     "test": "mocha",
-    "build:web": "browserify ./browser/index.js -t [ babelify --presets es2015 ] -o ./browser/build.js"
+    "build:dev": "browserify ./browser/index.js -t [ babelify --presets es2015 ] > ./browser/build.js",
+    "build:web": "browserify ./browser/index.js -t [ babelify --presets es2015 ] | uglifyjs > ./browser/build.js"
   }
 }
