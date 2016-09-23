@@ -1193,35 +1193,35 @@ exports.openHeaderMenu = function() {
         { type: 'separator' },
         {
             label: 'New File',
-            click: () => newFile(true)
+            click: () => sabaki.newFile(true)
         },
         {
             label: 'Open File…',
-            click: () => loadFile()
+            click: () => sabaki.loadFile()
         },
         {
             label: 'Download SGF',
-            click: () => saveFile()
+            click: () => sabaki.saveFile()
         },
         { type: 'separator' },
         {
             label: 'Show Coordinates',
-            checked: getShowCoordinates(),
-            click: () => setShowCoordinates(!getShowCoordinates())
+            checked: exports.getShowCoordinates(),
+            click: () => exports.setShowCoordinates(!exports.getShowCoordinates())
         },
         {
             label: 'Show Next Moves',
-            checked: getShowNextMoves(),
-            click: () => setShowNextMoves(!getShowNextMoves())
+            checked: exports.getShowNextMoves(),
+            click: () => exports.setShowNextMoves(!exports.getShowNextMoves())
         },
         {
             label: 'Show Sibling Variations',
-            checked: getShowSiblings(),
-            click: () => setShowSiblings(!getShowSiblings())
+            checked: exports.getShowSiblings(),
+            click: () => exports.setShowSiblings(!exports.getShowSiblings())
         },
         {
             label: 'Manage Games…',
-            click: () => showGameChooser()
+            click: () => exports.showGameChooser()
         },
         { type: 'separator' },
         {
