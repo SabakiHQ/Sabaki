@@ -131,10 +131,6 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
 }
 
 exports.parseFile = function(filename, callback) {
-    let input = fs.readFileSync(filename, {encoding: 'binary'})
-    let tokens = exports.tokenize(input)
-
-    return exports.parse(tokens, callback)
 }
 
 exports.string2dates = function(input) {

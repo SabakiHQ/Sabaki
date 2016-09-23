@@ -1,22 +1,8 @@
 const app = null
-const fs = require('fs')
-const path = require('path')
+const fs = null
+const path = null
 
 let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
-
-if (app && path) {
-    let directory = app.getPath('userData')
-    try { fs.mkdirSync(directory) } catch(err) {}
-
-    exports.settingsPath = path.join(directory, 'settings.json')
-    exports.stylesPath = path.join(directory, 'styles.css')
-
-    try {
-        fs.accessSync(exports.stylesPath, fs.R_OK)
-    } catch(e) {
-        fs.writeFileSync(exports.stylesPath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
-    }
-}
 
 let settings = {}
 let engines = []
@@ -92,46 +78,10 @@ let defaults = {
 }
 
 exports.load = function() {
-    if (!app) return settings = defaults
-
-    try {
-        settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
-    } catch(e) {
-        settings = {}
-    }
-
-    // Load default settings
-
-    for (let key in defaults) {
-        if (key in settings) continue
-        settings[key] = defaults[key]
-    }
-
-    engines = settings['engines.list']
-    engines.sort(namesort)
-
-    // Overwrite settings
-
-    for (let overwriteKey in settings) {
-        if (overwriteKey.indexOf('setting.overwrite.') != 0) continue
-
-        let overwrites = settings[overwriteKey]
-        if (!overwrites.length) continue
-
-        for (let i = 0; i < overwrites.length; i++) {
-            settings[overwrites[i]] = defaults[overwrites[i]]
-        }
-
-        settings[overwriteKey] = []
-    }
-
-    return exports.save()
+    return settings = defaults
 }
 
 exports.save = function() {
-    if (!app) return exports
-
-    fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
     return exports
 }
 

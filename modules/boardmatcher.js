@@ -2,32 +2,6 @@ const sgf = require('./sgf')
 const helper = require('./helper')
 
 exports.readShapes = function(filename) {
-    let tree = sgf.parseFile(filename).subtrees[0]
-    let result = []
-
-    for (let i = 0; i < tree.subtrees.length; i++) {
-        let node = tree.subtrees[i].nodes[0]
-        let points = ('AB' in node ? node.AB.map(x => sgf.point2vertex(x).concat([1])) : [])
-            .concat('AW' in node ? node.AW.map(x => sgf.point2vertex(x).concat([-1])) : [])
-
-        if ('CR' in node) {
-            node.CR.forEach(value => {
-                let vs = sgf.compressed2list(value)
-                vs.forEach(v => {
-                    if (!points.some(w => w[0] == v[0] && w[1] == v[1]))
-                        points.push(v.concat([0]))
-                })
-            })
-        }
-
-        result.push({
-            name: node.N[0],
-            points: points,
-            candidates: node.AB.map(sgf.point2vertex)
-        })
-    }
-
-    return result
 }
 
 exports.cornerMatch = function(area, source, target) {
