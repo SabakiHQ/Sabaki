@@ -979,13 +979,12 @@ sabaki.syncEngine = function() {
 
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
-    if (sendCommand == null) sendCommand = sabaki.getEngineController() != null
+    if (sendCommand == null) sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
     let pass = !sabaki.getBoard().hasVertex(vertex)
     if (!pass && sabaki.getBoard().arrangement[vertex] != 0) return
 
-    let position = sabaki.getCurrentTreePosition()
-    let tree = position[0], index = position[1]
+    let [tree, index] = sabaki.getCurrentTreePosition()
     let sign = view.getCurrentPlayer()
     let color = sign > 0 ? 'B' : 'W'
     let capture = false, suicide = false

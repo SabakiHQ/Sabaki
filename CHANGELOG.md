@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix arrow keys not working in open/save file dialog on macOS
+* Fix guess mode when an engine is attached
 
 ## [Sabaki v0.18.0][v0.18.0] (2016-09-18)
 
