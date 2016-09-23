@@ -1,11 +1,11 @@
 require('./ipc')
-let view
 
 const fs = require('fs')
 const {ipcRenderer, remote} = require('electron')
 const {app, dialog, Menu} = remote
 const Pikaday = require('pikaday')
 
+const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
 const fuzzyfinder = require('../modules/fuzzyfinder')
@@ -2209,8 +2209,6 @@ function undoBoard() {
  */
 
 $(document).ready(function() {
-    view = require('./view')
-
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
