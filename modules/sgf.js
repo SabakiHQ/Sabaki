@@ -93,7 +93,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
                     }
                 }
             } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
-                decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
+                let decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
                 property.push(decodedValue)
             } else {
                 property.push(encodedValue)
