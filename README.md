@@ -2,7 +2,7 @@
 
 <img src="logo.png" width="156" height="156">
 
-An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is the web version of Sabaki. It's a trimmed-down version that runs in any modern browser. To run Sabaki, simply open `./view/index.html` in a browser. You can try a [working demo here](http://sabaki.yichuanshen.de/web/).
+An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is the web version of Sabaki. It's a trimmed-down version that runs in any modern browser. Build instructions can be found in [the wiki](https://github.com/yishn/Sabaki/wiki/Building-&-Tests). You can try a [working demo here](http://sabaki.yichuanshen.de/web/).
 
 ![Screenshot](screenshot.png)
 
