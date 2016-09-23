@@ -1,3 +1,5 @@
+let view
+
 const fs = null
 const remote = {getCurrentWindow: () => null}
 const ipcRenderer = {send: () => {}}
@@ -6,7 +8,6 @@ const dialog = {showMessageBox: () => {}}
 const Pikaday = require('pikaday')
 const Menu = require('../modules/menu')
 
-const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
 const fuzzyfinder = require('../modules/fuzzyfinder')
@@ -2053,6 +2054,8 @@ function undoBoard() {
  */
 
 $(document).ready(function() {
+    view = require('./view')
+
     loadSettings()
     loadEngines()
     prepareDragDropFiles()
