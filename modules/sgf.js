@@ -1,5 +1,5 @@
 const fs = require('fs')
-const iconv = require('iconv-lite')
+const iconv = {encodingExists: () => false}
 const gametree = require('./gametree')
 const setting = require('./setting')
 const helper = require('./helper')

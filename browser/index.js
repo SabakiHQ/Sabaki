@@ -1782,7 +1782,7 @@ sabaki.loadFile = function(filename) {
                 })
             }
 
-            reader.readAsBinaryString(file)
+            reader.readAsText(file)
         } else {
             alert('Failed to load file.')
         }
