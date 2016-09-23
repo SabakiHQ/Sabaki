@@ -22,6 +22,7 @@
     "sigma": "^1.0.3"
   },
   "devDependencies": {
+    "electron-packager": "^8.0.0",
     "mocha": "^3.0.2",
     "tmp": "^0.0.28"
   },
