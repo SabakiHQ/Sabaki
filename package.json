@@ -22,6 +22,7 @@
     "sigma": "^1.0.3"
   },
   "devDependencies": {
+    "mocha": "^3.0.2",
     "tmp": "^0.0.28"
   },
   "scripts": {
