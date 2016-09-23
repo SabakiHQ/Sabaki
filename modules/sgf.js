@@ -109,7 +109,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
         if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
+            let t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
 
             if (t.nodes.length > 0) {
                 t.parent = tree
