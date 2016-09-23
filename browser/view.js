@@ -1256,7 +1256,7 @@ exports.openHeaderMenu = function() {
         }
     ]
 
-    menu = Menu.buildFromTemplate(template)
+    let menu = Menu.buildFromTemplate(template)
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($('#headermenu').offset().left),
@@ -1359,7 +1359,7 @@ exports.openCommentMenu = function() {
         }
     })
 
-    menu = Menu.buildFromTemplate(template)
+    let menu = Menu.buildFromTemplate(template)
     let $el = $('#properties .edit .header img')
 
     menu.popup(
@@ -1403,7 +1403,7 @@ exports.openEnginesMenu = function($element, callback = () => {}) {
         }
     })
 
-    menu = Menu.buildFromTemplate(template)
+    let menu = Menu.buildFromTemplate(template)
     menu.popup(
         remote.getCurrentWindow(),
         Math.round($element.offset().left),
@@ -1425,7 +1425,7 @@ exports.openNodeMenu = function(tree, index, position) {
         }
     ]
 
-    menu = Menu.buildFromTemplate(template)
+    let menu = Menu.buildFromTemplate(template)
     menu.popup(remote.getCurrentWindow(), ...position)
 }
 
