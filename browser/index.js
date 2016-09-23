@@ -1832,7 +1832,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
 sabaki.saveFile = function(filename) {
     if (view.getIsBusy()) return
 
-    let sgf = saveFileToSgf()
+    let sgf = sabaki.saveFileToSgf()
     let link = 'data:application/x-go-sgf;charset=utf-8,' + encodeURIComponent(sgf)
     let $el = $('<a/>')
     .attr('download', view.getRepresentedFilename() || 'game.sgf')
@@ -1843,7 +1843,7 @@ sabaki.saveFile = function(filename) {
     $el.get(0).click()
     $el.remove()
 
-    updateFileHash()
+    sabaki.updateFileHash()
 }
 
 sabaki.saveFileToSgf = function() {
