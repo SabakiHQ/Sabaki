@@ -1,5 +1,5 @@
 require('./ipc')
-window.sabaki = sabaki = {}
+window.sabaki = {}
 
 const fs = require('fs')
 const {ipcRenderer, remote} = require('electron')
