@@ -1,11 +1,6 @@
-let app
+const app = null
 const fs = require('fs')
 const path = require('path')
-
-try {
-    let remote = require('electron').remote
-    app = remote ? remote.app : require('electron').app
-} catch(err) {}
 
 let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
 

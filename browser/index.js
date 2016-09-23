@@ -3,8 +3,8 @@ const remote = {getCurrentWindow: () => null}
 const ipcRenderer = {send: () => {}}
 const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
 const dialog = {showMessageBox: () => {}}
-const Menu = require('../modules/menu')
 const Pikaday = require('pikaday')
+const Menu = require('../modules/menu')
 
 const view = require('./view')
 const $ = require('../modules/sprint')
@@ -14,7 +14,6 @@ const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
-const gtp = require('../modules/gtp')
 
 /**
  * Getter & setter

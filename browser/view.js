@@ -1,5 +1,8 @@
-const {shell, remote} = require('electron')
-const {app, dialog, Menu} = remote
+const shell = null
+const remote = {getCurrentWindow: () => null}
+const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
+const dialog = {showMessageBox: () => {}}
+const Menu = require('../modules/menu')
 const GeminiScrollbar = require('gemini-scrollbar')
 
 const $ = require('../modules/sprint')
