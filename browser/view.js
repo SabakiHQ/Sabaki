@@ -1732,6 +1732,8 @@ $(document).ready(function() {
 
     $('body').on('mouseup', function() {
         $('#goban').data('mousedown', false)
+    }).on('contextmenu', function(evt) {
+        evt.preventDefault()
     })
 
     exports.prepareScrollbars()
