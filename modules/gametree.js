@@ -245,11 +245,15 @@ exports.tree2matrixdict = function(tree, matrix, dict = {}, xshift = 0, yshift =
 }
 
 exports.onCurrentTrack = function(tree) {
-    return !tree.parent || tree.parent.subtrees[tree.parent.current] == tree && exports.onCurrentTrack(tree.parent)
+    return !tree.parent
+    || tree.parent.subtrees[tree.parent.current] == tree
+    && exports.onCurrentTrack(tree.parent)
 }
 
 exports.onMainTrack = function(tree) {
-    return !tree.parent || tree.parent.subtrees[0] == tree && exports.onMainTrack(tree.parent)
+    return !tree.parent
+    || tree.parent.subtrees[0] == tree 
+    && exports.onMainTrack(tree.parent)
 }
 
 exports.matrixdict2graph = function(matrixdict) {

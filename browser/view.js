@@ -109,8 +109,10 @@ exports.setShowLeftSidebar = function(show) {
     if (win) {
         let size = win.getContentSize()
 
-        if (!win.isMaximized())
-            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.leftsidebar_width'), size[1])
+        if (!win.isMaximized()) {
+            size[0] += (show ? 1 : -1) * setting.get('view.leftsidebar_width')
+            win.setContentSize(...size)
+        }
     }
 
     $('body').toggleClass('leftsidebar', show)
@@ -151,8 +153,10 @@ exports.setShowSidebar = function(show) {
     if (win) {
         let size = win.getContentSize()
 
-        if (!win.isMaximized())
-            win.setContentSize(size[0] + (show ? 1 : -1) * setting.get('view.sidebar_width'), size[1])
+        if (!win.isMaximized()) {
+            size[0] += (show ? 1 : -1) * setting.get('view.sidebar_width')
+            win.setContentSize(...size)
+        }
     }
 
     $('body').toggleClass('sidebar', show)
@@ -700,15 +704,15 @@ exports.prepareResizers = function() {
 
         if (sidebarInitPosX) {
             let [initX, initWidth] = sidebarInitPosX
-            let newwidth = Math.max(initWidth - evt.screenX + initX, setting.get('view.sidebar_minwidth'))
+            let newWidth = Math.max(initWidth - evt.screenX + initX, setting.get('view.sidebar_minwidth'))
 
-            exports.setSidebarWidth(newwidth)
+            exports.setSidebarWidth(newWidth)
             exports.resizeBoard()
         } else if (leftSidebarInitPosX) {
             let [initX, initWidth] = leftSidebarInitPosX
-            let newwidth = Math.max(initWidth + evt.screenX - initX, setting.get('view.leftsidebar_minwidth'))
+            let newWidth = Math.max(initWidth + evt.screenX - initX, setting.get('view.leftsidebar_minwidth'))
 
-            exports.setLeftSidebarWidth(newwidth)
+            exports.setLeftSidebarWidth(newWidth)
             exports.resizeBoard()
 
             return
@@ -964,7 +968,8 @@ exports.buildBoard = function() {
                     sabaki.vertexClicked(this, evt)
                 }.bind(vertex))
                 .on('touchend', function(evt) {
-                    if (!exports.getEditMode() || ['line', 'arrow'].indexOf(sabaki.getSelectedTool()) < 0)
+                    if (!exports.getEditMode()
+                    || ['line', 'arrow'].indexOf(sabaki.getSelectedTool()) < 0)
                         return
 
                     evt.preventDefault()

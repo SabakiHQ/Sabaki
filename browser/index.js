@@ -1,5 +1,3 @@
-window.sabaki = {}
-
 const fs = null
 const remote = {getCurrentWindow: () => null}
 const ipcRenderer = {send: () => {}}
@@ -16,6 +14,8 @@ const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
+
+window.sabaki = {view}
 
 /**
  * Getter & setter
@@ -105,7 +105,7 @@ sabaki.getCurrentTreePosition = function() {
     return $('#goban').data('position')
 }
 
-sabaki.setCurrentTreePosition = function(tree, index, now, redraw, ignoreAutoplay) {
+sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = false, ignoreAutoplay = false) {
     if (!tree || view.getScoringMode() || view.getEstimatorMode()) return
     if (!ignoreAutoplay && sabaki.getAutoplaying()) sabaki.setAutoplaying(false)
 
@@ -198,7 +198,9 @@ sabaki.getBoard = function() {
 sabaki.setBoard = function(board) {
     let $goban = $('#goban')
 
-    if (!sabaki.getBoard() || sabaki.getBoard().width != board.width || sabaki.getBoard().height != board.height) {
+    if (!sabaki.getBoard()
+    || sabaki.getBoard().width != board.width
+    || sabaki.getBoard().height != board.height) {
         $goban.data('board', board)
         view.buildBoard()
     }
@@ -404,7 +406,7 @@ sabaki.setAutoplaying = function(playing) {
 }
 
 /**
- * Methods
+ * Preparation Methods
  */
 
 sabaki.loadSettings = function() {
@@ -524,7 +526,8 @@ sabaki.prepareSidebar = function() {
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
     $('#properties .edit .header img').on('click', () => view.openCommentMenu())
 
-    $('#properties .edit .header input, #properties .edit textarea').on('input', () => sabaki.commitCommentText())
+    $('#properties .edit .header input, #properties .edit textarea')
+    .on('input', () => sabaki.commitCommentText())
 
     // Prepare game graph
 
@@ -567,7 +570,12 @@ sabaki.prepareSlider = function() {
 
         let level = Math.round((gametree.getHeight(sabaki.getRootTree()) - 1) * percentage)
         let tp = gametree.navigate(sabaki.getRootTree(), 0, level)
-        if (!tp) tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(sabaki.getRootTree()) - 1)
+
+        if (!tp) tp = gametree.navigate(
+            sabaki.getRootTree(),
+            0,
+            gametree.getCurrentHeight(sabaki.getRootTree()) - 1
+        )
 
         if (helper.equals(tp, sabaki.getCurrentTreePosition())) return
         sabaki.setCurrentTreePosition(...tp)
@@ -780,7 +788,8 @@ sabaki.prepareGameInfo = function() {
     $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        $(this).data('link', this.value == $(this).parent().nextAll('input[name="size-height"]').val())
+        let $input = $(this).parent().nextAll('input[name="size-height"]')
+        $(this).data('link', this.value == $input.val())
     }).on('input', function() {
         if (!$(this).data('link')) return
         $(this).parent().nextAll('input[name="size-height"]').val(this.value)
@@ -815,6 +824,32 @@ sabaki.preparePreferences = function() {
     $('#preferences button[type="reset"]').on('click', () => view.closePreferences())
 }
 
+/**
+ * Engine Methods
+ */
+
+sabaki.loadEngines = function() {
+}
+
+sabaki.attachEngine = function(exec, args, genMove) {
+}
+
+sabaki.detachEngine = function() {
+}
+
+sabaki.syncEngine = function() {
+}
+
+sabaki.sendGTPCommand = function(command, ignoreBlocked = false, callback = () => {}) {
+}
+
+sabaki.generateMove = function(ignoreBusy = false) {
+}
+
+/**
+ * File Hash Methods
+ */
+
 sabaki.generateFileHash = function() {
     let trees = sabaki.getGameTrees()
     let hash = ''
@@ -830,31 +865,130 @@ sabaki.updateFileHash = function() {
     $('body').data('filehash', sabaki.generateFileHash())
 }
 
-sabaki.loadEngines = function() {
-    // Load engines list
+sabaki.askForSave = function() {
+    if (!sabaki.getRootTree()) return true
+    let hash = sabaki.generateFileHash()
 
-    $('#preferences .engines-list ul').empty()
+    if (hash != sabaki.getFileHash()) {
+        let answer = view.showMessageBox(
+            'Your changes will be lost if you close this file without saving. Do you want to proceed?',
+            'warning',
+            ['Save', 'Don’t Save', 'Cancel'], 2
+        ) 
 
-    setting.getEngines().forEach(engine => {
-        view.addEngineItem(engine.name, engine.path, engine.args)
-    })
+        if (answer == 0) sabaki.saveFile(view.getRepresentedFilename())
+        else if (answer == 2) return false
+    }
+
+    return true
 }
 
-sabaki.attachEngine = function(exec, args, genMove) {
-}
+/**
+ * Game Board Methods
+ */
 
-sabaki.detachEngine = function() {
-}
+sabaki.vertexClicked = function(vertex, evt) {
+    view.closeGameInfo()
 
-sabaki.syncEngine = function() {
+    if (view.getScoringMode() || view.getEstimatorMode()) {
+        if ($('#score').hasClass('show')) return
+        if (evt.button != 0) return
+        if (sabaki.getBoard().arrangement[vertex] == 0) return
+
+        let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
+        let stones = view.getEstimatorMode()
+            ? sabaki.getBoard().getChain(vertex)
+            : sabaki.getBoard().getRelatedChains(vertex)
+
+        stones.forEach(v => {
+            $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
+        })
+
+        sabaki.updateAreaMap(view.getEstimatorMode())
+    } else if (view.getEditMode()) {
+        if (evt.ctrlKey) {
+            let coord = sabaki.getBoard().vertex2coord(vertex)
+
+            view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
+            sabaki.commitCommentText()
+        } else {
+            sabaki.useTool(vertex, evt)
+        }
+    } else if (view.getFindMode()) {
+        if (evt.button != 0) return
+
+        view.setIndicatorVertex(vertex)
+        sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), 1)
+    } else if (view.getGuessMode()) {
+        if (evt.button != 0) return
+
+        let tp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
+        if (!tp) {
+            view.setGuessMode(false)
+            return
+        }
+
+        let nextNode = tp[0].nodes[tp[1]]
+
+        if ('B' in nextNode) view.setCurrentPlayer(1)
+        else if ('W' in nextNode) view.setCurrentPlayer(-1)
+        else {
+            view.setGuessMode(false)
+            return
+        }
+
+        let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
+        let nextVertex = sgf.point2vertex(nextNode[color][0])
+        let board = sabaki.getBoard()
+
+        if (!board.hasVertex(nextVertex)) {
+            view.setGuessMode(false)
+            return
+        }
+
+        if (vertex[0] == nextVertex[0] && vertex[1] == nextVertex[1]) {
+            sabaki.makeMove(vertex)
+        } else {
+            if (board.arrangement[vertex] != 0) return
+            if ($('#goban .pos_' + vertex.join('-')).hasClass('paint_1')) return
+
+            let i = 0
+            if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
+                i = 1
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    let z = i == 0 ? x : y
+                    if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
+                        $('#goban .pos_' + x + '-' + y).addClass('paint_1')
+                }
+            }
+        }
+    } else {
+        // Playing mode
+
+        if (evt.button != 0) return
+        let board = sabaki.getBoard()
+
+        if (board.arrangement[vertex] == 0) {
+            sabaki.makeMove(vertex)
+            view.closeDrawers()
+        } else if (vertex in board.markups
+        && board.markups[vertex][0] == 'point'
+        && setting.get('edit.click_currentvertex_to_remove')) {
+            sabaki.removeNode(...sabaki.getCurrentTreePosition())
+        }
+    }
 }
 
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
-    if (sendCommand == null) sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
+    if (sendCommand == null)
+        sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
-    let pass = !sabaki.getBoard().hasVertex(vertex)
-    if (!pass && sabaki.getBoard().arrangement[vertex] != 0) return
+    let board = sabaki.getBoard()
+    let pass = !board.hasVertex(vertex)
+    if (!pass && board.arrangement[vertex] != 0) return
 
     let [tree, index] = sabaki.getCurrentTreePosition()
     let sign = view.getCurrentPlayer()
@@ -871,7 +1005,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             let ko = false
 
             if (tp) {
-                let hash = sabaki.getBoard().makeMove(sign, vertex).getHash()
+                let hash = board.makeMove(sign, vertex).getHash()
                 ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
@@ -883,16 +1017,16 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             ) != 0) return
         }
 
-        let vertexNeighbors = sabaki.getBoard().getNeighbors(vertex)
+        let vertexNeighbors = board.getNeighbors(vertex)
 
         // Check for suicide
         capture = vertexNeighbors
-            .some(v => sabaki.getBoard().arrangement[v] == -sign && sabaki.getBoard().getLiberties(v).length == 1)
+            .some(v => board.arrangement[v] == -sign && board.getLiberties(v).length == 1)
 
         suicide = !capture
-        && vertexNeighbors.filter(v => sabaki.getBoard().arrangement[v] == sign)
-            .every(v =>sabaki.getBoard().getLiberties(v).length == 1)
-        && vertexNeighbors.filter(v => sabaki.getBoard().arrangement[v] == 0).length == 0
+        && vertexNeighbors.filter(v => board.arrangement[v] == sign)
+            .every(v =>board.getLiberties(v).length == 1)
+        && vertexNeighbors.filter(v => board.arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
             if (view.showMessageBox(
@@ -944,7 +1078,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             })
 
             if (variations.length > 0) {
-                sabaki.setCurrentTreePosition(gametree.addBoard(variations[0]), 0, null, null, ignoreAutoplay)
+                sabaki.setCurrentTreePosition(variations[0], 0, null, null, ignoreAutoplay)
                 createNode = false
             }
         }
@@ -964,7 +1098,6 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
 
-            gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) sabaki.setRootTree(splitted)
             sabaki.setCurrentTreePosition(newtree, 0, null, null, ignoreAutoplay)
         }
@@ -1011,10 +1144,10 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        let command = new gtp.Command(null, 'play', [color, pass ? 'pass' : sabaki.getBoard().vertex2coord(vertex)])
+        let command = new gtp.Command(null, 'play', [color, pass ? 'pass' : board.vertex2coord(vertex)])
         sabaki.sendGTPCommand(command, true)
 
-        $('#console').data('boardhash', sabaki.getBoard().getHash())
+        $('#console').data('boardhash', board.getHash())
 
         view.setIsBusy(true)
         setTimeout(() => sabaki.generateMove(true), setting.get('gtp.move_delay'))
@@ -1183,10 +1316,10 @@ sabaki.useTool = function(vertex, evt) {
 
                 if ('LB' in node) {
                     let list = node.LB
-                        .filter(x => x.length == 4)
-                        .map(x => alpha.indexOf(x[3]))
-                        .filter(x => x >= 0)
-                    list.sort((a, b) => a - b)
+                    .filter(x => x.length == 4)
+                    .map(x => alpha.indexOf(x[3]))
+                    .filter(x => x >= 0)
+                    .sort((a, b) => a - b)
 
                     for (let i = 0; i <= list.length; i++) {
                         if (i < list.length && i == list[i]) continue
@@ -1236,6 +1369,10 @@ sabaki.drawLine = function(vertex) {
     view.updateBoardLines()
 }
 
+/**
+ * Find Methods
+ */
+
 sabaki.findPosition = function(step, condition) {
     if (isNaN(step)) step = 1
     else step = step >= 0 ? 1 : -1
@@ -1262,7 +1399,8 @@ sabaki.findPosition = function(step, condition) {
                 iterator = gametree.makeNodeIterator(...tp)
             }
 
-            if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp)) break
+            if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp))
+                break
         }
 
         sabaki.setCurrentTreePosition(...tp)
@@ -1288,97 +1426,9 @@ sabaki.findMove = function(vertex, text, step) {
     })
 }
 
-sabaki.vertexClicked = function(vertex, evt) {
-    view.closeGameInfo()
-
-    if (view.getScoringMode() || view.getEstimatorMode()) {
-        if ($('#score').hasClass('show')) return
-        if (evt.button != 0) return
-        if (sabaki.getBoard().arrangement[vertex] == 0) return
-
-        let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
-        let stones = view.getEstimatorMode() ? sabaki.getBoard().getChain(vertex) : sabaki.getBoard().getRelatedChains(vertex)
-
-        stones.forEach(v => {
-            $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
-        })
-
-        sabaki.updateAreaMap(view.getEstimatorMode())
-    } else if (view.getEditMode()) {
-        if (evt.ctrlKey) {
-            let coord = sabaki.getBoard().vertex2coord(vertex)
-
-            view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
-            sabaki.commitCommentText()
-        } else {
-            sabaki.useTool(vertex, evt)
-        }
-    } else if (view.getFindMode()) {
-        if (evt.button != 0) return
-
-        view.setIndicatorVertex(vertex)
-        sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), 1)
-    } else if (view.getGuessMode()) {
-        if (evt.button != 0) return
-
-        let tp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
-        if (!tp) {
-            view.setGuessMode(false)
-            return
-        }
-
-        let nextNode = tp[0].nodes[tp[1]]
-
-        if ('B' in nextNode) view.setCurrentPlayer(1)
-        else if ('W' in nextNode) view.setCurrentPlayer(-1)
-        else {
-            view.setGuessMode(false)
-            return
-        }
-
-        let color = view.getCurrentPlayer() > 0 ? 'B' : 'W'
-        let nextVertex = sgf.point2vertex(nextNode[color][0])
-        let board = sabaki.getBoard()
-
-        if (!board.hasVertex(nextVertex)) {
-            view.setGuessMode(false)
-            return
-        }
-
-        if (vertex[0] == nextVertex[0] && vertex[1] == nextVertex[1]) {
-            sabaki.makeMove(vertex)
-        } else {
-            if (board.arrangement[vertex] != 0) return
-            if ($('#goban .pos_' + vertex.join('-')).hasClass('paint_1')) return
-
-            let i = 0
-            if (Math.abs(vertex[1] - nextVertex[1]) > Math.abs(vertex[0] - nextVertex[0]))
-                i = 1
-
-            for (let x = 0; x < board.width; x++) {
-                for (let y = 0; y < board.height; y++) {
-                    let z = i == 0 ? x : y
-                    if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
-                        $('#goban .pos_' + x + '-' + y).addClass('paint_1')
-                }
-            }
-        }
-    } else {
-        // Playing mode
-
-        if (evt.button != 0) return
-        let board = sabaki.getBoard()
-
-        if (board.arrangement[vertex] == 0) {
-            sabaki.makeMove(vertex)
-            view.closeDrawers()
-        } else if (vertex in board.markups
-        && board.markups[vertex][0] == 'point'
-        && setting.get('edit.click_currentvertex_to_remove')) {
-            sabaki.removeNode(...sabaki.getCurrentTreePosition())
-        }
-    }
-}
+/**
+ * Update Methods
+ */
 
 sabaki.updateSidebar = function(redraw = false, now = false) {
     clearTimeout($('#sidebar').data('updatesidebarid'))
@@ -1448,7 +1498,7 @@ sabaki.updateCommentText = function() {
     $('#properties').data('scrollbar').update()
 }
 
-sabaki.updateAreaMap = function(useEstimateMap) {
+sabaki.updateAreaMap = function(estimate) {
     let board = sabaki.getBoard().clone()
 
     $('#goban .row li.dead').get().forEach(li => {
@@ -1458,7 +1508,7 @@ sabaki.updateAreaMap = function(useEstimateMap) {
         board.arrangement[$(li).data('vertex')] = 0
     })
 
-    let map = useEstimateMap ? board.getAreaEstimateMap() : board.getAreaMap()
+    let map = estimate ? board.getAreaEstimateMap() : board.getAreaMap()
 
     $('#goban .row li').get().forEach(li => {
         $(li)
@@ -1466,7 +1516,7 @@ sabaki.updateAreaMap = function(useEstimateMap) {
         .addClass('area_' + map[$(li).data('vertex')])
     })
 
-    if (!useEstimateMap) {
+    if (!estimate) {
         let $falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
 
         if ($falsedead.length > 0) {
@@ -1479,6 +1529,58 @@ sabaki.updateAreaMap = function(useEstimateMap) {
     .data('areamap', map)
     .data('finalboard', board)
 }
+
+sabaki.centerGraphCameraAt = function(node) {
+    if (!view.getShowSidebar() || !node) return
+
+    let s = $('#graph').data('sigma')
+    s.renderers[0].resize().render()
+
+    let matrixdict = sabaki.getGraphMatrixDict()
+    let y = matrixdict[1][node.id][1]
+
+    let wp = gametree.getSectionWidth(y, matrixdict[0])
+    let width = wp[0], padding = wp[1]
+    let x = matrixdict[1][node.id][0] - padding
+    let relX = width == 1 ? 0 : x / (width - 1)
+    let diff = (width - 1) * setting.get('graph.grid_size') / 2
+    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
+
+    node.color = setting.get('graph.node_active_color')
+    s.refresh()
+
+    sigma.misc.animation.camera(
+        s.camera,
+        {
+            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
+            y: node[s.camera.readPrefix + 'y']
+        },
+        {duration: setting.get('graph.delay')}
+    )
+}
+
+sabaki.startAutoScroll = function(direction, delay) {
+    if (direction > 0 && !$('#sidebar .slider a.next').data('mousedown')
+    || direction < 0 && !$('#sidebar .slider a.prev').data('mousedown')) return
+
+    if (delay == null) delay = setting.get('autoscroll.max_interval')
+    delay = Math.max(setting.get('autoscroll.min_interval'), delay)
+
+    let $slider = $('#sidebar .slider')
+    clearTimeout($slider.data('autoscrollid'))
+
+    if (direction > 0) sabaki.goForward()
+    else sabaki.goBack()
+    sabaki.updateSlider()
+
+    $slider.data('autoscrollid', setTimeout(() => {
+        sabaki.startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
+    }, delay))
+}
+
+/**
+ * Commit Methods
+ */
 
 sabaki.commitCommentText = function() {
     let [tree, index] = sabaki.getCurrentTreePosition()
@@ -1631,123 +1733,8 @@ sabaki.commitPreferences = function() {
     ipcRenderer.send('build-menu')
 }
 
-sabaki.sendGTPCommand = function(command, ignoreBlocked = false, callback = () => {}) {
-    if (!sabaki.getEngineController()) {
-        $('#console form:last-child input').val('')
-        return
-    }
-
-    let controller = sabaki.getEngineController()
-    let $container = $('#console .inner')
-    let $oldform = $container.find('form:last-child')
-    let $form = $oldform.clone(true)
-    let $pre = $('<pre/>').text(' ')
-
-    $form.find('input').val('')
-    $oldform.addClass('waiting').find('input').val(command.toString())
-    $container.append($pre).append($form)
-    if (view.getShowLeftSidebar()) $form.find('input').get(0).focus()
-
-    // Cleanup
-    let $forms = $('#console .inner form')
-    if ($forms.length > setting.get('console.max_history_count')) {
-        $forms.eq(0).next('pre').remove()
-        $forms.eq(0).remove()
-    }
-
-    let listener = (response, c) => {
-        $pre.html(response.toHtml())
-        view.wireLinks($pre)
-        $oldform.removeClass('waiting')
-        callback(response)
-
-        // Update scrollbars
-
-        let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
-        let scrollbar = $('#console').data('scrollbar')
-
-        $view.scrollTop($view.get(0).scrollHeight)
-        if (scrollbar) scrollbar.update()
-    }
-
-    if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
-        listener(new gtp.Response(null, 'blocked command', true, true), command)
-    } else {
-        controller.once('response-' + command.internalId, listener)
-        controller.sendCommand(command)
-    }
-}
-
-sabaki.generateMove = function(ignoreBusy = false) {
-}
-
-sabaki.centerGraphCameraAt = function(node) {
-    if (!view.getShowSidebar() || !node) return
-
-    let s = $('#graph').data('sigma')
-    s.renderers[0].resize().render()
-
-    let matrixdict = sabaki.getGraphMatrixDict()
-    let y = matrixdict[1][node.id][1]
-
-    let wp = gametree.getSectionWidth(y, matrixdict[0])
-    let width = wp[0], padding = wp[1]
-    let x = matrixdict[1][node.id][0] - padding
-    let relX = width == 1 ? 0 : x / (width - 1)
-    let diff = (width - 1) * setting.get('graph.grid_size') / 2
-    diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
-
-    node.color = setting.get('graph.node_active_color')
-    s.refresh()
-
-    sigma.misc.animation.camera(
-        s.camera,
-        {
-            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
-            y: node[s.camera.readPrefix + 'y']
-        },
-        {duration: setting.get('graph.delay')}
-    )
-}
-
-sabaki.askForSave = function() {
-    if (!sabaki.getRootTree()) return true
-    let hash = sabaki.generateFileHash()
-
-    if (hash != sabaki.getFileHash()) {
-        let answer = view.showMessageBox(
-            'Your changes will be lost if you close this file without saving. Do you want to proceed?',
-            'warning',
-            ['Save', 'Don’t Save', 'Cancel'], 2
-        )
-
-        if (answer == 2) return false
-    }
-
-    return true
-}
-
-sabaki.startAutoScroll = function(direction, delay) {
-    if (direction > 0 && !$('#sidebar .slider a.next').data('mousedown')
-    || direction < 0 && !$('#sidebar .slider a.prev').data('mousedown')) return
-
-    if (delay == null) delay = setting.get('autoscroll.max_interval')
-    delay = Math.max(setting.get('autoscroll.min_interval'), delay)
-
-    let $slider = $('#sidebar .slider')
-    clearTimeout($slider.data('autoscrollid'))
-
-    if (direction > 0) sabaki.goForward()
-    else sabaki.goBack()
-    sabaki.updateSlider()
-
-    $slider.data('autoscrollid', setTimeout(() => {
-        sabaki.startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
-    }, delay))
-}
-
 /**
- * Menu
+ * Menu Methods
  */
 
 sabaki.newFile = function(playSound) {
@@ -1820,8 +1807,9 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
             sabaki.updateFileHash()
         }
 
-        if (trees.length > 1)
+        if (trees.length > 1) {
             setTimeout(view.showGameChooser, setting.get('gamechooser.show_delay'))
+        }
 
         view.setProgressIndicator(-1, win)
         view.setIsBusy(false)
@@ -1931,8 +1919,8 @@ sabaki.goToBeginning = function() {
 }
 
 sabaki.goToEnd = function() {
-    let tree = sabaki.getRootTree()
-    sabaki.setCurrentTreePosition(...gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
+    let tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(tree) - 1)
+    sabaki.setCurrentTreePosition(...tp)
 }
 
 sabaki.goToNextVariation = function() {
