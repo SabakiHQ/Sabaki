@@ -1,5 +1,4 @@
 require('./ipc')
-window.sabaki = {}
 
 const fs = require('fs')
 const {ipcRenderer, remote} = require('electron')
@@ -15,6 +14,8 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
+
+window.sabaki = {view}
 
 /**
  * Getter & setter
