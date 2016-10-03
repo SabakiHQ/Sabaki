@@ -19,7 +19,10 @@ if (app && path) {
     try {
         fs.accessSync(exports.stylesPath, fs.R_OK)
     } catch(e) {
-        fs.writeFileSync(exports.stylesPath, '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */')
+        fs.writeFileSync(
+            exports.stylesPath,
+            '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */'
+        )
     }
 }
 

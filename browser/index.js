@@ -105,7 +105,7 @@ sabaki.getCurrentTreePosition = function() {
     return $('#goban').data('position')
 }
 
-sabaki.setCurrentTreePosition = function(tree, index, now, redraw, ignoreAutoplay) {
+sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = false, ignoreAutoplay = false) {
     if (!tree || view.getScoringMode() || view.getEstimatorMode()) return
     if (!ignoreAutoplay && sabaki.getAutoplaying()) sabaki.setAutoplaying(false)
 
@@ -198,7 +198,9 @@ sabaki.getBoard = function() {
 sabaki.setBoard = function(board) {
     let $goban = $('#goban')
 
-    if (!sabaki.getBoard() || sabaki.getBoard().width != board.width || sabaki.getBoard().height != board.height) {
+    if (!sabaki.getBoard()
+    || sabaki.getBoard().width != board.width
+    || sabaki.getBoard().height != board.height) {
         $goban.data('board', board)
         view.buildBoard()
     }
@@ -524,7 +526,8 @@ sabaki.prepareSidebar = function() {
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
     $('#properties .edit .header img').on('click', () => view.openCommentMenu())
 
-    $('#properties .edit .header input, #properties .edit textarea').on('input', () => sabaki.commitCommentText())
+    $('#properties .edit .header input, #properties .edit textarea')
+    .on('input', () => sabaki.commitCommentText())
 
     // Prepare game graph
 
@@ -567,7 +570,12 @@ sabaki.prepareSlider = function() {
 
         let level = Math.round((gametree.getHeight(sabaki.getRootTree()) - 1) * percentage)
         let tp = gametree.navigate(sabaki.getRootTree(), 0, level)
-        if (!tp) tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(sabaki.getRootTree()) - 1)
+
+        if (!tp) tp = gametree.navigate(
+            sabaki.getRootTree(),
+            0,
+            gametree.getCurrentHeight(sabaki.getRootTree()) - 1
+        )
 
         if (helper.equals(tp, sabaki.getCurrentTreePosition())) return
         sabaki.setCurrentTreePosition(...tp)
@@ -834,7 +842,8 @@ sabaki.prepareGameInfo = function() {
     $('#info input[name^="size-"]').attr('placeholder', setting.get('game.default_board_size'))
 
     $('#info input[name="size-width"]').on('focus', function() {
-        $(this).data('link', this.value == $(this).parent().nextAll('input[name="size-height"]').val())
+        let $input = $(this).parent().nextAll('input[name="size-height"]')
+        $(this).data('link', this.value == $input.val())
     }).on('input', function() {
         if (!$(this).data('link')) return
         $(this).parent().nextAll('input[name="size-height"]').val(this.value)
@@ -887,7 +896,7 @@ sabaki.attachEngine = function(exec, args, genMove) {
     sabaki.detachEngine()
     view.setIsBusy(true)
 
-    setTimeout(function() {
+    setTimeout(() => {
         let split = require('argv-split')
         let controller = new gtp.Controller(exec, split(args))
 
@@ -896,19 +905,19 @@ sabaki.attachEngine = function(exec, args, genMove) {
             return
         }
 
-        controller.on('quit', function() {
+        controller.on('quit', () => {
             $('#console').data('controller', null)
             view.setIsBusy(false)
         })
 
         $('#console').data('controller', controller)
 
-        sabaki.sendGTPCommand(new gtp.Command(null, 'name'), true, function(response) {
+        sabaki.sendGTPCommand(new gtp.Command(null, 'name'), true, response => {
             $('#console').data('enginename', response.content)
         })
         sabaki.sendGTPCommand(new gtp.Command(null, 'version'))
         sabaki.sendGTPCommand(new gtp.Command(null, 'protocol_version'))
-        sabaki.sendGTPCommand(new gtp.Command(null, 'list_commands'), true, function(response) {
+        sabaki.sendGTPCommand(new gtp.Command(null, 'list_commands'), true, response => {
             $('#console').data('commands', response.content.split('\n'))
         })
 
@@ -1091,7 +1100,9 @@ sabaki.vertexClicked = function(vertex, evt) {
         if (sabaki.getBoard().arrangement[vertex] == 0) return
 
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
-        let stones = view.getEstimatorMode() ? sabaki.getBoard().getChain(vertex) : sabaki.getBoard().getRelatedChains(vertex)
+        let stones = view.getEstimatorMode()
+            ? sabaki.getBoard().getChain(vertex)
+            : sabaki.getBoard().getRelatedChains(vertex)
 
         stones.forEach(v => {
             $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
@@ -1176,10 +1187,12 @@ sabaki.vertexClicked = function(vertex, evt) {
 
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
-    if (sendCommand == null) sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
+    if (sendCommand == null)
+        sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
-    let pass = !sabaki.getBoard().hasVertex(vertex)
-    if (!pass && sabaki.getBoard().arrangement[vertex] != 0) return
+    let board = sabaki.getBoard()
+    let pass = !board.hasVertex(vertex)
+    if (!pass && board.arrangement[vertex] != 0) return
 
     let [tree, index] = sabaki.getCurrentTreePosition()
     let sign = view.getCurrentPlayer()
@@ -1196,7 +1209,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             let ko = false
 
             if (tp) {
-                let hash = sabaki.getBoard().makeMove(sign, vertex).getHash()
+                let hash = board.makeMove(sign, vertex).getHash()
                 ko = tp[0].nodes[tp[1]].board.getHash() == hash
             }
 
@@ -1208,16 +1221,16 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             ) != 0) return
         }
 
-        let vertexNeighbors = sabaki.getBoard().getNeighbors(vertex)
+        let vertexNeighbors = board.getNeighbors(vertex)
 
         // Check for suicide
         capture = vertexNeighbors
-            .some(v => sabaki.getBoard().arrangement[v] == -sign && sabaki.getBoard().getLiberties(v).length == 1)
+            .some(v => board.arrangement[v] == -sign && board.getLiberties(v).length == 1)
 
         suicide = !capture
-        && vertexNeighbors.filter(v => sabaki.getBoard().arrangement[v] == sign)
-            .every(v =>sabaki.getBoard().getLiberties(v).length == 1)
-        && vertexNeighbors.filter(v => sabaki.getBoard().arrangement[v] == 0).length == 0
+        && vertexNeighbors.filter(v => board.arrangement[v] == sign)
+            .every(v =>board.getLiberties(v).length == 1)
+        && vertexNeighbors.filter(v => board.arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
             if (view.showMessageBox(
@@ -1269,7 +1282,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             })
 
             if (variations.length > 0) {
-                sabaki.setCurrentTreePosition(gametree.addBoard(variations[0]), 0, null, null, ignoreAutoplay)
+                sabaki.setCurrentTreePosition(variations[0], 0, null, null, ignoreAutoplay)
                 createNode = false
             }
         }
@@ -1289,7 +1302,6 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             splitted.subtrees.push(newtree)
             splitted.current = splitted.subtrees.length - 1
 
-            gametree.addBoard(newtree, newtree.nodes.length - 1)
             if (updateRoot) sabaki.setRootTree(splitted)
             sabaki.setCurrentTreePosition(newtree, 0, null, null, ignoreAutoplay)
         }
@@ -1336,10 +1348,10 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     // Handle GTP engine
 
     if (sendCommand && !enterScoring) {
-        let command = new gtp.Command(null, 'play', [color, pass ? 'pass' : sabaki.getBoard().vertex2coord(vertex)])
+        let command = new gtp.Command(null, 'play', [color, pass ? 'pass' : board.vertex2coord(vertex)])
         sabaki.sendGTPCommand(command, true)
 
-        $('#console').data('boardhash', sabaki.getBoard().getHash())
+        $('#console').data('boardhash', board.getHash())
 
         view.setIsBusy(true)
         setTimeout(() => sabaki.generateMove(true), setting.get('gtp.move_delay'))
@@ -1508,10 +1520,10 @@ sabaki.useTool = function(vertex, evt) {
 
                 if ('LB' in node) {
                     let list = node.LB
-                        .filter(x => x.length == 4)
-                        .map(x => alpha.indexOf(x[3]))
-                        .filter(x => x >= 0)
-                    list.sort((a, b) => a - b)
+                    .filter(x => x.length == 4)
+                    .map(x => alpha.indexOf(x[3]))
+                    .filter(x => x >= 0)
+                    .sort((a, b) => a - b)
 
                     for (let i = 0; i <= list.length; i++) {
                         if (i < list.length && i == list[i]) continue
@@ -1591,7 +1603,8 @@ sabaki.findPosition = function(step, condition) {
                 iterator = gametree.makeNodeIterator(...tp)
             }
 
-            if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp)) break
+            if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp))
+                break
         }
 
         sabaki.setCurrentTreePosition(...tp)
@@ -1956,7 +1969,7 @@ sabaki.loadFile = function(filename) {
     }
 
     if (filename) {
-        sabaki.loadFileFromSgf(fs.readFileSync(filename, { encoding: 'binary' }), true, err => {
+        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, err => {
             if (!err) view.setRepresentedFilename(filename)
         })
     }
@@ -1993,8 +2006,9 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
             sabaki.updateFileHash()
         }
 
-        if (trees.length > 1)
+        if (trees.length > 1) {
             setTimeout(view.showGameChooser, setting.get('gamechooser.show_delay'))
+        }
 
         view.setProgressIndicator(-1, win)
         view.setIsBusy(false)
@@ -2106,8 +2120,8 @@ sabaki.goToBeginning = function() {
 }
 
 sabaki.goToEnd = function() {
-    let tree = sabaki.getRootTree()
-    sabaki.setCurrentTreePosition(...gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1))
+    let tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(tree) - 1)
+    sabaki.setCurrentTreePosition(...tp)
 }
 
 sabaki.goToNextVariation = function() {
