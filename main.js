@@ -42,7 +42,7 @@ function newWindow(path) {
     return window
 }
 
-function buildMenu(noWindows) {
+function buildMenu(noWindows = false, disableAll = false) {
     let template = JSON.parse(JSON.stringify(require('./menu.json')))
 
     // Create app menu for OS X
@@ -143,7 +143,7 @@ function buildMenu(noWindows) {
         })
     }
 
-    // Handle clicks
+    // Process menu items
 
     let processMenu = items => {
         items.forEach(item => {
@@ -169,6 +169,10 @@ function buildMenu(noWindows) {
             if ('checked' in item) {
                 item.type = 'checkbox'
                 item.checked = !!setting.get(item.checked)
+            }
+
+            if (disableAll && !('submenu' in item)) {
+                item.enabled = false
             }
 
             if ('submenu' in item) {
