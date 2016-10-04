@@ -62,11 +62,11 @@ sabaki.setRootTree = function(tree) {
     sabaki.setCurrentTreePosition(gametree.addBoard(tree), 0, true)
 
     view.setPlayerName(1,
-        gametree.getPlayerName(1, tree, 'Black'),
+        gametree.getPlayerName(tree, 1, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.getPlayerName(-1, tree, 'White'),
+        gametree.getPlayerName(tree, -1, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
@@ -1824,11 +1824,11 @@ sabaki.commitGameInfo = function() {
     }
 
     view.setPlayerName(1,
-        gametree.getPlayerName(1, sabaki.getRootTree(), 'Black'),
+        gametree.getPlayerName(sabaki.getRootTree(), 1, 'Black'),
         'BR' in rootNode ? rootNode.BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.getPlayerName(-1, sabaki.getRootTree(), 'White'),
+        gametree.getPlayerName(sabaki.getRootTree(), -1, 'White'),
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 

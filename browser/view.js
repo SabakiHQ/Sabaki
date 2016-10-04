@@ -1512,8 +1512,8 @@ exports.showGameInfo = function() {
         $info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    $info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
-    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
+    $info.find('input[name="name_1"]').val(gametree.getPlayerName(tree, 1))
+    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(tree, -1))
     $info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
     $info.find('input[name="size-width"]').val(sabaki.getBoard().width)
     $info.find('input[name="size-height"]').val(sabaki.getBoard().height)
@@ -1616,8 +1616,8 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
         ))
 
         let $gamename = $li.find('span').eq(0)
-        let $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
-        let $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
+        let $black = $li.find('.black').text(gametree.getPlayerName(tree, 1, 'Black'))
+        let $white = $li.find('.white').text(gametree.getPlayerName(tree, -1, 'White'))
 
         if ('BR' in node) $black.attr('title', node.BR[0])
         if ('WR' in node) $white.attr('title', node.WR[0])

@@ -57,7 +57,7 @@ exports.getRoot = function(tree) {
     return tree
 }
 
-exports.getPlayerName = function(sign, tree, fallback) {
+exports.getPlayerName = function(tree, sign, fallback = '') {
     tree = exports.getRoot(tree)
     let color = sign > 0 ? 'B' : 'W'
 
@@ -252,7 +252,7 @@ exports.onCurrentTrack = function(tree) {
 
 exports.onMainTrack = function(tree) {
     return !tree.parent
-    || tree.parent.subtrees[0] == tree 
+    || tree.parent.subtrees[0] == tree
     && exports.onMainTrack(tree.parent)
 }
 
