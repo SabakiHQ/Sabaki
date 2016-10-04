@@ -2115,12 +2115,12 @@ sabaki.goToComment = function(step) {
 
 sabaki.goToBeginning = function() {
     let tree = sabaki.getRootTree()
-    if (tree.nodes.length == 0) return
     sabaki.setCurrentTreePosition(tree, 0)
 }
 
 sabaki.goToEnd = function() {
-    let tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(tree) - 1)
+    let tree = sabaki.getRootTree()
+    let tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
     sabaki.setCurrentTreePosition(...tp)
 }
 
