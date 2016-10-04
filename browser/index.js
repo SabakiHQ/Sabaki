@@ -2259,10 +2259,20 @@ $(document).ready(function() {
     sabaki.preparePreferences()
     sabaki.newFile()
 
+    view.prepareScrollbars()
+    view.prepareResizers()
+    view.prepareGameChooser()
+    view.prepareIndicator()
+    view.updateTitle()
+
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(evt) {
         evt.preventDefault()
         if (evt.wheelDelta < 0) sabaki.goForward()
         else if (evt.wheelDelta > 0) sabaki.goBack()
+    })
+
+    $('body').on('mouseup', function() {
+        $('#goban').data('mousedown', false)
     })
 }).on('keydown', function(evt) {
     if (evt.keyCode == 27) {

@@ -133,7 +133,6 @@ exports.setLeftSidebarWidth = function(width) {
 
     $('#leftsidebar').css('width', width)
     $('#main').css('left', width)
-    $('#console').data('scrollbar').update()
 }
 
 exports.getLeftSidebarWidth = function() {
@@ -226,7 +225,7 @@ exports.getSidebarWidth = function() {
 
 exports.setSidebarWidth = function(width) {
     if (!exports.getShowSidebar()) return
-    
+
     $('#sidebar').css('width', width)
     $('.sidebar #main').css('right', width)
 }
@@ -1731,20 +1730,3 @@ exports.closeDrawers = function() {
 
     return modeOpen || drawersOpen
 }
-
-/**
- * Main
- */
-
-$(document).ready(function() {
-    document.title = app.getName()
-
-    $('body').on('mouseup', function() {
-        $('#goban').data('mousedown', false)
-    })
-
-    exports.prepareScrollbars()
-    exports.prepareResizers()
-    exports.prepareGameChooser()
-    exports.prepareIndicator()
-})
