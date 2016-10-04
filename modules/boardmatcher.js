@@ -26,7 +26,7 @@ exports.cornerMatch = function(area, source, target) {
             return null
     }
 
-    let i = hypotheses.concat(hypothesesInvert).indexOf(true)
+    let i = [...hypotheses, ...hypothesesInvert].indexOf(true)
     return i < 8 ? [i, false] : [i - 8, true]
 }
 

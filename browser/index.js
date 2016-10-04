@@ -18,7 +18,7 @@ const setting = require('../modules/setting')
 window.sabaki = {view}
 
 /**
- * Getter & setter
+ * Getters & Setters
  */
 
 sabaki.getGameTrees = function() {
@@ -59,14 +59,15 @@ sabaki.setRootTree = function(tree) {
     sabaki.setGameTrees(trees)
 
     tree.parent = null
-    sabaki.setCurrentTreePosition(gametree.addBoard(tree), 0, true)
+    gametree.getBoard(tree)
+    sabaki.setCurrentTreePosition(tree, 0, true)
 
     view.setPlayerName(1,
-        gametree.getPlayerName(1, tree, 'Black'),
+        gametree.getPlayerName(tree, 1, 'Black'),
         'BR' in tree.nodes[0] ? tree.nodes[0].BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.getPlayerName(-1, tree, 'White'),
+        gametree.getPlayerName(tree, -1, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
 }
@@ -140,8 +141,7 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
 
     sabaki.updateSidebar(redraw, now)
     view.setShowHotspot('HO' in node)
-    gametree.addBoard(tree, index)
-    sabaki.setBoard(node.board)
+    sabaki.setBoard(gametree.getBoard(tree, index))
 
     // Determine current player
 
@@ -322,22 +322,21 @@ sabaki.getEngineCommands = function() {
     return $('#console').data('commands')
 }
 
-sabaki.setUndoable = function(undoable, tooltip) {
+sabaki.setUndoable = function(undoable, tooltip = 'Undo') {
     if (undoable) {
         let rootTree = gametree.clone(sabaki.getRootTree())
-        let position = gametree.getLevel(...sabaki.getCurrentTreePosition())
-        if (!tooltip) tooltip = 'Undo'
+        let level = gametree.getLevel(...sabaki.getCurrentTreePosition())
 
         $('#bar header .undo').attr('title', tooltip)
         $('body')
         .addClass('undoable')
         .data('undodata-root', rootTree)
-        .data('undodata-pos', position)
+        .data('undodata-level', level)
     } else {
         $('body')
         .removeClass('undoable')
         .data('undodata-root', null)
-        .data('undodata-pos', null)
+        .data('undodata-level', null)
     }
 }
 
@@ -770,7 +769,7 @@ sabaki.prepareGameInfo = function() {
             pikaday.hide()
     })
 
-    $(window).on('resize', function() { adjustPosition(pikaday) })
+    $(window).on('resize', () => adjustPosition(pikaday))
 
     $dateInput.on('focus', function() {
         pikaday.show()
@@ -887,12 +886,12 @@ sabaki.askForSave = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, evt) {
+sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
         if (sabaki.getBoard().arrangement[vertex] == 0) return
 
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
@@ -906,21 +905,21 @@ sabaki.vertexClicked = function(vertex, evt) {
 
         sabaki.updateAreaMap(view.getEstimatorMode())
     } else if (view.getEditMode()) {
-        if (evt.ctrlKey) {
+        if (ctrlKey) {
             let coord = sabaki.getBoard().vertex2coord(vertex)
 
             view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
             sabaki.commitCommentText()
         } else {
-            sabaki.useTool(vertex, evt)
+            sabaki.useTool(vertex, buttonIndex)
         }
     } else if (view.getFindMode()) {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         view.setIndicatorVertex(vertex)
         sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), 1)
     } else if (view.getGuessMode()) {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         let tp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
         if (!tp) {
@@ -967,7 +966,7 @@ sabaki.vertexClicked = function(vertex, evt) {
     } else {
         // Playing mode
 
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
         if (board.arrangement[vertex] == 0) {
@@ -1162,7 +1161,7 @@ sabaki.makeResign = function(sign) {
     $('#info input[name="result"]').val(player + '+Resign')
 }
 
-sabaki.useTool = function(vertex, evt) {
+sabaki.useTool = function(vertex, buttonIndex = 0) {
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
     let tool = sabaki.getSelectedTool()
@@ -1197,7 +1196,7 @@ sabaki.useTool = function(vertex, evt) {
         }
 
         let sign = tool.indexOf('_1') != -1 ? 1 : -1
-        if (evt.button == 2) sign = -sign
+        if (buttonIndex == 2) sign = -sign
 
         let oldSign = board.arrangement[vertex]
         let ids = ['AW', 'AE', 'AB']
@@ -1212,7 +1211,7 @@ sabaki.useTool = function(vertex, evt) {
             if (node[ids[i]].some(x => x.indexOf(':') >= 0)) {
                 node[ids[i]] = node[ids[i]]
                 .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
-                .reduce((list, x) => list.concat(x))
+                .reduce((list, x) => [...list, x])
             }
 
             // Remove residue
@@ -1278,7 +1277,7 @@ sabaki.useTool = function(vertex, evt) {
         if (node.LN.length == 0) delete node.LN
         if (node.AR.length == 0) delete node.AR
     } else {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         if (tool != 'label' && tool != 'number') {
             if (vertex in board.markups && board.markups[vertex][0] == tool) {
@@ -1381,7 +1380,7 @@ sabaki.findPosition = function(step, condition) {
 
     setTimeout(() => {
         let tp = sabaki.getCurrentTreePosition()
-        let iterator = gametree.makeNodeIterator(...tp)
+        let iterator = gametree.makeHorizontalNavigator(...tp)
 
         while (true) {
             tp = step >= 0 ? iterator.next() : iterator.prev()
@@ -1396,7 +1395,7 @@ sabaki.findPosition = function(step, condition) {
                     tp = sections[sections.length - 1]
                 }
 
-                iterator = gametree.makeNodeIterator(...tp)
+                iterator = gametree.makeHorizontalNavigator(...tp)
             }
 
             if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp))
@@ -1459,7 +1458,7 @@ sabaki.updateSidebar = function(redraw = false, now = false) {
 sabaki.updateGraph = function() {
     if (!view.getShowSidebar() || !sabaki.getCurrentTreePosition()) return
 
-    sabaki.setGraphMatrixDict(gametree.tree2matrixdict(sabaki.getRootTree()))
+    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     sabaki.centerGraphCameraAt(sabaki.getCurrentGraphNode())
 }
 
@@ -1539,7 +1538,7 @@ sabaki.centerGraphCameraAt = function(node) {
     let matrixdict = sabaki.getGraphMatrixDict()
     let y = matrixdict[1][node.id][1]
 
-    let wp = gametree.getSectionWidth(y, matrixdict[0])
+    let wp = gametree.getMatrixWidth(y, matrixdict[0])
     let width = wp[0], padding = wp[1]
     let x = matrixdict[1][node.id][0] - padding
     let relX = width == 1 ? 0 : x / (width - 1)
@@ -1620,11 +1619,11 @@ sabaki.commitGameInfo = function() {
     }
 
     view.setPlayerName(1,
-        gametree.getPlayerName(1, sabaki.getRootTree(), 'Black'),
+        gametree.getPlayerName(sabaki.getRootTree(), 1, 'Black'),
         'BR' in rootNode ? rootNode.BR[0] : ''
     )
     view.setPlayerName(-1,
-        gametree.getPlayerName(-1, sabaki.getRootTree(), 'White'),
+        gametree.getPlayerName(sabaki.getRootTree(), -1, 'White'),
         'WR' in rootNode ? rootNode.WR[0] : ''
     )
 
@@ -2019,14 +2018,14 @@ sabaki.removeNode = function(tree, index) {
         gametree.reduceTree(parent)
     }
 
-    sabaki.setGraphMatrixDict(gametree.tree2matrixdict(sabaki.getRootTree()))
+    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     if (!prev || sabaki.getCurrentGraphNode()) prev = sabaki.getCurrentTreePosition()
     sabaki.setCurrentTreePosition(...prev)
 }
 
 sabaki.undoBoard = function() {
     if ($('body').data('undodata-root') == null
-    || $('body').data('undodata-pos') == null)
+    || $('body').data('undodata-level') == null)
         return
 
     view.setIsBusy(true)
@@ -2034,7 +2033,7 @@ sabaki.undoBoard = function() {
     setTimeout(() => {
         sabaki.setRootTree($('body').data('undodata-root'))
 
-        let tp = gametree.navigate(sabaki.getRootTree(), 0, $('body').data('undodata-pos'))
+        let tp = gametree.navigate(sabaki.getRootTree(), 0, $('body').data('undodata-level'))
         sabaki.setCurrentTreePosition(...tp, true, true)
 
         sabaki.setUndoable(false)

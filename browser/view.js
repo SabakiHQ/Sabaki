@@ -13,7 +13,7 @@ const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
 /**
- * Getter & setter
+ * Getters & Setters
  */
 
 let busyTimeout = null
@@ -188,11 +188,21 @@ exports.getSidebarArrangement = function() {
     ]
 }
 
-exports.setSidebarArrangement = function(graph, comment, updateLayout) {
-    if (updateLayout == null || updateLayout) exports.updateSidebarLayout()
+exports.setSidebarArrangement = function(graph, comment, redraw = true) {
+    if (redraw) {
+        let $container = $('#properties .gm-scroll-view')
+        $container.css('opacity', 0)
 
-    if (!graph && !comment) exports.setShowSidebar(false)
-    else {
+        setTimeout(() => {
+            $('#graph').data('sigma').renderers[0].resize().render()
+            $('#properties').data('scrollbar').update()
+            $container.css('opacity', 1)
+        }, 300)
+    }
+
+    if (!graph && !comment) {
+        exports.setShowSidebar(false)
+    } else {
         if (!graph && comment) exports.setPropertiesHeight(100)
         else if (comment) exports.setPropertiesHeight(setting.get('view.properties_height'))
         else if (!comment) exports.setPropertiesHeight(0)
@@ -365,119 +375,12 @@ exports.setSliderValue = function(value, label) {
     $('#sidebar .slider .inner span').css('top', value + '%').text(label)
 }
 
-exports.getPlayMode = function() {
-    return !exports.getFindMode()
-        && !exports.getEditMode()
-        && !exports.getGuessMode()
-        && !exports.getAutoplayMode()
-        && !exports.getScoringMode()
-        && !exports.getEstimatorMode()
-}
-
-exports.getFindMode = function() {
-    return $('body').hasClass('find')
-}
-
-exports.setFindMode = function(pickMode) {
-    if (pickMode) {
-        if (pickMode != exports.getFindMode()) exports.closeDrawers()
-        $('body').addClass('find')
-
-        let input = $('#find input').get(0)
-        input.focus()
-        input.select()
-    } else {
-        exports.hideIndicator()
-        $('body').removeClass('find')
-        document.activeElement.blur()
-    }
-}
-
 exports.getFindText = function() {
     return $('#find input').val()
 }
 
 exports.setFindText = function(text) {
     $('#find input').val(text)
-}
-
-exports.getEditMode = function() {
-    return $('body').hasClass('edit')
-}
-
-exports.setEditMode = function(editMode) {
-    if (editMode) {
-        exports.closeDrawers()
-        $('body').addClass('edit')
-
-        $('#properties textarea').eq(0).scrollTop(0)
-    } else {
-        $('#goban').data('edittool-data', null)
-        $('body').removeClass('edit')
-    }
-}
-
-exports.getGuessMode = function() {
-    return $('body').hasClass('guess')
-}
-
-exports.setGuessMode = function(guessMode) {
-    if (guessMode) {
-        exports.closeDrawers()
-        $('body').addClass('guess')
-    } else {
-        $('body').removeClass('guess')
-    }
-}
-
-exports.getAutoplayMode = function() {
-    return $('body').hasClass('autoplay')
-}
-
-exports.setAutoplayMode = function(autoplayMode) {
-    if (autoplayMode) {
-        exports.closeDrawers()
-        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
-        $('body').addClass('autoplay')
-    } else {
-        $('body').removeClass('autoplay')
-        sabaki.setAutoplaying(false)
-    }
-}
-
-exports.getScoringMode = function() {
-    return $('body').hasClass('scoring')
-}
-
-exports.setScoringMode = function(mode, estimator) {
-    let type = estimator ? 'estimator' : 'scoring'
-
-    if (mode) {
-        // Clean board
-        $('#goban .row li')
-        .removeClass('area_-1')
-        .removeClass('area_0')
-        .removeClass('area_1')
-        .removeClass('dead')
-
-        exports.closeDrawers()
-        $('body').addClass(type)
-
-        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
-        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
-
-        sabaki.updateAreaMap(estimator)
-    } else {
-        $('body').removeClass(type)
-    }
-}
-
-exports.getEstimatorMode = function() {
-    return $('body').hasClass('estimator')
-}
-
-exports.setEstimatorMode = function(mode) {
-    exports.setScoringMode(mode, true)
 }
 
 exports.getIndicatorVertex = function() {
@@ -618,7 +521,7 @@ exports.getCurrentMoveInterpretation = function() {
 }
 
 /**
- * Methods
+ * Preparation Methods
  */
 
 exports.prepareScrollbars = function() {
@@ -752,7 +655,7 @@ exports.prepareGameChooser = function() {
             let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
-            let board = gametree.addBoard(...tp).nodes[tp[1]].board
+            let board = gametree.getBoard(...tp)
             let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))
@@ -791,6 +694,10 @@ exports.prepareIndicator = function() {
     $('#indicator').on('click', () => exports.hideIndicator())
 }
 
+/**
+ * Methods
+ */
+
 exports.updateTitle = function() {
     let basename = x => x
     let title = app.getName()
@@ -824,7 +731,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
             .on('click', function() {
                 exports.setIsBusy(true)
 
-                let result = dialog.showOpenDialog({
+                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -912,17 +819,6 @@ exports.readjustShifts = function(vertex) {
     }
 }
 
-exports.updateSidebarLayout = function() {
-    let $container = $('#properties .gm-scroll-view')
-    $container.css('opacity', 0)
-
-    setTimeout(() => {
-        $('#graph').data('sigma').renderers[0].resize().render()
-        $('#properties').data('scrollbar').update()
-        $container.css('opacity', 1)
-    }, 300)
-}
-
 exports.buildBoard = function() {
     let board = sabaki.getBoard()
     let rows = []
@@ -965,7 +861,7 @@ exports.buildBoard = function() {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    sabaki.vertexClicked(this, evt)
+                    sabaki.vertexClicked(this, evt.button, evt.ctrlKey)
                 }.bind(vertex))
                 .on('touchend', function(evt) {
                     if (!exports.getEditMode()
@@ -973,7 +869,7 @@ exports.buildBoard = function() {
                         return
 
                     evt.preventDefault()
-                    sabaki.vertexClicked(null, { button: 0 })
+                    sabaki.vertexClicked(null, 0)
                 })
                 .on('mousemove', function(evt) {
                     if (!$('#goban').data('mousedown')) return
@@ -1031,11 +927,10 @@ exports.updateBoardLines = function() {
         let mirrored = v2[0] < v1[0]
         let $li1 = $('#goban .pos_' + v1.join('-'))
         let $li2 = $('#goban .pos_' + v2.join('-'))
-        let pos1 = $li1.position()
-        let pos2 = $li2.position()
+        let pos1 = $li1.position(), pos2 = $li2.position()
         let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
-        let angle = Math.atan(dy / dx) * 180 / Math.PI
+        let angle = Math.atan2(dy, dx) * 180 / Math.PI
         if (mirrored) angle += 180
         let length = Math.sqrt(dx * dx + dy * dy)
 
@@ -1164,7 +1059,7 @@ exports.wireLinks = function($container) {
 }
 
 /**
- * Menus
+ * Menu Methods
  */
 
 exports.openHeaderMenu = function() {
@@ -1491,7 +1386,7 @@ exports.openAddGameMenu = function() {
             click: () => {
                 let tree = sabaki.getEmptyGameTree()
 
-                sabaki.setGameTrees(sabaki.getGameTrees().concat([tree]))
+                sabaki.setGameTrees([...sabaki.getGameTrees(), tree])
                 sabaki.setGameIndex(sabaki.getGameTrees().length - 1)
                 exports.showGameChooser('bottom')
             }
@@ -1505,6 +1400,117 @@ exports.openAddGameMenu = function() {
         Math.round($button.offset().left),
         Math.round($button.offset().top + $button.height())
     )
+}
+
+/**
+ * Bar Mode Methods
+ */
+
+exports.getPlayMode = function() {
+    return !exports.getFindMode()
+        && !exports.getEditMode()
+        && !exports.getGuessMode()
+        && !exports.getAutoplayMode()
+        && !exports.getScoringMode()
+        && !exports.getEstimatorMode()
+}
+
+exports.getFindMode = function() {
+    return $('body').hasClass('find')
+}
+
+exports.setFindMode = function(mode) {
+    if (mode) {
+        if (mode != exports.getFindMode()) exports.closeDrawers()
+        $('body').addClass('find')
+
+        let input = $('#find input').get(0)
+        input.focus()
+        input.select()
+    } else {
+        exports.hideIndicator()
+        $('body').removeClass('find')
+        document.activeElement.blur()
+    }
+}
+
+exports.getEditMode = function() {
+    return $('body').hasClass('edit')
+}
+
+exports.setEditMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('body').addClass('edit')
+
+        $('#properties textarea').eq(0).scrollTop(0)
+    } else {
+        $('#goban').data('edittool-data', null)
+        $('body').removeClass('edit')
+    }
+}
+
+exports.getGuessMode = function() {
+    return $('body').hasClass('guess')
+}
+
+exports.setGuessMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('body').addClass('guess')
+    } else {
+        $('body').removeClass('guess')
+    }
+}
+
+exports.getAutoplayMode = function() {
+    return $('body').hasClass('autoplay')
+}
+
+exports.setAutoplayMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
+        $('body').addClass('autoplay')
+    } else {
+        $('body').removeClass('autoplay')
+        sabaki.setAutoplaying(false)
+    }
+}
+
+exports.getScoringMode = function() {
+    return $('body').hasClass('scoring')
+}
+
+exports.setScoringMode = function(mode, estimator) {
+    let type = estimator ? 'estimator' : 'scoring'
+
+    if (mode) {
+        // Clean board
+        $('#goban .row li')
+        .removeClass('area_-1')
+        .removeClass('area_0')
+        .removeClass('area_1')
+        .removeClass('dead')
+
+        exports.closeDrawers()
+        $('body').addClass(type)
+
+        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
+        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
+
+        sabaki.updateAreaMap(estimator)
+    } else {
+        $('body').removeClass(type)
+    }
+}
+
+exports.getEstimatorMode = function() {
+    return $('body').hasClass('estimator')
+}
+
+exports.setEstimatorMode = function(mode) {
+    exports.setScoringMode(mode, true)
 }
 
 /**
@@ -1533,8 +1539,8 @@ exports.showGameInfo = function() {
         $info.find('input[name="' + key + '"]').val(value in rootNode ? rootNode[value][0] : '')
     }
 
-    $info.find('input[name="name_1"]').val(gametree.getPlayerName(1, tree, ''))
-    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(-1, tree, ''))
+    $info.find('input[name="name_1"]').val(gametree.getPlayerName(tree, 1))
+    $info.find('input[name="name_-1"]').val(gametree.getPlayerName(tree, -1))
     $info.find('input[name="komi"]').val('KM' in rootNode ? +rootNode.KM[0] : '')
     $info.find('input[name="size-width"]').val(sabaki.getBoard().width)
     $info.find('input[name="size-height"]').val(sabaki.getBoard().height)
@@ -1637,8 +1643,8 @@ exports.showGameChooser = function(restoreScrollbarPos = true) {
         ))
 
         let $gamename = $li.find('span').eq(0)
-        let $black = $li.find('.black').text(gametree.getPlayerName(1, tree, 'Black'))
-        let $white = $li.find('.white').text(gametree.getPlayerName(-1, tree, 'White'))
+        let $black = $li.find('.black').text(gametree.getPlayerName(tree, 1, 'Black'))
+        let $white = $li.find('.white').text(gametree.getPlayerName(tree, -1, 'White'))
 
         if ('BR' in node) $black.attr('title', node.BR[0])
         if ('WR' in node) $white.attr('title', node.WR[0])
