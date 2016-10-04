@@ -59,7 +59,8 @@ sabaki.setRootTree = function(tree) {
     sabaki.setGameTrees(trees)
 
     tree.parent = null
-    sabaki.setCurrentTreePosition(gametree.addBoard(tree), 0, true)
+    gametree.getBoard(tree)
+    sabaki.setCurrentTreePosition(tree, 0, true)
 
     view.setPlayerName(1,
         gametree.getPlayerName(tree, 1, 'Black'),
@@ -140,7 +141,7 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
 
     sabaki.updateSidebar(redraw, now)
     view.setShowHotspot('HO' in node)
-    gametree.addBoard(tree, index)
+    gametree.getBoard(tree, index)
     sabaki.setBoard(node.board)
 
     // Determine current player

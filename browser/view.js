@@ -757,7 +757,7 @@ exports.prepareGameChooser = function() {
             let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
 
-            let board = gametree.addBoard(...tp).nodes[tp[1]].board
+            let board = gametree.getBoard(...tp)
             let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))

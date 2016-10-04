@@ -359,8 +359,8 @@ exports.matrixdict2graph = function(matrixdict) {
     return graph
 }
 
-exports.addBoard = function(tree, index = 0, baseboard = null) {
-    if (index >= tree.nodes.length) return tree
+exports.getBoard = function(tree, index = 0, baseboard = null) {
+    if (index >= tree.nodes.length) return null
 
     let node = tree.nodes[index]
     let vertex = null
@@ -386,9 +386,7 @@ exports.addBoard = function(tree, index = 0, baseboard = null) {
             baseboard = new Board(...size)
         } else {
             let prevNode = prev[0].nodes[prev[1]]
-
-            if (!prevNode.board) exports.addBoard(...prev)
-            baseboard = prevNode.board
+            baseboard = prevNode.board || exports.getBoard(...prev)
         }
     }
 
@@ -453,8 +451,6 @@ exports.addBoard = function(tree, index = 0, baseboard = null) {
         })
     })
 
-    node.board = board
-
     // Add variation overlays
 
     let addOverlay = (node, type) => {
@@ -490,7 +486,8 @@ exports.addBoard = function(tree, index = 0, baseboard = null) {
         addOverlay(tree.nodes[index + 1], 'child')
     }
 
-    return tree
+    node.board = board
+    return board
 }
 
 exports.getJson = function(tree) {
