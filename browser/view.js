@@ -130,8 +130,10 @@ exports.setShowLeftSidebar = function(show) {
 
 exports.setLeftSidebarWidth = function(width) {
     if (!exports.getShowLeftSidebar()) return
+
     $('#leftsidebar').css('width', width)
     $('#main').css('left', width)
+    $('#console').data('scrollbar').update()
 }
 
 exports.getLeftSidebarWidth = function() {
@@ -224,6 +226,7 @@ exports.getSidebarWidth = function() {
 
 exports.setSidebarWidth = function(width) {
     if (!exports.getShowSidebar()) return
+    
     $('#sidebar').css('width', width)
     $('.sidebar #main').css('right', width)
 }
@@ -806,7 +809,7 @@ let showOpenSaveDialog = (type, options) => {
 
     ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
-    
+
     return result
 }
 
