@@ -325,19 +325,19 @@ sabaki.getEngineCommands = function() {
 sabaki.setUndoable = function(undoable, tooltip) {
     if (undoable) {
         let rootTree = gametree.clone(sabaki.getRootTree())
-        let position = gametree.getLevel(...sabaki.getCurrentTreePosition())
+        let level = gametree.getLevel(...sabaki.getCurrentTreePosition())
         if (!tooltip) tooltip = 'Undo'
 
         $('#bar header .undo').attr('title', tooltip)
         $('body')
         .addClass('undoable')
         .data('undodata-root', rootTree)
-        .data('undodata-pos', position)
+        .data('undodata-level', level)
     } else {
         $('body')
         .removeClass('undoable')
         .data('undodata-root', null)
-        .data('undodata-pos', null)
+        .data('undodata-level', null)
     }
 }
 
@@ -2227,7 +2227,7 @@ sabaki.removeNode = function(tree, index) {
 
 sabaki.undoBoard = function() {
     if ($('body').data('undodata-root') == null
-    || $('body').data('undodata-pos') == null)
+    || $('body').data('undodata-level') == null)
         return
 
     view.setIsBusy(true)
@@ -2235,7 +2235,7 @@ sabaki.undoBoard = function() {
     setTimeout(() => {
         sabaki.setRootTree($('body').data('undodata-root'))
 
-        let tp = gametree.navigate(sabaki.getRootTree(), 0, $('body').data('undodata-pos'))
+        let tp = gametree.navigate(sabaki.getRootTree(), 0, $('body').data('undodata-level'))
         sabaki.setCurrentTreePosition(...tp, true, true)
 
         sabaki.setUndoable(false)
