@@ -7,15 +7,15 @@ exports.readShapes = function(filename) {
 
     for (let i = 0; i < tree.subtrees.length; i++) {
         let node = tree.subtrees[i].nodes[0]
-        let points = ('AB' in node ? node.AB.map(x => sgf.point2vertex(x).concat([1])) : [])
-            .concat('AW' in node ? node.AW.map(x => sgf.point2vertex(x).concat([-1])) : [])
+        let points = ('AB' in node ? node.AB.map(x => [...sgf.point2vertex(x), 1]) : [])
+            .concat('AW' in node ? node.AW.map(x => [...sgf.point2vertex(x), -1]) : [])
 
         if ('CR' in node) {
             node.CR.forEach(value => {
                 let vs = sgf.compressed2list(value)
                 vs.forEach(v => {
                     if (!points.some(w => w[0] == v[0] && w[1] == v[1]))
-                        points.push(v.concat([0]))
+                        points.push([...v, 0])
                 })
             })
         }
@@ -52,7 +52,7 @@ exports.cornerMatch = function(area, source, target) {
             return null
     }
 
-    let i = hypotheses.concat(hypothesesInvert).indexOf(true)
+    let i = [...hypotheses, ...hypothesesInvert].indexOf(true)
     return i < 8 ? [i, false] : [i - 8, true]
 }
 

@@ -68,7 +68,7 @@ exports.getSymmetries = function(tuple) {
         ]
     }
 
-    return [tuple, reversed].concat(s(tuple)).concat(s(reversed))
+    return [tuple, reversed, ...s(tuple), ...s(reversed)]
 }
 
 exports.normalizeEndings = function(input) {

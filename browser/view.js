@@ -1342,7 +1342,7 @@ exports.openAddGameMenu = function() {
             click: () => {
                 let tree = sabaki.getEmptyGameTree()
 
-                sabaki.setGameTrees(sabaki.getGameTrees().concat([tree]))
+                sabaki.setGameTrees([...sabaki.getGameTrees(), tree])
                 sabaki.setGameIndex(sabaki.getGameTrees().length - 1)
                 exports.showGameChooser('bottom')
             }
@@ -1361,7 +1361,7 @@ exports.openAddGameMenu = function() {
                     filenames.forEach(filename => {
                         let trees = sgf.parseFile(filename).subtrees
 
-                        sabaki.setGameTrees(sabaki.getGameTrees().concat(trees))
+                        sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
                         sabaki.setGameIndex(sabaki.getGameIndex())
                         exports.showGameChooser('bottom')
                     })

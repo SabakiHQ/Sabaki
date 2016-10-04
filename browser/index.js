@@ -1415,7 +1415,7 @@ sabaki.useTool = function(vertex, buttonIndex = 0) {
             if (node[ids[i]].some(x => x.indexOf(':') >= 0)) {
                 node[ids[i]] = node[ids[i]]
                 .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
-                .reduce((list, x) => list.concat(x))
+                .reduce((list, x) => [...list, x])
             }
 
             // Remove residue

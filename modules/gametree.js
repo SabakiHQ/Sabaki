@@ -100,7 +100,7 @@ exports.getSection = function(tree, level) {
     let sections = []
 
     tree.subtrees.forEach(subtree => {
-        sections = sections.concat(exports.getSection(subtree, level - tree.nodes.length))
+        sections.push(...exports.getSection(subtree, level - tree.nodes.length))
     })
 
     return sections
@@ -217,7 +217,7 @@ exports.splitTree = function(tree, index) {
 exports.reduceTree = function(tree) {
     if (tree.subtrees.length != 1) return tree
 
-    tree.nodes = tree.nodes.concat(tree.subtrees[0].nodes)
+    tree.nodes.push(...tree.subtrees[0].nodes)
     tree.current = tree.subtrees[0].current
     tree.subtrees = tree.subtrees[0].subtrees
 
