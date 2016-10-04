@@ -228,7 +228,7 @@ exports.reduceTree = function(tree) {
     return tree
 }
 
-exports.getSectionWidth = function(y, matrix) {
+exports.getMatrixWidth = function(y, matrix) {
     let keys = Object.keys(new Int8Array(10))
         .map(i => parseFloat(i) + y - 4)
         .filter(i => i >= 0 && i < matrix.length)
