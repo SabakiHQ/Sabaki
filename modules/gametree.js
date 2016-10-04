@@ -70,6 +70,77 @@ exports.getPlayerName = function(tree, sign, fallback = '') {
     return result.trim() == '' ? fallback : result
 }
 
+exports.getHeight = function(tree) {
+    let height = 0
+
+    tree.subtrees.forEach(subtree => {
+        height = Math.max(exports.getHeight(subtree), height)
+    })
+
+    return height + tree.nodes.length
+}
+
+exports.getCurrentHeight = function(tree) {
+    let height = tree.nodes.length
+
+    if (tree.current != null)
+        height += exports.getCurrentHeight(tree.subtrees[tree.current])
+
+    return height
+}
+
+exports.getLevel = function(tree, index) {
+    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
+}
+
+exports.getSection = function(tree, level) {
+    if (level < 0) return []
+    if (level < tree.nodes.length) return [[tree, level]]
+
+    let sections = []
+
+    tree.subtrees.forEach(subtree => {
+        sections = sections.concat(exports.getSection(subtree, level - tree.nodes.length))
+    })
+
+    return sections
+}
+
+exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0) {
+    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
+
+    let hasCollisions = true
+    while (hasCollisions) {
+        hasCollisions = false
+
+        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
+
+            hasCollisions = true
+            xshift++
+            break
+        }
+    }
+
+    for (let y = 0; y < tree.nodes.length; y++) {
+        while (xshift >= matrix[yshift + y].length) {
+            matrix[yshift + y].push(null)
+        }
+
+        matrix[yshift + y][xshift] = [tree, y]
+        dict[tree.id + '-' + y] = [xshift, yshift + y]
+    }
+
+    if (!tree.collapsed) {
+        for (let k = 0; k < tree.subtrees.length; k++) {
+            let subtree = tree.subtrees[k]
+            exports.getMatrixDict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+        }
+    }
+
+    return [matrix, dict]
+}
+
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
@@ -157,42 +228,6 @@ exports.reduceTree = function(tree) {
     return tree
 }
 
-exports.getHeight = function(tree) {
-    let height = 0
-
-    tree.subtrees.forEach(subtree => {
-        height = Math.max(exports.getHeight(subtree), height)
-    })
-
-    return height + tree.nodes.length
-}
-
-exports.getCurrentHeight = function(tree) {
-    let height = tree.nodes.length
-
-    if (tree.current != null)
-        height += exports.getCurrentHeight(tree.subtrees[tree.current])
-
-    return height
-}
-
-exports.getLevel = function(tree, index) {
-    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
-}
-
-exports.getSection = function(tree, level) {
-    if (level < 0) return []
-    if (level < tree.nodes.length) return [[tree, level]]
-
-    let sections = []
-
-    tree.subtrees.forEach(subtree => {
-        sections = sections.concat(exports.getSection(subtree, level - tree.nodes.length))
-    })
-
-    return sections
-}
-
 exports.getSectionWidth = function(y, matrix) {
     let keys = Object.keys(new Int8Array(10))
         .map(i => parseFloat(i) + y - 4)
@@ -207,41 +242,6 @@ exports.getSectionWidth = function(y, matrix) {
     let width = Math.max(...keys.map(i => matrix[i].length)) - padding
 
     return [width, padding]
-}
-
-exports.tree2matrixdict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0) {
-    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
-
-    let hasCollisions = true
-    while (hasCollisions) {
-        hasCollisions = false
-
-        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
-
-            hasCollisions = true
-            xshift++
-            break
-        }
-    }
-
-    for (let y = 0; y < tree.nodes.length; y++) {
-        while (xshift >= matrix[yshift + y].length) {
-            matrix[yshift + y].push(null)
-        }
-
-        matrix[yshift + y][xshift] = [tree, y]
-        dict[tree.id + '-' + y] = [xshift, yshift + y]
-    }
-
-    if (!tree.collapsed) {
-        for (let k = 0; k < tree.subtrees.length; k++) {
-            let subtree = tree.subtrees[k]
-            exports.tree2matrixdict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
-        }
-    }
-
-    return [matrix, dict]
 }
 
 exports.onCurrentTrack = function(tree) {

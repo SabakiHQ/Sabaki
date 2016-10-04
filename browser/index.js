@@ -1663,7 +1663,7 @@ sabaki.updateSidebar = function(redraw = false, now = false) {
 sabaki.updateGraph = function() {
     if (!view.getShowSidebar() || !sabaki.getCurrentTreePosition()) return
 
-    sabaki.setGraphMatrixDict(gametree.tree2matrixdict(sabaki.getRootTree()))
+    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     sabaki.centerGraphCameraAt(sabaki.getCurrentGraphNode())
 }
 
@@ -2220,7 +2220,7 @@ sabaki.removeNode = function(tree, index) {
         gametree.reduceTree(parent)
     }
 
-    sabaki.setGraphMatrixDict(gametree.tree2matrixdict(sabaki.getRootTree()))
+    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     if (!prev || sabaki.getCurrentGraphNode()) prev = sabaki.getCurrentTreePosition()
     sabaki.setCurrentTreePosition(...prev)
 }
