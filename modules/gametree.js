@@ -521,6 +521,5 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    let sgf = require('./sgf')
     return helper.hash(sgf.stringify(tree))
 }
