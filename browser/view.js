@@ -780,6 +780,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     exports.setIsBusy(true)
+    ipcRenderer.send('build-menu', true)
 
     let result = dialog.showMessageBox(remote.getCurrentWindow(), {
         type,
@@ -790,7 +791,9 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
         noLink: true
     })
 
+    ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
+
     return result
 }
 
@@ -803,6 +806,7 @@ let showOpenSaveDialog = (type, options) => {
 
     ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
+    
     return result
 }
 
