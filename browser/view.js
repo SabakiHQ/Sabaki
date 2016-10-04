@@ -185,8 +185,8 @@ exports.getSidebarArrangement = function() {
     ]
 }
 
-exports.setSidebarArrangement = function(graph, comment, update = true) {
-    if (update) {
+exports.setSidebarArrangement = function(graph, comment, redraw = true) {
+    if (redraw) {
         let $container = $('#properties .gm-scroll-view')
         $container.css('opacity', 0)
 
@@ -877,7 +877,7 @@ exports.buildBoard = function() {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    sabaki.vertexClicked(this, evt)
+                    sabaki.vertexClicked(this, evt.button, evt.ctrlKey)
                 }.bind(vertex))
                 .on('touchend', function(evt) {
                     if (!exports.getEditMode()
@@ -885,7 +885,7 @@ exports.buildBoard = function() {
                         return
 
                     evt.preventDefault()
-                    sabaki.vertexClicked(null, { button: 0 })
+                    sabaki.vertexClicked(null, 0)
                 })
                 .on('mousemove', function(evt) {
                     if (!$('#goban').data('mousedown')) return

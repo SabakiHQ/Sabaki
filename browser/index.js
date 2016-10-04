@@ -322,11 +322,10 @@ sabaki.getEngineCommands = function() {
     return $('#console').data('commands')
 }
 
-sabaki.setUndoable = function(undoable, tooltip) {
+sabaki.setUndoable = function(undoable, tooltip = 'Undo') {
     if (undoable) {
         let rootTree = gametree.clone(sabaki.getRootTree())
         let level = gametree.getLevel(...sabaki.getCurrentTreePosition())
-        if (!tooltip) tooltip = 'Undo'
 
         $('#bar header .undo').attr('title', tooltip)
         $('body')
@@ -1091,12 +1090,12 @@ sabaki.askForSave = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, evt) {
+sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
         if (sabaki.getBoard().arrangement[vertex] == 0) return
 
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
@@ -1110,21 +1109,21 @@ sabaki.vertexClicked = function(vertex, evt) {
 
         sabaki.updateAreaMap(view.getEstimatorMode())
     } else if (view.getEditMode()) {
-        if (evt.ctrlKey) {
+        if (ctrlKey) {
             let coord = sabaki.getBoard().vertex2coord(vertex)
 
             view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
             sabaki.commitCommentText()
         } else {
-            sabaki.useTool(vertex, evt)
+            sabaki.useTool(vertex, buttonIndex)
         }
     } else if (view.getFindMode()) {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         view.setIndicatorVertex(vertex)
         sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), 1)
     } else if (view.getGuessMode()) {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         let tp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
         if (!tp) {
@@ -1171,7 +1170,7 @@ sabaki.vertexClicked = function(vertex, evt) {
     } else {
         // Playing mode
 
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
         if (board.arrangement[vertex] == 0) {
@@ -1366,7 +1365,7 @@ sabaki.makeResign = function(sign) {
     $('#info input[name="result"]').val(player + '+Resign')
 }
 
-sabaki.useTool = function(vertex, evt) {
+sabaki.useTool = function(vertex, buttonIndex = 0) {
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
     let tool = sabaki.getSelectedTool()
@@ -1401,7 +1400,7 @@ sabaki.useTool = function(vertex, evt) {
         }
 
         let sign = tool.indexOf('_1') != -1 ? 1 : -1
-        if (evt.button == 2) sign = -sign
+        if (buttonIndex == 2) sign = -sign
 
         let oldSign = board.arrangement[vertex]
         let ids = ['AW', 'AE', 'AB']
@@ -1482,7 +1481,7 @@ sabaki.useTool = function(vertex, evt) {
         if (node.LN.length == 0) delete node.LN
         if (node.AR.length == 0) delete node.AR
     } else {
-        if (evt.button != 0) return
+        if (buttonIndex != 0) return
 
         if (tool != 'label' && tool != 'number') {
             if (vertex in board.markups && board.markups[vertex][0] == tool) {
