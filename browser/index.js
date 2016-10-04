@@ -824,7 +824,7 @@ sabaki.prepareGameInfo = function() {
             pikaday.hide()
     })
 
-    $(window).on('resize', function() { adjustPosition(pikaday) })
+    $(window).on('resize', () => adjustPosition(pikaday))
 
     $dateInput.on('focus', function() {
         pikaday.show()
