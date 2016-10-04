@@ -1044,8 +1044,8 @@ sabaki.generateMove = function(ignoreBusy = false) {
         if (r.content.toLowerCase() != 'pass')
             v = sabaki.getBoard().coord2vertex(r.content)
 
-        $('#console').data('boardhash', sabaki.getBoard().makeMove(view.getCurrentPlayer(), v).getHash())
         sabaki.makeMove(v, false)
+        $('#console').data('boardhash', sabaki.getBoard().getHash())
     })
 }
 
@@ -1305,6 +1305,8 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             sabaki.setCurrentTreePosition(newtree, 0, null, null, ignoreAutoplay)
         }
     }
+
+    board = sabaki.getBoard()
 
     // Play sounds
 
