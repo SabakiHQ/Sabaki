@@ -88,7 +88,7 @@ exports.navigate = function(tree, index, step) {
     return null
 }
 
-exports.makeNodeIterator = function(tree, index) {
+exports.makeHorizontalNavigator = function(tree, index) {
     let root = exports.getRoot(tree)
     let level = exports.getLevel(tree, index, root)
     let sections = exports.getSection(root, level)

@@ -1585,7 +1585,7 @@ sabaki.findPosition = function(step, condition) {
 
     setTimeout(() => {
         let tp = sabaki.getCurrentTreePosition()
-        let iterator = gametree.makeNodeIterator(...tp)
+        let iterator = gametree.makeHorizontalNavigator(...tp)
 
         while (true) {
             tp = step >= 0 ? iterator.next() : iterator.prev()
@@ -1600,7 +1600,7 @@ sabaki.findPosition = function(step, condition) {
                     tp = sections[sections.length - 1]
                 }
 
-                iterator = gametree.makeNodeIterator(...tp)
+                iterator = gametree.makeHorizontalNavigator(...tp)
             }
 
             if (helper.equals(tp, sabaki.getCurrentTreePosition()) || condition(...tp))
