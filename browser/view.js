@@ -10,7 +10,7 @@ const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
 /**
- * Getter & setter
+ * Getters & Setters
  */
 
 let busyTimeout = null
@@ -185,11 +185,21 @@ exports.getSidebarArrangement = function() {
     ]
 }
 
-exports.setSidebarArrangement = function(graph, comment, updateLayout) {
-    if (updateLayout == null || updateLayout) exports.updateSidebarLayout()
+exports.setSidebarArrangement = function(graph, comment, update = true) {
+    if (update) {
+        let $container = $('#properties .gm-scroll-view')
+        $container.css('opacity', 0)
 
-    if (!graph && !comment) exports.setShowSidebar(false)
-    else {
+        setTimeout(() => {
+            $('#graph').data('sigma').renderers[0].resize().render()
+            $('#properties').data('scrollbar').update()
+            $container.css('opacity', 1)
+        }, 300)
+    }
+
+    if (!graph && !comment) {
+        exports.setShowSidebar(false)
+    } else {
         if (!graph && comment) exports.setPropertiesHeight(100)
         else if (comment) exports.setPropertiesHeight(setting.get('view.properties_height'))
         else if (!comment) exports.setPropertiesHeight(0)
@@ -362,119 +372,12 @@ exports.setSliderValue = function(value, label) {
     $('#sidebar .slider .inner span').css('top', value + '%').text(label)
 }
 
-exports.getPlayMode = function() {
-    return !exports.getFindMode()
-        && !exports.getEditMode()
-        && !exports.getGuessMode()
-        && !exports.getAutoplayMode()
-        && !exports.getScoringMode()
-        && !exports.getEstimatorMode()
-}
-
-exports.getFindMode = function() {
-    return $('body').hasClass('find')
-}
-
-exports.setFindMode = function(pickMode) {
-    if (pickMode) {
-        if (pickMode != exports.getFindMode()) exports.closeDrawers()
-        $('body').addClass('find')
-
-        let input = $('#find input').get(0)
-        input.focus()
-        input.select()
-    } else {
-        exports.hideIndicator()
-        $('body').removeClass('find')
-        document.activeElement.blur()
-    }
-}
-
 exports.getFindText = function() {
     return $('#find input').val()
 }
 
 exports.setFindText = function(text) {
     $('#find input').val(text)
-}
-
-exports.getEditMode = function() {
-    return $('body').hasClass('edit')
-}
-
-exports.setEditMode = function(editMode) {
-    if (editMode) {
-        exports.closeDrawers()
-        $('body').addClass('edit')
-
-        $('#properties textarea').eq(0).scrollTop(0)
-    } else {
-        $('#goban').data('edittool-data', null)
-        $('body').removeClass('edit')
-    }
-}
-
-exports.getGuessMode = function() {
-    return $('body').hasClass('guess')
-}
-
-exports.setGuessMode = function(guessMode) {
-    if (guessMode) {
-        exports.closeDrawers()
-        $('body').addClass('guess')
-    } else {
-        $('body').removeClass('guess')
-    }
-}
-
-exports.getAutoplayMode = function() {
-    return $('body').hasClass('autoplay')
-}
-
-exports.setAutoplayMode = function(autoplayMode) {
-    if (autoplayMode) {
-        exports.closeDrawers()
-        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
-        $('body').addClass('autoplay')
-    } else {
-        $('body').removeClass('autoplay')
-        sabaki.setAutoplaying(false)
-    }
-}
-
-exports.getScoringMode = function() {
-    return $('body').hasClass('scoring')
-}
-
-exports.setScoringMode = function(mode, estimator) {
-    let type = estimator ? 'estimator' : 'scoring'
-
-    if (mode) {
-        // Clean board
-        $('#goban .row li')
-        .removeClass('area_-1')
-        .removeClass('area_0')
-        .removeClass('area_1')
-        .removeClass('dead')
-
-        exports.closeDrawers()
-        $('body').addClass(type)
-
-        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
-        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
-
-        sabaki.updateAreaMap(estimator)
-    } else {
-        $('body').removeClass(type)
-    }
-}
-
-exports.getEstimatorMode = function() {
-    return $('body').hasClass('estimator')
-}
-
-exports.setEstimatorMode = function(mode) {
-    exports.setScoringMode(mode, true)
 }
 
 exports.getIndicatorVertex = function() {
@@ -623,7 +526,7 @@ exports.getCurrentMoveInterpretation = function() {
 }
 
 /**
- * Methods
+ * Preparation Methods
  */
 
 exports.prepareScrollbars = function() {
@@ -796,6 +699,10 @@ exports.prepareIndicator = function() {
     $('#indicator').on('click', () => exports.hideIndicator())
 }
 
+/**
+ * Methods
+ */
+
 exports.updateTitle = function() {
     let {basename} = require('path')
     let title = app.getName()
@@ -926,17 +833,6 @@ exports.readjustShifts = function(vertex) {
         removeShifts.forEach(s => $el.removeClass('shift_' + s))
         setTimeout(() => $el.removeClass('animate'), 200)
     }
-}
-
-exports.updateSidebarLayout = function() {
-    let $container = $('#properties .gm-scroll-view')
-    $container.css('opacity', 0)
-
-    setTimeout(() => {
-        $('#graph').data('sigma').renderers[0].resize().render()
-        $('#properties').data('scrollbar').update()
-        $container.css('opacity', 1)
-    }, 300)
 }
 
 exports.buildBoard = function() {
@@ -1180,7 +1076,7 @@ exports.wireLinks = function($container) {
 }
 
 /**
- * Menus
+ * Menu Methods
  */
 
 exports.openHeaderMenu = function() {
@@ -1484,6 +1380,117 @@ exports.openAddGameMenu = function() {
         Math.round($button.offset().left),
         Math.round($button.offset().top + $button.height())
     )
+}
+
+/**
+ * Bar Mode Methods
+ */
+
+exports.getPlayMode = function() {
+    return !exports.getFindMode()
+        && !exports.getEditMode()
+        && !exports.getGuessMode()
+        && !exports.getAutoplayMode()
+        && !exports.getScoringMode()
+        && !exports.getEstimatorMode()
+}
+
+exports.getFindMode = function() {
+    return $('body').hasClass('find')
+}
+
+exports.setFindMode = function(mode) {
+    if (mode) {
+        if (mode != exports.getFindMode()) exports.closeDrawers()
+        $('body').addClass('find')
+
+        let input = $('#find input').get(0)
+        input.focus()
+        input.select()
+    } else {
+        exports.hideIndicator()
+        $('body').removeClass('find')
+        document.activeElement.blur()
+    }
+}
+
+exports.getEditMode = function() {
+    return $('body').hasClass('edit')
+}
+
+exports.setEditMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('body').addClass('edit')
+
+        $('#properties textarea').eq(0).scrollTop(0)
+    } else {
+        $('#goban').data('edittool-data', null)
+        $('body').removeClass('edit')
+    }
+}
+
+exports.getGuessMode = function() {
+    return $('body').hasClass('guess')
+}
+
+exports.setGuessMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('body').addClass('guess')
+    } else {
+        $('body').removeClass('guess')
+    }
+}
+
+exports.getAutoplayMode = function() {
+    return $('body').hasClass('autoplay')
+}
+
+exports.setAutoplayMode = function(mode) {
+    if (mode) {
+        exports.closeDrawers()
+        $('#autoplay input').val(+setting.get('autoplay.sec_per_move'))
+        $('body').addClass('autoplay')
+    } else {
+        $('body').removeClass('autoplay')
+        sabaki.setAutoplaying(false)
+    }
+}
+
+exports.getScoringMode = function() {
+    return $('body').hasClass('scoring')
+}
+
+exports.setScoringMode = function(mode, estimator) {
+    let type = estimator ? 'estimator' : 'scoring'
+
+    if (mode) {
+        // Clean board
+        $('#goban .row li')
+        .removeClass('area_-1')
+        .removeClass('area_0')
+        .removeClass('area_1')
+        .removeClass('dead')
+
+        exports.closeDrawers()
+        $('body').addClass(type)
+
+        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
+        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
+
+        sabaki.updateAreaMap(estimator)
+    } else {
+        $('body').removeClass(type)
+    }
+}
+
+exports.getEstimatorMode = function() {
+    return $('body').hasClass('estimator')
+}
+
+exports.setEstimatorMode = function(mode) {
+    exports.setScoringMode(mode, true)
 }
 
 /**

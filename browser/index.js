@@ -18,7 +18,7 @@ const gtp = require('../modules/gtp')
 window.sabaki = {view}
 
 /**
- * Getter & setter
+ * Getters & Setters
  */
 
 sabaki.getGameTrees = function() {
