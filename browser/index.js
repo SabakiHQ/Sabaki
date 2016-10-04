@@ -2124,27 +2124,21 @@ sabaki.goToEnd = function() {
     sabaki.setCurrentTreePosition(...tp)
 }
 
-sabaki.goToNextVariation = function() {
+sabaki.goToSiblingVariation = function(sign) {
     let [tree, index] = sabaki.getCurrentTreePosition()
+    sign = sign < 0 ? -1 : 1
 
     if (!tree.parent) return
 
     let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + 1) % mod
+    let i = (tree.parent.current + mod + sign) % mod
 
     sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
-sabaki.goToPreviousVariation = function() {
-    let [tree, index] = sabaki.getCurrentTreePosition()
+sabaki.goToNextVariation = () => sabaki.goToSiblingVariation(1)
 
-    if (!tree.parent) return
-
-    let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + mod - 1) % mod
-
-    sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
-}
+sabaki.goToPreviousVariation = () => sabaki.goToSiblingVariation(-1)
 
 sabaki.goToMainVariation = function() {
     let tp = sabaki.getCurrentTreePosition()
