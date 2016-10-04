@@ -1959,7 +1959,7 @@ sabaki.loadFile = function(filename) {
     if (view.getIsBusy() || !sabaki.askForSave()) return
 
     if (!filename) {
-        let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+        let result = view.showOpenDialog({
             properties: ['openFile'],
             filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
         })
@@ -2017,21 +2017,20 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
 
 sabaki.saveFile = function(filename) {
     if (view.getIsBusy()) return
-    view.setIsBusy(true)
 
     if (!filename) {
-        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
+        filename = view.showSaveDialog({
             filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
         })
     }
 
     if (filename) {
+        view.setIsBusy(true)
         fs.writeFileSync(filename, sabaki.saveFileToSgf())
         sabaki.updateFileHash()
         view.setRepresentedFilename(filename)
+        view.setIsBusy(false)
     }
-
-    view.setIsBusy(false)
 }
 
 sabaki.saveFileToSgf = function() {

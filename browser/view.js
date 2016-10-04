@@ -734,9 +734,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
         ).append(
             $('<a class="browse"/>')
             .on('click', function() {
-                exports.setIsBusy(true)
-
-                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let result = view.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -747,8 +745,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
                     .val(result[0])
                     .get(0).focus()
                 }
-
-                exports.setIsBusy(false)
             })
             .append(
                 $('<img/>')
@@ -786,13 +782,31 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
     exports.setIsBusy(true)
 
     let result = dialog.showMessageBox(remote.getCurrentWindow(), {
-        type: type,
-        buttons: buttons,
+        type,
+        buttons,
         title: app.getName(),
-        message: message,
-        cancelId: cancelId,
+        message,
+        cancelId,
         noLink: true
     })
+
+    exports.setIsBusy(false)
+    return result
+}
+
+exports.showOpenDialog = function(options) {
+    exports.setIsBusy(true)
+
+    let result = dialog.showOpenDialog(remote.getCurrentWindow(), options)
+
+    exports.setIsBusy(false)
+    return result
+}
+
+exports.showSaveDialog = function(options) {
+    exports.setIsBusy(true)
+
+    let result = dialog.showSaveDialog(remote.getCurrentWindow(), options)
 
     exports.setIsBusy(false)
     return result
