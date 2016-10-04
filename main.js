@@ -219,9 +219,9 @@ function checkForUpdates(showNoUpdatesDialog) {
     })
 }
 
-ipcMain.on('new-window', (evt, path) => newWindow(path))
-ipcMain.on('build-menu', () => buildMenu())
-ipcMain.on('check-for-updates', (evt, showNoUpdatesDialog) => checkForUpdates(showNoUpdatesDialog))
+ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
+ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
+ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
 
 app.on('window-all-closed', () => {
     if (process.platform != 'darwin') {

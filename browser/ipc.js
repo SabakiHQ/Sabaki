@@ -84,9 +84,9 @@ let menudata = {
     reportissue: () => shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
 }
 
-ipcRenderer.on('menu-click', (e, action) => menudata[action]())
-ipcRenderer.on('attach-engine', (e, path, args) => sabaki.attachEngine(path, args))
+ipcRenderer.on('menu-click', (evt, action) => menudata[action]())
+ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 
-ipcRenderer.on('load-file', (e, path) => {
-    setTimeout(() => sabaki.loadFile(path), setting.get('app.loadgame_delay'))
+ipcRenderer.on('load-file', (evt, ...args) => {
+    setTimeout(() => sabaki.loadFile(...args), setting.get('app.loadgame_delay'))
 })
