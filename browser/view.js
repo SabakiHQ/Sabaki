@@ -1,4 +1,4 @@
-const {shell, remote} = require('electron')
+const {shell, remote, ipcRenderer} = require('electron')
 const {app, dialog, Menu} = remote
 const GeminiScrollbar = require('gemini-scrollbar')
 
@@ -794,23 +794,21 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
     return result
 }
 
-exports.showOpenDialog = function(options) {
+let showOpenSaveDialog = (type, options) => {
     exports.setIsBusy(true)
+    ipcRenderer.send('build-menu', true)
 
-    let result = dialog.showOpenDialog(remote.getCurrentWindow(), options)
+    type = type[0].toUpperCase() + type.slice(1).toLowerCase()
+    let result = dialog[`show${type}Dialog`](remote.getCurrentWindow(), options)
 
+    ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
     return result
 }
 
-exports.showSaveDialog = function(options) {
-    exports.setIsBusy(true)
+exports.showOpenDialog = options => showOpenSaveDialog('open', options)
 
-    let result = dialog.showSaveDialog(remote.getCurrentWindow(), options)
-
-    exports.setIsBusy(false)
-    return result
-}
+exports.showSaveDialog = options => showOpenSaveDialog('save', options)
 
 exports.readjustShifts = function(vertex) {
     let $li = $('#goban .pos_' + vertex.join('-'))
