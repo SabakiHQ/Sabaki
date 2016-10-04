@@ -42,7 +42,7 @@ function newWindow(path) {
     return window
 }
 
-function buildMenu(noWindows = false, disableAll = false) {
+function buildMenu(disableAll = false) {
     let template = JSON.parse(JSON.stringify(require('./menu.json')))
 
     // Create app menu for OS X
@@ -55,14 +55,12 @@ function buildMenu(noWindows = false, disableAll = false) {
         let helpMenu = template.find(x => x.label.replace('&', '') == 'Help')
         let items = helpMenu.submenu.splice(0, 3)
 
-        appMenu.push(...items.slice(0, noWindows ? 1 : 2))
+        appMenu.push(...items.slice(0, 2))
 
         // Remove original 'Preferences' menu item
 
         let fileMenu = template.find(x => x.label.replace('&', '') == 'File')
         let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
-
-        if (noWindows) preferenceItem.enabled = false
 
         appMenu.push(
             {type: 'separator'},
@@ -93,15 +91,14 @@ function buildMenu(noWindows = false, disableAll = false) {
             submenu: appMenu
         })
 
-        if (noWindows) template = [template[0]]
-
         // Add 'Window' menu
 
-        template.splice(noWindows ? template.length : template.length - 1, 0, {
+        template.splice(template.length - 1, 0, {
             submenu: [
                 {
                     label: 'New Window',
-                    click: () => newWindow()
+                    click: () => newWindow(),
+                    enabled: true
                 },
                 {role: 'minimize'},
                 {type: 'separator'},
@@ -171,7 +168,7 @@ function buildMenu(noWindows = false, disableAll = false) {
                 item.checked = !!setting.get(item.checked)
             }
 
-            if (disableAll && !('submenu' in item)) {
+            if (disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
                 item.enabled = false
             }
 
