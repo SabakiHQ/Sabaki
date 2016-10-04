@@ -1959,9 +1959,9 @@ sabaki.loadFile = function(filename) {
     if (view.getIsBusy() || !sabaki.askForSave()) return
 
     if (!filename) {
-        let result = dialog.showOpenDialog({
+        let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
             properties: ['openFile'],
-            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
         })
 
         if (result) filename = result[0]
@@ -2020,8 +2020,8 @@ sabaki.saveFile = function(filename) {
     view.setIsBusy(true)
 
     if (!filename) {
-        filename = dialog.showSaveDialog({
-            filters: [sgf.meta, { name: 'All Files', extensions: ['*'] }]
+        filename = dialog.showSaveDialog(remote.getCurrentWindow(), {
+            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
         })
     }
 
