@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Update to Electron v1.4.2
+
 **Fixed**
 
 * Fix arrow keys not working in open/save file dialog on macOS

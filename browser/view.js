@@ -729,9 +729,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
         ).append(
             $('<a class="browse"/>')
             .on('click', function() {
-                exports.setIsBusy(true)
-
-                let result = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                let result = view.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -742,8 +740,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
                     .val(result[0])
                     .get(0).focus()
                 }
-
-                exports.setIsBusy(false)
             })
             .append(
                 $('<img/>')
@@ -781,6 +777,13 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
     let result = confirm(message)
     return result ? 0 : cancelId
 }
+
+let showOpenSaveDialog = (type, options) => {
+}
+
+exports.showOpenDialog = options => showOpenSaveDialog('open', options)
+
+exports.showSaveDialog = options => showOpenSaveDialog('save', options)
 
 exports.readjustShifts = function(vertex) {
     let $li = $('#goban .pos_' + vertex.join('-'))
