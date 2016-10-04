@@ -141,8 +141,7 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
 
     sabaki.updateSidebar(redraw, now)
     view.setShowHotspot('HO' in node)
-    gametree.getBoard(tree, index)
-    sabaki.setBoard(node.board)
+    sabaki.setBoard(gametree.getBoard(tree, index))
 
     // Determine current player
 
