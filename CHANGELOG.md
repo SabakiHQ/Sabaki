@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.18.2][v0.18.2] (2016-10-10)
+
+**Fixed**
+
+* Fix graph not displaying diamond shapes
+
 ## [Sabaki v0.18.1][v0.18.1] (2016-10-10)
 
 **Changed**
