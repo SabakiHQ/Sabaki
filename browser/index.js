@@ -1102,6 +1102,8 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
         }
     }
 
+    board = sabaki.getBoard()
+
     // Play sounds
 
     if (!pass) {
@@ -1913,36 +1915,30 @@ sabaki.goToComment = function(step) {
 
 sabaki.goToBeginning = function() {
     let tree = sabaki.getRootTree()
-    if (tree.nodes.length == 0) return
     sabaki.setCurrentTreePosition(tree, 0)
 }
 
 sabaki.goToEnd = function() {
-    let tp = gametree.navigate(sabaki.getRootTree(), 0, gametree.getCurrentHeight(tree) - 1)
+    let tree = sabaki.getRootTree()
+    let tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
     sabaki.setCurrentTreePosition(...tp)
 }
 
-sabaki.goToNextVariation = function() {
+sabaki.goToSiblingVariation = function(sign) {
     let [tree, index] = sabaki.getCurrentTreePosition()
+    sign = sign < 0 ? -1 : 1
 
     if (!tree.parent) return
 
     let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + 1) % mod
+    let i = (tree.parent.current + mod + sign) % mod
 
     sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
-sabaki.goToPreviousVariation = function() {
-    let [tree, index] = sabaki.getCurrentTreePosition()
+sabaki.goToNextVariation = () => sabaki.goToSiblingVariation(1)
 
-    if (!tree.parent) return
-
-    let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + mod - 1) % mod
-
-    sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
-}
+sabaki.goToPreviousVariation = () => sabaki.goToSiblingVariation(-1)
 
 sabaki.goToMainVariation = function() {
     let tp = sabaki.getCurrentTreePosition()
@@ -2059,10 +2055,20 @@ $(document).ready(function() {
     sabaki.preparePreferences()
     sabaki.newFile()
 
+    view.prepareScrollbars()
+    view.prepareResizers()
+    view.prepareGameChooser()
+    view.prepareIndicator()
+    view.updateTitle()
+
     $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(evt) {
         evt.preventDefault()
         if (evt.wheelDelta < 0) sabaki.goForward()
         else if (evt.wheelDelta > 0) sabaki.goBack()
+    })
+
+    $('body').on('mouseup', function() {
+        $('#goban').data('mousedown', false)
     })
 }).on('keydown', function(evt) {
     if (evt.keyCode == 27) {
