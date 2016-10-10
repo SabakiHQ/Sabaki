@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.18.1][v0.18.1] (2016-10-10)
 
 **Changed**
 
+* Several internal changes to the code base
 * Update to Electron v1.4.3
 
 **Fixed**
@@ -433,7 +434,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.1...master
+[v0.18.1]: https://github.com/yishn/Sabaki/compare/v0.18.0...v0.18.1
 [v0.18.0]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.0
 [v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.17.1...v0.17.2
 [v0.17.1]: https://github.com/yishn/Sabaki/compare/v0.17.0...v0.17.1
