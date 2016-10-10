@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Several internal changes
+* Several internal changes to the code base
 * Update to Electron v1.4.3
 
 **Fixed**
