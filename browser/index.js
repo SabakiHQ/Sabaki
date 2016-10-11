@@ -1115,7 +1115,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
             view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
             sabaki.commitCommentText()
         } else {
-            sabaki.useTool(vertex, buttonIndex)
+            sabaki.useTool(vertex, null, buttonIndex)
         }
     } else if (view.getFindMode()) {
         if (buttonIndex != 0) return
@@ -1359,18 +1359,18 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     }
 }
 
-sabaki.makeResign = function(sign) {
-    if (!sign) sign = view.getCurrentPlayer()
-
+sabaki.makeResign = function() {
+    let player = view.getCurrentPlayer() > 0 ? 'W' : 'B'
+    
     view.showGameInfo()
-    let player = sign > 0 ? 'W' : 'B'
     $('#info input[name="result"]').val(player + '+Resign')
 }
 
-sabaki.useTool = function(vertex, buttonIndex = 0) {
+sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
+    if (!tool) tool = sabaki.getSelectedTool()
+
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
-    let tool = sabaki.getSelectedTool()
     let board = sabaki.getBoard()
     let dictionary = {
         cross: 'MA',
