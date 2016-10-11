@@ -80,8 +80,8 @@ let menudata = {
     togglefullscreen: () => view.setFullScreen(!view.getFullScreen()),
 
     checkforupdates: () => ipcRenderer.send('check-for-updates', true),
-    github: () => shell.openExternal('https://github.com/yishn/' + app.getName()),
-    reportissue: () => shell.openExternal('https://github.com/yishn/' + app.getName() + '/issues')
+    github: () => shell.openExternal(`https://github.com/yishn/${app.getName()}`),
+    reportissue: () => shell.openExternal(`https://github.com/yishn/${app.getName()}/issues`)
 }
 
 ipcRenderer.on('menu-click', (evt, action) => menudata[action]())
