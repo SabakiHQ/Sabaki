@@ -78,26 +78,27 @@ exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            let encodedValue = exports.unescapeString(value.substr(1, value.length - 2))
+            value = exports.unescapeString(value.substr(1, value.length - 2))
 
-            if (id == 'CA' && encoding != null && encodedValue != defaultEncoding && iconv.encodingExists(encodedValue)) {
-                encoding = encodedValue
-                property.push(encodedValue)
+            if (encoding != null) {
+                if (id == 'CA' && value != defaultEncoding && iconv.encodingExists(value)) {
+                    encoding = value
 
-                // We may have already incorrectly parsed some values in this root node
-                // already, so we have to go back and re-parse them now.
+                    // We may have already incorrectly parsed some values in this root node
+                    // already, so we have to go back and re-parse them now.
 
-                for (let k in node) {
-                    if (encodedProperties.indexOf(k) >= 0) {
-                        node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
+                    for (let k in node) {
+                        if (encodedProperties.includes(k)) {
+                            node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
+                        }
                     }
+                } else if (encodedProperties.includes(id) && encoding != defaultEncoding) {
+                    let decodedValue = iconv.decode(Buffer.from(value, 'binary'), encoding)
+                    value = decodedValue
                 }
-            } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
-                let decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
-                property.push(decodedValue)
-            } else {
-                property.push(encodedValue)
             }
+
+            property.push(value)
         }
 
         start[0] = ++i
@@ -134,8 +135,7 @@ exports.parseFile = function(filename, callback, ignoreEncoding = false) {
     let input = fs.readFileSync(filename, {encoding: 'binary'})
     let tokens = exports.tokenize(input)
 
-    if (ignoreEncoding) return exports.parse(tokens, callback, null)
-    return exports.parse(tokens, callback)
+    return exports.parse(tokens, callback, ignoreEncoding ? null : undefined)
 }
 
 exports.string2dates = function(input) {
