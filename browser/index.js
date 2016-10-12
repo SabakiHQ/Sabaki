@@ -173,9 +173,9 @@ sabaki.getSelectedTool = function() {
     let tool = $li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return $li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+        return $li.find('img').attr('src').includes('_1') ? 'stone_1' : 'stone_-1'
     } else if (tool == 'line') {
-        return $li.find('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
+        return $li.find('img').attr('src').includes('line') ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -184,7 +184,7 @@ sabaki.getSelectedTool = function() {
 sabaki.setSelectedTool = function(tool) {
     if (!view.getEditMode()) {
         view.setEditMode(true)
-        if (sabaki.getSelectedTool().indexOf(tool) >= 0) return
+        if (sabaki.getSelectedTool().includes(tool)) return
     }
 
     $('#goban').data('edittool-data', null)
@@ -500,10 +500,10 @@ sabaki.prepareEditTools = function() {
             $('#edit .selected').removeClass('selected')
             $a.parent().addClass('selected')
         } else if ($a.parent().hasClass('stone-tool')) {
-            let black = $img.attr('src').indexOf('_1') >= 0
+            let black = $img.attr('src').includes('_1')
             $img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         } else if ($a.parent().hasClass('line-tool')) {
-            let line = $img.attr('src').indexOf('line') >= 0
+            let line = $img.attr('src').includes('line')
             $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
@@ -646,14 +646,14 @@ sabaki.prepareConsole = function() {
     })
 
     $('#console form input').on('keydown', function(evt) {
-        if ([40, 38, 9].indexOf(evt.keyCode) != -1) evt.preventDefault()
+        if ([40, 38, 9].includes(evt.keyCode)) evt.preventDefault()
         let $inputs = $('#console form input')
 
         if ($(this).data('index') == null) $(this).data('index', $inputs.get().indexOf(this))
         let i = $(this).data('index')
         let length = $inputs.length
 
-        if ([38, 40].indexOf(evt.keyCode) != -1) {
+        if ([38, 40].includes(evt.keyCode)) {
             if (evt.keyCode == 38) {
                 // Up
                 i = Math.max(i - 1, 0)
@@ -1014,7 +1014,7 @@ sabaki.sendGTPCommand = function(command, ignoreBlocked = false, callback = () =
         if (scrollbar) scrollbar.update()
     }
 
-    if (!ignoreBlocked && setting.get('console.blocked_commands').indexOf(command.name) != -1) {
+    if (!ignoreBlocked && setting.get('console.blocked_commands').includes(command.name)) {
         listener(new gtp.Response(null, 'blocked command', true, true), command)
     } else {
         controller.once('response-' + command.internalId, listener)
@@ -1381,7 +1381,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
         label: 'LB'
     }
 
-    if (tool.indexOf('stone') != -1) {
+    if (tool.includes('stone')) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
             // New variation needed
 
@@ -1401,7 +1401,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
             if (updateRoot) sabaki.setRootTree(splitted)
         }
 
-        let sign = tool.indexOf('_1') != -1 ? 1 : -1
+        let sign = tool.includes('_1') ? 1 : -1
         if (buttonIndex == 2) sign = -sign
 
         let oldSign = board.arrangement[vertex]
@@ -1414,7 +1414,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
             // Resolve compressed lists
 
-            if (node[ids[i]].some(x => x.indexOf(':') >= 0)) {
+            if (node[ids[i]].some(x => x.includes(':'))) {
                 node[ids[i]] = node[ids[i]]
                 .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
                 .reduce((list, x) => [...list, x])
@@ -1624,7 +1624,7 @@ sabaki.findMove = function(vertex, text, step) {
     sabaki.findPosition(step, (tree, index) => {
         let node = tree.nodes[index]
         let cond = (prop, value) => prop in node
-            && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
+            && node[prop][0].toLowerCase().includes(value.toLowerCase())
 
         return (!point || ['B', 'W'].some(x => cond(x, point)))
             && (!text || cond('C', text) || cond('N', text))

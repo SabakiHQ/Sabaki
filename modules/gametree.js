@@ -304,9 +304,9 @@ exports.matrixdict2graph = function(matrixdict) {
             if ('HO' in tree.nodes[index])
                 node.originalColor = setting.get('graph.node_bookmark_color')
 
-            if (currentTrack.indexOf(tree.id) != -1) {
+            if (currentTrack.includes(tree.id)) {
                 node.color = node.originalColor
-            } else if (notCurrentTrack.indexOf(tree.id) == -1) {
+            } else if (!notCurrentTrack.includes(tree.id)) {
                 if (exports.onCurrentTrack(tree)) {
                     currentTrack.push(tree.id)
                     node.color = node.originalColor
@@ -377,7 +377,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             if ('SZ' in node) {
                 size = node.SZ[0]
 
-                if (size.indexOf(':') >= 0) size = size.split(':')
+                if (size.includes(':')) size = size.split(':')
                 else size = [size, size]
 
                 size = size.map(x => +x)
@@ -493,7 +493,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 exports.getJson = function(tree) {
     return JSON.stringify(tree, (name, val) => {
         let list = ['id', 'board', 'parent', 'collapsed', 'current']
-        return list.indexOf(name) >= 0 ? undefined : val
+        return list.includes(name) ? undefined : val
     })
 }
 

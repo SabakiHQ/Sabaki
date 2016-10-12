@@ -78,7 +78,7 @@ class Board {
     getConnectedComponent(vertex, func, result) {
         if (func instanceof Array) {
             let signs = func
-            func = v => signs.indexOf(this.arrangement[v]) >= 0
+            func = v => signs.includes(this.arrangement[v])
         }
 
         if (!this.hasVertex(vertex)) return []

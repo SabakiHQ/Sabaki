@@ -48,7 +48,7 @@ exports.cornerMatch = function(area, source, target) {
                 hypothesesInvert[i] = false
         }
 
-        if (hypotheses.indexOf(true) < 0 && hypothesesInvert.indexOf(true) < 0)
+        if (!hypotheses.includes(true) && !hypothesesInvert.includes(true))
             return null
     }
 
@@ -80,7 +80,7 @@ exports.shapeMatch = function(shape, board, vertex) {
                     hypotheses[k] = false
             }
 
-            if (hypotheses.indexOf(true) < 0) break
+            if (!hypotheses.includes(true)) break
         }
 
         let symm = hypotheses.indexOf(true)

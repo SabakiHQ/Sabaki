@@ -17,7 +17,7 @@ exports.check = function(repo, callback) {
             })
 
             response.on('end', () => {
-                let hasUpdates = content.indexOf('/tag/v' + app.getVersion()) == -1
+                let hasUpdates = !content.includes('/tag/v' + app.getVersion())
                 callback(null, hasUpdates, url)
             })
         }).on('error', err => {

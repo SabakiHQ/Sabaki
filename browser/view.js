@@ -679,7 +679,7 @@ exports.prepareGameChooser = function() {
 
         $('#gamechooser .games-list li').get().forEach(li => {
             if ($(li).find('span').get().some(span => {
-                return $(span).text().toLowerCase().indexOf(value.toLowerCase()) >= 0
+                return $(span).text().toLowerCase().includes(value.toLowerCase())
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
         })
@@ -899,7 +899,7 @@ exports.buildBoard = function() {
                 }.bind(vertex))
                 .on('touchend', function(evt) {
                     if (!exports.getEditMode()
-                    || ['line', 'arrow'].indexOf(sabaki.getSelectedTool()) < 0)
+                    || !['line', 'arrow'].includes(sabaki.getSelectedTool()))
                         return
 
                     evt.preventDefault()
