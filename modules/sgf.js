@@ -54,7 +54,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, encoding = defaultEncoding) {
+exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
@@ -80,7 +80,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
         } else if (type == 'c_value_type') {
             let encodedValue = exports.unescapeString(value.substr(1, value.length - 2))
 
-            if (id == 'CA' && iconv.encodingExists(encodedValue) && encodedValue != defaultEncoding) {
+            if (id == 'CA' && encoding != null && encodedValue != defaultEncoding && iconv.encodingExists(encodedValue)) {
                 encoding = encodedValue
                 property.push(encodedValue)
 
@@ -109,7 +109,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
         if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            let t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
+            let t = exports.parse(tokens, callback, encoding, start, depth + Math.min(tree.subtrees.length, 1))
 
             if (t.nodes.length > 0) {
                 t.parent = tree
