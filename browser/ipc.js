@@ -11,6 +11,7 @@ let menudata = {
     loadclipboard: () => sabaki.loadFileFromSgf(
         clipboard.readText(),
         false,
+        true,
         () => view.setRepresentedFilename(null)
     ),
     copytoclipboard: () => clipboard.writeText(sabaki.saveFileToSgf()),

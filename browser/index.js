@@ -1361,7 +1361,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
 sabaki.makeResign = function() {
     let player = view.getCurrentPlayer() > 0 ? 'W' : 'B'
-    
+
     view.showGameInfo()
     $('#info input[name="result"]').val(player + '+Resign')
 }
@@ -1970,13 +1970,13 @@ sabaki.loadFile = function(filename) {
     }
 
     if (filename) {
-        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, err => {
+        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, false, err => {
             if (!err) view.setRepresentedFilename(filename)
         })
     }
 }
 
-sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -1989,11 +1989,11 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
 
         try {
             trees = sgf.parse(sgf.tokenize(content), progress => {
-                if (progress - lastprogress < 0.05) return
+                if (progress - lastprogress < 0.1) return
 
                 view.setProgressIndicator(progress, win)
                 lastprogress = progress
-            }).subtrees
+            }, ignoreEncoding ? null : undefined).subtrees
 
             if (trees.length == 0) throw true
         } catch(e) {
