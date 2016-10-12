@@ -130,10 +130,11 @@ exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding
     return tree
 }
 
-exports.parseFile = function(filename, callback) {
+exports.parseFile = function(filename, callback, ignoreEncoding = false) {
     let input = fs.readFileSync(filename, {encoding: 'binary'})
     let tokens = exports.tokenize(input)
 
+    if (ignoreEncoding) return exports.parse(tokens, callback, null)
     return exports.parse(tokens, callback)
 }
 
