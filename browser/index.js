@@ -1957,8 +1957,8 @@ sabaki.newFile = function(playSound) {
     }
 }
 
-sabaki.loadFile = function(filename) {
-    if (view.getIsBusy() || !sabaki.askForSave()) return
+sabaki.loadFile = function(filename, dontask = false) {
+    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
 
     if (!filename) {
         let result = view.showOpenDialog({
