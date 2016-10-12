@@ -44,34 +44,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.17.2][v0.17.2] (2016-09-10)
 
-**Changed**
-
-* Update to Electron v1.3.5
-
-**Fixed**
-
-* Fix autoplay stopping at non-move nodes
-* Fix autoplay not working with non-alternating color moves
-* Fix regression where swapping player names wouldn't work
-* Fix performance issue where a huge amount of games inside a SGF collection can slow down Sabaki
-
-## [Sabaki v0.17.1][v0.17.1] (2016-08-14)
-
-**Fixed**
-
-* Fix regression where autoplay is not working
-* Fix system paths not being honored in macOS
-
-## [Sabaki v0.17.0][v0.17.0] (2016-08-10)
-
 **Added**
 
+* Autoplay mode
+* `Ctrl`-click position to insert coordinates when in edit mode
 * Add keyboard shortcut for 'Pass' (`Ctrl+P` or `Command+P`)
 
 **Changed**
 
 * Clicking on the current player indicator switches current player without passing
-* Update to Electron v1.3.2
+* Update to Electron v1.3.5
 * Bump gemini-scrollbar@v1.4.3
 * Bump octicons@v4.3.0
 
@@ -79,20 +61,11 @@ All notable changes to this project will be documented in this file.
 
 * Fix `PL[B]` not working
 * Fix scrollbar in engines list not updating correctly
-
-## [Sabaki v0.16.1][v0.16.1] (2016-07-14)
-
-**Added**
-
-* Autoplay mode
-* `Ctrl`-click position to insert coordinates when in edit mode
-
-**Changed**
-
-* Update to Electron v1.2.7
-
-**Fixed**
-
+* Fix system paths not being honored in macOS
+* Fix autoplay stopping at non-move nodes
+* Fix autoplay not working with non-alternating color moves
+* Fix regression where swapping player names wouldn't work
+* Fix performance issue where a huge amount of games inside a SGF collection can slow down Sabaki
 * Fix games vanishing in 'Manage Games...' when dragging
 * Fix unresponsiveness when cancelling adding files to games
 * Fix adding files to games being impossible under Mac
@@ -385,7 +358,6 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 * Fix wrong cross symbol on Windows 10
-* Fix a bug where current game track is not correctly highlighted in the graph
 * Fix a bug where stone sounds are not played immediately
 * Fix graph performance issues
 * Fix uncaught exception when playing in pruned subgraphs again
@@ -450,10 +422,7 @@ First release
 [v0.18.2]: https://github.com/yishn/Sabaki/compare/v0.18.1...v0.18.2
 [v0.18.1]: https://github.com/yishn/Sabaki/compare/v0.18.0...v0.18.1
 [v0.18.0]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.0
-[v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.17.1...v0.17.2
-[v0.17.1]: https://github.com/yishn/Sabaki/compare/v0.17.0...v0.17.1
-[v0.17.0]: https://github.com/yishn/Sabaki/compare/v0.16.1...v0.17.0
-[v0.16.1]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.16.1
+[v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.17.2
 [v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.3
 [v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0
 [v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
