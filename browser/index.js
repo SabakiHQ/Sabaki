@@ -1318,7 +1318,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
         delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
 
         if (capture || suicide)
-            setTimeout(() => sound.playCapture(), delay)
+            sound.playCapture(delay)
 
         sound.playPachi()
     } else {
