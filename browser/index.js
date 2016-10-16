@@ -115,6 +115,8 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
     if (!tree || view.getScoringMode() || view.getEstimatorMode()) return
     if (!ignoreAutoplay && sabaki.getAutoplaying()) sabaki.setAutoplaying(false)
 
+    sabaki.events.emit('navigating', tree, index)
+
     // Remove old graph node color
 
     let oldGraphNode = sabaki.getCurrentGraphNode()
@@ -159,6 +161,10 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
         currentplayer = node.PL[0] == 'W' ? -1 : 1
 
     view.setCurrentPlayer(currentplayer)
+
+    // Emit event
+
+    sabaki.events.emit('navigated')
 }
 
 sabaki.getCurrentGraphNode = function() {
@@ -2275,6 +2281,8 @@ $(document).ready(function() {
     $('body').on('mouseup', function() {
         $('#goban').data('mousedown', false)
     })
+
+    sabaki.events.emit('preparation-complete')
 }).on('keydown', function(evt) {
     if (evt.keyCode == 27) {
         // Escape
