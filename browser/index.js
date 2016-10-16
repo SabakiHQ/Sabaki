@@ -3,6 +3,7 @@ require('./ipc')
 const fs = require('fs')
 const {ipcRenderer, remote} = require('electron')
 const {app, dialog, Menu} = remote
+const EventEmitter = require('events')
 const Pikaday = require('pikaday')
 
 const view = require('./view')
@@ -17,6 +18,7 @@ const gtp = require('../modules/gtp')
 
 window.sabaki = {
     view,
+    events: new EventEmitter()
     modules: {sgf, gametree, sound, setting}
 }
 
