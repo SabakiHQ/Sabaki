@@ -15,7 +15,10 @@ const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
 
-window.sabaki = {view}
+window.sabaki = {
+    view,
+    modules: {sgf, gametree, sound, setting}
+}
 
 /**
  * Getters & Setters
