@@ -15,7 +15,10 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
-window.sabaki = {view}
+window.sabaki = {
+    view,
+    modules: {sgf, gametree, sound, setting}
+}
 
 /**
  * Getters & Setters
@@ -173,9 +176,9 @@ sabaki.getSelectedTool = function() {
     let tool = $li.attr('class').replace('selected', '').replace('-tool', '').trim()
 
     if (tool == 'stone') {
-        return $li.find('img').attr('src').indexOf('_1') != -1 ? 'stone_1' : 'stone_-1'
+        return $li.find('img').attr('src').includes('_1') ? 'stone_1' : 'stone_-1'
     } else if (tool == 'line') {
-        return $li.find('img').attr('src').indexOf('line') != -1 ? 'line' : 'arrow'
+        return $li.find('img').attr('src').includes('line') ? 'line' : 'arrow'
     } else {
         return tool
     }
@@ -184,7 +187,7 @@ sabaki.getSelectedTool = function() {
 sabaki.setSelectedTool = function(tool) {
     if (!view.getEditMode()) {
         view.setEditMode(true)
-        if (sabaki.getSelectedTool().indexOf(tool) >= 0) return
+        if (sabaki.getSelectedTool().includes(tool)) return
     }
 
     $('#goban').data('edittool-data', null)
@@ -500,10 +503,10 @@ sabaki.prepareEditTools = function() {
             $('#edit .selected').removeClass('selected')
             $a.parent().addClass('selected')
         } else if ($a.parent().hasClass('stone-tool')) {
-            let black = $img.attr('src').indexOf('_1') >= 0
+            let black = $img.attr('src').includes('_1')
             $img.attr('src', black ? '../img/edit/stone_-1.svg' : '../img/edit/stone_1.svg')
         } else if ($a.parent().hasClass('line-tool')) {
-            let line = $img.attr('src').indexOf('line') >= 0
+            let line = $img.attr('src').includes('line')
             $img.attr('src', line ? '../img/edit/arrow.svg' : '../img/edit/line.svg')
         }
     })
@@ -911,7 +914,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
             view.setCommentText([view.getCommentText().trim(), coord].join(' ').trim())
             sabaki.commitCommentText()
         } else {
-            sabaki.useTool(vertex, buttonIndex)
+            sabaki.useTool(vertex, null, buttonIndex)
         }
     } else if (view.getFindMode()) {
         if (buttonIndex != 0) return
@@ -1155,18 +1158,18 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     }
 }
 
-sabaki.makeResign = function(sign) {
-    if (!sign) sign = view.getCurrentPlayer()
+sabaki.makeResign = function() {
+    let player = view.getCurrentPlayer() > 0 ? 'W' : 'B'
 
     view.showGameInfo()
-    let player = sign > 0 ? 'W' : 'B'
     $('#info input[name="result"]').val(player + '+Resign')
 }
 
-sabaki.useTool = function(vertex, buttonIndex = 0) {
+sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
+    if (!tool) tool = sabaki.getSelectedTool()
+
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
-    let tool = sabaki.getSelectedTool()
     let board = sabaki.getBoard()
     let dictionary = {
         cross: 'MA',
@@ -1177,7 +1180,7 @@ sabaki.useTool = function(vertex, buttonIndex = 0) {
         label: 'LB'
     }
 
-    if (tool.indexOf('stone') != -1) {
+    if (tool.includes('stone')) {
         if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
             // New variation needed
 
@@ -1197,7 +1200,7 @@ sabaki.useTool = function(vertex, buttonIndex = 0) {
             if (updateRoot) sabaki.setRootTree(splitted)
         }
 
-        let sign = tool.indexOf('_1') != -1 ? 1 : -1
+        let sign = tool.includes('_1') ? 1 : -1
         if (buttonIndex == 2) sign = -sign
 
         let oldSign = board.arrangement[vertex]
@@ -1210,7 +1213,7 @@ sabaki.useTool = function(vertex, buttonIndex = 0) {
 
             // Resolve compressed lists
 
-            if (node[ids[i]].some(x => x.indexOf(':') >= 0)) {
+            if (node[ids[i]].some(x => x.includes(':'))) {
                 node[ids[i]] = node[ids[i]]
                 .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
                 .reduce((list, x) => [...list, x])
@@ -1420,7 +1423,7 @@ sabaki.findMove = function(vertex, text, step) {
     sabaki.findPosition(step, (tree, index) => {
         let node = tree.nodes[index]
         let cond = (prop, value) => prop in node
-            && node[prop][0].toLowerCase().indexOf(value.toLowerCase()) >= 0
+            && node[prop][0].toLowerCase().includes(value.toLowerCase())
 
         return (!point || ['B', 'W'].some(x => cond(x, point)))
             && (!text || cond('C', text) || cond('N', text))
@@ -1753,8 +1756,8 @@ sabaki.newFile = function(playSound) {
     }
 }
 
-sabaki.loadFile = function(filename) {
-    if (view.getIsBusy() || !sabaki.askForSave()) return
+sabaki.loadFile = function(filename, dontask = false) {
+    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
 
     $('#fileinput').val('').off('change').on('change', function(evt) {
         let file = evt.target.files[0]
@@ -1777,7 +1780,7 @@ sabaki.loadFile = function(filename) {
     }).get(0).click()
 }
 
-sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -1790,11 +1793,11 @@ sabaki.loadFileFromSgf = function(content, dontask = false, callback = () => {})
 
         try {
             trees = sgf.parse(sgf.tokenize(content), progress => {
-                if (progress - lastprogress < 0.05) return
+                if (progress - lastprogress < 0.1) return
 
                 view.setProgressIndicator(progress, win)
                 lastprogress = progress
-            }).subtrees
+            }, ignoreEncoding ? null : undefined).subtrees
 
             if (trees.length == 0) throw true
         } catch(e) {

@@ -52,6 +52,7 @@ let defaults = {
     'gtp.move_delay': 300,
     'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
+    'setting.overwrite.v0.19.0': ['window.minheight'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
@@ -72,7 +73,7 @@ let defaults = {
     'view.sidebar_width': 270,
     'view.sidebar_minwidth': 100,
     'window.height': 604,
-    'window.minheight': 200,
+    'window.minheight': 440,
     'window.minwidth': 550,
     'window.width': 564
 }

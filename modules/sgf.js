@@ -54,7 +54,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, encoding = defaultEncoding) {
+exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
@@ -78,26 +78,27 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
                 property = node[id]
             }
         } else if (type == 'c_value_type') {
-            let encodedValue = exports.unescapeString(value.substr(1, value.length - 2))
+            value = exports.unescapeString(value.substr(1, value.length - 2))
 
-            if (id == 'CA' && iconv.encodingExists(encodedValue) && encodedValue != defaultEncoding) {
-                encoding = encodedValue
-                property.push(encodedValue)
+            if (encoding != null) {
+                if (id == 'CA' && value != defaultEncoding && iconv.encodingExists(value)) {
+                    encoding = value
 
-                // We may have already incorrectly parsed some values in this root node
-                // already, so we have to go back and re-parse them now.
+                    // We may have already incorrectly parsed some values in this root node
+                    // already, so we have to go back and re-parse them now.
 
-                for (let k in node) {
-                    if (encodedProperties.indexOf(k) >= 0) {
-                        node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
+                    for (let k in node) {
+                        if (encodedProperties.includes(k)) {
+                            node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
+                        }
                     }
+                } else if (encodedProperties.includes(id) && encoding != defaultEncoding) {
+                    let decodedValue = iconv.decode(Buffer.from(value, 'binary'), encoding)
+                    value = decodedValue
                 }
-            } else if (encodedProperties.indexOf(id) > -1 && encoding != defaultEncoding) {
-                let decodedValue = iconv.decode(Buffer.from(encodedValue, 'binary'), encoding)
-                property.push(decodedValue)
-            } else {
-                property.push(encodedValue)
             }
+
+            property.push(value)
         }
 
         start[0] = ++i
@@ -109,7 +110,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
         if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            let t = exports.parse(tokens, callback, start, depth + Math.min(tree.subtrees.length, 1), encoding)
+            let t = exports.parse(tokens, callback, encoding, start, depth + Math.min(tree.subtrees.length, 1))
 
             if (t.nodes.length > 0) {
                 t.parent = tree
@@ -130,7 +131,7 @@ exports.parse = function(tokens, callback = () => {}, start = [0], depth = 0, en
     return tree
 }
 
-exports.parseFile = function(filename, callback) {
+exports.parseFile = function(filename, callback, ignoreEncoding = false) {
 }
 
 exports.string2dates = function(input) {
