@@ -1821,6 +1821,8 @@ sabaki.commitCommentText = function() {
 
     sabaki.updateSidebar(true)
     sabaki.setUndoable(false)
+
+    sabaki.events.emit('commenttext-updated')
 }
 
 sabaki.commitGameInfo = function() {
@@ -1917,6 +1919,10 @@ sabaki.commitGameInfo = function() {
         let command = new gtp.Command(null, 'komi', [komi])
         sabaki.sendGTPCommand(command, true)
     }
+
+    // Emit event
+
+    sabaki.events.emit('gameinfo-updated')
 }
 
 sabaki.commitScore = function() {
@@ -2034,6 +2040,8 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         view.setProgressIndicator(-1, win)
         view.setIsBusy(false)
         callback(error)
+
+        sabaki.events.emit('sgf-loaded')
     }, setting.get('app.loadgame_delay'))
 }
 
