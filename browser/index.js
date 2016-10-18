@@ -1597,7 +1597,7 @@ sabaki.drawLine = function(vertex) {
  * Find Methods
  */
 
-sabaki.findPosition = function(step, condition) {
+sabaki.findPosition = function(step, condition, callback = () => {}) {
     if (isNaN(step)) step = 1
     else step = step >= 0 ? 1 : -1
 
@@ -1629,14 +1629,15 @@ sabaki.findPosition = function(step, condition) {
 
         sabaki.setCurrentTreePosition(...tp)
         view.setIsBusy(false)
+        callback()
     }, setting.get('find.delay'))
 }
 
-sabaki.findBookmark = function(step) {
-    sabaki.findPosition(step, (tree, index) => 'HO' in tree.nodes[index])
+sabaki.findBookmark = function(step, callback) {
+    sabaki.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
 }
 
-sabaki.findMove = function(vertex, text, step) {
+sabaki.findMove = function(vertex, text, step, callback) {
     if (vertex == null && text.trim() == '') return
     let point = vertex ? sgf.vertex2point(vertex) : null
 
@@ -1647,7 +1648,7 @@ sabaki.findMove = function(vertex, text, step) {
 
         return (!point || ['B', 'W'].some(x => cond(x, point)))
             && (!text || cond('C', text) || cond('N', text))
-    })
+    }, callback)
 }
 
 /**
