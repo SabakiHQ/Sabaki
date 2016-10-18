@@ -1,5 +1,7 @@
 # Sabaki Object
 
+`sabaki` is a global object, letting users to access the Sabaki API.
+
 ## Events
 
 To listen to events, use the [`EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter) `sabaki.events` like this:
@@ -52,3 +54,5 @@ The `gameinfo-updated` event is triggered when the user updates the data in the 
 ### Event: 'sgf-loaded'
 
 The `sgf-loaded` event is triggered when Sabaki finishes loading some SGF.
+
+## Methods
