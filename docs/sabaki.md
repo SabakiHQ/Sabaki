@@ -2,6 +2,14 @@
 
 ## Events
 
+To listen to events, use the [`EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter) `sabaki.events` like this:
+
+~~~js
+sabaki.events.on('preparation-complete', () => {
+    console.log('Preparation complete!')
+})
+~~~
+
 ### Event: 'preparation-complete'
 
 The `preparation-complete` event is emitted after the page is ready, Sabaki has loaded all settings, and all components are ready to use.
