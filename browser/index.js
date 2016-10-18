@@ -1379,6 +1379,8 @@ sabaki.makeResign = function() {
 
     view.showGameInfo()
     $('#info input[name="result"]').val(player + '+Resign')
+
+    sabaki.events.emit('resigned', view.getCurrentPlayer())
 }
 
 sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
@@ -1571,6 +1573,8 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
     sabaki.setUndoable(false)
     sabaki.setCurrentTreePosition(tree, index)
+
+    sabaki.events.emit('tool-used', tool)
 }
 
 sabaki.drawLine = function(vertex) {
