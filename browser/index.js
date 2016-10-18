@@ -17,9 +17,8 @@ const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
 
 window.sabaki = {
-    view,
     events: new EventEmitter(),
-    modules: {sgf, gametree, sound, setting}
+    modules: {view, sgf, gametree, sound, setting}
 }
 
 /**
