@@ -1047,7 +1047,7 @@ sabaki.generateMove = function(ignoreBusy = false) {
         view.setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
             view.showMessageBox(sabaki.getEngineName() + ' has resigned.')
-            sabaki.getRootTree().nodes[0].RE = [opponent + '+Resign']
+            sabaki.makeResign()
             return
         }
 
@@ -1368,6 +1368,10 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
         view.setIsBusy(true)
         setTimeout(() => sabaki.generateMove(true), setting.get('gtp.move_delay'))
     }
+
+    // Emit event
+
+    sabaki.events.emit('move-made')
 }
 
 sabaki.makeResign = function() {

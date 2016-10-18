@@ -16,3 +16,7 @@ The `navigating` event is triggered when Sabaki is about to load the game tree p
 ### Event: 'navigated'
 
 The `navigated` event is emitted when Sabaki has finished loading a game tree position.
+
+### Event: 'move-made'
+
+The `move-made` event is emitted after a move has been played.
