@@ -1,7 +1,5 @@
 const assert = require('assert')
 const fs = require('fs')
-const util = require('util')
-const tmp = require('tmp')
 
 const sgf = require('../modules/sgf')
 const gametree = require('../modules/gametree')
