@@ -1764,7 +1764,7 @@ sabaki.centerGraphCameraAt = function(node) {
             x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
             y: node[s.camera.readPrefix + 'y']
         },
-        {duration: 300}
+        {duration: setting.get('graph.animation_duration')}
     )
 }
 

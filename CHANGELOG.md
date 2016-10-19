@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Sidebar lag is reduced
+
 **Fixed**
 
 * Fix 'Load From Clipboard' encoding issue

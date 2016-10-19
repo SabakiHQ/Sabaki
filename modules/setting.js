@@ -59,6 +59,7 @@ let defaults = {
     'game.show_suicide_warning': true,
     'gamechooser.show_delay': 100,
     'gamechooser.thumbnail_size': 153,
+    'graph.animation_duration': 300,
     'graph.collapse_min_depth': 1,
     'graph.collapse_tokens_count': 10000,
     'graph.delay': 100,
