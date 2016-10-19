@@ -7,7 +7,7 @@ let pachiSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`../sound/${x
 let newGameSound = new Audio('../sound/newgame.mp3')
 let passSound = new Audio('../sound/pass.mp3')
 
-exports.playCapture = function() {
+exports.playCapture = function(delay = 0) {
     let index = lastCaptureIndex
 
     while (index == lastCaptureIndex) {
@@ -15,10 +15,11 @@ exports.playCapture = function() {
     }
 
     lastCaptureIndex = index
-    captureSounds[index].play()
+
+    setTimeout(() => captureSounds[index].play(), delay)
 }
 
-exports.playPachi = function() {
+exports.playPachi = function(delay = 0) {
     let index = lastPachiIndex
 
     while (index == lastPachiIndex) {
@@ -26,8 +27,14 @@ exports.playPachi = function() {
     }
 
     lastPachiIndex = index
-    pachiSounds[index].play()
+
+    setTimeout(() => pachiSounds[index].play(), delay)
 }
 
-exports.playNewGame = function() { newGameSound.play() }
-exports.playPass = function() { passSound.play() }
+exports.playNewGame = function(delay = 0) {
+    setTimeout(() => newGameSound.play(), delay)
+}
+
+exports.playPass = function(delay = 0) {
+    setTimeout(() => passSound.play(), delay)
+}
