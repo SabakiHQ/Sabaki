@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Sidebar lag is reduced
+* Update to Electron v1.4.4
+
 **Fixed**
 
 * Fix 'Load From Clipboard' encoding issue

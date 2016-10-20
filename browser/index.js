@@ -1763,8 +1763,7 @@ sabaki.centerGraphCameraAt = function(node) {
     let matrixdict = sabaki.getGraphMatrixDict()
     let y = matrixdict[1][node.id][1]
 
-    let wp = gametree.getMatrixWidth(y, matrixdict[0])
-    let width = wp[0], padding = wp[1]
+    let [width, padding] = gametree.getMatrixWidth(y, matrixdict[0])
     let x = matrixdict[1][node.id][0] - padding
     let relX = width == 1 ? 0 : x / (width - 1)
     let diff = (width - 1) * setting.get('graph.grid_size') / 2
@@ -1779,7 +1778,7 @@ sabaki.centerGraphCameraAt = function(node) {
             x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
             y: node[s.camera.readPrefix + 'y']
         },
-        {duration: setting.get('graph.delay')}
+        {duration: setting.get('graph.animation_duration')}
     )
 }
 
