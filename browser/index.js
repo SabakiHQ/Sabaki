@@ -1966,8 +1966,8 @@ sabaki.commitPreferences = function() {
  * Menu Methods
  */
 
-sabaki.newFile = function(playSound) {
-    if (view.getIsBusy() || !sabaki.askForSave()) return
+sabaki.newFile = function(showInfo = false, dontask = false) {
+    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
 
     view.closeDrawers()
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
@@ -1975,7 +1975,7 @@ sabaki.newFile = function(playSound) {
     sabaki.setGameIndex(0)
     sabaki.updateFileHash()
 
-    if (playSound) {
+    if (showInfo) {
         sound.playNewGame()
         view.showGameInfo()
     }

@@ -56,3 +56,10 @@ The `gameinfo-updated` event is triggered when the user updates the data in the 
 The `sgf-loaded` event is triggered when Sabaki finishes loading some SGF.
 
 ## Methods
+
+### sabaki.newFile([showInfo[, dontask]])
+
+* `showInfo` `<Boolean>` Default: `false`
+* `dontask` `<Boolean>` Default: `false`
+
+Resets file name, returns to play mode, and replaces current file with an empty file. If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
