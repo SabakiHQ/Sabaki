@@ -59,7 +59,30 @@ The `sgf-loaded` event is triggered when Sabaki finishes loading some SGF.
 
 ### sabaki.newFile([showInfo[, dontask]])
 
-* `showInfo` `<Boolean>` Default: `false`
-* `dontask` `<Boolean>` Default: `false`
+* `showInfo` `<Boolean>` - Default: `false`
+* `dontask` `<Boolean>` - Default: `false`
 
-Resets file name, returns to play mode, and replaces current file with an empty file. If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
+Resets file name, returns to play mode, and replaces current file with an empty file. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
+
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
+
+### sabaki.loadFile([filename[, dontask[, callback]]]) *Desktop*
+
+* `filename` `<String>`
+* `dontask` `<Boolean>` - Default: `false`
+* `callback` `<Function>`
+
+Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show a open file dialog.
+
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
+
+### sabaki.loadFileFromSgf(sgf[, dontask[, ignoreEncoding[, callback]]])
+
+* `sgf` `<String>`
+* `dontask` `<Boolean>` - Default: `false`
+* `ignoreEncoding` `<Boolean>` - Default: `false`
+* `callback` `<Function>`
+
+Returns to play mode and replaces current file with the SGF specified in `sgf`. If `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
+
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.

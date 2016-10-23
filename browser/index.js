@@ -1981,7 +1981,7 @@ sabaki.newFile = function(showInfo = false, dontask = false) {
     }
 }
 
-sabaki.loadFile = function(filename, dontask = false) {
+sabaki.loadFile = function(filename = null, dontask = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
 
     if (!filename) {
@@ -2000,7 +2000,7 @@ sabaki.loadFile = function(filename, dontask = false) {
     }
 }
 
-sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(sgf, dontask = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -2012,7 +2012,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         let trees = []
 
         try {
-            trees = sgf.parse(sgf.tokenize(content), progress => {
+            trees = sgf.parse(sgf.tokenize(sgf), progress => {
                 if (progress - lastprogress < 0.1) return
 
                 view.setProgressIndicator(progress, win)
