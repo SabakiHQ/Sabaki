@@ -66,13 +66,13 @@ Resets file name, returns to play mode, and replaces current file with an empty 
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
 
-### sabaki.loadFile([filename[, dontask[, callback]]]) *Desktop*
+### sabaki.loadFile([filename[, dontask[, callback]]])
 
 * `filename` `<String>`
 * `dontask` `<Boolean>` - Default: `false`
 * `callback` `<Function>`
 
-Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show a open file dialog.
+Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show a open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
 
