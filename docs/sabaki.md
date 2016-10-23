@@ -57,32 +57,32 @@ The `sgf-loaded` event is triggered when Sabaki finishes loading some SGF.
 
 ## Methods
 
-### sabaki.newFile([showInfo[, dontask]])
+### sabaki.newFile([showInfo[, dontAsk]])
 
 * `showInfo` `<Boolean>` - Default: `false`
-* `dontask` `<Boolean>` - Default: `false`
+* `dontAsk` `<Boolean>` - Default: `false`
 
 Resets file name, returns to play mode, and replaces current file with an empty file. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
 
-### sabaki.loadFile([filename[, dontask[, callback]]])
+### sabaki.loadFile([filename[, dontAsk[, callback]]])
 
 * `filename` `<String>`
-* `dontask` `<Boolean>` - Default: `false`
+* `dontAsk` `<Boolean>` - Default: `false`
 * `callback` `<Function>`
 
 Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show a open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
 
-### sabaki.loadFileFromSgf(sgf[, dontask[, ignoreEncoding[, callback]]])
+### sabaki.loadFileFromSgf(sgf[, dontAsk[, ignoreEncoding[, callback]]])
 
 * `sgf` `<String>`
-* `dontask` `<Boolean>` - Default: `false`
+* `dontAsk` `<Boolean>` - Default: `false`
 * `ignoreEncoding` `<Boolean>` - Default: `false`
 * `callback` `<Function>`
 
 Returns to play mode and replaces current file with the SGF specified in `sgf`. If `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontask` is `false`. Set `dontask` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.

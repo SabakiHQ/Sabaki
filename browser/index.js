@@ -1966,8 +1966,8 @@ sabaki.commitPreferences = function() {
  * Menu Methods
  */
 
-sabaki.newFile = function(showInfo = false, dontask = false) {
-    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
+sabaki.newFile = function(showInfo = false, dontAsk = false) {
+    if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
 
     view.closeDrawers()
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
@@ -1981,8 +1981,8 @@ sabaki.newFile = function(showInfo = false, dontask = false) {
     }
 }
 
-sabaki.loadFile = function(filename = null, dontask = false, callback = () => {}) {
-    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
+sabaki.loadFile = function(filename = null, dontAsk = false, callback = () => {}) {
+    if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
 
     if (!filename) {
         let result = view.showOpenDialog({
@@ -2000,8 +2000,8 @@ sabaki.loadFile = function(filename = null, dontask = false, callback = () => {}
     }
 }
 
-sabaki.loadFileFromSgf = function(sgf, dontask = false, ignoreEncoding = false, callback = () => {}) {
-    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
+sabaki.loadFileFromSgf = function(sgf, dontAsk = false, ignoreEncoding = false, callback = () => {}) {
+    if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
 
