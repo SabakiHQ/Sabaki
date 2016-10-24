@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Sidebar lag is reduced
+* Update icons
 * Update to Electron v1.4.4
 
 **Fixed**
