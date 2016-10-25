@@ -2000,7 +2000,7 @@ sabaki.loadFile = function(filename = null, dontAsk = false, callback = () => {}
     }
 }
 
-sabaki.loadFileFromSgf = function(sgf, dontAsk = false, ignoreEncoding = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(content, dontAsk = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -2012,7 +2012,7 @@ sabaki.loadFileFromSgf = function(sgf, dontAsk = false, ignoreEncoding = false, 
         let trees = []
 
         try {
-            trees = sgf.parse(sgf.tokenize(sgf), progress => {
+            trees = sgf.parse(sgf.tokenize(content), progress => {
                 if (progress - lastprogress < 0.1) return
 
                 view.setProgressIndicator(progress, win)
