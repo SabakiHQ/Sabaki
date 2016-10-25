@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Sidebar lag is reduced
+* More intuitive 'Go To Next/Previous Variation'
 * Update icons
 * Update to Electron v1.4.4
 
