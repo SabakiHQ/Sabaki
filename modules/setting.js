@@ -53,7 +53,7 @@ let defaults = {
     'gtp.move_delay': 300,
     'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
-    'setting.overwrite.v0.19.0': ['window.minheight', 'graph.delay'],
+    'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
