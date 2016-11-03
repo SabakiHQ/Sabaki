@@ -18,7 +18,7 @@
     "gemini-scrollbar": "^1.4.3",
     "iconv-lite": "^0.4.13",
     "octicons": "^5.0.1",
-    "pikaday": "^1.4.0",
+    "pikaday": "~1.4.0",
     "sigma": "^1.0.3"
   },
   "devDependencies": {
