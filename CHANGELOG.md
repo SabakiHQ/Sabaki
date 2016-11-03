@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Update to Electron v1.4.5
+
 ## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
 
 **Changed**
