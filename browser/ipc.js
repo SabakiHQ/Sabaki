@@ -16,11 +16,16 @@ let menudata = {
     ),
     copytoclipboard: () => clipboard.writeText(sabaki.saveFileToSgf()),
     copyascii: () => clipboard.writeText(sabaki.getBoard().generateAscii()),
+    gameinfo: () => view.showGameInfo(),
     managegames: () => view.showGameChooser(),
+    preferences: () => view.showPreferences(),
+
+    selectposition: () => 0,
+    pass: () => sabaki.makeMove([-1, -1]),
+    resign: () => sabaki.makeResign(),
+    changeplayer: () => view.setCurrentPlayer(-view.getCurrentPlayer()),
     score: () => view.setScoringMode(true),
     estimate: () => view.setEstimatorMode(true),
-    gameinfo: () => view.showGameInfo(),
-    preferences: () => view.showPreferences(),
 
     editmode: () => view.setEditMode(!view.getEditMode()),
     clearmarkup: () => sabaki.clearMarkup(),
@@ -32,8 +37,6 @@ let menudata = {
     linetool: () => sabaki.setSelectedTool('line'),
     labeltool: () => sabaki.setSelectedTool('label'),
     numbertool: () => sabaki.setSelectedTool('number'),
-    pass: () => sabaki.makeMove([-1, -1]),
-    resign: () => sabaki.makeResign(),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
 

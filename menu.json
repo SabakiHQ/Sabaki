@@ -12,7 +12,7 @@
                 "accelerator": "CmdOrCtrl+Shift+N",
                 "action": "newwindow"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "&Open…",
                 "accelerator": "CmdOrCtrl+O",
@@ -28,7 +28,7 @@
                 "accelerator": "CmdOrCtrl+Shift+S",
                 "action": "saveas"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Load From &Clipboard",
                 "action": "loadclipboard"
@@ -41,9 +41,9 @@
                 "label": "Copy &ASCII Diagram",
                 "action": "copyascii"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
-                "label": "&Info",
+                "label": "Game &Info",
                 "accelerator": "CmdOrCtrl+I",
                 "action": "gameinfo"
             },
@@ -52,7 +52,7 @@
                 "accelerator": "CmdOrCtrl+Shift+M",
                 "action": "managegames"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "&Preferences…",
                 "accelerator": "CmdOrCtrl+,",
@@ -64,6 +64,16 @@
         "label": "&Play",
         "submenu": [
             {
+                "label": "&Change Player",
+                "action": "changeplayer"
+            },
+            {"type": "separator"},
+            {
+                "label": "&Select Position",
+                "accelerator": "CmdOrCtrl+L",
+                "action": "selectposition"
+            },
+            {
                 "label": "&Pass",
                 "accelerator": "CmdOrCtrl+P",
                 "action": "pass"
@@ -72,9 +82,9 @@
                 "label": "&Resign",
                 "action": "resign"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
-                "label": "&Score",
+                "label": "Sc&ore",
                 "action": "score"
             },
             {
@@ -95,7 +105,7 @@
                 "label": "Clear &Markup",
                 "action": "clearmarkup"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "&Stone Tool",
                 "accelerator": "CmdOrCtrl+1",
@@ -136,7 +146,7 @@
                 "accelerator": "CmdOrCtrl+8",
                 "action": "numbertool"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Make Main &Variation",
                 "action": "makemainvariation"
@@ -166,7 +176,7 @@
                 "accelerator": "Shift+F3",
                 "action": "findprevious"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Toggle &Hotspot",
                 "accelerator": "CmdOrCtrl+B",
@@ -197,7 +207,7 @@
                 "accelerator": "Down",
                 "action": "goforward"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Go To &Previous Fork",
                 "accelerator": "CmdOrCtrl+Up",
@@ -208,7 +218,7 @@
                 "accelerator": "CmdOrCtrl+Down",
                 "action": "gotonextfork"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Go To Previous Commen&t",
                 "accelerator": "CmdOrCtrl+Shift+Up",
@@ -219,7 +229,7 @@
                 "accelerator": "CmdOrCtrl+Shift+Down",
                 "action": "nextcomment"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Go To Be&ginning",
                 "accelerator": "Home",
@@ -230,7 +240,7 @@
                 "accelerator": "End",
                 "action": "gotoend"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Go To &Main Variation",
                 "accelerator": "CmdOrCtrl+Left",
@@ -259,13 +269,13 @@
                 "label": "&Detach",
                 "action": "detachengine"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Generate &Move",
                 "accelerator": "F5",
                 "action": "generatemove"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Toggle &GTP Console",
                 "action": "gtpconsole"
@@ -292,7 +302,7 @@
                 "accelerator": "CmdOrCtrl+Shift+F",
                 "action": "togglefullscreen"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Show &Coordinates",
                 "accelerator": "CmdOrCtrl+Shift+C",
@@ -309,7 +319,7 @@
                 "checked": "view.show_siblings",
                 "action": "toggleshowsiblings"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "Show Game &Graph",
                 "checked": "view.show_graph",
@@ -335,7 +345,7 @@
                 "label": "Check For &Updates",
                 "action": "checkforupdates"
             },
-            { "type": "separator" },
+            {"type": "separator"},
             {
                 "label": "GitHub &Respository",
                 "action": "github"
