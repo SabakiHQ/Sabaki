@@ -43,9 +43,34 @@
             },
             { "type": "separator" },
             {
+                "label": "&Info",
+                "accelerator": "CmdOrCtrl+I",
+                "action": "gameinfo"
+            },
+            {
                 "label": "&Manage Games…",
                 "accelerator": "CmdOrCtrl+Shift+M",
                 "action": "managegames"
+            },
+            { "type": "separator" },
+            {
+                "label": "&Preferences…",
+                "accelerator": "CmdOrCtrl+,",
+                "action": "preferences"
+            }
+        ]
+    },
+    {
+        "label": "&Play",
+        "submenu": [
+            {
+                "label": "&Pass",
+                "accelerator": "CmdOrCtrl+P",
+                "action": "pass"
+            },
+            {
+                "label": "Resi&gn",
+                "action": "resign"
             },
             { "type": "separator" },
             {
@@ -55,17 +80,6 @@
             {
                 "label": "&Estimate",
                 "action": "estimate"
-            },
-            {
-                "label": "&Info",
-                "accelerator": "CmdOrCtrl+I",
-                "action": "gameinfo"
-            },
-            { "type": "separator" },
-            {
-                "label": "&Preferences…",
-                "accelerator": "CmdOrCtrl+,",
-                "action": "preferences"
             }
         ]
     },
@@ -121,16 +135,6 @@
                 "label": "&Number Tool",
                 "accelerator": "CmdOrCtrl+8",
                 "action": "numbertool"
-            },
-            { "type": "separator" },
-            {
-                "label": "&Pass",
-                "accelerator": "CmdOrCtrl+P",
-                "action": "pass"
-            },
-            {
-                "label": "Resi&gn",
-                "action": "resign"
             },
             { "type": "separator" },
             {
