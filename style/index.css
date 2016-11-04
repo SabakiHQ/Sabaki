@@ -461,12 +461,12 @@ header, #bar .bar {
         top: 0%;
         left: 0;
         right: 0;
-        height: 20px;
+        height: 22px;
         margin-top: -10px;
         background: #393939;
         color: #ccc;
-        font-size: .7em;
-        line-height: 20px;
+        font-size: .8em;
+        line-height: 22px;
         text-align: center;
         transition: top .2s, background .2s;
     }
