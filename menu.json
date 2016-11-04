@@ -24,7 +24,7 @@
                 "action": "savefile"
             },
             {
-                "label": "Save &As…",
+                "label": "Sa&ve As…",
                 "accelerator": "CmdOrCtrl+Shift+S",
                 "action": "saveas"
             },
@@ -69,12 +69,12 @@
                 "action": "pass"
             },
             {
-                "label": "Resi&gn",
+                "label": "&Resign",
                 "action": "resign"
             },
             { "type": "separator" },
             {
-                "label": "Sco&re",
+                "label": "&Score",
                 "action": "score"
             },
             {
