@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Update to Electron v1.4.5
 * Update to Octicons v5.0.1
 
+**Fixed**
+
+* Fix handicap stones being placed incorrectly
+
 ## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
 
 **Changed**

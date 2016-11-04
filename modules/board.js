@@ -419,7 +419,7 @@ class Board {
         let farX = this.width - nearX - 1
         let farY = this.height - nearY - 1
 
-        let result = [[nearX, nearY], [farX, farY], [nearX, farY], [farX, nearY]]
+        let result = [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
         let middleX = (this.width - 1) / 2
         let middleY = (this.height - 1) / 2
 
