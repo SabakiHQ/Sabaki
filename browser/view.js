@@ -799,6 +799,37 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
     return result
 }
 
+exports.showInputBox = function(message, callback = () => {}) {
+    exports.setIsBusy(true)
+    ipcRenderer.send('build-menu', true)
+
+    $('#input-box')
+    .addClass('show')
+    .find('input')
+    .attr('placeholder', message)
+    .val('')
+    .off('keyup')
+    .on('keyup', e => {
+        if (e.keyCode == 13) {
+            // Enter
+
+            e.stopPropagation()
+            exports.closeInputBox()
+            callback(e.target.value)
+        }
+    }).get(0).focus()
+}
+
+exports.closeInputBox = function() {
+    if (!$('#input-box.show').length) return
+
+    ipcRenderer.send('build-menu')
+    exports.setIsBusy(false)
+
+    $('#input-box').removeClass('show')
+    .find('input').off('keyup').get(0).blur()
+}
+
 let showOpenSaveDialog = (type, options) => {
     exports.setIsBusy(true)
     ipcRenderer.send('build-menu', true)
@@ -1712,11 +1743,12 @@ exports.closeGameChooser = function() {
 }
 
 exports.closeDrawers = function() {
-    let drawersOpen = $('.drawer.show').length > 0
+    let drawersOpen = $('.drawer.show, #input-box.show').length > 0
     let modeOpen = $('#bar .bar').get()
         .map(x => $(x).attr('id'))
         .some(x => $('body').hasClass(x))
 
+    exports.closeInputBox()
     exports.closeGameInfo()
     exports.closeScore()
     exports.closePreferences()
