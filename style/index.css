@@ -563,7 +563,7 @@ header, #bar .bar {
         color: #222;
     }
     .edit #properties .edit input { color: #555; }
-    .edit #properties .inner, .edit #properties .gm-scrollbar { opacity: 0; }
+    .edit #properties .inner { opacity: 0; }
     #properties .horizontalresizer {
         position: absolute;
         top: 0;

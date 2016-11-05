@@ -186,12 +186,12 @@ exports.getSidebarArrangement = function() {
 
 exports.setSidebarArrangement = function(graph, comment, redraw = true) {
     if (redraw) {
-        let $container = $('#properties .gm-scroll-view')
+        let $container = $('#properties .inner')
         $container.css('opacity', 0)
 
         setTimeout(() => {
             $('#graph').data('sigma').renderers[0].resize().render()
-            $container.css('opacity', 1)
+            $container.css('opacity', '')
         }, 300)
     }
 
