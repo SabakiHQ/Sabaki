@@ -1103,6 +1103,10 @@ sabaki.askForSave = function() {
 sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
+    if (typeof vertex == 'string') {
+        vertex = sabaki.getBoard().coord2vertex(vertex)
+    }
+
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
         if (buttonIndex != 0) return
@@ -2102,6 +2106,17 @@ sabaki.goForward = function() {
     sabaki.goStep(1)
 }
 
+sabaki.goToMoveNumber = function(number) {
+    number = +number
+
+    if (isNaN(number)) return
+
+    let root = sabaki.getRootTree()
+    let tp = gametree.navigate(root, 0, number)
+
+    if (tp) sabaki.setCurrentTreePosition(...tp)
+}
+
 sabaki.goToNextFork = function() {
     let [tree, index] = sabaki.getCurrentTreePosition()
 
@@ -2152,14 +2167,17 @@ sabaki.goToEnd = function() {
 
 sabaki.goToSiblingVariation = function(sign) {
     let [tree, index] = sabaki.getCurrentTreePosition()
+    let navigate = index == tree.nodes.length - 1
+        && tree.subtrees.length > 0
+        && sign > 0
+        || !tree.parent
+
     sign = sign < 0 ? -1 : 1
 
-    if (!tree.parent) return
+    let mod = navigate ? tree.subtrees.length : tree.parent.subtrees.length
+    let i = ((navigate ? tree.current : tree.parent.current) + mod + sign) % mod
 
-    let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + mod + sign) % mod
-
-    sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
+    sabaki.setCurrentTreePosition(navigate ? tree.subtrees[i] : tree.parent.subtrees[i], 0)
 }
 
 sabaki.goToNextVariation = () => sabaki.goToSiblingVariation(1)

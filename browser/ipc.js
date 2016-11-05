@@ -16,11 +16,16 @@ let menudata = {
     ),
     copytoclipboard: () => clipboard.writeText(sabaki.saveFileToSgf()),
     copyascii: () => clipboard.writeText(sabaki.getBoard().generateAscii()),
+    gameinfo: () => view.showGameInfo(),
     managegames: () => view.showGameChooser(),
+    preferences: () => view.showPreferences(),
+
+    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
+    pass: () => sabaki.makeMove([-1, -1]),
+    resign: () => sabaki.makeResign(),
+    changeplayer: () => view.setCurrentPlayer(-view.getCurrentPlayer()),
     score: () => view.setScoringMode(true),
     estimate: () => view.setEstimatorMode(true),
-    gameinfo: () => view.showGameInfo(),
-    preferences: () => view.showPreferences(),
 
     editmode: () => view.setEditMode(!view.getEditMode()),
     clearmarkup: () => sabaki.clearMarkup(),
@@ -32,8 +37,6 @@ let menudata = {
     linetool: () => sabaki.setSelectedTool('line'),
     labeltool: () => sabaki.setSelectedTool('label'),
     numbertool: () => sabaki.setSelectedTool('number'),
-    pass: () => sabaki.makeMove([-1, -1]),
-    resign: () => sabaki.makeResign(),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
 
@@ -52,6 +55,7 @@ let menudata = {
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),
+    gotomovenumber: () => view.showInputBox('Enter a move number to go to', sabaki.goToMoveNumber),
     gotopreviousfork: () => sabaki.goToPreviousFork(),
     gotonextfork: () => sabaki.goToNextFork(),
     nextcomment: () => sabaki.goToComment(1),
@@ -62,10 +66,7 @@ let menudata = {
     gotopreviousvariation: () => sabaki.goToPreviousVariation(),
     gotomainvariation: () => sabaki.goToMainVariation(),
 
-    manageengines: () => {
-        view.showPreferences()
-        view.setPreferencesTab('engines')
-    },
+    manageengines: () => view.showPreferences('engines'),
     detachengine: () => sabaki.detachEngine(),
     generatemove: () => sabaki.generateMove(),
     gtpconsole: () => view.setShowLeftSidebar(!view.getShowLeftSidebar()),

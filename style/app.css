@@ -74,6 +74,34 @@ img {
         display: block;
 }
 
+#input-box {
+        position: absolute;
+        position: fixed;
+        margin-left: -205px;
+        top: 0;
+        left: 50%;
+        width: 400px;
+        padding: 5px;
+        background: rgba(38, 41, 44, .97);
+        color: #eee;
+        transform: translateY(-100%);
+        transition: transform .1s;
+        z-index: 1000;
+    }
+    #input-box.show {
+        transform: translateY(0);
+        box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    }
+    #input-box input {
+        box-sizing: border-box;
+        background: #111;
+        color: #eee;
+        width: 100%;
+    }
+    #input-box input:focus {
+        background: #1a1a1a;
+}
+
 form p, form ul li {
         margin: 7px 0;
     }

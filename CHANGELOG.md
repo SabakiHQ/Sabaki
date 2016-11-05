@@ -4,10 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add 'Go To Move Number' menu item
+* Ability to select points by keyboard input
+
+**Changed**
+
+* Change keyboard shortcuts for toggling sidebar elements
+* Update to Electron v1.4.5
+* Update to Octicons v5.0.1
+
+**Fixed**
+
+* Fix handicap stones being placed incorrectly
+
+## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
+
 **Changed**
 
 * Sidebar lag is reduced
-* Update icons
+* More intuitive 'Go To Next/Previous Variation'
+* Update application icon
 * Update to Electron v1.4.4
 
 **Fixed**
@@ -424,7 +442,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.3...master
+[v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.18.2...v0.18.3
 [v0.18.2]: https://github.com/yishn/Sabaki/compare/v0.18.1...v0.18.2
 [v0.18.1]: https://github.com/yishn/Sabaki/compare/v0.18.0...v0.18.1
 [v0.18.0]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.0
