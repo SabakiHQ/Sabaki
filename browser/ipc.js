@@ -66,10 +66,7 @@ let menudata = {
     gotopreviousvariation: () => sabaki.goToPreviousVariation(),
     gotomainvariation: () => sabaki.goToMainVariation(),
 
-    manageengines: () => {
-        view.showPreferences()
-        view.setPreferencesTab('engines')
-    },
+    manageengines: () => view.showPreferences('engines'),
     detachengine: () => sabaki.detachEngine(),
     generatemove: () => sabaki.generateMove(),
     gtpconsole: () => view.setShowLeftSidebar(!view.getShowLeftSidebar()),

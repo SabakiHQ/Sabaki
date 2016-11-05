@@ -1616,7 +1616,7 @@ exports.closeScore = function() {
     $('#score').removeClass('show')
 }
 
-exports.showPreferences = function() {
+exports.showPreferences = function(tab = 'general') {
     // Load preferences
 
     $('#preferences input[type="checkbox"]').get()
@@ -1626,7 +1626,7 @@ exports.showPreferences = function() {
 
     // Show preferences
 
-    exports.setPreferencesTab('general')
+    exports.setPreferencesTab(tab)
     exports.closeDrawers()
     $('#preferences').addClass('show')
 }
