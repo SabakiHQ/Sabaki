@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix handicap stones being placed incorrectly
+* Fix not being able to select executables for engines
 
 ## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
 
