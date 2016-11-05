@@ -77,10 +77,10 @@ img {
 #input-box {
         position: absolute;
         position: fixed;
-        margin-left: -255px;
+        margin-left: -205px;
         top: 0;
         left: 50%;
-        width: 500px;
+        width: 400px;
         padding: 5px;
         background: rgba(38, 41, 44, .97);
         color: #eee;
