@@ -556,11 +556,18 @@ header, #bar .bar {
     .edit #properties {
         background: #E6DF86;
         color: #222;
+        overflow: hidden;
     }
     .edit #properties .edit,
     .edit #properties .edit textarea {
         display: block;
         color: #222;
+    }
+    .edit #properties .edit textarea::-webkit-scrollbar-thumb {
+        background: #A29B42;
+    }
+    .edit #properties .edit textarea::-webkit-scrollbar-thumb:hover {
+        background: #B3AC53;
     }
     .edit #properties .edit input { color: #555; }
     .edit #properties .inner { opacity: 0; }

@@ -181,7 +181,6 @@ form p, form ul li {
     }
     ::-webkit-scrollbar-thumb {
         background: #393939;
-        transition: background .2s;
     }
     ::-webkit-scrollbar-thumb:hover {
         background: #494949;
