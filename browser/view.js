@@ -1,6 +1,5 @@
 const {shell, remote, ipcRenderer} = require('electron')
 const {app, dialog, Menu} = remote
-const GeminiScrollbar = require('gemini-scrollbar')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -122,10 +121,9 @@ exports.setShowLeftSidebar = function(show) {
 
     // Update scrollbars
 
-    let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
+    let $view = $('#console')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
-    $('#console').data('scrollbar').update()
 }
 
 exports.setLeftSidebarWidth = function(width) {
@@ -193,7 +191,6 @@ exports.setSidebarArrangement = function(graph, comment, redraw = true) {
 
         setTimeout(() => {
             $('#graph').data('sigma').renderers[0].resize().render()
-            $('#properties').data('scrollbar').update()
             $container.css('opacity', 1)
         }, 300)
     }
@@ -402,9 +399,6 @@ exports.setPreferencesTab = function(tab) {
 
     let $form = $('#preferences form')
     $form.attr('class', tab)
-
-    if (tab == 'engines')
-        $('#preferences .engines-list').data('scrollbar').update()
 }
 
 exports.getRepresentedFilename = function() {
@@ -531,45 +525,6 @@ exports.getCurrentMoveInterpretation = function() {
  * Preparation Methods
  */
 
-exports.prepareScrollbars = function() {
-    $('#properties').data('scrollbar', new GeminiScrollbar({
-        element: $('#properties').get(0),
-        createElements: false
-    }).create())
-
-    $('#console').data('scrollbar', new GeminiScrollbar({
-        element: $('#console').get(0),
-        createElements: false
-    }).create())
-
-    let $enginesList = $('#preferences .engines-list')
-    $enginesList.data('scrollbar', new GeminiScrollbar({
-        element: $enginesList.get(0),
-        createElements: false
-    }).create())
-
-    let $gamesList = $('#gamechooser .games-list')
-    $gamesList.data('scrollbar', new GeminiScrollbar({
-        element: $gamesList.get(0),
-        createElements: false
-    }).create())
-
-    $(window).on('resize', function() {
-        if (!$('#gamechooser').hasClass('show')) return
-
-        let width = $('#gamechooser .games-list').width() - 20
-        let $svgs = $('#gamechooser ol li svg')
-
-        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
-
-        let svgWidth = $svgs.width() + 12 + 20
-        let count = Math.floor(width / svgWidth)
-
-        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
-        $('#gamechooser .games-list').data('scrollbar').update()
-    })
-}
-
 exports.prepareResizers = function() {
     $('.verticalresizer').on('mousedown', function(evt) {
         if (evt.button != 0) return
@@ -644,6 +599,20 @@ exports.prepareGameChooser = function() {
         '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
     ].join(', '))
 
+    $(window).on('resize', function() {
+        if (!$('#gamechooser').hasClass('show')) return
+
+        let width = $('#gamechooser .games-list').width() - 20
+        let $svgs = $('#gamechooser ol li svg')
+
+        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
+
+        let svgWidth = $svgs.width() + 12 + 20
+        let count = Math.floor(width / svgWidth)
+
+        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
+    })
+
     // Load SVG images on the fly
 
     let updateSVG = () => {
@@ -684,8 +653,6 @@ exports.prepareGameChooser = function() {
             else $(li).addClass('hide')
         })
 
-        let $gamesList = $('#gamechooser .games-list')
-        $gamesList.data('scrollbar').update()
         $scrollContainer.scrollTop(0)
 
         updateSVG()
@@ -736,7 +703,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
         ).append(
             $('<a class="browse"/>')
             .on('click', function() {
-                let result = view.showOpenDialog({
+                let result = exports.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -765,7 +732,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
     ).append(
         $('<a class="remove"/>').on('click', function() {
             $(this).parents('li').eq(0).remove()
-            $('#preferences .engines-list').data('scrollbar').update()
         }).append(
             $('<img/>')
             .attr('src', '../node_modules/octicons/build/svg/x.svg')
@@ -775,9 +741,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
 
     $ul.append($li)
     $li.find('h3 input').get(0).focus()
-
-    let enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
-    if (enginesScrollbar) enginesScrollbar.update()
 }
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
@@ -1090,7 +1053,6 @@ exports.hideIndicator = function() {
 exports.clearConsole = function() {
     $('#console .inner pre, #console .inner form:not(:last-child)').remove()
     $('#console .inner form:last-child input').eq(0).val('').get(0).focus()
-    $('#console').data('scrollbar').update()
 }
 
 exports.wireLinks = function($container) {
