@@ -20,7 +20,7 @@ let menudata = {
     managegames: () => view.showGameChooser(),
     preferences: () => view.showPreferences(),
 
-    selectposition: () => 0,
+    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
     changeplayer: () => view.setCurrentPlayer(-view.getCurrentPlayer()),
@@ -55,7 +55,7 @@ let menudata = {
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),
-    gotomovenumber: () => view.showInputBox('Enter a move number to go to', x => sabaki.goToMoveNumber(x)),
+    gotomovenumber: () => view.showInputBox('Enter a move number to go to', sabaki.goToMoveNumber),
     gotopreviousfork: () => sabaki.goToPreviousFork(),
     gotonextfork: () => sabaki.goToNextFork(),
     nextcomment: () => sabaki.goToComment(1),

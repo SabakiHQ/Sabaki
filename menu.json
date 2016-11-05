@@ -69,7 +69,7 @@
             },
             {"type": "separator"},
             {
-                "label": "&Select Position",
+                "label": "&Select Point",
                 "accelerator": "CmdOrCtrl+L",
                 "action": "selectposition"
             },

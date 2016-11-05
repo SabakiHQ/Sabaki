@@ -1098,6 +1098,10 @@ sabaki.askForSave = function() {
 sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
+    if (typeof vertex == 'string') {
+        vertex = sabaki.getBoard().coord2vertex(vertex)
+    }
+
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
         if (buttonIndex != 0) return

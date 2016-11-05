@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Add 'Go To Move Number' menu item
+* Ability to select points by keyboard input
 
 **Changed**
 
