@@ -2080,6 +2080,17 @@ sabaki.goForward = function() {
     sabaki.goStep(1)
 }
 
+sabaki.goToMoveNumber = function(number) {
+    number = +number
+
+    if (isNaN(number)) return
+
+    let root = sabaki.getRootTree()
+    let tp = gametree.navigate(root, 0, number)
+
+    if (tp) sabaki.setCurrentTreePosition(...tp)
+}
+
 sabaki.goToNextFork = function() {
     let [tree, index] = sabaki.getCurrentTreePosition()
 

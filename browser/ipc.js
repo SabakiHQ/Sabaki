@@ -55,6 +55,7 @@ let menudata = {
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),
+    gotomovenumber: () => view.showInputBox('Enter a move number to go to', x => sabaki.goToMoveNumber(x)),
     gotopreviousfork: () => sabaki.goToPreviousFork(),
     gotonextfork: () => sabaki.goToNextFork(),
     nextcomment: () => sabaki.goToComment(1),

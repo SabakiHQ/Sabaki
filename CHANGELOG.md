@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add 'Go To Move Number' menu item
+
 **Changed**
 
+* Change keyboard shortcuts for toggling sidebar elements
 * Update to Electron v1.4.5
 * Update to Octicons v5.0.1
 

@@ -255,6 +255,12 @@
                 "label": "Go To Next Va&riation",
                 "accelerator": "Right",
                 "action": "gotonextvariation"
+            },
+            {"type": "separator"},
+            {
+                "label": "Go To Move N&umber",
+                "accelerator": "CmdOrCtrl+G",
+                "action": "gotomovenumber"
             }
         ]
     },
@@ -321,15 +327,15 @@
             },
             {"type": "separator"},
             {
-                "label": "Show Game &Graph",
+                "label": "Show Game &Tree",
                 "checked": "view.show_graph",
-                "accelerator": "CmdOrCtrl+G",
+                "accelerator": "CmdOrCtrl+T",
                 "action": "togglegamegraph"
             },
             {
                 "label": "Show Co&mments",
                 "checked": "view.show_comments",
-                "accelerator": "CmdOrCtrl+Shift+G",
+                "accelerator": "CmdOrCtrl+Shift+T",
                 "action": "togglecomments"
             }
         ]
