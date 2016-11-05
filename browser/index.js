@@ -878,7 +878,7 @@ sabaki.askForSave = function() {
             'Your changes will be lost if you close this file without saving. Do you want to proceed?',
             'warning',
             ['Save', 'Don’t Save', 'Cancel'], 2
-        ) 
+        )
 
         if (answer == 0) sabaki.saveFile(view.getRepresentedFilename())
         else if (answer == 2) return false
@@ -2103,22 +2103,22 @@ $(document).ready(function() {
 
     if (evt.keyCode == 36) {
         // Home
-        goToBeginning()
+        sabaki.goToBeginning()
     } else if (evt.keyCode == 35) {
         // End
-        goToEnd()
+        sabaki.goToEnd()
     } else if (evt.keyCode == 38) {
         // Up
-        goBack()
+        sabaki.goBack()
     } else if (evt.keyCode == 40) {
         // Down
-        goForward()
+        sabaki.goForward()
     } else if (evt.keyCode == 37) {
         // Left
-        goToPreviousVariation()
+        sabaki.goToPreviousVariation()
     } else if (evt.keyCode == 39) {
         // Right
-        goToNextVariation()
+        sabaki.goToNextVariation()
     }
 })
 
