@@ -1015,13 +1015,8 @@ sabaki.sendGTPCommand = function(command, ignoreBlocked = false, callback = () =
         $oldform.removeClass('waiting')
         callback(response)
 
-        // Update scrollbars
-
-        let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
-        let scrollbar = $('#console').data('scrollbar')
-
+        let $view = $('#console')
         $view.scrollTop($view.get(0).scrollHeight)
-        if (scrollbar) scrollbar.update()
     }
 
     if (!ignoreBlocked && setting.get('console.blocked_commands').includes(command.name)) {
@@ -1722,8 +1717,7 @@ sabaki.updateCommentText = function() {
         return [null, null]
     })())
 
-    $('#properties, #properties .gm-scroll-view').scrollTop(0)
-    $('#properties').data('scrollbar').update()
+    $('#properties').scrollTop(0)
 }
 
 sabaki.updateAreaMap = function(estimate) {
@@ -2299,7 +2293,6 @@ $(document).ready(function() {
     sabaki.preparePreferences()
     sabaki.newFile()
 
-    view.prepareScrollbars()
     view.prepareResizers()
     view.prepareGameChooser()
     view.prepareIndicator()
