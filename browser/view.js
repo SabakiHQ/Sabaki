@@ -599,7 +599,7 @@ exports.prepareGameChooser = function() {
     $(window).on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
-        let width = $scrollContainer.width() - 20
+        let width = $scrollContainer.width() - 28
         let $svgs = $('#gamechooser ol li svg')
 
         if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
