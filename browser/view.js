@@ -594,15 +594,12 @@ exports.prepareResizers = function() {
 }
 
 exports.prepareGameChooser = function() {
-    let $scrollContainer = $([
-        '#gamechooser .games-list.gm-prevented',
-        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
-    ].join(', '))
+    let $scrollContainer = $('#gamechooser .games-list')
 
     $(window).on('resize', function() {
         if (!$('#gamechooser').hasClass('show')) return
 
-        let width = $('#gamechooser .games-list').width() - 20
+        let width = $scrollContainer.width() - 20
         let $svgs = $('#gamechooser ol li svg')
 
         if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
@@ -1599,11 +1596,7 @@ exports.closePreferences = function() {
 }
 
 exports.showGameChooser = function(restoreScrollbarPos = true) {
-    let $scrollContainer = $([
-        '#gamechooser .games-list.gm-prevented',
-        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
-    ].join(', '))
-
+    let $scrollContainer = $('#gamechooser .games-list')
     let scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
 
     if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
