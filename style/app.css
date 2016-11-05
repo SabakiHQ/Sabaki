@@ -1,4 +1,3 @@
-@import url('../node_modules/gemini-scrollbar/gemini-scrollbar.css');
 @import url('../node_modules/pikaday/css/pikaday.css');
 
 /**
@@ -72,6 +71,34 @@ img {
     }
     body.busy #busy {
         display: block;
+}
+
+#input-box {
+        position: absolute;
+        position: fixed;
+        margin-left: -205px;
+        top: 0;
+        left: 50%;
+        width: 400px;
+        padding: 5px;
+        background: rgba(38, 41, 44, .97);
+        color: #eee;
+        transform: translateY(-100%);
+        transition: transform .1s;
+        z-index: 1000;
+    }
+    #input-box.show {
+        transform: translateY(0);
+        box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    }
+    #input-box input {
+        box-sizing: border-box;
+        background: #111;
+        color: #eee;
+        width: 100%;
+    }
+    #input-box input:focus {
+        background: #1a1a1a;
 }
 
 form p, form ul li {
@@ -148,32 +175,22 @@ form p, form ul li {
 }
 
 /**
- * Gemini Scrollbars
+ * Scrollbars
  */
 
-.gm-scrollbar {
-        bottom: 0;
-        right: 0;
-    }
-    .gm-scrollbar.-vertical {
-        width: 8px;
-        top: 0;
-    }
-    .gm-scrollbar.-horizontal {
+::-webkit-scrollbar {
         height: 8px;
-        left: 0;
+        width: 8px;
+        background: transparent;
     }
-    .gm-scrollbar .thumb {
+    ::-webkit-scrollbar-thumb {
         background: #393939;
-        border-radius: 0;
-        cursor: default;
-        transition: background .2s, height .5s, width .5s;
     }
-    .gm-scrollbar .thumb:hover, .gm-scrollbar .thumb:active {
+    ::-webkit-scrollbar-thumb:hover {
         background: #494949;
     }
-    .gm-scrollbar .thumb:active {
-        transition: none;
+    ::-webkit-scrollbar-corner {
+        background: transparent;
 }
 
 /**

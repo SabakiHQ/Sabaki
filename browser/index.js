@@ -894,6 +894,10 @@ sabaki.askForSave = function() {
 sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
+    if (typeof vertex == 'string') {
+        vertex = sabaki.getBoard().coord2vertex(vertex)
+    }
+
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
         if (buttonIndex != 0) return
@@ -1500,8 +1504,7 @@ sabaki.updateCommentText = function() {
         return [null, null]
     })())
 
-    $('#properties, #properties .gm-scroll-view').scrollTop(0)
-    $('#properties').data('scrollbar').update()
+    $('#properties').scrollTop(0)
 }
 
 sabaki.updateAreaMap = function(estimate) {
@@ -1880,6 +1883,17 @@ sabaki.goForward = function() {
     sabaki.goStep(1)
 }
 
+sabaki.goToMoveNumber = function(number) {
+    number = +number
+
+    if (isNaN(number)) return
+
+    let root = sabaki.getRootTree()
+    let tp = gametree.navigate(root, 0, number)
+
+    if (tp) sabaki.setCurrentTreePosition(...tp)
+}
+
 sabaki.goToNextFork = function() {
     let [tree, index] = sabaki.getCurrentTreePosition()
 
@@ -2062,7 +2076,6 @@ $(document).ready(function() {
     sabaki.preparePreferences()
     sabaki.newFile()
 
-    view.prepareScrollbars()
     view.prepareResizers()
     view.prepareGameChooser()
     view.prepareIndicator()

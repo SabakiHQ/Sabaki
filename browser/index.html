@@ -126,12 +126,8 @@
     <div class="verticalresizer"></div>
 
     <section id="console">
-        <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
-        <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
-        <div class="gm-scroll-view">
-            <div class="inner">
-                <form><label><input type="text" /></label></form>
-            </div>
+        <div class="inner">
+            <form><label><input type="text" /></label></form>
         </div>
     </section>
 </section>
@@ -152,20 +148,16 @@
     <section id="properties">
         <div class="horizontalresizer"></div>
 
-        <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
-        <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
-        <div class="gm-scroll-view">
-            <div class="inner">
-                <p class="header">
-                    <img width="16" height="16" class="positionstatus" />
-                    <img width="16" height="16" class="movestatus" />
-                    <img src="../node_modules/octicons/build/svg/pencil.svg" class="edit-button"
-                        title="Edit" width="16" height="16" />
+        <div class="inner">
+            <p class="header">
+                <img width="16" height="16" class="positionstatus" />
+                <img width="16" height="16" class="movestatus" />
+                <img src="../node_modules/octicons/build/svg/pencil.svg" class="edit-button"
+                    title="Edit" width="16" height="16" />
 
-                    <span></span>
-                </p>
-                <div class="comment"></div>
-            </div>
+                <span></span>
+            </p>
+            <div class="comment"></div>
         </div>
 
         <div class="edit">
@@ -380,17 +372,17 @@
     <input type="search" name="filter" placeholder="Filter" />
 
     <div class="games-list">
-        <div class="gm-scrollbar -vertical"><div class="thumb"></div></div>
-        <div class="gm-scrollbar -horizontal"><div class="thumb"></div></div>
-        <div class="gm-scroll-view">
-            <ol></ol>
-        </div>
+        <ol></ol>
     </div>
 
     <p>
         <button type="button" class="dropdown" name="add">Add</button>
         <button type="button" name="close">Close</button>
     </p>
+</section>
+
+<section id="input-box">
+    <input type="text" name="input" placeholder="Input Box Text">
 </section>
 
 <section id="busy"></section>

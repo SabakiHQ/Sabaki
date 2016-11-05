@@ -3,7 +3,6 @@ const remote = {getCurrentWindow: () => null}
 const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
 const dialog = {showMessageBox: () => {}}
 const Menu = require('../modules/menu')
-const GeminiScrollbar = require('gemini-scrollbar')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -125,10 +124,9 @@ exports.setShowLeftSidebar = function(show) {
 
     // Update scrollbars
 
-    let $view = $('#console.gm-prevented, #console.gm-scrollbar-container .gm-scroll-view')
+    let $view = $('#console')
     $view.scrollTop($view.get(0).scrollHeight)
     $view.find('form:last-child input').get(0).focus()
-    $('#console').data('scrollbar').update()
 }
 
 exports.setLeftSidebarWidth = function(width) {
@@ -191,13 +189,12 @@ exports.getSidebarArrangement = function() {
 
 exports.setSidebarArrangement = function(graph, comment, redraw = true) {
     if (redraw) {
-        let $container = $('#properties .gm-scroll-view')
+        let $container = $('#properties .inner')
         $container.css('opacity', 0)
 
         setTimeout(() => {
             $('#graph').data('sigma').renderers[0].resize().render()
-            $('#properties').data('scrollbar').update()
-            $container.css('opacity', 1)
+            $container.css('opacity', '')
         }, 300)
     }
 
@@ -405,9 +402,6 @@ exports.setPreferencesTab = function(tab) {
 
     let $form = $('#preferences form')
     $form.attr('class', tab)
-
-    if (tab == 'engines')
-        $('#preferences .engines-list').data('scrollbar').update()
 }
 
 exports.getRepresentedFilename = function() {
@@ -526,45 +520,6 @@ exports.getCurrentMoveInterpretation = function() {
  * Preparation Methods
  */
 
-exports.prepareScrollbars = function() {
-    $('#properties').data('scrollbar', new GeminiScrollbar({
-        element: $('#properties').get(0),
-        createElements: false
-    }).create())
-
-    $('#console').data('scrollbar', new GeminiScrollbar({
-        element: $('#console').get(0),
-        createElements: false
-    }).create())
-
-    let $enginesList = $('#preferences .engines-list')
-    $enginesList.data('scrollbar', new GeminiScrollbar({
-        element: $enginesList.get(0),
-        createElements: false
-    }).create())
-
-    let $gamesList = $('#gamechooser .games-list')
-    $gamesList.data('scrollbar', new GeminiScrollbar({
-        element: $gamesList.get(0),
-        createElements: false
-    }).create())
-
-    $(window).on('resize', function() {
-        if (!$('#gamechooser').hasClass('show')) return
-
-        let width = $('#gamechooser .games-list').width() - 20
-        let $svgs = $('#gamechooser ol li svg')
-
-        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
-
-        let svgWidth = $svgs.width() + 12 + 20
-        let count = Math.floor(width / svgWidth)
-
-        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
-        $('#gamechooser .games-list').data('scrollbar').update()
-    })
-}
-
 exports.prepareResizers = function() {
     $('.verticalresizer').on('mousedown', function(evt) {
         if (evt.button != 0) return
@@ -634,10 +589,21 @@ exports.prepareResizers = function() {
 }
 
 exports.prepareGameChooser = function() {
-    let $scrollContainer = $([
-        '#gamechooser .games-list.gm-prevented',
-        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
-    ].join(', '))
+    let $scrollContainer = $('#gamechooser .games-list')
+
+    $(window).on('resize', function() {
+        if (!$('#gamechooser').hasClass('show')) return
+
+        let width = $scrollContainer.width() - 28
+        let $svgs = $('#gamechooser ol li svg')
+
+        if ($svgs.length == 0) $svgs = $('#gamechooser ol li')
+
+        let svgWidth = $svgs.width() + 12 + 20
+        let count = Math.floor(width / svgWidth)
+
+        $('#gamechooser ol li').css('width', Math.floor(width / count) - 20)
+    })
 
     // Load SVG images on the fly
 
@@ -679,8 +645,6 @@ exports.prepareGameChooser = function() {
             else $(li).addClass('hide')
         })
 
-        let $gamesList = $('#gamechooser .games-list')
-        $gamesList.data('scrollbar').update()
         $scrollContainer.scrollTop(0)
 
         updateSVG()
@@ -731,7 +695,7 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
         ).append(
             $('<a class="browse"/>')
             .on('click', function() {
-                let result = view.showOpenDialog({
+                let result = exports.showOpenDialog({
                     properties: ['openFile'],
                     filters: [{name: 'All Files', extensions: ['*']}]
                 })
@@ -760,7 +724,6 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
     ).append(
         $('<a class="remove"/>').on('click', function() {
             $(this).parents('li').eq(0).remove()
-            $('#preferences .engines-list').data('scrollbar').update()
         }).append(
             $('<img/>')
             .attr('src', '../node_modules/octicons/build/svg/x.svg')
@@ -770,14 +733,42 @@ exports.addEngineItem = function(name = '', path = '', args = '') {
 
     $ul.append($li)
     $li.find('h3 input').get(0).focus()
-
-    let enginesScrollbar = $('#preferences .engines-list').data('scrollbar')
-    if (enginesScrollbar) enginesScrollbar.update()
 }
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     let result = confirm(message)
     return result ? 0 : cancelId
+}
+
+exports.showInputBox = function(message, callback = () => {}) {
+    exports.setIsBusy(true)
+    ipcRenderer.send('build-menu', true)
+
+    $('#input-box')
+    .addClass('show')
+    .find('input')
+    .attr('placeholder', message)
+    .val('')
+    .off('keyup')
+    .on('keyup', e => {
+        if (e.keyCode == 13) {
+            // Enter
+
+            e.stopPropagation()
+            exports.closeInputBox()
+            callback(e.target.value)
+        }
+    }).get(0).focus()
+}
+
+exports.closeInputBox = function() {
+    if (!$('#input-box.show').length) return
+
+    ipcRenderer.send('build-menu')
+    exports.setIsBusy(false)
+
+    $('#input-box').removeClass('show')
+    .find('input').off('keyup').get(0).blur()
 }
 
 let showOpenSaveDialog = (type, options) => {
@@ -1030,7 +1021,6 @@ exports.hideIndicator = function() {
 exports.clearConsole = function() {
     $('#console .inner pre, #console .inner form:not(:last-child)').remove()
     $('#console .inner form:last-child input').eq(0).val('').get(0).focus()
-    $('#console').data('scrollbar').update()
 }
 
 exports.wireLinks = function($container) {
@@ -1593,7 +1583,7 @@ exports.closeScore = function() {
     $('#score').removeClass('show')
 }
 
-exports.showPreferences = function() {
+exports.showPreferences = function(tab = 'general') {
     // Load preferences
 
     $('#preferences input[type="checkbox"]').get()
@@ -1603,7 +1593,7 @@ exports.showPreferences = function() {
 
     // Show preferences
 
-    exports.setPreferencesTab('general')
+    exports.setPreferencesTab(tab)
     exports.closeDrawers()
     $('#preferences').addClass('show')
 }
@@ -1614,11 +1604,7 @@ exports.closePreferences = function() {
 }
 
 exports.showGameChooser = function(restoreScrollbarPos = true) {
-    let $scrollContainer = $([
-        '#gamechooser .games-list.gm-prevented',
-        '#gamechooser .games-list.gm-scrollbar-container .gm-scroll-view'
-    ].join(', '))
-
+    let $scrollContainer = $('#gamechooser .games-list')
     let scrollbarPos = restoreScrollbarPos ? $scrollContainer.scrollTop() : 0
 
     if (!restoreScrollbarPos || restoreScrollbarPos == 'top')
@@ -1720,11 +1706,12 @@ exports.closeGameChooser = function() {
 }
 
 exports.closeDrawers = function() {
-    let drawersOpen = $('.drawer.show').length > 0
+    let drawersOpen = $('.drawer.show, #input-box.show').length > 0
     let modeOpen = $('#bar .bar').get()
         .map(x => $(x).attr('id'))
         .some(x => $('body').hasClass(x))
 
+    exports.closeInputBox()
     exports.closeGameInfo()
     exports.closeScore()
     exports.closePreferences()
