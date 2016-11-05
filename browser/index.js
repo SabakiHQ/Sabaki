@@ -2081,10 +2081,11 @@ $(document).ready(function() {
     view.prepareIndicator()
     view.updateTitle()
 
-    $('#main, #graph canvas:last-child, #graph .slider').on('mousewheel', function(evt) {
+    $('#main, #graph canvas:last-child, #graph .slider').on('wheel', function(evt) {
         evt.preventDefault()
-        if (evt.wheelDelta < 0) sabaki.goForward()
-        else if (evt.wheelDelta > 0) sabaki.goBack()
+
+        if (evt.deltaY > 0) sabaki.goForward()
+        else if (evt.deltaY < 0) sabaki.goBack()
     })
 
     $('body').on('mouseup', function() {
