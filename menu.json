@@ -148,6 +148,19 @@
             },
             {"type": "separator"},
             {
+                "label": "C&opy Variation",
+                "action": "copyvariation"
+            },
+            {
+                "label": "C&ut Variation",
+                "action": "cutvariation"
+            },
+            {
+                "label": "&Paste Variation",
+                "action": "pastevariation"
+            },
+            {"type": "separator"},
+            {
                 "label": "Make Main &Variation",
                 "action": "makemainvariation"
             },
