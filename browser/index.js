@@ -2082,11 +2082,13 @@ sabaki.goToMoveNumber = function(number) {
     number = +number
 
     if (isNaN(number)) return
+    if (number < 0) number = 0
 
     let root = sabaki.getRootTree()
-    let tp = gametree.navigate(root, 0, number)
+    let tp = gametree.navigate(root, 0, Math.round(number))
 
     if (tp) sabaki.setCurrentTreePosition(...tp)
+    else sabaki.goToEnd()
 }
 
 sabaki.goToNextFork = function() {
