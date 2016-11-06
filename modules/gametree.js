@@ -21,7 +21,7 @@ exports.clone = function(tree, newIds = false, parent = null) {
         nodes: [],
         subtrees: [],
         current: tree.current,
-        parent: parent,
+        parent,
         collapsed: tree.collapsed
     }
 

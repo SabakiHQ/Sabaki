@@ -2190,6 +2190,20 @@ sabaki.cutVariation = function(tree, index) {
     sabaki.removeNode(tree, index, false, false)
 }
 
+sabaki.pasteVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Paste Variation')
+
+    let updateRoot = tree == sabaki.getRootTree()
+    let splitted = gametree.split(tree, index)
+    let copied = $('body').data('copyvardata')
+    
+    copied.parent = splitted
+    splitted.subtrees.push(copied)
+
+    if (updateRoot) sabaki.setRootTree(splitted)
+    sabaki.setCurrentTreePosition(copied, 0, true, true)
+}
+
 sabaki.makeMainVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Restore Main Variation')
     view.closeDrawers()
