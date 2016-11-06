@@ -1294,7 +1294,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             // Create variation
 
             let updateRoot = tree == sabaki.getRootTree()
-            let splitted = gametree.splitTree(tree, index)
+            let splitted = gametree.split(tree, index)
             let newtree = gametree.new()
             let node = {}
 
@@ -1390,7 +1390,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
             // New variation needed
 
             let updateRoot = tree == sabaki.getRootTree()
-            let splitted = gametree.splitTree(tree, index)
+            let splitted = gametree.split(tree, index)
 
             if (splitted != tree || splitted.subtrees.length != 0) {
                 tree = gametree.new()
@@ -2227,7 +2227,7 @@ sabaki.removeNode = function(tree, index) {
 
         parent.subtrees.splice(i, 1)
         if (parent.current >= 1) parent.current--
-        gametree.reduceTree(parent)
+        gametree.reduce(parent)
     }
 
     sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))

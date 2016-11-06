@@ -191,7 +191,7 @@ exports.makeHorizontalNavigator = function(tree, index) {
     }
 }
 
-exports.splitTree = function(tree, index) {
+exports.split = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return tree
 
     let newnodes = tree.nodes.slice(0, index + 1)
@@ -210,7 +210,7 @@ exports.splitTree = function(tree, index) {
     return newtree
 }
 
-exports.reduceTree = function(tree) {
+exports.reduce = function(tree) {
     if (tree.subtrees.length != 1) return tree
 
     tree.nodes.push(...tree.subtrees[0].nodes)
