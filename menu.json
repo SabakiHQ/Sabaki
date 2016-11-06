@@ -84,12 +84,12 @@
             },
             {"type": "separator"},
             {
-                "label": "Sc&ore",
-                "action": "score"
-            },
-            {
                 "label": "&Estimate",
                 "action": "estimate"
+            },
+            {
+                "label": "Sc&ore",
+                "action": "score"
             }
         ]
     },

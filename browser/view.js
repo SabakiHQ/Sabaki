@@ -1098,12 +1098,12 @@ exports.openHeaderMenu = function() {
         },
         { type: 'separator' },
         {
-            label: '&Score',
-            click: () => exports.setScoringMode(true)
-        },
-        {
             label: 'Es&timate',
             click: () => exports.setEstimatorMode(true)
+        },
+        {
+            label: '&Score',
+            click: () => exports.setScoringMode(true)
         },
         {
             label: '&Edit',
