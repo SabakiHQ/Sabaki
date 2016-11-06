@@ -1129,12 +1129,12 @@ exports.openHeaderMenu = function() {
         },
         { type: 'separator' },
         {
-            label: '&Score',
-            click: () => exports.setScoringMode(true)
-        },
-        {
             label: 'Es&timate',
             click: () => exports.setEstimatorMode(true)
+        },
+        {
+            label: '&Score',
+            click: () => exports.setScoringMode(true)
         },
         {
             label: '&Edit',
@@ -1310,6 +1310,19 @@ exports.openNodeMenu = function(tree, index, position) {
     if (exports.getScoringMode()) return
 
     let template = [
+        {
+            label: 'C&opy Variation',
+            click: () => sabaki.copyVariation(tree, index)
+        },
+        {
+            label: 'C&ut Variation',
+            click: () => sabaki.cutVariation(tree, index)
+        },
+        {
+            label: '&Paste Variation',
+            click: () => sabaki.pasteVariation(tree, index)
+        },
+        {type: 'separator'},
         {
             label: 'Make &Main Variation',
             click: () => sabaki.makeMainVariation(tree, index)

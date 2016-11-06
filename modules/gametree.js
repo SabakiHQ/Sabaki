@@ -15,13 +15,13 @@ exports.new = function() {
     }
 }
 
-exports.clone = function(tree, parent = null) {
+exports.clone = function(tree, newIds = false, parent = null) {
     let c = {
-        id: tree.id,
+        id: newIds ? helper.getId() : tree.id,
         nodes: [],
         subtrees: [],
         current: tree.current,
-        parent: parent,
+        parent,
         collapsed: tree.collapsed
     }
 
@@ -32,11 +32,7 @@ exports.clone = function(tree, parent = null) {
             if (key == 'board') continue
 
             if (Object.prototype.toString.call(node[key]) == '[object Array]') {
-                cn[key] = []
-
-                for (let i = 0; i < node[key].length; i++) {
-                    cn[key].push(node[key][i])
-                }
+                cn[key] = [...node[key]]
             } else {
                 cn[key] = node[key]
             }
@@ -46,7 +42,7 @@ exports.clone = function(tree, parent = null) {
     })
 
     tree.subtrees.forEach(subtree => {
-        c.subtrees.push(exports.clone(subtree, c))
+        c.subtrees.push(exports.clone(subtree, newIds, c))
     })
 
     return c
@@ -195,7 +191,7 @@ exports.makeHorizontalNavigator = function(tree, index) {
     }
 }
 
-exports.splitTree = function(tree, index) {
+exports.split = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return tree
 
     let newnodes = tree.nodes.slice(0, index + 1)
@@ -214,7 +210,7 @@ exports.splitTree = function(tree, index) {
     return newtree
 }
 
-exports.reduceTree = function(tree) {
+exports.reduce = function(tree) {
     if (tree.subtrees.length != 1) return tree
 
     tree.nodes.push(...tree.subtrees[0].nodes)

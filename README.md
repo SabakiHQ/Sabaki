@@ -14,6 +14,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. This is
 - Personalize board appearance with [userstyles](https://github.com/yishn/Sabaki/wiki/Userstyles)
 - SGF editing tools
 - Lines & arrows markup
+- Copy & paste variations
 - Game graph
 - Score estimator
 - Scoring tool
