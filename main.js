@@ -16,7 +16,8 @@ function newWindow(path) {
         height: setting.get('window.height'),
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
-        backgroundColor: '#ECB55A'
+        backgroundColor: '#ECB55A',
+        show: false
     })
 
     windows.push(window)
