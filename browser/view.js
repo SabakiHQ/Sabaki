@@ -1280,6 +1280,19 @@ exports.openNodeMenu = function(tree, index, position) {
 
     let template = [
         {
+            label: 'C&opy Variation',
+            click: () => sabaki.copyVariation(tree, index)
+        },
+        {
+            label: 'C&ut Variation',
+            click: () => sabaki.cutVariation(tree, index)
+        },
+        {
+            label: '&Paste Variation',
+            click: () => sabaki.pasteVariation(tree, index)
+        },
+        {type: 'separator'},
+        {
             label: 'Make &Main Variation',
             click: () => sabaki.makeMainVariation(tree, index)
         },
