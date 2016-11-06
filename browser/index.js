@@ -2200,8 +2200,17 @@ sabaki.pasteVariation = function(tree, index) {
     copied.parent = splitted
     splitted.subtrees.push(copied)
 
-    if (updateRoot) sabaki.setRootTree(splitted)
-    sabaki.setCurrentTreePosition(copied, 0, true, true)
+    if (updateRoot) {
+        sabaki.setRootTree(splitted)
+    }
+
+    if (index == tree.nodes.length - 1) {
+        let index = tree.nodes.length
+        gametree.reduce(splitted)
+        sabaki.setCurrentTreePosition(splitted, index, true, true)
+    } else {
+        sabaki.setCurrentTreePosition(copied, 0, true, true)
+    }
 }
 
 sabaki.makeMainVariation = function(tree, index) {
