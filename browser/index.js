@@ -2177,6 +2177,19 @@ sabaki.goToMainVariation = function() {
     }
 }
 
+sabaki.copyVariation = function(tree, index) {
+    let clone = gametree.clone(tree, true)
+    if (index != 0) gametree.split(clone, index - 1)
+
+    $('body').data('copyvardata', clone)
+}
+
+sabaki.cutVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Cut Variation')
+    sabaki.copyVariation(tree, index)
+    sabaki.removeNode(tree, index, false, false)
+}
+
 sabaki.makeMainVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Restore Main Variation')
     view.closeDrawers()
@@ -2196,13 +2209,13 @@ sabaki.makeMainVariation = function(tree, index) {
     sabaki.setCurrentTreePosition(tree, index, true, true)
 }
 
-sabaki.removeNode = function(tree, index) {
+sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
     if (!tree.parent && index == 0) {
         view.showMessageBox('The root node cannot be removed.', 'warning')
         return
     }
 
-    if (setting.get('edit.show_removenode_warning') && view.showMessageBox(
+    if (confirm != false && setting.get('edit.show_removenode_warning') && view.showMessageBox(
         'Do you really want to remove this node?',
         'warning',
         ['Remove Node', 'Cancel'], 1
@@ -2210,7 +2223,7 @@ sabaki.removeNode = function(tree, index) {
 
     // Save undo information
 
-    sabaki.setUndoable(true, 'Undo Remove Node')
+    if (undoable) sabaki.setUndoable(true, 'Undo Remove Node')
 
     // Remove node
 
