@@ -2178,7 +2178,7 @@ sabaki.goToMainVariation = function() {
 }
 
 sabaki.copyVariation = function(tree, index) {
-    let clone = gametree.clone(tree, true)
+    let clone = gametree.clone(tree)
     if (index != 0) gametree.split(clone, index - 1)
 
     $('body').data('copyvardata', clone)
@@ -2195,8 +2195,8 @@ sabaki.pasteVariation = function(tree, index) {
 
     let updateRoot = tree == sabaki.getRootTree()
     let splitted = gametree.split(tree, index)
-    let copied = $('body').data('copyvardata')
-    
+    let copied = gametree.clone($('body').data('copyvardata'), true)
+
     copied.parent = splitted
     splitted.subtrees.push(copied)
 
