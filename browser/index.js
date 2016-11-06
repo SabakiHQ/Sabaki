@@ -1299,7 +1299,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
             // Create variation
 
             let updateRoot = tree == sabaki.getRootTree()
-            let splitted = gametree.splitTree(tree, index)
+            let splitted = gametree.split(tree, index)
             let newtree = gametree.new()
             let node = {}
 
@@ -1401,7 +1401,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
             // New variation needed
 
             let updateRoot = tree == sabaki.getRootTree()
-            let splitted = gametree.splitTree(tree, index)
+            let splitted = gametree.split(tree, index)
 
             if (splitted != tree || splitted.subtrees.length != 0) {
                 tree = gametree.new()
@@ -2104,11 +2104,13 @@ sabaki.goToMoveNumber = function(number) {
     number = +number
 
     if (isNaN(number)) return
+    if (number < 0) number = 0
 
     let root = sabaki.getRootTree()
-    let tp = gametree.navigate(root, 0, number)
+    let tp = gametree.navigate(root, 0, Math.round(number))
 
     if (tp) sabaki.setCurrentTreePosition(...tp)
+    else sabaki.goToEnd()
 }
 
 sabaki.goToNextFork = function() {
@@ -2199,6 +2201,42 @@ sabaki.goToMainVariation = function() {
     }
 }
 
+sabaki.copyVariation = function(tree, index) {
+    let clone = gametree.clone(tree)
+    if (index != 0) gametree.split(clone, index - 1)
+
+    $('body').data('copyvardata', clone)
+}
+
+sabaki.cutVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Cut Variation')
+    sabaki.copyVariation(tree, index)
+    sabaki.removeNode(tree, index, false, false)
+}
+
+sabaki.pasteVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Paste Variation')
+
+    let updateRoot = tree == sabaki.getRootTree()
+    let splitted = gametree.split(tree, index)
+    let copied = gametree.clone($('body').data('copyvardata'), true)
+
+    copied.parent = splitted
+    splitted.subtrees.push(copied)
+
+    if (updateRoot) {
+        sabaki.setRootTree(splitted)
+    }
+
+    if (index == tree.nodes.length - 1) {
+        let index = tree.nodes.length
+        gametree.reduce(splitted)
+        sabaki.setCurrentTreePosition(splitted, index, true, true)
+    } else {
+        sabaki.setCurrentTreePosition(copied, 0, true, true)
+    }
+}
+
 sabaki.makeMainVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Restore Main Variation')
     view.closeDrawers()
@@ -2218,13 +2256,13 @@ sabaki.makeMainVariation = function(tree, index) {
     sabaki.setCurrentTreePosition(tree, index, true, true)
 }
 
-sabaki.removeNode = function(tree, index) {
+sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
     if (!tree.parent && index == 0) {
         view.showMessageBox('The root node cannot be removed.', 'warning')
         return
     }
 
-    if (setting.get('edit.show_removenode_warning') && view.showMessageBox(
+    if (confirm != false && setting.get('edit.show_removenode_warning') && view.showMessageBox(
         'Do you really want to remove this node?',
         'warning',
         ['Remove Node', 'Cancel'], 1
@@ -2232,7 +2270,7 @@ sabaki.removeNode = function(tree, index) {
 
     // Save undo information
 
-    sabaki.setUndoable(true, 'Undo Remove Node')
+    if (undoable) sabaki.setUndoable(true, 'Undo Remove Node')
 
     // Remove node
 
@@ -2249,7 +2287,7 @@ sabaki.removeNode = function(tree, index) {
 
         parent.subtrees.splice(i, 1)
         if (parent.current >= 1) parent.current--
-        gametree.reduceTree(parent)
+        gametree.reduce(parent)
     }
 
     sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))

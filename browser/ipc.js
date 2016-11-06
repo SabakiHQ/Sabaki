@@ -37,6 +37,9 @@ let menudata = {
     linetool: () => sabaki.setSelectedTool('line'),
     labeltool: () => sabaki.setSelectedTool('label'),
     numbertool: () => sabaki.setSelectedTool('number'),
+    copyvariation: () => sabaki.copyVariation(...sabaki.getCurrentTreePosition()),
+    cutvariation: () => sabaki.cutVariation(...sabaki.getCurrentTreePosition()),
+    pastevariation: () => sabaki.pasteVariation(...sabaki.getCurrentTreePosition()),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
 

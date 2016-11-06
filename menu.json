@@ -84,12 +84,12 @@
             },
             {"type": "separator"},
             {
-                "label": "Sc&ore",
-                "action": "score"
-            },
-            {
                 "label": "&Estimate",
                 "action": "estimate"
+            },
+            {
+                "label": "Sc&ore",
+                "action": "score"
             }
         ]
     },
@@ -145,6 +145,19 @@
                 "label": "&Number Tool",
                 "accelerator": "CmdOrCtrl+8",
                 "action": "numbertool"
+            },
+            {"type": "separator"},
+            {
+                "label": "C&opy Variation",
+                "action": "copyvariation"
+            },
+            {
+                "label": "C&ut Variation",
+                "action": "cutvariation"
+            },
+            {
+                "label": "&Paste Variation",
+                "action": "pastevariation"
             },
             {"type": "separator"},
             {
