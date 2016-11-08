@@ -2161,8 +2161,11 @@ $(document).ready(function() {
     }
 })
 
-$(window).on('resize', function() {
+$(window).on('load', function() {
+    let win = remote.getCurrentWindow()
+    if (win) win.show()
+}).on('resize', function() {
     view.resizeBoard()
 }).on('beforeunload', function(evt) {
-    if (!sabaki.askForSave()) evt.returnValue = 'false'
+    if (!sabaki.askForSave()) evt.returnValue = ' '
 })
