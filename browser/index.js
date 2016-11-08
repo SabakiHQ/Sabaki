@@ -2339,7 +2339,7 @@ $(window).on('load', function() {
 }).on('resize', function() {
     view.resizeBoard()
 }).on('beforeunload', function(evt) {
-    if (!sabaki.askForSave()) evt.returnValue = 'false'
+    if (!sabaki.askForSave()) evt.returnValue = ' '
 
     sabaki.detachEngine()
 
