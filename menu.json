@@ -64,8 +64,8 @@
         "label": "&Play",
         "submenu": [
             {
-                "label": "&Change Player",
-                "action": "changeplayer"
+                "label": "&Toggle Player",
+                "action": "toggleplayer"
             },
             {"type": "separator"},
             {

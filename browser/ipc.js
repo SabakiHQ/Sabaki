@@ -23,7 +23,7 @@ let menudata = {
     selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
-    changeplayer: () => view.setCurrentPlayer(-view.getCurrentPlayer()),
+    toggleplayer: () => sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer()),
     score: () => view.setScoringMode(true),
     estimate: () => view.setEstimatorMode(true),
 

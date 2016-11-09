@@ -107,6 +107,24 @@ sabaki.setGraphMatrixDict = function(matrixdict) {
     $('#graph').data('graphmatrixdict', matrixdict)
 }
 
+sabaki.setCurrentPlayer = function(sign) {
+    let [tree, index] = sabaki.getCurrentTreePosition()
+    let node = tree.nodes[index]
+    let intendedSign = 'B' in node ? -1 : +('W' in node)
+
+    if (intendedSign == sign) {
+        delete node.PL
+    } else {
+        node.PL = [sign > 0 ? 'B' : 'W']
+    }
+
+    view.setCurrentPlayer(sign)
+}
+
+sabaki.getCurrentPlayer = function() {
+    return view.getCurrentPlayer()
+}
+
 sabaki.getCurrentTreePosition = function() {
     return $('#goban').data('position')
 }
@@ -480,19 +498,8 @@ sabaki.prepareBars = function() {
 
     // Handle current player toggler
 
-    $('.current-player').on('click', function() {
-        let [tree, index] = sabaki.getCurrentTreePosition()
-        let node = tree.nodes[index]
-        let intendedSign = 'B' in node ? -1 : +('W' in node)
-        let sign = -view.getCurrentPlayer()
-
-        if (intendedSign == sign) {
-            delete node.PL
-        } else {
-            node.PL = [sign > 0 ? 'B' : 'W']
-        }
-
-        view.setCurrentPlayer(sign)
+    $('header .current-player').on('click', () => {
+        sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer())
     })
 }
 
