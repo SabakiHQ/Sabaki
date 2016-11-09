@@ -742,14 +742,13 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
 
 exports.showInputBox = function(message, callback = () => {}) {
     exports.setIsBusy(true)
-    ipcRenderer.send('build-menu', true)
 
     $('#input-box')
     .addClass('show')
     .find('input')
     .attr('placeholder', message)
     .val('')
-    .off('keyup')
+    .off('keyup blur')
     .on('keyup', e => {
         if (e.keyCode == 13) {
             // Enter
@@ -758,13 +757,14 @@ exports.showInputBox = function(message, callback = () => {}) {
             exports.closeInputBox()
             callback(e.target.value)
         }
+    }).on('blur', () => {
+        exports.closeInputBox()
     }).get(0).focus()
 }
 
 exports.closeInputBox = function() {
     if (!$('#input-box.show').length) return
 
-    ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
 
     $('#input-box').removeClass('show')

@@ -109,6 +109,24 @@ sabaki.setGraphMatrixDict = function(matrixdict) {
     $('#graph').data('graphmatrixdict', matrixdict)
 }
 
+sabaki.setCurrentPlayer = function(sign) {
+    let [tree, index] = sabaki.getCurrentTreePosition()
+    let node = tree.nodes[index]
+    let intendedSign = 'B' in node ? -1 : +('W' in node)
+
+    if (intendedSign == sign) {
+        delete node.PL
+    } else {
+        node.PL = [sign > 0 ? 'B' : 'W']
+    }
+
+    view.setCurrentPlayer(sign)
+}
+
+sabaki.getCurrentPlayer = function() {
+    return view.getCurrentPlayer()
+}
+
 sabaki.getCurrentTreePosition = function() {
     return $('#goban').data('position')
 }
@@ -482,19 +500,8 @@ sabaki.prepareBars = function() {
 
     // Handle current player toggler
 
-    $('.current-player').on('click', function() {
-        let [tree, index] = sabaki.getCurrentTreePosition()
-        let node = tree.nodes[index]
-        let intendedSign = 'B' in node ? -1 : +('W' in node)
-        let sign = -view.getCurrentPlayer()
-
-        if (intendedSign == sign) {
-            delete node.PL
-        } else {
-            node.PL = [sign > 0 ? 'B' : 'W']
-        }
-
-        view.setCurrentPlayer(sign)
+    $('header .current-player').on('click', () => {
+        sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer())
     })
 }
 
@@ -974,9 +981,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
                 }
             }
         }
-    } else {
-        // Playing mode
-
+    } else if (view.getPlayMode() || view.getAutoplayMode()) {
         if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
@@ -992,7 +997,9 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
 }
 
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
-    if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
+    if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode())
+        view.closeDrawers()
+        
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
