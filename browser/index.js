@@ -889,8 +889,7 @@ sabaki.askForSave = function() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) sabaki.saveFile(view.getRepresentedFilename())
-        else if (answer == 2) return false
+        if (answer == 2) return false
     }
 
     return true
@@ -999,7 +998,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode())
         view.closeDrawers()
-        
+
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
