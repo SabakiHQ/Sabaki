@@ -768,7 +768,7 @@ exports.showInputBox = function(message, callback = () => {}) {
     .find('input')
     .attr('placeholder', message)
     .val('')
-    .off('keyup')
+    .off('keyup blur')
     .on('keyup', e => {
         if (e.keyCode == 13) {
             // Enter
@@ -777,6 +777,8 @@ exports.showInputBox = function(message, callback = () => {}) {
             exports.closeInputBox()
             callback(e.target.value)
         }
+    }).on('blur', () => {
+        exports.closeInputBox()
     }).get(0).focus()
 }
 
