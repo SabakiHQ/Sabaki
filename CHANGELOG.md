@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 * Change keyboard shortcuts for toggling sidebar elements
 * Update to Electron v1.4.5
 * Update to Octicons v5.0.1
+* Remove gemini-scrollbar dependency
 
 **Fixed**
 
