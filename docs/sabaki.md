@@ -72,7 +72,7 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 * `dontAsk` `<Boolean>` - Default: `false`
 * `callback` `<Function>`
 
-Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show a open file dialog. On the web version, `filename` is ignored and treated as if not set.
+Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show an open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
 
