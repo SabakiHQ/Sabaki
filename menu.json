@@ -30,11 +30,11 @@
             },
             {"type": "separator"},
             {
-                "label": "Load From &Clipboard",
+                "label": "Load from &Clipboard",
                 "action": "loadclipboard"
             },
             {
-                "label": "Copy &To Clipboard",
+                "label": "Copy &to Clipboard",
                 "action": "copytoclipboard"
             },
             {
@@ -64,8 +64,8 @@
         "label": "&Play",
         "submenu": [
             {
-                "label": "&Change Player",
-                "action": "changeplayer"
+                "label": "&Toggle Player",
+                "action": "toggleplayer"
             },
             {"type": "separator"},
             {
@@ -196,12 +196,12 @@
                 "action": "togglehotspot"
             },
             {
-                "label": "Jump To Ne&xt Hotspot",
+                "label": "Jump to Ne&xt Hotspot",
                 "accelerator": "F2",
                 "action": "nexthotspot"
             },
             {
-                "label": "Jump To Pre&vious Hotspot",
+                "label": "Jump to Pre&vious Hotspot",
                 "accelerator": "Shift+F2",
                 "action": "previoushotspot"
             }
@@ -222,56 +222,56 @@
             },
             {"type": "separator"},
             {
-                "label": "Go To &Previous Fork",
+                "label": "Go to &Previous Fork",
                 "accelerator": "CmdOrCtrl+Up",
                 "action": "gotopreviousfork"
             },
             {
-                "label": "Go To &Next Fork",
+                "label": "Go to &Next Fork",
                 "accelerator": "CmdOrCtrl+Down",
                 "action": "gotonextfork"
             },
             {"type": "separator"},
             {
-                "label": "Go To Previous Commen&t",
+                "label": "Go to Previous Commen&t",
                 "accelerator": "CmdOrCtrl+Shift+Up",
                 "action": "previouscomment"
             },
             {
-                "label": "Go To Next &Comment",
+                "label": "Go to Next &Comment",
                 "accelerator": "CmdOrCtrl+Shift+Down",
                 "action": "nextcomment"
             },
             {"type": "separator"},
             {
-                "label": "Go To Be&ginning",
+                "label": "Go to Be&ginning",
                 "accelerator": "Home",
                 "action": "gotobeginning"
             },
             {
-                "label": "Go To &End",
+                "label": "Go to &End",
                 "accelerator": "End",
                 "action": "gotoend"
             },
             {"type": "separator"},
             {
-                "label": "Go To &Main Variation",
+                "label": "Go to &Main Variation",
                 "accelerator": "CmdOrCtrl+Left",
                 "action": "gotomainvariation"
             },
             {
-                "label": "Go To Previous &Variation",
+                "label": "Go to Previous &Variation",
                 "accelerator": "Left",
                 "action": "gotopreviousvariation"
             },
             {
-                "label": "Go To Next Va&riation",
+                "label": "Go to Next Va&riation",
                 "accelerator": "Right",
                 "action": "gotonextvariation"
             },
             {"type": "separator"},
             {
-                "label": "Go To Move N&umber",
+                "label": "Go to Move N&umber",
                 "accelerator": "CmdOrCtrl+G",
                 "action": "gotomovenumber"
             }
@@ -361,7 +361,7 @@
                 "enabled": false
             },
             {
-                "label": "Check For &Updates",
+                "label": "Check for &Updates",
                 "action": "checkforupdates"
             },
             {"type": "separator"},

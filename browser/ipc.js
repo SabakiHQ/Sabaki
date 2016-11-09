@@ -23,7 +23,7 @@ let menudata = {
     selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
-    changeplayer: () => view.setCurrentPlayer(-view.getCurrentPlayer()),
+    toggleplayer: () => sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer()),
     score: () => view.setScoringMode(true),
     estimate: () => view.setEstimatorMode(true),
 
@@ -58,7 +58,6 @@ let menudata = {
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),
-    gotomovenumber: () => view.showInputBox('Enter a move number to go to', sabaki.goToMoveNumber),
     gotopreviousfork: () => sabaki.goToPreviousFork(),
     gotonextfork: () => sabaki.goToNextFork(),
     nextcomment: () => sabaki.goToComment(1),
@@ -68,6 +67,10 @@ let menudata = {
     gotonextvariation: () => sabaki.goToNextVariation(),
     gotopreviousvariation: () => sabaki.goToPreviousVariation(),
     gotomainvariation: () => sabaki.goToMainVariation(),
+    gotomovenumber: () => view.showInputBox('Enter a move number to go to', move => {
+        view.closeDrawers()
+        sabaki.goToMoveNumber(move)
+    }),
 
     manageengines: () => view.showPreferences('engines'),
     detachengine: () => sabaki.detachEngine(),
@@ -89,7 +92,11 @@ let menudata = {
     reportissue: () => shell.openExternal(`https://github.com/yishn/${app.getName()}/issues`)
 }
 
-ipcRenderer.on('menu-click', (evt, action) => menudata[action]())
+ipcRenderer.on('menu-click', (evt, action) => {
+    view.closeInputBox()
+    menudata[action]()
+})
+
 ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 
 ipcRenderer.on('load-file', (evt, ...args) => {
