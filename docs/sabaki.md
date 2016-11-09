@@ -86,3 +86,31 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 Returns to play mode and replaces current file with the SGF specified in `sgf`. If `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
+
+### sabaki.askForSave()
+
+If there's a modified file opened, Sabaki will ask the user to save the file first or to cancel the action. Returns `true` if the user saved the file or wants to proceed without saving, and `false` if the user wants to cancel the action.
+
+### sabaki.vertexClick(vertex[, buttonIndex[, ctrlKey]])
+
+* `vertex` [`<Vertex>`](vertex.md) or `<String>`
+* `buttonIndex` `<Number>` - Default: `0`
+* `ctrlKey` `<Boolean>` - Default: `false`
+
+Performs a click on the given vertex position on the board with given button index and whether the control key is pressed.
+
+### sabaki.makeMove(vertex)
+
+* `vertex` [`<Vertex>`](vertex.md) or `<String>`
+
+Makes a proper move on the given vertex on the current board as the current player. If `vertex` is occupied, the game tree doesn't change. If `vertex` is not on the board, Sabaki will make a pass instead.
+
+Depending on the settings, Sabaki may notify the user about ko and suicide, plays a sound, or/and sends a command to the attached GTP engine.
+
+### sabaki.makeResign()
+
+Updates game information that the current player has resigned and shows the game info drawer for the user.
+
+### sabaki.useTool(vertex[, tool])
+
+* `vertex` [`<Vertex>`](vertex.md) or `<String>`

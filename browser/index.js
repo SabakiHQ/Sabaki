@@ -1105,9 +1105,8 @@ sabaki.askForSave = function() {
 sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
-    if (typeof vertex == 'string') {
+    if (typeof vertex == 'string')
         vertex = sabaki.getBoard().coord2vertex(vertex)
-    }
 
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
@@ -1204,6 +1203,9 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
+
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
 
     let board = sabaki.getBoard()
     let pass = !board.hasVertex(vertex)
@@ -1390,6 +1392,9 @@ sabaki.makeResign = function() {
 
 sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
     if (!tool) tool = sabaki.getSelectedTool()
+    
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
 
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
