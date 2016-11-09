@@ -1338,7 +1338,9 @@
       })
     },
     toggleClass: function(className, bool) {
-      return manipulateClass.call(this, "toggle", className, bool)
+      if (bool == null) return manipulateClass.call(this, "toggle", className)
+      else if (!bool) return manipulateClass.call(this, "remove", className)
+      return manipulateClass.call(this, "add", className)
     },
     trigger: function(event) {
       // IE polyfill
