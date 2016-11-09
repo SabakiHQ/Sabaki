@@ -20,7 +20,7 @@ let menudata = {
     managegames: () => view.showGameChooser(),
     preferences: () => view.showPreferences(),
 
-    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
+    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClick),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
     toggleplayer: () => sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer()),

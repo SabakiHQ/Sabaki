@@ -1102,7 +1102,7 @@ sabaki.askForSave = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
+sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false) {
     view.closeGameInfo()
 
     if (typeof vertex == 'string') {
@@ -1201,7 +1201,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode())
         view.closeDrawers()
-        
+
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
