@@ -58,7 +58,6 @@ let menudata = {
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),
-    gotomovenumber: () => view.showInputBox('Enter a move number to go to', sabaki.goToMoveNumber),
     gotopreviousfork: () => sabaki.goToPreviousFork(),
     gotonextfork: () => sabaki.goToNextFork(),
     nextcomment: () => sabaki.goToComment(1),
@@ -68,6 +67,10 @@ let menudata = {
     gotonextvariation: () => sabaki.goToNextVariation(),
     gotopreviousvariation: () => sabaki.goToPreviousVariation(),
     gotomainvariation: () => sabaki.goToMainVariation(),
+    gotomovenumber: () => view.showInputBox('Enter a move number to go to', move => {
+        view.closeDrawers()
+        sabaki.goToMoveNumber(move)
+    }),
 
     manageengines: () => view.showPreferences('engines'),
     detachengine: () => sabaki.detachEngine(),

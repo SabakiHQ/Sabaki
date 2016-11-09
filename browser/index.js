@@ -1178,9 +1178,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
                 }
             }
         }
-    } else {
-        // Playing mode
-
+    } else if (view.getPlayMode() || view.getAutoplayMode()) {
         if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
@@ -1196,7 +1194,9 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
 }
 
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
-    if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode()) return
+    if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode())
+        view.closeDrawers()
+        
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
