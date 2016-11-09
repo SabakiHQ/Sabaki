@@ -761,7 +761,6 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
 
 exports.showInputBox = function(message, callback = () => {}) {
     exports.setIsBusy(true)
-    ipcRenderer.send('build-menu', true)
 
     $('#input-box')
     .addClass('show')
@@ -785,7 +784,6 @@ exports.showInputBox = function(message, callback = () => {}) {
 exports.closeInputBox = function() {
     if (!$('#input-box.show').length) return
 
-    ipcRenderer.send('build-menu')
     exports.setIsBusy(false)
 
     $('#input-box').removeClass('show')

@@ -92,7 +92,11 @@ let menudata = {
     reportissue: () => shell.openExternal(`https://github.com/yishn/${app.getName()}/issues`)
 }
 
-ipcRenderer.on('menu-click', (evt, action) => menudata[action]())
+ipcRenderer.on('menu-click', (evt, action) => {
+    view.closeInputBox()
+    menudata[action]()
+})
+
 ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 
 ipcRenderer.on('load-file', (evt, ...args) => {
