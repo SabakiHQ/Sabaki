@@ -711,7 +711,7 @@ header, #bar .bar {
         margin: 0;
     }
     #info ul input[name="komi"], #info ul input[name^="size-"] {
-        width: 35px;
+        width: 45px;
     }
     #info span.size-swap {
         padding: 3px;
