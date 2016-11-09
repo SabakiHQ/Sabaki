@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "babel-polyfill": "^6.16.0",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
     "sigma": "^1.0.3"

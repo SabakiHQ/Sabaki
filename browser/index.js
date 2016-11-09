@@ -1,3 +1,5 @@
+require('babel-polyfill')
+
 const fs = null
 const remote = {getCurrentWindow: () => null}
 const ipcRenderer = {send: () => {}}
