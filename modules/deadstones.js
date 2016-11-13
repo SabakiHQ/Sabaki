@@ -8,16 +8,20 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0) {
         return false
 
     let neighbors = board.getNeighbors(vertex)
-    let freeNeighbors = neighbors.filter(n => board.arrangement[n] == 0)
+    let freeNeighbors = []
+    let friendlyNeighbors = []
+
+    neighbors.forEach(n => {
+        if (board.arrangement[n] == 0) freeNeighbors.push(n)
+        else if (board.arrangement[n] == sign) friendlyNeighbors.push(n)
+    })
 
     count += freeNeighbors.length
     if (count >= N) return true
 
     visited.push(vertex)
 
-    return neighbors
-    .filter(n => board.arrangement[n] == sign)
-    .some(n => hasNLiberties(board, n, N, visited, count))
+    return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count))
 }
 
 function makeMove(board, sign, vertex) {
@@ -27,9 +31,9 @@ function makeMove(board, sign, vertex) {
     board.arrangement[vertex] = sign
 
     let deadNeighbors = board.getNeighbors(vertex)
-        .filter(n => board.arrangement[n] == -sign && !board.hasLiberties(n))
+        .filter(n => board.arrangement[n] == -sign && !hasNLiberties(board, n, 1))
 
-    if (deadNeighbors.length <= 1 && !board.hasLiberties(vertex)
+    if (deadNeighbors.length <= 1 && !hasNLiberties(board, vertex, 1)
     || deadNeighbors.length == 0 && !hasNLiberties(board, vertex, 2)) {
         board.arrangement[vertex] = 0
         return null
