@@ -28,13 +28,18 @@ function makeMove(board, sign, vertex) {
     if (board.arrangement[vertex] != 0) return null
 
     sign = sign > 0 ? 1 : -1
+
+    if (board.getNeighbors(vertex).every(n => board.arrangement[n] == sign)) {
+        return null
+    }
+
     board.arrangement[vertex] = sign
 
     let deadNeighbors = board.getNeighbors(vertex)
         .filter(n => board.arrangement[n] == -sign && !hasNLiberties(board, n, 1))
 
-    if (deadNeighbors.length <= 1 && !hasNLiberties(board, vertex, 1)
-    || deadNeighbors.length == 0 && !hasNLiberties(board, vertex, 2)) {
+    if (deadNeighbors.length == 0 && !hasNLiberties(board, vertex, 2)
+    || deadNeighbors.length <= 1 && !hasNLiberties(board, vertex, 1)) {
         board.arrangement[vertex] = 0
         return null
     }
@@ -73,29 +78,32 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     let finished = {'-1': false, '1': false}
 
     while (iterations > 0) {
-        if (freeVertices.length == 0 && finished['-1'] && finished['1']) {
+        if (freeVertices.length == 0 || finished[-sign] && finished[sign]) {
             return board.getAreaMap()
-        } else if (freeVertices.length == 0) {
-            finished[sign] = true
         }
+
+        let madeMove = false
 
         while (freeVertices.length > 0) {
             let randomIndex = Math.floor(Math.random() * freeVertices.length)
             let vertex = freeVertices[randomIndex]
+            let freedVertices = makeMove(board, sign, vertex, false)
 
             freeVertices.splice(randomIndex, 1)
 
-            if (board.getNeighbors(vertex).every(n => board.arrangement[n] == sign))
-                continue
+            if (freedVertices != null) {
+                freeVertices.push(...freedVertices)
 
-            let result = makeMove(board, sign, vertex, false)
+                finished[-sign] = false
+                madeMove = true
 
-            if (result != null) {
-                finished['-1'] = finished['1'] = false
-                freeVertices.push(...result)
                 break
+            } else {
+                illegalVertices.push(vertex)
             }
         }
+
+        finished[sign] = !madeMove
 
         freeVertices.push(...illegalVertices)
         illegalVertices.length = 0
@@ -126,7 +134,8 @@ exports.getProbabilityMap = function(board, iterations = 5) {
     }
 
     for (let v in pmap) {
-        result[v] = pmap[v] / (pmap[v] + nmap[v])
+        if (pmap[v] + nmap[v] == 0) result[v] = 0.5
+        else result[v] = pmap[v] / (pmap[v] + nmap[v])
     }
 
     return result
