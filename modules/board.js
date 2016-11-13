@@ -367,16 +367,17 @@ class Board {
         return true
     }
 
-    makeMove(sign, vertex) {
+    makeMove(sign, vertex, allowSuicide = true) {
         let move = new Board(this.width, this.height, this.arrangement, this.captures)
 
         if (sign == 0 || !this.hasVertex(vertex)) return move
         if (this.arrangement[vertex] != 0) return null
 
         sign = sign > 0 ? 1 : -1
-        let suicide = true
+        let possibleSuicide = true
 
         // Remove captured stones
+
         this.getNeighbors(vertex).forEach(n => {
             if (move.arrangement[n] != -sign) return
 
@@ -391,16 +392,19 @@ class Board {
                 move.captures[sign.toString()]++
             })
 
-            suicide = false;
+            possibleSuicide = false
         })
 
         move.arrangement[vertex] = sign
 
         // Detect suicide
-        if (suicide) {
+
+        if (possibleSuicide) {
             let chain = move.getChain(vertex)
 
             if (move.getLiberties(vertex).length == 0) {
+                if (!allowSuicide) return null
+
                 chain.forEach(c => {
                     move.arrangement[c] = 0
                     move.captures[(-sign).toString()]++
@@ -438,10 +442,60 @@ class Board {
         return result.slice(0, count)
     }
 
-    guessDeadStones() {
-        let result = []
+    guessDeadStones(iterations = 1000) {
+        return []
+    }
 
-        return result
+    playTillEnd(sign, iterations = 400) {
+        let board = this
+        let vertices
+
+        let updateVertices = () => {
+            vertices = []
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    if (board.arrangement[[x, y]] != 0) continue
+                    vertices.push([x, y])
+                }
+            }
+        }
+
+        updateVertices()
+
+        let finished = {'-1': false, '1': false}
+
+        while (iterations > 0) {
+            if (vertices.length == 0 && finished['-1'] && finished['1']) {
+                return board.getAreaMap()
+            } else if (vertices.length == 0) {
+                finished[sign] = true
+            }
+
+            while (vertices.length > 0) {
+                let randomIndex = Math.floor(Math.random() * vertices.length)
+                let vertex = vertices[randomIndex]
+
+                vertices.splice(randomIndex, 1)
+
+                if (board.getNeighbors(vertex).every(n => board.arrangement[n] == sign))
+                    continue
+
+                let move = board.makeMove(sign, vertex, false)
+
+                if (move != null && move.getLiberties(vertex).length > 1) {
+                    board = move
+                    finished['-1'] = finished['1'] = false
+                    updateVertices()
+                    break
+                }
+            }
+
+            sign = -sign
+            iterations--
+        }
+
+        return board.getAreaMap()
     }
 
     getSvg(pixelsize) {
