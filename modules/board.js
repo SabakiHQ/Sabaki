@@ -66,9 +66,7 @@ class Board {
         return helper.getSymmetries(vertex).map(([x, y]) => [(x % mx + mx) % mx, (y % my + my) % my])
     }
 
-    getNeighbors(vertex, ignoreBoard = false) {
-        if (!ignoreBoard && !this.hasVertex(vertex)) return []
-        let [x, y] = vertex
+    getNeighbors([x, y], ignoreBoard = false) {
         let result = []
 
         if (!ignoreBoard && x > 0)
