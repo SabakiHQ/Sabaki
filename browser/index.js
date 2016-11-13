@@ -1196,7 +1196,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
 sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     if (!view.getPlayMode() && !view.getAutoplayMode() && !view.getGuessMode())
         view.closeDrawers()
-        
+
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
 
@@ -1239,7 +1239,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
         suicide = !capture
         && vertexNeighbors.filter(v => board.arrangement[v] == sign)
-            .every(v =>board.getLiberties(v).length == 1)
+            .every(v => board.getLiberties(v).length == 1)
         && vertexNeighbors.filter(v => board.arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
