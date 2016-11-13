@@ -69,16 +69,27 @@ class Board {
     getNeighbors(vertex, ignoreBoard = false) {
         if (!ignoreBoard && !this.hasVertex(vertex)) return []
         let [x, y] = vertex
+        let result = []
 
-        return [
-            [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(v => ignoreBoard || this.hasVertex(v))
+        if (!ignoreBoard && x > 0)
+            result.push([x - 1, y])
+        if (!ignoreBoard && x < this.width - 1)
+            result.push([x + 1, y])
+        if (!ignoreBoard && y > 0)
+            result.push([x, y - 1])
+        if (!ignoreBoard && y < this.height - 1)
+            result.push([x, y + 1])
+
+        return result
     }
 
-    getConnectedComponent(vertex, func, result) {
+    getConnectedComponent(vertex, func, result = null) {
         if (func instanceof Array) {
             let signs = func
             func = v => signs.includes(this.arrangement[v])
+        } else if (typeof func == 'number') {
+            let sign = func
+            func = v => this.arrangement[v] == sign
         }
 
         if (!this.hasVertex(vertex)) return []
@@ -97,7 +108,7 @@ class Board {
     }
 
     getChain(vertex) {
-        return this.getConnectedComponent(vertex, [this.arrangement[vertex]])
+        return this.getConnectedComponent(vertex, this.arrangement[vertex])
     }
 
     hasLiberties(vertex, visited = []) {
@@ -106,13 +117,15 @@ class Board {
 
         if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
             return false
-        if (this.getNeighbors(vertex).some(n => this.arrangement[n] == 0))
+
+        let neighbors = this.getNeighbors(vertex)
+
+        if (neighbors.some(n => this.arrangement[n] == 0))
             return true
 
         visited.push(vertex)
 
-        return this.getNeighbors(vertex)
-        .filter(n => this.arrangement[n] == sign)
+        return neighbors.filter(n => this.arrangement[n] == sign)
         .some(n => this.hasLiberties(n, visited))
     }
 
@@ -121,12 +134,13 @@ class Board {
 
         let chain = this.getChain(vertex)
         let liberties = []
+        let added = {}
 
         chain.forEach(c => {
-            liberties.push(...this.getNeighbors(c).filter(n => {
-                return this.arrangement[n] == 0
-                && !liberties.some(v => v[0] == n[0] && v[1] == n[1])
-            }))
+            let freeNeighbors = this.getNeighbors(c).filter(n => this.arrangement[n] == 0)
+
+            liberties.push(...freeNeighbors.filter(n => !(n in added)))
+            freeNeighbors.forEach(n => added[n] = true)
         })
 
         return liberties
