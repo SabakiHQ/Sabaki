@@ -54,6 +54,34 @@ function makeMove(board, sign, vertex) {
     return dead
 }
 
+function fixHoles(board) {
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let vertex = [x, y]
+
+            if (board.arrangement[vertex.join(',')] != 0)
+                continue
+
+            let neighbors = board.getNeighbors(vertex)
+            let sign = board.arrangement[neighbors[0].join(',')]
+            let fix = true
+
+            for (let i = 1; i < neighbors.length; i++) {
+                let n = neighbors[i]
+
+                if (board.arrangement[n.join(',')] != sign) {
+                    fix = false
+                    break
+                }
+            }
+
+            if (fix) board.arrangement[vertex] = sign
+        }
+    }
+
+    return board
+}
+
 exports.guess = function(board, iterations = 10000) {
     return []
 }
@@ -75,9 +103,8 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     let finished = {'-1': false, '1': false}
 
     while (iterations > 0) {
-        if (freeVertices.length == 0 || finished[-sign] && finished[sign]) {
-            return board.getAreaMap()
-        }
+        if (freeVertices.length == 0 || finished[-sign] && finished[sign])
+            break
 
         let madeMove = false
 
@@ -109,7 +136,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
         iterations--
     }
 
-    return board.getAreaMap()
+    return fixHoles(board).arrangement
 }
 
 exports.getProbabilityMap = function(board, iterations = 5) {
