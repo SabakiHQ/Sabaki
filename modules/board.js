@@ -383,7 +383,7 @@ class Board {
         return true
     }
 
-    makeMove(sign, vertex, allowSuicide = true) {
+    makeMove(sign, vertex) {
         let move = new Board(this.width, this.height, this.arrangement, this.captures)
 
         if (sign == 0 || !this.hasVertex(vertex)) return move
@@ -394,31 +394,23 @@ class Board {
 
         // Remove captured stones
 
-        let possibleSuicide = true
+        let deadNeighbors = move.getNeighbors(vertex)
+            .filter(n => move.arrangement[n] == -sign && !move.hasLiberties(n))
 
-        this.getNeighbors(vertex).forEach(n => {
-            if (move.arrangement[n] != -sign) return
-            if (move.hasLiberties(n)) return
-
+        deadNeighbors.forEach(n => {
             this.getChain(n).forEach(c => {
                 move.arrangement[c] = 0
-                move.captures[sign.toString()]++
+                move.captures[sign]++
             })
-
-            possibleSuicide = false
         })
 
         // Detect suicide
 
-        if (possibleSuicide) {
-            if (!move.hasLiberties(vertex)) {
-                if (!allowSuicide) return null
-
-                move.getChain(vertex).forEach(c => {
-                    move.arrangement[c] = 0
-                    move.captures[(-sign).toString()]++
-                })
-            }
+        if (deadNeighbors.length == 0 && !move.hasLiberties(vertex)) {
+            move.getChain(vertex).forEach(c => {
+                move.arrangement[c] = 0
+                move.captures[-sign]++
+            })
         }
 
         return move
