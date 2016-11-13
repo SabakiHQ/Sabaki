@@ -162,7 +162,7 @@ class Board {
                     this.getNeighbors(c).forEach(n => {
                         if (this.arrangement[n] == 0 || indicator == 0) return
 
-                        if (sign == 0) sign = map[n] = this.arrangement[n]
+                        if (sign == 0) sign = this.arrangement[n]
                         else if (sign != this.arrangement[n]) indicator = 0
                     })
                 })
@@ -370,12 +370,10 @@ class Board {
             for (let y = 0; y < this.height; y++) {
                 let vertex = [x, y]
                 if (this.arrangement[vertex] == 0 || vertex in liberties) continue
-
-                let l = this.getLiberties(vertex).length
-                if (l == 0) return false
+                if (!this.hasLiberties(vertex)) return false
 
                 this.getChain(vertex).forEach(v => {
-                    liberties[v] = l
+                    liberties[v] = true
                 })
             }
         }
