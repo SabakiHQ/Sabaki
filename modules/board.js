@@ -100,6 +100,22 @@ class Board {
         return this.getConnectedComponent(vertex, [this.arrangement[vertex]])
     }
 
+    hasLiberties(vertex, visited = []) {
+        let sign = this.arrangement[vertex]
+        if (!this.hasVertex(vertex) || sign == 0) return false
+
+        if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
+            return false
+        if (this.getNeighbors(vertex).some(n => this.arrangement[n] == 0))
+            return true
+
+        visited.push(vertex)
+
+        return this.getNeighbors(vertex)
+        .filter(n => this.arrangement[n] == sign)
+        .some(n => this.hasLiberties(n, visited))
+    }
+
     getLiberties(vertex) {
         if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
 
@@ -374,18 +390,15 @@ class Board {
         if (this.arrangement[vertex] != 0) return null
 
         sign = sign > 0 ? 1 : -1
-        let possibleSuicide = true
+        move.arrangement[vertex] = sign
 
         // Remove captured stones
 
+        let possibleSuicide = true
+        
         this.getNeighbors(vertex).forEach(n => {
             if (move.arrangement[n] != -sign) return
-
-            let ll = this.getLiberties(n)
-            if (ll.length != 1) return
-
-            let l = ll[0]
-            if (l[0] != vertex[0] || l[1] != vertex[1]) return
+            if (move.hasLiberties(n)) return
 
             this.getChain(n).forEach(c => {
                 move.arrangement[c] = 0
@@ -395,17 +408,13 @@ class Board {
             possibleSuicide = false
         })
 
-        move.arrangement[vertex] = sign
-
         // Detect suicide
 
         if (possibleSuicide) {
-            let chain = move.getChain(vertex)
-
-            if (move.getLiberties(vertex).length == 0) {
+            if (!move.hasLiberties(vertex)) {
                 if (!allowSuicide) return null
 
-                chain.forEach(c => {
+                move.getChain(vertex).forEach(c => {
                     move.arrangement[c] = 0
                     move.captures[(-sign).toString()]++
                 })
