@@ -1,7 +1,11 @@
 const Board = require('./board')
 
-function hasNLiberties(board, vertex, N, visited = [], count = 0) {
-    let sign = board.arrangement[vertex.join(',')]
+function vertex2key(v) {
+    return v.join(',')
+}
+
+function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
+    if (sign == null) sign = board.arrangement[vertex2key(vertex)]
 
     if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
         return false
@@ -12,7 +16,7 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        let s = board.arrangement[n.join(',')]
+        let s = board.arrangement[vertex2key(n)]
 
         if (s == 0) freeNeighbors.push(n)
         else if (s == sign) friendlyNeighbors.push(n)
@@ -23,20 +27,22 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0) {
 
     visited.push(vertex)
 
-    return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count))
+    return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count, sign))
 }
 
 function makeMove(board, sign, vertex) {
     let neighbors = board.getNeighbors(vertex)
+    let neighborSigns = neighbors.map(n => board.arrangement[vertex2key(n)])
 
-    if (neighbors.every(n => board.arrangement[n.join(',')] == sign)) {
+    if (neighborSigns.every(s => s == sign)) {
         return null
     }
 
-    board.arrangement[vertex] = sign
+    let key = vertex2key(vertex)
+    board.arrangement[key] = sign
 
     if (!hasNLiberties(board, vertex, 2)) {
-        board.arrangement[vertex] = 0
+        board.arrangement[key] = 0
         return null
     }
 
@@ -44,7 +50,8 @@ function makeMove(board, sign, vertex) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        if (board.arrangement[n.join(',')] != -sign || hasNLiberties(board, n, 1)) return
+        if (neighborSigns[i] != -sign || hasNLiberties(board, n, 1))
+            continue
 
         let chain = board.getChain(n)
         dead.push(...chain)
@@ -59,17 +66,17 @@ function fixHoles(board) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
 
-            if (board.arrangement[vertex.join(',')] != 0)
+            if (board.arrangement[vertex2key(vertex)] != 0)
                 continue
 
             let neighbors = board.getNeighbors(vertex)
-            let sign = board.arrangement[neighbors[0].join(',')]
+            let sign = board.arrangement[vertex2key(neighbors[0])]
             let fix = true
 
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
 
-                if (board.arrangement[n.join(',')] != sign) {
+                if (board.arrangement[vertex2key(n)] != sign) {
                     fix = false
                     break
                 }
