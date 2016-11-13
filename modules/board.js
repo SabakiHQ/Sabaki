@@ -398,6 +398,8 @@ class Board {
             .filter(n => move.arrangement[n] == -sign && !move.hasLiberties(n))
 
         deadNeighbors.forEach(n => {
+            if (move.arrangement[n] == 0) return
+
             this.getChain(n).forEach(c => {
                 move.arrangement[c] = 0
                 move.captures[sign]++

@@ -1,6 +1,29 @@
 const Board = require('./board')
 
-exports.guess = function(board) {
+function makeMove(board, sign, vertex) {
+    if (board.arrangement[vertex] != 0) return true
+
+    sign = sign > 0 ? 1 : -1
+    board.arrangement[vertex] = sign
+
+    let deadNeighbors = board.getNeighbors(vertex)
+        .filter(n => board.arrangement[n] == -sign && !board.hasLiberties(n))
+
+    if (deadNeighbors.length <= 1 && !board.hasLiberties(vertex)
+    || deadNeighbors.length == 0 && board.getLiberties(vertex).length <= 1) {
+        board.arrangement[vertex] = 0
+        return true
+    }
+
+    deadNeighbors.forEach(n => {
+        if (board.arrangement[n] == 0) return
+        board.getChain(n).forEach(c => board.arrangement[c] = 0)
+    })
+
+    return false
+}
+
+exports.guess = function(board, iterations = 10000) {
     return []
 }
 
@@ -54,26 +77,4 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     }
 
     return board.getAreaMap()
-}
-
-function makeMove(board, sign, vertex) {
-    if (board.arrangement[vertex] != 0) return true
-
-    sign = sign > 0 ? 1 : -1
-    board.arrangement[vertex] = sign
-
-    let deadNeighbors = board.getNeighbors(vertex)
-        .filter(n => board.arrangement[n] == -sign && !board.hasLiberties(n))
-
-    if (deadNeighbors.length <= 1 && !board.hasLiberties(vertex)
-    || deadNeighbors.length == 0 && board.getLiberties(vertex).length <= 1) {
-        board.arrangement[vertex] = 0
-        return true
-    }
-
-    deadNeighbors.forEach(n => {
-        board.getChain(n).forEach(c => board.arrangement[c] = 0)
-    })
-
-    return false
 }
