@@ -1,6 +1,6 @@
 const Board = require('./board')
 
-function hasTwoLiberties(board, vertex, visited = [], count = 0) {
+function hasNLiberties(board, vertex, N, visited = [], count = 0) {
     let sign = board.arrangement[vertex]
     if (!board.hasVertex(vertex) || sign == 0) return false
 
@@ -11,13 +11,13 @@ function hasTwoLiberties(board, vertex, visited = [], count = 0) {
     let freeNeighbors = neighbors.filter(n => board.arrangement[n] == 0)
 
     count += freeNeighbors.length
-    if (count >= 2) return true
+    if (count >= N) return true
 
     visited.push(vertex)
 
     return neighbors
     .filter(n => board.arrangement[n] == sign)
-    .some(n => hasTwoLiberties(board, n, visited, count))
+    .some(n => hasNLiberties(board, n, N, visited, count))
 }
 
 function makeMove(board, sign, vertex) {
@@ -30,7 +30,7 @@ function makeMove(board, sign, vertex) {
         .filter(n => board.arrangement[n] == -sign && !board.hasLiberties(n))
 
     if (deadNeighbors.length <= 1 && !board.hasLiberties(vertex)
-    || deadNeighbors.length == 0 && !hasTwoLiberties(board, vertex)) {
+    || deadNeighbors.length == 0 && !hasNLiberties(board, vertex, 2)) {
         board.arrangement[vertex] = 0
         return null
     }
