@@ -1,8 +1,7 @@
 const Board = require('./board')
 
 function hasNLiberties(board, vertex, N, visited = [], count = 0) {
-    let sign = board.arrangement[vertex]
-    if (!board.hasVertex(vertex) || sign == 0) return false
+    let sign = board.arrangement[vertex.join(',')]
 
     if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
         return false
@@ -11,10 +10,13 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0) {
     let freeNeighbors = []
     let friendlyNeighbors = []
 
-    neighbors.forEach(n => {
-        if (board.arrangement[n] == 0) freeNeighbors.push(n)
-        else if (board.arrangement[n] == sign) friendlyNeighbors.push(n)
-    })
+    for (let i = 0; i < neighbors.length; i++) {
+        let n = neighbors[i]
+        let s = board.arrangement[n.join(',')]
+
+        if (s == 0) freeNeighbors.push(n)
+        else if (s == sign) friendlyNeighbors.push(n)
+    }
 
     count += freeNeighbors.length
     if (count >= N) return true
@@ -25,34 +27,29 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0) {
 }
 
 function makeMove(board, sign, vertex) {
-    if (board.arrangement[vertex] != 0) return null
+    let neighbors = board.getNeighbors(vertex)
 
-    sign = sign > 0 ? 1 : -1
-
-    if (board.getNeighbors(vertex).every(n => board.arrangement[n] == sign)) {
+    if (neighbors.every(n => board.arrangement[n.join(',')] == sign)) {
         return null
     }
 
     board.arrangement[vertex] = sign
 
-    let deadNeighbors = board.getNeighbors(vertex)
-        .filter(n => board.arrangement[n] == -sign && !hasNLiberties(board, n, 1))
-
-    if (deadNeighbors.length == 0 && !hasNLiberties(board, vertex, 2)
-    || deadNeighbors.length <= 1 && !hasNLiberties(board, vertex, 1)) {
+    if (!hasNLiberties(board, vertex, 2)) {
         board.arrangement[vertex] = 0
         return null
     }
 
     let dead = []
 
-    deadNeighbors.forEach(n => {
-        if (board.arrangement[n] == 0) return
+    for (let i = 0; i < neighbors.length; i++) {
+        let n = neighbors[i]
+        if (board.arrangement[n.join(',')] != -sign || hasNLiberties(board, n, 1)) return
 
         let chain = board.getChain(n)
         dead.push(...chain)
         chain.forEach(c => board.arrangement[c] = 0)
-    })
+    }
 
     return dead
 }
