@@ -89,8 +89,29 @@ function fixHoles(board) {
     return board
 }
 
-exports.guess = function(board, iterations = 10000) {
-    return []
+exports.guess = function(board, ...args) {
+    let map = exports.getProbabilityMap(board, ...args)
+    let done = {}
+    let result = []
+
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let vertex = [x, y]
+            let sign = board.arrangement[vertex]
+
+            if (sign == 0 || vertex in done) continue
+
+            let chain = board.getChain(vertex)
+            let probability = chain.map(v => map[v]).reduce((x, sum) => sum + x) / chain.length
+            let newSign = probability < 0.5 ? -1 : probability > 0.5 ? 1 : 0
+
+            if (newSign == -sign) result.push(...chain)
+
+            done[vertex] = true
+        }
+    }
+
+    return result
 }
 
 exports.playTillEnd = function(board, sign, iterations = null) {
