@@ -69,13 +69,13 @@ class Board {
     getNeighbors([x, y], ignoreBoard = false) {
         let result = []
 
-        if (!ignoreBoard && x > 0)
+        if (ignoreBoard || x > 0)
             result.push([x - 1, y])
-        if (!ignoreBoard && x < this.width - 1)
+        if (ignoreBoard || x < this.width - 1)
             result.push([x + 1, y])
-        if (!ignoreBoard && y > 0)
+        if (ignoreBoard || y > 0)
             result.push([x, y - 1])
-        if (!ignoreBoard && y < this.height - 1)
+        if (ignoreBoard || y < this.height - 1)
             result.push([x, y + 1])
 
         return result
