@@ -2006,6 +2006,8 @@ sabaki.cutVariation = function(tree, index) {
 }
 
 sabaki.pasteVariation = function(tree, index) {
+    if ($('body').data('copyvardata') == null) return
+
     sabaki.setUndoable(true, 'Undo Paste Variation')
 
     let updateRoot = tree == sabaki.getRootTree()
