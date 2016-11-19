@@ -2222,6 +2222,13 @@ sabaki.pasteVariation = function(tree, index) {
     }
 }
 
+sabaki.flattenVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Flatten')
+    view.closeDrawers()
+
+    // TODO
+}
+
 sabaki.makeMainVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Restore Main Variation')
     view.closeDrawers()
