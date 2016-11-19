@@ -65,7 +65,7 @@ sabaki.setRootTree = function(tree) {
 
     tree.parent = null
     gametree.getBoard(tree)
-    sabaki.setCurrentTreePosition(tree, 0, true)
+    sabaki.setCurrentTreePosition(tree, 0, true, true)
 
     view.setPlayerName(1,
         gametree.getPlayerName(tree, 1, 'Black'),
@@ -1677,7 +1677,6 @@ sabaki.updateGraph = function() {
 
     sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     sabaki.centerGraphCameraAt(sabaki.getCurrentGraphNode())
-    console.log('update graph')
 }
 
 sabaki.updateSlider = function() {
@@ -2225,9 +2224,33 @@ sabaki.pasteVariation = function(tree, index) {
 
 sabaki.flattenVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Undo Flatten')
-    view.closeDrawers()
 
-    // TODO
+    let board = gametree.getBoard(tree, index)
+    let rootNode = sabaki.getRootTree().nodes[0]
+    let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
+
+    let clone = gametree.clone(tree)
+    if (index != 0) gametree.split(clone, index - 1)
+    let node = clone.nodes[0]
+
+    node.AB = []
+    node.AW = []
+    node.AE = []
+    delete node.B
+    delete node.W
+    clone.parent = null
+    inherit.forEach(x => x in rootNode ? node[x] = rootNode[x] : null)
+
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let sign = board.arrangement[[x, y]]
+            if (sign == 0) continue
+
+            node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
+        }
+    }
+
+    sabaki.setRootTree(clone)
 }
 
 sabaki.makeMainVariation = function(tree, index) {

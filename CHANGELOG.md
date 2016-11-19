@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add ability to flatten nodes
+
 **Fixed**
 
 * Fix game graph not updated when pasting variations sometimes
