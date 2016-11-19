@@ -161,12 +161,12 @@
             },
             {"type": "separator"},
             {
-                "label": "&Flatten",
-                "action": "flatten"
-            },
-            {
                 "label": "Make Main &Variation",
                 "action": "makemainvariation"
+            },
+            {
+                "label": "&Flatten",
+                "action": "flatten"
             },
             {
                 "label": "&Remove Node",
