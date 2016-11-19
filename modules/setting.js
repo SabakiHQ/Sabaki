@@ -31,7 +31,7 @@ let engines = []
 
 let defaults = {
     'app.startup_check_updates': true,
-    'app.startup_check_updates_delay': 100,
+    'app.startup_check_updates_delay': 3000,
     'app.loadgame_delay': 100,
     'app.hide_busy_delay': 200,
     'autoplay.sec_per_move': 1,
@@ -76,6 +76,7 @@ let defaults = {
     'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
+    'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
