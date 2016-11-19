@@ -161,6 +161,10 @@
             },
             {"type": "separator"},
             {
+                "label": "&Flatten",
+                "action": "flatten"
+            },
+            {
                 "label": "Make Main &Variation",
                 "action": "makemainvariation"
             },

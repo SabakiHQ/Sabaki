@@ -64,7 +64,7 @@ sabaki.setRootTree = function(tree) {
 
     tree.parent = null
     gametree.getBoard(tree)
-    sabaki.setCurrentTreePosition(tree, 0, true)
+    sabaki.setCurrentTreePosition(tree, 0, true, true)
 
     view.setPlayerName(1,
         gametree.getPlayerName(tree, 1, 'Black'),
@@ -1246,7 +1246,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
         suicide = !capture
         && vertexNeighbors.filter(v => board.arrangement[v] == sign)
-            .every(v =>board.getLiberties(v).length == 1)
+            .every(v => board.getLiberties(v).length == 1)
         && vertexNeighbors.filter(v => board.arrangement[v] == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
@@ -2230,6 +2230,7 @@ sabaki.pasteVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Undo Paste Variation')
 
     let updateRoot = tree == sabaki.getRootTree()
+    let oldLength = tree.nodes.length
     let splitted = gametree.split(tree, index)
     let copied = gametree.clone($('body').data('copyvardata'), true)
 
@@ -2240,13 +2241,43 @@ sabaki.pasteVariation = function(tree, index) {
         sabaki.setRootTree(splitted)
     }
 
-    if (index == tree.nodes.length - 1) {
-        let index = tree.nodes.length
+    if (splitted.subtrees.length == 1) {
         gametree.reduce(splitted)
-        sabaki.setCurrentTreePosition(splitted, index, true, true)
+        sabaki.setCurrentTreePosition(splitted, oldLength, true, true)
     } else {
         sabaki.setCurrentTreePosition(copied, 0, true, true)
     }
+}
+
+sabaki.flattenVariation = function(tree, index) {
+    sabaki.setUndoable(true, 'Undo Flatten')
+
+    let board = gametree.getBoard(tree, index)
+    let rootNode = sabaki.getRootTree().nodes[0]
+    let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
+
+    let clone = gametree.clone(tree)
+    if (index != 0) gametree.split(clone, index - 1)
+    let node = clone.nodes[0]
+
+    node.AB = []
+    node.AW = []
+    node.AE = []
+    delete node.B
+    delete node.W
+    clone.parent = null
+    inherit.forEach(x => x in rootNode ? node[x] = rootNode[x] : null)
+
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let sign = board.arrangement[[x, y]]
+            if (sign == 0) continue
+
+            node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
+        }
+    }
+
+    sabaki.setRootTree(clone)
 }
 
 sabaki.makeMainVariation = function(tree, index) {

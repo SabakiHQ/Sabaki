@@ -6,15 +6,27 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Add ability to flatten nodes
+
+**Fixed**
+
+* Fix game graph not updated when pasting variations sometimes
+
+## [Sabaki v0.19.0][v0.19.0] (2016-11-11)
+
+**Added**
+
+* Add 'Play' menu
+* Add 'Go To Move Number' menu item
 * Ability to select points by keyboard input
 * Ability to copy/cut/paste variations
-* Add 'Go To Move Number' menu item
 
 **Changed**
 
 * Change keyboard shortcuts for toggling sidebar elements
 * Update to Electron v1.4.5
 * Update to Octicons v5.0.1
+* Remove gemini-scrollbar dependency
 
 **Fixed**
 
@@ -445,7 +457,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.18.3...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.0...master
+[v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.18.3
 [v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.18.2...v0.18.3
 [v0.18.2]: https://github.com/yishn/Sabaki/compare/v0.18.1...v0.18.2
 [v0.18.1]: https://github.com/yishn/Sabaki/compare/v0.18.0...v0.18.1
