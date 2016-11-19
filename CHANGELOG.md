@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Add ability to flatten nodes
 
+**Changed**
+
+* Update to Electron v1.4.7
+
 **Fixed**
 
 * Fix game graph not updated when pasting variations sometimes
