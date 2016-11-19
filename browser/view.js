@@ -1324,6 +1324,10 @@ exports.openNodeMenu = function(tree, index, position) {
         },
         {type: 'separator'},
         {
+            label: '&Flatten',
+            click: () => sabaki.flattenVariation(tree, index)
+        },
+        {
             label: 'Make &Main Variation',
             click: () => sabaki.makeMainVariation(tree, index)
         },
