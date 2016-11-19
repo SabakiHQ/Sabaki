@@ -1677,6 +1677,7 @@ sabaki.updateGraph = function() {
 
     sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
     sabaki.centerGraphCameraAt(sabaki.getCurrentGraphNode())
+    console.log('update graph')
 }
 
 sabaki.updateSlider = function() {
@@ -2203,6 +2204,7 @@ sabaki.pasteVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Undo Paste Variation')
 
     let updateRoot = tree == sabaki.getRootTree()
+    let oldLength = tree.nodes.length
     let splitted = gametree.split(tree, index)
     let copied = gametree.clone($('body').data('copyvardata'), true)
 
@@ -2213,10 +2215,9 @@ sabaki.pasteVariation = function(tree, index) {
         sabaki.setRootTree(splitted)
     }
 
-    if (index == tree.nodes.length - 1) {
-        let index = tree.nodes.length
+    if (splitted.subtrees.length == 1) {
         gametree.reduce(splitted)
-        sabaki.setCurrentTreePosition(splitted, index, true, true)
+        sabaki.setCurrentTreePosition(splitted, oldLength, true, true)
     } else {
         sabaki.setCurrentTreePosition(copied, 0, true, true)
     }
