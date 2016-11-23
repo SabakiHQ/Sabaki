@@ -2384,9 +2384,10 @@ $(window).on('load', function() {
     sabaki.detachEngine()
 
     let win = remote.getCurrentWindow()
-    if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
-    setting
-    .set('window.width', Math.round($('body').width()))
-    .set('window.height', Math.round($('body').height()))
+    if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
+        setting
+        .set('window.width', Math.round($('body').width()))
+        .set('window.height', Math.round($('body').height()))
+    }
 })
