@@ -1848,6 +1848,7 @@ sabaki.saveFile = function(filename) {
     $el.remove()
 
     sabaki.updateFileHash()
+    return true
 }
 
 sabaki.saveFileToSgf = function() {

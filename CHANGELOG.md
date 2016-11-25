@@ -36,7 +36,6 @@ All notable changes to this project will be documented in this file.
 
 * Fix handicap stones being placed incorrectly
 * Fix not being able to select executables for engines
-* Fix a bug where clicking 'Cancel' on the save file confirmation dialog when quitting does not prevent it
 
 ## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
 
