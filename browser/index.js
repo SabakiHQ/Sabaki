@@ -1086,7 +1086,7 @@ sabaki.askForSave = function() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) sabaki.saveFile(view.getRepresentedFilename())
+        if (answer == 0) return sabaki.saveFile(view.getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -2041,7 +2041,11 @@ sabaki.saveFile = function(filename) {
         sabaki.updateFileHash()
         view.setRepresentedFilename(filename)
         view.setIsBusy(false)
+
+        return true
     }
+
+    return false
 }
 
 sabaki.saveFileToSgf = function() {
