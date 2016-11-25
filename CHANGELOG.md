@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.19.1][v0.19.1] (2016-11-20)
 
 **Added**
 
 * Add ability to flatten nodes
+
+**Changed**
+
+* Update to Electron v1.4.7
 
 **Fixed**
 
@@ -32,9 +36,13 @@ All notable changes to this project will be documented in this file.
 
 * Fix handicap stones being placed incorrectly
 * Fix not being able to select executables for engines
-* Fix a bug where clicking 'Cancel' on the save file confirmation dialog when quitting does not prevent it
 
 ## [Sabaki v0.18.3][v0.18.3] (2016-10-26)
+
+**Added**
+
+* Add support for non-UTF8 encodings (Thanks to @apetresc)
+* Add basic text editing keyboard shortcuts when editing/writing comments on macOS
 
 **Changed**
 
@@ -46,38 +54,9 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix 'Load From Clipboard' encoding issue
-
-## [Sabaki v0.18.2][v0.18.2] (2016-10-10)
-
-**Fixed**
-
 * Fix graph not displaying diamond shapes
-
-## [Sabaki v0.18.1][v0.18.1] (2016-10-10)
-
-**Changed**
-
-* Several internal changes to the code base
-* Update to Electron v1.4.3
-
-**Fixed**
-
 * Fix arrow keys not working in open/save file dialog on macOS
 * Fix guess mode when an engine is attached
-
-## [Sabaki v0.18.0][v0.18.0] (2016-09-18)
-
-**Added**
-
-* Add support for non-UTF8 encodings (Thanks to @apetresc)
-* Add basic text editing keyboard shortcuts when editing/writing comments on macOS
-
-**Changed**
-
-* Update to Electron v1.3.6
-
-**Fixed**
-
 * Fix removing nodes resulting in invalid game graphs sometimes
 * Fix regression where guess mode stopped working
 
@@ -332,6 +311,7 @@ All notable changes to this project will be documented in this file.
 ## [Sabaki v0.7.1][v0.7.1] (2015-12-31)
 
 **Added**
+
 * Find move
 * Fullscreen mode
 * Add GTP engines support
@@ -341,6 +321,7 @@ All notable changes to this project will be documented in this file.
 * Ability to turn off 'Remove Node' warning
 
 **Changed**
+
 * More responsive game graph
 * Touch-friendly slider
 * Fix duplicate Taskbar icon in Windows
@@ -348,6 +329,7 @@ All notable changes to this project will be documented in this file.
 * Window has an icon in Linux
 
 **Fixed**
+
 * More crisp bar icons
 * Fix engines not showing in preferences when removed but not saved
 * Fix certain actions failing in scoring mode
@@ -356,6 +338,7 @@ All notable changes to this project will be documented in this file.
 ## [Sabaki v0.5.0][v0.5.0] (2015-09-03)
 
 **Added**
+
 * Add 'Clear All Overlays' menu item
 * Ask for saving file when closing a changed game
 * Confirm remove node
@@ -363,11 +346,13 @@ All notable changes to this project will be documented in this file.
 * Add Linux release
 
 **Fixed**
+
 * Always use system font
 * Fix weird rendering artifacts
 * Prevent new windows when Ctrl-clicking links
 
 **Changed**
+
 * Alpha and number tools use up lower, unused symbols before using higher symbols
 * When opening Sabaki with a big file, the main window will show before loading file
 * Update to Electron v0.31.2
@@ -375,27 +360,32 @@ All notable changes to this project will be documented in this file.
 ## [Sabaki v0.4.2][v0.4.2] (2015-08-28)
 
 **Added**
+
 * Resizable comment view
 * Comment view
 * Add keyboard shortcut for 'Remove Node'
 * Hovering over coordinates in a comment will show the corresponding position on the board
 
 **Fixed**
+
 * Avoid initial collision of fuzzily placed stones
 * Mouse wheel navigation works when pointing at the game graph
 * Fix slider arrow not being at the right place sometimes
 * Fix a bug where saving games with comments could lead to unescaped characters
 
 **Changed**
+
 * Update to Electron v0.31.1
 * Change name to Sabaki
 
 ## [Goban v0.3.7][v0.3.7] (2015-08-16)
 
 **Added**
+
 * Highlight current game track in graph
 
 **Fixed**
+
 * Fix wrong cross symbol on Windows 10
 * Fix a bug where stone sounds are not played immediately
 * Fix graph performance issues
@@ -403,11 +393,13 @@ All notable changes to this project will be documented in this file.
 * Faster click response when playing in large graphs
 
 **Changed**
+
 * Update to Electron v0.30.4
 
 ## [Goban v0.3.5][v0.3.5] (2015-08-04)
 
 **Added**
+
 * Check for updates at startup
 * Add move count indicator next to slider
 * Ability to load a game by dropping file onto the board
@@ -420,6 +412,7 @@ All notable changes to this project will be documented in this file.
 * Automatically expand collapsed subgraphs
 
 **Fixed**
+
 * Fix uncaught exception when playing in pruned subgraphs
 * Fix a bug where the slider won't update when playing in pruned subgraphs
 * Fix a bug where label tooltips are not removed
@@ -429,6 +422,7 @@ All notable changes to this project will be documented in this file.
 * Fix uncaught exception when saving SGF file
 
 **Changed**
+
 * Faster slider response
 * Collapse game graph for performance
 * Update to Electron v0.30.2
@@ -436,6 +430,7 @@ All notable changes to this project will be documented in this file.
 ## [Goban v0.3.0][v0.3.0] (2015-07-22)
 
 **Added**
+
 * Game graph
 * Resizable sidebar
 * Detect and notify user about ko
@@ -444,6 +439,7 @@ All notable changes to this project will be documented in this file.
 * Add navigation to sibling variations
 
 **Fixed**
+
 * Prevent accidentally clicking on the board when dragging graph
 * Fix a bug where removed variations show up on the board
 * Fix an error where updating the score of a drawed game, the SGF result will not be correct
@@ -451,18 +447,17 @@ All notable changes to this project will be documented in this file.
 * Fix unresponsiveness when clicking on a vertex on the game graph
 
 **Changed**
+
 * Update to Electron v0.30.0
 
 ## Goban v0.1.0 (2015-06-20)
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.0...master
-[v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.18.3
-[v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.18.2...v0.18.3
-[v0.18.2]: https://github.com/yishn/Sabaki/compare/v0.18.1...v0.18.2
-[v0.18.1]: https://github.com/yishn/Sabaki/compare/v0.18.0...v0.18.1
-[v0.18.0]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.0
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.1...master
+[v0.19.1]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.19.1
+[v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.0
+[v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.3
 [v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.17.2
 [v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.3
 [v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0

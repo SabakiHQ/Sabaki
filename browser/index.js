@@ -1091,7 +1091,7 @@ sabaki.askForSave = function() {
             ['Save', 'Don’t Save', 'Cancel'], 2
         )
 
-        if (answer == 0) sabaki.saveFile(view.getRepresentedFilename())
+        if (answer == 0) return sabaki.saveFile(view.getRepresentedFilename())
         else if (answer == 2) return false
     }
 
@@ -2068,7 +2068,11 @@ sabaki.saveFile = function(filename) {
         sabaki.updateFileHash()
         view.setRepresentedFilename(filename)
         view.setIsBusy(false)
+
+        return true
     }
+
+    return false
 }
 
 sabaki.saveFileToSgf = function() {
@@ -2227,6 +2231,8 @@ sabaki.cutVariation = function(tree, index) {
 }
 
 sabaki.pasteVariation = function(tree, index) {
+    if ($('body').data('copyvardata') == null) return
+
     sabaki.setUndoable(true, 'Undo Paste Variation')
 
     let updateRoot = tree == sabaki.getRootTree()
@@ -2411,9 +2417,10 @@ $(window).on('load', function() {
     sabaki.detachEngine()
 
     let win = remote.getCurrentWindow()
-    if (win.isMaximized() || win.isMinimized() || win.isFullScreen()) return
 
-    setting
-    .set('window.width', Math.round($('body').width()))
-    .set('window.height', Math.round($('body').height()))
+    if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
+        setting
+        .set('window.width', Math.round($('body').width()))
+        .set('window.height', Math.round($('body').height()))
+    }
 })
