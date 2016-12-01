@@ -162,7 +162,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     return fixHoles(board).arrangement
 }
 
-exports.getProbabilityMap = function(board, iterations = 30) {
+exports.getProbabilityMap = function(board, iterations = 50) {
     let pmap = []
     let nmap = []
     let result = {}
