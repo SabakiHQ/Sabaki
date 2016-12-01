@@ -2,29 +2,31 @@ const helper = require('./helper')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class Board {
-    constructor(width = 19, height = 19, arrangement = {}, captures = {'-1': 0, '1': 0}) {
+    constructor(width = 19, height = 19, arrangement = [], captures = {'-1': 0, '1': 0}) {
         this.width = width
         this.height = height
         this.captures = {'-1': captures['-1'], '1': captures['1']}
-        this.arrangement = {}
+        this.arrangement = []
         this.markups = {}
         this.ghosts = []
         this.lines = []
 
         // Initialize arrangement
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                this.arrangement[[x, y]] = [x, y] in arrangement ? arrangement[[x, y]] : 0
-            }
+        for (let i = 0; i < Math.max(arrangement.length, width * height); i++) {
+            this.arrangement[i] = arrangement[i] || 0
         }
     }
 
+    _vertex2index([x, y]) {
+        return y * this.width + x
+    }
+
     get(vertex) {
-        return this.arrangement[vertex]
+        return this.arrangement[this._vertex2index(vertex)]
     }
 
     set(vertex, sign) {
-        this.arrangement[vertex] = sign
+        this.arrangement[this._vertex2index(vertex)] = sign
         return this
     }
 
