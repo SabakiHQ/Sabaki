@@ -39,7 +39,7 @@ class Board {
     clear() {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                this.arrangement[[x, y]] = 0
+                this.set([x, y], 0)
             }
         }
     }
@@ -87,7 +87,7 @@ class Board {
     getConnectedComponent(vertex, func, result) {
         if (func instanceof Array) {
             let signs = func
-            func = v => signs.includes(this.arrangement[v])
+            func = v => signs.includes(this.get(v))
         }
 
         if (!this.hasVertex(vertex)) return []
@@ -106,18 +106,18 @@ class Board {
     }
 
     getChain(vertex) {
-        return this.getConnectedComponent(vertex, [this.arrangement[vertex]])
+        return this.getConnectedComponent(vertex, [this.get(vertex)])
     }
 
     getLiberties(vertex) {
-        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.get(vertex) == 0) return []
 
         let chain = this.getChain(vertex)
         let liberties = []
 
         chain.forEach(c => {
             liberties.push(...this.getNeighbors(c).filter(n => {
-                return this.arrangement[n] == 0
+                return this.get(n) == 0
                 && !liberties.some(v => v[0] == n[0] && v[1] == n[1])
             }))
         })
@@ -126,10 +126,10 @@ class Board {
     }
 
     getRelatedChains(vertex) {
-        if (!this.hasVertex(vertex) || this.arrangement[vertex] == 0) return []
+        if (!this.hasVertex(vertex) || this.get(vertex) == 0) return []
 
-        let area = this.getConnectedComponent(vertex, [this.arrangement[vertex], 0])
-        return area.filter(v => this.arrangement[v] == this.arrangement[vertex])
+        let area = this.getConnectedComponent(vertex, [this.get(vertex), 0])
+        return area.filter(v => this.get(v) == this.get(vertex))
     }
 
     getAreaMap() {
@@ -140,8 +140,8 @@ class Board {
                 let vertex = [i, j]
 
                 if (vertex in map) continue
-                if (this.arrangement[vertex] != 0) {
-                    map[vertex] = this.arrangement[vertex]
+                if (this.get(vertex) != 0) {
+                    map[vertex] = this.get(vertex)
                     continue
                 }
 
@@ -153,10 +153,10 @@ class Board {
                     if (indicator == 0) return
 
                     this.getNeighbors(c).forEach(n => {
-                        if (this.arrangement[n] == 0 || indicator == 0) return
+                        if (this.get(n) == 0 || indicator == 0) return
 
-                        if (sign == 0) sign = map[n] = this.arrangement[n]
-                        else if (sign != this.arrangement[n]) indicator = 0
+                        if (sign == 0) sign = map[n] = this.get(n)
+                        else if (sign != this.get(n)) indicator = 0
                     })
                 })
 
@@ -214,8 +214,8 @@ class Board {
 
         let f = (x, y) => {
             let v = [x, y]
-            if (this.arrangement[v] == sign) min = 0
-            else if (this.arrangement[v] == 0) min++
+            if (this.get(v) == sign) min = 0
+            else if (this.get(v) == 0) min++
             else min = Infinity
 
             map[v] = min = v in map ? Math.min(min, map[v]) : min
@@ -304,7 +304,7 @@ class Board {
 
                 stack.push(...this.getNeighbors(v, true).filter(x => {
                     return d + 1 <= distance
-                    && this.arrangement[x] != -sign
+                    && this.get(x) != -sign
                     && !(x in visited)
                 }).map(x => [x, d + 1]))
             }
@@ -313,7 +313,7 @@ class Board {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let v = [x, y]
-                if (v in done || this.arrangement[v] != sign) continue
+                if (v in done || this.get(v) != sign) continue
                 let chain = this.getChain(v)
 
                 chain.forEach(x => { done[x] = true })
@@ -339,7 +339,7 @@ class Board {
             if (sign == 0) continue
 
             score['area_' + sign]++
-            if (this.arrangement[vertex] == 0) score['territory_' + sign]++
+            if (this.get(vertex) == 0) score['territory_' + sign]++
         }
 
         return score
@@ -362,7 +362,7 @@ class Board {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let vertex = [x, y]
-                if (this.arrangement[vertex] == 0 || vertex in liberties) continue
+                if (this.get(vertex) == 0 || vertex in liberties) continue
 
                 let l = this.getLiberties(vertex).length
                 if (l == 0) return false
@@ -380,14 +380,14 @@ class Board {
         let move = new Board(this.width, this.height, this.arrangement, this.captures)
 
         if (sign == 0 || !this.hasVertex(vertex)) return move
-        if (this.arrangement[vertex] != 0) return null
+        if (this.get(vertex) != 0) return null
 
         sign = sign > 0 ? 1 : -1
         let suicide = true
 
         // Remove captured stones
         this.getNeighbors(vertex).forEach(n => {
-            if (move.arrangement[n] != -sign) return
+            if (move.get(n) != -sign) return
 
             let ll = this.getLiberties(n)
             if (ll.length != 1) return
@@ -396,14 +396,14 @@ class Board {
             if (l[0] != vertex[0] || l[1] != vertex[1]) return
 
             this.getChain(n).forEach(c => {
-                move.arrangement[c] = 0
+                move.set(c, 0)
                 move.captures[sign.toString()]++
             })
 
             suicide = false;
         })
 
-        move.arrangement[vertex] = sign
+        move.set(vertex, sign)
 
         // Detect suicide
         if (suicide) {
@@ -411,7 +411,7 @@ class Board {
 
             if (move.getLiberties(vertex).length == 0) {
                 chain.forEach(c => {
-                    move.arrangement[c] = 0
+                    move.set(c, 0)
                     move.captures[(-sign).toString()]++
                 })
             }
@@ -456,7 +456,7 @@ class Board {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let vertex = [x, y]
-                let sign = this.arrangement[vertex]
+                let sign = this.get(vertex)
                 if (sign == 0 || vertex in done) continue
 
                 let area = this.getConnectedComponent(vertex, v => map[v] == sign)
@@ -470,13 +470,13 @@ class Board {
 
         for (let i = 0; i < list.length; i++) {
             let vertex = list[i][0]
-            let sign = this.arrangement[vertex]
+            let sign = this.get(vertex)
             let area = this.getConnectedComponent(vertex, v => map[v] == sign)
 
             if (area.length >= 8) continue
 
             area.forEach(v => { map[v] = -sign })
-            result.push(...area.filter(v => this.arrangement[v] != 0))
+            result.push(...area.filter(v => this.get(v) != 0))
         }
 
         return result
@@ -494,8 +494,8 @@ class Board {
 
                 let posArea = this.getConnectedComponent(vertex, [0, -1])
                 let negArea = this.getConnectedComponent(vertex, [0, 1])
-                let posDead = posArea.filter(v => this.arrangement[v] == -1)
-                let negDead = negArea.filter(v => this.arrangement[v] == 1)
+                let posDead = posArea.filter(v => this.get(v) == -1)
+                let negDead = negArea.filter(v => this.get(v) == 1)
 
                 let sign = 0
                 let actualArea, actualDead
@@ -561,7 +561,7 @@ class Board {
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                if (this.arrangement[[x, y]] == 0) continue
+                if (this.get([x, y]) == 0) continue
 
                 let circle = document.createElementNS(ns, 'circle')
                 circle.setAttribute('cx', x * tileSize + radius + 1)
@@ -577,14 +577,14 @@ class Board {
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                if (this.arrangement[[x, y]] == 0) continue
+                if (this.get([x, y]) == 0) continue
 
                 let circle = document.createElementNS(ns, 'circle')
                 circle.setAttribute('cx', x * tileSize + radius + 1)
                 circle.setAttribute('cy', y * tileSize + radius + 1)
                 circle.setAttribute('r', radius)
 
-                if (this.arrangement[[x, y]] == -1)
+                if (this.get([x, y]) == -1)
                     circle.setAttribute('fill', 'white')
 
                 svg.appendChild(circle)
@@ -637,7 +637,7 @@ class Board {
             for (let y = 0; y < this.height; y++) {
                 let v = [x, y]
                 let i = getIndexFromVertex(v)
-                let s = this.arrangement[v]
+                let s = this.get(v)
 
                 if (!this.markups[v] || !(this.markups[v][0] in data)) {
                     if (s != 0) result[i] = data.plain[s + 1]
