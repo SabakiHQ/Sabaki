@@ -57,10 +57,7 @@ describe('Board', () => {
     describe('clear', () => {
         it('should clear the stones on the board', () => {
             let board = new Board(9, 9)
-            board.set([0, 0], 1)
-            board.set([1, 1], -1)
-            board.set([3, 5], 1)
-
+            board.set([0, 0], 1).set([1, 1], -1).set([3, 5], 1)
             board.clear()
             assert.deepEqual(board.arrangement, new Board(9, 9).arrangement)
         })
@@ -184,8 +181,7 @@ describe('Board', () => {
             let board = new Board()
             assert(board.isValid())
 
-            board.set([1, 1], 1)
-            board.set([1, 2], -1)
+            board.set([1, 1], 1).set([1, 2], -1)
             assert(board.isValid())
         })
         it('should return false for non-valid board arrangements', () => {
@@ -231,8 +227,7 @@ describe('Board', () => {
 
             board = new Board()
 
-            board.set([0, 1], 1)
-            board.set([0, 0], -1)
+            board.set([0, 1], 1).set([0, 0], -1)
 
             move = board.makeMove(1, [1, 0])
 
@@ -254,8 +249,7 @@ describe('Board', () => {
 
             board = new Board()
 
-            board.set([0, 1], 1)
-            board.set([0, 0], -1)
+            board.set([0, 1], 1).set([0, 0], -1)
 
             move = board.makeMove(1, [1, 0])
 
