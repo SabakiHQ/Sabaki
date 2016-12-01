@@ -19,6 +19,15 @@ class Board {
         }
     }
 
+    get(vertex) {
+        return this.arrangement[vertex]
+    }
+
+    set(vertex, sign) {
+        this.arrangement[vertex] = sign
+        return this
+    }
+
     clone() {
         return this.makeMove(0)
     }
