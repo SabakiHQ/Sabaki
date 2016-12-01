@@ -165,6 +165,10 @@
                 "action": "makemainvariation"
             },
             {
+                "label": "&Flatten",
+                "action": "flatten"
+            },
+            {
                 "label": "&Remove Node",
                 "accelerator": "CmdOrCtrl+Delete",
                 "action": "removenode"
