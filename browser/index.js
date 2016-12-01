@@ -235,7 +235,7 @@ sabaki.setBoard = function(board) {
         for (let y = 0; y < board.height; y++) {
             let $li = $goban.find('.pos_' + x + '-' + y)
             let $span = $li.find('.stone span')
-            let sign = board.arrangement[[x, y]]
+            let sign = board.get([x, y])
             let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
                 'circle', 'triangle', 'cross', 'square', 'label', 'point',
                 'dimmed', 'paint_1', 'paint_-1']
@@ -973,7 +973,7 @@ sabaki.syncEngine = function() {
     for (let i = 0; i < board.width; i++) {
         for (let j = 0; j < board.height; j++) {
             let v = [i, j]
-            let sign = board.arrangement[v]
+            let sign = board.get(v)
             if (sign == 0) continue
 
             let color = sign > 0 ? 'B' : 'W'
@@ -1107,7 +1107,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
         if (buttonIndex != 0) return
-        if (sabaki.getBoard().arrangement[vertex] == 0) return
+        if (sabaki.getBoard().get(vertex) == 0) return
 
         let dead = !$('#goban .pos_' + vertex.join('-')).hasClass('dead')
         let stones = view.getEstimatorMode()
@@ -1163,7 +1163,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
         if (vertex[0] == nextVertex[0] && vertex[1] == nextVertex[1]) {
             sabaki.makeMove(vertex)
         } else {
-            if (board.arrangement[vertex] != 0) return
+            if (board.get(vertex) != 0) return
             if ($('#goban .pos_' + vertex.join('-')).hasClass('paint_1')) return
 
             let i = 0
@@ -1182,7 +1182,7 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
         if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
-        if (board.arrangement[vertex] == 0) {
+        if (board.get(vertex) == 0) {
             sabaki.makeMove(vertex)
             view.closeDrawers()
         } else if (vertex in board.markups
@@ -1202,7 +1202,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     let board = sabaki.getBoard()
     let pass = !board.hasVertex(vertex)
-    if (!pass && board.arrangement[vertex] != 0) return
+    if (!pass && board.get(vertex) != 0) return
 
     let [tree, index] = sabaki.getCurrentTreePosition()
     let sign = view.getCurrentPlayer()
@@ -1235,12 +1235,12 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
         // Check for suicide
         capture = vertexNeighbors
-            .some(v => board.arrangement[v] == -sign && board.getLiberties(v).length == 1)
+            .some(v => board.get(v) == -sign && board.getLiberties(v).length == 1)
 
         suicide = !capture
-        && vertexNeighbors.filter(v => board.arrangement[v] == sign)
+        && vertexNeighbors.filter(v => board.get(v) == sign)
             .every(v => board.getLiberties(v).length == 1)
-        && vertexNeighbors.filter(v => board.arrangement[v] == 0).length == 0
+        && vertexNeighbors.filter(v => board.get(v) == 0).length == 0
 
         if (suicide && setting.get('game.show_suicide_warning')) {
             if (view.showMessageBox(
@@ -1415,7 +1415,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
         let sign = tool.includes('_1') ? 1 : -1
         if (buttonIndex == 2) sign = -sign
 
-        let oldSign = board.arrangement[vertex]
+        let oldSign = board.get(vertex)
         let ids = ['AW', 'AE', 'AB']
         let id = ids[sign + 1]
         let point = sgf.vertex2point(vertex)
@@ -1720,7 +1720,7 @@ sabaki.updateAreaMap = function(estimate) {
         if ($(li).hasClass('sign_1')) board.captures['-1']++
         else if ($(li).hasClass('sign_-1')) board.captures['1']++
 
-        board.arrangement[$(li).data('vertex')] = 0
+        board.get($(li).data('vertex')) = 0
     })
 
     let map = estimate ? board.getAreaEstimateMap() : board.getAreaMap()
@@ -2249,7 +2249,7 @@ sabaki.flattenVariation = function(tree, index) {
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
-            let sign = board.arrangement[[x, y]]
+            let sign = board.get([x, y])
             if (sign == 0) continue
 
             node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
