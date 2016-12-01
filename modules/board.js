@@ -17,16 +17,16 @@ class Board {
         }
     }
 
-    _vertex2index([x, y]) {
+    vertex2index([x, y]) {
         return y * this.width + x
     }
 
     get(vertex) {
-        return this.arrangement[this._vertex2index(vertex)]
+        return this.arrangement[this.vertex2index(vertex)]
     }
 
     set(vertex, sign) {
-        this.arrangement[this._vertex2index(vertex)] = sign
+        this.arrangement[this.vertex2index(vertex)] = sign
         return this
     }
 
