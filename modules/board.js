@@ -78,6 +78,7 @@ class Board {
     }
 
     getNeighbors([x, y], ignoreBoard = false) {
+        if (!this.hasVertex([x, y])) return []
         let result = []
 
         if (ignoreBoard || x > 0)
@@ -411,15 +412,15 @@ class Board {
         if (this.get(vertex) != 0) return null
 
         sign = sign > 0 ? 1 : -1
-        move.arrangement[vertex] = sign
+        move.set(vertex, sign)
 
         // Remove captured stones
 
         let deadNeighbors = move.getNeighbors(vertex)
-            .filter(n => move.arrangement[n] == -sign && !move.hasLiberties(n))
+            .filter(n => move.get(n) == -sign && !move.hasLiberties(n))
 
         deadNeighbors.forEach(n => {
-            if (move.arrangement[n] == 0) return
+            if (move.get(n) == 0) return
 
             this.getChain(n).forEach(c => {
                 move.set(c, 0)
