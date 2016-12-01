@@ -1720,7 +1720,7 @@ sabaki.updateAreaMap = function(estimate) {
         if ($(li).hasClass('sign_1')) board.captures['-1']++
         else if ($(li).hasClass('sign_-1')) board.captures['1']++
 
-        board.get($(li).data('vertex')) = 0
+        board.set($(li).data('vertex'), 0)
     })
 
     let map = estimate ? board.getAreaEstimateMap() : board.getAreaMap()

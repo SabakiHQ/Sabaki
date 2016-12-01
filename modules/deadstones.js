@@ -78,7 +78,7 @@ function fixHoles(board) {
                 }
             }
 
-            if (fix) board.get(vertex) = sign
+            if (fix) board.set(vertex, sign)
         }
     }
 
@@ -164,26 +164,31 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 }
 
 exports.getProbabilityMap = function(board, iterations = 30) {
-    let pmap = {}
-    let nmap = {}
+    let pmap = []
+    let nmap = []
     let result = {}
 
     for (let i = 0; i < iterations; i++) {
         let sign = Math.sign(Math.random() - 0.5)
         let areaMap = exports.playTillEnd(board, sign)
 
-        for (let v in areaMap) {
-            if (!(v in pmap)) pmap[v] = 0
-            if (!(v in nmap)) nmap[v] = 0
+        for (let j = 0; j < areaMap.length; j++) {
+            if (!(j in pmap)) pmap[j] = 0
+            if (!(j in nmap)) nmap[j] = 0
 
-            if (areaMap[v] < 0) nmap[v]++
-            else if (areaMap[v] > 0) pmap[v]++
+            if (areaMap[j] < 0) nmap[j]++
+            else if (areaMap[j] > 0) pmap[j]++
         }
     }
 
-    for (let v in pmap) {
-        if (pmap[v] + nmap[v] == 0) result[v] = 0.5
-        else result[v] = pmap[v] / (pmap[v] + nmap[v])
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let v = [x, y]
+            let j = board._vertex2index(v)
+
+            if (pmap[j] + nmap[j] == 0) result[v] = 0.5
+            else result[v] = pmap[j] / (pmap[j] + nmap[j])
+        }
     }
 
     return result
