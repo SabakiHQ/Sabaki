@@ -1,11 +1,7 @@
 const Board = require('./board')
 
-function vertex2key(v) {
-    return v.join(',')
-}
-
 function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
-    if (sign == null) sign = board.get(vertex2key(vertex))
+    if (sign == null) sign = board.get(vertex)
 
     if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
         return false
@@ -16,7 +12,7 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        let s = board.get(vertex2key(n))
+        let s = board.get(n)
 
         if (s == 0) freeNeighbors.push(n)
         else if (s == sign) friendlyNeighbors.push(n)
@@ -32,17 +28,17 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
 
 function makeMove(board, sign, vertex) {
     let neighbors = board.getNeighbors(vertex)
-    let neighborSigns = neighbors.map(n => board.get(vertex2key(n)))
+    let neighborSigns = neighbors.map(n => board.get(n))
 
     if (neighborSigns.every(s => s == sign)) {
         return null
     }
 
-    let key = vertex2key(vertex)
-    board.set(key, sign)
+
+    board.set(vertex, sign)
 
     if (!hasNLiberties(board, vertex, 2)) {
-        board.set(key, 0)
+        board.set(vertex, 0)
         return null
     }
 
@@ -66,17 +62,17 @@ function fixHoles(board) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
 
-            if (board.get(vertex2key(vertex)) != 0)
+            if (board.get(vertex) != 0)
                 continue
 
             let neighbors = board.getNeighbors(vertex)
-            let sign = board.get(vertex2key(neighbors[0]))
+            let sign = board.get(neighbors[0])
             let fix = true
 
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
 
-                if (board.get(vertex2key(n)) != sign) {
+                if (board.get(n) != sign) {
                     fix = false
                     break
                 }
