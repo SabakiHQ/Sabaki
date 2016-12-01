@@ -480,17 +480,17 @@ exports.getCurrentMoveInterpretation = function() {
 
     if (!board.hasVertex(vertex)) return 'Pass'
 
-    let sign = board.arrangement[vertex]
+    let sign = board.get(vertex)
     let neighbors = board.getNeighbors(vertex)
 
     // Check atari
 
-    if (neighbors.some(v => board.arrangement[v] == -sign && board.getLiberties(v).length == 1))
+    if (neighbors.some(v => board.get(v) == -sign && board.getLiberties(v).length == 1))
         return 'Atari'
 
     // Check connection
 
-    let friendly = neighbors.filter(v => board.arrangement[v] == sign)
+    let friendly = neighbors.filter(v => board.get(v) == sign)
     if (friendly.length == neighbors.length) return 'Fill'
     if (friendly.length >= 2) return 'Connect'
 

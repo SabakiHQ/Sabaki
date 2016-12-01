@@ -9,7 +9,7 @@ describe('Board', () => {
 
             for (let x = 0; x < board.width; x++) {
                 for (let y = 0; y < board.height; y++) {
-                    assert.equal(board.arrangement[[x, y]], 0)
+                    assert.equal(board.get([x, y]), 0)
                 }
             }
         })
@@ -27,13 +27,13 @@ describe('Board', () => {
     describe('clone', () => {
         it('should clone board arrangement', () => {
             let board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+            ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
             let clone = board.clone()
 
             assert.deepEqual(board.arrangement, clone.arrangement)
 
-            board.arrangement[[5, 5]] = 1
+            board.set([5, 5], 1)
             assert.notDeepEqual(board.arrangement, clone.arrangement)
         })
     })
@@ -57,9 +57,9 @@ describe('Board', () => {
     describe('clear', () => {
         it('should clear the stones on the board', () => {
             let board = new Board(9, 9)
-            board.arrangement[[0, 0]] = 1
-            board.arrangement[[1, 1]] = -1
-            board.arrangement[[3, 5]] = 1
+            board.set([0, 0], 1)
+            board.set([1, 1], -1)
+            board.set([3, 5], 1)
 
             board.clear()
             assert.deepEqual(board.arrangement, new Board(9, 9).arrangement)
@@ -142,8 +142,8 @@ describe('Board', () => {
     describe('getConnectedComponent', () => {
         it('should be able to return the chain of a vertex', () => {
             let board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+            ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
 
             assert.deepEqual(
                 board.getConnectedComponent([1, 1], [-1]).sort(helper.lexicalCompare),
@@ -152,8 +152,8 @@ describe('Board', () => {
         })
         it('should be able to return the stone connected component of a vertex', () => {
             let board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]].forEach(x => board.set(x, 1))
+            ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
 
             assert.deepEqual(
                 board.getConnectedComponent([1, 1], [-1, 1]).sort(helper.lexicalCompare),
@@ -165,7 +165,7 @@ describe('Board', () => {
     describe('getLiberties', () => {
         it('should return the liberties of the chain of the given vertex', () => {
             let board = new Board()
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
 
             assert.deepEqual(
                 board.getLiberties([1, 1]).sort(helper.lexicalCompare),
@@ -184,19 +184,19 @@ describe('Board', () => {
             let board = new Board()
             assert(board.isValid())
 
-            board.arrangement[[1, 1]] = 1
-            board.arrangement[[1, 2]] = -1
+            board.set([1, 1], 1)
+            board.set([1, 2], -1)
             assert(board.isValid())
         })
         it('should return false for non-valid board arrangements', () => {
             let board = new Board()
-            ;[[1, 0], [0, 1]].forEach(x => board.arrangement[x] = 1)
-            ;[[0, 0]].forEach(x => board.arrangement[x] = -1)
+            ;[[1, 0], [0, 1]].forEach(x => board.set(x, 1))
+            ;[[0, 0]].forEach(x => board.set(x, -1))
             assert(!board.isValid())
 
             board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1], [2, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
+            ;[[1, 1], [2, 1]].forEach(x => board.set(x, -1))
             assert(!board.isValid())
         })
     })
@@ -210,7 +210,7 @@ describe('Board', () => {
         it('should make a move', () => {
             let board = new Board()
             let move = board.makeMove(1, [5, 5])
-            board.arrangement[[5, 5]] = 1
+            board.set([5, 5], 1)
             assert.deepEqual(board.arrangement, move.arrangement)
         })
         it('should remove captured stones', () => {
@@ -218,35 +218,35 @@ describe('Board', () => {
             let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
             let white = [[1, 1], [2, 1]]
 
-            black.forEach(x => board.arrangement[x] = 1)
-            white.forEach(x => board.arrangement[x] = -1)
+            black.forEach(x => board.set(x, 1))
+            white.forEach(x => board.set(x, -1))
 
             let move = board.makeMove(1, [3, 1])
 
-            assert.equal(move.arrangement[[3, 1]], 1)
-            black.forEach(x => assert.equal(move.arrangement[x], 1))
-            white.forEach(x => assert.equal(move.arrangement[x], 0))
+            assert.equal(move.get([3, 1]), 1)
+            black.forEach(x => assert.equal(move.get(x), 1))
+            white.forEach(x => assert.equal(move.get(x), 0))
 
             // Edge capture
 
             board = new Board()
 
-            board.arrangement[[0, 1]] = 1
-            board.arrangement[[0, 0]] = -1
+            board.set([0, 1], 1)
+            board.set([0, 0], -1)
 
             move = board.makeMove(1, [1, 0])
 
-            assert.equal(move.arrangement[[0, 0]], 0)
-            assert.equal(move.arrangement[[1, 0]], 1)
-            assert.equal(move.arrangement[[0, 1]], 1)
+            assert.equal(move.get([0, 0]), 0)
+            assert.equal(move.get([1, 0]), 1)
+            assert.equal(move.get([0, 1]), 1)
         })
         it('should count captures correctly', () => {
             let board = new Board()
             let black = [[0, 1], [1, 0], [1, 2], [2, 0], [2, 2]]
             let white = [[1, 1], [2, 1]]
 
-            black.forEach(x => board.arrangement[x] = 1)
-            white.forEach(x => board.arrangement[x] = -1)
+            black.forEach(x => board.set(x, 1))
+            white.forEach(x => board.set(x, -1))
 
             let move = board.makeMove(1, [3, 1])
             assert.equal(move.captures[-1], 0)
@@ -254,8 +254,8 @@ describe('Board', () => {
 
             board = new Board()
 
-            board.arrangement[[0, 1]] = 1
-            board.arrangement[[0, 0]] = -1
+            board.set([0, 1], 1)
+            board.set([0, 0], -1)
 
             move = board.makeMove(1, [1, 0])
 
@@ -264,18 +264,18 @@ describe('Board', () => {
         })
         it('should handle suicide correctly', () => {
             let board = new Board()
-            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.arrangement[x] = 1)
-            ;[[1, 1]].forEach(x => board.arrangement[x] = -1)
+            ;[[0, 1], [1, 0], [1, 2], [2, 0], [2, 2], [3, 1]].forEach(x => board.set(x, 1))
+            ;[[1, 1]].forEach(x => board.set(x, -1))
             let move = board.makeMove(-1, [2, 1])
-            assert.equal(move.arrangement[[1, 1]], 0)
-            assert.equal(move.arrangement[[2, 1]], 0)
-            assert.equal(move.arrangement[[3, 1]], 1)
-            assert.equal(move.arrangement[[1, 2]], 1)
+            assert.equal(move.get([1, 1]), 0)
+            assert.equal(move.get([2, 1]), 0)
+            assert.equal(move.get([3, 1]), 1)
+            assert.equal(move.get([1, 2]), 1)
         })
         it('should make a pass', () => {
             let board = new Board()
             assert.deepEqual(board.makeMove(1, [-1, -1]).arrangement, board.arrangement)
-            board.arrangement[[1, 1]] = -1
+            board.set([1, 1], -1)
             assert.deepEqual(board.makeMove(1, [-1, -1]).arrangement, board.arrangement)
         })
     })
