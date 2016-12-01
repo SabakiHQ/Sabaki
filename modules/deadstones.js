@@ -34,7 +34,6 @@ function makeMove(board, sign, vertex) {
         return null
     }
 
-
     board.set(vertex, sign)
 
     if (!hasNLiberties(board, vertex, 2)) {
@@ -98,7 +97,7 @@ exports.guess = function(board, ...args) {
             if (sign == 0 || vertex in done) continue
 
             let chain = board.getChain(vertex)
-            let probability = chain.map(v => map[v]).reduce((x, sum) => sum + x) / chain.length
+            let probability = chain.map(v => map[v]).reduce((sum, x) => sum + x) / chain.length
             let newSign = probability < 0.5 ? -1 : probability > 0.5 ? 1 : 0
 
             if (newSign == -sign) result.push(...chain)
