@@ -407,7 +407,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 
         node[ids[i]].forEach(value => {
             sgf.compressed2list(value).forEach(vertex => {
-                board.arrangement[vertex] = i - 1
+                board.set(vertex, i - 1)
             })
         })
     }

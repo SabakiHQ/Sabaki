@@ -8,17 +8,17 @@ exports.cornerMatch = function(area, source, target) {
     let hypotheses = Array.apply(null, new Array(8)).map(x => true)
     let hypothesesInvert = Array.apply(null, new Array(8)).map(x => true)
 
-    area.sort((v, w) => Math.abs(source.arrangement[w]) - Math.abs(source.arrangement[v]))
+    area.sort((v, w) => Math.abs(source.get(w)) - Math.abs(source.get(v)))
 
     for (let j = 0; j < area.length; j++) {
         let vertex = area[j]
-        let sign = source.arrangement[vertex]
+        let sign = source.get(vertex)
         let representatives = target.getSymmetries(vertex)
 
         for (let i = 0; i < hypotheses.length; i++) {
-            if (hypotheses[i] && target.arrangement[representatives[i]] != sign)
+            if (hypotheses[i] && target.get(representatives[i]) != sign)
                 hypotheses[i] = false
-            if (hypothesesInvert[i] && target.arrangement[representatives[i]] != -sign)
+            if (hypothesesInvert[i] && target.get(representatives[i]) != -sign)
                 hypothesesInvert[i] = false
         }
 
@@ -32,7 +32,7 @@ exports.cornerMatch = function(area, source, target) {
 
 exports.shapeMatch = function(shape, board, vertex) {
     if (!board.hasVertex(vertex)) return false
-    let sign = board.arrangement[vertex]
+    let sign = board.get(vertex)
     if (sign == 0) return false
 
     for (let i = 0; i < shape.candidates.length; i++) {
@@ -50,7 +50,7 @@ exports.shapeMatch = function(shape, board, vertex) {
                 if (!hypotheses[k]) continue
                 let w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
-                if (board.arrangement[w] != s * sign)
+                if (board.get(w) != s * sign)
                     hypotheses[k] = false
             }
 
