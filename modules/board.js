@@ -336,12 +336,15 @@ class Board {
         score['captures_1'] = this.captures['1']
         score['captures_-1'] = this.captures['-1']
 
-        for (let vertex in areaMap) {
-            let sign = areaMap[vertex]
-            if (sign == 0) continue
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let vertex = [x, y]
+                let sign = areaMap[vertex]
+                if (sign == 0) continue
 
-            score['area_' + sign]++
-            if (this.get(vertex) == 0) score['territory_' + sign]++
+                score['area_' + sign]++
+                if (this.get(vertex) == 0) score['territory_' + sign]++
+            }
         }
 
         return score
