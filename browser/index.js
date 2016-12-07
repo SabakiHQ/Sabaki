@@ -886,7 +886,10 @@ sabaki.preparePreferences = function() {
         view.closePreferences()
     })
 
-    $('#preferences button[type="reset"]').on('click', () => view.closePreferences())
+    $('#preferences button[type="reset"]').on('click', evt => {
+        evt.preventDefault()
+        view.closePreferences()
+    })
 }
 
 /**
