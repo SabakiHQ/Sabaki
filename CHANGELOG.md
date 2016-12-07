@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add ability to remove all variations apart from the active one
+
 **Changed**
 
 * Update to Electron v1.4.10
