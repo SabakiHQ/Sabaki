@@ -2318,7 +2318,7 @@ sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
 }
 
 sabaki.removeOtherVariations = function(tree, index, confirm = null) {
-    if (confirm != false && setting.get('edit.show_removeothevariations_warning') && view.showMessageBox(
+    if (confirm != false && setting.get('edit.show_removeothervariations_warning') && view.showMessageBox(
         'Do you really want to remove all other variations?',
         'warning',
         ['Remove Variations', 'Cancel'], 1
