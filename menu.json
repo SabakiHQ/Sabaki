@@ -176,6 +176,10 @@
                 "label": "&Remove Node",
                 "accelerator": "CmdOrCtrl+Delete",
                 "action": "removenode"
+            },
+            {
+                "label": "Remove &Other Variations",
+                "action": "removeothervariations"
             }
         ]
     },

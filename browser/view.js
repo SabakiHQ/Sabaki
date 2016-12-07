@@ -1301,8 +1301,12 @@ exports.openNodeMenu = function(tree, index, position) {
             click: () => sabaki.flattenVariation(tree, index)
         },
         {
-            label: '&Remove',
+            label: '&Remove Node',
             click: () => sabaki.removeNode(tree, index)
+        },
+        {
+            label: 'Remove &Other Variations',
+            click: () => sabaki.removeOtherVariations(tree, index)
         }
     ]
 
