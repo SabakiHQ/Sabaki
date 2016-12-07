@@ -22,7 +22,7 @@ exports.readShapes = function(filename) {
 
         result.push({
             name: node.N[0],
-            points: points,
+            points,
             candidates: node.AB.map(sgf.point2vertex)
         })
     }
@@ -76,7 +76,7 @@ exports.shapeMatch = function(shape, board, vertex) {
                 if (!hypotheses[k]) continue
                 let w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
-                if (board.get(w) != s * sign)
+                if (!board.hasVertex(w) || board.get(w) != s * sign)
                     hypotheses[k] = false
             }
 
