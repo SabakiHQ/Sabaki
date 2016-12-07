@@ -2312,9 +2312,49 @@ sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
         gametree.reduce(parent)
     }
 
-    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
+    sabaki.updateGraph()
     if (!prev || sabaki.getCurrentGraphNode()) prev = sabaki.getCurrentTreePosition()
     sabaki.setCurrentTreePosition(...prev)
+}
+
+sabaki.removeOtherVariations = function(tree, index, confirm = null) {
+    if (confirm != false && setting.get('edit.show_removeothevariations_warning') && view.showMessageBox(
+        'Do you really want to remove all other variations?',
+        'warning',
+        ['Remove Variations', 'Cancel'], 1
+    ) == 1) return
+
+    // Save undo information
+
+    sabaki.setUndoable(true, 'Undo Remove Other Variations')
+    view.closeDrawers()
+
+    // Remove all subsequent variations
+
+    let t = tree
+
+    while (t.subtrees.length != 0) {
+        t.subtrees = [t.subtrees[t.current]]
+        t.current = 0
+
+        t = t.subtrees[0]
+    }
+
+    // Remove all precedent variations
+
+    t = tree
+
+    while (t.parent != null) {
+        let parent = t.parent
+
+        parent.subtrees = [t]
+        parent.current = 0
+
+        t = parent
+    }
+
+    sabaki.setCurrentTreePosition(tree, index)
+    sabaki.updateGraph()
 }
 
 sabaki.undoBoard = function() {
