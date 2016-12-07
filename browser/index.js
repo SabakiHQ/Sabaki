@@ -2348,12 +2348,10 @@ sabaki.removeOtherVariations = function(tree, index, confirm = null) {
     t = tree
 
     while (t.parent != null) {
-        let parent = t.parent
+        t.parent.subtrees = [t]
+        t.parent.current = 0
 
-        parent.subtrees = [t]
-        parent.current = 0
-
-        t = parent
+        t = t.parent
     }
 
     sabaki.setCurrentTreePosition(tree, index)
