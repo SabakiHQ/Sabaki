@@ -60,13 +60,7 @@ exports.lexicalCompare = function(a, b) {
 
 exports.getSymmetries = function(tuple) {
     let reversed = [tuple[1], tuple[0]]
-    let s = v => {
-        return [
-            [-v[0], v[1]],
-            [v[0], -v[1]],
-            [-v[0], -v[1]]
-        ]
-    }
+    let s = ([x, y]) => [[-x, y], [x, -y], [-x, -y]]
 
     return [tuple, reversed, ...s(tuple), ...s(reversed)]
 }

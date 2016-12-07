@@ -27,6 +27,7 @@ let defaults = {
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
+    'edit.show_removeothervariations_warning': true,
     'edit.undo_delay': 100,
     'engines.list': engines,
     'find.delay': 100,
