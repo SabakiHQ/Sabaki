@@ -2354,8 +2354,7 @@ sabaki.removeOtherVariations = function(tree, index, confirm = null) {
         t = t.parent
     }
 
-    sabaki.setCurrentTreePosition(tree, index)
-    sabaki.updateGraph()
+    sabaki.setCurrentTreePosition(tree, index, true, true)
 }
 
 sabaki.undoBoard = function() {
