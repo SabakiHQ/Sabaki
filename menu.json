@@ -102,6 +102,10 @@
                 "action": "editmode"
             },
             {
+                "label": "Clear &Markup",
+                "action": "clearmarkup"
+            },
+            {
                 "label": "&Select Tool",
                 "submenu": [
                     {
@@ -145,10 +149,6 @@
                         "action": "numbertool"
                     }
                 ]
-            },
-            {
-                "label": "Clear &Markup",
-                "action": "clearmarkup"
             },
             {"type": "separator"},
             {
