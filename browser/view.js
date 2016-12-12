@@ -497,9 +497,17 @@ exports.getCurrentMoveInterpretation = function() {
 
     let shapes = exports.getShapes()
 
-    for (let i = 0; i < shapes.length; i++) {
-        if (boardmatcher.shapeMatch(shapes[i], board, vertex))
-            return shapes[i].name
+    for (let shape of shapes) {
+        if ('size' in shape && (board.width != board.height || board.width != shape.size))
+            continue
+
+        if ('type' in shape && shape.type == 'corner') {
+            let result = boardmatcher.cornerMatch(shape.points, board)
+            if (result == null) continue
+        }
+
+        if (boardmatcher.shapeMatch(shape, board, vertex))
+            return shape.name
     }
 
     if (friendly.length == 1) return 'Stretch'

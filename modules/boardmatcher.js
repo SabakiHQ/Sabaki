@@ -9,37 +9,41 @@ exports.readShapes = function(filename) {
         let node = tree.subtrees[i].nodes[0]
         let points = ('AB' in node ? node.AB.map(x => [...sgf.point2vertex(x), 1]) : [])
             .concat('AW' in node ? node.AW.map(x => [...sgf.point2vertex(x), -1]) : [])
+        let data = {}
 
         if ('CR' in node) {
-            node.CR.forEach(value => {
+            for (let value of node.CR) {
                 let vs = sgf.compressed2list(value)
-                vs.forEach(v => {
+
+                for (let v of vs) {
                     if (!points.some(w => w[0] == v[0] && w[1] == v[1]))
                         points.push([...v, 0])
-                })
-            })
+                }
+            }
         }
 
-        result.push({
+        if ('C' in node) {
+            for (let [key, value] of node.C[0].trim().split(', ').map(x => x.split(': '))) {
+                data[key] = value
+            }
+        }
+
+        result.push(Object.assign({
             name: node.N[0],
             points,
             candidates: node.AB.map(sgf.point2vertex)
-        })
+        }, data))
     }
 
     return result
 }
 
-exports.cornerMatch = function(area, source, target) {
-    let hypotheses = Array.apply(null, new Array(8)).map(x => true)
-    let hypothesesInvert = Array.apply(null, new Array(8)).map(x => true)
+exports.cornerMatch = function(points, target) {
+    let hypotheses = [...Array(8)].map(x => true)
+    let hypothesesInvert = [...Array(8)].map(x => true)
 
-    area.sort((v, w) => Math.abs(source.get(w)) - Math.abs(source.get(v)))
-
-    for (let j = 0; j < area.length; j++) {
-        let vertex = area[j]
-        let sign = source.get(vertex)
-        let representatives = target.getSymmetries(vertex)
+    for (let [x, y, sign] of points) {
+        let representatives = target.getSymmetries([x, y])
 
         for (let i = 0; i < hypotheses.length; i++) {
             if (hypotheses[i] && target.get(representatives[i]) != sign)
@@ -61,9 +65,8 @@ exports.shapeMatch = function(shape, board, vertex) {
     let sign = board.get(vertex)
     if (sign == 0) return false
 
-    for (let i = 0; i < shape.candidates.length; i++) {
-        let anchor = shape.candidates[i]
-        let hypotheses = Array.apply(null, new Array(8)).map(() => true)
+    for (let anchor of shape.candidates) {
+        let hypotheses = [...Array(8)].map(() => true)
 
         // Hypothesize vertex == anchor
 
