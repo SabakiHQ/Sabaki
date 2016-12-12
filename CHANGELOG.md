@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 * Update to Electron v1.4.10
 
+**Fixed**
+
+* Fix incorrectly interpreting openings on boards other than 19&times;19
+
 ## [Sabaki v0.19.1][v0.19.1] (2016-11-20)
 
 **Added**

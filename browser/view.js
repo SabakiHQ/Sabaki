@@ -322,18 +322,17 @@ exports.setAnnotations = function(posstatus, posvalue, movestatus, movevalue) {
     if (movestatus == null) $header.removeClass('movestatus')
     else $header.addClass('movestatus')
 
-    if (movestatus == -1)
-        $img.attr('src', '../img/ui/badmove.svg')
-            .attr('alt', 'Bad move')
-    else if (movestatus == 0)
-        $img.attr('src', '../img/ui/doubtfulmove.svg')
-            .attr('alt', 'Doubtful move')
-    else if (movestatus == 1)
-        $img.attr('src', '../img/ui/interestingmove.svg')
-            .attr('alt', 'Interesting move')
-    else if (movestatus == 2)
-        $img.attr('src', '../img/ui/goodmove.svg')
-            .attr('alt', 'Good move')
+    let data = {
+        '-1': ['Bad move', 'badmove'],
+        '0': ['Doubtful move', 'doubtfulmove'],
+        '1': ['Interesting move', 'interestingmove'],
+        '2': ['Good move', 'goodmove']
+    }
+
+    if (movestatus in data) {
+        $img.attr('alt', data[movestatus][0])
+            .attr('src', `../img/ui/${data[movestatus][1]}.svg`)
+    }
 
     if (movevalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
     $img.attr('title', $img.attr('alt'))
@@ -345,18 +344,17 @@ exports.setAnnotations = function(posstatus, posvalue, movestatus, movevalue) {
     if (posstatus == null) $header.removeClass('positionstatus')
     else $header.addClass('positionstatus')
 
-    if (posstatus == -1)
-        $img.attr('src', '../img/ui/white.svg')
-            .attr('alt', 'Good for white')
-    else if (posstatus == 0)
-        $img.attr('src', '../img/ui/balance.svg')
-            .attr('alt', 'Even position')
-    else if (posstatus == 1)
-        $img.attr('src', '../img/ui/black.svg')
-            .attr('alt', 'Good for black')
-    else if (posstatus == -2)
-        $img.attr('src', '../img/ui/unclear.svg')
-            .attr('alt', 'Unclear position')
+    data = {
+        '-1': ['Good for white', 'white'],
+        '0': ['Even position', 'balance'],
+        '1': ['Good for black', 'black'],
+        '-2': ['Unclear position', 'unclear']
+    }
+
+    if (posstatus in data) {
+        $img.attr('alt', data[posstatus][0])
+            .attr('src', `../img/ui/${data[posstatus][1]}.svg`)
+    }
 
     if (posvalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
     $img.attr('title', $img.attr('alt'))
@@ -626,7 +624,7 @@ exports.prepareGameChooser = function() {
                 && bounds.top + $(el).height() > listBounds.top
         })
 
-        updateElements.forEach(el => {
+        for (let el of updateElements) {
             let tree = $(el).data('gametree')
             let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
@@ -635,7 +633,7 @@ exports.prepareGameChooser = function() {
             let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))
-        })
+        }
     }
 
     $(window).on('resize', updateSVG)
@@ -646,12 +644,12 @@ exports.prepareGameChooser = function() {
     $('#gamechooser > input').on('input', function() {
         let value = this.value
 
-        $('#gamechooser .games-list li').get().forEach(li => {
+        for (let li of $('#gamechooser .games-list li').get()) {
             if ($(li).find('span').get().some(span => {
                 return $(span).text().toLowerCase().includes(value.toLowerCase())
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
-        })
+        }
 
         $scrollContainer.scrollTop(0)
 
@@ -926,7 +924,7 @@ exports.updateBoardLines = function() {
     let tx = parseFloat($('#goban').css('border-left-width'))
     let ty = parseFloat($('#goban').css('border-top-width'))
 
-    $('#goban hr').get().forEach(line => {
+    for (let line of $('#goban hr').get()) {
         let v1 = $(line).data('v1'), v2 = $(line).data('v2')
         let mirrored = v2[0] < v1[0]
         let $li1 = $('#goban .pos_' + v1.join('-'))
@@ -945,7 +943,7 @@ exports.updateBoardLines = function() {
             width: length + 'px',
             transform: 'rotate(' + angle + 'deg)'
         })
-    })
+    }
 }
 
 exports.resizeBoard = function() {
@@ -1243,8 +1241,8 @@ exports.openCommentMenu = function() {
         }
     )
 
-    template.forEach(item => {
-        if (!('data' in item)) return
+    for (let item of template) {
+        if (!('data' in item)) continue
 
         let [p, clear, value] = item.data
         delete item.data
@@ -1260,7 +1258,7 @@ exports.openCommentMenu = function() {
 
             sabaki.setCurrentTreePosition(...sabaki.getCurrentTreePosition(), true, true)
         }
-    })
+    }
 
     let menu = Menu.buildFromTemplate(template)
     let $el = $('#properties .edit .header img')
