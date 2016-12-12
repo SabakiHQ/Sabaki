@@ -629,7 +629,7 @@ exports.prepareGameChooser = function() {
                 && bounds.top + $(el).height() > listBounds.top
         })
 
-        updateElements.forEach(el => {
+        for (let el of updateElements) {
             let tree = $(el).data('gametree')
             let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
@@ -638,7 +638,7 @@ exports.prepareGameChooser = function() {
             let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))
-        })
+        }
     }
 
     $(window).on('resize', updateSVG)
@@ -649,12 +649,12 @@ exports.prepareGameChooser = function() {
     $('#gamechooser > input').on('input', function() {
         let value = this.value
 
-        $('#gamechooser .games-list li').get().forEach(li => {
+        for (let li of $('#gamechooser .games-list li').get()) {
             if ($(li).find('span').get().some(span => {
                 return $(span).text().toLowerCase().includes(value.toLowerCase())
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
-        })
+        }
 
         $scrollContainer.scrollTop(0)
 
@@ -953,7 +953,7 @@ exports.updateBoardLines = function() {
     let tx = parseFloat($('#goban').css('border-left-width'))
     let ty = parseFloat($('#goban').css('border-top-width'))
 
-    $('#goban hr').get().forEach(line => {
+    for (let line of $('#goban hr').get()) {
         let v1 = $(line).data('v1'), v2 = $(line).data('v2')
         let mirrored = v2[0] < v1[0]
         let $li1 = $('#goban .pos_' + v1.join('-'))
@@ -972,7 +972,7 @@ exports.updateBoardLines = function() {
             width: length + 'px',
             transform: 'rotate(' + angle + 'deg)'
         })
-    })
+    }
 }
 
 exports.resizeBoard = function() {
@@ -1210,8 +1210,8 @@ exports.openCommentMenu = function() {
         }
     )
 
-    template.forEach(item => {
-        if (!('data' in item)) return
+    for (let item of template) {
+        if (!('data' in item)) continue
 
         let [p, clear, value] = item.data
         delete item.data
@@ -1227,7 +1227,7 @@ exports.openCommentMenu = function() {
 
             sabaki.setCurrentTreePosition(...sabaki.getCurrentTreePosition(), true, true)
         }
-    })
+    }
 
     let menu = Menu.buildFromTemplate(template)
     let $el = $('#properties .edit .header img')
@@ -1393,13 +1393,13 @@ exports.openAddGameMenu = function() {
                 })
 
                 if (filenames) {
-                    filenames.forEach(filename => {
+                    for (let filename of filenames) {
                         let trees = sgf.parseFile(filename).subtrees
 
                         sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
                         sabaki.setGameIndex(sabaki.getGameIndex())
                         exports.showGameChooser('bottom')
-                    })
+                    }
                 }
 
                 exports.setIsBusy(false)

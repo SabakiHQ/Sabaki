@@ -25,7 +25,7 @@ exports.clone = function(tree, newIds = false, parent = null) {
         collapsed: tree.collapsed
     }
 
-    tree.nodes.forEach(node => {
+    for (let node of tree.nodes) {
         let cn = {}
 
         for (let key in node) {
@@ -39,11 +39,11 @@ exports.clone = function(tree, newIds = false, parent = null) {
         }
 
         c.nodes.push(cn)
-    })
+    }
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         c.subtrees.push(exports.clone(subtree, newIds, c))
-    })
+    }
 
     return c
 }
@@ -69,9 +69,9 @@ exports.getPlayerName = function(tree, sign, fallback = '') {
 exports.getHeight = function(tree) {
     let height = 0
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         height = Math.max(exports.getHeight(subtree), height)
-    })
+    }
 
     return height + tree.nodes.length
 }
@@ -95,9 +95,9 @@ exports.getSection = function(tree, level) {
 
     let sections = []
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         sections.push(...exports.getSection(subtree, level - tree.nodes.length))
-    })
+    }
 
     return sections
 }
@@ -217,9 +217,9 @@ exports.reduce = function(tree) {
     tree.current = tree.subtrees[0].current
     tree.subtrees = tree.subtrees[0].subtrees
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         subtree.parent = tree
-    })
+    }
 
     return tree
 }
@@ -405,11 +405,11 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(value => {
-            sgf.compressed2list(value).forEach(vertex => {
+        for (let value of node[ids[i]]) {
+            for (let vertex of sgf.compressed2list(value)) {
                 board.set(vertex, i - 1)
-            })
-        })
+            }
+        }
     }
 
     if (vertex != null) {
@@ -422,30 +422,34 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(value => {
-            sgf.compressed2list(value).forEach(vertex => {
+        for (let value of node[ids[i]]) {
+            for (let vertex of sgf.compressed2list(value)) {
                 board.markups[vertex] = [classes[i], '']
-            })
-        })
+            }
+        }
     }
 
     if ('LB' in node) {
-        node.LB.forEach(composed => {
+        for (let composed of node.LB) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1).replace(/\s+/, ' ')
+
             board.markups[sgf.point2vertex(point)] = ['label', label]
-        })
+        }
     }
 
-    ;['AR', 'LN'].filter(type => type in node).forEach(type => {
-        node[type].forEach(composed => {
+    for (let type of ['AR', 'LN']) {
+        if (!(type in node)) continue
+
+        for (let composed of node[type]) {
             let sep = composed.indexOf(':')
             let p1 = composed.slice(0, sep)
             let p2 = composed.slice(sep + 1)
+
             board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
-        })
-    })
+        }
+    }
 
     // Add variation overlays
 
@@ -467,17 +471,17 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     }
 
     if (index == 0 && tree.parent) {
-        tree.parent.subtrees.forEach(subtree => {
-            if (subtree.nodes.length == 0) return
+        for (let subtree of tree.parent.subtrees) {
+            if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'sibling')
-        })
+        }
     }
 
     if (index == tree.nodes.length - 1) {
-        tree.subtrees.forEach(subtree => {
-            if (subtree.nodes.length == 0) return
+        for (let subtree of tree.subtrees) {
+            if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'child')
-        })
+        }
     } else if (index < tree.nodes.length - 1) {
         addOverlay(tree.nodes[index + 1], 'child')
     }
