@@ -275,26 +275,25 @@ sabaki.setBoard = function(board) {
 
     // Add ghosts
 
-    board.ghosts.forEach(x => {
-        let [v, s, type] = x
+    for (let [v, s, type] of board.ghosts) {
         let $li = $('#goban .pos_' + v.join('-'))
 
         if (type == 'child') $li.addClass('ghost_' + s)
         else if (type == 'sibling') $li.addClass('siblingghost_' + s)
-    })
+    }
 
     // Add lines
 
     $('#goban hr').remove()
 
-    board.lines.forEach(line => {
+    for (let line of board.lines) {
         $goban.append(
             $('<hr/>')
             .addClass(line[2] ? 'arrow' : 'line')
             .data('v1', line[0])
             .data('v2', line[1])
         )
-    })
+    }
 
     view.updateBoardLines()
 }
@@ -462,10 +461,10 @@ sabaki.prepareBars = function() {
 
     let bars = ['edit', 'guess', 'autoplay', 'scoring', 'estimator', 'find']
 
-    bars.forEach(id => {
+    for (let id of bars) {
         let funcName = 'set' + id[0].toUpperCase() + id.slice(1) + 'Mode'
         $(`#${id} > .close`).on('click', () => view[funcName](false))
-    })
+    }
 
     // Handle header bar
 
@@ -780,7 +779,7 @@ sabaki.prepareGameInfo = function() {
     let markDates = pikaday => {
         let dates = (sgf.string2dates($dateInput.val()) || []).filter(x => x.length == 3)
 
-        $(pikaday.el).find('.pika-button').get().forEach(el => {
+        for (let el of $(pikaday.el).find('.pika-button').get()) {
             let year = +$(el).attr('data-pika-year')
             let month = +$(el).attr('data-pika-month')
             let day = +$(el).attr('data-pika-day')
@@ -788,7 +787,7 @@ sabaki.prepareGameInfo = function() {
             $(el).parent().toggleClass('is-multi-selected', dates.some(d => {
                 return helper.equals(d, [year, month + 1, day])
             }))
-        })
+        }
     }
 
     let pikaday = new Pikaday({
@@ -891,7 +890,10 @@ sabaki.preparePreferences = function() {
         view.closePreferences()
     })
 
-    $('#preferences button[type="reset"]').on('click', () => view.closePreferences())
+    $('#preferences button[type="reset"]').on('click', evt => {
+        evt.preventDefault()
+        view.closePreferences()
+    })
 }
 
 /**
@@ -903,9 +905,9 @@ sabaki.loadEngines = function() {
 
     $('#preferences .engines-list ul').empty()
 
-    setting.getEngines().forEach(engine => {
+    for (let engine of setting.getEngines()) {
         view.addEngineItem(engine.name, engine.path, engine.args)
-    })
+    }
 }
 
 sabaki.attachEngine = function(exec, args, genMove) {
@@ -1118,9 +1120,9 @@ sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false) {
             ? sabaki.getBoard().getChain(vertex)
             : sabaki.getBoard().getRelatedChains(vertex)
 
-        stones.forEach(v => {
+        for (let v of stones) {
             $('#goban .pos_' + v.join('-')).toggleClass('dead', dead)
-        })
+        }
 
         sabaki.updateAreaMap(view.getEstimatorMode())
     } else if (view.getEditMode()) {
@@ -1497,15 +1499,15 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
         node.AR = []
         board.lines = []
 
-        $('#goban hr').get().forEach(hr => {
+        for (let hr of $('#goban hr').get()) {
             let p1 = sgf.vertex2point($(hr).data('v1'))
             let p2 = sgf.vertex2point($(hr).data('v2'))
 
-            if (p1 == p2) return
+            if (p1 == p2) continue
 
             node[$(hr).hasClass('arrow') ? 'AR' : 'LN'].push(p1 + ':' + p2)
             board.lines.push([$(hr).data('v1'), $(hr).data('v2'), $(hr).hasClass('arrow')])
-        })
+        }
 
         if (node.LN.length == 0) delete node.LN
         if (node.AR.length == 0) delete node.AR
@@ -1568,9 +1570,9 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
         // Update SGF
 
-        $('#goban .row li').get().forEach(li => {
+        for (let li of $('#goban .row li').get()) {
             let v = $(li).data('vertex')
-            if (!(v in board.markups)) return
+            if (!(v in board.markups)) continue
 
             let id = dictionary[board.markups[v][0]]
             let pt = sgf.vertex2point(v)
@@ -1578,7 +1580,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
             if (id in node) node[id].push(pt)
             else node[id] = [pt]
-        })
+        }
     }
 
     sabaki.setUndoable(false)
@@ -1735,20 +1737,20 @@ sabaki.updateCommentText = function() {
 sabaki.updateAreaMap = function(estimate) {
     let board = sabaki.getBoard().clone()
 
-    $('#goban .row li.dead').get().forEach(li => {
+    for (let li of $('#goban .row li.dead').get()) {
         if ($(li).hasClass('sign_1')) board.captures['-1']++
         else if ($(li).hasClass('sign_-1')) board.captures['1']++
 
         board.set($(li).data('vertex'), 0)
-    })
+    }
 
     let map = estimate ? board.getAreaEstimateMap() : board.getAreaMap()
 
-    $('#goban .row li').get().forEach(li => {
+    for (let li of $('#goban .row li').get()) {
         $(li)
         .removeClass('area_-1').removeClass('area_0').removeClass('area_1')
         .addClass('area_' + map[$(li).data('vertex')])
-    })
+    }
 
     if (!estimate) {
         let $falsedead = $('#goban .row li.area_-1.sign_-1.dead, #goban .row li.area_1.sign_1.dead')
@@ -1956,7 +1958,7 @@ sabaki.commitPreferences = function() {
 
     setting.clearEngines()
 
-    $('#preferences .engines-list li').get().forEach(li => {
+    for (let li of $('#preferences .engines-list li').get()) {
         let $nameinput = $(li).find('h3 input')
 
         setting.addEngine(
@@ -1964,7 +1966,7 @@ sabaki.commitPreferences = function() {
             $(li).find('h3 + p input').val(),
             $(li).find('h3 + p + p input').val()
         )
-    })
+    }
 
     setting.save()
     sabaki.loadEngines()
@@ -2339,9 +2341,46 @@ sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
         gametree.reduce(parent)
     }
 
-    sabaki.setGraphMatrixDict(gametree.getMatrixDict(sabaki.getRootTree()))
+    sabaki.updateGraph()
     if (!prev || sabaki.getCurrentGraphNode()) prev = sabaki.getCurrentTreePosition()
     sabaki.setCurrentTreePosition(...prev)
+}
+
+sabaki.removeOtherVariations = function(tree, index, confirm = null) {
+    if (confirm != false && setting.get('edit.show_removeothervariations_warning') && view.showMessageBox(
+        'Do you really want to remove all other variations?',
+        'warning',
+        ['Remove Variations', 'Cancel'], 1
+    ) == 1) return
+
+    // Save undo information
+
+    sabaki.setUndoable(true, 'Undo Remove Other Variations')
+    view.closeDrawers()
+
+    // Remove all subsequent variations
+
+    let t = tree
+
+    while (t.subtrees.length != 0) {
+        t.subtrees = [t.subtrees[t.current]]
+        t.current = 0
+
+        t = t.subtrees[0]
+    }
+
+    // Remove all precedent variations
+
+    t = tree
+
+    while (t.parent != null) {
+        t.parent.subtrees = [t]
+        t.parent.current = 0
+
+        t = t.parent
+    }
+
+    sabaki.setCurrentTreePosition(tree, index, true, true)
 }
 
 sabaki.undoBoard = function() {

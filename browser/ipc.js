@@ -40,9 +40,10 @@ let menudata = {
     copyvariation: () => sabaki.copyVariation(...sabaki.getCurrentTreePosition()),
     cutvariation: () => sabaki.cutVariation(...sabaki.getCurrentTreePosition()),
     pastevariation: () => sabaki.pasteVariation(...sabaki.getCurrentTreePosition()),
-    flatten: () => sabaki.flattenVariation(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
+    flatten: () => sabaki.flattenVariation(...sabaki.getCurrentTreePosition()),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
+    removeothervariations: () => sabaki.removeOtherVariations(...sabaki.getCurrentTreePosition()),
 
     findmode: () => view.setFindMode(!view.getFindMode()),
     findnext: () => {
