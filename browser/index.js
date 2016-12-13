@@ -1,7 +1,7 @@
 require('./ipc')
 
 const fs = require('fs')
-const {ipcRenderer, remote} = require('electron')
+const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, dialog, Menu} = remote
 const EventEmitter = require('events')
 const Pikaday = require('pikaday')
@@ -2036,6 +2036,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         }
 
         if (trees.length != 0) {
+            view.setRepresentedFilename(null)
             sabaki.setGameTrees(trees)
             sabaki.setGameIndex(0)
             sabaki.updateTreeHash()
@@ -2050,6 +2051,10 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         view.setIsBusy(false)
         callback(error)
     }, setting.get('app.loadgame_delay'))
+}
+
+sabaki.loadFileFromClipboard = function() {
+    sabaki.loadFileFromSgf(clipboard.readText(), false, true)
 }
 
 sabaki.saveFile = function(filename) {
