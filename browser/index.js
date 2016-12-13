@@ -81,6 +81,10 @@ sabaki.getTreeHash = function() {
     return $('body').data('treehash')
 }
 
+sabaki.getFileHash = function() {
+    return $('body').data('filehash')
+}
+
 sabaki.getGraphMatrixDict = function() {
     return $('#graph').data('graphmatrixdict')
 }
@@ -1075,6 +1079,22 @@ sabaki.generateTreeHash = function() {
 
 sabaki.updateTreeHash = function() {
     $('body').data('treehash', sabaki.generateTreeHash())
+}
+
+sabaki.generateFileHash = function() {
+    let filename = view.getRepresentedFilename()
+    if (!filename) return null
+
+    try {
+        let content = fs.readFileSync(filename, 'utf8')
+        return helper.hash(content)
+    } catch(err) {}
+
+    return null
+}
+
+sabaki.updateFileHash = function() {
+    $('body').data('filehash', sabaki.generateFileHash())
 }
 
 sabaki.askForSave = function() {
