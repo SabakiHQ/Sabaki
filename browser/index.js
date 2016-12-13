@@ -1115,6 +1115,23 @@ sabaki.askForSave = function() {
     return true
 }
 
+sabaki.askForReload = function() {
+    let hash = sabaki.generateFileHash()
+
+    if (hash != sabaki.getFileHash()) {
+        let answer = view.showMessageBox([
+            `This file has been changed outside of ${app.getName()}.`,
+            'Do you want to reload the file? Your changes will be lost.'
+        ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
+
+        if (answer == 0) {
+            sabaki.loadFile(view.getRepresentedFilename(), true)
+        }
+
+        $('body').data('filehash', hash)
+    }
+}
+
 /**
  * Game Board Methods
  */
@@ -2462,23 +2479,5 @@ $(window).on('load', function() {
         setting
         .set('window.width', Math.round($('body').width()))
         .set('window.height', Math.round($('body').height()))
-    }
-})
-
-remote.getCurrentWindow().on('focus', function() {
-    if (!setting.get('file.show_reload_warning')) return
-    let hash = sabaki.generateFileHash()
-
-    if (hash != sabaki.getFileHash()) {
-        let result = view.showMessageBox([
-            `This file has been changed outside of ${app.getName()}.`,
-            'Do you want to reload the file? Your changes will be lost.'
-        ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
-
-        if (result == 0) {
-            sabaki.loadFile(view.getRepresentedFilename(), true)
-        }
-
-        $('body').data('filehash', hash)
     }
 })

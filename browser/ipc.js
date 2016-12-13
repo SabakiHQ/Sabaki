@@ -99,3 +99,9 @@ ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 ipcRenderer.on('load-file', (evt, ...args) => {
     setTimeout(() => sabaki.loadFile(...args), setting.get('app.loadgame_delay'))
 })
+
+ipcRenderer.on('window-focus', () => {
+    if (setting.get('file.show_reload_warning')) {
+        sabaki.askForReload()
+    }
+})
