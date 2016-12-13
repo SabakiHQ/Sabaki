@@ -77,8 +77,8 @@ sabaki.setRootTree = function(tree) {
     )
 }
 
-sabaki.getFileHash = function() {
-    return $('body').data('filehash')
+sabaki.getTreeHash = function() {
+    return $('body').data('treehash')
 }
 
 sabaki.getGraphMatrixDict = function() {
@@ -1062,7 +1062,7 @@ sabaki.generateMove = function(ignoreBusy = false) {
  * File Hash Methods
  */
 
-sabaki.generateFileHash = function() {
+sabaki.generateTreeHash = function() {
     let trees = sabaki.getGameTrees()
     let hash = ''
 
@@ -1073,15 +1073,15 @@ sabaki.generateFileHash = function() {
     return hash
 }
 
-sabaki.updateFileHash = function() {
-    $('body').data('filehash', sabaki.generateFileHash())
+sabaki.updateTreeHash = function() {
+    $('body').data('treehash', sabaki.generateTreeHash())
 }
 
 sabaki.askForSave = function() {
     if (!sabaki.getRootTree()) return true
-    let hash = sabaki.generateFileHash()
+    let hash = sabaki.generateTreeHash()
 
-    if (hash != sabaki.getFileHash()) {
+    if (hash != sabaki.getTreeHash()) {
         let answer = view.showMessageBox(
             'Your changes will be lost if you close this file without saving.',
             'warning',
@@ -1960,7 +1960,7 @@ sabaki.newFile = function(playSound) {
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
     view.setRepresentedFilename(null)
     sabaki.setGameIndex(0)
-    sabaki.updateFileHash()
+    sabaki.updateTreeHash()
 
     if (playSound) {
         sound.playNewGame()
@@ -2015,7 +2015,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         if (trees.length != 0) {
             sabaki.setGameTrees(trees)
             sabaki.setGameIndex(0)
-            sabaki.updateFileHash()
+            sabaki.updateTreeHash()
         }
 
         if (trees.length > 1) {
@@ -2040,7 +2040,7 @@ sabaki.saveFile = function(filename) {
     if (filename) {
         view.setIsBusy(true)
         fs.writeFileSync(filename, sabaki.saveFileToSgf())
-        sabaki.updateFileHash()
+        sabaki.updateTreeHash()
         view.setRepresentedFilename(filename)
         view.setIsBusy(false)
 
