@@ -52,6 +52,7 @@ let defaults = {
     'edit.show_removeothervariations_warning': true,
     'edit.undo_delay': 100,
     'engines.list': engines,
+    'file.show_reload_warning': true,
     'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,

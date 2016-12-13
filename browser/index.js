@@ -1981,6 +1981,7 @@ sabaki.newFile = function(playSound) {
     view.setRepresentedFilename(null)
     sabaki.setGameIndex(0)
     sabaki.updateTreeHash()
+    sabaki.updateFileHash()
 
     if (playSound) {
         sound.playNewGame()
@@ -2002,7 +2003,9 @@ sabaki.loadFile = function(filename, dontask = false) {
 
     if (filename) {
         sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, false, err => {
-            if (!err) view.setRepresentedFilename(filename)
+            if (err) return
+            view.setRepresentedFilename(filename)
+            sabaki.updateFileHash()
         })
     }
 }
@@ -2036,6 +2039,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
             sabaki.setGameTrees(trees)
             sabaki.setGameIndex(0)
             sabaki.updateTreeHash()
+            sabaki.updateFileHash()
         }
 
         if (trees.length > 1) {
@@ -2061,6 +2065,7 @@ sabaki.saveFile = function(filename) {
         view.setIsBusy(true)
         fs.writeFileSync(filename, sabaki.saveFileToSgf())
         sabaki.updateTreeHash()
+        sabaki.updateFileHash()
         view.setRepresentedFilename(filename)
         view.setIsBusy(false)
 
@@ -2452,5 +2457,23 @@ $(window).on('load', function() {
         setting
         .set('window.width', Math.round($('body').width()))
         .set('window.height', Math.round($('body').height()))
+    }
+})
+
+remote.getCurrentWindow().on('focus', function() {
+    if (!setting.get('file.show_reload_warning')) return
+    let hash = sabaki.generateFileHash()
+
+    if (hash != sabaki.getFileHash()) {
+        let result = view.showMessageBox([
+            `This file has been changed outside of ${app.getName()}.`,
+            'Do you want to reload the file? Your changes will be lost.'
+        ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
+
+        if (result == 0) {
+            sabaki.loadFile(view.getRepresentedFilename(), true)
+        }
+
+        $('body').data('filehash', hash)
     }
 })
