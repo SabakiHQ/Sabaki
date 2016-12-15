@@ -1472,7 +1472,8 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
             // Remove residue
 
-            k = node[ids[i]].indexOf(point)
+            let k = node[ids[i]].indexOf(point)
+            
             if (k >= 0) {
                 node[ids[i]].splice(k, 1)
 
