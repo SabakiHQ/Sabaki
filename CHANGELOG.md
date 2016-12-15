@@ -2,19 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.19.2][v0.19.2] (2016-12-15)
 
 **Added**
 
+* Sabaki offers to reload the opened file if it has been changed externally
 * Add ability to remove all variations apart from the active one
 
 **Changed**
 
-* Update to Electron v1.4.10
+* Update to Electron v1.4.12
 
 **Fixed**
 
 * Fix incorrectly interpreting openings on boards other than 19&times;19
+* Fix Sabaki closing even if user cancels
 
 ## [Sabaki v0.19.1][v0.19.1] (2016-11-20)
 
@@ -468,7 +470,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.1...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.2...master
+[v0.19.2]: https://github.com/yishn/Sabaki/compare/v0.19.1...v0.19.2
 [v0.19.1]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.19.1
 [v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.0
 [v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.3

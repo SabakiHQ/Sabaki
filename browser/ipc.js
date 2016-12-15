@@ -1,4 +1,4 @@
-const {ipcRenderer, clipboard, shell} = require('electron')
+const {ipcRenderer, shell} = require('electron')
 const view = require('./view')
 const setting = require('../modules/setting')
 
@@ -8,12 +8,7 @@ let menudata = {
     loadfile: () => sabaki.loadFile(),
     savefile: () => sabaki.saveFile(view.getRepresentedFilename()),
     saveas: () => sabaki.saveFile(),
-    loadclipboard: () => sabaki.loadFileFromSgf(
-        clipboard.readText(),
-        false,
-        true,
-        () => view.setRepresentedFilename(null)
-    ),
+    loadclipboard: () => sabaki.loadFileFromClipboard(),
     copytoclipboard: () => clipboard.writeText(sabaki.saveFileToSgf()),
     copyascii: () => clipboard.writeText(sabaki.getBoard().generateAscii()),
     gameinfo: () => view.showGameInfo(),
@@ -103,4 +98,10 @@ ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 
 ipcRenderer.on('load-file', (evt, ...args) => {
     setTimeout(() => sabaki.loadFile(...args), setting.get('app.loadgame_delay'))
+})
+
+ipcRenderer.on('window-focus', () => {
+    if (setting.get('file.show_reload_warning')) {
+        sabaki.askForReload()
+    }
 })

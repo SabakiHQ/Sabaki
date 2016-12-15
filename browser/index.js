@@ -1,7 +1,7 @@
 require('./ipc')
 
 const fs = require('fs')
-const {ipcRenderer, remote} = require('electron')
+const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, dialog, Menu} = remote
 const EventEmitter = require('events')
 const Pikaday = require('pikaday')
@@ -74,6 +74,10 @@ sabaki.setRootTree = function(tree) {
         gametree.getPlayerName(tree, -1, 'White'),
         'WR' in tree.nodes[0] ? tree.nodes[0].WR[0] : ''
     )
+}
+
+sabaki.getTreeHash = function() {
+    return $('body').data('treehash')
 }
 
 sabaki.getFileHash = function() {
@@ -1067,7 +1071,7 @@ sabaki.generateMove = function(ignoreBusy = false) {
  * File Hash Methods
  */
 
-sabaki.generateFileHash = function() {
+sabaki.generateTreeHash = function() {
     let trees = sabaki.getGameTrees()
     let hash = ''
 
@@ -1078,15 +1082,31 @@ sabaki.generateFileHash = function() {
     return hash
 }
 
+sabaki.updateTreeHash = function() {
+    $('body').data('treehash', sabaki.generateTreeHash())
+}
+
+sabaki.generateFileHash = function() {
+    let filename = view.getRepresentedFilename()
+    if (!filename) return null
+
+    try {
+        let content = fs.readFileSync(filename, 'utf8')
+        return helper.hash(content)
+    } catch(err) {}
+
+    return null
+}
+
 sabaki.updateFileHash = function() {
     $('body').data('filehash', sabaki.generateFileHash())
 }
 
 sabaki.askForSave = function() {
     if (!sabaki.getRootTree()) return true
-    let hash = sabaki.generateFileHash()
+    let hash = sabaki.generateTreeHash()
 
-    if (hash != sabaki.getFileHash()) {
+    if (hash != sabaki.getTreeHash()) {
         let answer = view.showMessageBox(
             'Your changes will be lost if you close this file without saving.',
             'warning',
@@ -1098,6 +1118,23 @@ sabaki.askForSave = function() {
     }
 
     return true
+}
+
+sabaki.askForReload = function() {
+    let hash = sabaki.generateFileHash()
+
+    if (hash != sabaki.getFileHash()) {
+        let answer = view.showMessageBox([
+            `This file has been changed outside of ${app.getName()}.`,
+            'Do you want to reload the file? Your changes will be lost.'
+        ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
+
+        if (answer == 0) {
+            sabaki.loadFile(view.getRepresentedFilename(), true)
+        }
+
+        $('body').data('filehash', hash)
+    }
 }
 
 /**
@@ -1451,7 +1488,8 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
             // Remove residue
 
-            k = node[ids[i]].indexOf(point)
+            let k = node[ids[i]].indexOf(point)
+            
             if (k >= 0) {
                 node[ids[i]].splice(k, 1)
 
@@ -1985,6 +2023,7 @@ sabaki.newFile = function(showInfo = false, dontAsk = false) {
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
     view.setRepresentedFilename(null)
     sabaki.setGameIndex(0)
+    sabaki.updateTreeHash()
     sabaki.updateFileHash()
 
     if (showInfo) {
@@ -2007,7 +2046,9 @@ sabaki.loadFile = function(filename = null, dontAsk = false, callback = () => {}
 
     if (filename) {
         sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, false, err => {
-            if (!err) view.setRepresentedFilename(filename)
+            if (err) return
+            view.setRepresentedFilename(filename)
+            sabaki.updateFileHash()
         })
     }
 }
@@ -2038,8 +2079,10 @@ sabaki.loadFileFromSgf = function(content, dontAsk = false, ignoreEncoding = fal
         }
 
         if (trees.length != 0) {
+            view.setRepresentedFilename(null)
             sabaki.setGameTrees(trees)
             sabaki.setGameIndex(0)
+            sabaki.updateTreeHash()
             sabaki.updateFileHash()
         }
 
@@ -2055,6 +2098,10 @@ sabaki.loadFileFromSgf = function(content, dontAsk = false, ignoreEncoding = fal
     }, setting.get('app.loadgame_delay'))
 }
 
+sabaki.loadFileFromClipboard = function() {
+    sabaki.loadFileFromSgf(clipboard.readText(), false, true)
+}
+
 sabaki.saveFile = function(filename) {
     if (view.getIsBusy()) return
 
@@ -2067,8 +2114,9 @@ sabaki.saveFile = function(filename) {
     if (filename) {
         view.setIsBusy(true)
         fs.writeFileSync(filename, sabaki.saveFileToSgf())
-        sabaki.updateFileHash()
         view.setRepresentedFilename(filename)
+        sabaki.updateTreeHash()
+        sabaki.updateFileHash()
         view.setIsBusy(false)
 
         return true
@@ -2451,15 +2499,24 @@ $(window).on('load', function() {
 }).on('resize', function() {
     view.resizeBoard()
 }).on('beforeunload', function(evt) {
-    if (!sabaki.askForSave()) evt.returnValue = ' '
-
-    sabaki.detachEngine()
-
     let win = remote.getCurrentWindow()
 
-    if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
-        setting
-        .set('window.width', Math.round($('body').width()))
-        .set('window.height', Math.round($('body').height()))
+    if (!$('body').data('closewindow')) {
+        evt.returnValue = ' '
+
+        setTimeout(() => {
+            if (sabaki.askForSave()) {
+                $('body').data('closewindow', true)
+                win.close()
+            }
+        }, 0)
+    } else {
+        sabaki.detachEngine()
+
+        if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
+            setting
+            .set('window.width', Math.round($('body').width()))
+            .set('window.height', Math.round($('body').height()))
+        }
     }
 })
