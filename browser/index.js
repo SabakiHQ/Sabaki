@@ -2469,15 +2469,24 @@ $(window).on('load', function() {
 }).on('resize', function() {
     view.resizeBoard()
 }).on('beforeunload', function(evt) {
-    if (!sabaki.askForSave()) evt.returnValue = ' '
-
-    sabaki.detachEngine()
-
     let win = remote.getCurrentWindow()
 
-    if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
-        setting
-        .set('window.width', Math.round($('body').width()))
-        .set('window.height', Math.round($('body').height()))
+    if (!$('body').data('closewindow')) {
+        evt.returnValue = ' '
+
+        setTimeout(() => {
+            if (sabaki.askForSave()) {
+                $('body').data('closewindow', true)
+                win.close()
+            }
+        }, 10)
+    } else {
+        sabaki.detachEngine()
+
+        if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
+            setting
+            .set('window.width', Math.round($('body').width()))
+            .set('window.height', Math.round($('body').height()))
+        }
     }
 })
