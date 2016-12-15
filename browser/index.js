@@ -2086,9 +2086,9 @@ sabaki.saveFile = function(filename) {
     if (filename) {
         view.setIsBusy(true)
         fs.writeFileSync(filename, sabaki.saveFileToSgf())
+        view.setRepresentedFilename(filename)
         sabaki.updateTreeHash()
         sabaki.updateFileHash()
-        view.setRepresentedFilename(filename)
         view.setIsBusy(false)
 
         return true
