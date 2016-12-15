@@ -79,6 +79,10 @@ sabaki.setRootTree = function(tree) {
     )
 }
 
+sabaki.getTreeHash = function() {
+    return $('body').data('treehash')
+}
+
 sabaki.getFileHash = function() {
     return $('body').data('filehash')
 }
@@ -865,7 +869,7 @@ sabaki.generateMove = function(ignoreBusy = false) {
  * File Hash Methods
  */
 
-sabaki.generateFileHash = function() {
+sabaki.generateTreeHash = function() {
     let trees = sabaki.getGameTrees()
     let hash = ''
 
@@ -876,15 +880,31 @@ sabaki.generateFileHash = function() {
     return hash
 }
 
+sabaki.updateTreeHash = function() {
+    $('body').data('treehash', sabaki.generateTreeHash())
+}
+
+sabaki.generateFileHash = function() {
+    let filename = view.getRepresentedFilename()
+    if (!filename) return null
+
+    try {
+        let content = fs.readFileSync(filename, 'utf8')
+        return helper.hash(content)
+    } catch(err) {}
+
+    return null
+}
+
 sabaki.updateFileHash = function() {
     $('body').data('filehash', sabaki.generateFileHash())
 }
 
 sabaki.askForSave = function() {
     if (!sabaki.getRootTree()) return true
-    let hash = sabaki.generateFileHash()
+    let hash = sabaki.generateTreeHash()
 
-    if (hash != sabaki.getFileHash()) {
+    if (hash != sabaki.getTreeHash()) {
         let answer = view.showMessageBox(
             'Your changes will be lost if you close this file without saving. Do you want to proceed?',
             'warning',
@@ -895,6 +915,9 @@ sabaki.askForSave = function() {
     }
 
     return true
+}
+
+sabaki.askForReload = function() {
 }
 
 /**
@@ -1762,6 +1785,7 @@ sabaki.newFile = function(playSound) {
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
     view.setRepresentedFilename(null)
     sabaki.setGameIndex(0)
+    sabaki.updateTreeHash()
     sabaki.updateFileHash()
 
     if (playSound) {
@@ -1783,7 +1807,9 @@ sabaki.loadFile = function(filename, dontask = false) {
                 let contents = e.target.result
 
                 sabaki.loadFileFromSgf(contents, true, err => {
-                    if (!err) view.setRepresentedFilename(file.name)
+                    if (err) return
+                    view.setRepresentedFilename(filename)
+                    sabaki.updateFileHash()
                 })
             }
 
@@ -1820,8 +1846,10 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         }
 
         if (trees.length != 0) {
+            view.setRepresentedFilename(null)
             sabaki.setGameTrees(trees)
             sabaki.setGameIndex(0)
+            sabaki.updateTreeHash()
             sabaki.updateFileHash()
         }
 
@@ -1833,6 +1861,10 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         view.setIsBusy(false)
         callback(error)
     }, setting.get('app.loadgame_delay'))
+}
+
+sabaki.loadFileFromClipboard = function() {
+    sabaki.loadFileFromSgf(clipboard.readText(), false, true)
 }
 
 sabaki.saveFile = function(filename) {
@@ -1849,6 +1881,7 @@ sabaki.saveFile = function(filename) {
     $el.get(0).click()
     $el.remove()
 
+    sabaki.updateTreeHash()
     sabaki.updateFileHash()
     return true
 }

@@ -281,6 +281,7 @@ exports.getCurrentPlayer = function() {
 exports.setCurrentPlayer = function(sign) {
     $('.current-player')
     .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
+    $('header .current-player')
     .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
 
