@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-* Fix game graph not updated when pasting variations sometimes
+* Fix game graph not being updated when pasting variations sometimes
 
 ## [Sabaki v0.19.0][v0.19.0] (2016-11-11)
 
