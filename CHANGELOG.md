@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Sabaki offers to reload the opened file if it has been changed externally
-* Add ability to remove all variations apart from the active one
+* Ability to remove all variations apart from the active one
 
 **Changed**
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Add ability to flatten nodes
+* Ability to flatten nodes
 
 **Changed**
 
@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-* Fix game graph not updated when pasting variations sometimes
+* Fix game graph not being updated when pasting variations sometimes
 
 ## [Sabaki v0.19.0][v0.19.0] (2016-11-11)
 
