@@ -2479,7 +2479,7 @@ $(window).on('load', function() {
                 $('body').data('closewindow', true)
                 win.close()
             }
-        }, 10)
+        }, 0)
     } else {
         sabaki.detachEngine()
 
