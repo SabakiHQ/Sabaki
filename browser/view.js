@@ -1381,6 +1381,8 @@ exports.openAddGameMenu = function() {
                 sabaki.setGameTrees([...sabaki.getGameTrees(), tree])
                 sabaki.setGameIndex(sabaki.getGameTrees().length - 1)
                 exports.showGameChooser('bottom')
+                exports.closeGameChooser()
+                exports.showGameInfo()
             }
         },
         {
