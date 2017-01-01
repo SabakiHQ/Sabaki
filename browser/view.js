@@ -1569,7 +1569,7 @@ exports.showGameInfo = function() {
 
     let disabled = tree.nodes.length > 1
         || tree.subtrees.length > 0
-        || ['AB', 'AW', 'W', 'B'].some(x => x in rootNode)
+        || ['AW', 'W', 'B'].some(x => x in rootNode)
 
     $info.find('input[name^="size-"]').add(handicap).prop('disabled', disabled)
     $info.toggleClass('disabled', disabled)
