@@ -56,6 +56,7 @@ let defaults = {
     'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
+    'game.default_handicap': 0,
     'game.goto_end_after_loading': false,
     'game.show_ko_warning': true,
     'game.show_suicide_warning': true,

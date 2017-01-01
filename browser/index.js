@@ -15,6 +15,7 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const gtp = require('../modules/gtp')
+const Board = require('../modules/board')
 
 window.sabaki = {
     view,
@@ -385,11 +386,18 @@ sabaki.setHotspot = function(bookmark) {
 }
 
 sabaki.getEmptyGameTree = function() {
+    let handicap = setting.get('game.default_handicap')
+    let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
+    let width = size[0]
+    let height = size.length == 1 ? size[0] : size[1]
+    let stones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
+
     let buffer = [
         `;GM[1]FF[4]CA[UTF-8]`,
         `AP[${app.getName()}:${app.getVersion()}]`,
         `KM[${setting.get('game.default_komi')}]`,
-        `SZ[${setting.get('game.default_board_size')}]`
+        `SZ[${size.join(':')}]`,
+        handicap > 0 ? `HA[${handicap}]AB[${stones}]` : ''
     ].join('')
 
     return sgf.parse(sgf.tokenize(buffer))
