@@ -385,9 +385,12 @@ sabaki.setHotspot = function(bookmark) {
 }
 
 sabaki.getEmptyGameTree = function() {
-    let buffer = ';GM[1]FF[4]AP[' + app.getName() + ':' + app.getVersion() + ']'
-        + 'CA[UTF-8]KM[' + setting.get('game.default_komi')
-        + ']SZ[' + setting.get('game.default_board_size') + ']'
+    let buffer = [
+        `;GM[1]FF[4]CA[UTF-8]`,
+        `AP[${app.getName()}:${app.getVersion()}]`,
+        `KM[${setting.get('game.default_komi')}]`,
+        `SZ[${setting.get('game.default_board_size')}]`
+    ].join('')
 
     return sgf.parse(sgf.tokenize(buffer))
 }
@@ -1473,7 +1476,7 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
             // Remove residue
 
             let k = node[ids[i]].indexOf(point)
-            
+
             if (k >= 0) {
                 node[ids[i]].splice(k, 1)
 
