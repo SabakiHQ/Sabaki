@@ -1895,18 +1895,28 @@ sabaki.commitGameInfo = function() {
 
     let komi = +$info.find('input[name="komi"]').val()
     if (isNaN(komi)) komi = 0
+
     rootNode.KM = ['' + komi]
+    setting.set('game.default_komi', komi)
 
     // Handle size
 
-    let size = ['width', 'height'].map(x => {
-        let num = parseFloat($info.find('input[name="size-' + x + '"]').val())
-        if (isNaN(num)) num = setting.get('game.default_board_size')
-        return Math.min(Math.max(num, 3), 25)
-    })
+    if (!$info.find('input[name="size-width"]').get(0).disabled) {
+        let size = ['width', 'height'].map(x => {
+            let num = +$info.find('input[name="size-' + x + '"]').val()
+            return Math.min(Math.max(num, 3), 25)
+        })
 
-    if (size[0] == size[1]) rootNode.SZ = ['' + size[0]]
-    else rootNode.SZ = [size.join(':')]
+        if (size.some(x => isNaN(x))) {
+            size = setting.get('game.default_board_size').toString().split(':')
+            if (size.length != 2) size = [+size[0], +size[size.length - 1]]
+        }
+
+        if (size[0] == size[1]) rootNode.SZ = ['' + size[0]]
+        else rootNode.SZ = [size.join(':')]
+
+        setting.set('game.default_board_size', rootNode.SZ[0])
+    }
 
     // Handle handicap stones
 
@@ -1919,12 +1929,14 @@ sabaki.commitGameInfo = function() {
         if (handicap == 0) {
             delete rootNode.AB
             delete rootNode.HA
+            setting.set('game.default_handicap', 0)
         } else {
             let board = sabaki.getBoard()
             let stones = board.getHandicapPlacement(handicap + 1)
 
             rootNode.HA = ['' + stones.length]
             rootNode.AB = stones.map(sgf.vertex2point)
+            setting.set('game.default_handicap', stones.length)
         }
 
         sabaki.setCurrentTreePosition(sabaki.getRootTree(), 0)

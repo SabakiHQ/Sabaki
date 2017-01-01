@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Sabaki remembers board setup, i.e. komi, board size, and handicap stones
+
 **Fixed**
 
 * Fix copy to clipboard not working
