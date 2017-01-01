@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix copy to clipboard not working
+
 ## [Sabaki v0.19.2][v0.19.2] (2016-12-15)
 
 **Added**
