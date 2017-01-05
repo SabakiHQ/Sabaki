@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Sabaki remembers board setup, i.e. komi, board size, and handicap stones
 
+**Changed**
+
+* Update to Electron v1.4.13
+
 **Fixed**
 
 * Fix copy to clipboard not working
