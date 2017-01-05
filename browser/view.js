@@ -960,7 +960,7 @@ exports.updateBoardLines = function() {
         let pos1 = $li1.position(), pos2 = $li2.position()
         let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
-        let angle = Math.atan2(dy, dx) * 180 / Math.PI
+        let angle = Math.atan(dy / dx) * 180 / Math.PI
         if (mirrored) angle += 180
         let length = Math.sqrt(dx * dx + dy * dy)
 

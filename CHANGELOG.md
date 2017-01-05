@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix copy to clipboard not working
+* Fix board arrows not pointing in the right direction
 
 ## [Sabaki v0.19.2][v0.19.2] (2016-12-15)
 
