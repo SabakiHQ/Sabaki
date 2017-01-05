@@ -954,8 +954,8 @@ exports.updateBoardLines = function() {
 
     for (let line of $('#goban hr').get()) {
         let v1 = $(line).data('v1'), v2 = $(line).data('v2')
-        let $li1 = $('#goban .pos_' + v1.join('-'))
-        let $li2 = $('#goban .pos_' + v2.join('-'))
+        let $li1 = $(`#goban .pos_${v1.join('-')}`)
+        let $li2 = $(`#goban .pos_${v2.join('-')}`)
         let pos1 = $li1.position(), pos2 = $li2.position()
         let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
@@ -965,9 +965,9 @@ exports.updateBoardLines = function() {
         $(line).css({
             top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty + 'px',
             left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + tx + 'px',
-            marginLeft: -length / 2 + 'px',
-            width: length + 'px',
-            transform: 'rotate(' + angle + 'deg)'
+            marginLeft: `${-length / 2}px`,
+            width: `${length}px`,
+            transform: `rotate(${angle}deg)`
         })
     }
 }
