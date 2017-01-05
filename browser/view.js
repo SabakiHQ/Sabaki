@@ -854,6 +854,18 @@ exports.buildBoard = function() {
     let rows = []
     let hoshi = board.getHandicapPlacement(9)
 
+    let getEndTargetVertex = evt => {
+        let {pageX, pageY} = evt.touches[0]
+        let endTarget = document.elementFromPoint(pageX, pageY)
+        if (!endTarget) return null
+
+        let v = $(endTarget).data('vertex')
+        if (!v) endTarget = $(endTarget).parents('li').get(0)
+        if (endTarget) v = $(endTarget).data('vertex')
+
+        return v
+    }
+
     for (let y = 0; y < board.height; y++) {
         let $ol = $('<ol class="row"/>')
 
@@ -869,31 +881,17 @@ exports.buildBoard = function() {
             if (hoshi.some(v => helper.equals(v, vertex)))
                 $li.addClass('hoshi')
 
-            let getEndTargetVertex = evt => {
-                let endTarget = document.elementFromPoint(
-                    evt.touches[0].pageX,
-                    evt.touches[0].pageY
-                )
-
-                if (!endTarget) return null
-                let v = $(endTarget).data('vertex')
-                if (!v) endTarget = $(endTarget).parents('li').get(0)
-                if (endTarget) v = $(endTarget).data('vertex')
-
-                return v
-            }
-
             $ol.append(
                 $li.append(
                     $('<div class="stone"/>').append($img).append($('<span/>'))
                 )
-                .on('mouseup', function(evt) {
+                .on('mouseup', evt => {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    sabaki.vertexClicked(this, evt.button, evt.ctrlKey)
-                }.bind(vertex))
-                .on('touchend', function(evt) {
+                    sabaki.vertexClicked(vertex, evt.button, evt.ctrlKey)
+                })
+                .on('touchend', evt => {
                     if (!exports.getEditMode()
                     || !['line', 'arrow'].includes(sabaki.getSelectedTool()))
                         return
@@ -901,17 +899,17 @@ exports.buildBoard = function() {
                     evt.preventDefault()
                     sabaki.vertexClicked(null, 0)
                 })
-                .on('mousemove', function(evt) {
+                .on('mousemove', evt => {
                     if (!$('#goban').data('mousedown')) return
                     if (evt.button != 0) return
 
-                    sabaki.drawLine(this)
-                }.bind(vertex))
-                .on('touchmove', function(evt) {
+                    sabaki.drawLine(vertex)
+                })
+                .on('touchmove', evt => {
                     e.preventDefault()
                     sabaki.drawLine(getEndTargetVertex(evt))
                 })
-                .on('mousedown', function() {
+                .on('mousedown', () => {
                     $('#goban').data('mousedown', true)
                 })
                 .append($('<div class="paint"/>'))
@@ -920,6 +918,8 @@ exports.buildBoard = function() {
 
         rows.push($ol)
     }
+
+    // Add coordinates
 
     let alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
     let $coordx = $('<ol class="coordx"/>')
