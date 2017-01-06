@@ -980,8 +980,13 @@ exports.resizeBoard = function() {
     let $goban = $('#goban')
 
     $main.css('width', '').css('height', '')
-    let outerWidth = Math.round($main.width())
-    let outerHeight = Math.round($main.height())
+
+    let outerWidth = Math.round($main.width()
+        - parseFloat($main.css('padding-left'))
+        - parseFloat($main.css('padding-right')))
+    let outerHeight = Math.round($main.height()
+        - parseFloat($main.css('padding-top'))
+        - parseFloat($main.css('padding-bottom')))
 
     if (outerWidth % 2 != 0) outerWidth++
     if (outerHeight % 2 != 0) outerHeight++
@@ -989,11 +994,13 @@ exports.resizeBoard = function() {
 
     let boardWidth = board.width
     let boardHeight = board.height
-    let width = helper.floorEven(outerWidth - parseFloat($goban.css('padding-left'))
+    let width = helper.floorEven(outerWidth
+        - parseFloat($goban.css('padding-left'))
         - parseFloat($goban.css('padding-right'))
         - parseFloat($goban.css('border-left-width'))
         - parseFloat($goban.css('border-right-width')))
-    let height = helper.floorEven(outerHeight - parseFloat($goban.css('padding-top'))
+    let height = helper.floorEven(outerHeight
+        - parseFloat($goban.css('padding-top'))
         - parseFloat($goban.css('padding-bottom'))
         - parseFloat($goban.css('border-top-width'))
         - parseFloat($goban.css('border-bottom-width')))
