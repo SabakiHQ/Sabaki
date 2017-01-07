@@ -33,7 +33,6 @@ function newWindow(path) {
     window.on('focus', () => {
         window.webContents.send('window-focus')
     }).on('closed', () => {
-        windows.splice(windows.indexOf(window), 1)
         window = null
     })
 
@@ -87,19 +86,7 @@ function buildMenu(disableAll = false) {
             {role: 'hide'},
             {role: 'hideothers'},
             {type: 'separator'},
-            {
-                label: `Quit ${app.getName()}`,
-                accelerator: `CmdOrCtrl+Q`,
-                click: () => {
-                    for (let win of windows) {
-                        let n = windows.length
-                        win.close()
-                        if (windows.length == n) return
-                    }
-
-                    app.quit()
-                }
-            }
+            {role: 'quit'}
         )
 
         template.unshift({
