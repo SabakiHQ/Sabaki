@@ -485,7 +485,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.19.3...master
+[v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.19.2...v0.19.3
 [v0.19.2]: https://github.com/yishn/Sabaki/compare/v0.19.1...v0.19.2
 [v0.19.1]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.19.1
 [v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.0
