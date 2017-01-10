@@ -1,6 +1,6 @@
 build.js
 
-bin/
+dist/
 gnugo/
 node_modules/
 
