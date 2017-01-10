@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.19.3][v0.19.3] (2017-01-11)
+
+**Added**
+
+* Sabaki remembers board setup, i.e. komi, board size, and handicap stones
+
+**Changed**
+
+* Update to Electron v1.4.13
+
+**Fixed**
+
+* Fix copy to clipboard not working
+* Fix board arrows not pointing in the right direction
+
 ## [Sabaki v0.19.2][v0.19.2] (2016-12-15)
 
 **Added**

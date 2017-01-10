@@ -1,4 +1,4 @@
-const {ipcRenderer, shell} = require('electron')
+const {ipcRenderer, shell, clipboard} = require('electron')
 const view = require('./view')
 const setting = require('../modules/setting')
 
