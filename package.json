@@ -4,6 +4,8 @@
   "version": "0.19.3",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
+  "homepage": "http://sabaki.yichuanshen.de",
+  "license": "MIT",
   "main": "main.js",
   "repository": {
     "type": "git",
@@ -11,15 +13,25 @@
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",
+    "copyright": "Copyright © 2015-2017 Yichuan Shen",
     "linux": {
-      "target": ["appImage", "deb", "rpm", "tar.gz"]
+      "category": "Game",
+      "packageCategory": "games",
+      "target": ["appImage", "deb", "rpm", "pacman", "tar.gz"]
     },
     "mac": {
       "category": "public.app-category.board-games"
     },
     "win": {
-      "iconUrl": "https://raw.githubusercontent.com/yishn/sabaki/master/data/icon.ico"
-    }
+      "iconUrl": "https://raw.githubusercontent.com/yishn/sabaki/master/data/icon.ico",
+      "target": ["msi"]
+    },
+    "fileAssociations": [
+      {
+        "ext": "sgf",
+        "name": "SGF"
+      }
+    ]
   },
   "bugs": {
     "url": "https://github.com/yishn/Sabaki/issues"
