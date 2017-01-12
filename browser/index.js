@@ -2349,6 +2349,25 @@ sabaki.makeMainVariation = function(tree, index) {
     sabaki.setCurrentTreePosition(tree, index, true, true)
 }
 
+sabaki.shiftVariation = function(step, tree, index) {
+    if (!tree.parent) return
+
+    sabaki.setUndoable(true, 'Undo Shift Variation')
+    view.closeDrawers()
+
+    let subtrees = tree.parent.subtrees
+    let i = subtrees.indexOf(tree)
+
+    step = step % subtrees.length
+    let inew = (i + step) % subtrees.length
+    if (inew < 0) inew += subtrees.length
+
+    subtrees.splice(i, 1)
+    subtrees.splice(inew, 0, tree)
+
+    sabaki.setCurrentTreePosition(tree, index, true, true)
+}
+
 sabaki.removeNode = function(tree, index, confirm = null, undoable = true) {
     if (!tree.parent && index == 0) {
         view.showMessageBox('The root node cannot be removed.', 'warning')
