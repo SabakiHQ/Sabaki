@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to change the order of variations
+
 **Changed**
 
 * Update to Electron v1.4.14
