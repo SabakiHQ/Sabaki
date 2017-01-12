@@ -169,6 +169,15 @@
                 "action": "makemainvariation"
             },
             {
+                "label": "Shift &Left",
+                "action": "shiftleft"
+            },
+            {
+                "label": "Shift Ri&ght",
+                "action": "shiftright"
+            },
+            {"type": "separator"},
+            {
                 "label": "&Flatten",
                 "action": "flatten"
             },

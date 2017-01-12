@@ -1307,6 +1307,15 @@ exports.openNodeMenu = function(tree, index, position) {
             click: () => sabaki.makeMainVariation(tree, index)
         },
         {
+            label: "Shift &Left",
+            click: () => sabaki.shiftVariation(-1, tree, index)
+        },
+        {
+            label: "Shift Ri&ght",
+            click: () => sabaki.shiftVariation(1, tree, index)
+        },
+        {type: 'separator'},
+        {
             label: '&Flatten',
             click: () => sabaki.flattenVariation(tree, index)
         },
