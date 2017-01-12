@@ -2132,15 +2132,13 @@ sabaki.saveFileToSgf = function() {
 }
 
 sabaki.clearMarkup = function() {
-    view.closeDrawers()
-    let markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
-
-    // Save undo information
     sabaki.setUndoable(true, 'Restore Markup')
+    view.closeDrawers()
 
+    let markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
     let [tree, index] = sabaki.getCurrentTreePosition()
-    markupIds.forEach(id => delete tree.nodes[index][id])
 
+    markupIds.forEach(id => delete tree.nodes[index][id])
     sabaki.setCurrentTreePosition(tree, index)
 }
 
@@ -2356,11 +2354,9 @@ sabaki.shiftVariation = function(step, tree, index) {
     view.closeDrawers()
 
     let subtrees = tree.parent.subtrees
+    let m = subtrees.length
     let i = subtrees.indexOf(tree)
-
-    step = step % subtrees.length
-    let inew = (i + step) % subtrees.length
-    if (inew < 0) inew += subtrees.length
+    let inew = ((i + step) % m + m) % m
 
     subtrees.splice(i, 1)
     subtrees.splice(inew, 0, tree)
