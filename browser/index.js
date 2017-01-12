@@ -388,13 +388,13 @@ sabaki.setHotspot = function(bookmark) {
 sabaki.getEmptyGameTree = function() {
     let handicap = setting.get('game.default_handicap')
     let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
-    let stones = new Board(size[0], size[size.length - 1]).getHandicapPlacement(handicap).map(sgf.vertex2point)
+    let stones = new Board(size[0], size.slice(-1)[0]).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
     let buffer = [
         `;GM[1]FF[4]CA[UTF-8]`,
         `AP[${app.getName()}:${app.getVersion()}]`,
         `KM[${setting.get('game.default_komi')}]`,
-        `SZ[${size.join(':')}]`,
+        `SZ[${size[0]}:${size.slice(-1)[0]}]`,
         stones.length > 0 ? `HA[${handicap}]AB[${stones.join('][')}]` : ''
     ].join('')
 
@@ -409,16 +409,16 @@ sabaki.setAutoplaying = function(playing) {
     let autoplay = () => {
         if (!sabaki.getAutoplaying()) return
 
-        let ntp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
-        if (!ntp) {
+        let tp = gametree.navigate(...sabaki.getCurrentTreePosition(), 1)
+        if (!tp) {
             sabaki.setAutoplaying(false)
             return
         }
 
-        let node = ntp[0].nodes[ntp[1]]
+        let node = tp[0].nodes[tp[1]]
 
         if (!node.B && !node.W) {
-            sabaki.setCurrentTreePosition(...ntp, false, false, true)
+            sabaki.setCurrentTreePosition(...tp, false, false, true)
         } else {
             let vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
             view.setCurrentPlayer(node.B ? 1 : -1)
