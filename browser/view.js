@@ -1739,6 +1739,16 @@ exports.closeGameChooser = function() {
     document.activeElement.blur()
 }
 
+exports.showCleanMarkup = function() {
+    exports.closeDrawers()
+    $('#cleanmarkup').addClass('show')
+}
+
+exports.closeCleanMarkup = function() {
+    $('#cleanmarkup').removeClass('show')
+    document.activeElement.blur()
+}
+
 exports.closeDrawers = function() {
     let drawersOpen = $('.drawer.show, #input-box.show').length > 0
     let modeOpen = $('#bar .bar').get()
@@ -1750,6 +1760,7 @@ exports.closeDrawers = function() {
     exports.closeScore()
     exports.closePreferences()
     exports.closeGameChooser()
+    exports.closeCleanMarkup()
     exports.setEditMode(false)
     exports.setScoringMode(false)
     exports.setEstimatorMode(false)

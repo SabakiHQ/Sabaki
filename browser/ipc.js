@@ -23,7 +23,7 @@ let menudata = {
     estimate: () => view.setEstimatorMode(true),
 
     editmode: () => view.setEditMode(!view.getEditMode()),
-    clearmarkup: () => sabaki.clearMarkup(),
+    cleanmarkup: () => view.showCleanMarkup(),
     stonetool: () => sabaki.setSelectedTool('stone'),
     crosstool: () => sabaki.setSelectedTool('cross'),
     triangletool: () => sabaki.setSelectedTool('triangle'),

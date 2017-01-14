@@ -904,6 +904,13 @@ sabaki.preparePreferences = function() {
     })
 }
 
+sabaki.prepareCleanMarkup = function() {
+    $('#cleanmarkup button[type="reset"]').on('click', evt => {
+        evt.preventDefault()
+        view.closeCleanMarkup()
+    })
+}
+
 /**
  * Engine Methods
  */
@@ -2131,17 +2138,6 @@ sabaki.saveFileToSgf = function() {
     return text
 }
 
-sabaki.clearMarkup = function() {
-    sabaki.setUndoable(true, 'Restore Markup')
-    view.closeDrawers()
-
-    let markupIds = ['MA', 'TR', 'CR', 'SQ', 'LB', 'AR', 'LN']
-    let [tree, index] = sabaki.getCurrentTreePosition()
-
-    markupIds.forEach(id => delete tree.nodes[index][id])
-    sabaki.setCurrentTreePosition(tree, index)
-}
-
 sabaki.goStep = function(step) {
     if (view.getGuessMode()) return
 
@@ -2474,6 +2470,7 @@ $(document).ready(function() {
     sabaki.prepareConsole()
     sabaki.prepareGameInfo()
     sabaki.preparePreferences()
+    sabaki.prepareCleanMarkup()
     sabaki.newFile()
 
     view.prepareResizers()

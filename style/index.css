@@ -649,6 +649,9 @@ header, #bar .bar {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
+    .drawer h2 {
+        font-weight: lighter;
+    }
     .drawer input, .drawer select, button {
         background: #111;
         color: #eee;
@@ -728,6 +731,9 @@ header, #bar .bar {
 #score {
         background: rgba(251, 245, 147, .9);
         color: #333;
+    }
+    #score h2 {
+        font-weight: normal;
     }
     #score .tabs {
         position: absolute;
@@ -857,7 +863,6 @@ header, #bar .bar {
     }
     #gamechooser h2 {
         padding: 20px;
-        font-weight: lighter;
     }
     #gamechooser ol {
         list-style: none;
