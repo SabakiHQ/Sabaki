@@ -187,7 +187,7 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
 sabaki.getCurrentGraphNode = function() {
     let pos = sabaki.getCurrentTreePosition()
     if (!pos) return null
-    return sabaki.getGraphNode(pos[0], pos[1])
+    return sabaki.getGraphNode(...pos)
 }
 
 sabaki.getGraphNode = function(tree, index) {
@@ -1752,19 +1752,19 @@ sabaki.updateCommentText = function() {
     view.setCommentText('C' in node ? node.C[0] : '')
     view.setCommentTitle('N' in node ? node.N[0] : '')
 
-    view.setAnnotations(...(() => {
-        if ('UC' in node) return [-2, node.UC[0]]
-        if ('GW' in node) return [-1, node.GW[0]]
-        if ('DM' in node) return [0, node.DM[0]]
-        if ('GB' in node) return [1, node.GB[0]]
-        return [null, null]
-    })(), ...(() => {
-        if ('BM' in node) return [-1, node.BM[0]]
-        if ('TE' in node) return [2, node.TE[0]]
-        if ('DO' in node) return [0, 1]
-        if ('IT' in node) return [1, 1]
-        return [null, null]
-    })())
+    view.setAnnotations(...(
+        'UC' in node ? [-2, node.UC[0]]
+        : 'GW' in node ? [-1, node.GW[0]]
+        : 'DM' in node ? [0, node.DM[0]]
+        : 'GB' in node ? [1, node.GB[0]]
+        : [null, null]
+    ), ...(
+        'BM' in node ? [-1, node.BM[0]]
+        : 'TE' in node ? [2, node.TE[0]]
+        : 'DO' in node ? [0, 1]
+        : 'IT' in node ? [1, 1]
+        : [null, null]
+    ))
 
     $('#properties').scrollTop(0)
 }
@@ -1807,31 +1807,28 @@ sabaki.centerGraphCameraAt = function(node) {
     let s = $('#graph').data('sigma')
     s.renderers[0].resize().render()
 
-    let matrixdict = sabaki.getGraphMatrixDict()
-    let y = matrixdict[1][node.id][1]
-
-    let [width, padding] = gametree.getMatrixWidth(y, matrixdict[0])
-    let x = matrixdict[1][node.id][0] - padding
-    let relX = width == 1 ? 0 : x / (width - 1)
+    let [matrix, dict] = sabaki.getGraphMatrixDict()
+    let [x, y] = dict[node.id]
+    let [width, padding] = gametree.getMatrixWidth(y, matrix)
+    x -= padding
+    let relX = width == 1 ? 1 : 1 - 2 * x / (width - 1)
     let diff = (width - 1) * setting.get('graph.grid_size') / 2
     diff = Math.min(diff, s.renderers[0].width / 2 - setting.get('graph.grid_size'))
 
     node.color = setting.get('graph.node_active_color')
     s.refresh()
 
+    let prefix = s.camera.readPrefix
     sigma.misc.animation.camera(
         s.camera,
-        {
-            x: node[s.camera.readPrefix + 'x'] + (1 - 2 * relX) * diff,
-            y: node[s.camera.readPrefix + 'y']
-        },
+        {x: node[`${prefix}x`] + relX * diff, y: node[`${prefix}y`]},
         {duration: setting.get('graph.animation_duration')}
     )
 }
 
-sabaki.startAutoScroll = function(direction, delay) {
-    if (direction > 0 && !$('#sidebar .slider a.next').data('mousedown')
-    || direction < 0 && !$('#sidebar .slider a.prev').data('mousedown')) return
+sabaki.startAutoScroll = function(step, delay) {
+    if (step > 0 && !$('#sidebar .slider a.next').data('mousedown')
+    || step < 0 && !$('#sidebar .slider a.prev').data('mousedown')) return
 
     if (delay == null) delay = setting.get('autoscroll.max_interval')
     delay = Math.max(setting.get('autoscroll.min_interval'), delay)
@@ -1839,12 +1836,11 @@ sabaki.startAutoScroll = function(direction, delay) {
     let $slider = $('#sidebar .slider')
     clearTimeout($slider.data('autoscrollid'))
 
-    if (direction > 0) sabaki.goForward()
-    else sabaki.goBack()
+    sabaki.goStep(step)
     sabaki.updateSlider()
 
     $slider.data('autoscrollid', setTimeout(() => {
-        sabaki.startAutoScroll(direction, delay - setting.get('autoscroll.diff'))
+        sabaki.startAutoScroll(step, delay - setting.get('autoscroll.diff'))
     }, delay))
 }
 

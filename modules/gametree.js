@@ -253,9 +253,8 @@ exports.onMainTrack = function(tree) {
 }
 
 exports.matrixdict2graph = function(matrixdict) {
-    let matrix = matrixdict[0]
-    let dict = matrixdict[1]
-    let graph = { nodes: [], edges: [] }
+    let [matrix, dict] = matrixdict
+    let graph = {nodes: [], edges: []}
     let currentTrack = []
     let notCurrentTrack = []
     let width = Math.max(...matrix.map(x => x.length))
