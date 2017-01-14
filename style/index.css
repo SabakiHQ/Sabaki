@@ -663,7 +663,13 @@ header, #bar .bar {
     button:active {
         position: relative;
         top: 2px;
+    }
+    .drawer input[type="checkbox"]:focus { background: #111; }
+    .drawer input[type="checkbox"]::before {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
 }
+
 
 #info section {
         text-align: center;
@@ -797,10 +803,11 @@ header, #bar .bar {
         height: 400px;
     }
     #preferences.show { bottom: 0; }
-    #preferences input[type="checkbox"]:focus { background: #111; }
     #preferences form ul { margin: 0 0 1.5em; }
-    #preferences form ul li { margin: 0 0 7px; }
-    #preferences form > p:last-child {
+    #preferences form ul li,
+    #cleanmarkup form ul li { margin: 0 0 7px; }
+    #preferences form > p:last-child,
+    #cleanmarkup form > p:last-child {
         position: absolute;
         right: 20px;
         bottom: 14px;
@@ -812,7 +819,6 @@ header, #bar .bar {
         height: 315px;
         padding-top: 1.5em;
         column-count: 2;
-        -webkit-column-count: 2;
         -moz-column-count: 2;
     }
     #preferences form.general > div.general,
@@ -821,10 +827,15 @@ header, #bar .bar {
     }
     #preferences .engines-list {
         overflow: auto;
+}
+
+#cleanmarkup form {
+        overflow: hidden;
     }
-    #preferences input[type="checkbox"]::before {
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
+    #cleanmarkup form ul {
+        float: left;
+        padding-top: 1.5em;
+        width: 33%;
 }
 
 #gamechooser {

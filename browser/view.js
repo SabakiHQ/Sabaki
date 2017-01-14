@@ -1740,6 +1740,9 @@ exports.closeGameChooser = function() {
 }
 
 exports.showCleanMarkup = function() {
+    $('#cleanmarkup input[type="checkbox"]').get()
+        .forEach(el => el.checked = !!setting.get(el.name))
+
     exports.closeDrawers()
     $('#cleanmarkup').addClass('show')
 }
