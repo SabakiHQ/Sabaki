@@ -905,6 +905,56 @@ sabaki.preparePreferences = function() {
 }
 
 sabaki.prepareCleanMarkup = function() {
+    $('#cleanmarkup button:not([type="reset"])').on('click', evt => {
+        evt.preventDefault()
+        sabaki.setUndoable(true, 'Undo Clean Markup')
+
+        let data = {
+            cross: ['MA'],
+            triangle: ['TR'],
+            square: ['SQ'],
+            circle: ['CR'],
+            line: ['LN'],
+            arrow: ['AR'],
+            label: ['LB'],
+            comments: ['C', 'N'],
+            annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
+            hotspots: ['HO']
+        }
+
+        let cleanWholeGame = $(evt.target).attr('class') == 'whole-game'
+        let properties = $('#cleanmarkup input[type="checkbox"]').get()
+            .filter(x => $(x).prop('checked'))
+            .map(x => data[$(x).attr('name').replace('cleanmarkup.', '')])
+            .reduce((sum, x) => [...sum, ...x], [])
+
+        view.setIsBusy(true)
+
+        setTimeout(() => {
+            if (!cleanWholeGame) {
+                let [tree, i] = sabaki.getCurrentTreePosition()
+
+                for (let prop of properties) {
+                    delete tree.nodes[i][prop]
+                }
+            } else {
+                let trees = gametree.getTreesRecursive(sabaki.getRootTree())
+
+                for (let tree of trees) {
+                    for (let i = 0; i < tree.nodes.length; i++) {
+                        for (let prop of properties) {
+                            delete tree.nodes[i][prop]
+                        }
+                    }
+                }
+            }
+
+            view.setIsBusy(false)
+            view.closeCleanMarkup()
+            sabaki.setCurrentTreePosition(...sabaki.getCurrentTreePosition(), true, true)
+        }, 100)
+    })
+
     $('#cleanmarkup button[type="reset"]').on('click', evt => {
         evt.preventDefault()
         view.closeCleanMarkup()
