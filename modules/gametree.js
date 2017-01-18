@@ -137,6 +137,16 @@ exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0
     return [matrix, dict]
 }
 
+exports.getTreesRecursive = function(tree) {
+    let result = [tree]
+
+    for (let subtree of tree.subtrees) {
+        result.push(...exports.getTreesRecursive(subtree))
+    }
+
+    return result
+}
+
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
