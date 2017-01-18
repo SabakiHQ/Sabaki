@@ -1370,6 +1370,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
+        
         let node = {}
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
@@ -1445,20 +1446,16 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
     // Enter scoring mode when two consecutive passes
 
     let enterScoring = false
+    let ptp = gametree.navigate(...sabaki.getCurrentTreePosition(), -1)
 
-    if (pass && createNode) {
-        let tp = sabaki.getCurrentTreePosition()
-        let ptp = gametree.navigate(...tp, -1)
+    if (pass && createNode && ptp) {
+        let prevNode = ptp[0].nodes[ptp[1]]
+        let prevColor = sign > 0 ? 'W' : 'B'
+        let prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
 
-        if (ptp) {
-            let prevNode = ptp[0].nodes[ptp[1]]
-            let prevColor = sign > 0 ? 'W' : 'B'
-            let prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
-
-            if (prevPass) {
-                enterScoring = true
-                view.setScoringMode(true)
-            }
+        if (prevPass) {
+            enterScoring = true
+            view.setScoringMode(true)
         }
     }
 
