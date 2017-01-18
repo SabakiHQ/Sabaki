@@ -1440,7 +1440,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     // Remove undo information
 
-    sabaki.setUndoable(false)
+    if (createNode) sabaki.setUndoable(false)
 
     // Enter scoring mode when two consecutive passes
 
