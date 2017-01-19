@@ -922,6 +922,11 @@ sabaki.prepareCleanMarkup = function() {
             hotspots: ['HO']
         }
 
+        for (let input of $('#cleanmarkup input[type="checkbox"]').get()) {
+            let $input = $(input)
+            setting.set($input.attr('name'), $input.prop('checked'))
+        }
+
         let cleanWholeGame = $(evt.target).attr('class') == 'whole-game'
         let properties = $('#cleanmarkup input[type="checkbox"]').get()
             .filter(x => $(x).prop('checked'))
@@ -1370,7 +1375,7 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     if (tree.current == null && tree.nodes.length - 1 == index) {
         // Append move
-        
+
         let node = {}
         node[color] = [sgf.vertex2point(vertex)]
         tree.nodes.push(node)
