@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to change the order of variations
+* Ability to remove certain node information from the whole game or current position
 
 **Changed**
 
