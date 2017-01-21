@@ -1459,7 +1459,8 @@ exports.openSortGamesMenu = function() {
             // Stable sort
 
             trees = trees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
-                let [x1, x2] = property == '-1' ? [i2, i1] : [t1, t2].map(t => t.nodes[0][property] || '')
+                let [x1, x2] = property == '-1' ? [i2, i1]
+                    : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
 
                 if (['BR', 'WR'].includes(property)) {
                     [x1, x2] = [x1, x2]
