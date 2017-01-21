@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 
 * Update to Electron v1.4.14
 
+**Fixed**
+
+* Use `\r\n` as linebreaks on Windows
+
 ## [Sabaki v0.19.3][v0.19.3] (2017-01-11)
 
 **Added**
