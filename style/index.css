@@ -860,8 +860,9 @@ header, #bar .bar {
         padding: 20px;
         text-align: right;
     }
-    #gamechooser button[name="add"] {
+    #gamechooser button.dropdown {
         float: left;
+        margin-right: 10px;
     }
     #gamechooser .games-list {
         position: absolute;

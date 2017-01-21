@@ -663,6 +663,7 @@ exports.prepareGameChooser = function() {
     // Buttons
 
     $('#gamechooser button[name="add"]').on('click', () => exports.openAddGameMenu())
+    $('#gamechooser button[name="sort"]').on('click', () => exports.openSortGamesMenu())
     $('#gamechooser button[name="close"]').on('click', () => exports.closeGameChooser())
 }
 
@@ -1422,9 +1423,29 @@ exports.openAddGameMenu = function() {
         }
     ]
 
-    let menu = Menu.buildFromTemplate(template)
-    let $button = $('#gamechooser').find('button[name="add"]')
-    menu.popup(
+    let $button = $('#gamechooser button[name="add"]')
+
+    Menu.buildFromTemplate(template).popup(
+        remote.getCurrentWindow(),
+        Math.round($button.offset().left),
+        Math.round($button.offset().top + $button.height())
+    )
+}
+
+exports.openSortGamesMenu = function() {
+    let template = [
+        {label: 'Black Player Name', property: 'PB'},
+        {label: 'White Player Name', property: 'PW'},
+        {label: 'Black Player Rank', property: 'BR'},
+        {label: 'White Player Rank', property: 'WR'},
+        {label: 'Game Name', property: 'GN'},
+        {label: 'Game Event', property: 'EV'},
+        {label: 'Date', property: 'DT'}
+    ]
+
+    let $button = $('#gamechooser button[name="sort"]')
+
+    Menu.buildFromTemplate(template).popup(
         remote.getCurrentWindow(),
         Math.round($button.offset().left),
         Math.round($button.offset().top + $button.height())
