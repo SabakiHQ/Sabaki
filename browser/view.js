@@ -1434,14 +1434,39 @@ exports.openAddGameMenu = function() {
 
 exports.openSortGamesMenu = function() {
     let template = [
-        {label: 'Black Player Name', property: 'PB'},
-        {label: 'White Player Name', property: 'PW'},
-        {label: 'Black Player Rank', property: 'BR'},
-        {label: 'White Player Rank', property: 'WR'},
-        {label: 'Game Name', property: 'GN'},
-        {label: 'Game Event', property: 'EV'},
-        {label: 'Date', property: 'DT'}
+        {label: '&Black Player', property: 'PB'},
+        {label: '&White Player', property: 'PW'},
+        {label: 'Black &Rank', property: 'BR'},
+        {label: 'White Ran&k', property: 'WR'},
+        {label: 'Game &Name', property: 'GN'},
+        {label: 'Game &Event', property: 'EV'},
+        {label: '&Date', property: 'DT'}
     ]
+
+    for (let item of template) {
+        let {property} = item
+        delete item.property
+
+        item.click = () => {
+            exports.setIsBusy(true)
+
+            let trees = sabaki.getGameTrees()
+            let current = trees[sabaki.getGameIndex()]
+
+            // Stable sort
+            
+            trees = trees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
+                let [x1, x2] = [t1, t2].map(t => t.nodes[0][property] || '')
+                let s = x1 < x2 ? -1 : +(x1 != x2)
+                return s != 0 ? s : i1 - i2
+            }).map(x => x[0])
+
+            sabaki.setGameTrees(trees)
+            sabaki.setGameIndex(trees.indexOf(current))
+            exports.showGameChooser()
+            exports.setIsBusy(false)
+        }
+    }
 
     let $button = $('#gamechooser button[name="sort"]')
 
