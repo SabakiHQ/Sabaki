@@ -1,5 +1,6 @@
 const {shell, remote, ipcRenderer} = require('electron')
 const {app, dialog, Menu} = remote
+const natsort = require('natsort')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -1436,11 +1437,13 @@ exports.openSortGamesMenu = function() {
     let template = [
         {label: '&Black Player', property: 'PB'},
         {label: '&White Player', property: 'PW'},
-        {label: 'Black &Rank', property: 'BR'},
+        {label: 'Black R&ank', property: 'BR'},
         {label: 'White Ran&k', property: 'WR'},
         {label: 'Game &Name', property: 'GN'},
         {label: 'Game &Event', property: 'EV'},
-        {label: '&Date', property: 'DT'}
+        {label: '&Date', property: 'DT'},
+        {type: 'separator'},
+        {label: '&Reverse', property: '-1'}
     ]
 
     for (let item of template) {
@@ -1454,10 +1457,26 @@ exports.openSortGamesMenu = function() {
             let current = trees[sabaki.getGameIndex()]
 
             // Stable sort
-            
+
             trees = trees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
-                let [x1, x2] = [t1, t2].map(t => t.nodes[0][property] || '')
+                let [x1, x2] = property == '-1' ? [i2, i1] : [t1, t2].map(t => t.nodes[0][property] || '')
+
+                if (['BR', 'WR'].includes(property)) {
+                    [x1, x2] = [x1, x2]
+                    .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
+                    .map(x => isNaN(x) ? -Infinity : x)
+                } else if (property == 'DT') {
+                    [x1, x2] = [x1, x2]
+                    .map(x => sgf.string2dates(x))
+                    .map(x => x ? sgf.dates2string(x.sort(helper.lexicalCompare)) : '')
+                }
+
                 let s = x1 < x2 ? -1 : +(x1 != x2)
+
+                if (['GN', 'EV'].includes(property)) {
+                    s = natsort({insensitive: true})(x1, x2)
+                }
+
                 return s != 0 ? s : i1 - i2
             }).map(x => x[0])
 
