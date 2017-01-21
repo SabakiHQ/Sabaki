@@ -599,6 +599,7 @@ class Board {
 
     generateAscii() {
         let result = []
+        let lb = helper.linebreak
 
         let getIndexFromVertex = ([x, y]) => {
             let rowLength = 4 + this.width * 2
@@ -609,21 +610,21 @@ class Board {
 
         result.push('+')
         for (let x = 0; x < this.width; x++) result.push('-', '-')
-        result.push('-', '+', '\n')
+        result.push('-', '+', lb)
 
         for (let y = 0; y < this.height; y++) {
             result.push('|')
             for (let x = 0; x < this.width; x++) result.push(' ', '.')
-            result.push(' ', '|', '\n')
+            result.push(' ', '|', lb)
         }
 
         result.push('+')
         for (let x = 0; x < this.width; x++) result.push('-', '-')
-        result.push('-', '+', '\n')
+        result.push('-', '+', lb)
 
         this.getHandicapPlacement(9).forEach(v => result[getIndexFromVertex(v)] = ',')
 
-        // Place markups & stones
+        // Place markers & stones
 
         let data = {
             plain: ['O', null, 'X'],
@@ -643,7 +644,7 @@ class Board {
                 if (!this.markups[v] || !(this.markups[v][0] in data)) {
                     if (s != 0) result[i] = data.plain[s + 1]
                 } else {
-                    let type = this.markups[v][0], label = this.markups[v][1]
+                    let [type, label] = this.markups[v]
 
                     if (type != 'label') {
                         result[i] = data[type][s + 1]
@@ -658,16 +659,11 @@ class Board {
 
         // Add lines & arrows
 
-        for (let line of this.lines) {
-            let start = line[0], end = line[1], arrow = line[2]
-            let type = arrow ? 'AR' : 'LN'
-
-            result += '{' + type + ' '
-                + this.vertex2coord(start) + ' '
-                + this.vertex2coord(end) + '}\n'
+        for (let [start, end, arrow] of this.lines) {
+            result += `{${arrow ? 'AR' : 'LN'} ${this.vertex2coord(start)} ${this.vertex2coord(end)}}${lb}`
         }
 
-        return ('\n' + result.trim()).split('\n').map(l => '$$ ' + l).join('\n')
+        return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
     }
 
     getHash() {
