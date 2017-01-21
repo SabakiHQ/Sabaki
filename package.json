@@ -16,6 +16,7 @@
   "dependencies": {
     "argv-split": "^1.0.0",
     "iconv-lite": "^0.4.13",
+    "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
     "sigma": "^1.0.3"
