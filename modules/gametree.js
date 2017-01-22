@@ -278,6 +278,7 @@ exports.matrixdict2graph = function(matrixdict) {
             let index = matrix[y][x][1]
             let id = tree.id + '-' + index
             let commentproperties = setting.get('sgf.comment_properties')
+
             let node = {
                 id: id,
                 x: x * gridSize,
@@ -332,6 +333,14 @@ exports.matrixdict2graph = function(matrixdict) {
             let prevId = prev[0].id + '-' + prev[1]
             let prevPos = dict[prevId]
 
+            let thickness = setting.get('graph.edge_inactive_size')
+            let edgeColor = setting.get('graph.edge_inactive_color')
+
+            if (currentTrack.includes(tree.id)) {
+                thickness = setting.get('graph.edge_size')
+                edgeColor = setting.get('graph.edge_color')
+            }
+
             if (prevPos[0] != x) {
                 graph.nodes.push({
                     id: id + '-h',
@@ -343,19 +352,25 @@ exports.matrixdict2graph = function(matrixdict) {
                 graph.edges.push({
                     id: id + '-e1',
                     source: id,
-                    target: id + '-h'
+                    target: id + '-h',
+                    size: thickness,
+                    color: edgeColor
                 })
 
                 graph.edges.push({
                     id: id + '-e2',
                     source: id + '-h',
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             } else {
                 graph.edges.push({
                     id: id + '-e1',
                     source: id,
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             }
         }

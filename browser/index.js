@@ -562,7 +562,7 @@ sabaki.prepareSidebar = function() {
         },
         settings: {
             defaultNodeColor: setting.get('graph.node_inactive_color'),
-            defaultEdgeColor: setting.get('graph.node_color'),
+            defaultEdgeColor: setting.get('graph.node_inactive_color'),
             defaultNodeBorderColor: 'rgba(255,255,255,.2)',
             edgeColor: 'default',
             borderSize: 2,
@@ -573,7 +573,7 @@ sabaki.prepareSidebar = function() {
         }
     })
 
-    let getTreePos = evt => [evt.data.node.data[0], evt.data.node.data[1]]
+    let getTreePos = evt => evt.data.node.data.slice(0, 2)
 
     s.bind('clickNode', function(evt) {
         sabaki.setCurrentTreePosition(...getTreePos(evt), true)

@@ -36,7 +36,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Sabaki offers to reload the opened file if it has been changed externally
+* Sabaki offers to reload an opened file if it has been changed externally
 * Ability to remove all variations apart from the active one
 
 **Changed**
