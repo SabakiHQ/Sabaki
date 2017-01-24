@@ -274,8 +274,7 @@ exports.matrixdict2graph = function(matrixdict) {
         for (let x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
-            let tree = matrix[y][x][0]
-            let index = matrix[y][x][1]
+            let [tree, index] = matrix[y][x]
             let id = tree.id + '-' + index
             let commentproperties = setting.get('sgf.comment_properties')
 
