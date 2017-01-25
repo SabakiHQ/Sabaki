@@ -98,14 +98,14 @@ sabaki.setGraphMatrixDict = function(matrixdict) {
     try {
         s = $('#graph').data('sigma')
         graph = gametree.matrixdict2graph(matrixdict)
-    } catch(e) { }
+    } catch (err) { }
 
     try {
         if (s && graph) {
             s.graph.clear()
             s.graph.read(graph)
         }
-    } catch(e) {
+    } catch (err) {
         sabaki.setGraphMatrixDict(matrixdict)
     }
 
@@ -1159,7 +1159,7 @@ sabaki.generateFileHash = function() {
     try {
         let content = fs.readFileSync(filename, 'utf8')
         return helper.hash(content)
-    } catch(err) {}
+    } catch (err) {}
 
     return null
 }
@@ -2124,7 +2124,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
             }, ignoreEncoding ? null : undefined).subtrees
 
             if (trees.length == 0) throw true
-        } catch(e) {
+        } catch (err) {
             view.showMessageBox('This file is unreadable.', 'warning')
             error = true
         }

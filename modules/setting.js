@@ -5,20 +5,20 @@ const path = require('path')
 try {
     let remote = require('electron').remote
     app = remote ? remote.app : require('electron').app
-} catch(err) {}
+} catch (err) {}
 
 let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
 
 if (app && path) {
     let directory = app.getPath('userData')
-    try { fs.mkdirSync(directory) } catch(err) {}
+    try { fs.mkdirSync(directory) } catch (err) {}
 
     exports.settingsPath = path.join(directory, 'settings.json')
     exports.stylesPath = path.join(directory, 'styles.css')
 
     try {
         fs.accessSync(exports.stylesPath, fs.R_OK)
-    } catch(e) {
+    } catch (err) {
         fs.writeFileSync(
             exports.stylesPath,
             '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */'
@@ -124,7 +124,7 @@ exports.load = function() {
 
     try {
         settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
-    } catch(e) {
+    } catch (err) {
         settings = {}
     }
 
