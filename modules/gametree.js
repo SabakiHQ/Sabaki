@@ -262,8 +262,7 @@ exports.onMainTrack = function(tree) {
     && exports.onMainTrack(tree.parent)
 }
 
-exports.matrixdict2graph = function(matrixdict) {
-    let [matrix, dict] = matrixdict
+exports.matrixdict2graph = function([matrix, dict]) {
     let graph = {nodes: [], edges: []}
     let currentTrack = []
     let notCurrentTrack = []
@@ -329,15 +328,19 @@ exports.matrixdict2graph = function(matrixdict) {
 
             let prev = exports.navigate(tree, index, -1)
             if (!prev) continue
+            
             let prevId = prev[0].id + '-' + prev[1]
             let prevPos = dict[prevId]
-
-            let thickness = setting.get('graph.edge_inactive_size')
-            let edgeColor = setting.get('graph.edge_inactive_color')
+            let thickness, edgeColor, addEdge
 
             if (currentTrack.includes(tree.id)) {
                 thickness = setting.get('graph.edge_size')
                 edgeColor = setting.get('graph.edge_color')
+                addEdge = e => graph.edges.push(e)
+            } else {
+                thickness = setting.get('graph.edge_inactive_size')
+                edgeColor = setting.get('graph.edge_inactive_color')
+                addEdge = e => graph.edges.unshift(e)
             }
 
             if (prevPos[0] != x) {
@@ -348,7 +351,7 @@ exports.matrixdict2graph = function(matrixdict) {
                     size: 0
                 })
 
-                graph.edges.push({
+                addEdge({
                     id: id + '-e1',
                     source: id,
                     target: id + '-h',
@@ -356,7 +359,7 @@ exports.matrixdict2graph = function(matrixdict) {
                     color: edgeColor
                 })
 
-                graph.edges.push({
+                addEdge({
                     id: id + '-e2',
                     source: id + '-h',
                     target: prevId,
@@ -364,7 +367,7 @@ exports.matrixdict2graph = function(matrixdict) {
                     color: edgeColor
                 })
             } else {
-                graph.edges.push({
+                addEdge({
                     id: id + '-e1',
                     source: id,
                     target: prevId,
