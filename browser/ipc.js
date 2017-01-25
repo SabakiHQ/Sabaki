@@ -23,7 +23,7 @@ let menudata = {
     estimate: () => view.setEstimatorMode(true),
 
     editmode: () => view.setEditMode(!view.getEditMode()),
-    clearmarkup: () => sabaki.clearMarkup(),
+    cleanmarkup: () => view.showCleanMarkup(),
     stonetool: () => sabaki.setSelectedTool('stone'),
     crosstool: () => sabaki.setSelectedTool('cross'),
     triangletool: () => sabaki.setSelectedTool('triangle'),
@@ -36,6 +36,8 @@ let menudata = {
     cutvariation: () => sabaki.cutVariation(...sabaki.getCurrentTreePosition()),
     pastevariation: () => sabaki.pasteVariation(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
+    shiftleft: () => sabaki.shiftVariation(-1, ...sabaki.getCurrentTreePosition()),
+    shiftright: () => sabaki.shiftVariation(1, ...sabaki.getCurrentTreePosition()),
     flatten: () => sabaki.flattenVariation(...sabaki.getCurrentTreePosition()),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
     removeothervariations: () => sabaki.removeOtherVariations(...sabaki.getCurrentTreePosition()),

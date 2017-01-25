@@ -16,6 +16,7 @@
   "dependencies": {
     "argv-split": "^1.0.0",
     "iconv-lite": "^0.4.13",
+    "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
     "sigma": "^1.0.3"
@@ -27,8 +28,8 @@
   },
   "scripts": {
     "test": "mocha",
-    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.13 --out=./bin --overwrite --icon=./data/icon.ico --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --win32metadata.CompanyName=\"Yichuan Shen\" --win32metadata.FileDescription=\"Sabaki\" --win32metadata.OriginalFilename=\"sabaki.exe\" --win32metadata.ProductName=\"Sabaki\" --win32metadata.InternalName=\"sabaki.exe\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
-    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.13 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
-    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.13 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --icon=./data/icon.icns --app-category-type=public.app-category.games --extend-info=./data/extra-info.plist --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar"
+    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.15 --out=./bin --overwrite --icon=./data/icon.ico --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --win32metadata.CompanyName=\"Yichuan Shen\" --win32metadata.FileDescription=\"Sabaki\" --win32metadata.OriginalFilename=\"sabaki.exe\" --win32metadata.ProductName=\"Sabaki\" --win32metadata.InternalName=\"sabaki.exe\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
+    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.15 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
+    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.19.3 --build-version=0.19.3 --version=1.4.15 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --icon=./data/icon.icns --app-category-type=public.app-category.games --extend-info=./data/extra-info.plist --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar"
   }
 }

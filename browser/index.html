@@ -379,8 +379,47 @@
 
     <p>
         <button type="button" class="dropdown" name="add">Add</button>
+        <button type="button" class="dropdown" name="sort">Sort By</button>
         <button type="button" name="close">Close</button>
     </p>
+</section>
+
+<section id="cleanmarkup" class="drawer">
+    <h2>Clean Markup</h2>
+
+    <form>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.cross" />
+                Cross markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.triangle" />
+                Triangle markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.square" />
+                Square markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.circle" />
+                Circle markers</label></li>
+        </ul>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.line" />
+                Line markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.arrow" />
+                Arrow markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.label" />
+                Label markers</label></li>
+        </ul>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.comments" />
+                Comments</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.annotations" />
+                Annotations</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.hotspots" />
+                Hotspots</label></li>
+        </ul>
+        <p>
+            <button class="whole-game">Remove from whole game</button>
+            <button class="current-node">Remove from current position</button>
+            <button type="reset">Cancel</button>
+        </p>
+    </form>
 </section>
 
 <section id="input-box">

@@ -102,8 +102,8 @@
                 "action": "editmode"
             },
             {
-                "label": "Clear &Markup",
-                "action": "clearmarkup"
+                "label": "Clean &Markup…",
+                "action": "cleanmarkup"
             },
             {
                 "label": "&Select Tool",
@@ -168,6 +168,15 @@
                 "label": "Make Main &Variation",
                 "action": "makemainvariation"
             },
+            {
+                "label": "Shift &Left",
+                "action": "shiftleft"
+            },
+            {
+                "label": "Shift Ri&ght",
+                "action": "shiftright"
+            },
+            {"type": "separator"},
             {
                 "label": "&Flatten",
                 "action": "flatten"

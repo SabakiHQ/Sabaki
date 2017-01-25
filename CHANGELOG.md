@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Ability to change the order of variations
+* Ability to remove certain node information from the whole game or current position
+
+**Changed**
+
+* Update to Electron v1.4.15
+
+**Fixed**
+
+* Use `\r\n` as linebreaks on Windows
+
 ## [Sabaki v0.19.3][v0.19.3] (2017-01-11)
 
 **Added**
@@ -21,7 +36,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Sabaki offers to reload the opened file if it has been changed externally
+* Sabaki offers to reload an opened file if it has been changed externally
 * Ability to remove all variations apart from the active one
 
 **Changed**

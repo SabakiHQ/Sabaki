@@ -649,6 +649,9 @@ header, #bar .bar {
         bottom: 0;
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
+    .drawer h2 {
+        font-weight: lighter;
+    }
     .drawer input, .drawer select, button {
         background: #111;
         color: #eee;
@@ -660,7 +663,13 @@ header, #bar .bar {
     button:active {
         position: relative;
         top: 2px;
+    }
+    .drawer input[type="checkbox"]:focus { background: #111; }
+    .drawer input[type="checkbox"]::before {
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
 }
+
 
 #info section {
         text-align: center;
@@ -710,8 +719,10 @@ header, #bar .bar {
         bottom: 20px;
         margin: 0;
     }
-    #info ul input[name="komi"], #info ul input[name^="size-"] {
-        width: 45px;
+    #info ul input[name="komi"],
+    #info ul input[name^="size-"] { width: 45px; }
+    @media screen and (max-width: 600px) {
+        #info ul input[name^="size-"] { width: 40px; }
     }
     #info span.size-swap {
         padding: 3px;
@@ -728,6 +739,9 @@ header, #bar .bar {
 #score {
         background: rgba(251, 245, 147, .9);
         color: #333;
+    }
+    #score h2 {
+        font-weight: normal;
     }
     #score .tabs {
         position: absolute;
@@ -791,10 +805,11 @@ header, #bar .bar {
         height: 400px;
     }
     #preferences.show { bottom: 0; }
-    #preferences input[type="checkbox"]:focus { background: #111; }
     #preferences form ul { margin: 0 0 1.5em; }
-    #preferences form ul li { margin: 0 0 7px; }
-    #preferences form > p:last-child {
+    #preferences form ul li,
+    #cleanmarkup form ul li { margin: 0 0 7px; }
+    #preferences form > p:last-child,
+    #cleanmarkup form > p:last-child {
         position: absolute;
         right: 20px;
         bottom: 14px;
@@ -806,7 +821,6 @@ header, #bar .bar {
         height: 315px;
         padding-top: 1.5em;
         column-count: 2;
-        -webkit-column-count: 2;
         -moz-column-count: 2;
     }
     #preferences form.general > div.general,
@@ -815,10 +829,15 @@ header, #bar .bar {
     }
     #preferences .engines-list {
         overflow: auto;
+}
+
+#cleanmarkup form {
+        overflow: hidden;
     }
-    #preferences input[type="checkbox"]::before {
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
+    #cleanmarkup form ul {
+        float: left;
+        padding-top: 1.5em;
+        width: 33%;
 }
 
 #gamechooser {
@@ -841,8 +860,9 @@ header, #bar .bar {
         padding: 20px;
         text-align: right;
     }
-    #gamechooser button[name="add"] {
+    #gamechooser button.dropdown {
         float: left;
+        margin-right: 10px;
     }
     #gamechooser .games-list {
         position: absolute;
@@ -857,7 +877,6 @@ header, #bar .bar {
     }
     #gamechooser h2 {
         padding: 20px;
-        font-weight: lighter;
     }
     #gamechooser ol {
         list-style: none;
