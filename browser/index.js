@@ -2376,8 +2376,6 @@ sabaki.makeMainVariation = function(tree, index) {
     sabaki.setUndoable(true, 'Restore Main Variation')
     view.closeDrawers()
 
-    let root = sabaki.getRootTree()
-    let level = gametree.getLevel(tree, index)
     let t = tree
 
     while (t.parent != null) {
@@ -2386,6 +2384,16 @@ sabaki.makeMainVariation = function(tree, index) {
         t.parent.current = 0
 
         t = t.parent
+    }
+
+    t = tree
+
+    while (t.current != null) {
+        let [x] = t.subtrees.splice(t.current, 1)
+        t.subtrees.unshift(x)
+        t.current = 0
+
+        t = x
     }
 
     sabaki.setCurrentTreePosition(tree, index, true, true)
