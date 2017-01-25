@@ -328,19 +328,18 @@ exports.matrixdict2graph = function([matrix, dict]) {
 
             let prev = exports.navigate(tree, index, -1)
             if (!prev) continue
-            
+
             let prevId = prev[0].id + '-' + prev[1]
             let prevPos = dict[prevId]
-            let thickness, edgeColor, addEdge
+
+            let thickness = setting.get('graph.edge_inactive_size')
+            let edgeColor = setting.get('graph.edge_inactive_color')
+            let method = 'unshift'
 
             if (currentTrack.includes(tree.id)) {
                 thickness = setting.get('graph.edge_size')
                 edgeColor = setting.get('graph.edge_color')
-                addEdge = e => graph.edges.push(e)
-            } else {
-                thickness = setting.get('graph.edge_inactive_size')
-                edgeColor = setting.get('graph.edge_inactive_color')
-                addEdge = e => graph.edges.unshift(e)
+                method = 'push'
             }
 
             if (prevPos[0] != x) {
@@ -351,7 +350,7 @@ exports.matrixdict2graph = function([matrix, dict]) {
                     size: 0
                 })
 
-                addEdge({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
                     target: id + '-h',
@@ -359,7 +358,7 @@ exports.matrixdict2graph = function([matrix, dict]) {
                     color: edgeColor
                 })
 
-                addEdge({
+                graph.edges[method]({
                     id: id + '-e2',
                     source: id + '-h',
                     target: prevId,
@@ -367,7 +366,7 @@ exports.matrixdict2graph = function([matrix, dict]) {
                     color: edgeColor
                 })
             } else {
-                addEdge({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
                     target: prevId,
