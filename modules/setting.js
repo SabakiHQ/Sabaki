@@ -21,7 +21,7 @@ if (app && path) {
     } catch (err) {
         fs.writeFileSync(
             exports.stylesPath,
-            '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */'
+            `/* This stylesheet is loaded when ${app.getName()} starts up. */`
         )
     }
 }
@@ -175,11 +175,7 @@ exports.set = function(key, value) {
 }
 
 exports.addEngine = function(name, path, args) {
-    engines.push({
-        name: name,
-        path: path,
-        args: args
-    })
+    engines.push({name, path, args})
     engines.sort(namesort)
     return exports
 }
