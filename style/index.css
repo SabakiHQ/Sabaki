@@ -862,7 +862,7 @@ header, #bar .bar {
     }
     #gamechooser button.dropdown {
         float: left;
-        margin-right: 10px;
+        margin-right: 5px;
     }
     #gamechooser .games-list {
         position: absolute;
