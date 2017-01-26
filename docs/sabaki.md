@@ -1,6 +1,6 @@
 # Sabaki Object
 
-`sabaki` is a global object, letting users to access the Sabaki API.
+`sabaki` is a global object, giving users access to the Sabaki API.
 
 ## Events
 

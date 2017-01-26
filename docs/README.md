@@ -4,6 +4,8 @@ Please make sure that you use the documents that match your Sabaki version. To v
 
 Note that the Sabaki API is in an early stage of development and is subject to change at will. Sabaki will follow semantic versioning when it reaches version 1.0.
 
+This documentation is incomplete and a work in progress.
+
 ## API References
 
 * [Sabaki Object](sabaki.md)
