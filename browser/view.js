@@ -3,6 +3,7 @@ const remote = {getCurrentWindow: () => null}
 const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
 const dialog = {showMessageBox: () => {}}
 const Menu = require('../modules/menu')
+const natsort = require('natsort')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
