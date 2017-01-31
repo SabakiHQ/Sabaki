@@ -825,7 +825,7 @@ header, #bar .bar {
         width: 50%;
         float: left;
     }
-    #preferences form > div.general ul:not(:last-child) {
+    #preferences form > div.general ul:not(:nth-child(even)) {
         width: calc(50% - 20px);
         margin-right: 20px;
     }
@@ -836,6 +836,12 @@ header, #bar .bar {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+    }
+    #preferences form > div.general div {
+        clear: both;
+    }
+    #preferences form > div.general label select {
+        margin-left: 10px;
     }
     #preferences form.general > div.general,
     #preferences form.engines > div.engines {
