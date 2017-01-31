@@ -1689,6 +1689,11 @@ exports.showPreferences = function(tab = 'general') {
     $('#preferences input[type="checkbox"]').get()
         .forEach(el => el.checked = !!setting.get(el.name))
 
+    let gridSize = setting.get('graph.grid_size')
+    let type = gridSize < 22 ? 'compact' : gridSize > 22 ? 'big' : 'spacious'
+
+    $(`#preferences select[name="graph.layout"] option[value="${type}"]`).prop('selected', true)
+
     sabaki.loadEngines()
 
     // Show preferences

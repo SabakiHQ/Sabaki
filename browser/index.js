@@ -2043,6 +2043,15 @@ sabaki.commitPreferences = function() {
     view.setFuzzyStonePlacement(setting.get('view.fuzzy_stone_placement'))
     view.setAnimatedStonePlacement(setting.get('view.animated_stone_placement'))
 
+    let graphLayout = $('#preferences select[name="graph.layout"]').val()
+    let data = {compact: [16, 4], spacious: [22, 4], big: [26, 6]}
+    let [gridSize, nodeSize] = data[graphLayout]
+
+    setting.set('graph.grid_size', gridSize)
+    setting.set('graph.node_size', nodeSize)
+
+    sabaki.updateSidebar(true, true)
+
     // Save engines
 
     setting.clearEngines()
