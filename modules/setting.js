@@ -16,6 +16,16 @@ let defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
+    'cleanmarkup.cross': true,
+    'cleanmarkup.triangle': true,
+    'cleanmarkup.square': true,
+    'cleanmarkup.circle': true,
+    'cleanmarkup.line': true,
+    'cleanmarkup.arrow': true,
+    'cleanmarkup.label': true,
+    'cleanmarkup.comments': false,
+    'cleanmarkup.annotations': false,
+    'cleanmarkup.hotspots': false,
     'comments.show_move_interpretation': true,
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
@@ -44,12 +54,16 @@ let defaults = {
     'graph.collapse_min_depth': 1,
     'graph.collapse_tokens_count': 10000,
     'graph.delay': 100,
-    'graph.grid_size': 30,
+    'graph.edge_color': '#ccc',
+    'graph.edge_inactive_color': '#777',
+    'graph.edge_size': 2,
+    'graph.edge_inactive_size': 1,
+    'graph.grid_size': 22,
     'graph.node_active_color': '#f76047',
     'graph.node_bookmark_color': '#c678dd',
     'graph.node_collapsed_color': '#333',
-    'graph.node_inactive_color': '#777',
     'graph.node_color': '#eee',
+    'graph.node_inactive_color': '#777',
     'graph.node_comment_color': '#6bb1ff',
     'graph.node_size': 5,
     'gtp.attach_delay': 300,
@@ -58,6 +72,7 @@ let defaults = {
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
+    'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
@@ -103,11 +118,7 @@ exports.set = function(key, value) {
 }
 
 exports.addEngine = function(name, path, args) {
-    engines.push({
-        name: name,
-        path: path,
-        args: args
-    })
+    engines.push({name, path, args})
     engines.sort(namesort)
     return exports
 }

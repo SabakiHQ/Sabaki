@@ -236,11 +236,11 @@ exports.stringify = function(tree) {
         output += '\n'
     }
 
-    for (let i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + exports.stringify(tree.subtrees[i]) + ')'
+    for (let subtree of tree.subtrees) {
+        output += '(' + exports.stringify(subtree) + ')'
     }
 
-    return output
+    return output.replace(/\n/g, helper.linebreak)
 }
 
 exports.escapeString = function(input) {
