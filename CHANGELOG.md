@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Sabaki uses `\r\n` as linebreaks on Windows
+* Fix 'Download' button when an update is available
 
 ## [Sabaki v0.19.3][v0.19.3] (2017-01-11)
 
