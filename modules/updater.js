@@ -4,7 +4,8 @@ const https = require('https')
 const url = require('url')
 
 exports.check = function(repo, callback) {
-    let options = url.parse(`https://github.com/${repo}/releases/latest`)
+    let address = `https://github.com/${repo}/releases/latest`
+    let options = url.parse(address)
     options.ciphers = 'AES128-SHA256'
 
     // Check internet connection first
@@ -19,7 +20,7 @@ exports.check = function(repo, callback) {
                 content += chunk
             }).on('end', () => {
                 let hasUpdates = content.trim() != '' && !content.includes(`/tag/v${app.getVersion()}`)
-                callback(null, hasUpdates, url)
+                callback(null, hasUpdates, address)
             })
         }).on('error', err => {
             callback(err)
