@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 * Ability to change the order of variations
 * Ability to remove certain node information from the whole game or current position
 * Ability to sort games in a game container
+* Add compact and big style game tree
 
 **Changed**
 
