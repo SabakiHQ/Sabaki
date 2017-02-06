@@ -70,11 +70,12 @@ class Board {
     }
 
     getSymmetries(vertex) {
-        let mx = this.width - 1
-        let my = this.height - 1
         if (!this.hasVertex(vertex)) return []
 
-        return helper.getSymmetries(vertex).map(([x, y]) => [(x % mx + mx) % mx, (y % my + my) % my])
+        let [mx, my] = [this.width - 1, this.height - 1]
+        let mod = (x, m) => (x % m + m) % m
+
+        return helper.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
     }
 
     getNeighbors(vertex, ignoreBoard = false) {
