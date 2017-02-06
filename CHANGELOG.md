@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix GitHub and 'Report Issue' menu items not working
+
 ## [Sabaki v0.20.0][v0.20.0] (2017-02-01)
 
 **Added**
