@@ -137,6 +137,16 @@ exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0
     return [matrix, dict]
 }
 
+exports.getTreesRecursive = function(tree) {
+    let result = [tree]
+
+    for (let subtree of tree.subtrees) {
+        result.push(...exports.getTreesRecursive(subtree))
+    }
+
+    return result
+}
+
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
@@ -252,10 +262,8 @@ exports.onMainTrack = function(tree) {
     && exports.onMainTrack(tree.parent)
 }
 
-exports.matrixdict2graph = function(matrixdict) {
-    let matrix = matrixdict[0]
-    let dict = matrixdict[1]
-    let graph = { nodes: [], edges: [] }
+exports.matrixdict2graph = function([matrix, dict]) {
+    let graph = {nodes: [], edges: []}
     let currentTrack = []
     let notCurrentTrack = []
     let width = Math.max(...matrix.map(x => x.length))
@@ -265,10 +273,10 @@ exports.matrixdict2graph = function(matrixdict) {
         for (let x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
-            let tree = matrix[y][x][0]
-            let index = matrix[y][x][1]
+            let [tree, index] = matrix[y][x]
             let id = tree.id + '-' + index
             let commentproperties = setting.get('sgf.comment_properties')
+
             let node = {
                 id: id,
                 x: x * gridSize,
@@ -320,8 +328,19 @@ exports.matrixdict2graph = function(matrixdict) {
 
             let prev = exports.navigate(tree, index, -1)
             if (!prev) continue
+
             let prevId = prev[0].id + '-' + prev[1]
             let prevPos = dict[prevId]
+
+            let thickness = setting.get('graph.edge_inactive_size')
+            let edgeColor = setting.get('graph.edge_inactive_color')
+            let method = 'unshift'
+
+            if (currentTrack.includes(tree.id)) {
+                thickness = setting.get('graph.edge_size')
+                edgeColor = setting.get('graph.edge_color')
+                method = 'push'
+            }
 
             if (prevPos[0] != x) {
                 graph.nodes.push({
@@ -331,22 +350,28 @@ exports.matrixdict2graph = function(matrixdict) {
                     size: 0
                 })
 
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
-                    target: id + '-h'
+                    target: id + '-h',
+                    size: thickness,
+                    color: edgeColor
                 })
 
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e2',
                     source: id + '-h',
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             } else {
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             }
         }

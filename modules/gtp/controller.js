@@ -49,7 +49,7 @@ class Controller extends EventEmitter {
 
         try {
             this.process.stdin.write(command.toString() + '\n')
-        } catch(e) {
+        } catch (err) {
             this.emit(
                 'response-' + command.internalId,
                 new gtp.Response(command.id, 'connection error', true, true),

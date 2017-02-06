@@ -1,5 +1,6 @@
 const {shell, remote, ipcRenderer} = require('electron')
 const {app, dialog, Menu} = remote
+const natsort = require('natsort')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -663,6 +664,7 @@ exports.prepareGameChooser = function() {
     // Buttons
 
     $('#gamechooser button[name="add"]').on('click', () => exports.openAddGameMenu())
+    $('#gamechooser button[name="sort"]').on('click', () => exports.openSortGamesMenu())
     $('#gamechooser button[name="close"]').on('click', () => exports.closeGameChooser())
 }
 
@@ -1307,6 +1309,15 @@ exports.openNodeMenu = function(tree, index, position) {
             click: () => sabaki.makeMainVariation(tree, index)
         },
         {
+            label: "Shift &Left",
+            click: () => sabaki.shiftVariation(-1, tree, index)
+        },
+        {
+            label: "Shift Ri&ght",
+            click: () => sabaki.shiftVariation(1, tree, index)
+        },
+        {type: 'separator'},
+        {
             label: '&Flatten',
             click: () => sabaki.flattenVariation(tree, index)
         },
@@ -1413,9 +1424,73 @@ exports.openAddGameMenu = function() {
         }
     ]
 
-    let menu = Menu.buildFromTemplate(template)
-    let $button = $('#gamechooser').find('button[name="add"]')
-    menu.popup(
+    let $button = $('#gamechooser button[name="add"]')
+
+    Menu.buildFromTemplate(template).popup(
+        remote.getCurrentWindow(),
+        Math.round($button.offset().left),
+        Math.round($button.offset().top + $button.height())
+    )
+}
+
+exports.openSortGamesMenu = function() {
+    let template = [
+        {label: '&Black Player', property: 'PB'},
+        {label: '&White Player', property: 'PW'},
+        {label: 'Black R&ank', property: 'BR'},
+        {label: 'White Ran&k', property: 'WR'},
+        {label: 'Game &Name', property: 'GN'},
+        {label: 'Game &Event', property: 'EV'},
+        {label: '&Date', property: 'DT'},
+        {type: 'separator'},
+        {label: '&Reverse', property: '-1'}
+    ]
+
+    for (let item of template) {
+        let {property} = item
+        delete item.property
+
+        item.click = () => {
+            exports.setIsBusy(true)
+
+            let trees = sabaki.getGameTrees()
+            let current = trees[sabaki.getGameIndex()]
+
+            // Stable sort
+
+            trees = trees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
+                let [x1, x2] = property == '-1' ? [i2, i1]
+                    : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
+
+                if (['BR', 'WR'].includes(property)) {
+                    [x1, x2] = [x1, x2]
+                    .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
+                    .map(x => isNaN(x) ? -Infinity : x)
+                } else if (property == 'DT') {
+                    [x1, x2] = [x1, x2]
+                    .map(x => sgf.string2dates(x))
+                    .map(x => x ? sgf.dates2string(x.sort(helper.lexicalCompare)) : '')
+                }
+
+                let s = x1 < x2 ? -1 : +(x1 != x2)
+
+                if (['GN', 'EV'].includes(property)) {
+                    s = natsort({insensitive: true})(x1, x2)
+                }
+
+                return s != 0 ? s : i1 - i2
+            }).map(x => x[0])
+
+            sabaki.setGameTrees(trees)
+            sabaki.setGameIndex(trees.indexOf(current))
+            exports.showGameChooser()
+            exports.setIsBusy(false)
+        }
+    }
+
+    let $button = $('#gamechooser button[name="sort"]')
+
+    Menu.buildFromTemplate(template).popup(
         remote.getCurrentWindow(),
         Math.round($button.offset().left),
         Math.round($button.offset().top + $button.height())
@@ -1614,6 +1689,11 @@ exports.showPreferences = function(tab = 'general') {
     $('#preferences input[type="checkbox"]').get()
         .forEach(el => el.checked = !!setting.get(el.name))
 
+    let gridSize = setting.get('graph.grid_size')
+    let type = gridSize < 22 ? 'compact' : gridSize > 22 ? 'big' : 'spacious'
+
+    $(`#preferences select[name="graph.layout"] option[value="${type}"]`).prop('selected', true)
+
     sabaki.loadEngines()
 
     // Show preferences
@@ -1730,6 +1810,19 @@ exports.closeGameChooser = function() {
     document.activeElement.blur()
 }
 
+exports.showCleanMarkup = function() {
+    $('#cleanmarkup input[type="checkbox"]').get()
+        .forEach(el => el.checked = !!setting.get(el.name))
+
+    exports.closeDrawers()
+    $('#cleanmarkup').addClass('show')
+}
+
+exports.closeCleanMarkup = function() {
+    $('#cleanmarkup').removeClass('show')
+    document.activeElement.blur()
+}
+
 exports.closeDrawers = function() {
     let drawersOpen = $('.drawer.show, #input-box.show').length > 0
     let modeOpen = $('#bar .bar').get()
@@ -1741,6 +1834,7 @@ exports.closeDrawers = function() {
     exports.closeScore()
     exports.closePreferences()
     exports.closeGameChooser()
+    exports.closeCleanMarkup()
     exports.setEditMode(false)
     exports.setScoringMode(false)
     exports.setEstimatorMode(false)
