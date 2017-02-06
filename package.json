@@ -31,6 +31,10 @@
         "ext": "sgf",
         "name": "SGF"
       }
+    ],
+    "files": [
+      "**/*",
+      "!(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)"
     ]
   },
   "bugs": {
