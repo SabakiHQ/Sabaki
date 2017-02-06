@@ -17,7 +17,7 @@
     "linux": {
       "category": "Game",
       "packageCategory": "games",
-      "target": ["appImage", "deb", "rpm", "pacman", "tar.gz"]
+      "target": ["deb", "rpm", "pacman", "tar.gz"]
     },
     "mac": {
       "category": "public.app-category.board-games"
