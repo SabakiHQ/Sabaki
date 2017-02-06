@@ -57,6 +57,8 @@
   "scripts": {
     "test": "mocha",
     "pack": "build --dir",
-    "dist": "build"
+    "dist:macos": "build -m",
+    "dist:linux": "build -l",
+    "dist:win": "build -w"
   }
 }
