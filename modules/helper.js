@@ -61,10 +61,8 @@ exports.lexicalCompare = function(a, b) {
 }
 
 exports.getSymmetries = function(tuple) {
-    let reversed = [tuple[1], tuple[0]]
-    let s = ([x, y]) => [[-x, y], [x, -y], [-x, -y]]
-
-    return [tuple, reversed, ...s(tuple), ...s(reversed)]
+    let f = ([x, y]) => [[x, y], [-x, y], [x, -y], [-x, -y]]
+    return [...f(tuple), ...f(tuple.slice().reverse())]
 }
 
 exports.normalizeEndings = function(input) {
