@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Fix GitHub and 'Report Issue' menu items not working
 * Fix move interpretation stuck at '3-3 point' sometimes
+* Fix showing reload file warning if the file has been removed
 
 ## [Sabaki v0.20.0][v0.20.0] (2017-02-01)
 
