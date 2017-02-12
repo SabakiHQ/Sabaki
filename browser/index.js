@@ -1189,7 +1189,7 @@ sabaki.askForSave = function() {
 sabaki.askForReload = function() {
     let hash = sabaki.generateFileHash()
 
-    if (hash != sabaki.getFileHash()) {
+    if (hash && hash != sabaki.getFileHash()) {
         let answer = view.showMessageBox([
             `This file has been changed outside of ${app.getName()}.`,
             'Do you want to reload the file? Your changes will be lost.'

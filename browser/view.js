@@ -499,12 +499,9 @@ exports.getCurrentMoveInterpretation = function() {
         if ('size' in shape && (board.width != board.height || board.width != shape.size))
             continue
 
-        if ('type' in shape && shape.type == 'corner') {
-            let result = boardmatcher.cornerMatch(shape.points, board)
-            if (result == null) continue
-        }
+        let corner = 'type' in shape && shape.type == 'corner'
 
-        if (boardmatcher.shapeMatch(shape, board, vertex))
+        if (boardmatcher.shapeMatch(shape, board, vertex, corner))
             return shape.name
     }
 

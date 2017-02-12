@@ -1,5 +1,6 @@
 const {app, shell, dialog, ipcMain} = require('electron')
 const {BrowserWindow, Menu} = require('electron')
+const fs = require('fs')
 const setting = require('./modules/setting')
 const updater = require('./modules/updater')
 
@@ -46,7 +47,7 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    let template = JSON.parse(JSON.stringify(require('./menu.json')))
+    let template = JSON.parse(fs.readFileSync(`${__dirname}/menu.json`))
 
     // Create app menu for OS X
 
