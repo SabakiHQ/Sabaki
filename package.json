@@ -34,7 +34,12 @@
     ],
     "files": [
       "**/*",
-      "!(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)"
+      "!browser/build.js",
+      "!**/{.c9,scss,docs}${/*}",
+      "!node_modules/moment${/*}",
+      "!node_modules/{octicons,sigma}/{plugins,lib,src,build/font}${/*}",
+      "!node_modules/sigma/build/plugins/*.js",
+      "node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"
     ]
   },
   "bugs": {
