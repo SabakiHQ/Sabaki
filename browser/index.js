@@ -914,6 +914,17 @@ sabaki.prepareCleanMarkup = function() {
     })
 }
 
+sabaki.prepareClipboard = function() {
+    document.addEventListener("copy", function(e) {
+      e.clipboardData.setData("text/plain", sabaki.saveFileToSgf());
+      e.preventDefault();
+    });
+    document.addEventListener("paste", function(e) {
+      sabaki.loadFileFromSgf(e.clipboardData.getData("text/plain"), false, true);
+      e.preventDefault();
+    });
+}
+
 /**
  * Engine Methods
  */
@@ -1950,7 +1961,7 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
 }
 
 sabaki.loadFileFromClipboard = function() {
-    sabaki.loadFileFromSgf(clipboard.readText(), false, true)
+    document.execCommand("paste");
 }
 
 sabaki.saveFile = function(filename) {
@@ -1982,6 +1993,10 @@ sabaki.saveFileToSgf = function() {
     }
 
     return text
+}
+
+sabaki.saveFileToClipboard = function() {
+    document.execCommand("copy");
 }
 
 sabaki.goStep = function(step) {
@@ -2325,6 +2340,7 @@ $(document).ready(function() {
     sabaki.prepareGameInfo()
     sabaki.preparePreferences()
     sabaki.prepareCleanMarkup()
+    sabaki.prepareClipboard()
     sabaki.newFile()
 
     view.prepareResizers()

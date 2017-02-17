@@ -1110,6 +1110,14 @@ exports.openHeaderMenu = function() {
             label: 'Download SGF',
             click: () => sabaki.saveFile()
         },
+        {
+            label: 'Save to Clipboard',
+            click: () => sabaki.saveFileToClipboard()
+        },
+        {
+            label: 'Load from Clipboard',
+            click: () => sabaki.loadFileFromClipboard()
+        },
         { type: 'separator' },
         {
             label: 'Show Coordinates',
