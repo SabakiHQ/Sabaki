@@ -21,7 +21,7 @@ function getChain(board, vertex, result = null, sign = null) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let v = neighbors[i]
-        if (board.get(v) != sign || result.some(equals(v))) continue
+        if (board.get(v) !== sign || result.some(equals(v))) continue
 
         result.push(v)
         getChain(board, v, result, sign)
@@ -86,7 +86,7 @@ function makePseudoMove(board, sign, vertex) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        if (neighborSigns[i] != -sign || hasNLiberties(board, n, 1))
+        if (board.get(n) !== -sign || hasNLiberties(board, n, 1))
             continue
 
         let chain = getChain(board, n)
@@ -106,7 +106,7 @@ function fixHoles(board) {
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
-            if (board.get(vertex) != 0) continue
+            if (board.get(vertex) !== 0) continue
 
             let neighbors = getNeighbors(board, vertex)
             let neighborSigns = neighbors.map(n => board.get(n))
@@ -115,7 +115,7 @@ function fixHoles(board) {
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
 
-                if (neighborSigns[i] != neighborSigns[0]) {
+                if (neighborSigns[i] !== neighborSigns[0]) {
                     fix = false
                     break
                 }
@@ -169,7 +169,7 @@ exports.getFloatingStones = function(board) {
     for (let i = 0; i < board.width; i++) {
         for (let j = 0; j < board.height; j++) {
             let vertex = [i, j]
-            if (map[vertex] != 0 || vertex in done) continue
+            if (map[vertex] !== 0 || vertex in done) continue
 
             let posArea = board.getConnectedComponent(vertex, [0, -1])
             let negArea = board.getConnectedComponent(vertex, [0, 1])
@@ -215,7 +215,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
-            if (board.get([x, y]) != 0) continue
+            if (board.get([x, y]) !== 0) continue
             freeVertices.push([x, y])
         }
     }
@@ -235,7 +235,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 
             freeVertices.splice(randomIndex, 1)
 
-            if (freedVertices != null) {
+            if (freedVertices !== null) {
                 freeVertices.push(...freedVertices)
 
                 finished[-sign] = false
