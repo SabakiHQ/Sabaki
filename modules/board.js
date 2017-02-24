@@ -302,19 +302,8 @@ class Board {
         let getVertex = v => {
             if (this.hasVertex(v)) return v
 
-            let [x, y] = v
-
-            if (x < 0)
-                x = -x - 1
-            else if (x >= this.width)
-                x = 2 * this.width - x - 1
-
-            if (y < 0)
-                y = -y - 1
-            else if (y >= this.height)
-                y = 2 * this.height - y - 1
-
-            return [x, y]
+            let size = [this.width, this.height]
+            return v.map((z, i) => z < 0 ? -z - 1 : z >= size[i] ? 2 * size[i] - z - 1 : z)
         }
 
         let castInfluence = (chain, distance) => {
@@ -322,10 +311,9 @@ class Board {
             let visited = {}
 
             while (stack.length > 0) {
-                let tuple = stack.shift()
-                let v = tuple[0], d = tuple[1]
-
+                let [v, d] = stack.shift()
                 if (v in visited) continue
+
                 visited[v] = true
                 map[getVertex(v)] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
