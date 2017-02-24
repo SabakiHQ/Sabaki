@@ -105,7 +105,7 @@
             <span id="player_1"><span class="captures">0</span> <span class="name">Black</span></span>
             <span id="player_-1"><span class="name">White</span> <span class="captures">0</span></span>
 
-            <img src="../img/ui/blacktoplay.svg" class="current-player" height="22" />
+            <img src="../img/ui/blacktoplay.svg" class="current-player" height="22" title="Change Player" />
 
             <div class="bookmark" title="Hotspot"></div>
 
@@ -320,13 +320,12 @@
                     Enable sounds</label></li>
                 <li><label><input type="checkbox" name="game.goto_end_after_loading" />
                     Jump to end after loading a game</label></li>
-            </ul>
-
-            <ul>
                 <li><label><input type="checkbox" name="view.fuzzy_stone_placement" />
                     Fuzzy stone placement</label></li>
                 <li><label><input type="checkbox" name="view.animated_stone_placement" />
                     Animate fuzzy placement</label></li>
+                <li><label><input type="checkbox" name="file.show_reload_warning" />
+                    Offer to reload file if changed externally</label></li>
             </ul>
 
             <ul>
@@ -338,9 +337,21 @@
                     Show suicide warning</label></li>
                 <li><label><input type="checkbox" name="edit.show_removenode_warning" />
                     Show remove node warning</label></li>
+                <li><label><input type="checkbox" name="edit.show_removeothervariations_warning" />
+                    Show remove other variations warning</label></li>
                 <li><label><input type="checkbox" name="edit.click_currentvertex_to_remove" />
                     Click marked stone to remove node</label></li>
             </ul>
+
+            <div>
+                <p><label>Game Tree Style:
+                    <select name="graph.layout">
+                        <option value="compact">Compact</option>
+                        <option value="spacious">Spacious</option>
+                        <option value="big">Big</option>
+                    </select>
+                </label></p>
+            </div>
         </div>
 
         <div class="engines">
@@ -375,8 +386,47 @@
 
     <p>
         <button type="button" class="dropdown" name="add">Add</button>
+        <button type="button" class="dropdown" name="sort">Sort By</button>
         <button type="button" name="close">Close</button>
     </p>
+</section>
+
+<section id="cleanmarkup" class="drawer">
+    <h2>Clean Markup</h2>
+
+    <form>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.cross" />
+                Cross markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.triangle" />
+                Triangle markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.square" />
+                Square markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.circle" />
+                Circle markers</label></li>
+        </ul>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.line" />
+                Line markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.arrow" />
+                Arrow markers</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.label" />
+                Label markers</label></li>
+        </ul>
+        <ul>
+            <li><label><input type="checkbox" name="cleanmarkup.comments" />
+                Comments</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.annotations" />
+                Annotations</label></li>
+            <li><label><input type="checkbox" name="cleanmarkup.hotspots" />
+                Hotspots</label></li>
+        </ul>
+        <p>
+            <button class="whole-game">Remove from whole game</button>
+            <button class="current-node">Remove from current position</button>
+            <button type="reset">Cancel</button>
+        </p>
+    </form>
 </section>
 
 <section id="input-box">

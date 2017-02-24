@@ -5,23 +5,23 @@ const path = require('path')
 try {
     let remote = require('electron').remote
     app = remote ? remote.app : require('electron').app
-} catch(err) {}
+} catch (err) {}
 
 let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
 
 if (app && path) {
     let directory = app.getPath('userData')
-    try { fs.mkdirSync(directory) } catch(err) {}
+    try { fs.mkdirSync(directory) } catch (err) {}
 
     exports.settingsPath = path.join(directory, 'settings.json')
     exports.stylesPath = path.join(directory, 'styles.css')
 
     try {
         fs.accessSync(exports.stylesPath, fs.R_OK)
-    } catch(e) {
+    } catch (err) {
         fs.writeFileSync(
             exports.stylesPath,
-            '/* This stylesheet is loaded when ' + app.getName() + ' starts up. */'
+            `/* This stylesheet is loaded when ${app.getName()} starts up. */`
         )
     }
 }
@@ -38,6 +38,16 @@ let defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,
+    'cleanmarkup.cross': true,
+    'cleanmarkup.triangle': true,
+    'cleanmarkup.square': true,
+    'cleanmarkup.circle': true,
+    'cleanmarkup.line': true,
+    'cleanmarkup.arrow': true,
+    'cleanmarkup.label': true,
+    'cleanmarkup.comments': false,
+    'cleanmarkup.annotations': false,
+    'cleanmarkup.hotspots': false,
     'comments.show_move_interpretation': true,
     'console.blocked_commands': [
         'boardsize', 'clear_board', 'play',
@@ -49,11 +59,14 @@ let defaults = {
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
+    'edit.show_removeothervariations_warning': true,
     'edit.undo_delay': 100,
     'engines.list': engines,
+    'file.show_reload_warning': true,
     'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
+    'game.default_handicap': 0,
     'game.goto_end_after_loading': false,
     'game.show_ko_warning': true,
     'game.show_suicide_warning': true,
@@ -63,12 +76,16 @@ let defaults = {
     'graph.collapse_min_depth': 1,
     'graph.collapse_tokens_count': 10000,
     'graph.delay': 100,
-    'graph.grid_size': 25,
+    'graph.edge_color': '#ccc',
+    'graph.edge_inactive_color': '#777',
+    'graph.edge_size': 2,
+    'graph.edge_inactive_size': 1,
+    'graph.grid_size': 22,
     'graph.node_active_color': '#f76047',
     'graph.node_bookmark_color': '#c678dd',
     'graph.node_collapsed_color': '#333',
-    'graph.node_inactive_color': '#777',
     'graph.node_color': '#eee',
+    'graph.node_inactive_color': '#777',
     'graph.node_comment_color': '#6bb1ff',
     'graph.node_size': 4,
     'gtp.attach_delay': 300,
@@ -77,6 +94,7 @@ let defaults = {
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
+    'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
@@ -107,7 +125,7 @@ exports.load = function() {
 
     try {
         settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
-    } catch(e) {
+    } catch (err) {
         settings = {}
     }
 
@@ -158,11 +176,7 @@ exports.set = function(key, value) {
 }
 
 exports.addEngine = function(name, path, args) {
-    engines.push({
-        name: name,
-        path: path,
-        args: args
-    })
+    engines.push({name, path, args})
     engines.sort(namesort)
     return exports
 }

@@ -17,16 +17,16 @@ class Board {
         }
     }
 
-    _vertex2index([x, y]) {
+    vertex2index([x, y]) {
         return y * this.width + x
     }
 
     get(vertex) {
-        return this.arrangement[this._vertex2index(vertex)]
+        return this.arrangement[this.vertex2index(vertex)]
     }
 
     set(vertex, sign) {
-        this.arrangement[this._vertex2index(vertex)] = sign
+        this.arrangement[this.vertex2index(vertex)] = sign
         return this
     }
 
@@ -70,11 +70,12 @@ class Board {
     }
 
     getSymmetries(vertex) {
-        let mx = this.width - 1
-        let my = this.height - 1
         if (!this.hasVertex(vertex)) return []
 
-        return helper.getSymmetries(vertex).map(([x, y]) => [(x % mx + mx) % mx, (y % my + my) % my])
+        let [mx, my] = [this.width - 1, this.height - 1]
+        let mod = (x, m) => (x % m + m) % m
+
+        return helper.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
     }
 
     getNeighbors([x, y], ignoreBoard = false) {
@@ -106,13 +107,13 @@ class Board {
         if (!result) result = [vertex]
 
         // Recursive depth-first search
-        this.getNeighbors(vertex).forEach(v => {
-            if (!func(v)) return
-            if (result.some(w => w[0] == v[0] && w[1] == v[1])) return
+        for (let v of this.getNeighbors(vertex)) {
+            if (!func(v)) continue
+            if (result.some(w => w[0] == v[0] && w[1] == v[1])) continue
 
             result.push(v)
             this.getConnectedComponent(v, func, result)
-        })
+        }
 
         return result
     }
@@ -146,12 +147,12 @@ class Board {
         let liberties = []
         let added = {}
 
-        chain.forEach(c => {
+        for (let c of chain) {
             let freeNeighbors = this.getNeighbors(c).filter(n => this.get(n) == 0)
 
             liberties.push(...freeNeighbors.filter(n => !(n in added)))
             freeNeighbors.forEach(n => added[n] = true)
-        })
+        }
 
         return liberties
     }
@@ -180,20 +181,20 @@ class Board {
                 let sign = 0
                 let indicator = 1
 
-                chain.forEach(c => {
-                    if (indicator == 0) return
+                for (let c of chain) {
+                    if (indicator == 0) continue
 
-                    this.getNeighbors(c).forEach(n => {
-                        if (this.get(n) == 0 || indicator == 0) return
+                    for (let n of this.getNeighbors(c)) {
+                        if (this.get(n) == 0 || indicator == 0) continue
 
                         if (sign == 0) sign = map[n] = this.get(n)
                         else if (sign != this.get(n)) indicator = 0
-                    })
-                })
+                    }
+                }
 
-                chain.forEach(c => {
+                for (let c of chain) {
                     map[c] = sign * indicator
-                })
+                }
             }
         }
 
@@ -347,7 +348,7 @@ class Board {
                 if (v in done || this.get(v) != sign) continue
                 let chain = this.getChain(v)
 
-                chain.forEach(x => { done[x] = true })
+                chain.forEach(x => done[x] = true)
                 castInfluence(chain, 6)
             }
         }
@@ -365,12 +366,15 @@ class Board {
         score['captures_1'] = this.captures['1']
         score['captures_-1'] = this.captures['-1']
 
-        for (let vertex in areaMap) {
-            let sign = areaMap[vertex]
-            if (sign == 0) continue
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let vertex = [x, y]
+                let sign = areaMap[vertex]
+                if (sign == 0) continue
 
-            score['area_' + sign]++
-            if (this.get(vertex) == 0) score['territory_' + sign]++
+                score['area_' + sign]++
+                if (this.get(vertex) == 0) score['territory_' + sign]++
+            }
         }
 
         return score
@@ -396,9 +400,7 @@ class Board {
                 if (this.get(vertex) == 0 || vertex in liberties) continue
                 if (!this.hasLiberties(vertex)) return false
 
-                this.getChain(vertex).forEach(v => {
-                    liberties[v] = true
-                })
+                this.getChain(vertex).forEach(v => liberties[v] = true)
             }
         }
 
@@ -419,24 +421,22 @@ class Board {
         let deadNeighbors = move.getNeighbors(vertex)
             .filter(n => move.get(n) == -sign && !move.hasLiberties(n))
 
-        deadNeighbors.forEach(n => {
-            if (move.get(n) == 0) return
-
-            this.getChain(n).forEach(c => {
+        for (let n of deadNeighbors) {
+            for (let c of this.getChain(n)) {
                 move.set(c, 0)
                 move.captures[sign.toString()]++
-            })
-        })
+            }
+        }
 
         move.set(vertex, sign)
 
         // Detect suicide
 
         if (deadNeighbors.length == 0 && !move.hasLiberties(vertex)) {
-            move.getChain(vertex).forEach(c => {
+            for (let c of move.getChain(vertex)) {
                 move.set(c, 0)
                 move.captures[-sign]++
-            })
+            }
         }
 
         return move
@@ -481,15 +481,15 @@ class Board {
 
         // Draw hoshi
 
-        this.getHandicapPlacement(9).forEach(v => {
+        for (let [x, y] of this.getHandicapPlacement(9)) {
             let circle = document.createElementNS(ns, 'circle')
-            circle.setAttribute('cx', v[0] * tileSize + radius + 1)
-            circle.setAttribute('cy', v[1] * tileSize + radius + 1)
+            circle.setAttribute('cx', x * tileSize + radius + 1)
+            circle.setAttribute('cy', y * tileSize + radius + 1)
             circle.setAttribute('r', 2)
             circle.setAttribute('fill', '#5E2E0C')
 
             svg.appendChild(circle)
-        })
+        }
 
         // Draw shadows
 
@@ -530,6 +530,7 @@ class Board {
 
     generateAscii() {
         let result = []
+        let lb = helper.linebreak
 
         let getIndexFromVertex = ([x, y]) => {
             let rowLength = 4 + this.width * 2
@@ -540,23 +541,21 @@ class Board {
 
         result.push('+')
         for (let x = 0; x < this.width; x++) result.push('-', '-')
-        result.push('-', '+', '\n')
+        result.push('-', '+', lb)
 
         for (let y = 0; y < this.height; y++) {
             result.push('|')
             for (let x = 0; x < this.width; x++) result.push(' ', '.')
-            result.push(' ', '|', '\n')
+            result.push(' ', '|', lb)
         }
 
         result.push('+')
         for (let x = 0; x < this.width; x++) result.push('-', '-')
-        result.push('-', '+', '\n')
+        result.push('-', '+', lb)
 
-        this.getHandicapPlacement(9).forEach(v => {
-            result[getIndexFromVertex(v)] = ','
-        })
+        this.getHandicapPlacement(9).forEach(v => result[getIndexFromVertex(v)] = ',')
 
-        // Place markups & stones
+        // Place markers & stones
 
         let data = {
             plain: ['O', null, 'X'],
@@ -576,7 +575,7 @@ class Board {
                 if (!this.markups[v] || !(this.markups[v][0] in data)) {
                     if (s != 0) result[i] = data.plain[s + 1]
                 } else {
-                    let type = this.markups[v][0], label = this.markups[v][1]
+                    let [type, label] = this.markups[v]
 
                     if (type != 'label') {
                         result[i] = data[type][s + 1]
@@ -591,16 +590,11 @@ class Board {
 
         // Add lines & arrows
 
-        this.lines.forEach(line => {
-            let start = line[0], end = line[1], arrow = line[2]
-            let type = arrow ? 'AR' : 'LN'
+        for (let [start, end, arrow] of this.lines) {
+            result += `{${arrow ? 'AR' : 'LN'} ${this.vertex2coord(start)} ${this.vertex2coord(end)}}${lb}`
+        }
 
-            result += '{' + type + ' '
-                + this.vertex2coord(start) + ' '
-                + this.vertex2coord(end) + '}\n'
-        })
-
-        return ('\n' + result.trim()).split('\n').map(l => '$$ ' + l).join('\n')
+        return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
     }
 
     getHash() {

@@ -2,6 +2,8 @@ const marked = require('./marked')
 
 let id = 0
 
+exports.linebreak = process.platform == 'win32' ? '\r\n' : '\n'
+
 exports.getId = function() {
     return ++id
 }
@@ -59,16 +61,8 @@ exports.lexicalCompare = function(a, b) {
 }
 
 exports.getSymmetries = function(tuple) {
-    let reversed = [tuple[1], tuple[0]]
-    let s = v => {
-        return [
-            [-v[0], v[1]],
-            [v[0], -v[1]],
-            [-v[0], -v[1]]
-        ]
-    }
-
-    return [tuple, reversed, ...s(tuple), ...s(reversed)]
+    let f = ([x, y]) => [[x, y], [-x, y], [x, -y], [-x, -y]]
+    return [...f(tuple), ...f(tuple.slice().reverse())]
 }
 
 exports.normalizeEndings = function(input) {

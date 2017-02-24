@@ -1,4 +1,5 @@
-const {ipcRenderer, clipboard, shell} = require('electron')
+const {ipcRenderer, shell, clipboard} = require('electron')
+const {app} = require('electron').remote
 const view = require('./view')
 const setting = require('../modules/setting')
 
@@ -8,12 +9,7 @@ let menudata = {
     loadfile: () => sabaki.loadFile(),
     savefile: () => sabaki.saveFile(view.getRepresentedFilename()),
     saveas: () => sabaki.saveFile(),
-    loadclipboard: () => sabaki.loadFileFromSgf(
-        clipboard.readText(),
-        false,
-        true,
-        () => view.setRepresentedFilename(null)
-    ),
+    loadclipboard: () => sabaki.loadFileFromClipboard(),
     copytoclipboard: () => clipboard.writeText(sabaki.saveFileToSgf()),
     copyascii: () => clipboard.writeText(sabaki.getBoard().generateAscii()),
     gameinfo: () => view.showGameInfo(),
@@ -28,7 +24,7 @@ let menudata = {
     estimate: () => view.setEstimatorMode(true),
 
     editmode: () => view.setEditMode(!view.getEditMode()),
-    clearmarkup: () => sabaki.clearMarkup(),
+    cleanmarkup: () => view.showCleanMarkup(),
     stonetool: () => sabaki.setSelectedTool('stone'),
     crosstool: () => sabaki.setSelectedTool('cross'),
     triangletool: () => sabaki.setSelectedTool('triangle'),
@@ -40,9 +36,12 @@ let menudata = {
     copyvariation: () => sabaki.copyVariation(...sabaki.getCurrentTreePosition()),
     cutvariation: () => sabaki.cutVariation(...sabaki.getCurrentTreePosition()),
     pastevariation: () => sabaki.pasteVariation(...sabaki.getCurrentTreePosition()),
-    flatten: () => sabaki.flattenVariation(...sabaki.getCurrentTreePosition()),
     makemainvariation: () => sabaki.makeMainVariation(...sabaki.getCurrentTreePosition()),
+    shiftleft: () => sabaki.shiftVariation(-1, ...sabaki.getCurrentTreePosition()),
+    shiftright: () => sabaki.shiftVariation(1, ...sabaki.getCurrentTreePosition()),
+    flatten: () => sabaki.flattenVariation(...sabaki.getCurrentTreePosition()),
     removenode: () => sabaki.removeNode(...sabaki.getCurrentTreePosition()),
+    removeothervariations: () => sabaki.removeOtherVariations(...sabaki.getCurrentTreePosition()),
 
     findmode: () => view.setFindMode(!view.getFindMode()),
     findnext: () => {
@@ -102,4 +101,10 @@ ipcRenderer.on('attach-engine', (evt, ...args) => sabaki.attachEngine(...args))
 
 ipcRenderer.on('load-file', (evt, ...args) => {
     setTimeout(() => sabaki.loadFile(...args), setting.get('app.loadgame_delay'))
+})
+
+ipcRenderer.on('window-focus', () => {
+    if (setting.get('file.show_reload_warning')) {
+        sabaki.askForReload()
+    }
 })

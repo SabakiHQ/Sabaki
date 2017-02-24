@@ -9,37 +9,41 @@ exports.readShapes = function(filename) {
         let node = tree.subtrees[i].nodes[0]
         let points = ('AB' in node ? node.AB.map(x => [...sgf.point2vertex(x), 1]) : [])
             .concat('AW' in node ? node.AW.map(x => [...sgf.point2vertex(x), -1]) : [])
+        let data = {}
 
         if ('CR' in node) {
-            node.CR.forEach(value => {
+            for (let value of node.CR) {
                 let vs = sgf.compressed2list(value)
-                vs.forEach(v => {
+
+                for (let v of vs) {
                     if (!points.some(w => w[0] == v[0] && w[1] == v[1]))
                         points.push([...v, 0])
-                })
-            })
+                }
+            }
         }
 
-        result.push({
+        if ('C' in node) {
+            for (let [key, value] of node.C[0].trim().split(', ').map(x => x.split(': '))) {
+                data[key] = value
+            }
+        }
+
+        result.push(Object.assign({
             name: node.N[0],
-            points: points,
+            points,
             candidates: node.AB.map(sgf.point2vertex)
-        })
+        }, data))
     }
 
     return result
 }
 
-exports.cornerMatch = function(area, source, target) {
-    let hypotheses = Array.apply(null, new Array(8)).map(x => true)
-    let hypothesesInvert = Array.apply(null, new Array(8)).map(x => true)
+exports.cornerMatch = function(points, target) {
+    let hypotheses = [...Array(8)].map(x => true)
+    let hypothesesInvert = [...Array(8)].map(x => true)
 
-    area.sort((v, w) => Math.abs(source.get(w)) - Math.abs(source.get(v)))
-
-    for (let j = 0; j < area.length; j++) {
-        let vertex = area[j]
-        let sign = source.get(vertex)
-        let representatives = target.getSymmetries(vertex)
+    for (let [x, y, sign] of points) {
+        let representatives = target.getSymmetries([x, y])
 
         for (let i = 0; i < hypotheses.length; i++) {
             if (hypotheses[i] && target.get(representatives[i]) != sign)
@@ -56,16 +60,18 @@ exports.cornerMatch = function(area, source, target) {
     return i < 8 ? [i, false] : [i - 8, true]
 }
 
-exports.shapeMatch = function(shape, board, vertex) {
-    if (!board.hasVertex(vertex)) return false
+exports.shapeMatch = function(shape, board, vertex, corner = false) {
+    if (!board.hasVertex(vertex)) return null
     let sign = board.get(vertex)
-    if (sign == 0) return false
+    if (sign == 0) return null
 
-    for (let i = 0; i < shape.candidates.length; i++) {
-        let anchor = shape.candidates[i]
-        let hypotheses = Array.apply(null, new Array(8)).map(() => true)
+    for (let anchor of shape.candidates) {
+        let hypotheses = [...Array(8)].map(() => true)
 
         // Hypothesize vertex == anchor
+
+        if (corner && board.getSymmetries(anchor).every(([x, y]) => x != vertex[0] || y != vertex[1]))
+            continue
 
         for (let j = 0; j < shape.points.length; j++) {
             let v = shape.points[j].slice(0, 2), s = shape.points[j][2]
@@ -76,7 +82,7 @@ exports.shapeMatch = function(shape, board, vertex) {
                 if (!hypotheses[k]) continue
                 let w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
-                if (board.get(w) != s * sign)
+                if (!board.hasVertex(w) || board.get(w) != s * sign)
                     hypotheses[k] = false
             }
 
@@ -87,5 +93,5 @@ exports.shapeMatch = function(shape, board, vertex) {
         if (symm >= 0) return [symm, sign]
     }
 
-    return false
+    return null
 }

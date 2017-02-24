@@ -183,7 +183,7 @@ exports.getProbabilityMap = function(board, iterations = 50) {
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let v = [x, y]
-            let j = board._vertex2index(v)
+            let j = board.vertex2index(v)
 
             if (pmap[j] + nmap[j] == 0) result[v] = 0.5
             else result[v] = pmap[j] / (pmap[j] + nmap[j])

@@ -102,57 +102,61 @@
                 "action": "editmode"
             },
             {
-                "label": "Clear &Markup",
-                "action": "clearmarkup"
+                "label": "Clean &Markup…",
+                "action": "cleanmarkup"
+            },
+            {
+                "label": "&Select Tool",
+                "submenu": [
+                    {
+                        "label": "&Stone Tool",
+                        "accelerator": "CmdOrCtrl+1",
+                        "action": "stonetool"
+                    },
+                    {
+                        "label": "&Cross Tool",
+                        "accelerator": "CmdOrCtrl+2",
+                        "action": "crosstool"
+                    },
+                    {
+                        "label": "&Triangle Tool",
+                        "accelerator": "CmdOrCtrl+3",
+                        "action": "triangletool"
+                    },
+                    {
+                        "label": "S&quare Tool",
+                        "accelerator": "CmdOrCtrl+4",
+                        "action": "squaretool"
+                    },
+                    {
+                        "label": "C&ircle Tool",
+                        "accelerator": "CmdOrCtrl+5",
+                        "action": "circletool"
+                    },
+                    {
+                        "label": "&Line/Arrow Tool",
+                        "accelerator": "CmdOrCtrl+6",
+                        "action": "linetool"
+                    },
+                    {
+                        "label": "La&bel Tool",
+                        "accelerator": "CmdOrCtrl+7",
+                        "action": "labeltool"
+                    },
+                    {
+                        "label": "&Number Tool",
+                        "accelerator": "CmdOrCtrl+8",
+                        "action": "numbertool"
+                    }
+                ]
             },
             {"type": "separator"},
             {
-                "label": "&Stone Tool",
-                "accelerator": "CmdOrCtrl+1",
-                "action": "stonetool"
-            },
-            {
-                "label": "&Cross Tool",
-                "accelerator": "CmdOrCtrl+2",
-                "action": "crosstool"
-            },
-            {
-                "label": "&Triangle Tool",
-                "accelerator": "CmdOrCtrl+3",
-                "action": "triangletool"
-            },
-            {
-                "label": "S&quare Tool",
-                "accelerator": "CmdOrCtrl+4",
-                "action": "squaretool"
-            },
-            {
-                "label": "C&ircle Tool",
-                "accelerator": "CmdOrCtrl+5",
-                "action": "circletool"
-            },
-            {
-                "label": "&Line/Arrow Tool",
-                "accelerator": "CmdOrCtrl+6",
-                "action": "linetool"
-            },
-            {
-                "label": "La&bel Tool",
-                "accelerator": "CmdOrCtrl+7",
-                "action": "labeltool"
-            },
-            {
-                "label": "&Number Tool",
-                "accelerator": "CmdOrCtrl+8",
-                "action": "numbertool"
-            },
-            {"type": "separator"},
-            {
-                "label": "C&opy Variation",
+                "label": "&Copy Variation",
                 "action": "copyvariation"
             },
             {
-                "label": "C&ut Variation",
+                "label": "Cu&t Variation",
                 "action": "cutvariation"
             },
             {
@@ -165,6 +169,15 @@
                 "action": "makemainvariation"
             },
             {
+                "label": "Shift &Left",
+                "action": "shiftleft"
+            },
+            {
+                "label": "Shift Ri&ght",
+                "action": "shiftright"
+            },
+            {"type": "separator"},
+            {
                 "label": "&Flatten",
                 "action": "flatten"
             },
@@ -172,6 +185,10 @@
                 "label": "&Remove Node",
                 "accelerator": "CmdOrCtrl+Delete",
                 "action": "removenode"
+            },
+            {
+                "label": "Remove &Other Variations",
+                "action": "removeothervariations"
             }
         ]
     },

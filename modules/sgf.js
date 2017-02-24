@@ -220,7 +220,7 @@ exports.compressed2list = function(compressed) {
 exports.stringify = function(tree) {
     let output = ''
 
-    tree.nodes.forEach(function(node) {
+    for (let node of tree.nodes) {
         output += ';'
 
         for (let id in node) {
@@ -238,13 +238,13 @@ exports.stringify = function(tree) {
         }
 
         output += '\n'
-    })
-
-    for (let i = 0; i < tree.subtrees.length; i++) {
-        output += '(' + exports.stringify(tree.subtrees[i]) + ')'
     }
 
-    return output
+    for (let subtree of tree.subtrees) {
+        output += '(' + exports.stringify(subtree) + ')'
+    }
+
+    return output.replace(/\n/g, helper.linebreak)
 }
 
 exports.escapeString = function(input) {

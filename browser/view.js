@@ -1,5 +1,6 @@
 const {shell, remote, ipcRenderer} = require('electron')
 const {app, dialog, Menu} = remote
+const natsort = require('natsort')
 
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
@@ -279,7 +280,6 @@ exports.getCurrentPlayer = function() {
 exports.setCurrentPlayer = function(sign) {
     $('.current-player')
     .attr('src', sign > 0 ? '../img/ui/blacktoplay.svg' : '../img/ui/whitetoplay.svg')
-    .attr('title', sign > 0 ? 'Black to play' : 'White to play')
 }
 
 exports.getCommentText = function() {
@@ -320,18 +320,17 @@ exports.setAnnotations = function(posstatus, posvalue, movestatus, movevalue) {
     if (movestatus == null) $header.removeClass('movestatus')
     else $header.addClass('movestatus')
 
-    if (movestatus == -1)
-        $img.attr('src', '../img/ui/badmove.svg')
-            .attr('alt', 'Bad move')
-    else if (movestatus == 0)
-        $img.attr('src', '../img/ui/doubtfulmove.svg')
-            .attr('alt', 'Doubtful move')
-    else if (movestatus == 1)
-        $img.attr('src', '../img/ui/interestingmove.svg')
-            .attr('alt', 'Interesting move')
-    else if (movestatus == 2)
-        $img.attr('src', '../img/ui/goodmove.svg')
-            .attr('alt', 'Good move')
+    let data = {
+        '-1': ['Bad move', 'badmove'],
+        '0': ['Doubtful move', 'doubtfulmove'],
+        '1': ['Interesting move', 'interestingmove'],
+        '2': ['Good move', 'goodmove']
+    }
+
+    if (movestatus in data) {
+        $img.attr('alt', data[movestatus][0])
+            .attr('src', `../img/ui/${data[movestatus][1]}.svg`)
+    }
 
     if (movevalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
     $img.attr('title', $img.attr('alt'))
@@ -343,18 +342,17 @@ exports.setAnnotations = function(posstatus, posvalue, movestatus, movevalue) {
     if (posstatus == null) $header.removeClass('positionstatus')
     else $header.addClass('positionstatus')
 
-    if (posstatus == -1)
-        $img.attr('src', '../img/ui/white.svg')
-            .attr('alt', 'Good for white')
-    else if (posstatus == 0)
-        $img.attr('src', '../img/ui/balance.svg')
-            .attr('alt', 'Even position')
-    else if (posstatus == 1)
-        $img.attr('src', '../img/ui/black.svg')
-            .attr('alt', 'Good for black')
-    else if (posstatus == -2)
-        $img.attr('src', '../img/ui/unclear.svg')
-            .attr('alt', 'Unclear position')
+    data = {
+        '-1': ['Good for white', 'white'],
+        '0': ['Even position', 'balance'],
+        '1': ['Good for black', 'black'],
+        '-2': ['Unclear position', 'unclear']
+    }
+
+    if (posstatus in data) {
+        $img.attr('alt', data[posstatus][0])
+            .attr('src', `../img/ui/${data[posstatus][1]}.svg`)
+    }
 
     if (posvalue == 2) $img.attr('alt', 'Very ' + $img.attr('alt').toLowerCase())
     $img.attr('title', $img.attr('alt'))
@@ -498,9 +496,14 @@ exports.getCurrentMoveInterpretation = function() {
 
     let shapes = exports.getShapes()
 
-    for (let i = 0; i < shapes.length; i++) {
-        if (boardmatcher.shapeMatch(shapes[i], board, vertex))
-            return shapes[i].name
+    for (let shape of shapes) {
+        if ('size' in shape && (board.width != board.height || board.width != shape.size))
+            continue
+
+        let corner = 'type' in shape && shape.type == 'corner'
+
+        if (boardmatcher.shapeMatch(shape, board, vertex, corner))
+            return shape.name
     }
 
     if (friendly.length == 1) return 'Stretch'
@@ -624,7 +627,7 @@ exports.prepareGameChooser = function() {
                 && bounds.top + $(el).height() > listBounds.top
         })
 
-        updateElements.forEach(el => {
+        for (let el of updateElements) {
             let tree = $(el).data('gametree')
             let tp = gametree.navigate(tree, 0, 30)
             if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
@@ -633,7 +636,7 @@ exports.prepareGameChooser = function() {
             let svg = board.getSvg(setting.get('gamechooser.thumbnail_size'))
 
             $(svg).insertAfter($(el).find('span').eq(0))
-        })
+        }
     }
 
     $(window).on('resize', updateSVG)
@@ -644,12 +647,12 @@ exports.prepareGameChooser = function() {
     $('#gamechooser > input').on('input', function() {
         let value = this.value
 
-        $('#gamechooser .games-list li').get().forEach(li => {
+        for (let li of $('#gamechooser .games-list li').get()) {
             if ($(li).find('span').get().some(span => {
                 return $(span).text().toLowerCase().includes(value.toLowerCase())
             })) $(li).removeClass('hide')
             else $(li).addClass('hide')
-        })
+        }
 
         $scrollContainer.scrollTop(0)
 
@@ -659,6 +662,7 @@ exports.prepareGameChooser = function() {
     // Buttons
 
     $('#gamechooser button[name="add"]').on('click', () => exports.openAddGameMenu())
+    $('#gamechooser button[name="sort"]').on('click', () => exports.openSortGamesMenu())
     $('#gamechooser button[name="close"]').on('click', () => exports.closeGameChooser())
 }
 
@@ -850,6 +854,18 @@ exports.buildBoard = function() {
     let rows = []
     let hoshi = board.getHandicapPlacement(9)
 
+    let getEndTargetVertex = evt => {
+        let {pageX, pageY} = evt.touches[0]
+        let endTarget = document.elementFromPoint(pageX, pageY)
+        if (!endTarget) return null
+
+        let v = $(endTarget).data('vertex')
+        if (!v) endTarget = $(endTarget).parents('li').get(0)
+        if (endTarget) v = $(endTarget).data('vertex')
+
+        return v
+    }
+
     for (let y = 0; y < board.height; y++) {
         let $ol = $('<ol class="row"/>')
 
@@ -865,31 +881,17 @@ exports.buildBoard = function() {
             if (hoshi.some(v => helper.equals(v, vertex)))
                 $li.addClass('hoshi')
 
-            let getEndTargetVertex = evt => {
-                let endTarget = document.elementFromPoint(
-                    evt.touches[0].pageX,
-                    evt.touches[0].pageY
-                )
-
-                if (!endTarget) return null
-                let v = $(endTarget).data('vertex')
-                if (!v) endTarget = $(endTarget).parents('li').get(0)
-                if (endTarget) v = $(endTarget).data('vertex')
-
-                return v
-            }
-
             $ol.append(
                 $li.append(
                     $('<div class="stone"/>').append($img).append($('<span/>'))
                 )
-                .on('mouseup', function(evt) {
+                .on('mouseup', evt => {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    sabaki.vertexClicked(this, evt.button, evt.ctrlKey)
-                }.bind(vertex))
-                .on('touchend', function(evt) {
+                    sabaki.vertexClicked(vertex, evt.button, evt.ctrlKey)
+                })
+                .on('touchend', evt => {
                     if (!exports.getEditMode()
                     || !['line', 'arrow'].includes(sabaki.getSelectedTool()))
                         return
@@ -897,17 +899,17 @@ exports.buildBoard = function() {
                     evt.preventDefault()
                     sabaki.vertexClicked(null, 0)
                 })
-                .on('mousemove', function(evt) {
+                .on('mousemove', evt => {
                     if (!$('#goban').data('mousedown')) return
                     if (evt.button != 0) return
 
-                    sabaki.drawLine(this)
-                }.bind(vertex))
-                .on('touchmove', function(evt) {
+                    sabaki.drawLine(vertex)
+                })
+                .on('touchmove', evt => {
                     e.preventDefault()
                     sabaki.drawLine(getEndTargetVertex(evt))
                 })
-                .on('mousedown', function() {
+                .on('mousedown', () => {
                     $('#goban').data('mousedown', true)
                 })
                 .append($('<div class="paint"/>'))
@@ -916,6 +918,8 @@ exports.buildBoard = function() {
 
         rows.push($ol)
     }
+
+    // Add coordinates
 
     let alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
     let $coordx = $('<ol class="coordx"/>')
@@ -948,26 +952,24 @@ exports.updateBoardLines = function() {
     let tx = parseFloat($('#goban').css('border-left-width'))
     let ty = parseFloat($('#goban').css('border-top-width'))
 
-    $('#goban hr').get().forEach(line => {
+    for (let line of $('#goban hr').get()) {
         let v1 = $(line).data('v1'), v2 = $(line).data('v2')
-        let mirrored = v2[0] < v1[0]
-        let $li1 = $('#goban .pos_' + v1.join('-'))
-        let $li2 = $('#goban .pos_' + v2.join('-'))
+        let $li1 = $(`#goban .pos_${v1.join('-')}`)
+        let $li2 = $(`#goban .pos_${v2.join('-')}`)
         let pos1 = $li1.position(), pos2 = $li2.position()
         let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
         let angle = Math.atan2(dy, dx) * 180 / Math.PI
-        if (mirrored) angle += 180
         let length = Math.sqrt(dx * dx + dy * dy)
 
         $(line).css({
             top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + ty + 'px',
             left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + tx + 'px',
-            marginLeft: -length / 2 + 'px',
-            width: length + 'px',
-            transform: 'rotate(' + angle + 'deg)'
+            marginLeft: `${-length / 2}px`,
+            width: `${length}px`,
+            transform: `rotate(${angle}deg)`
         })
-    })
+    }
 }
 
 exports.resizeBoard = function() {
@@ -978,8 +980,13 @@ exports.resizeBoard = function() {
     let $goban = $('#goban')
 
     $main.css('width', '').css('height', '')
-    let outerWidth = Math.round($main.width())
-    let outerHeight = Math.round($main.height())
+
+    let outerWidth = Math.round($main.width()
+        - parseFloat($main.css('padding-left'))
+        - parseFloat($main.css('padding-right')))
+    let outerHeight = Math.round($main.height()
+        - parseFloat($main.css('padding-top'))
+        - parseFloat($main.css('padding-bottom')))
 
     if (outerWidth % 2 != 0) outerWidth++
     if (outerHeight % 2 != 0) outerHeight++
@@ -987,11 +994,13 @@ exports.resizeBoard = function() {
 
     let boardWidth = board.width
     let boardHeight = board.height
-    let width = helper.floorEven(outerWidth - parseFloat($goban.css('padding-left'))
+    let width = helper.floorEven(outerWidth
+        - parseFloat($goban.css('padding-left'))
         - parseFloat($goban.css('padding-right'))
         - parseFloat($goban.css('border-left-width'))
         - parseFloat($goban.css('border-right-width')))
-    let height = helper.floorEven(outerHeight - parseFloat($goban.css('padding-top'))
+    let height = helper.floorEven(outerHeight
+        - parseFloat($goban.css('padding-top'))
         - parseFloat($goban.css('padding-bottom'))
         - parseFloat($goban.css('border-top-width'))
         - parseFloat($goban.css('border-bottom-width')))
@@ -1205,8 +1214,8 @@ exports.openCommentMenu = function() {
         }
     )
 
-    template.forEach(item => {
-        if (!('data' in item)) return
+    for (let item of template) {
+        if (!('data' in item)) continue
 
         let [p, clear, value] = item.data
         delete item.data
@@ -1222,7 +1231,7 @@ exports.openCommentMenu = function() {
 
             sabaki.setCurrentTreePosition(...sabaki.getCurrentTreePosition(), true, true)
         }
-    })
+    }
 
     let menu = Menu.buildFromTemplate(template)
     let $el = $('#properties .edit .header img')
@@ -1298,12 +1307,25 @@ exports.openNodeMenu = function(tree, index, position) {
             click: () => sabaki.makeMainVariation(tree, index)
         },
         {
+            label: "Shift &Left",
+            click: () => sabaki.shiftVariation(-1, tree, index)
+        },
+        {
+            label: "Shift Ri&ght",
+            click: () => sabaki.shiftVariation(1, tree, index)
+        },
+        {type: 'separator'},
+        {
             label: '&Flatten',
             click: () => sabaki.flattenVariation(tree, index)
         },
         {
-            label: '&Remove',
+            label: '&Remove Node',
             click: () => sabaki.removeNode(tree, index)
+        },
+        {
+            label: 'Remove &Other Variations',
+            click: () => sabaki.removeOtherVariations(tree, index)
         }
     ]
 
@@ -1371,6 +1393,8 @@ exports.openAddGameMenu = function() {
                 sabaki.setGameTrees([...sabaki.getGameTrees(), tree])
                 sabaki.setGameIndex(sabaki.getGameTrees().length - 1)
                 exports.showGameChooser('bottom')
+                exports.closeGameChooser()
+                exports.showGameInfo()
             }
         },
         {
@@ -1384,13 +1408,13 @@ exports.openAddGameMenu = function() {
                 })
 
                 if (filenames) {
-                    filenames.forEach(filename => {
+                    for (let filename of filenames) {
                         let trees = sgf.parseFile(filename).subtrees
 
                         sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
                         sabaki.setGameIndex(sabaki.getGameIndex())
                         exports.showGameChooser('bottom')
-                    })
+                    }
                 }
 
                 exports.setIsBusy(false)
@@ -1398,9 +1422,73 @@ exports.openAddGameMenu = function() {
         }
     ]
 
-    let menu = Menu.buildFromTemplate(template)
-    let $button = $('#gamechooser').find('button[name="add"]')
-    menu.popup(
+    let $button = $('#gamechooser button[name="add"]')
+
+    Menu.buildFromTemplate(template).popup(
+        remote.getCurrentWindow(),
+        Math.round($button.offset().left),
+        Math.round($button.offset().top + $button.height())
+    )
+}
+
+exports.openSortGamesMenu = function() {
+    let template = [
+        {label: '&Black Player', property: 'PB'},
+        {label: '&White Player', property: 'PW'},
+        {label: 'Black R&ank', property: 'BR'},
+        {label: 'White Ran&k', property: 'WR'},
+        {label: 'Game &Name', property: 'GN'},
+        {label: 'Game &Event', property: 'EV'},
+        {label: '&Date', property: 'DT'},
+        {type: 'separator'},
+        {label: '&Reverse', property: '-1'}
+    ]
+
+    for (let item of template) {
+        let {property} = item
+        delete item.property
+
+        item.click = () => {
+            exports.setIsBusy(true)
+
+            let trees = sabaki.getGameTrees()
+            let current = trees[sabaki.getGameIndex()]
+
+            // Stable sort
+
+            trees = trees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
+                let [x1, x2] = property == '-1' ? [i2, i1]
+                    : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
+
+                if (['BR', 'WR'].includes(property)) {
+                    [x1, x2] = [x1, x2]
+                    .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
+                    .map(x => isNaN(x) ? -Infinity : x)
+                } else if (property == 'DT') {
+                    [x1, x2] = [x1, x2]
+                    .map(x => sgf.string2dates(x))
+                    .map(x => x ? sgf.dates2string(x.sort(helper.lexicalCompare)) : '')
+                }
+
+                let s = x1 < x2 ? -1 : +(x1 != x2)
+
+                if (['GN', 'EV'].includes(property)) {
+                    s = natsort({insensitive: true})(x1, x2)
+                }
+
+                return s != 0 ? s : i1 - i2
+            }).map(x => x[0])
+
+            sabaki.setGameTrees(trees)
+            sabaki.setGameIndex(trees.indexOf(current))
+            exports.showGameChooser()
+            exports.setIsBusy(false)
+        }
+    }
+
+    let $button = $('#gamechooser button[name="sort"]')
+
+    Menu.buildFromTemplate(template).popup(
         remote.getCurrentWindow(),
         Math.round($button.offset().left),
         Math.round($button.offset().top + $button.height())
@@ -1557,7 +1645,7 @@ exports.showGameInfo = function() {
 
     let disabled = tree.nodes.length > 1
         || tree.subtrees.length > 0
-        || ['AB', 'AW', 'W', 'B'].some(x => x in rootNode)
+        || ['AW', 'W', 'B'].some(x => x in rootNode)
 
     $info.find('input[name^="size-"]').add(handicap).prop('disabled', disabled)
     $info.toggleClass('disabled', disabled)
@@ -1598,6 +1686,11 @@ exports.showPreferences = function(tab = 'general') {
 
     $('#preferences input[type="checkbox"]').get()
         .forEach(el => el.checked = !!setting.get(el.name))
+
+    let gridSize = setting.get('graph.grid_size')
+    let type = gridSize < 22 ? 'compact' : gridSize > 22 ? 'big' : 'spacious'
+
+    $(`#preferences select[name="graph.layout"] option[value="${type}"]`).prop('selected', true)
 
     sabaki.loadEngines()
 
@@ -1715,6 +1808,19 @@ exports.closeGameChooser = function() {
     document.activeElement.blur()
 }
 
+exports.showCleanMarkup = function() {
+    $('#cleanmarkup input[type="checkbox"]').get()
+        .forEach(el => el.checked = !!setting.get(el.name))
+
+    exports.closeDrawers()
+    $('#cleanmarkup').addClass('show')
+}
+
+exports.closeCleanMarkup = function() {
+    $('#cleanmarkup').removeClass('show')
+    document.activeElement.blur()
+}
+
 exports.closeDrawers = function() {
     let drawersOpen = $('.drawer.show, #input-box.show').length > 0
     let modeOpen = $('#bar .bar').get()
@@ -1726,6 +1832,7 @@ exports.closeDrawers = function() {
     exports.closeScore()
     exports.closePreferences()
     exports.closeGameChooser()
+    exports.closeCleanMarkup()
     exports.setEditMode(false)
     exports.setScoringMode(false)
     exports.setEstimatorMode(false)

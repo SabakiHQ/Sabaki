@@ -25,7 +25,7 @@ exports.clone = function(tree, newIds = false, parent = null) {
         collapsed: tree.collapsed
     }
 
-    tree.nodes.forEach(node => {
+    for (let node of tree.nodes) {
         let cn = {}
 
         for (let key in node) {
@@ -39,11 +39,11 @@ exports.clone = function(tree, newIds = false, parent = null) {
         }
 
         c.nodes.push(cn)
-    })
+    }
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         c.subtrees.push(exports.clone(subtree, newIds, c))
-    })
+    }
 
     return c
 }
@@ -69,9 +69,9 @@ exports.getPlayerName = function(tree, sign, fallback = '') {
 exports.getHeight = function(tree) {
     let height = 0
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         height = Math.max(exports.getHeight(subtree), height)
-    })
+    }
 
     return height + tree.nodes.length
 }
@@ -95,9 +95,9 @@ exports.getSection = function(tree, level) {
 
     let sections = []
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         sections.push(...exports.getSection(subtree, level - tree.nodes.length))
-    })
+    }
 
     return sections
 }
@@ -135,6 +135,16 @@ exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0
     }
 
     return [matrix, dict]
+}
+
+exports.getTreesRecursive = function(tree) {
+    let result = [tree]
+
+    for (let subtree of tree.subtrees) {
+        result.push(...exports.getTreesRecursive(subtree))
+    }
+
+    return result
 }
 
 exports.navigate = function(tree, index, step) {
@@ -217,9 +227,9 @@ exports.reduce = function(tree) {
     tree.current = tree.subtrees[0].current
     tree.subtrees = tree.subtrees[0].subtrees
 
-    tree.subtrees.forEach(subtree => {
+    for (let subtree of tree.subtrees) {
         subtree.parent = tree
-    })
+    }
 
     return tree
 }
@@ -252,10 +262,8 @@ exports.onMainTrack = function(tree) {
     && exports.onMainTrack(tree.parent)
 }
 
-exports.matrixdict2graph = function(matrixdict) {
-    let matrix = matrixdict[0]
-    let dict = matrixdict[1]
-    let graph = { nodes: [], edges: [] }
+exports.matrixdict2graph = function([matrix, dict]) {
+    let graph = {nodes: [], edges: []}
     let currentTrack = []
     let notCurrentTrack = []
     let width = Math.max(...matrix.map(x => x.length))
@@ -265,10 +273,10 @@ exports.matrixdict2graph = function(matrixdict) {
         for (let x = 0; x < width; x++) {
             if (!matrix[y][x]) continue
 
-            let tree = matrix[y][x][0]
-            let index = matrix[y][x][1]
+            let [tree, index] = matrix[y][x]
             let id = tree.id + '-' + index
             let commentproperties = setting.get('sgf.comment_properties')
+
             let node = {
                 id: id,
                 x: x * gridSize,
@@ -320,8 +328,19 @@ exports.matrixdict2graph = function(matrixdict) {
 
             let prev = exports.navigate(tree, index, -1)
             if (!prev) continue
+
             let prevId = prev[0].id + '-' + prev[1]
             let prevPos = dict[prevId]
+
+            let thickness = setting.get('graph.edge_inactive_size')
+            let edgeColor = setting.get('graph.edge_inactive_color')
+            let method = 'unshift'
+
+            if (currentTrack.includes(tree.id)) {
+                thickness = setting.get('graph.edge_size')
+                edgeColor = setting.get('graph.edge_color')
+                method = 'push'
+            }
 
             if (prevPos[0] != x) {
                 graph.nodes.push({
@@ -331,22 +350,28 @@ exports.matrixdict2graph = function(matrixdict) {
                     size: 0
                 })
 
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
-                    target: id + '-h'
+                    target: id + '-h',
+                    size: thickness,
+                    color: edgeColor
                 })
 
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e2',
                     source: id + '-h',
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             } else {
-                graph.edges.push({
+                graph.edges[method]({
                     id: id + '-e1',
                     source: id,
-                    target: prevId
+                    target: prevId,
+                    size: thickness,
+                    color: edgeColor
                 })
             }
         }
@@ -405,11 +430,11 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(value => {
-            sgf.compressed2list(value).forEach(vertex => {
+        for (let value of node[ids[i]]) {
+            for (let vertex of sgf.compressed2list(value)) {
                 board.set(vertex, i - 1)
-            })
-        })
+            }
+        }
     }
 
     if (vertex != null) {
@@ -422,30 +447,34 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     for (let i = 0; i < ids.length; i++) {
         if (!(ids[i] in node)) continue
 
-        node[ids[i]].forEach(value => {
-            sgf.compressed2list(value).forEach(vertex => {
+        for (let value of node[ids[i]]) {
+            for (let vertex of sgf.compressed2list(value)) {
                 board.markups[vertex] = [classes[i], '']
-            })
-        })
+            }
+        }
     }
 
     if ('LB' in node) {
-        node.LB.forEach(composed => {
+        for (let composed of node.LB) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1).replace(/\s+/, ' ')
+
             board.markups[sgf.point2vertex(point)] = ['label', label]
-        })
+        }
     }
 
-    ;['AR', 'LN'].filter(type => type in node).forEach(type => {
-        node[type].forEach(composed => {
+    for (let type of ['AR', 'LN']) {
+        if (!(type in node)) continue
+
+        for (let composed of node[type]) {
             let sep = composed.indexOf(':')
             let p1 = composed.slice(0, sep)
             let p2 = composed.slice(sep + 1)
+
             board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
-        })
-    })
+        }
+    }
 
     // Add variation overlays
 
@@ -467,17 +496,17 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
     }
 
     if (index == 0 && tree.parent) {
-        tree.parent.subtrees.forEach(subtree => {
-            if (subtree.nodes.length == 0) return
+        for (let subtree of tree.parent.subtrees) {
+            if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'sibling')
-        })
+        }
     }
 
     if (index == tree.nodes.length - 1) {
-        tree.subtrees.forEach(subtree => {
-            if (subtree.nodes.length == 0) return
+        for (let subtree of tree.subtrees) {
+            if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'child')
-        })
+        }
     } else if (index < tree.nodes.length - 1) {
         addOverlay(tree.nodes[index + 1], 'child')
     }
