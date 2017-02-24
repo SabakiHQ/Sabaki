@@ -39,11 +39,7 @@ class Board {
     }
 
     clear() {
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                this.set([x, y], 0)
-            }
-        }
+        this.arrangement = this.arrangement.map(_ => 0)
     }
 
     isSquare() {
@@ -107,6 +103,7 @@ class Board {
         if (!result) result = [vertex]
 
         // Recursive depth-first search
+
         for (let v of this.getNeighbors(vertex)) {
             if (!func(v)) continue
             if (result.some(w => w[0] == v[0] && w[1] == v[1])) continue
@@ -122,19 +119,17 @@ class Board {
         return this.getConnectedComponent(vertex, [this.get(vertex)])
     }
 
-    hasLiberties(vertex, visited = []) {
+    hasLiberties(vertex, visited = {}) {
         let sign = this.get(vertex)
         if (!this.hasVertex(vertex) || sign == 0) return false
 
-        if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
-            return false
-
+        if (vertex in visited) return false
         let neighbors = this.getNeighbors(vertex)
 
         if (neighbors.some(n => this.get(n) == 0))
             return true
 
-        visited.push(vertex)
+        visited[vertex] = true
 
         return neighbors.filter(n => this.get(n) == sign)
         .some(n => this.hasLiberties(n, visited))
