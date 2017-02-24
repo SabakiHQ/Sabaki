@@ -13,6 +13,20 @@ function getNeighbors(board, [x, y]) {
     return result
 }
 
+function getChain(board, vertex, result = null, sign = null) {
+    if (result === null) result = [vertex]
+    if (sign === null) sign = board.get(vertex)
+
+    for (let v of getNeighbors(board, vertex)) {
+        if (board.get(v) != sign || result.some(equals(v))) continue
+
+        result.push(v)
+        getChain(board, v, result, sign)
+    }
+
+    return result
+}
+
 function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null) {
     if (count[0] >= N) return true
 
@@ -72,7 +86,7 @@ function makePseudoMove(board, sign, vertex) {
         if (neighborSigns[i] != -sign || hasNLiberties(board, n, 1))
             continue
 
-        let chain = board.getChain(n)
+        let chain = getChain(board, n)
         dead.push(...chain)
         chain.forEach(c => board.set(c, 0))
     }
@@ -123,7 +137,7 @@ exports.guess = function(board, scoring = false, iterations = 50) {
 
             if (sign === 0 || vertex in done) continue
 
-            let chain = board.getChain(vertex)
+            let chain = getChain(board, vertex)
             let probability = chain.map(v => map[v]).reduce((sum, x) => sum + x) / chain.length
             let newSign = probability < 0.5 ? -1 : probability > 0.5 ? 1 : 0
 
@@ -177,7 +191,7 @@ exports.getFloatingStones = function(board) {
             }
 
             if (sign === 0) {
-                actualArea = board.getChain(vertex)
+                actualArea = getChain(board, vertex)
                 actualDead = []
             }
 
