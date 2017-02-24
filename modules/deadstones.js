@@ -36,9 +36,16 @@ function makePseudoMove(board, sign, vertex) {
 
     board.set(vertex, sign)
 
+    let hasEnemyNeighbors = neighborSigns.some(s => s == -sign)
+    let checkCapture = false
+
     if (!hasNLiberties(board, vertex, 2)) {
-        board.set(vertex, 0)
-        return null
+        if (!hasEnemyNeighbors) {
+            board.set(vertex, 0)
+            return null
+        } else {
+            checkCapture = true
+        }
     }
 
     let dead = []
@@ -51,6 +58,11 @@ function makePseudoMove(board, sign, vertex) {
         let chain = board.getChain(n)
         dead.push(...chain)
         chain.forEach(c => board.set(c, 0))
+    }
+
+    if (checkCapture && dead.length == 0) {
+        board.set(vertex, 0)
+        return null
     }
 
     return dead
