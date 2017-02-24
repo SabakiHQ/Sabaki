@@ -36,7 +36,7 @@ class Board {
     }
 
     clear() {
-        this.arrangement = this.arrangement.map(_ => 0)
+        this.arrangement = this.arrangement.map(_ => Array(this.width).fill(0))
     }
 
     isSquare() {
