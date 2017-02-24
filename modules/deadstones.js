@@ -13,23 +13,25 @@ function getNeighbors(board, [x, y]) {
     return result
 }
 
-function hasNPseudoLiberties(board, vertex, N, visited = [], count = [0], sign = null) {
+function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null) {
     if (count[0] >= N) return true
 
     let key = vertex.join(',')
     if (visited.includes(key)) return false
     if (sign === null) sign = board.get(vertex)
 
-    let neighbors = board.getNeighbors(vertex)
+    let neighbors = getNeighbors(board, vertex)
     let friendlyNeighbors = []
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
+        let nkey = n.join(',')
         let s = board.get(n)
 
-        if (s === 0) {
+        if (s === 0 && !visited.includes(nkey)) {
             count[0]++
             if (count[0] >= N) return true
+            visited.push(nkey)
         } else if (s === sign) {
             friendlyNeighbors.push(n)
         }
@@ -38,7 +40,7 @@ function hasNPseudoLiberties(board, vertex, N, visited = [], count = [0], sign =
     visited.push(key)
 
     for (let i = 0; i < friendlyNeighbors.length; i++) {
-        if (hasNPseudoLiberties(board, friendlyNeighbors[i], N, visited, count, sign))
+        if (hasNLiberties(board, friendlyNeighbors[i], N, visited, count, sign))
             return true
     }
 
@@ -54,7 +56,7 @@ function makePseudoMove(board, sign, vertex) {
 
     let checkCapture = false
 
-    if (!hasNPseudoLiberties(board, vertex, 2)) {
+    if (!hasNLiberties(board, vertex, 2)) {
         if (!neighborSigns.some(s => s === -sign)) {
             board.set(vertex, 0)
             return null
@@ -67,7 +69,7 @@ function makePseudoMove(board, sign, vertex) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        if (neighborSigns[i] != -sign || hasNPseudoLiberties(board, n, 1))
+        if (neighborSigns[i] != -sign || hasNLiberties(board, n, 1))
             continue
 
         let chain = board.getChain(n)
