@@ -1,11 +1,24 @@
 const Board = require('./board')
 
-let equals = v => w => w[0] == v[0] && w[1] == v[1]
+let equals = v => w => w[0] === v[0] && w[1] === v[1]
 
-function hasNPseudoLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
+function getNeighbors(board, [x, y]) {
+    let result = []
+
+    if (x > 0) result.push([x - 1, y])
+    if (y > 0) result.push([x, y - 1])
+    if (x < board.width - 1) result.push([x + 1, y])
+    if (y < board.height - 1) result.push([x, y + 1])
+
+    return result
+}
+
+function hasNPseudoLiberties(board, vertex, N, visited = [], count = [0], sign = null) {
+    if (count[0] >= N) return true
+
     let key = vertex.join(',')
     if (visited.includes(key)) return false
-    if (sign == null) sign = board.get(vertex)
+    if (sign === null) sign = board.get(vertex)
 
     let neighbors = board.getNeighbors(vertex)
     let friendlyNeighbors = []
@@ -14,29 +27,35 @@ function hasNPseudoLiberties(board, vertex, N, visited = [], count = 0, sign = n
         let n = neighbors[i]
         let s = board.get(n)
 
-        if (s == 0) {
-            count++
-            if (count >= N) return true
-        } else if (s == sign) {
+        if (s === 0) {
+            count[0]++
+            if (count[0] >= N) return true
+        } else if (s === sign) {
             friendlyNeighbors.push(n)
         }
     }
 
     visited.push(key)
-    return friendlyNeighbors.some(n => hasNPseudoLiberties(board, n, N, visited, count, sign))
+
+    for (let i = 0; i < friendlyNeighbors.length; i++) {
+        if (hasNPseudoLiberties(board, friendlyNeighbors[i], N, visited, count, sign))
+            return true
+    }
+
+    return false
 }
 
 function makePseudoMove(board, sign, vertex) {
-    let neighbors = board.getNeighbors(vertex)
+    let neighbors = getNeighbors(board, vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
-    if (neighborSigns.every(s => s == sign)) return null
+    if (neighborSigns.every(s => s === sign)) return null
 
     board.set(vertex, sign)
 
     let checkCapture = false
 
     if (!hasNPseudoLiberties(board, vertex, 2)) {
-        if (!neighborSigns.some(s => s == -sign)) {
+        if (!neighborSigns.some(s => s === -sign)) {
             board.set(vertex, 0)
             return null
         } else {
@@ -56,7 +75,7 @@ function makePseudoMove(board, sign, vertex) {
         chain.forEach(c => board.set(c, 0))
     }
 
-    if (checkCapture && dead.length == 0) {
+    if (checkCapture && dead.length === 0) {
         board.set(vertex, 0)
         return null
     }
@@ -70,7 +89,7 @@ function fixHoles(board) {
             let vertex = [x, y]
             if (board.get(vertex) != 0) continue
 
-            let neighbors = board.getNeighbors(vertex)
+            let neighbors = getNeighbors(board, vertex)
             let neighborSigns = neighbors.map(n => board.get(n))
             let fix = true
 
@@ -100,13 +119,13 @@ exports.guess = function(board, scoring = false, iterations = 50) {
             let vertex = [x, y]
             let sign = board.get(vertex)
 
-            if (sign == 0 || vertex in done) continue
+            if (sign === 0 || vertex in done) continue
 
             let chain = board.getChain(vertex)
             let probability = chain.map(v => map[v]).reduce((sum, x) => sum + x) / chain.length
             let newSign = probability < 0.5 ? -1 : probability > 0.5 ? 1 : 0
 
-            if (newSign == -sign) result.push(...chain)
+            if (newSign === -sign) result.push(...chain)
 
             done[vertex] = true
         }
@@ -135,8 +154,8 @@ exports.getFloatingStones = function(board) {
 
             let posArea = board.getConnectedComponent(vertex, [0, -1])
             let negArea = board.getConnectedComponent(vertex, [0, 1])
-            let posDead = posArea.filter(v => board.get(v) == -1)
-            let negDead = negArea.filter(v => board.get(v) == 1)
+            let posDead = posArea.filter(v => board.get(v) === -1)
+            let negDead = negArea.filter(v => board.get(v) === 1)
             let posDiff = posArea.filter(v => !posDead.some(equals(v)) && !negArea.some(equals(v)))
             let negDiff = negArea.filter(v => !negDead.some(equals(v)) && !posArea.some(equals(v)))
 
@@ -155,7 +174,7 @@ exports.getFloatingStones = function(board) {
                 actualDead = posDead
             }
 
-            if (sign == 0) {
+            if (sign === 0) {
                 actualArea = board.getChain(vertex)
                 actualDead = []
             }
@@ -169,7 +188,7 @@ exports.getFloatingStones = function(board) {
 }
 
 exports.playTillEnd = function(board, sign, iterations = null) {
-    if (iterations == null) iterations = board.width * board.height
+    if (iterations === null) iterations = board.width * board.height
     board = board.clone()
 
     let freeVertices = []
@@ -185,7 +204,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     let finished = {'-1': false, '1': false}
 
     while (iterations > 0) {
-        if (freeVertices.length == 0 || finished[-sign] && finished[sign])
+        if (freeVertices.length === 0 || finished[-sign] && finished[sign])
             break
 
         let madeMove = false
@@ -218,7 +237,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
         iterations--
     }
 
-    return fixHoles(board).arrangement
+    return fixHoles(board)
 }
 
 exports.getProbabilityMap = function(board, iterations) {
@@ -228,7 +247,7 @@ exports.getProbabilityMap = function(board, iterations) {
 
     for (let i = 0; i < iterations; i++) {
         let sign = Math.sign(Math.random() - 0.5)
-        let areaMap = exports.playTillEnd(board, sign)
+        let areaMap = exports.playTillEnd(board, sign).arrangement
 
         for (let j = 0; j < areaMap.length; j++) {
             if (!(j in pmap)) pmap[j] = 0
@@ -244,7 +263,7 @@ exports.getProbabilityMap = function(board, iterations) {
             let v = [x, y]
             let j = board.vertex2index(v)
 
-            if (pmap[j] + nmap[j] == 0) result[v] = 0.5
+            if (pmap[j] + nmap[j] === 0) result[v] = 0.5
             else result[v] = pmap[j] / (pmap[j] + nmap[j])
         }
     }
