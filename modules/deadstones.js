@@ -2,8 +2,9 @@ const Board = require('./board')
 
 let equals = v => w => w[0] == v[0] && w[1] == v[1]
 
-function hasNLiberties(board, vertex, N, visited = {}, count = 0, sign = null) {
-    if (vertex in visited) return false
+function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
+    let key = vertex.join(',')
+    if (visited.includes(key)) return false
     if (sign == null) sign = board.get(vertex)
 
     let neighbors = board.getNeighbors(vertex)
@@ -21,7 +22,7 @@ function hasNLiberties(board, vertex, N, visited = {}, count = 0, sign = null) {
     count += freeNeighbors.length
     if (count >= N) return true
 
-    visited[vertex] = true
+    visited.push(key)
     return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count, sign))
 }
 

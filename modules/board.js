@@ -119,17 +119,18 @@ class Board {
         return this.getConnectedComponent(vertex, [this.get(vertex)])
     }
 
-    hasLiberties(vertex, visited = {}) {
+    hasLiberties(vertex, visited = []) {
         let sign = this.get(vertex)
         if (!this.hasVertex(vertex) || sign == 0) return false
 
-        if (vertex in visited) return false
+        let key = vertex.join(',')
+        if (visited.includes(key)) return false
         let neighbors = this.getNeighbors(vertex)
 
         if (neighbors.some(n => this.get(n) == 0))
             return true
 
-        visited[vertex] = true
+        visited.push(key)
 
         return neighbors.filter(n => this.get(n) == sign)
         .some(n => this.hasLiberties(n, visited))
@@ -407,7 +408,7 @@ class Board {
 
         for (let n of deadNeighbors) {
             if (move.get(n) == 0) continue
-            
+
             for (let c of this.getChain(n)) {
                 move.set(c, 0)
                 move.captures[sign.toString()]++
