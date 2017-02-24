@@ -2,45 +2,41 @@ const Board = require('./board')
 
 let equals = v => w => w[0] == v[0] && w[1] == v[1]
 
-function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
+function hasNPseudoLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
     let key = vertex.join(',')
     if (visited.includes(key)) return false
     if (sign == null) sign = board.get(vertex)
 
     let neighbors = board.getNeighbors(vertex)
-    let freeNeighbors = []
     let friendlyNeighbors = []
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
         let s = board.get(n)
 
-        if (s == 0) freeNeighbors.push(n)
-        else if (s == sign) friendlyNeighbors.push(n)
+        if (s == 0) {
+            count++
+            if (count >= N) return true
+        } else if (s == sign) {
+            friendlyNeighbors.push(n)
+        }
     }
 
-    count += freeNeighbors.length
-    if (count >= N) return true
-
     visited.push(key)
-    return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count, sign))
+    return friendlyNeighbors.some(n => hasNPseudoLiberties(board, n, N, visited, count, sign))
 }
 
 function makePseudoMove(board, sign, vertex) {
     let neighbors = board.getNeighbors(vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
-
-    if (neighborSigns.every(s => s == sign)) {
-        return null
-    }
+    if (neighborSigns.every(s => s == sign)) return null
 
     board.set(vertex, sign)
 
-    let hasEnemyNeighbors = neighborSigns.some(s => s == -sign)
     let checkCapture = false
 
-    if (!hasNLiberties(board, vertex, 2)) {
-        if (!hasEnemyNeighbors) {
+    if (!hasNPseudoLiberties(board, vertex, 2)) {
+        if (!neighborSigns.some(s => s == -sign)) {
             board.set(vertex, 0)
             return null
         } else {
@@ -52,7 +48,7 @@ function makePseudoMove(board, sign, vertex) {
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        if (neighborSigns[i] != -sign || hasNLiberties(board, n, 1))
+        if (neighborSigns[i] != -sign || hasNPseudoLiberties(board, n, 1))
             continue
 
         let chain = board.getChain(n)
@@ -72,24 +68,22 @@ function fixHoles(board) {
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
-
-            if (board.get(vertex) != 0)
-                continue
+            if (board.get(vertex) != 0) continue
 
             let neighbors = board.getNeighbors(vertex)
-            let sign = board.get(neighbors[0])
+            let neighborSigns = neighbors.map(n => board.get(n))
             let fix = true
 
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
 
-                if (board.get(n) != sign) {
+                if (neighborSigns[i] != neighborSigns[0]) {
                     fix = false
                     break
                 }
             }
 
-            if (fix) board.set(vertex, sign)
+            if (fix) board.set(vertex, neighborSigns[0])
         }
     }
 
