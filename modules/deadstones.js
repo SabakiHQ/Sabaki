@@ -17,7 +17,10 @@ function getChain(board, vertex, result = null, sign = null) {
     if (result === null) result = [vertex]
     if (sign === null) sign = board.get(vertex)
 
-    for (let v of getNeighbors(board, vertex)) {
+    let neighbors = getNeighbors(board, vertex)
+
+    for (let i = 0; i < neighbors.length; i++) {
+        let v = neighbors[i]
         if (board.get(v) != sign || result.some(equals(v))) continue
 
         result.push(v)
