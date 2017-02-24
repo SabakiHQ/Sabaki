@@ -1834,9 +1834,11 @@ sabaki.updateAreaMap = function(estimate) {
     let map = estimate ? board.getAreaEstimateMap() : board.getAreaMap()
 
     for (let li of $('#goban .row li').get()) {
+        let [x, y] = $(li).data('vertex')
+
         $(li)
         .removeClass('area_-1').removeClass('area_0').removeClass('area_1')
-        .addClass('area_' + map[$(li).data('vertex')])
+        .addClass('area_' + map[y][x])
     }
 
     if (!estimate) {
