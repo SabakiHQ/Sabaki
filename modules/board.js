@@ -75,7 +75,7 @@ class Board {
     }
 
     getNeighbors([x, y], ignoreBoard = false) {
-        if (!this.hasVertex([x, y])) return []
+        if (!ignoreBoard && !this.hasVertex([x, y])) return []
         let result = []
 
         if (ignoreBoard || x > 0)
