@@ -12,21 +12,18 @@ class Board {
         this.lines = []
 
         // Initialize arrangement
-        for (let i = 0; i < Math.max(arrangement.length, width * height); i++) {
-            this.arrangement[i] = arrangement[i] || 0
+
+        for (let y = 0; y < this.height; y++) {
+            this.arrangement[y] = y in arrangement ? [...arrangement[y]] : Array(this.width).fill(0)
         }
     }
 
-    vertex2index([x, y]) {
-        return y * this.width + x
+    get([x, y]) {
+        return (this.arrangement[y] || [])[x]
     }
 
-    get(vertex) {
-        return this.arrangement[this.vertex2index(vertex)]
-    }
-
-    set(vertex, sign) {
-        this.arrangement[this.vertex2index(vertex)] = sign
+    set([x, y], sign) {
+        this.arrangement[y][x] = sign
         return this
     }
 

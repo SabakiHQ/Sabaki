@@ -249,24 +249,26 @@ exports.getProbabilityMap = function(board, iterations) {
 
     for (let i = 0; i < iterations; i++) {
         let sign = Math.sign(Math.random() - 0.5)
-        let areaMap = exports.playTillEnd(board, sign).arrangement
+        let areaMap = exports.playTillEnd(board, sign)
 
-        for (let j = 0; j < areaMap.length; j++) {
-            if (!(j in pmap)) pmap[j] = 0
-            if (!(j in nmap)) nmap[j] = 0
+        for (let x = 0; x < areaMap.width; x++) {
+            for (let y = 0; y < areaMap.height; y++) {
+                if (!(y in pmap)) pmap[y] = Array(areaMap.width).fill(0)
+                if (!(y in nmap)) nmap[y] = Array(areaMap.width).fill(0)
 
-            if (areaMap[j] < 0) nmap[j]++
-            else if (areaMap[j] > 0) pmap[j]++
+                let s = areaMap.get([x, y])
+                if (s < 0) nmap[y][x]++
+                else if (s > 0) pmap[y][x]++
+            }
         }
     }
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let v = [x, y]
-            let j = board.vertex2index(v)
 
-            if (pmap[j] + nmap[j] === 0) result[v] = 0.5
-            else result[v] = pmap[j] / (pmap[j] + nmap[j])
+            if (pmap[y][x] + nmap[y][x] === 0) result[v] = 0.5
+            else result[v] = pmap[y][x] / (pmap[y][x] + nmap[y][x])
         }
     }
 
