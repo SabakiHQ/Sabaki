@@ -1,10 +1,10 @@
 const Board = require('./board')
 
-function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
-    if (sign == null) sign = board.get(vertex)
+let equals = v => w => w[0] == v[0] && w[1] == v[1]
 
-    if (visited.some(v => v[0] == vertex[0] && v[1] == vertex[1]))
-        return false
+function hasNLiberties(board, vertex, N, visited = {}, count = 0, sign = null) {
+    if (vertex in visited) return false
+    if (sign == null) sign = board.get(vertex)
 
     let neighbors = board.getNeighbors(vertex)
     let freeNeighbors = []
@@ -21,12 +21,11 @@ function hasNLiberties(board, vertex, N, visited = [], count = 0, sign = null) {
     count += freeNeighbors.length
     if (count >= N) return true
 
-    visited.push(vertex)
-
+    visited[vertex] = true
     return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count, sign))
 }
 
-function makeMove(board, sign, vertex) {
+function makeFastMove(board, sign, vertex) {
     let neighbors = board.getNeighbors(vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
 
@@ -84,8 +83,8 @@ function fixHoles(board) {
     return board
 }
 
-exports.guess = function(board, ...args) {
-    let map = exports.getProbabilityMap(board, ...args)
+exports.guess = function(board, scoring = false, iterations = 50) {
+    let map = exports.getProbabilityMap(board, iterations)
     let done = {}
     let result = []
 
@@ -103,6 +102,59 @@ exports.guess = function(board, ...args) {
             if (newSign == -sign) result.push(...chain)
 
             done[vertex] = true
+        }
+    }
+
+    if (scoring) {
+        let floating = exports.getFloatingStones(board)
+
+        for (let v of floating) {
+            if (!result.some(equals(v))) result.push(v)
+        }
+    }
+
+    return result
+}
+
+exports.getFloatingStones = function(board) {
+    let map = board.getAreaMap()
+    let done = {}
+    let result = []
+
+    for (let i = 0; i < board.width; i++) {
+        for (let j = 0; j < board.height; j++) {
+            let vertex = [i, j]
+            if (map[vertex] != 0 || vertex in done) continue
+
+            let posArea = board.getConnectedComponent(vertex, [0, -1])
+            let negArea = board.getConnectedComponent(vertex, [0, 1])
+            let posDead = posArea.filter(v => board.get(v) == -1)
+            let negDead = negArea.filter(v => board.get(v) == 1)
+            let posDiff = posArea.filter(v => !posDead.some(equals(v)) && !negArea.some(equals(v)))
+            let negDiff = negArea.filter(v => !negDead.some(equals(v)) && !posArea.some(equals(v)))
+
+            let sign = 0
+            let actualArea, actualDead
+
+            if (negDiff.length <= 1 && negDead.length <= posDead.length) {
+                sign--
+                actualArea = negArea
+                actualDead = negDead
+            }
+
+            if (posDiff.length <= 1 && posDead.length <= negDead.length) {
+                sign++
+                actualArea = posArea
+                actualDead = posDead
+            }
+
+            if (sign == 0) {
+                actualArea = board.getChain(vertex)
+                actualDead = []
+            }
+
+            actualArea.forEach(v => done[v] = true)
+            result.push(...actualDead)
         }
     }
 
@@ -134,7 +186,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
         while (freeVertices.length > 0) {
             let randomIndex = Math.floor(Math.random() * freeVertices.length)
             let vertex = freeVertices[randomIndex]
-            let freedVertices = makeMove(board, sign, vertex, false)
+            let freedVertices = makeFastMove(board, sign, vertex, false)
 
             freeVertices.splice(randomIndex, 1)
 
@@ -162,7 +214,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
     return fixHoles(board).arrangement
 }
 
-exports.getProbabilityMap = function(board, iterations = 50) {
+exports.getProbabilityMap = function(board, iterations) {
     let pmap = []
     let nmap = []
     let result = {}

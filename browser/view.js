@@ -1589,7 +1589,7 @@ exports.setScoringMode = function(mode, estimator) {
         exports.closeDrawers()
         $('body').addClass(type)
 
-        let dead = deadstones.guess(sabaki.getBoard())
+        let dead = deadstones.guess(sabaki.getBoard(), !estimator)
         dead.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
 
         sabaki.updateAreaMap(estimator)

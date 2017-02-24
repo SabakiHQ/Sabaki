@@ -177,10 +177,11 @@ class Board {
                 let indicator = 1
 
                 for (let c of chain) {
-                    if (indicator == 0) continue
+                    if (indicator == 0) break
 
                     for (let n of this.getNeighbors(c)) {
-                        if (this.get(n) == 0 || indicator == 0) continue
+                        if (indicator == 0) break
+                        if (this.get(n) == 0) continue
 
                         if (sign == 0) sign = map[n] = this.get(n)
                         else if (sign != this.get(n)) indicator = 0
@@ -405,6 +406,8 @@ class Board {
             .filter(n => move.get(n) == -sign && !move.hasLiberties(n))
 
         for (let n of deadNeighbors) {
+            if (move.get(n) == 0) continue
+            
             for (let c of this.getChain(n)) {
                 move.set(c, 0)
                 move.captures[sign.toString()]++
