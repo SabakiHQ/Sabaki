@@ -25,7 +25,7 @@ function hasNLiberties(board, vertex, N, visited = {}, count = 0, sign = null) {
     return friendlyNeighbors.some(n => hasNLiberties(board, n, N, visited, count, sign))
 }
 
-function makeFastMove(board, sign, vertex) {
+function makePseudoMove(board, sign, vertex) {
     let neighbors = board.getNeighbors(vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
 
@@ -186,7 +186,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
         while (freeVertices.length > 0) {
             let randomIndex = Math.floor(Math.random() * freeVertices.length)
             let vertex = freeVertices[randomIndex]
-            let freedVertices = makeFastMove(board, sign, vertex, false)
+            let freedVertices = makePseudoMove(board, sign, vertex, false)
 
             freeVertices.splice(randomIndex, 1)
 
