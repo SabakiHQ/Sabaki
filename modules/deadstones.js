@@ -123,7 +123,14 @@ function fixHoles(board) {
 }
 
 exports.guess = function(board, scoring = false, iterations = 20) {
-    let map = exports.getProbabilityMap(board, iterations)
+    let boardClone = board.clone()
+
+    if (scoring) {
+        let floating = exports.getFloatingStones(boardClone)
+        floating.forEach(v => boardClone.set(v, 0))
+    }
+
+    let map = exports.getProbabilityMap(boardClone, iterations)
     let done = []
     let result = []
 
@@ -141,14 +148,6 @@ exports.guess = function(board, scoring = false, iterations = 20) {
             if (newSign === -sign) result.push(...chain)
 
             done.push(vertex)
-        }
-    }
-
-    if (scoring) {
-        let floating = exports.getFloatingStones(board)
-
-        for (let v of floating) {
-            if (!result.some(equals(v))) result.push(v)
         }
     }
 
