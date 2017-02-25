@@ -1,6 +1,7 @@
 const Board = require('./board')
 
 let equals = v => w => w[0] === v[0] && w[1] === v[1]
+let equalsSign = s => t => s === t
 
 function getNeighbors(board, [x, y]) {
     let result = []
@@ -67,14 +68,14 @@ function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null)
 function makePseudoMove(board, sign, vertex) {
     let neighbors = getNeighbors(board, vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
-    if (neighborSigns.every(s => s === sign)) return null
+    if (neighborSigns.every(equalsSign(sign))) return null
 
     board.set(vertex, sign)
 
     let checkCapture = false
 
     if (!hasNLiberties(board, vertex, 2)) {
-        if (!neighborSigns.some(s => s === -sign)) {
+        if (!neighborSigns.some(equalsSign(-sign))) {
             board.set(vertex, 0)
             return null
         } else {
@@ -91,7 +92,10 @@ function makePseudoMove(board, sign, vertex) {
 
         let chain = getChain(board, n)
         dead.push(...chain)
-        chain.forEach(c => board.set(c, 0))
+
+        for (let j = 0; j < chain.length; j++) {
+            board.set(chain[j], 0)
+        }
     }
 
     if (checkCapture && dead.length === 0) {
@@ -130,23 +134,24 @@ function fixHoles(board) {
 
 exports.guess = function(board, scoring = false, iterations = 50) {
     let map = exports.getProbabilityMap(board, iterations)
-    let done = {}
+    let done = []
     let result = []
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
+            let key = vertex.join(',')
             let sign = board.get(vertex)
 
-            if (sign === 0 || vertex in done) continue
+            if (sign === 0 || done.includes(key)) continue
 
             let chain = getChain(board, vertex)
-            let probability = chain.map(v => map[v]).reduce((sum, x) => sum + x) / chain.length
+            let probability = chain.map(([i, j]) => map[j][i]).reduce((sum, x) => sum + x) / chain.length
             let newSign = probability < 0.5 ? -1 : probability > 0.5 ? 1 : 0
 
             if (newSign === -sign) result.push(...chain)
 
-            done[vertex] = true
+            done.push(key)
         }
     }
 
@@ -163,18 +168,21 @@ exports.guess = function(board, scoring = false, iterations = 50) {
 
 exports.getFloatingStones = function(board) {
     let map = board.getAreaMap()
-    let done = {}
+    let done = []
     let result = []
+    let isNegative = v => board.get(v) === -1
+    let isPositive = v => board.get(v) === 1
+    let markAsDone = v => done.push(v.join(','))
 
     for (let i = 0; i < board.width; i++) {
         for (let j = 0; j < board.height; j++) {
             let vertex = [i, j]
-            if (map[vertex] !== 0 || vertex in done) continue
+            if (map[j][i] !== 0 || done.includes(vertex.join(','))) continue
 
             let posArea = board.getConnectedComponent(vertex, [0, -1])
             let negArea = board.getConnectedComponent(vertex, [0, 1])
-            let posDead = posArea.filter(v => board.get(v) === -1)
-            let negDead = negArea.filter(v => board.get(v) === 1)
+            let posDead = posArea.filter(isNegative)
+            let negDead = negArea.filter(isPositive)
             let posDiff = posArea.filter(v => !posDead.some(equals(v)) && !negArea.some(equals(v)))
             let negDiff = negArea.filter(v => !negDead.some(equals(v)) && !posArea.some(equals(v)))
 
@@ -198,7 +206,7 @@ exports.getFloatingStones = function(board) {
                 actualDead = []
             }
 
-            actualArea.forEach(v => done[v] = true)
+            actualArea.forEach(markAsDone)
             result.push(...actualDead)
         }
     }
@@ -222,10 +230,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 
     let finished = {'-1': false, '1': false}
 
-    while (iterations > 0) {
-        if (freeVertices.length === 0 || finished[-sign] && finished[sign])
-            break
-
+    while (iterations > 0 && freeVertices.length > 0 && !(finished[-sign] && finished[sign])) {
         let madeMove = false
 
         while (freeVertices.length > 0) {
@@ -260,9 +265,9 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 }
 
 exports.getProbabilityMap = function(board, iterations) {
-    let pmap = []
-    let nmap = []
-    let result = {}
+    let pmap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
+    let nmap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
+    let result = [...Array(board.height)].map(_ => Array(board.width).fill(0.5))
 
     for (let i = 0; i < iterations; i++) {
         let sign = Math.sign(Math.random() - 0.5)
@@ -270,9 +275,6 @@ exports.getProbabilityMap = function(board, iterations) {
 
         for (let x = 0; x < areaMap.width; x++) {
             for (let y = 0; y < areaMap.height; y++) {
-                if (!(y in pmap)) pmap[y] = Array(areaMap.width).fill(0)
-                if (!(y in nmap)) nmap[y] = Array(areaMap.width).fill(0)
-
                 let s = areaMap.get([x, y])
                 if (s < 0) nmap[y][x]++
                 else if (s > 0) pmap[y][x]++
@@ -282,10 +284,8 @@ exports.getProbabilityMap = function(board, iterations) {
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
-            let v = [x, y]
-
-            if (pmap[y][x] + nmap[y][x] === 0) result[v] = 0.5
-            else result[v] = pmap[y][x] / (pmap[y][x] + nmap[y][x])
+            if (pmap[y][x] + nmap[y][x] === 0) continue
+            result[y][x] = pmap[y][x] / (pmap[y][x] + nmap[y][x])
         }
     }
 
