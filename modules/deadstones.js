@@ -100,19 +100,24 @@ function fixHoles(board) {
             if (board.get(vertex) !== 0) continue
 
             let neighbors = getNeighbors(vertex)
-            let neighborSigns = neighbors.map(n => board.get(n))
+            let sign = 0
             let fix = true
 
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
+                let s = board.get(n)
 
-                if (neighborSigns[i] !== null && neighborSigns[i] !== neighborSigns[0]) {
-                    fix = false
-                    break
+                if (s !== null && s !== sign) {
+                    if (sign === 0) {
+                        sign = s
+                    } else {
+                        fix = false
+                        break
+                    }
                 }
             }
 
-            if (fix) board.set(vertex, neighborSigns[0])
+            if (fix) board.set(vertex, sign)
         }
     }
 
