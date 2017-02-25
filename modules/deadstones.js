@@ -24,11 +24,10 @@ function getChain(board, vertex, result = null, sign = null) {
     return result
 }
 
-function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null) {
-    if (count[0] >= N) return true
+function hasNLiberties(board, vertex, N, visited = [], liberties = [], sign = null) {
+    if (liberties.length >= N) return true
 
-    let key = vertex.join(',')
-    if (visited.includes(key)) return false
+    if (visited.some(equals(vertex))) return false
     if (sign === null) sign = board.get(vertex)
 
     let neighbors = getNeighbors(vertex)
@@ -36,22 +35,20 @@ function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null)
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
-        let nkey = n.join(',')
         let s = board.get(n)
 
-        if (s === 0 && !visited.includes(nkey)) {
-            count[0]++
-            if (count[0] >= N) return true
-            visited.push(nkey)
+        if (s === 0 && !liberties.some(equals(n))) {
+            liberties.push(n)
+            if (liberties.length >= N) return true
         } else if (s === sign) {
             friendlyNeighbors.push(n)
         }
     }
 
-    visited.push(key)
+    visited.push(vertex)
 
     for (let i = 0; i < friendlyNeighbors.length; i++) {
-        if (hasNLiberties(board, friendlyNeighbors[i], N, visited, count, sign))
+        if (hasNLiberties(board, friendlyNeighbors[i], N, visited, liberties, sign))
             return true
     }
 
