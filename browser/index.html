@@ -320,18 +320,15 @@
                     Enable sounds</label></li>
                 <li><label><input type="checkbox" name="game.goto_end_after_loading" />
                     Jump to end after loading a game</label></li>
-            </ul>
-
-            <ul>
                 <li><label><input type="checkbox" name="view.fuzzy_stone_placement" />
                     Fuzzy stone placement</label></li>
                 <li><label><input type="checkbox" name="view.animated_stone_placement" />
                     Animate fuzzy placement</label></li>
+                <li><label><input type="checkbox" name="file.show_reload_warning" />
+                    Offer to reload file if changed externally</label></li>
             </ul>
 
             <ul>
-                <li><label><input type="checkbox" name="file.show_reload_warning" />
-                    Offer to reload file if changed externally</label></li>
                 <li><label><input type="checkbox" name="comments.show_move_interpretation" />
                     Show automatic move title</label></li>
                 <li><label><input type="checkbox" name="game.show_ko_warning" />
@@ -345,6 +342,16 @@
                 <li><label><input type="checkbox" name="edit.click_currentvertex_to_remove" />
                     Click marked stone to remove node</label></li>
             </ul>
+
+            <div>
+                <p><label>Game Tree Style:
+                    <select name="graph.layout">
+                        <option value="compact">Compact</option>
+                        <option value="spacious">Spacious</option>
+                        <option value="big">Big</option>
+                    </select>
+                </label></p>
+            </div>
         </div>
 
         <div class="engines">

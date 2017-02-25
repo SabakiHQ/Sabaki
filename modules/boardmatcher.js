@@ -60,15 +60,18 @@ exports.cornerMatch = function(points, target) {
     return i < 8 ? [i, false] : [i - 8, true]
 }
 
-exports.shapeMatch = function(shape, board, vertex) {
-    if (!board.hasVertex(vertex)) return false
+exports.shapeMatch = function(shape, board, vertex, corner = false) {
+    if (!board.hasVertex(vertex)) return null
     let sign = board.get(vertex)
-    if (sign == 0) return false
+    if (sign == 0) return null
 
     for (let anchor of shape.candidates) {
         let hypotheses = [...Array(8)].map(() => true)
 
         // Hypothesize vertex == anchor
+
+        if (corner && board.getSymmetries(anchor).every(([x, y]) => x != vertex[0] || y != vertex[1]))
+            continue
 
         for (let j = 0; j < shape.points.length; j++) {
             let v = shape.points[j].slice(0, 2), s = shape.points[j][2]
@@ -90,5 +93,5 @@ exports.shapeMatch = function(shape, board, vertex) {
         if (symm >= 0) return [symm, sign]
     }
 
-    return false
+    return null
 }

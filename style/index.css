@@ -820,8 +820,28 @@ header, #bar .bar {
     #preferences form > div.general {
         height: 315px;
         padding-top: 1.5em;
-        column-count: 2;
-        -moz-column-count: 2;
+    }
+    #preferences form > div.general ul {
+        width: 50%;
+        float: left;
+    }
+    #preferences form > div.general ul:not(:nth-child(even)) {
+        width: calc(50% - 20px);
+        margin-right: 20px;
+    }
+    #preferences form > div.general ul li label {
+        display: block;
+        height: 1.5em;
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #preferences form > div.general div {
+        clear: both;
+    }
+    #preferences form > div.general label select {
+        margin-left: 10px;
     }
     #preferences form.general > div.general,
     #preferences form.engines > div.engines {

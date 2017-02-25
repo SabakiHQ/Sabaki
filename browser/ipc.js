@@ -1,4 +1,5 @@
 const {ipcRenderer, shell, clipboard} = require('electron')
+const {app} = require('electron').remote
 const view = require('./view')
 const setting = require('../modules/setting')
 
