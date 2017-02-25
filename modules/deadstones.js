@@ -26,8 +26,6 @@ function getChain(board, vertex, result = null, sign = null) {
 
 function hasNLiberties(board, vertex, N, visited = [], liberties = [], sign = null) {
     if (liberties.length >= N) return true
-
-    if (visited.some(equals(vertex))) return false
     if (sign === null) sign = board.get(vertex)
 
     let neighbors = getNeighbors(vertex)
@@ -48,8 +46,11 @@ function hasNLiberties(board, vertex, N, visited = [], liberties = [], sign = nu
     visited.push(vertex)
 
     for (let i = 0; i < friendlyNeighbors.length; i++) {
-        if (hasNLiberties(board, friendlyNeighbors[i], N, visited, liberties, sign))
-            return true
+        let n = friendlyNeighbors[i]
+        if (visited.some(equals(n))) continue
+
+        hasNLiberties(board, n, N, visited, liberties, sign)
+        if (liberties.length >= N) return true
     }
 
     return false
@@ -121,7 +122,7 @@ function fixHoles(board) {
     return board
 }
 
-exports.guess = function(board, scoring = false, iterations = 20) {
+exports.guess = function(board, scoring = false, iterations = 50) {
     let boardClone = board.clone()
 
     if (scoring) {
