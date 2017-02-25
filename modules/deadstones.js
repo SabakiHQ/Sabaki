@@ -3,22 +3,15 @@ const Board = require('./board')
 let equals = v => w => w[0] === v[0] && w[1] === v[1]
 let equalsSign = s => t => s === t
 
-function getNeighbors(board, [x, y]) {
-    let result = []
-
-    if (x > 0) result.push([x - 1, y])
-    if (y > 0) result.push([x, y - 1])
-    if (x < board.width - 1) result.push([x + 1, y])
-    if (y < board.height - 1) result.push([x, y + 1])
-
-    return result
+function getNeighbors([x, y]) {
+    return [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
 }
 
 function getChain(board, vertex, result = null, sign = null) {
     if (result === null) result = [vertex]
     if (sign === null) sign = board.get(vertex)
 
-    let neighbors = getNeighbors(board, vertex)
+    let neighbors = getNeighbors(vertex)
 
     for (let i = 0; i < neighbors.length; i++) {
         let v = neighbors[i]
@@ -38,7 +31,7 @@ function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null)
     if (visited.includes(key)) return false
     if (sign === null) sign = board.get(vertex)
 
-    let neighbors = getNeighbors(board, vertex)
+    let neighbors = getNeighbors(vertex)
     let friendlyNeighbors = []
 
     for (let i = 0; i < neighbors.length; i++) {
@@ -66,7 +59,7 @@ function hasNLiberties(board, vertex, N, visited = [], count = [0], sign = null)
 }
 
 function makePseudoMove(board, sign, vertex) {
-    let neighbors = getNeighbors(board, vertex)
+    let neighbors = getNeighbors(vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
     if (neighborSigns.every(equalsSign(sign))) return null
 
@@ -112,14 +105,14 @@ function fixHoles(board) {
             let vertex = [x, y]
             if (board.get(vertex) !== 0) continue
 
-            let neighbors = getNeighbors(board, vertex)
+            let neighbors = getNeighbors(vertex)
             let neighborSigns = neighbors.map(n => board.get(n))
             let fix = true
 
             for (let i = 1; i < neighbors.length; i++) {
                 let n = neighbors[i]
 
-                if (neighborSigns[i] !== neighborSigns[0]) {
+                if (neighborSigns[i] !== null && neighborSigns[i] !== neighborSigns[0]) {
                     fix = false
                     break
                 }
@@ -140,10 +133,9 @@ exports.guess = function(board, scoring = false, iterations = 50) {
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
-            let key = vertex.join(',')
             let sign = board.get(vertex)
 
-            if (sign === 0 || done.includes(key)) continue
+            if (sign === 0 || done.some(equals(vertex))) continue
 
             let chain = getChain(board, vertex)
             let probability = chain.map(([i, j]) => map[j][i]).reduce((sum, x) => sum + x) / chain.length
@@ -151,7 +143,7 @@ exports.guess = function(board, scoring = false, iterations = 50) {
 
             if (newSign === -sign) result.push(...chain)
 
-            done.push(key)
+            done.push(vertex)
         }
     }
 
@@ -172,12 +164,12 @@ exports.getFloatingStones = function(board) {
     let result = []
     let isNegative = v => board.get(v) === -1
     let isPositive = v => board.get(v) === 1
-    let markAsDone = v => done.push(v.join(','))
+    let markAsDone = v => done.push(v)
 
     for (let i = 0; i < board.width; i++) {
         for (let j = 0; j < board.height; j++) {
             let vertex = [i, j]
-            if (map[j][i] !== 0 || done.includes(vertex.join(','))) continue
+            if (map[j][i] !== 0 || done.some(equals(vertex))) continue
 
             let posArea = board.getConnectedComponent(vertex, [0, -1])
             let negArea = board.getConnectedComponent(vertex, [0, 1])

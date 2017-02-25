@@ -19,7 +19,7 @@ class Board {
     }
 
     get([x, y]) {
-        return (this.arrangement[y] || [])[x]
+        return this.arrangement[y] ? this.arrangement[y][x] : null
     }
 
     set([x, y], sign) {
