@@ -339,12 +339,11 @@ class Board {
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
-                let vertex = [x, y]
-                let sign = areaMap[vertex]
+                let sign = areaMap[y][x]
                 if (sign === 0) continue
 
                 score['area_' + sign]++
-                if (this.get(vertex) === 0) score['territory_' + sign]++
+                if (this.get([x, y]) === 0) score['territory_' + sign]++
             }
         }
 

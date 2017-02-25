@@ -58,7 +58,6 @@ function hasNLiberties(board, vertex, N, visited = [], liberties = [], sign = nu
 function makePseudoMove(board, sign, vertex) {
     let neighbors = getNeighbors(vertex)
     let neighborSigns = neighbors.map(n => board.get(n))
-    if (neighborSigns.every(equalsSign(sign))) return null
 
     board.set(vertex, sign)
 
