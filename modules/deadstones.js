@@ -125,7 +125,7 @@ function fixHoles(board) {
     return board
 }
 
-exports.guess = function(board, scoring = false, iterations = 50) {
+exports.guess = function(board, scoring = false, iterations = 20) {
     let boardClone = board.clone()
 
     if (scoring) {
