@@ -24,6 +24,10 @@ function getChain(board, vertex, result = null, sign = null) {
     return result
 }
 
+function isPointChain(board, vertex) {
+    return !getNeighbors(vertex).some(equalsSign(board, board.get(vertex)))
+}
+
 function hasLiberties(board, vertex, visited = [], sign = null) {
     if (sign == null) sign = board.get(vertex)
 
@@ -56,6 +60,7 @@ function hasLiberties(board, vertex, visited = [], sign = null) {
 function makePseudoMove(board, sign, vertex) {
     let neighbors = getNeighbors(vertex)
     let checkCapture = false
+    let checkMultipleDeadChains = false
 
     if (neighbors.every(equalsSign(board, sign, undefined)))
         return null
@@ -66,12 +71,15 @@ function makePseudoMove(board, sign, vertex) {
         if (!neighbors.some(equalsSign(board, -sign))) {
             board.set(vertex, 0)
             return null
+        } else if (isPointChain(board, vertex)) {
+            checkMultipleDeadChains = true
         } else {
             checkCapture = true
         }
     }
 
     let dead = []
+    let deadChains = 0
 
     for (let i = 0; i < neighbors.length; i++) {
         let n = neighbors[i]
@@ -80,10 +88,20 @@ function makePseudoMove(board, sign, vertex) {
 
         let chain = getChain(board, n)
         dead.push(...chain)
+        deadChains++
 
         for (let j = 0; j < chain.length; j++) {
             board.set(chain[j], 0)
         }
+    }
+
+    if (checkMultipleDeadChains && deadChains <= 1) {
+        for (let j = 0; j < dead.length; j++) {
+            board.set(dead[j], -sign)
+        }
+
+        board.set(vertex, 0)
+        return null
     }
 
     if (checkCapture && dead.length === 0) {
@@ -225,8 +243,7 @@ exports.getFloatingStones = function(board) {
     return result
 }
 
-exports.playTillEnd = function(board, sign, iterations = null) {
-    if (iterations == null) iterations = board.width * board.height
+exports.playTillEnd = function(board, sign, iterations = Infinity) {
     board = board.clone()
 
     let freeVertices = []
@@ -272,7 +289,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
         iterations--
     }
 
-    return fixHoles(board)
+    return board
 }
 
 exports.getProbabilityMap = function(board, iterations) {
@@ -282,7 +299,7 @@ exports.getProbabilityMap = function(board, iterations) {
 
     for (let i = 0; i < iterations; i++) {
         let sign = Math.sign(Math.random() - 0.5)
-        let areaMap = exports.playTillEnd(board, sign)
+        let areaMap = fixHoles(exports.playTillEnd(board, sign))
 
         for (let x = 0; x < areaMap.width; x++) {
             for (let y = 0; y < areaMap.height; y++) {
