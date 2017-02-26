@@ -109,18 +109,17 @@ class Board {
         return this.getConnectedComponent(vertex, this.get(vertex))
     }
 
-    hasLiberties(vertex, visited = []) {
+    hasLiberties(vertex, visited = {}) {
         let sign = this.get(vertex)
         if (!this.hasVertex(vertex) || sign === 0) return false
 
-        let key = vertex.join(',')
-        if (visited.includes(key)) return false
+        if (vertex in visited) return false
         let neighbors = this.getNeighbors(vertex)
 
         if (neighbors.some(n => this.get(n) === 0))
             return true
 
-        visited.push(key)
+        visited[vertex] = true
 
         return neighbors.filter(n => this.get(n) === sign)
         .some(n => this.hasLiberties(n, visited))
@@ -297,10 +296,9 @@ class Board {
 
             while (stack.length > 0) {
                 let [v, d] = stack.shift()
-                let key = v.join(',')
 
-                if (visited.includes(key)) continue
-                visited.push(key)
+                if (visited.some(w => w[0] === v[0] && w[1] === v[1])) continue
+                visited.push(v)
 
                 let [x, y] = getVertex(v)
                 map[y][x] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
@@ -308,7 +306,7 @@ class Board {
                 stack.push(...this.getNeighbors(v, true).filter(n => {
                     return d + 1 <= distance
                     && this.get(n) !== -sign
-                    && !visited.includes(n.join(','))
+                    && !visited.some(w => w[0] === n[0] && w[1] === n[1])
                 }).map(n => [n, d + 1]))
             }
         }
@@ -316,10 +314,10 @@ class Board {
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let v = [x, y]
-                if (done.includes(v.join(',')) || this.get(v) !== sign) continue
+                if (done.some(w => w[0] === v[0] && w[1] === v[1]) || this.get(v) !== sign) continue
                 let chain = this.getChain(v)
 
-                chain.forEach(w => done.push(w.join(',')))
+                chain.forEach(w => done.push(w))
                 castInfluence(chain, 6)
             }
         }
