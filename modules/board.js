@@ -19,7 +19,7 @@ class Board {
     }
 
     get([x, y]) {
-        return this.arrangement[y] ? this.arrangement[y][x] : null
+        return this.arrangement[y] ? this.arrangement[y][x] : undefined
     }
 
     set([x, y], sign) {
@@ -157,7 +157,7 @@ class Board {
             for (let y = 0; y < this.height; y++) {
                 let vertex = [x, y]
 
-                if (map[y][x] !== null) continue
+                if (map[y][x] != null) continue
                 if (this.get(vertex) !== 0) {
                     map[y][x] = this.get(vertex)
                     continue

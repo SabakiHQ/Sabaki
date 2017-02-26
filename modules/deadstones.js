@@ -1,15 +1,15 @@
 const Board = require('./board')
 
 let equals = v => w => w[0] === v[0] && w[1] === v[1]
-let equalsSign = (board, s) => v => [s, null].includes(board.get(v))
+let equalsSign = (board, ...s) => v => s.includes(board.get(v))
 
 function getNeighbors([x, y]) {
     return [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
 }
 
 function getChain(board, vertex, result = null, sign = null) {
-    if (result === null) result = [vertex]
-    if (sign === null) sign = board.get(vertex)
+    if (result == null) result = [vertex]
+    if (sign == null) sign = board.get(vertex)
 
     let neighbors = getNeighbors(vertex)
 
@@ -25,7 +25,7 @@ function getChain(board, vertex, result = null, sign = null) {
 }
 
 function hasLiberties(board, vertex, visited = [], sign = null) {
-    if (sign === null) sign = board.get(vertex)
+    if (sign == null) sign = board.get(vertex)
 
     let neighbors = getNeighbors(vertex)
     let friendlyNeighbors = []
@@ -57,7 +57,8 @@ function makePseudoMove(board, sign, vertex) {
     let neighbors = getNeighbors(vertex)
     let checkCapture = false
 
-    if (neighbors.every(equalsSign(board, sign))) return null
+    if (neighbors.every(equalsSign(board, sign, undefined)))
+        return null
 
     board.set(vertex, sign)
 
@@ -107,7 +108,7 @@ function fixHoles(board) {
                 let n = neighbors[i]
                 let s = board.get(n)
 
-                if (s !== null && s !== sign) {
+                if (s != null && s !== sign) {
                     if (sign === 0) {
                         sign = s
                     } else {
@@ -124,7 +125,7 @@ function fixHoles(board) {
     return board
 }
 
-exports.guess = function(board, scoring = false, iterations = 30) {
+exports.guess = function(board, scoring = false, iterations = 50) {
     let boardClone = board.clone()
 
     if (scoring) {
@@ -205,7 +206,7 @@ exports.getFloatingStones = function(board) {
 }
 
 exports.playTillEnd = function(board, sign, iterations = null) {
-    if (iterations === null) iterations = board.width * board.height
+    if (iterations == null) iterations = board.width * board.height
     board = board.clone()
 
     let freeVertices = []
@@ -230,7 +231,7 @@ exports.playTillEnd = function(board, sign, iterations = null) {
 
             freeVertices.splice(randomIndex, 1)
 
-            if (freedVertices !== null) {
+            if (freedVertices != null) {
                 freeVertices.push(...freedVertices)
 
                 finished[-sign] = false
