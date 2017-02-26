@@ -154,7 +154,27 @@ exports.guess = function(board, scoring = false, iterations = 20) {
         }
     }
 
-    return result
+    if (!scoring) return result
+
+    // Preserve life & death status of related chains
+
+    done.length = 0
+    let updatedResult = []
+
+    for (let vertex of result) {
+        if (done.some(equals(vertex))) continue
+
+        let related = board.getRelatedChains(vertex)
+        let deadProbability = related.filter(v => result.some(equals(v))).length / related.length
+
+        if (deadProbability > 0.5) {
+            updatedResult.push(...related)
+        }
+
+        done.push(...related)
+    }
+
+    return updatedResult
 }
 
 exports.getFloatingStones = function(board) {
