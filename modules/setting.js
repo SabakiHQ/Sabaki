@@ -90,6 +90,7 @@ let defaults = {
     'graph.node_size': 4,
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
+    'score.estimator_iterations': 30,
     'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
