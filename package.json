@@ -11,25 +11,30 @@
     "type": "git",
     "url": "https://github.com/yishn/Sabaki"
   },
+  "bugs": {
+    "url": "https://github.com/yishn/Sabaki/issues"
+  },
   "build": {
     "appId": "de.yichuanshen.sabaki",
     "copyright": "Copyright © 2015-2017 Yichuan Shen",
+    "compression": "maximum",
     "linux": {
-      "category": "Game",
-      "packageCategory": "games",
-      "target": ["deb", "rpm", "pacman", "tar.gz"]
+      "category": "Game"
     },
     "mac": {
-      "category": "public.app-category.board-games"
+      "category": "public.app-category.board-games",
+      "target": "7z"
     },
-    "win": {
-      "iconUrl": "https://raw.githubusercontent.com/yishn/sabaki/master/data/icon.ico",
-      "target": ["msi"]
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
     },
     "fileAssociations": [
       {
         "ext": "sgf",
-        "name": "SGF"
+        "name": "SGF",
+        "description": "Smart Game Format"
       }
     ],
     "files": [
@@ -42,10 +47,6 @@
       "node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"
     ]
   },
-  "bugs": {
-    "url": "https://github.com/yishn/Sabaki/issues"
-  },
-  "license": "MIT",
   "dependencies": {
     "argv-split": "^1.0.0",
     "iconv-lite": "^0.4.13",
@@ -63,8 +64,8 @@
   "scripts": {
     "test": "mocha",
     "pack": "build --dir",
-    "dist:macos": "build -m",
-    "dist:linux": "build -l",
-    "dist:win": "build -w"
+    "dist:macos": "build -m --x64",
+    "dist:linux": "build -l --ia32 --x64",
+    "dist:win": "build -w --ia32"
   }
 }
