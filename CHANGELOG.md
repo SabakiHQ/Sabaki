@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Use Monte Carlo algorithm for better dead stones estimation
 
+**Changed**
+
+* Update to Electron v1.6.1
+
 **Fixed**
 
 * Fix GitHub and 'Report Issue' menu items not working

@@ -23,7 +23,7 @@
     },
     "mac": {
       "category": "public.app-category.board-games",
-      "target": "7z"
+      "target": ["7z"]
     },
     "nsis": {
       "oneClick": false,
@@ -56,8 +56,8 @@
     "sigma": "^1.0.3"
   },
   "devDependencies": {
-    "electron": "1.4.15",
-    "electron-builder": "^11.2.3",
+    "electron": "1.6.1",
+    "electron-builder": "^14.5.3",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
   },
