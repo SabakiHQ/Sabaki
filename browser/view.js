@@ -5,6 +5,7 @@ const natsort = require('natsort')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
 const boardmatcher = require('../modules/boardmatcher')
+const deadstones = require('../modules/deadstones')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
@@ -1588,8 +1589,8 @@ exports.setScoringMode = function(mode, estimator) {
         exports.closeDrawers()
         $('body').addClass(type)
 
-        let deadstones = estimator ? sabaki.getBoard().guessDeadStones() : sabaki.getBoard().determineDeadStones()
-        deadstones.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
+        let dead = deadstones.guess(sabaki.getBoard(), !estimator, setting.get('score.estimator_iterations'))
+        dead.forEach(v => $('#goban .pos_' + v.join('-')).addClass('dead'))
 
         sabaki.updateAreaMap(estimator)
     } else {
