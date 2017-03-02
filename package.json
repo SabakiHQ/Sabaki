@@ -39,6 +39,7 @@
     ],
     "files": [
       "**/*",
+      "!test${/*}",
       "!browser/build.js",
       "!**/{.c9,scss,docs}${/*}",
       "!node_modules/moment${/*}",
