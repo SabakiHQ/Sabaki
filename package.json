@@ -3,7 +3,9 @@
   "productName": "Sabaki",
   "version": "0.20.0",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
-  "author": "Yichuan Shen",
+  "author": "Yichuan Shen <shen.yichuan@gmail.com>",
+  "homepage": "http://sabaki.yichuanshen.de",
+  "license": "MIT",
   "main": "main.js",
   "repository": {
     "type": "git",
@@ -12,7 +14,39 @@
   "bugs": {
     "url": "https://github.com/yishn/Sabaki/issues"
   },
-  "license": "MIT",
+  "build": {
+    "appId": "de.yichuanshen.sabaki",
+    "copyright": "Copyright © 2015-2017 Yichuan Shen",
+    "compression": "maximum",
+    "linux": {
+      "category": "Game"
+    },
+    "mac": {
+      "category": "public.app-category.board-games",
+      "target": ["7z"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    },
+    "fileAssociations": [
+      {
+        "ext": "sgf",
+        "name": "SGF",
+        "description": "Smart Game Format"
+      }
+    ],
+    "files": [
+      "**/*",
+      "!browser/build.js",
+      "!**/{.c9,scss,docs}${/*}",
+      "!node_modules/moment${/*}",
+      "!node_modules/{octicons,sigma}/{plugins,lib,src,build/font}${/*}",
+      "!node_modules/sigma/build/plugins/*.js",
+      "node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"
+    ]
+  },
   "dependencies": {
     "argv-split": "^1.0.0",
     "iconv-lite": "^0.4.13",
@@ -22,14 +56,16 @@
     "sigma": "^1.0.3"
   },
   "devDependencies": {
-    "electron-packager": "^8.5.1",
+    "electron": "1.6.1",
+    "electron-builder": "^14.5.3",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
   },
   "scripts": {
     "test": "mocha",
-    "build:win": "electron-packager ./ sabaki --platform=win32 --arch=all --app-version=0.20.0 --build-version=0.20.0 --electron-version=1.4.15 --out=./bin --overwrite --icon=./data/icon.ico --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --win32metadata.CompanyName=\"Yichuan Shen\" --win32metadata.FileDescription=\"Sabaki\" --win32metadata.OriginalFilename=\"sabaki.exe\" --win32metadata.ProductName=\"Sabaki\" --win32metadata.InternalName=\"sabaki.exe\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
-    "build:linux": "electron-packager ./ sabaki --platform=linux --arch=all --app-version=0.20.0 --build-version=0.20.0 --electron-version=1.4.15 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar",
-    "build:osx": "electron-packager ./ Sabaki --platform=darwin --arch=all --app-version=0.20.0 --build-version=0.20.0 --electron-version=1.4.15 --out=./bin --overwrite --app-copyright=\"Copyright (C) 2015-2017 Yichuan Shen\" --icon=./data/icon.icns --app-category-type=public.app-category.games --extend-info=./data/extra-info.plist --ignore=\"(build.js|docs|tests?|examples|.c9|scss|^/node_modules/(moment|(octicons|sigma)/(plugins|lib|src|build/font)))($|/)\" --asar"
+    "pack": "build --dir",
+    "dist:macos": "build -m --x64",
+    "dist:linux": "build -l --ia32 --x64",
+    "dist:win": "build -w --ia32"
   }
 }
