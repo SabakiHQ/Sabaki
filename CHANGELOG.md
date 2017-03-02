@@ -31,7 +31,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Update to Electron v1.4.15
-* Current variation is more distinguishable from other variations
+* Current variation is more distinguishable from other variations in the game tree
 
 **Fixed**
 
