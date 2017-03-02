@@ -67,6 +67,7 @@
     "pack": "build --dir",
     "dist:macos": "build -m --x64",
     "dist:linux": "build -l --ia32 --x64",
-    "dist:win": "build -w --ia32"
+    "dist:win32": "build -w --ia32",
+    "dist:win64": "build -w --x64"
   }
 }
