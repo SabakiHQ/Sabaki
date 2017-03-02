@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.20.1][v0.20.1] (2017-03-03)
 
 **Added**
 
@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Update to Electron v1.6.1
+* Sabaki Web saves settings in local storage
 
 **Fixed**
 
@@ -520,7 +521,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.1...master
+[v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
 [v0.20.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.20.0
 [v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.19.2...v0.19.3
 [v0.19.2]: https://github.com/yishn/Sabaki/compare/v0.19.1...v0.19.2
