@@ -183,6 +183,11 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
     .goban.variations .row li.sign_0.ghost_-1 .stone::after,
     .goban .row li.sign_1.point .stone::after { background: white; }
 
+    .goban.variations .row li.sign_0.ghost_1.badmove .stone::after { background: #600; }
+    .goban.variations .row li.sign_0.ghost_-1.badmove .stone::after { background: #fbd; opacity: .8; }
+    .goban.variations .row li.sign_0.ghost_1.goodmove .stone::after { background: #060; }
+    .goban.variations .row li.sign_0.ghost_-1.goodmove .stone::after { background: #bfb;  }
+
     body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
     body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after,
     body:not(.guess) .goban.variations .row li.sign_0.ghost_1 .stone::after,

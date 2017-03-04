@@ -275,11 +275,17 @@ sabaki.setBoard = function(board) {
 
     // Add ghosts
 
-    for (let [v, s, type] of board.ghosts) {
+    for (let [v, s, types] of board.ghosts) {
         let $li = $('#goban .pos_' + v.join('-'))
+        $li.removeClass('badmove')
+        $li.removeClass('goodmove')
 
-        if (type == 'child') $li.addClass('ghost_' + s)
-        else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+        for (let type of types) {
+            if (type == 'child') $li.addClass('ghost_' + s)
+            else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+            else if (type == 'badmove') $li.addClass('badmove')
+            else if (type == 'goodmove') $li.addClass('goodmove')
+        }
     }
 
     // Add lines
