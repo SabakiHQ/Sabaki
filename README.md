@@ -34,7 +34,7 @@ If you're looking for the code of the [website](http://sabaki.yichuanshen.de/), 
 
 ## Building & Tests
 
-See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests) in the wiki.
+See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/e7e4e585a18c0cb7e0a69814a67626bde5d23046) in the wiki.
 
 ## License
 

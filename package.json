@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.20.0",
+  "version": "0.20.1",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
@@ -39,6 +39,7 @@
     ],
     "files": [
       "**/*",
+      "!test${/*}",
       "!browser/build.js",
       "!**/{.c9,scss,docs}${/*}",
       "!node_modules/moment${/*}",
@@ -66,6 +67,7 @@
     "pack": "build --dir",
     "dist:macos": "build -m --x64",
     "dist:linux": "build -l --ia32 --x64",
-    "dist:win": "build -w --ia32"
+    "dist:win32": "build -w --ia32",
+    "dist:win64": "build -w --x64"
   }
 }
