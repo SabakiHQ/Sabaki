@@ -17,6 +17,7 @@ exports.buildFromTemplate = function(template) {
             exports.hide()
         })
 
+        if (item.type == 'saveClip') $li.addClass('saveClip')
         if (item.checked) $li.addClass('checked')
         $element.append($li)
     })

@@ -915,13 +915,10 @@ sabaki.prepareCleanMarkup = function() {
 }
 
 sabaki.prepareClipboard = function() {
-    document.addEventListener("copy", function(e) {
-      e.clipboardData.setData("text/plain", sabaki.saveFileToSgf());
-      e.preventDefault();
-    });
-    document.addEventListener("paste", function(e) {
-      sabaki.loadFileFromSgf(e.clipboardData.getData("text/plain"), false, true);
-      e.preventDefault();
+    new Clipboard(".saveClip", {
+        text: function(trigger) {
+            return sabaki.saveFileToSgf();
+        }
     });
 }
 
@@ -1960,10 +1957,6 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
     }, setting.get('app.loadgame_delay'))
 }
 
-sabaki.loadFileFromClipboard = function() {
-    document.execCommand("paste");
-}
-
 sabaki.saveFile = function(filename) {
     if (view.getIsBusy()) return
 
@@ -1993,10 +1986,6 @@ sabaki.saveFileToSgf = function() {
     }
 
     return text
-}
-
-sabaki.saveFileToClipboard = function() {
-    document.execCommand("copy");
 }
 
 sabaki.goStep = function(step) {

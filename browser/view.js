@@ -1112,11 +1112,12 @@ exports.openHeaderMenu = function() {
         },
         {
             label: 'Save to Clipboard',
-            click: () => sabaki.saveFileToClipboard()
+            type: 'saveClip',
+            click: () => ""
         },
         {
             label: 'Load from Clipboard',
-            click: () => sabaki.loadFileFromClipboard()
+            click: () => sabaki.loadFileFromSgf(window.prompt("Paste the sgf here"))
         },
         { type: 'separator' },
         {
