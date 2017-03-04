@@ -225,8 +225,11 @@ header, #bar .bar {
     .edit #edit ul li a:hover {
         background: #B3AC53;
     }
-    .edit #edit ul li.selected a, .edit #edit ul li a:active {
-        background: #A29B42;
+    .edit #edit ul li a:active {
+        background: #8E851B;
+    }
+    .edit #edit ul li.selected a {
+        background: #9F962C;
     }
     #edit ul li a img {
         position: absolute;
