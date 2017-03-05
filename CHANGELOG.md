@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to @C0DEHERO)
+
 **Fixed**
 
 * Fix Sabaki inserting a ton of unnecessary empty lines in SGF files on Windows
