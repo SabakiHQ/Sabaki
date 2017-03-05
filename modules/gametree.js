@@ -491,6 +491,9 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             return
         }
 
+        if (board.ghosts.some(([w]) => w[0] == v[0] && w[1] == v[1]))
+            return
+
         let types = [type]
 
         if ('BM' in node) {
@@ -507,13 +510,6 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
         board.ghosts.push([v, sign, types])
     }
 
-    if (index == 0 && tree.parent) {
-        for (let subtree of tree.parent.subtrees) {
-            if (subtree.nodes.length == 0) continue
-            addOverlay(subtree.nodes[0], 'sibling')
-        }
-    }
-
     if (index == tree.nodes.length - 1) {
         for (let subtree of tree.subtrees) {
             if (subtree.nodes.length == 0) continue
@@ -521,6 +517,13 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
         }
     } else if (index < tree.nodes.length - 1) {
         addOverlay(tree.nodes[index + 1], 'child')
+    }
+
+    if (index == 0 && tree.parent) {
+        for (let subtree of tree.parent.subtrees) {
+            if (subtree.nodes.length == 0) continue
+            addOverlay(subtree.nodes[0], 'sibling')
+        }
     }
 
     node.board = board
