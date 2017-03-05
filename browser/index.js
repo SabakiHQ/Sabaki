@@ -451,11 +451,13 @@ sabaki.setAutoplaying = function(playing) {
 sabaki.loadSettings = function() {
     $('head link.userstyle').attr('href', setting.stylesPath)
 
-    $('#goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
-    $('#goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
-    $('#goban').toggleClass('coordinates', setting.get('view.show_coordinates'))
-    $('#goban').toggleClass('variations', setting.get('view.show_next_moves'))
-    $('#goban').toggleClass('siblings', setting.get('view.show_siblings'))
+    $('#goban')
+    .toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
+    .toggleClass('animation', setting.get('view.animated_stone_placement'))
+    .toggleClass('coordinates', setting.get('view.show_coordinates'))
+    .toggleClass('movecolorization', setting.get('view.show_move_colorization'))
+    .toggleClass('variations', setting.get('view.show_next_moves'))
+    .toggleClass('siblings', setting.get('view.show_siblings'))
 
     if (setting.get('view.show_leftsidebar')) {
         $('body').addClass('leftsidebar')

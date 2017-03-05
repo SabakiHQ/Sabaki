@@ -109,6 +109,7 @@ let defaults = {
     'view.show_comments': false,
     'view.show_coordinates': false,
     'view.show_graph': false,
+    'view.show_move_colorization': true,
     'view.show_next_moves': true,
     'view.show_siblings': true,
     'view.leftsidebar_width': 250,
