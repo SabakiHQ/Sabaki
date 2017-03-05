@@ -237,18 +237,22 @@ exports.stringify = function(tree) {
             output += id + '[' + node[id].map(exports.escapeString).join('][') + ']'
         }
 
-        output += '\n'
+        output += helper.linebreak
     }
 
     for (let subtree of tree.subtrees) {
         output += '(' + exports.stringify(subtree) + ')'
     }
 
-    return output.replace(/\n/g, helper.linebreak)
+    return output
 }
 
 exports.escapeString = function(input) {
-    return input.toString().replace(/\\/g, '\\\\').replace(/\]/g, '\\]')
+    return input.toString()
+        .replace(/\\/g, '\\\\')
+        .replace(/\]/g, '\\]')
+        .replace(/\n\n+/g, '\n\n')
+        .replace(/\n/g, helper.linebreak)
 }
 
 exports.unescapeString = function(input) {
