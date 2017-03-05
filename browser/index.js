@@ -241,11 +241,13 @@ sabaki.setBoard = function(board) {
             let $li = $goban.find('.pos_' + x + '-' + y)
             let $span = $li.find('.stone span')
             let sign = board.get([x, y])
-            let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
-                'circle', 'triangle', 'cross', 'square', 'label', 'point',
-                'dimmed', 'paint_1', 'paint_-1']
 
             // Clean up
+
+            let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
+                'circle', 'triangle', 'cross', 'square', 'label',
+                'point', 'dimmed', 'paint_1', 'paint_-1',
+                'badmove', 'doubtfulmove', 'interestingmove', 'goodmove']
 
             types.forEach(x => $li.hasClass(x) ? $li.removeClass(x) : null)
             $span.attr('title', '')
@@ -253,11 +255,11 @@ sabaki.setBoard = function(board) {
             // Add markups
 
             if ([x, y] in board.markups) {
-                let markup = board.markups[[x, y]]
-                let type = markup[0], label = markup[1]
+                let [type, label] = board.markups[[x, y]]
 
                 if (type != '') $li.addClass(type)
                 if (label != '') $span.attr('title', label)
+
                 $li.toggleClass('smalllabel', label.length >= 3)
             }
 
@@ -275,23 +277,26 @@ sabaki.setBoard = function(board) {
 
     // Add ghosts
 
-    for (let [v, s, type] of board.ghosts) {
+    for (let [v, s, types] of board.ghosts) {
         let $li = $('#goban .pos_' + v.join('-'))
 
-        if (type == 'child') $li.addClass('ghost_' + s)
-        else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+        for (let type of types) {
+            if (type == 'child') $li.addClass('ghost_' + s)
+            else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+            else if (type == 'badmove') $li.addClass('badmove')
+            else if (type == 'doubtfulmove') $li.addClass('doubtfulmove')
+            else if (type == 'interestingmove') $li.addClass('interestingmove')
+            else if (type == 'goodmove') $li.addClass('goodmove')
+        }
     }
 
     // Add lines
 
     $('#goban hr').remove()
 
-    for (let line of board.lines) {
+    for (let [v1, v2, arrow] of board.lines) {
         $goban.append(
-            $('<hr/>')
-            .addClass(line[2] ? 'arrow' : 'line')
-            .data('v1', line[0])
-            .data('v2', line[1])
+            $('<hr/>').addClass(arrow ? 'arrow' : 'line').data('v1', v1).data('v2', v2)
         )
     }
 
