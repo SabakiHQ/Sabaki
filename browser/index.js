@@ -18,6 +18,7 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const Board = require('../modules/board')
+const Clipboard = require('clipboard')
 
 window.sabaki = {
     view,
