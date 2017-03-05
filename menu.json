@@ -350,6 +350,11 @@
                 "action": "togglecoordinates"
             },
             {
+                "label": "Show Move Colori&zation",
+                "checked": "view.show_move_colorization",
+                "action": "toggleshowmovecolorization"
+            },
+            {
                 "label": "Show &Next Moves",
                 "checked": "view.show_next_moves",
                 "action": "toggleshownextmoves"

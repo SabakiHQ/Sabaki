@@ -67,6 +67,15 @@ exports.setShowSiblings = function(show) {
     setting.set('view.show_siblings', show)
 }
 
+exports.getShowMoveColorization = function() {
+    return $('#goban').hasClass('movecolorization')
+}
+
+exports.getShowMoveColorization = function(show) {
+    $('#goban').toggleClass('movecolorization', show)
+    setting.set('view.show_move_colorization', show)
+}
+
 exports.getFuzzyStonePlacement = function() {
     return $('#goban').hasClass('fuzzy')
 }
