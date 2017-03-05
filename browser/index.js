@@ -2185,10 +2185,6 @@ sabaki.loadFileFromSgf = function(content, dontAsk = false, ignoreEncoding = fal
     }, setting.get('app.loadgame_delay'))
 }
 
-sabaki.loadFileFromClipboard = function() {
-    sabaki.loadFileFromSgf(clipboard.readText(), false, true)
-}
-
 sabaki.saveFile = function(filename) {
     if (view.getIsBusy()) return
 
