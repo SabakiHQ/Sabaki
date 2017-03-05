@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to @C0DEHERO)
+* Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to [@C0DEHERO](https://github.com/C0DEHERO))
 
 **Fixed**
 
@@ -118,7 +118,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Add support for non-UTF8 encodings (Thanks to @apetresc)
+* Add support for non-UTF8 encodings (Thanks to [@apetresc](https://github.com/apetresc))
 * Add basic text editing keyboard shortcuts when editing/writing comments on macOS
 
 **Changed**
