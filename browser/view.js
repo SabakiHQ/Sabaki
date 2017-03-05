@@ -1117,7 +1117,7 @@ exports.openHeaderMenu = function() {
         },
         {
             label: 'Load from Clipboard',
-            click: () => sabaki.loadFileFromSgf(window.prompt('Paste the sgf here'))
+            click: () => sabaki.loadFileFromSgf(window.prompt('Paste SGF here:'))
         },
         { type: 'separator' },
         {

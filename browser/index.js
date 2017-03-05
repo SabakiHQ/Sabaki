@@ -5,6 +5,7 @@ const remote = {getCurrentWindow: () => null}
 const ipcRenderer = {send: () => {}}
 const app = {getName: () => 'Sabaki', getVersion: () => 'web'}
 const dialog = {showMessageBox: () => {}}
+const Clipboard = require('clipboard')
 const EventEmitter = require('events')
 const Pikaday = require('pikaday')
 const Menu = require('../modules/menu')
@@ -18,7 +19,6 @@ const sound = require('../modules/sound')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const Board = require('../modules/board')
-const Clipboard = require('clipboard')
 
 window.sabaki = {
     view,
