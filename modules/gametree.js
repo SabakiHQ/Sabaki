@@ -496,14 +496,16 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 
         let types = [type]
 
-        if ('BM' in node) {
-            types.push('badmove')
-        } else if ('DO' in node) {
-            types.push('doubtfulmove')
-        } else if ('IT' in node) {
-            types.push('interestingmove')
-        } else if ('TE' in node) {
-            types.push('goodmove')
+        if (type == 'child') {
+            if ('BM' in node) {
+                types.push('badmove')
+            } else if ('DO' in node) {
+                types.push('doubtfulmove')
+            } else if ('IT' in node) {
+                types.push('interestingmove')
+            } else if ('TE' in node) {
+                types.push('goodmove')
+            }
         }
 
         if (!board.hasVertex(v)) return
