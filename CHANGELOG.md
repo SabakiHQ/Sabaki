@@ -53,50 +53,9 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Sabaki remembers board setup, i.e. komi, board size, and handicap stones
-
-**Changed**
-
-* Update to Electron v1.4.13
-
-**Fixed**
-
-* Fix copy to clipboard not working
-* Fix board arrows not pointing in the right direction
-
-## [Sabaki v0.19.2][v0.19.2] (2016-12-15)
-
-**Added**
-
 * Sabaki offers to reload an opened file if it has been changed externally
 * Ability to remove all variations apart from the active one
-
-**Changed**
-
-* Update to Electron v1.4.12
-
-**Fixed**
-
-* Fix incorrectly interpreting openings on boards other than 19&times;19
-* Fix Sabaki closing even if user cancels
-
-## [Sabaki v0.19.1][v0.19.1] (2016-11-20)
-
-**Added**
-
 * Ability to flatten nodes
-
-**Changed**
-
-* Update to Electron v1.4.7
-
-**Fixed**
-
-* Fix game graph not being updated when pasting variations sometimes
-
-## [Sabaki v0.19.0][v0.19.0] (2016-11-11)
-
-**Added**
-
 * Add 'Play' menu
 * Add 'Go To Move Number' menu item
 * Ability to select points by keyboard input
@@ -105,12 +64,17 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Change keyboard shortcuts for toggling sidebar elements
-* Update to Electron v1.4.5
+* Update to Electron v1.4.13
 * Update to Octicons v5.0.1
 * Remove gemini-scrollbar dependency
 
 **Fixed**
 
+* Fix copy to clipboard not working
+* Fix board arrows not pointing in the right direction
+* Fix incorrectly interpreting openings on boards other than 19&times;19
+* Fix Sabaki closing even if user cancels
+* Fix game graph not being updated when pasting variations sometimes
 * Fix handicap stones being placed incorrectly
 * Fix not being able to select executables for engines
 
@@ -534,10 +498,7 @@ First release
 [unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.1...master
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
 [v0.20.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.20.0
-[v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.19.2...v0.19.3
-[v0.19.2]: https://github.com/yishn/Sabaki/compare/v0.19.1...v0.19.2
-[v0.19.1]: https://github.com/yishn/Sabaki/compare/v0.19.0...v0.19.1
-[v0.19.0]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.0
+[v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.3
 [v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.3
 [v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.17.2
 [v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.3
