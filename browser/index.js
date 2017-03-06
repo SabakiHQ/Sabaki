@@ -554,7 +554,13 @@ sabaki.prepareSidebar = function() {
     // Prepare comments section
 
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
-    $('#properties .edit .header img').on('click', () => view.openCommentMenu())
+
+    $('#properties .edit .header img').on('click', function() {
+        view.openCommentMenu([
+            Math.round($(this).offset().left),
+            Math.round($(this).offset().top + $(this).height())
+        ])
+    })
 
     $('#properties .edit .header input, #properties .edit textarea')
     .on('input', () => sabaki.commitCommentText())
@@ -1214,7 +1220,7 @@ sabaki.askForReload = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
+sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, position = null) {
     view.closeGameInfo()
 
     if (typeof vertex == 'string') {
@@ -1296,16 +1302,21 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false) {
             }
         }
     } else if (view.getPlayMode() || view.getAutoplayMode()) {
-        if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
-        if (board.get(vertex) == 0) {
-            sabaki.makeMove(vertex)
-            view.closeDrawers()
-        } else if (vertex in board.markups
-        && board.markups[vertex][0] == 'point'
-        && setting.get('edit.click_currentvertex_to_remove')) {
-            sabaki.removeNode(...sabaki.getCurrentTreePosition())
+        if (buttonIndex == 0) {
+            if (board.get(vertex) == 0) {
+                sabaki.makeMove(vertex)
+                view.closeDrawers()
+            } else if (vertex in board.markups
+                       && board.markups[vertex][0] == 'point'
+                       && setting.get('edit.click_currentvertex_to_remove')) {
+                sabaki.removeNode(...sabaki.getCurrentTreePosition())
+            }
+        } else if (buttonIndex == 2) {
+            if (vertex in board.markups && board.markups[vertex][0] == 'point') {
+                view.openCommentMenu(position)
+            }
         }
     }
 }

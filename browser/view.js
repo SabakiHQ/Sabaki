@@ -898,7 +898,8 @@ exports.buildBoard = function() {
                     if (!$('#goban').data('mousedown')) return
 
                     $('#goban').data('mousedown', false)
-                    sabaki.vertexClicked(vertex, evt.button, evt.ctrlKey)
+                    let pos = [evt.clientX, evt.clientY]
+                    sabaki.vertexClicked(vertex, evt.button, evt.ctrlKey, pos)
                 })
                 .on('touchend', evt => {
                     if (!exports.getEditMode()
@@ -1147,7 +1148,7 @@ exports.openHeaderMenu = function() {
     )
 }
 
-exports.openCommentMenu = function() {
+exports.openCommentMenu = function(position) {
     let tp = sabaki.getCurrentTreePosition()
     let node = tp[0].nodes[tp[1]]
 
@@ -1243,13 +1244,7 @@ exports.openCommentMenu = function() {
     }
 
     let menu = Menu.buildFromTemplate(template)
-    let $el = $('#properties .edit .header img')
-
-    menu.popup(
-        remote.getCurrentWindow(),
-        Math.round($el.offset().left),
-        Math.round($el.offset().top + $el.height())
-    )
+    menu.popup(remote.getCurrentWindow(), ...position)
 }
 
 exports.openEnginesMenu = function($element, callback = () => {}) {
