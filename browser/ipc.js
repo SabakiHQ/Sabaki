@@ -53,8 +53,8 @@ let menudata = {
         sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), -1)
     },
     togglehotspot: () => sabaki.setHotspot(!sabaki.getHotspot()),
-    nexthotspot: () => sabaki.findBookmark(1),
-    previoushotspot: () => sabaki.findBookmark(-1),
+    nexthotspot: () => sabaki.findHotspot(1),
+    previoushotspot: () => sabaki.findHotspot(-1),
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),

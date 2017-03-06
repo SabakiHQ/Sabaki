@@ -1,4 +1,4 @@
-# Sabaki Object
+Integer# Sabaki Object
 
 `sabaki` is a global object, giving users access to the Sabaki API.
 
@@ -19,7 +19,7 @@ The `preparation-complete` event is emitted after the page is ready, Sabaki has 
 ### Event: 'navigating'
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Number>`
+* `index` `<Integer>`
 
 The `navigating` event is triggered when Sabaki is about to load the game tree position at `index` in `tree`.
 
@@ -33,7 +33,7 @@ The `move-made` event is emitted after a move has been played, either a stone ha
 
 ### Event: 'resigned'
 
-* `player` `<Number>`
+* `player` `<Integer>`
 
 The `resigned` event is triggered after someone resigns. `player` is `1` if black resigns, otherwise `-1`.
 
@@ -87,6 +87,16 @@ Returns to play mode and replaces current file with the SGF specified in `sgf`. 
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
 
+### sabaki.saveFile([filename])
+
+* `filename` `<String>`
+
+Saves current file in given `filename`. If `filename` is not set, Sabaki will show a save file dialog. On the web version `filename` is ignored and treated as if not set.
+
+### sabaki.saveFileToSgf()
+
+Returns the SGF of the current file as a string.
+
 ### sabaki.askForSave()
 
 If there's a modified file opened, Sabaki will ask the user to save the file first or to cancel the action. Returns `true` if the user saved the file or wants to proceed without saving, and `false` if the user wants to cancel the action.
@@ -94,7 +104,7 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 ### sabaki.vertexClick(vertex[, buttonIndex[, ctrlKey[, position]]])
 
 * `vertex` [`<Vertex>`](vertex.md) or `<String>`
-* `buttonIndex` `<Number>` - Default: `0`
+* `buttonIndex` `<Integer>` - Default: `0`
 * `ctrlKey` `<Boolean>` - Default: `false`
 * `position` `<Integer[]>` - Default: `null`
 
@@ -112,6 +122,26 @@ Depending on the settings, Sabaki may notify the user about ko and suicide, play
 
 Updates game information that the current player has resigned and shows the game info drawer for the user.
 
-### sabaki.useTool(vertex[, tool])
+### sabaki.useTool(vertex[, tool[, buttonIndex]])
 
 * `vertex` [`<Vertex>`](vertex.md) or `<String>`
+* `tool` `<String>` - One of `stone_1`, `stone_-1`, `cross`, `triangle`, `square`, `circle`, `line`, `arrow`, `label`, `number`. Default is currently selected tool.
+* `buttonIndex` `<Integer>` - Default: `0`
+
+### sabaki.findPosition(step, condition[, callback])
+
+* `step` `<Integer>`
+* `condition` `<Function>`
+* `callback` `<Function>`
+
+### sabaki.findHotspot(step[, callback])
+
+* `step` `<Integer>`
+* `callback` `<Function>`
+
+### sabaki.findMove(vertex, text, step[, callback])
+
+* `vertex` [`<Vertex>`](vertex.md)
+* `text` `<String>`
+* `step` `<Integer>`
+* `callback` `<Function>`

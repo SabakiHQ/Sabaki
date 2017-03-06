@@ -1718,6 +1718,9 @@ sabaki.drawLine = function(vertex) {
 
     if (!vertex || !view.getEditMode() || tool != 'line' && tool != 'arrow') return
 
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
+
     if (!$('#goban').data('edittool-data')) {
         let $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
         $('#goban').append($hr).data('edittool-data', $hr)
@@ -1769,7 +1772,7 @@ sabaki.findPosition = function(step, condition, callback = () => {}) {
     }, setting.get('find.delay'))
 }
 
-sabaki.findBookmark = function(step, callback) {
+sabaki.findHotspot = function(step, callback) {
     sabaki.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
 }
 
@@ -2203,7 +2206,7 @@ sabaki.loadFileFromSgf = function(content, dontAsk = false, ignoreEncoding = fal
     }, setting.get('app.loadgame_delay'))
 }
 
-sabaki.saveFile = function(filename) {
+sabaki.saveFile = function(filename = null) {
     if (view.getIsBusy()) return
 
     if (!filename) {
