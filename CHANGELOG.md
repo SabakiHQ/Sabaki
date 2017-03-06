@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Ability to color move spots on the board according to its move annotation (Thanks to [@dfannius](https://github.com/dfannius))
+* Move annotation context menu on the last played stone (Thanks to [@dfannius](https://github.com/dfannius))
 * Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to [@C0DEHERO](https://github.com/C0DEHERO))
 
 **Fixed**
