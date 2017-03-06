@@ -246,11 +246,13 @@ sabaki.setBoard = function(board) {
             let $li = $goban.find('.pos_' + x + '-' + y)
             let $span = $li.find('.stone span')
             let sign = board.get([x, y])
-            let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
-                'circle', 'triangle', 'cross', 'square', 'label', 'point',
-                'dimmed', 'paint_1', 'paint_-1']
 
             // Clean up
+
+            let types = ['ghost_1', 'ghost_-1', 'siblingghost_1', 'siblingghost_-1',
+                'circle', 'triangle', 'cross', 'square', 'label',
+                'point', 'dimmed', 'paint_1', 'paint_-1',
+                'badmove', 'doubtfulmove', 'interestingmove', 'goodmove']
 
             types.forEach(x => $li.hasClass(x) ? $li.removeClass(x) : null)
             $span.attr('title', '')
@@ -258,11 +260,11 @@ sabaki.setBoard = function(board) {
             // Add markups
 
             if ([x, y] in board.markups) {
-                let markup = board.markups[[x, y]]
-                let type = markup[0], label = markup[1]
+                let [type, label] = board.markups[[x, y]]
 
                 if (type != '') $li.addClass(type)
                 if (label != '') $span.attr('title', label)
+
                 $li.toggleClass('smalllabel', label.length >= 3)
             }
 
@@ -280,23 +282,26 @@ sabaki.setBoard = function(board) {
 
     // Add ghosts
 
-    for (let [v, s, type] of board.ghosts) {
+    for (let [v, s, types] of board.ghosts) {
         let $li = $('#goban .pos_' + v.join('-'))
 
-        if (type == 'child') $li.addClass('ghost_' + s)
-        else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+        for (let type of types) {
+            if (type == 'child') $li.addClass('ghost_' + s)
+            else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+            else if (type == 'badmove') $li.addClass('badmove')
+            else if (type == 'doubtfulmove') $li.addClass('doubtfulmove')
+            else if (type == 'interestingmove') $li.addClass('interestingmove')
+            else if (type == 'goodmove') $li.addClass('goodmove')
+        }
     }
 
     // Add lines
 
     $('#goban hr').remove()
 
-    for (let line of board.lines) {
+    for (let [v1, v2, arrow] of board.lines) {
         $goban.append(
-            $('<hr/>')
-            .addClass(line[2] ? 'arrow' : 'line')
-            .data('v1', line[0])
-            .data('v2', line[1])
+            $('<hr/>').addClass(arrow ? 'arrow' : 'line').data('v1', v1).data('v2', v2)
         )
     }
 
@@ -451,11 +456,13 @@ sabaki.setAutoplaying = function(playing) {
 sabaki.loadSettings = function() {
     $('head link.userstyle').attr('href', setting.stylesPath)
 
-    $('#goban').toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
-    $('#goban').toggleClass('animation', setting.get('view.animated_stone_placement'))
-    $('#goban').toggleClass('coordinates', setting.get('view.show_coordinates'))
-    $('#goban').toggleClass('variations', setting.get('view.show_next_moves'))
-    $('#goban').toggleClass('siblings', setting.get('view.show_siblings'))
+    $('#goban')
+    .toggleClass('fuzzy', setting.get('view.fuzzy_stone_placement'))
+    .toggleClass('animation', setting.get('view.animated_stone_placement'))
+    .toggleClass('coordinates', setting.get('view.show_coordinates'))
+    .toggleClass('movecolorization', setting.get('view.show_move_colorization'))
+    .toggleClass('variations', setting.get('view.show_next_moves'))
+    .toggleClass('siblings', setting.get('view.show_siblings'))
 
     if (setting.get('view.show_leftsidebar')) {
         $('body').addClass('leftsidebar')
@@ -552,7 +559,13 @@ sabaki.prepareSidebar = function() {
     // Prepare comments section
 
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
-    $('#properties .edit .header img').on('click', () => view.openCommentMenu())
+
+    $('#properties .edit .header img').on('click', function() {
+        view.openCommentMenu([
+            Math.round($(this).offset().left),
+            Math.round($(this).offset().top + $(this).height())
+        ])
+    })
 
     $('#properties .edit .header input, #properties .edit textarea')
     .on('input', () => sabaki.commitCommentText())
@@ -1212,7 +1225,7 @@ sabaki.askForReload = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false) {
+sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false, position = null) {
     view.closeGameInfo()
 
     if (typeof vertex == 'string')
@@ -1293,16 +1306,21 @@ sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false) {
             }
         }
     } else if (view.getPlayMode() || view.getAutoplayMode()) {
-        if (buttonIndex != 0) return
         let board = sabaki.getBoard()
 
-        if (board.get(vertex) == 0) {
-            sabaki.makeMove(vertex)
-            view.closeDrawers()
-        } else if (vertex in board.markups
-        && board.markups[vertex][0] == 'point'
-        && setting.get('edit.click_currentvertex_to_remove')) {
-            sabaki.removeNode(...sabaki.getCurrentTreePosition())
+        if (buttonIndex == 0) {
+            if (board.get(vertex) == 0) {
+                sabaki.makeMove(vertex)
+                view.closeDrawers()
+            } else if (vertex in board.markups
+                       && board.markups[vertex][0] == 'point'
+                       && setting.get('edit.click_currentvertex_to_remove')) {
+                sabaki.removeNode(...sabaki.getCurrentTreePosition())
+            }
+        } else if (buttonIndex == 2) {
+            if (vertex in board.markups && board.markups[vertex][0] == 'point') {
+                view.openCommentMenu(position)
+            }
         }
     }
 }
@@ -1499,7 +1517,7 @@ sabaki.makeResign = function() {
 
 sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
     if (!tool) tool = sabaki.getSelectedTool()
-    
+
     if (typeof vertex == 'string')
         vertex = sabaki.getBoard().coord2vertex(vertex)
 

@@ -183,6 +183,15 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
     .goban.variations .row li.sign_0.ghost_-1 .stone::after,
     .goban .row li.sign_1.point .stone::after { background: white; }
 
+    .goban.movecolorization .row li.sign_0.ghost_1.goodmove .stone::after { background: #006300;  }
+    .goban.movecolorization .row li.sign_0.ghost_-1.goodmove .stone::after { background: #47D661;  }
+    .goban.movecolorization .row li.sign_0.ghost_1.interestingmove .stone::after { background: #003037; }
+    .goban.movecolorization .row li.sign_0.ghost_-1.interestingmove .stone::after { background: #47B3BA; }
+    .goban.movecolorization .row li.sign_0.ghost_1.doubtfulmove .stone::after { background: #EBEB00; }
+    .goban.movecolorization .row li.sign_0.ghost_-1.doubtfulmove .stone::after { background: #FFFF1F; }
+    .goban.movecolorization .row li.sign_0.ghost_1.badmove .stone::after { background: #930000; }
+    .goban.movecolorization .row li.sign_0.ghost_-1.badmove .stone::after { background: #F76047; }
+
     body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_1 .stone::after,
     body:not(.guess) .goban.siblings .row li.sign_0.siblingghost_-1 .stone::after,
     body:not(.guess) .goban.variations .row li.sign_0.ghost_1 .stone::after,

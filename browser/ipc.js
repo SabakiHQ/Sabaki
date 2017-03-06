@@ -83,6 +83,7 @@ let menudata = {
     toggleautoplaymode: () => view.setAutoplayMode(!view.getAutoplayMode()),
     toggleshownextmoves: () => view.setShowNextMoves(!view.getShowNextMoves()),
     toggleshowsiblings: () => view.setShowSiblings(!view.getShowSiblings()),
+    toggleshowmovecolorization: () => view.setShowMoveColorization(!view.getShowMoveColorization()),
     togglegamegraph: () => view.setSidebarArrangement(!view.getShowGraph(), view.getShowComment()),
     togglecomments: () => view.setSidebarArrangement(view.getShowGraph(), !view.getShowComment()),
     togglefullscreen: () => view.setFullScreen(!view.getFullScreen()),
