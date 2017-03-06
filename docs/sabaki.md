@@ -91,13 +91,14 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 If there's a modified file opened, Sabaki will ask the user to save the file first or to cancel the action. Returns `true` if the user saved the file or wants to proceed without saving, and `false` if the user wants to cancel the action.
 
-### sabaki.vertexClick(vertex[, buttonIndex[, ctrlKey]])
+### sabaki.vertexClick(vertex[, buttonIndex[, ctrlKey[, position]]])
 
 * `vertex` [`<Vertex>`](vertex.md) or `<String>`
 * `buttonIndex` `<Number>` - Default: `0`
 * `ctrlKey` `<Boolean>` - Default: `false`
+* `position` `<Integer[]>` - Default: `null`
 
-Performs a click on the given vertex position on the board with given button index and whether the control key is pressed.
+Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for showing context menus.
 
 ### sabaki.makeMove(vertex)
 
