@@ -1116,7 +1116,7 @@ exports.openHeaderMenu = function() {
             label: '&Resign',
             click: () => sabaki.makeResign()
         },
-        { type: 'separator' },
+        {type: 'separator'},
         {
             label: 'Es&timate',
             click: () => exports.setEstimatorMode(true)
@@ -1133,7 +1133,7 @@ exports.openHeaderMenu = function() {
             label: '&Find',
             click: () => exports.setFindMode(true)
         },
-        { type: 'separator' },
+        {type: 'separator'},
         {
             label: '&Info',
             click: () => exports.showGameInfo()
