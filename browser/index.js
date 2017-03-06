@@ -556,9 +556,10 @@ sabaki.prepareSidebar = function() {
     $('#properties .header .edit-button').on('click', () => view.setEditMode(true))
 
     $('#properties .edit .header img').on('click', function() {
-        let pos = [Math.round($(this).offset().left),
-                   Math.round($(this).offset().top + $(this).height())]
-        view.openCommentMenu(pos)
+        view.openCommentMenu([
+            Math.round($(this).offset().left),
+            Math.round($(this).offset().top + $(this).height())
+        ])
     })
 
     $('#properties .edit .header input, #properties .edit textarea')
@@ -1219,7 +1220,7 @@ sabaki.askForReload = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, pos = null) {
+sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, position = null) {
     view.closeGameInfo()
 
     if (typeof vertex == 'string') {
@@ -1301,8 +1302,9 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, pos = 
             }
         }
     } else if (view.getPlayMode() || view.getAutoplayMode()) {
+        let board = sabaki.getBoard()
+
         if (buttonIndex == 0) {
-            let board = sabaki.getBoard()
             if (board.get(vertex) == 0) {
                 sabaki.makeMove(vertex)
                 view.closeDrawers()
@@ -1312,9 +1314,8 @@ sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, pos = 
                 sabaki.removeNode(...sabaki.getCurrentTreePosition())
             }
         } else if (buttonIndex == 2) {
-            let board = sabaki.getBoard()
             if (vertex in board.markups && board.markups[vertex][0] == 'point') {
-                view.openCommentMenu(pos)
+                view.openCommentMenu(position)
             }
         }
     }
