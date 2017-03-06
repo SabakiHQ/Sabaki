@@ -2290,17 +2290,13 @@ sabaki.goToEnd = function() {
 
 sabaki.goToSiblingVariation = function(sign) {
     let [tree, index] = sabaki.getCurrentTreePosition()
-    let navigate = index == tree.nodes.length - 1
-        && tree.subtrees.length > 0
-        && sign > 0
-        || !tree.parent
 
     sign = sign < 0 ? -1 : 1
 
-    let mod = navigate ? tree.subtrees.length : tree.parent.subtrees.length
-    let i = ((navigate ? tree.current : tree.parent.current) + mod + sign) % mod
+    let mod = tree.parent.subtrees.length
+    let i = (tree.parent.current + mod + sign) % mod
 
-    sabaki.setCurrentTreePosition(navigate ? tree.subtrees[i] : tree.parent.subtrees[i], 0)
+    sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
 
 sabaki.goToNextVariation = () => sabaki.goToSiblingVariation(1)
