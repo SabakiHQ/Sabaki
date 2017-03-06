@@ -2318,17 +2318,17 @@ sabaki.goToEnd = function() {
     sabaki.setCurrentTreePosition(...tp)
 }
 
-sabaki.goToSiblingVariation = function(sign) {
+sabaki.goToSiblingVariation = function(step) {
     let [tree, index] = sabaki.getCurrentTreePosition()
     let navigate = index == tree.nodes.length - 1
         && tree.subtrees.length > 0
-        && sign > 0
+        && step > 0
         || !tree.parent
 
-    sign = sign < 0 ? -1 : 1
+    step = step < 0 ? -1 : 1
 
     let mod = navigate ? tree.subtrees.length : tree.parent.subtrees.length
-    let i = ((navigate ? tree.current : tree.parent.current) + mod + sign) % mod
+    let i = ((navigate ? tree.current : tree.parent.current) + mod + step) % mod
 
     sabaki.setCurrentTreePosition(navigate ? tree.subtrees[i] : tree.parent.subtrees[i], 0)
 }
