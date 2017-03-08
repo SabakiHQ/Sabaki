@@ -268,6 +268,21 @@ sabaki.setBoard = function(board) {
                 $li.toggleClass('smalllabel', label.length >= 3)
             }
 
+            // Add ghost stone
+
+            if ([x, y] in board.ghosts) {
+                let [s, types] = board.ghosts[[x, y]]
+
+                for (let type of types) {
+                    if (type == 'child') $li.addClass('ghost_' + s)
+                    else if (type == 'sibling') $li.addClass('siblingghost_' + s)
+                    else if (type == 'badmove') $li.addClass('badmove')
+                    else if (type == 'doubtfulmove') $li.addClass('doubtfulmove')
+                    else if (type == 'interestingmove') $li.addClass('interestingmove')
+                    else if (type == 'goodmove') $li.addClass('goodmove')
+                }
+            }
+
             // Set stone image
 
             if ($li.hasClass('sign_' + sign)) continue
@@ -277,21 +292,6 @@ sabaki.setBoard = function(board) {
             }
 
             $li.addClass('sign_' + sign)
-        }
-    }
-
-    // Add ghosts
-
-    for (let [v, s, types] of board.ghosts) {
-        let $li = $('#goban .pos_' + v.join('-'))
-
-        for (let type of types) {
-            if (type == 'child') $li.addClass('ghost_' + s)
-            else if (type == 'sibling') $li.addClass('siblingghost_' + s)
-            else if (type == 'badmove') $li.addClass('badmove')
-            else if (type == 'doubtfulmove') $li.addClass('doubtfulmove')
-            else if (type == 'interestingmove') $li.addClass('interestingmove')
-            else if (type == 'goodmove') $li.addClass('goodmove')
         }
     }
 
