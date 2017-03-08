@@ -2324,7 +2324,7 @@ sabaki.goToSiblingVariation = function(step) {
     step = step < 0 ? -1 : 1
 
     let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + mod + sign) % mod
+    let i = (tree.parent.current + mod + step) % mod
 
     sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
