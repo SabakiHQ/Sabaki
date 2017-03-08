@@ -71,7 +71,7 @@ exports.getShowMoveColorization = function() {
     return $('#goban').hasClass('movecolorization')
 }
 
-exports.getShowMoveColorization = function(show) {
+exports.setShowMoveColorization = function(show) {
     $('#goban').toggleClass('movecolorization', show)
     setting.set('view.show_move_colorization', show)
 }
