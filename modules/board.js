@@ -8,7 +8,7 @@ class Board {
         this.captures = {'-1': captures['-1'], '1': captures['1']}
         this.arrangement = []
         this.markups = {}
-        this.ghosts = []
+        this.ghosts = {}
         this.lines = []
 
         // Initialize arrangement

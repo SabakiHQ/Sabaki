@@ -491,7 +491,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             return
         }
 
-        if (board.ghosts.some(([w]) => w[0] == v[0] && w[1] == v[1]))
+        if (v in board.ghosts || !board.hasVertex(v))
             return
 
         let types = [type]
@@ -508,8 +508,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             }
         }
 
-        if (!board.hasVertex(v)) return
-        board.ghosts.push([v, sign, types])
+        board.ghosts[v] = [sign, types]
     }
 
     if (index == tree.nodes.length - 1) {
