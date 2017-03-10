@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-* Fix Sabaki inserting a ton of unnecessary empty lines in SGF files on Windows
+* Fix issue where Sabaki is inserting a ton of unnecessary empty lines in SGF files on Windows
 
 ## [Sabaki v0.20.1][v0.20.1] (2017-03-03)
 
