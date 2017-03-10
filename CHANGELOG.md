@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Update to Electron v1.6.2
 * Board lines are now vector images
 
 **Fixed**
