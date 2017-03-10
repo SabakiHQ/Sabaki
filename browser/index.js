@@ -2595,9 +2595,8 @@ $(window).on('load', function() {
         sabaki.detachEngine()
 
         if (!win.isMaximized() && !win.isMinimized() && !win.isFullScreen()) {
-            setting
-            .set('window.width', Math.round($('body').width()))
-            .set('window.height', Math.round($('body').height()))
+            let [width, height] = win.getContentSize()
+            setting.set('window.width', width).set('window.height', height)
         }
     }
 })
