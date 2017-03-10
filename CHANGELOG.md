@@ -2,17 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
 
 **Added**
 
-* Ability to color move spots on the board according to its move annotation (Thanks to [@dfannius](https://github.com/dfannius))
+* Move spots on the board are getting colored according to its move annotation (Thanks to [@dfannius](https://github.com/dfannius))
 * Move annotation context menu on the last played stone (Thanks to [@dfannius](https://github.com/dfannius))
 * Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to [@C0DEHERO](https://github.com/C0DEHERO))
 
+**Changed**
+
+* Update to Electron v1.6.2
+* Board lines are now vector images
+
 **Fixed**
 
-* Fix Sabaki inserting a ton of unnecessary empty lines in SGF files on Windows
+* Fix issue where Sabaki is inserting a ton of unnecessary empty lines in SGF files on Windows
 
 ## [Sabaki v0.20.1][v0.20.1] (2017-03-03)
 
@@ -497,7 +502,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.1...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.2...master
+[v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
 [v0.20.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.20.0
 [v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.3

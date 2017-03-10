@@ -79,7 +79,7 @@
 
 .goban .row li {
         position: relative;
-        background: url('../img/goban/inner.png') center;
+        background: url('../img/goban/inner.svg') center;
     }
     .goban .row li.hoshi::after {
         content: '';
@@ -95,28 +95,28 @@
         background: #5E2E0C;
     }
     .goban .row:nth-child(3) li {
-        background-image: url('../img/goban/side-n.png');
+        background-image: url('../img/goban/side-n.svg');
     }
     .goban .row:nth-last-child(3) li {
-        background-image: url('../img/goban/side-s.png');
+        background-image: url('../img/goban/side-s.svg');
     }
     .goban .row li:first-child {
-        background-image: url('../img/goban/side-w.png');
+        background-image: url('../img/goban/side-w.svg');
     }
     .goban .row li:last-child {
-        background-image: url('../img/goban/side-e.png');
+        background-image: url('../img/goban/side-e.svg');
     }
     .goban .row:nth-child(3) li:first-child {
-        background-image: url('../img/goban/corner-nw.png');
+        background-image: url('../img/goban/corner-nw.svg');
     }
     .goban .row:nth-child(3) li:last-child {
-        background-image: url('../img/goban/corner-ne.png');
+        background-image: url('../img/goban/corner-ne.svg');
     }
     .goban .row:nth-last-child(3) li:first-child {
-        background-image: url('../img/goban/corner-sw.png');
+        background-image: url('../img/goban/corner-sw.svg');
     }
     .goban .row:nth-last-child(3) li:last-child {
-        background-image: url('../img/goban/corner-se.png');
+        background-image: url('../img/goban/corner-se.svg');
 }
 
 /**

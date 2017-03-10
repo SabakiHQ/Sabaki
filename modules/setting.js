@@ -57,6 +57,7 @@ let defaults = {
     ],
     'console.max_history_count': 30,
     'debug.dev_tools': false,
+    'debug.zoom_factor': 1.0,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,

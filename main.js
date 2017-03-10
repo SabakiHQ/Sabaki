@@ -18,7 +18,10 @@ function newWindow(path) {
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
         backgroundColor: '#111111',
-        show: false
+        show: false,
+        webPreferences: {
+            zoomFactor: setting.get('debug.zoom_factor')
+        }
     })
 
     windows.push(window)
