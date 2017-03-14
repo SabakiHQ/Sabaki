@@ -8,7 +8,7 @@ let random = n => Math.floor(Math.random() * n)
 
 class Goban extends Component {
     constructor(props) {
-        super(props)
+        super()
 
         this.componentWillReceiveProps(props)
     }
@@ -31,17 +31,18 @@ class Goban extends Component {
 
         // Resize board when window is resizing
 
-        window.addEventListener('resize', () => {
-            this.resizeBoard()
-        })
+        window.addEventListener('resize', () => this.resizeBoard())
 
         this.resizeBoard()
     }
 
     componentWillReceiveProps(nextProps) {
+        // Update state to accomodate new board size
+
         let dim = board => [board.width, board.height]
 
-        if (!helper.shallowEquals(dim(nextProps.board), dim(this.props.board))) return
+        if (this.props && helper.shallowEquals(dim(nextProps.board), dim(this.props.board)))
+            return
 
         let rangeX = range(nextProps.board.width)
         let rangeY = range(nextProps.board.height)
@@ -54,20 +55,21 @@ class Goban extends Component {
     }
 
     resizeBoard() {
-        let {board, showCoordinates} = this.props
+        let {board, showCoordinates, onBeforeResize = () => {}} = this.props
+        onBeforeResize()
 
-        let $main = $('main')
         let $goban = $(this.element)
+        let $main = $goban.parent()
 
-        let outerWidth = Math.round($main.width()
-            - parseFloat($main.css('padding-left'))
-            - parseFloat($main.css('padding-right')))
-        let outerHeight = Math.round($main.height()
-            - parseFloat($main.css('padding-top'))
-            - parseFloat($main.css('padding-bottom')))
-
+        let outerWidth = parseFloat($main.css('width'))
+        let outerHeight = parseFloat($main.css('height'))
         let boardWidth = board.width
         let boardHeight = board.height
+
+        if (showCoordinates) {
+            boardWidth += 2
+            boardHeight += 2
+        }
 
         let width = helper.floorEven(outerWidth
             - this.state.paddingLeft - this.state.paddingRight
@@ -75,11 +77,6 @@ class Goban extends Component {
         let height = helper.floorEven(outerHeight
             - this.state.paddingTop - this.state.paddingBottom
             - this.state.borderTopWidth - this.state.borderBottomWidth)
-
-        if (showCoordinates) {
-            boardWidth += 2
-            boardHeight += 2
-        }
 
         let fieldSize = helper.floorEven(Math.min(width / boardWidth, height / boardHeight, 150))
         let minX = fieldSize * boardWidth

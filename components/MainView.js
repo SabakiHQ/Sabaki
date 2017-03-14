@@ -3,9 +3,26 @@ const {h, Component} = require('preact')
 const Goban = require('./Goban')
 const Bar = require('./Bar')
 
+const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
+    adjustSize() {
+        let $main = $(this.mainElement).css('width', '').css('height', '')
+
+        let width = Math.round($main.width()
+            - parseFloat($main.css('padding-left'))
+            - parseFloat($main.css('padding-right')))
+        let height = Math.round($main.height()
+            - parseFloat($main.css('padding-top'))
+            - parseFloat($main.css('padding-bottom')))
+
+        if (width % 2 != 0) width++
+        if (height % 2 != 0) height++
+
+        this.setState({width, height})
+    }
+
     render({
         treePosition,
         showCoordinates,
@@ -14,9 +31,14 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animatedStonePlacement
-    }) {
+    }, {width, height}) {
         return h('section', {id: 'main'},
-            h('main', {},
+            h('main',
+                {
+                    ref: el => this.mainElement = el,
+                    style: {width, height}
+                },
+
                 h(Goban, {
                     board: gametree.getBoard(...treePosition),
                     showCoordinates,
@@ -24,7 +46,9 @@ class MainView extends Component {
                     showNextMoves,
                     showSiblings,
                     fuzzyStonePlacement,
-                    animatedStonePlacement
+                    animatedStonePlacement,
+
+                    onBeforeResize: () => this.adjustSize()
                 })
             ),
             h('section', {id: 'bar'})
