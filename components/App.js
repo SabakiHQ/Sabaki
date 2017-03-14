@@ -14,7 +14,8 @@ class App extends Component {
         this.window = remote.getCurrentWindow()
 
         this.state = {
-            board: new Board()
+            board: new Board(),
+            showCoordinates: false
         }
     }
 

@@ -55,6 +55,10 @@ exports.equals = function(a, b) {
     return false
 }
 
+exports.shallowEquals = function(a, b) {
+    return a === b || a.length === b.length && a.every((x, i) => x == b[i])
+}
+
 exports.lexicalCompare = function(a, b) {
     if (!a.length || !b.length) return a.length - b.length
     return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : exports.lexicalCompare(a.slice(1), b.slice(1))
