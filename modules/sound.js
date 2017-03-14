@@ -1,11 +1,11 @@
 let lastPachiIndex = -1
 let lastCaptureIndex = -1
 
-let captureSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`../sound/capture${x}.mp3`))
-let pachiSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`../sound/${x}.mp3`))
+let captureSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`./sound/capture${x}.mp3`))
+let pachiSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`./sound/${x}.mp3`))
 
-let newGameSound = new Audio('../sound/newgame.mp3')
-let passSound = new Audio('../sound/pass.mp3')
+let newGameSound = new Audio('./sound/newgame.mp3')
+let passSound = new Audio('./sound/pass.mp3')
 
 exports.playCapture = function(delay = 0) {
     let index = lastCaptureIndex

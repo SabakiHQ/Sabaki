@@ -156,7 +156,18 @@ class Goban extends Component {
         }
     }
 
-    render({board, showCoordinates}, state) {
+    render({
+        board,
+        showCoordinates,
+        showMoveColorization,
+        showNextMoves,
+        showSiblings,
+        fuzzyStonePlacement,
+        animatedStonePlacement,
+
+        onVertexClick = () => {},
+        onMouseMove = () => {}
+    }, state) {
         let rangeX = range(board.width)
         let rangeY = range(board.height)
         let hoshi = board.getHandicapPlacement(9)
@@ -183,9 +194,17 @@ class Goban extends Component {
 
         return h('section',
             {
-                id: 'goban',
-                class: 'goban',
                 ref: el => this.element = el,
+                id: 'goban',
+                class: {
+                    goban: true,
+                    coordinates: showCoordinates,
+                    movecolorization: showMoveColorization,
+                    variations: showNextMoves,
+                    siblings: showSiblings,
+                    fuzzy: fuzzyStonePlacement,
+                    animation: animatedStonePlacement
+                },
                 style: {
                     fontSize: state.fieldSize,
                     width: state.width,
@@ -259,14 +278,12 @@ class Goban extends Component {
                                 this.mouseDown = false
                                 evt.vertex = [x, y]
 
-                                if (this.props.onVertexClick)
-                                    this.props.onVertexClick(evt)
+                                onVertexClick(evt)
                             },
                             onMouseMove: evt => {
                                 evt.vertex = [x, y]
 
-                                if (this.props.onMouseMove)
-                                    this.props.onMouseMove(evt)
+                                onMouseMove(evt)
                             }
                         },
                         h('div', {class: 'stone'},
