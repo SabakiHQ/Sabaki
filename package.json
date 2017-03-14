@@ -23,7 +23,9 @@
     },
     "mac": {
       "category": "public.app-category.board-games",
-      "target": ["7z"]
+      "target": [
+        "7z"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -54,6 +56,7 @@
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
+    "preact": "^7.2.0",
     "sigma": "^1.0.3"
   },
   "devDependencies": {

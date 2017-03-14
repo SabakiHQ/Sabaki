@@ -40,7 +40,7 @@ function newWindow(path) {
         window = null
     })
 
-    window.loadURL(`file://${__dirname}/browser/index.html`)
+    window.loadURL(`file://${__dirname}/index.html`)
 
     if (setting.get('debug.dev_tools')) {
         window.toggleDevTools()
