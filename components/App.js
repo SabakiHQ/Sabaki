@@ -25,6 +25,7 @@ class App extends Component {
         let emptyTree = this.getEmptyGameTree()
 
         this.state = {
+            title: app.getName(),
             mode: 'play',
             busy: false,
 
@@ -52,11 +53,17 @@ class App extends Component {
             sidebarWidth: setting.get('view.sidebar_width'),
             sidebarSplit: setting.get('view.properties_height')
         }
+
+        this.componentWillUpdate({}, this.state)
     }
 
     componentDidMount() {
         window.sabaki = this
         remote.getCurrentWindow().show()
+    }
+
+    componentWillUpdate(_, nextState) {
+        document.title = nextState.title
     }
 
     getEmptyGameTree() {
