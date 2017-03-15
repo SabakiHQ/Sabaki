@@ -24,6 +24,21 @@ class MainView extends Component {
         this.handleAutoplayButtonClick = this.handleAutoplayButtonClick.bind(this)
     }
 
+    componentDidMount() {
+        // Handle mouse scrolling
+
+        this.mainElement.addEventListener('wheel', evt => {
+            evt.preventDefault()
+
+            let sign = Math.sign(evt.deltaY)
+            let treePosition = gametree.navigate(...this.props.treePosition, sign)
+
+            if (treePosition == null) return
+
+            sabaki.setState({treePosition})
+        })
+    }
+
     handleGobanResize() {
         /*  Because of board rendering issues, we want the width
             and the height of `<main>` to be even */

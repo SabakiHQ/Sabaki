@@ -34,6 +34,8 @@ class GameGraph extends Component {
     }
 
     componentWillReceiveProps({treePosition}) {
+        // Adjust camera position and recalculate matrix-dict of game tree
+
         let [tree, index] = treePosition
         let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
         let gridSize = setting.get('graph.grid_size')
@@ -62,13 +64,24 @@ class GameGraph extends Component {
         setTimeout(() => this.remeasure(), 200)
     }
 
-    renderNodes({matrixDict: [matrix, dict], cameraPosition: [cx, cy], viewportSize: [width, height]}) {
+    renderNodes({
+        matrixDict: [matrix, dict],
+        cameraPosition: [cx, cy],
+        viewportSize: [width, height]
+    }) {
         let nodes = []
         let edges = []
+
+        let stroke = current => current ? setting.get('graph.edge_color')
+            : setting.get('graph.edge_inactive_color')
+        let strokeWidth = current => current ? setting.get('graph.edge_size')
+            : setting.get('graph.edge_inactive_size')
 
         let gridSize = setting.get('graph.grid_size')
         let nodeSize = setting.get('graph.node_size')
         let commentProperties = setting.get('sgf.comment_properties')
+
+        // Render only nodes that are visible
 
         for (let x = Math.ceil(cx / gridSize); x <= (cx + width) / gridSize + 1; x++) {
             for (let y = Math.ceil(cy / gridSize); y <= (cy + height) / gridSize + 1; y++) {
@@ -122,49 +135,111 @@ class GameGraph extends Component {
                     }))
                 }
 
-                // Render precedent edges
+                // Render precedent edge
 
-                if (!tree.parent && index === 0) continue
+                if (index > 0 || tree.parent) {
+                    let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
+                    let [px, py] = dict[prevTree.id + '-' + prevIndex]
 
-                let stroke = onCurrentTrack ? setting.get('graph.edge_color')
-                    : setting.get('graph.edge_inactive_color')
-                let strokeWidth = onCurrentTrack ? setting.get('graph.edge_size')
-                    : setting.get('graph.edge_inactive_size')
+                    // Render edge only if node is not visible,
+                    // otherwise this edge is already rendered as successor edge
 
-                if (index > 0 || tree.parent && tree.parent.subtrees.indexOf(tree) === 0) {
+                    if (px < cx / gridSize || px > (cx + width) / gridSize + 1
+                    || py < cy / gridSize || py > (cy + height) / gridSize + 1) {
+                        let method = onCurrentTrack ? 'unshift' : 'push'
+
+                        if (px === x) {
+                            // Draw straight line
+
+                            edges[method](h('line', {
+                                x1: x * gridSize - cx,
+                                y1: y * gridSize - cy,
+                                x2: px * gridSize - cx,
+                                y2: py * gridSize - cy,
+                                stroke: stroke(onCurrentTrack),
+                                strokeWidth: strokeWidth(onCurrentTrack)
+                            }))
+                        } else {
+                            // Draw angled line
+
+                            edges[method](h('line', {
+                                x1: x * gridSize - cx,
+                                y1: y * gridSize - cy,
+                                x2: (x - 1) * gridSize - cx,
+                                y2: (y - 1) * gridSize - cy,
+                                stroke: stroke(onCurrentTrack),
+                                strokeWidth: strokeWidth(onCurrentTrack)
+                            }))
+
+                            edges[method](h('line', {
+                                x1: px * gridSize - cx,
+                                y1: py * gridSize - cy,
+                                x2: (x - 1) * gridSize - cx,
+                                y2: (y - 1) * gridSize - cy,
+                                stroke: stroke(onCurrentTrack),
+                                strokeWidth: strokeWidth(onCurrentTrack)
+                            }))
+                        }
+                    }
+                }
+
+                // Render successor edges
+
+                if (index < tree.nodes.length - 1) {
                     // Draw straight line
 
-                    edges.push(h('line', {
+                    let current = onCurrentTrack && (index < tree.nodes.length - 1 || tree.current === 0)
+                    let method = current ? 'unshift' : 'push'
+
+                    edges[method](h('line', {
                         x1: x * gridSize - cx,
                         y1: y * gridSize - cy,
                         x2: x * gridSize - cx,
-                        y2: (y - 1) * gridSize - cy,
-                        stroke,
-                        strokeWidth
+                        y2: (y + 1) * gridSize - cy,
+                        stroke: stroke(current),
+                        strokeWidth: strokeWidth(current)
                     }))
-                } else {
-                    // Draw angled line
+                }
 
-                    edges.push(h('line', {
-                        x1: x * gridSize - cx,
-                        y1: y * gridSize - cy,
-                        x2: (x - 1) * gridSize - cx,
-                        y2: (y - 1) * gridSize - cy,
-                        stroke,
-                        strokeWidth
-                    }))
+                if (index === tree.nodes.length - 1) {
+                    for (let subtree of tree.subtrees) {
+                        let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
+                        let [nx, ny] = dict[subtree.id + '-0']
+                        let method = current ? 'unshift' : 'push'
 
-                    let precedentId = tree.parent.id + '-' + (tree.parent.nodes.length - 1)
-                    let [px, py] = dict[precedentId]
+                        if (nx === x) {
+                            // Draw straight line
 
-                    edges.push(h('line', {
-                        x1: px * gridSize - cx,
-                        y1: py * gridSize - cy,
-                        x2: (x - 1) * gridSize - cx,
-                        y2: (y - 1) * gridSize - cy,
-                        stroke,
-                        strokeWidth
-                    }))
+                            edges[method](h('line', {
+                                x1: x * gridSize - cx,
+                                y1: y * gridSize - cy,
+                                x2: nx * gridSize - cx,
+                                y2: ny * gridSize - cy,
+                                stroke: stroke(current),
+                                strokeWidth: strokeWidth(current)
+                            }))
+                        } else {
+                            // Draw angled line
+
+                            edges[method](h('line', {
+                                x1: x * gridSize - cx,
+                                y1: y * gridSize - cy,
+                                x2: (nx - 1) * gridSize - cx,
+                                y2: (ny - 1) * gridSize - cy,
+                                stroke: stroke(current),
+                                strokeWidth: strokeWidth(current)
+                            }))
+
+                            edges[method](h('line', {
+                                x1: nx * gridSize - cx,
+                                y1: ny * gridSize - cy,
+                                x2: (nx - 1) * gridSize - cx,
+                                y2: (ny - 1) * gridSize - cy,
+                                stroke: stroke(current),
+                                strokeWidth: strokeWidth(current)
+                            }))
+                        }
+                    }
                 }
             }
         }
@@ -172,7 +247,7 @@ class GameGraph extends Component {
         return [...edges, ...nodes]
     }
 
-    render({height, treePosition}, {matrixDict, cameraPosition, viewportSize}) {
+    render({height, treePosition}, {cameraPosition, viewportSize}) {
         let [tree, index] = treePosition
         let rootTree = gametree.getRoot(tree)
         let level = gametree.getLevel(...treePosition)
@@ -184,7 +259,7 @@ class GameGraph extends Component {
                 style: {height: height + '%'}
             },
 
-            viewportSize && cameraPosition && h('svg',
+            cameraPosition && viewportSize && h('svg',
                 {
                     width: viewportSize[0],
                     height: viewportSize[1]
