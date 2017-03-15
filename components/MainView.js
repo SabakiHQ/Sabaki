@@ -80,7 +80,7 @@ class MainView extends Component {
         autoplaying,
         findText,
 
-        showGameTree,
+        showGameGraph,
         showCommentBox,
         sidebarWidth
     }, {
@@ -90,7 +90,7 @@ class MainView extends Component {
         let board = gametree.getBoard(...treePosition)
         let [tree, index] = treePosition
         let node = tree.nodes[index]
-        let showSidebar = showGameTree || showCommentBox
+        let showSidebar = showGameGraph || showCommentBox
 
         return h('section',
             {

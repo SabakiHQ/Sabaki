@@ -58,7 +58,7 @@ class App extends Component {
 
             showLeftSidebar: setting.get('view.show_leftsidebar'),
             leftSidebarWidth: setting.get('view.leftsidebar_width'),
-            showGameTree: setting.get('view.show_graph'),
+            showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
             sidebarSplit: setting.get('view.properties_height'),
@@ -99,7 +99,7 @@ class App extends Component {
             {
                 class: {
                     leftsidebar: state.showLeftSidebar,
-                    sidebar: state.showGameTree || state.showCommentBox,
+                    sidebar: state.showGameGraph || state.showCommentBox,
                     [state.mode]: true
                 }
             },
