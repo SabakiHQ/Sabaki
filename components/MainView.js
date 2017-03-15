@@ -8,6 +8,9 @@ const gametree = require('../modules/gametree')
 
 class MainView extends Component {
     adjustSize() {
+        // Because of board rendering issues, we want the width
+        // and the height of `<main>` to be even
+
         let $main = $(this.mainElement).css('width', '').css('height', '')
 
         let width = Math.round($main.width()
@@ -31,7 +34,10 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animatedStonePlacement
-    }, {width, height}) {
+    }, {
+        width,
+        height
+    }) {
         return h('section', {id: 'main'},
             h('main',
                 {

@@ -21,12 +21,11 @@ const Board = require('../modules/board')
 class App extends Component {
     constructor() {
         super()
-
-        this.window = remote.getCurrentWindow()
-
+        
         let emptyTree = this.getEmptyGameTree()
 
         this.state = {
+            app: this,
             mode: 'play',
             busy: false,
 
@@ -56,7 +55,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        this.window.show()
+        remote.getCurrentWindow().show()
     }
 
     getEmptyGameTree() {
