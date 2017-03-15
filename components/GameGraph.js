@@ -25,7 +25,8 @@ class GameGraph extends Component {
 
     componentDidMount() {
         window.addEventListener('resize', () => {
-            this.remeasure()
+            clearInterval(this.remeasureId)
+            this.remeasureId = setTimeout(() => this.remeasure(), 500)
         })
 
         this.remeasure()
@@ -42,7 +43,7 @@ class GameGraph extends Component {
         let [width, padding] = gametree.getMatrixWidth(y, matrix)
         x -= padding
 
-        let relX = width == 1 ? 1 : 1 - 2 * x / (width - 1)
+        let relX = width === 1 ? 1 : 1 - 2 * x / (width - 1)
         let diff = (width - 1) * gridSize / 2
         diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
@@ -58,7 +59,7 @@ class GameGraph extends Component {
     componentDidUpdate({height}) {
         if (height === this.props.height) return
 
-        this.remeasure()
+        setTimeout(() => this.remeasure(), 200)
     }
 
     renderNodes({matrixDict: [matrix, dict], cameraPosition: [cx, cy], viewportSize: [width, height]}) {

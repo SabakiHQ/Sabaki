@@ -35,9 +35,11 @@ class Goban extends Component {
 
         // Resize board when window is resizing
 
-        window.addEventListener('resize', () => this.resizeBoard())
+        window.addEventListener('resize', () => {
+            this.resize()
+        })
 
-        this.resizeBoard()
+        this.resize()
     }
 
     componentWillReceiveProps(nextProps) {
@@ -62,7 +64,7 @@ class Goban extends Component {
         })
     }
 
-    resizeBoard() {
+    resize() {
         let {board, showCoordinates, onBeforeResize = () => {}} = this.props
         onBeforeResize()
 
