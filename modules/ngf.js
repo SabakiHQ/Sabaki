@@ -41,14 +41,16 @@ exports.parse = function (input) {
 
     let line2 = lines[2].split(' ')
     if (line2.length > 1) {
-        let white_rank = line2[line2.length - 1]
-        root.WR = [white_rank]
+        let whiterank = line2[line2.length - 1]
+        whiterank = whiterank.replace('DP', 'p').replace('K', 'k').replace('D', 'd')
+        root.WR = [whiterank]
     }
 
     let line3 = lines[3].split(' ')
     if (line3.length > 1) {
-        let black_rank = line3[line3.length - 1]
-        root.BR = [black_rank]
+        let blackrank = line3[line3.length - 1]
+        blackrank = blackrank.replace('DP', 'p').replace('K', 'k').replace('D', 'd')
+        root.BR = [blackrank]
     }
 
     if (handicap === 0 && komi === Math.floor(komi)) {
