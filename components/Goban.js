@@ -11,6 +11,10 @@ class Goban extends Component {
         super()
 
         this.componentWillReceiveProps(props)
+
+        this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
+        this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
+        this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
     }
 
     componentDidMount() {
@@ -157,6 +161,31 @@ class Goban extends Component {
         }
     }
 
+    handleVertexMouseDown() {
+        this.mouseDown = true
+    }
+
+    handleVertexMouseUp(evt) {
+        if (!this.mouseDown) return
+
+        let {onVertexClick = () => {}} = this.props
+        let {currentTarget} = evt
+
+        this.mouseDown = false
+        evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+
+        onVertexClick(evt)
+    }
+
+    handleVertexMouseMove(evt) {
+        let {onVertexMouseMove = () => {}} = this.props
+        let {currentTarget} = evt
+
+        evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+
+        onVertexMouseMove(evt)
+    }
+
     render({
         board,
         showCoordinates,
@@ -269,22 +298,11 @@ class Goban extends Component {
                                 height: fieldSize
                             },
 
-                            onMouseDown: () => {
-                                this.mouseDown = true
-                            },
-                            onMouseUp: evt => {
-                                if (!this.mouseDown) return
+                            'data-vertex': `${x}-${y}`,
 
-                                this.mouseDown = false
-                                evt.vertex = [x, y]
-
-                                onVertexClick(evt)
-                            },
-                            onMouseMove: evt => {
-                                evt.vertex = [x, y]
-
-                                onMouseMove(evt)
-                            }
+                            onMouseDown: this.handleVertexMouseDown,
+                            onMouseUp: this.handleVertexMouseUp,
+                            onMouseMove: this.handleVertexMouseMove
                         },
                         h('div', {class: 'stone'},
                             h('img', {src: './img/goban/blank.svg'}),
