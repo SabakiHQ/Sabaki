@@ -37,6 +37,8 @@ class App extends Component {
             undoable: false,
             undoText: 'Undo',
             selectedTool: 'stone_1',
+            autoplaying: false,
+            secondsPerMove: setting.get('autoplay.sec_per_move'),
             scoringMethod: setting.get('scoring.method'),
 
             showCoordinates: setting.get('view.show_coordinates'),

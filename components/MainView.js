@@ -3,6 +3,8 @@ const {h, Component} = require('preact')
 const Goban = require('./Goban')
 const PlayBar = require('./PlayBar')
 const EditBar = require('./EditBar')
+const GuessBar = require('./GuessBar')
+const AutoplayBar = require('./AutoplayBar')
 
 const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
@@ -15,6 +17,8 @@ class MainView extends Component {
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
         this.handleEditToolClick = this.handleEditToolClick.bind(this)
         this.handleBarCloseButtonClick = this.handleBarCloseButtonClick.bind(this)
+        this.handleAutoplayValueChange = this.handleAutoplayValueChange.bind(this)
+        this.handleAutoplayButtonClick = this.handleAutoplayButtonClick.bind(this)
     }
 
     handleGobanResize() {
@@ -48,6 +52,14 @@ class MainView extends Component {
         sabaki.setState({mode: 'play'})
     }
 
+    handleAutoplayButtonClick() {
+        sabaki.setState(({autoplaying}) => ({autoplaying: !autoplaying}))
+    }
+
+    handleAutoplayValueChange(evt) {
+        sabaki.setState({secondsPerMove: +evt.currentTarget.value})
+    }
+
     render({
         treePosition,
 
@@ -60,7 +72,9 @@ class MainView extends Component {
 
         undoable,
         undoText,
-        selectedTool
+        selectedTool,
+        secondsPerMove,
+        autoplaying
     }, {
         width,
         height
@@ -112,6 +126,16 @@ class MainView extends Component {
                 h(EditBar, {
                     selectedTool,
                     onToolButtonClick: this.handleEditToolClick,
+                    onCloseButtonClick: this.handleBarCloseButtonClick
+                }),
+
+                h(GuessBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
+
+                h(AutoplayBar, {
+                    playing: autoplaying,
+                    secondsPerMove,
+                    onValueChange: this.handleAutoplayValueChange,
+                    onButtonClick: this.handleAutoplayButtonClick,
                     onCloseButtonClick: this.handleBarCloseButtonClick
                 })
             )
