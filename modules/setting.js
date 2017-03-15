@@ -77,7 +77,7 @@ let defaults = {
     'graph.collapse_min_depth': 1,
     'graph.collapse_tokens_count': 10000,
     'graph.delay': 100,
-    'graph.edge_color': '#ccc',
+    'graph.edge_color': '#eee',
     'graph.edge_inactive_color': '#777',
     'graph.edge_size': 2,
     'graph.edge_inactive_size': 1,

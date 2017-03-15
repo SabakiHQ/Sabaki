@@ -37,8 +37,8 @@ class MainView extends Component {
             - parseFloat($main.css('padding-top'))
             - parseFloat($main.css('padding-bottom')))
 
-        if (width % 2 != 0) width++
-        if (height % 2 != 0) height++
+        if (width % 2 !== 0) width++
+        if (height % 2 !== 0) height++
 
         this.setState({width, height})
     }

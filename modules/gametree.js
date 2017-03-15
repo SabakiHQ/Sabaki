@@ -107,7 +107,7 @@ exports.getSection = function(tree, level) {
     return sections
 }
 
-exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0) {
+exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
     if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
 
     let hasCollisions = true

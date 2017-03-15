@@ -61,7 +61,6 @@ class App extends Component {
             showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
-            sidebarSplit: setting.get('view.properties_height'),
             autoscrolling: 0
         }
 

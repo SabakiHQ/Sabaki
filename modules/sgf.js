@@ -58,8 +58,7 @@ exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
-    tree.collapsed = tokens.length >= setting.get('graph.collapse_tokens_count')
-        && depth > setting.get('graph.collapse_min_depth')
+    tree.collapsed = false
 
     while (i < tokens.length) {
         let [type, value] = tokens[i]
