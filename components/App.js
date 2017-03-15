@@ -35,6 +35,8 @@ class App extends Component {
             gameIndex: 0,
             treePosition: [emptyTree, 0],
 
+            // Bar state
+
             undoable: false,
             undoText: 'Undo',
             selectedTool: 'stone_1',
@@ -43,6 +45,8 @@ class App extends Component {
             scoringMethod: setting.get('scoring.method'),
             findText: '',
 
+            // Board state
+
             showCoordinates: setting.get('view.show_coordinates'),
             showMoveColorization: setting.get('view.show_move_colorization'),
             showNextMoves: setting.get('view.show_next_moves'),
@@ -50,12 +54,15 @@ class App extends Component {
             fuzzyStonePlacement: setting.get('view.fuzzy_stone_placement'),
             animatedStonePlacement: setting.get('view.animated_stone_placement'),
 
+            // Sidebar state
+
             showLeftSidebar: setting.get('view.show_leftsidebar'),
             leftSidebarWidth: setting.get('view.leftsidebar_width'),
             showGameTree: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
-            sidebarSplit: setting.get('view.properties_height')
+            sidebarSplit: setting.get('view.properties_height'),
+            autoscrolling: 0
         }
 
         this.componentWillUpdate({}, this.state)

@@ -78,7 +78,11 @@ class MainView extends Component {
         selectedTool,
         secondsPerMove,
         autoplaying,
-        findText
+        findText,
+
+        showGameTree,
+        showCommentBox,
+        sidebarWidth
     }, {
         width,
         height
@@ -86,8 +90,14 @@ class MainView extends Component {
         let board = gametree.getBoard(...treePosition)
         let [tree, index] = treePosition
         let node = tree.nodes[index]
+        let showSidebar = showGameTree || showCommentBox
 
-        return h('section', {id: 'main'},
+        return h('section',
+            {
+                id: 'main',
+                style: {right: showSidebar ? sidebarWidth: null}
+            },
+
             h('main',
                 {
                     ref: el => this.mainElement = el,
