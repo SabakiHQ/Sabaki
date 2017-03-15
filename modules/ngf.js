@@ -1,15 +1,19 @@
+const fs = require('fs')
 const iconv = require('iconv-lite')
 const gametree = require('./gametree')
 const sgf = require('./sgf')
 const Board = require('./board')
 
-exports.parse = function (input) {
+exports.meta = {
+    name: 'wBaduk NGF',
+    extensions: ['ngf']
+}
 
-    // Try UTF-8 encoding... in any case it's better than binary.
+exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
 
-    input = iconv.decode(Buffer.from(input, 'binary'), 'utf8')
+    content = iconv.decode(Buffer.from(content, 'binary'), 'utf8')
 
-    let lines = input.split('\n')
+    let lines = content.split('\n')
 
     let tree = gametree.new()
     let root = {}
@@ -162,4 +166,8 @@ exports.parse = function (input) {
     }
 
     return tree
+}
+
+exports.parseFile = function (filename, callback = () => {}) {
+    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}), callback)
 }
