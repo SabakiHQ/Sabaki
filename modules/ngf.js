@@ -67,10 +67,13 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     if (lines[10].includes('resign')) {
         margin = 'R'
     }
-    if (lines[10].includes('hite win')) {
+    if (lines[10].includes('time')) {
+        margin = 'T'
+    }
+    if (lines[10].includes('hite win') || lines[10].includes('lack lose')) {
         winner = 'W'
     }
-    if (lines[10].includes('lack win')) {
+    if (lines[10].includes('lack win') || lines[10].includes('hite lose')) {
         winner = 'B'
     }
     if (margin === '') {
