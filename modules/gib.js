@@ -185,10 +185,14 @@ exports.parse = function (input) {
 
         } else if (line.slice(0, 3) === 'STO') {
 
+            let elements = line.split(' ')
+            if (elements.length < 6) {
+                continue
+            }
+            
             let node = {}
             tree.nodes.push(node)
-
-            let elements = line.split(' ')
+            
             let key
 
             if (elements[3] === '1') {
