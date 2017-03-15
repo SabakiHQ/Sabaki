@@ -39,14 +39,14 @@ exports.parse = function (input) {
         komi = 0
     }
 
-    let line2 = lines[2].split(' ')
+    let line2 = lines[2].trim().split(' ')
     if (line2.length > 1) {
         let whiterank = line2[line2.length - 1]
         whiterank = whiterank.replace('DP', 'p').replace('K', 'k').replace('D', 'd')
         root.WR = [whiterank]
     }
 
-    let line3 = lines[3].split(' ')
+    let line3 = lines[3].trim().split(' ')
     if (line3.length > 1) {
         let blackrank = line3[line3.length - 1]
         blackrank = blackrank.replace('DP', 'p').replace('K', 'k').replace('D', 'd')
