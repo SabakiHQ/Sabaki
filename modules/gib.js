@@ -1,21 +1,14 @@
-const fs = require('fs')
 const iconv = require('iconv-lite')
 const gametree = require('./gametree')
+const sgf = require('./sgf')
 
-function string_from_point(x, y) {
-    // convert x, y into SGF coordinate e.g. 'pd'
-    return String.fromCharCode(x + 96) + String.fromCharCode(y + 96)
-}
-
-function handicap_points(boardsize, handicap, tygem) {
+function handicapPoints(boardsize, handicap, tygem) {
 
     // Return a list of handicap points.
     // The "tygem" flag affects the positioning.
 
-    let points = []
-
     if (boardsize < 4) {
-        return points
+        return []
     }
 
     if (handicap > 9) {
@@ -29,47 +22,49 @@ function handicap_points(boardsize, handicap, tygem) {
         d = 3
     }
 
+    let points = []
+
     if (handicap >= 2) {
-        points.push([boardsize - d, 1 + d])
-        points.push([1 + d, boardsize - d])
+        points.push([boardsize - d - 1, d])
+        points.push([d, boardsize - d - 1])
     }
 
     // Experiments suggest Tygem puts its 3rd handicap stone in the top left
 
     if (handicap >= 3) {
         if (tygem) {
-            points.push([1 + d, 1 + d])
+            points.push([d, d])
         } else {
-            points.push([boardsize - d, boardsize - d])
+            points.push([boardsize - d - 1, boardsize - d - 1])
         }
     }
 
     if (handicap >= 4) {
         if (tygem) {
-            points.push([boardsize - d, boardsize - d])
+            points.push([boardsize - d - 1, boardsize - d - 1])
         } else {
-            points.push([1 + d, 1 + d])
+            points.push([d, d])
         }
     }
 
-    if (boardsize % 2 == 0) {      // No handicap > 4 on even sided boards
+    if (boardsize % 2 === 0) {      // No handicap > 4 on even sided boards
         return points
     }
 
     let mid = (boardsize + 1) / 2
 
     if (handicap === 5 || handicap === 7 || handicap === 9) {
-        points.push([mid, mid])
+        points.push([mid - 1, mid - 1])
     }
 
     if (handicap >= 6) {
-        points.push([1 + d, mid])
-        points.push([boardsize - d, mid])
+        points.push([d, mid - 1])
+        points.push([boardsize - d - 1, mid - 1])
     }
 
     if (handicap >= 8) {
-        points.add([mid, 1 + d])
-        points.add([mid, boardsize - d])
+        points.push([mid - 1, d])
+        points.push([mid - 1, boardsize - d - 1])
     }
 
     return points
@@ -127,14 +122,11 @@ exports.parse = function (input) {
 
             // Try to find score by assuming any float found is the score.
 
-            for (let i in strings) {
-                try {
-                    let p = parseFloat(strings[i])  // Does this ever throw?
-                    if (isNaN(p) === false) {
-                        score = p
-                    }
+            for (let s of strings) {
+                let p = parseFloat(s)
+                if (Number.isNaN(p) === false) {
+                    score = p
                 }
-                catch (e) {}
             }
 
             if (line.toLowerCase().includes('white') &&
@@ -164,25 +156,22 @@ exports.parse = function (input) {
         } else if (line.slice(0, 3) === 'INI') {
 
             let setup = line.split(' ')
+
             let handicap = 0
-            try {
-                let p = parseInt(setup[3])
-                if (isNaN(p) === false) {
-                    handicap = p
-                }
+            let p = parseFloat(setup[3])
+            if (Number.isNaN(p) === false) {
+                handicap = p
             }
-            catch (e) {}
 
             if (handicap >= 2 && handicap <= 9) {
                 root.HA = [handicap.toString()]
                 root.AB = []
 
-                let points = handicap_points(19, handicap, true)
+                let points = handicapPoints(19, handicap, true)
 
-                for (let i in points) {
-                    let x = points[i][0]
-                    let y = points[i][1]
-                    let s = string_from_point(x, y)
+                for (let p of points) {
+                    let [x, y] = p
+                    let s = sgf.vertex2point([x, y])
                     root.AB.push(s)
                 }
             }
@@ -205,10 +194,10 @@ exports.parse = function (input) {
                 key = 'W'
             }
 
-            let x = parseInt(elements[4]) + 1
-            let y = parseInt(elements[5]) + 1
+            let x = parseFloat(elements[4])
+            let y = parseFloat(elements[5])
 
-            let val = string_from_point(x, y)
+            let val = sgf.vertex2point([x, y])
             node[key] = [val]
         }
     }
