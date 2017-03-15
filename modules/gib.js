@@ -3,7 +3,7 @@ const iconv = require('iconv-lite')
 const gametree = require('./gametree')
 
 function string_from_point(x, y) {
-    // convert x, y into SGF coordinate e.g. "pd"
+    // convert x, y into SGF coordinate e.g. 'pd'
     return String.fromCharCode(x + 96) + String.fromCharCode(y + 96)
 }
 
@@ -87,6 +87,10 @@ exports.parse = function (input) {
     let root = {}
     tree.nodes.push(root)
 
+    root.FF = ['4']
+    root.GM = ['1']
+    root.SZ = ['19']
+
     let node = root
 
     for (let n = 0; n < lines.length; n++) {
@@ -108,12 +112,12 @@ exports.parse = function (input) {
             // Hard-coded the common komi cases.
             // For better results, we could do a regex here instead.
 
-            if (line.toLowerCase().includes("black 6.5 dum")) {
-                root.KM = ["6.5"]
-            } else if (line.toLowerCase().includes("black 7.5 dum")) {
-                root.KM = ["7.5"]
-            } else if (line.toLowerCase().includes("black 0.5 dum")) {
-                root.KM = ["0.5"]
+            if (line.toLowerCase().includes('black 6.5 dum')) {
+                root.KM = ['6.5']
+            } else if (line.toLowerCase().includes('black 7.5 dum')) {
+                root.KM = ['7.5']
+            } else if (line.toLowerCase().includes('black 0.5 dum')) {
+                root.KM = ['0.5']
             }
 
         } else if (line.startsWith('\\[GAMERESULT=')) {
@@ -137,11 +141,11 @@ exports.parse = function (input) {
                 line.toLowerCase().includes('black') === false) {
 
                 if (line.toLowerCase().includes('resignation')) {
-                    root.RE = ["W+R"]
+                    root.RE = ['W+R']
                 } else if (score !== null) {
-                    root.RE = ["W+" + score.toString()]
+                    root.RE = ['W+' + score.toString()]
                 } else {
-                    root.RE = ["W+"]
+                    root.RE = ['W+']
                 }
             }
 
@@ -149,11 +153,11 @@ exports.parse = function (input) {
                 line.toLowerCase().includes('white') === false) {
 
                 if (line.toLowerCase().includes('resignation')) {
-                    root.RE = ["B+R"]
+                    root.RE = ['B+R']
                 } else if (score !== null) {
-                    root.RE = ["B+" + score.toString()]
+                    root.RE = ['B+' + score.toString()]
                 } else {
-                    root.RE = ["B+"]
+                    root.RE = ['B+']
                 }
             }
 
@@ -170,7 +174,7 @@ exports.parse = function (input) {
             catch (e) {}
 
             if (handicap >= 2 && handicap <= 9) {
-                root.HA = [handicap]
+                root.HA = [handicap.toString()]
                 root.AB = []
 
                 let points = handicap_points(19, handicap, true)
@@ -189,10 +193,10 @@ exports.parse = function (input) {
             if (elements.length < 6) {
                 continue
             }
-            
+
             let node = {}
             tree.nodes.push(node)
-            
+
             let key
 
             if (elements[3] === '1') {
