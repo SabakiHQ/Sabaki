@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const Bar = require('./Bar')
 
 class EditBar extends Component {
     constructor() {
@@ -45,10 +46,10 @@ class EditBar extends Component {
         )
     }
 
-    render({selectedTool, onCloseButtonClick = () => {}}, {stoneTool}) {
+    render({selectedTool}, {stoneTool}) {
         let isSelected = ([, id]) => id.replace(/_-?1$/, '') === selectedTool.replace(/_-?1$/, '')
 
-        return h('section', {id: 'edit', class: 'bar'},
+        return h(Bar, Object.assign({type: 'edit'}, this.props),
             h('ul', {},
                 [
                     ['Stone Tool', `stone_${stoneTool}`],
@@ -62,8 +63,7 @@ class EditBar extends Component {
                 ].map(x =>
                     this.renderButton(...x, isSelected(x))
                 )
-            ),
-            h('a', {class: 'close', href: '#', onClick: onCloseButtonClick})
+            )
         )
     }
 }

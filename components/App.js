@@ -27,6 +27,7 @@ class App extends Component {
         this.state = {
             title: app.getName(),
             mode: 'play',
+            openDrawer: null,
             busy: false,
 
             representedFilename: null,

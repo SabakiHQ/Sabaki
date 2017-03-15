@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const Bar = require('./Bar')
 
 class AutoplayBar extends Component {
     render({
@@ -6,9 +7,8 @@ class AutoplayBar extends Component {
         secondsPerMove,
         onValueChange = () => {},
         onButtonClick = () => {},
-        onCloseButtonClick = () => {}
     }) {
-        return h('section', {id: 'autoplay', class: {bar: true, playing}},
+        return h(Bar, Object.assign({type: 'autoplay', class: {playing}}, this.props),
             h('form', {},
                 h('label', {},
                     h('input', {
@@ -18,14 +18,13 @@ class AutoplayBar extends Component {
                         min: 1,
                         max: 10,
                         step: 'any',
-                        
+
                         onChange: onValueChange
                     }),
                     ' sec per move'
                 )
             ),
-            h('a', {class: 'play', href: '#', onClick: onButtonClick}),
-            h('a', {class: 'close', href: '#', onClick: onCloseButtonClick})
+            h('a', {class: 'play', href: '#', onClick: onButtonClick})
         )
     }
 }
