@@ -1,74 +1,7 @@
 const iconv = require('iconv-lite')
 const gametree = require('./gametree')
 const sgf = require('./sgf')
-
-function handicapPoints(boardsize, handicap, tygem) {
-
-    // Return a list of handicap points.
-    // The "tygem" flag affects the positioning.
-
-    if (boardsize < 4) {
-        return []
-    }
-
-    if (handicap > 9) {
-        handicap = 9
-    }
-
-    let d
-    if (boardsize < 13) {
-        d = 2
-    } else {
-        d = 3
-    }
-
-    let points = []
-
-    if (handicap >= 2) {
-        points.push([boardsize - d - 1, d])
-        points.push([d, boardsize - d - 1])
-    }
-
-    // Experiments suggest Tygem puts its 3rd handicap stone in the top left
-
-    if (handicap >= 3) {
-        if (tygem) {
-            points.push([d, d])
-        } else {
-            points.push([boardsize - d - 1, boardsize - d - 1])
-        }
-    }
-
-    if (handicap >= 4) {
-        if (tygem) {
-            points.push([boardsize - d - 1, boardsize - d - 1])
-        } else {
-            points.push([d, d])
-        }
-    }
-
-    if (boardsize % 2 === 0) {      // No handicap > 4 on even sided boards
-        return points
-    }
-
-    let mid = (boardsize + 1) / 2
-
-    if (handicap === 5 || handicap === 7 || handicap === 9) {
-        points.push([mid - 1, mid - 1])
-    }
-
-    if (handicap >= 6) {
-        points.push([d, mid - 1])
-        points.push([boardsize - d - 1, mid - 1])
-    }
-
-    if (handicap >= 8) {
-        points.push([mid - 1, d])
-        points.push([mid - 1, boardsize - d - 1])
-    }
-
-    return points
-}
+const Board = require('./board')
 
 exports.parse = function (input) {
 
@@ -167,7 +100,9 @@ exports.parse = function (input) {
                 root.HA = [handicap.toString()]
                 root.AB = []
 
-                let points = handicapPoints(19, handicap, true)
+                let tmp = new Board()       // Created solely for .getHandicapPlacement()
+
+                let points = tmp.getHandicapPlacement(handicap)
 
                 for (let p of points) {
                     let [x, y] = p
