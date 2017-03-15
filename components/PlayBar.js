@@ -28,6 +28,7 @@ class PlayBar extends Component {
                 h('span', {class: 'name', title: playerRanks[1]}, playerNames[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
+            
             h('img', {
                 src: `./img/ui/player_${currentPlayer}.svg`,
                 class: 'current-player',

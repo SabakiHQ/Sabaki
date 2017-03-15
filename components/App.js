@@ -25,7 +25,6 @@ class App extends Component {
         let emptyTree = this.getEmptyGameTree()
 
         this.state = {
-            app: this,
             mode: 'play',
             busy: false,
 

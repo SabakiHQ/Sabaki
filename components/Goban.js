@@ -46,8 +46,12 @@ class Goban extends Component {
 
         let rangeX = range(nextProps.board.width)
         let rangeY = range(nextProps.board.height)
+        let hoshis = nextProps.board.getHandicapPlacement(9)
 
         this.setState({
+            rangeX,
+            rangeY,
+            hoshis,
             randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
             shifts: rangeY.map(_ => rangeX.map(__ => random(9))),
             animate: []
@@ -165,25 +169,24 @@ class Goban extends Component {
         onVertexClick = () => {},
         onMouseMove = () => {}
     }, state) {
-        let rangeX = range(board.width)
-        let rangeY = range(board.height)
-        let hoshi = board.getHandicapPlacement(9)
+        let {rangeX, rangeY, hoshis, fieldSize} = state
+
         let rowStyle = {
-            height: state.fieldSize,
-            lineHeight: state.fieldSize + 'px',
-            marginLeft: showCoordinates ? state.fieldSize : 0
+            height: fieldSize,
+            lineHeight: fieldSize + 'px',
+            marginLeft: showCoordinates ? fieldSize : 0
         }
 
-        let coordX = () => h('ol', {class: 'coordx'},
+        let renderCoordX = () => h('ol', {class: 'coordx'},
             rangeX.map(i => h('li', {style: rowStyle}, alpha[i]))
         )
 
-        let coordY = ({left = null} = {}) => h('ol', {class: 'coordy'},
+        let renderCoordY = ({left = null} = {}) => h('ol', {class: 'coordy'},
             rangeY.map(i => h('li', {
                 style: {
-                    width: state.fieldSize,
-                    top: state.fieldSize,
-                    lineHeight: state.fieldSize + 'px',
+                    width: fieldSize,
+                    top: fieldSize,
+                    lineHeight: fieldSize + 'px',
                     left
                 }
             }, board.height - i))
@@ -203,7 +206,7 @@ class Goban extends Component {
                     animation: animatedStonePlacement
                 },
                 style: {
-                    fontSize: state.fieldSize,
+                    fontSize: fieldSize,
                     width: state.width,
                     height: state.height,
                     marginLeft: state.marginLeft,
@@ -221,8 +224,8 @@ class Goban extends Component {
                     }
                 },
 
-                coordY(),
-                coordX(),
+                renderCoordY(),
+                renderCoordX(),
 
                 rangeY.map(y => h('ol', {class: 'row', style: rowStyle}, rangeX.map(x => {
                     let sign = board.get([x, y])
@@ -256,14 +259,14 @@ class Goban extends Component {
                                 [`random_${state.randomizer[y][x]}`]: true,
                                 [`sign_${sign}`]: true,
                                 [markupType]: !!markupType,
-                                hoshi: hoshi.some(v => helper.shallowEquals(v, [x, y])),
+                                hoshi: hoshis.some(v => helper.shallowEquals(v, [x, y])),
                                 animate: state.animate.some(v => helper.shallowEquals(v, [x, y])),
                                 smalllabel: label.length >= 3
                             }, ghostClasses),
 
                             style: {
-                                width: state.fieldSize,
-                                height: state.fieldSize
+                                width: fieldSize,
+                                height: fieldSize
                             },
 
                             onMouseDown: () => {
@@ -284,18 +287,18 @@ class Goban extends Component {
                             }
                         },
                         h('div', {class: 'stone'},
-                            h('img', {src: './img/goban/stone_0.svg'}),
+                            h('img', {src: './img/goban/blank.svg'}),
                             h('span', {title: label})
                         ),
                         h('div', {class: 'paint'})
                     )
                 }))),
 
-                coordX(),
-                coordY({left: state.fieldSize * (board.width + 1)})
+                renderCoordX(),
+                renderCoordY({left: fieldSize * (board.width + 1)})
             ),
 
-            // Draw lines
+            // Draw lines & arrows
 
             board.lines.map(([v1, v2, arrow]) => {
                 let $li1 = $(`#goban .pos_${v1.join('-')}`)
@@ -303,6 +306,8 @@ class Goban extends Component {
                 let pos1 = $li1.position(), pos2 = $li2.position()
                 let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
 
+                let top = (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2
+                let left = (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2
                 let angle = Math.atan2(dy, dx) * 180 / Math.PI
                 let length = Math.sqrt(dx * dx + dy * dy)
 
@@ -310,8 +315,8 @@ class Goban extends Component {
                     {
                         class: arrow ? 'arrow' : 'line',
                         style: {
-                            top: (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2 + state.borderTopWidth,
-                            left: (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2 + state.borderLeftWidth,
+                            top: top + state.borderTopWidth,
+                            left: left + state.borderLeftWidth,
                             marginLeft: -length / 2,
                             width: length,
                             transform: `rotate(${angle}deg)`
