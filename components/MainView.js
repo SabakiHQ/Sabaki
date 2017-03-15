@@ -2,12 +2,22 @@ const {h, Component} = require('preact')
 
 const Goban = require('./Goban')
 const PlayBar = require('./PlayBar')
+const EditBar = require('./EditBar')
 
 const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
-    adjustSize() {
+    constructor() {
+        super()
+
+        this.handleGobanResize = this.handleGobanResize.bind(this)
+        this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
+        this.handleEditToolClick = this.handleEditToolClick.bind(this)
+        this.handleBarCloseButtonClick = this.handleBarCloseButtonClick.bind(this)
+    }
+
+    handleGobanResize() {
         /*  Because of board rendering issues, we want the width
             and the height of `<main>` to be even */
 
@@ -26,6 +36,18 @@ class MainView extends Component {
         this.setState({width, height})
     }
 
+    handleGobanVertexClick(evt) {
+        console.log(evt.vertex)
+    }
+
+    handleEditToolClick(evt) {
+        sabaki.setState({selectedTool: evt.toolId})
+    }
+
+    handleBarCloseButtonClick() {
+        sabaki.setState({mode: 'play'})
+    }
+
     render({
         treePosition,
 
@@ -37,7 +59,8 @@ class MainView extends Component {
         animatedStonePlacement,
 
         undoable,
-        undoText
+        undoText,
+        selectedTool
     }, {
         width,
         height
@@ -62,7 +85,8 @@ class MainView extends Component {
                     fuzzyStonePlacement,
                     animatedStonePlacement,
 
-                    onBeforeResize: () => this.adjustSize()
+                    onBeforeResize: this.handleGobanResize,
+                    onVertexClick: this.handleGobanVertexClick
                 })
             ),
 
@@ -83,6 +107,12 @@ class MainView extends Component {
                     showHotspot: 'HO' in node,
                     undoable,
                     undoText
+                }),
+
+                h(EditBar, {
+                    selectedTool,
+                    onToolButtonClick: this.handleEditToolClick,
+                    onCloseButtonClick: this.handleBarCloseButtonClick
                 })
             )
         )

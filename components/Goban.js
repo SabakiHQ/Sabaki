@@ -2,9 +2,9 @@ const {h, Component} = require('preact')
 const $ = require('../modules/sprint')
 const helper = require('../modules/helper')
 
-let alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-let range = n => [...Array(n)].map((_, i) => i)
-let random = n => Math.floor(Math.random() * n)
+const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const range = n => [...Array(n)].map((_, i) => i)
+const random = n => Math.floor(Math.random() * n)
 
 class Goban extends Component {
     constructor(props) {
