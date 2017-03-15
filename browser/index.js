@@ -9,6 +9,7 @@ const Pikaday = require('pikaday')
 const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
+const gib = require('../modules/gib')
 const fuzzyfinder = require('../modules/fuzzyfinder')
 const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
@@ -2118,14 +2119,21 @@ sabaki.loadFile = function(filename, dontask = false) {
     if (!filename) {
         let result = view.showOpenDialog({
             properties: ['openFile'],
-            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+            filters: [{name: 'Go Records', extensions: ['sgf', 'gib']}, {name: 'All Files', extensions: ['*']}]
         })
 
         if (result) filename = result[0]
     }
 
     if (filename) {
-        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, false, err => {
+
+        let format = 'SGF'
+
+        if (filename.toUpperCase().endsWith('.GIB')) {
+            format = 'GIB'
+        }
+
+        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), format, true, false, err => {
             if (err) return
             view.setRepresentedFilename(filename)
             sabaki.updateFileHash()
@@ -2133,7 +2141,7 @@ sabaki.loadFile = function(filename, dontask = false) {
     }
 }
 
-sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(content, format = 'SGF', dontask = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -2145,12 +2153,21 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         let trees = []
 
         try {
-            trees = sgf.parse(sgf.tokenize(content), progress => {
-                if (progress - lastprogress < 0.1) return
 
-                view.setProgressIndicator(progress, win)
-                lastprogress = progress
-            }, ignoreEncoding ? null : undefined).subtrees
+            switch (format) {
+
+            case 'SGF':
+                trees = sgf.parse(sgf.tokenize(content), progress => {
+                    if (progress - lastprogress < 0.1) return
+                    view.setProgressIndicator(progress, win)
+                    lastprogress = progress
+                }, ignoreEncoding ? null : undefined).subtrees
+                break
+
+            case 'GIB':
+                trees = [gib.parse(content)]
+                break
+            }
 
             if (trees.length == 0) throw true
         } catch (err) {
