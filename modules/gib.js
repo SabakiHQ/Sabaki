@@ -91,7 +91,7 @@ exports.parse = function (input) {
             let setup = line.split(' ')
 
             let handicap = 0
-            let p = parseFloat(setup[3])
+            let p = Math.floor(parseFloat(setup[3]))
             if (Number.isNaN(p) === false) {
                 handicap = p
             }
@@ -126,8 +126,8 @@ exports.parse = function (input) {
                 key = 'W'
             }
 
-            let x = parseFloat(elements[4])
-            let y = parseFloat(elements[5])
+            let x = Math.floor(parseFloat(elements[4]))
+            let y = Math.floor(parseFloat(elements[5]))
 
             if (Number.isNaN(x) || Number.isNaN(y)) {
                 continue

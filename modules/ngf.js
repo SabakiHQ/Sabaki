@@ -17,12 +17,22 @@ exports.parse = function (input) {
     // These array accesses might throw if out of range, that's fine.
     // The caller will deal with the exception.
 
-    let boardsize = parseFloat(lines[1])
-    let handicap = parseFloat(lines[5])
+    let boardsize = Math.floor(parseFloat(lines[1]))
+    let handicap = Math.floor(parseFloat(lines[5]))
     let pw = lines[2].split(' ')[0]
     let pb = lines[3].split(' ')[0]
     let rawdate = lines[8].slice(0, 8)
-    let komi = parseFloat(lines[7])
+    let komi = Math.floor(parseFloat(lines[7]))
+
+    if (Number.isNaN(boardsize)) {
+        boardsize = 19
+    }
+    if (Number.isNaN(handicap)) {
+        handicap = 0
+    }
+    if (Number.isNaN(komi)) {
+        komi = 0
+    }
 
     let line2 = lines[2].split(' ')
     if (line2.length > 1) {
