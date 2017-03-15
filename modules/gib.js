@@ -37,15 +37,17 @@ exports.parse = function (input) {
 
         } else if (line.startsWith('\\[GAMECONDITION=')) {
 
-            // Hard-coded the common komi cases.
-            // For better results, we could do a regex here instead.
+            // Find komi if it's recorded in English.
+            // It could also be in other languages, in which case we won't find it.
 
-            if (line.toLowerCase().includes('black 6.5 dum')) {
-                root.KM = ['6.5']
-            } else if (line.toLowerCase().includes('black 7.5 dum')) {
-                root.KM = ['7.5']
-            } else if (line.toLowerCase().includes('black 0.5 dum')) {
-                root.KM = ['0.5']
+            let regex = new RegExp('Black (.+) Dum')
+            let match = regex.exec(line)
+
+            if (match) {
+                let komi = parseFloat(match[1])
+                if (Number.isNaN(komi) === false) {
+                    root.KM = [komi.toString()]
+                }
             }
 
         } else if (line.startsWith('\\[GAMERESULT=')) {
