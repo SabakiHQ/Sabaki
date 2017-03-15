@@ -21,7 +21,7 @@ const Board = require('../modules/board')
 class App extends Component {
     constructor() {
         super()
-        
+
         let emptyTree = this.getEmptyGameTree()
 
         this.state = {
@@ -35,6 +35,7 @@ class App extends Component {
             treePosition: [emptyTree, 0],
 
             undoable: false,
+            undoText: 'Undo',
             selectedTool: 'stone_1',
             scoringMethod: setting.get('scoring.method'),
 
@@ -55,6 +56,7 @@ class App extends Component {
     }
 
     componentDidMount() {
+        window.sabaki = this
         remote.getCurrentWindow().show()
     }
 
@@ -80,7 +82,8 @@ class App extends Component {
             {
                 class: {
                     leftsidebar: state.showLeftSidebar,
-                    sidebar: state.showGameTree || state.showCommentBox
+                    sidebar: state.showGameTree || state.showCommentBox,
+                    [state.mode]: true
                 }
             },
 

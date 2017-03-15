@@ -1,15 +1,15 @@
 const {h, Component} = require('preact')
 
 const Goban = require('./Goban')
-const Bar = require('./Bar')
+const PlayBar = require('./PlayBar')
 
 const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
     adjustSize() {
-        // Because of board rendering issues, we want the width
-        // and the height of `<main>` to be even
+        /*  Because of board rendering issues, we want the width
+            and the height of `<main>` to be even */
 
         let $main = $(this.mainElement).css('width', '').css('height', '')
 
@@ -28,16 +28,24 @@ class MainView extends Component {
 
     render({
         treePosition,
+
         showCoordinates,
         showMoveColorization,
         showNextMoves,
         showSiblings,
         fuzzyStonePlacement,
-        animatedStonePlacement
+        animatedStonePlacement,
+
+        undoable,
+        undoText
     }, {
         width,
         height
     }) {
+        let board = gametree.getBoard(...treePosition)
+        let [tree, index] = treePosition
+        let node = tree.nodes[index]
+
         return h('section', {id: 'main'},
             h('main',
                 {
@@ -46,7 +54,7 @@ class MainView extends Component {
                 },
 
                 h(Goban, {
-                    board: gametree.getBoard(...treePosition),
+                    board,
                     showCoordinates,
                     showMoveColorization,
                     showNextMoves,
@@ -57,7 +65,26 @@ class MainView extends Component {
                     onBeforeResize: () => this.adjustSize()
                 })
             ),
-            h('section', {id: 'bar'})
+
+            h('section', {id: 'bar'},
+                h(PlayBar, {
+                    playerNames: [[1, 'Black'], [-1, 'White']].map(([s, fallback]) =>
+                        gametree.getPlayerName(tree, s, fallback)
+                    ),
+                    playerRanks: ['BR', 'WR'].map(p =>
+                        gametree.getRootProperty(tree, p, '')
+                    ),
+                    playerCaptures: [1, -1].map(s =>
+                        board.captures[s]
+                    ),
+                    currentPlayer: 'PL' in node ? (node.PL[0] == 'W' ? -1 : 1)
+                        : 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1
+                        : 1,
+                    showHotspot: 'HO' in node,
+                    undoable,
+                    undoText
+                })
+            )
         )
     }
 }

@@ -59,7 +59,7 @@ header, #bar .bar {
         font-size: .8em;
         transition: opacity .2s;
     }
-    header .bookmark {
+    header .hotspot {
         position: absolute;
         left: 10px;
         top: -42px;
@@ -68,7 +68,7 @@ header, #bar .bar {
         background: #a456bb;
         transition: top .2s;
     }
-    header .bookmark::before, header .bookmark::after {
+    header .hotspot::before, header .hotspot::after {
         content: '';
         display: block;
         position: absolute;
@@ -77,12 +77,12 @@ header, #bar .bar {
         border-top: 6px solid #a456bb;
         border-right: 6px solid transparent;
     }
-    header .bookmark::after {
+    header .hotspot::after {
         left: 6px;
         border-right: none;
         border-left: 6px solid transparent;
     }
-    .bookmark header .bookmark { top: 0; }
+    header.hotspot .hotspot { top: 0; }
     header > img, #headermenu, header .undo {
         display: block;
         position: absolute;
@@ -117,8 +117,8 @@ header, #bar .bar {
         filter: invert(100%);
         -webkit-filter: invert(100%);
     }
-    .undoable header .undo { top: 50%; }
-    .bookmark header .undo { left: 32px; }
+    header.undoable .undo { top: 50%; }
+    header.hotspot .undo { left: 32px; }
     #headermenu:hover, header .undo:hover {
         background: #222;
 }

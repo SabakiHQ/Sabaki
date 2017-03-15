@@ -54,14 +54,19 @@ exports.getRoot = function(tree) {
 }
 
 exports.getPlayerName = function(tree, sign, fallback = '') {
-    tree = exports.getRoot(tree)
     let color = sign > 0 ? 'B' : 'W'
 
-    if (tree.nodes.length == 0) return fallback
+    return exports.getRootProperty(tree, `P${color}`,
+        exports.getRootProperty(tree, `${color}T`, fallback)
+    )
+}
+
+exports.getRootProperty = function(tree, property, fallback = null) {
+    let node = exports.getRoot(tree).nodes[0]
+    if (!node) return fallback
 
     let result = ''
-    if (('P' + color) in tree.nodes[0]) result = tree.nodes[0]['P' + color][0]
-    else if ((color + 'T') in tree.nodes[0]) result = tree.nodes[0][color + 'T'][0]
+    if (property in node) result = node[property][0]
 
     return result.trim() == '' ? fallback : result
 }
