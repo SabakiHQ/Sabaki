@@ -10,6 +10,7 @@ const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
 const gib = require('../modules/gib')
+const ngf = require('../modules/ngf')
 const fuzzyfinder = require('../modules/fuzzyfinder')
 const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
@@ -2119,7 +2120,7 @@ sabaki.loadFile = function(filename, dontask = false) {
     if (!filename) {
         let result = view.showOpenDialog({
             properties: ['openFile'],
-            filters: [{name: 'Go Records', extensions: ['sgf', 'gib']}, {name: 'All Files', extensions: ['*']}]
+            filters: [{name: 'Go Records', extensions: ['sgf', 'gib', 'ngf']}, {name: 'All Files', extensions: ['*']}]
         })
 
         if (result) filename = result[0]
@@ -2131,6 +2132,10 @@ sabaki.loadFile = function(filename, dontask = false) {
 
         if (filename.toUpperCase().endsWith('.GIB')) {
             format = 'GIB'
+        }
+
+        if (filename.toUpperCase().endsWith('.NGF')) {
+            format = 'NGF'
         }
 
         sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), format, true, false, err => {
@@ -2166,6 +2171,10 @@ sabaki.loadFileFromSgf = function(content, format = 'SGF', dontask = false, igno
 
             case 'GIB':
                 trees = [gib.parse(content)]
+                break
+
+            case 'NGF':
+                trees = [ngf.parse(content)]
                 break
             }
 
