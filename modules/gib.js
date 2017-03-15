@@ -81,28 +81,27 @@ exports.parse = function (input) {
 
     input = iconv.decode(Buffer.from(input, 'binary'), 'utf8')
 
-    let lines = input.split('\n');
+    let lines = input.split('\n')
 
-    let tree = gametree.new();
-    let root = {};
-    tree.nodes.push(root);
+    let tree = gametree.new()
+    let root = {}
+    tree.nodes.push(root)
 
-    let node = root;
+    let node = root
 
-    let n;
-    for (n = 0; n < lines.length; n++) {
+    for (let n = 0; n < lines.length; n++) {
 
-        let line = lines[n].trim();
+        let line = lines[n].trim()
 
         if (line.startsWith('\\[GAMEBLACKNAME=') && line.endsWith('\\]')) {
 
-            let s = line.slice(16, -2);
-            root.PB = [s];
+            let s = line.slice(16, -2)
+            root.PB = [s]
 
         } else if (line.startsWith('\\[GAMEWHITENAME=') && line.endsWith('\\]')) {
 
-            let s = line.slice(16, -2);
-            root.PW = [s];
+            let s = line.slice(16, -2)
+            root.PW = [s]
 
         } else if (line.startsWith('\\[GAMECONDITION=')) {
 
@@ -186,25 +185,25 @@ exports.parse = function (input) {
 
         } else if (line.slice(0, 3) === 'STO') {
 
-            let node = {};
-            tree.nodes.push(node);
+            let node = {}
+            tree.nodes.push(node)
 
-            let elements = line.split(' ');
-            let key;
+            let elements = line.split(' ')
+            let key
 
             if (elements[3] === '1') {
-                key = 'B';
+                key = 'B'
             } else {
-                key = 'W';
+                key = 'W'
             }
 
-            let x = parseInt(elements[4]) + 1;
-            let y = parseInt(elements[5]) + 1;
+            let x = parseInt(elements[4]) + 1
+            let y = parseInt(elements[5]) + 1
 
-            let val = string_from_point(x, y);
-            node[key] = [val];
+            let val = string_from_point(x, y)
+            node[key] = [val]
         }
     }
 
-    return tree;
-};
+    return tree
+}
