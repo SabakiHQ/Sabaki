@@ -1,8 +1,13 @@
+const iconv = require('iconv-lite')
 const gametree = require('./gametree')
 const sgf = require('./sgf')
 const Board = require('./board')
 
 exports.parse = function (input) {
+
+    // Try UTF-8 encoding... in any case it's better than binary.
+
+    input = iconv.decode(Buffer.from(input, 'binary'), 'utf8')
 
     let lines = input.split('\n')
 
