@@ -41,6 +41,7 @@ class App extends Component {
             autoplaying: false,
             secondsPerMove: setting.get('autoplay.sec_per_move'),
             scoringMethod: setting.get('scoring.method'),
+            findText: '',
 
             showCoordinates: setting.get('view.show_coordinates'),
             showMoveColorization: setting.get('view.show_move_colorization'),

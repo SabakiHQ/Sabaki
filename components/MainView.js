@@ -5,6 +5,9 @@ const PlayBar = require('./PlayBar')
 const EditBar = require('./EditBar')
 const GuessBar = require('./GuessBar')
 const AutoplayBar = require('./AutoplayBar')
+const ScoringBar = require('./ScoringBar')
+const EstimatorBar = require('./EstimatorBar')
+const FindBar = require('./FindBar')
 
 const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
@@ -74,7 +77,8 @@ class MainView extends Component {
         undoText,
         selectedTool,
         secondsPerMove,
-        autoplaying
+        autoplaying,
+        findText
     }, {
         width,
         height
@@ -137,7 +141,11 @@ class MainView extends Component {
                     onValueChange: this.handleAutoplayValueChange,
                     onButtonClick: this.handleAutoplayButtonClick,
                     onCloseButtonClick: this.handleBarCloseButtonClick
-                })
+                }),
+
+                h(ScoringBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
+                h(EstimatorBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
+                h(FindBar, {onCloseButtonClick: this.handleBarCloseButtonClick})
             )
         )
     }
