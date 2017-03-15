@@ -118,9 +118,6 @@ exports.parse = function (input) {
                 continue
             }
 
-            let node = {}
-            tree.nodes.push(node)
-
             let key
 
             if (elements[3] === '1') {
@@ -132,7 +129,14 @@ exports.parse = function (input) {
             let x = parseFloat(elements[4])
             let y = parseFloat(elements[5])
 
+            if (Number.isNaN(x) || Number.isNaN(y)) {
+                continue
+            }
+
             let val = sgf.vertex2point([x, y])
+
+            let node = {}
+            tree.nodes.push(node)
             node[key] = [val]
         }
     }
