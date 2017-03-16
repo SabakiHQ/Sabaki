@@ -70,6 +70,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     let root = {}
     tree.nodes.push(root)
 
+    root.CA = ['utf8']
     root.FF = ['4']
     root.GM = ['1']
     root.SZ = ['19']
