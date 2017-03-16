@@ -473,10 +473,10 @@ header, #bar .bar {
         text-align: center;
         transition: top .2s, background .2s;
     }
-    #graph .slider .inner.active span {
+    #graph .slider .inner:active span {
         transition: none;
     }
-    #graph .slider .inner.active span, #graph .slider .inner span:hover {
+    #graph .slider .inner:active span, #graph .slider .inner span:hover {
         background: #494949;
 }
 

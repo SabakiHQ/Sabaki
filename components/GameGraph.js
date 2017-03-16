@@ -6,6 +6,9 @@ const setting = require('../modules/setting')
 
 const Slider = require('./Slider')
 
+let gridSize = setting.get('graph.grid_size')
+let nodeSize = setting.get('graph.node_size')
+
 class GameGraph extends Component {
     constructor() {
         super()
@@ -72,7 +75,6 @@ class GameGraph extends Component {
         this.renderId = setTimeout(() => {
             let [tree, index] = treePosition
             let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
-            let gridSize = setting.get('graph.grid_size')
 
             let id = tree.id + '-' + index
             let [x, y] = dict[id]
@@ -98,8 +100,8 @@ class GameGraph extends Component {
         setTimeout(() => this.remeasure(), 200)
     }
 
-    animateCameraPosition(toPosition, duration = null, fps = 60) {
-        if (duration == null) duration = setting.get('graph.animation_duration')
+    animateCameraPosition(toPosition, duration = null) {
+        if (duration == null) duration = setting.get('graph.delay')
 
         let [cx, cy] = this.state.cameraPosition
         let [ncx, ncy] = toPosition
@@ -140,7 +142,6 @@ class GameGraph extends Component {
             return
         }
 
-        let gridSize = setting.get('graph.grid_size')
         let {matrixDict: [matrix, ], mousePosition: [mx, my], cameraPosition: [cx, cy]} = this.state
         let {onNodeClick = () => {}} = this.props
         let [nearestX, nearestY] = [(mx + cx) / gridSize, (my + cy) / gridSize].map(z => Math.round(z))
@@ -165,8 +166,6 @@ class GameGraph extends Component {
         let strokeWidth = current => current ? setting.get('graph.edge_size')
             : setting.get('graph.edge_inactive_size')
 
-        let gridSize = setting.get('graph.grid_size')
-        let nodeSize = setting.get('graph.node_size')
         let commentProperties = setting.get('sgf.comment_properties')
 
         let [minX, minY] = [cx, cy].map(z => Math.ceil(z / gridSize) - 1)

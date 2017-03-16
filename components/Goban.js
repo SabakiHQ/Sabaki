@@ -58,12 +58,15 @@ class Goban extends Component {
         let rangeY = range(nextProps.board.height)
         let hoshis = nextProps.board.getHandicapPlacement(9)
 
+        let shifts = rangeY.map(_ => rangeX.map(__ => random(9)))
+        this.readjustShifts(shifts)
+
         this.setState({
             rangeX,
             rangeY,
             hoshis,
             randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
-            shifts: rangeY.map(_ => rangeX.map(__ => random(9))),
+            shifts,
             animate: []
         })
     }
@@ -109,23 +112,22 @@ class Goban extends Component {
         })
     }
 
-    readjustShifts(vertex = null) {
-        let {board} = this.props
-        let {animate, shifts} = this.state
-
+    readjustShifts(shifts, vertex = null) {
         if (vertex == null) {
-            for (let x = 0; x < board.width; x++) {
-                for (let y = 0; y < board.height; y++) {
-                    readjustShifts([x, y])
+            let movedVertices = []
+
+            for (let y = 0; y < shifts.length; y++) {
+                for (let x = 0; x < shifts[0].length; x++) {
+                    movedVertices.push(...this.readjustShifts(shifts, [x, y]))
                 }
             }
 
-            return
+            return movedVertices
         }
 
         let [x, y] = vertex
         let direction = shifts[y][x]
-        if (direction == 0) return
+        if (direction == 0) return []
 
         let query, removeShifts
 
@@ -146,25 +148,18 @@ class Goban extends Component {
             query = [x, y + 1]
             removeShifts = [2, 5, 6]
         } else {
-            return
+            return []
         }
 
         let [qx, qy] = query
+        let movedVertices = []
 
         if (shifts[qy] && removeShifts.includes(shifts[qy][qx])) {
             shifts[qy][qx] = 0
-
-            this.setState({
-                animate: [...animate, query],
-                shifts
-            })
-
-            setTimeout(() => {
-                this.setState(({animate}) => ({
-                    animate: animate.filter(v => !helper.shallowEquals(v, query))
-                }))
-            }, 200)
+            movedVertices.push(query)
         }
+
+        return movedVertices
     }
 
     handleVertexMouseDown() {
