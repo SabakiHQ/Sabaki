@@ -159,6 +159,7 @@ class GameGraph extends Component {
 
         let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 5, 0))
         let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 5)
+        let doneTreeBones = []
 
         // Render only nodes that are visible
 
@@ -193,6 +194,7 @@ class GameGraph extends Component {
                     // Render pass node
 
                     nodes.push(h('path', {
+                        key: `${x}-${y}`,
                         d: [
                             `M ${left - nodeSize} ${top - nodeSize}`,
                             `h ${nodeSize * 2}`,
@@ -209,6 +211,7 @@ class GameGraph extends Component {
                     let s = Math.round(Math.sqrt(2) * nodeSize)
 
                     nodes.push(h('path', {
+                        key: `${x}-${y}`,
                         d: [
                             `M ${left} ${top - s}`,
                             `L ${left - s} ${top}`,
@@ -221,6 +224,7 @@ class GameGraph extends Component {
                     }))
                 } else {
                     nodes.push(h('path', {
+                        key: `${x}-${y}`,
                         d: [
                             `M ${left} ${top}`,
                             `m ${-nodeSize} 0`,
@@ -232,25 +236,26 @@ class GameGraph extends Component {
                     }))
                 }
 
-                // Render precedent edge
+                // Render precedent edge with tree bone
 
-                if (index > 0 || tree.parent) {
+                if (index === 0 && tree.parent) {
                     let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
                     let [px, py] = dict[prevTree.id + '-' + prevIndex]
 
-                    // Render edge only if node is not visible,
+                    // Render edge only if parent node is not visible,
                     // otherwise this edge is already rendered as successor edge
 
                     if (px < minX || px > maxX || py < minY || py > maxY) {
-                        let method = onCurrentTrack ? 'push' : 'push'
+                        let method = onCurrentTrack ? 'unshift' : 'push'
 
                         if (px === x) {
                             // Draw straight line
 
                             edges[method](h('polyline', {
+                                key: tree.id,
                                 points: [
-                                    `${left},${top}`,
-                                    `${left},${top - gridSize}`
+                                    `${left},${top - gridSize}`,
+                                    `${left},${top + (tree.nodes.length - 1) * gridSize}`
                                 ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(onCurrentTrack),
@@ -260,68 +265,76 @@ class GameGraph extends Component {
                             // Draw angled line
 
                             edges[method](h('polyline', {
+                                key: tree.id,
                                 points: [
-                                    `${left},${top}`,
+                                    `${px * gridSize},${py * gridSize}`,
                                     `${left - gridSize},${top - gridSize}`,
-                                    `${px * gridSize},${py * gridSize}`
+                                    `${left},${top}`,
+                                    `${left},${top + (tree.nodes.length - 1) * gridSize}`
                                 ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(onCurrentTrack),
                                 strokeWidth: strokeWidth(onCurrentTrack)
                             }))
                         }
+
+                        doneTreeBones.push(tree.id)
                     }
                 }
 
                 // Render successor edges
 
-                if (index < tree.nodes.length - 1) {
-                    // Draw straight line
+                if (!doneTreeBones.includes(tree.id)) {
+                    // Draw straight edge through whole tree, a so-called "tree bone"
 
-                    let current = onCurrentTrack && (index < tree.nodes.length - 1 || tree.current === 0)
-                    let method = current ? 'push' : 'push'
+                    let method = onCurrentTrack ? 'unshift' : 'push'
+                    let [left, top] = dict[tree.id + '-0'].map(z => z * gridSize)
 
                     edges[method](h('polyline', {
-                        points: [
-                            `${left},${top}`,
-                            `${left},${top + gridSize}`
-                        ].join(' '),
+                        key: tree.id,
+                        points: `${left},${top} ${left},${top + (tree.nodes.length - 1) * gridSize}`,
                         fill: 'none',
-                        stroke: stroke(current),
-                        strokeWidth: strokeWidth(current)
+                        stroke: stroke(onCurrentTrack),
+                        strokeWidth: strokeWidth(onCurrentTrack)
                     }))
-                } else {
+
+                    doneTreeBones.push(tree.id)
+                }
+
+                if (index === tree.nodes.length - 1) {
                     for (let subtree of tree.subtrees) {
                         let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
                         let [nx, ny] = dict[subtree.id + '-0']
-                        let method = current ? 'push' : 'push'
+                        let method = current ? 'unshift' : 'push'
 
                         if (nx === x) {
-                            // Draw straight line
+                            // Draw straight tree bone, linking to parent tree
 
                             edges[method](h('polyline', {
-                                points: [
-                                    `${left},${top}`,
-                                    `${nx * gridSize},${ny * gridSize}`
-                                ].join(' '),
+                                key: subtree.id,
+                                points: `${left},${top} ${left},${top + subtree.nodes.length * gridSize}`,
                                 fill: 'none',
                                 stroke: stroke(current),
                                 strokeWidth: strokeWidth(current)
                             }))
                         } else {
-                            // Draw angled line
+                            // Draw angled line with tree bone
 
                             edges[method](h('polyline', {
+                                key: subtree.id,
                                 points: [
                                     `${left},${top}`,
                                     `${(nx - 1) * gridSize},${(ny - 1) * gridSize}`,
-                                    `${nx * gridSize},${ny * gridSize}`
+                                    `${nx * gridSize},${ny * gridSize}`,
+                                    `${nx * gridSize},${(ny + subtree.nodes.length - 1) * gridSize}`
                                 ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(current),
                                 strokeWidth: strokeWidth(current)
                             }))
                         }
+
+                        doneTreeBones.push(subtree.id)
                     }
                 }
             }
@@ -366,6 +379,8 @@ class GameGraph extends Component {
                 h('style', {}, `
                     #graph svg > * {
                         transform: translate(${-cx}px, ${-cy}px);
+                    }
+                    #graph svg:not(:active) > * {
                         transition: transform ${animationDuration / 1000}s;
                     }
                     #graph svg path.hover {
