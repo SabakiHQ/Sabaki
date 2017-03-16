@@ -40,7 +40,7 @@ class GameGraph extends Component {
             if (!this.mouseDown) {
                 [movementX, movementY] = [0, 0]
                 this.drag = false
-                if (mousePosition[0] < 0) return
+                if (Math.min(...mousePosition) < -10) return
             } else {
                 this.drag = true
             }
@@ -331,8 +331,7 @@ class GameGraph extends Component {
             }
         }
 
-        edges.push(...nodes)
-        return edges
+        return [h('g', {}, edges), h('g', {}, nodes)]
     }
 
     render({height, treePosition}, {matrixDict, cameraPosition: [cx, cy], viewportSize}) {
