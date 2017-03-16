@@ -92,6 +92,15 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                 }
             }
 
+        } else if (line.startsWith('\\[GAMETAG=')) {
+
+            let regex = new RegExp('C(\\d\\d\\d\\d):(\\d\\d):(\\d\\d)')
+            let match = regex.exec(line)
+
+            if (match) {
+                root.DT = [match[1] + '-' + match[2] + '-' + match[3]]
+            }
+
         } else if (line.slice(0, 3) === 'INI') {
 
             let setup = line.split(' ')
