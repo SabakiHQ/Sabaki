@@ -2128,14 +2128,11 @@ sabaki.loadFile = function(filename, dontask = false) {
     }
 
     if (filename) {
-
         let format = 'sgf'
 
         if (filename.toLowerCase().endsWith('.gib')) {
             format = 'gib'
-        }
-
-        if (filename.toLowerCase().endsWith('.ngf')) {
+        } else if (filename.toLowerCase().endsWith('.ngf')) {
             format = 'ngf'
         }
 
