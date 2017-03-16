@@ -160,7 +160,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
     for (let n = 0; n < lines.length; n++) {
 
-        let line = lines[n].trim().toUpperCase()
+        let line = lines[n].trim()
 
         if (line.length >= 7) {
 
