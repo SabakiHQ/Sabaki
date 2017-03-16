@@ -39,61 +39,54 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
             let s = line.slice(16, -2)
             root.PW = [s]
 
-        } else if (line.startsWith('\\[GAMECONDITION=')) {
+        } else if (line.startsWith('\\[GAMEINFOMAIN=')) {
 
-            // Find komi if it's recorded in English.
-            // Also check for the most common komi written in Chinese.
+            // The GRLT tag contains the type of result:
+            // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
+            // If there is a score, the ZIPSU tag contains it (multiplied by 10).
 
-            let regex = new RegExp('Black (.+) Dum')
+            let winner = ''
+            let margin = ''
+
+            let regex = new RegExp('GRLT:(\\d+),')
             let match = regex.exec(line)
 
             if (match) {
-                let komi = parseFloat(match[1])
-                if (Number.isNaN(komi) === false) {
-                    root.KM = [komi.toString()]
+
+                let num = parseFloat(match[1])
+
+                if (num === 0 || num === 3 || num === 7) {
+                    winner = 'B'
+                } else if (num === 1 || num === 4 || num === 8) {
+                    winner = 'W'
                 }
-            } else if (line.includes('黑贴6目半') || line.includes('黑貼6目半')) {
-                root.KM = ['6.5']
-            } else if (line.includes('黑贴7目半') || line.includes('黑貼7目半')) {
-                root.KM = ['7.5']
-            }
 
-        } else if (line.startsWith('\\[GAMERESULT=')) {
-
-            let score = null
-            let strings = line.split(' ')
-
-            // Try to find score by assuming any float found is the score.
-
-            for (let s of strings) {
-                let p = parseFloat(s)
-                if (Number.isNaN(p) === false) {
-                    score = p
-                }
-            }
-
-            if (line.toLowerCase().includes('white') &&
-                line.toLowerCase().includes('black') === false) {
-
-                if (line.toLowerCase().includes('resignation')) {
-                    root.RE = ['W+R']
-                } else if (score !== null) {
-                    root.RE = ['W+' + score.toString()]
-                } else {
-                    root.RE = ['W+']
+                if (num === 3 || num === 4) {
+                    margin = 'R'
+                } else if (num === 7 || num === 8) {
+                    margin = 'T'
+                } else if (num === 0 || num === 1) {
+                    regex = new RegExp('ZIPSU:(\\d+),')
+                    match = regex.exec(line)
+                    if (match) {
+                        let score = parseFloat(match[1]) / 10
+                        margin = score.toString()
+                    }
                 }
             }
 
-            if (line.toLowerCase().includes('black') &&
-                line.toLowerCase().includes('white') === false) {
+            if (winner !== '') {
+                root.RE = [winner + '+' + margin]
+            }
 
-                if (line.toLowerCase().includes('resignation')) {
-                    root.RE = ['B+R']
-                } else if (score !== null) {
-                    root.RE = ['B+' + score.toString()]
-                } else {
-                    root.RE = ['B+']
-                }
+            // Komi is apparently stored in the GONGJE tag.
+
+            regex = new RegExp('GONGJE:(\\d+),')
+            match = regex.exec(line)
+
+            if (match) {
+                let komi = parseFloat(match[1]) / 10
+                root.KM = [komi.toString()]
             }
 
         } else if (line.startsWith('\\[GAMETAG=')) {
