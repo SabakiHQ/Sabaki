@@ -18,6 +18,10 @@ class Goban extends Component {
     }
 
     componentDidMount() {
+        document.addEventListener('mouseup', () => {
+            this.mouseDown = false
+        })
+
         // Measure CSS
 
         let $goban = $(this.element)
@@ -284,6 +288,9 @@ class Goban extends Component {
 
                     return h('li',
                         {
+                            key: `${x}-${y}`,
+                            'data-vertex': `${x}-${y}`,
+
                             class: Object.assign({
                                 [`pos_${x}-${y}`]: true,
                                 [`shift_${state.shifts[y][x]}`]: true,
@@ -299,8 +306,6 @@ class Goban extends Component {
                                 width: fieldSize,
                                 height: fieldSize
                             },
-
-                            'data-vertex': `${x}-${y}`,
 
                             onMouseDown: this.handleVertexMouseDown,
                             onMouseUp: this.handleVertexMouseUp,

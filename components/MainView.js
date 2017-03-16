@@ -29,13 +29,7 @@ class MainView extends Component {
 
         this.mainElement.addEventListener('wheel', evt => {
             evt.preventDefault()
-
-            let sign = Math.sign(evt.deltaY)
-            let treePosition = gametree.navigate(...this.props.treePosition, sign)
-
-            if (treePosition == null) return
-
-            sabaki.setState({treePosition})
+            sabaki.goStep(Math.sign(evt.deltaY))
         })
     }
 
