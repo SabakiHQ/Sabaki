@@ -17,10 +17,11 @@ class GameGraph extends Component {
             mousePosition: [-100, -100]
         }
 
+        this.easing = x => (Math.sin(Math.PI * (x - 0.5)) + 1) / 2
+
         this.handleNodeClick = this.handleNodeClick.bind(this)
         this.handleMouseWheel = this.handleMouseWheel.bind(this)
         this.handleGraphMouseDown = this.handleGraphMouseDown.bind(this)
-        this.handleGraphMouseMove = this.handleGraphMouseMove.bind(this)
     }
 
     remeasure() {
@@ -29,6 +30,27 @@ class GameGraph extends Component {
     }
 
     componentDidMount() {
+        document.addEventListener('mousemove', evt => {
+            if (!this.svgElement) return
+
+            let {left, top} = this.svgElement.getBoundingClientRect()
+            let mousePosition = [evt.x - left, evt.y - top].map(z => Math.round(z))
+            let {movementX, movementY} = evt
+
+            if (!this.mouseDown) {
+                [movementX, movementY] = [0, 0]
+                this.drag = false
+                if (mousePosition[0] < 0) return
+            } else {
+                this.drag = true
+            }
+
+            this.setState(({cameraPosition: [cx, cy]}) => ({
+                mousePosition,
+                cameraPosition: [cx - movementX, cy - movementY]
+            }))
+        })
+
         document.addEventListener('mouseup', () => {
             this.mouseDown = false
         })
@@ -78,26 +100,29 @@ class GameGraph extends Component {
 
     animateCameraPosition(toPosition, duration = null, fps = 60) {
         if (duration == null) duration = setting.get('graph.animation_duration')
-        window.cancelAnimationFrame(this.animationId)
 
         let [cx, cy] = this.state.cameraPosition
         let [ncx, ncy] = toPosition
-        let easing = x => (Math.sin(Math.PI * (x - 0.5)) + 1) / 2
         let startTime = null
 
         let step = timestamp => {
-            if (!startTime) startTime = timestamp
+            if (!startTime) {
+                startTime = timestamp
+                this.animationId = startTime
+            } else if (this.animationId != startTime) {
+                return
+            }
 
-            let t = easing((timestamp - startTime) / duration)
-            let cameraPosition = [cx + (ncx - cx) * t, cy + (ncy - cy) * t]
+            let t = this.easing((timestamp - startTime) / duration)
+            let cameraPosition = [cx + (ncx - cx) * t, cy + (ncy - cy) * t].map(z => Math.round(z))
 
             this.setState({cameraPosition})
 
             if (timestamp - startTime < duration)
-                this.animationId = window.requestAnimationFrame(step)
+                window.requestAnimationFrame(step)
         }
 
-        this.animationId = window.requestAnimationFrame(step)
+        window.requestAnimationFrame(step)
     }
 
     handleMouseWheel(evt) {
@@ -107,23 +132,6 @@ class GameGraph extends Component {
 
     handleGraphMouseDown(evt) {
         this.mouseDown = true
-    }
-
-    handleGraphMouseMove(evt) {
-        let mousePosition = [evt.offsetX, evt.offsetY]
-        let {movementX, movementY} = evt
-
-        if (!this.mouseDown) {
-            [movementX, movementY] = [0, 0]
-            this.drag = false
-        } else {
-            this.drag = true
-        }
-
-        this.setState(({cameraPosition: [cx, cy]}) => ({
-            mousePosition,
-            cameraPosition: [cx - movementX, cy - movementY]
-        }))
     }
 
     handleNodeClick(evt) {
@@ -166,8 +174,8 @@ class GameGraph extends Component {
 
         // Render only nodes that are visible
 
-        for (let x = minX; x <= maxX; x++) {
-            for (let y = minY; y <= maxY; y++) {
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
                 if (matrix[y] == null || matrix[y][x] == null) continue
 
                 let [tree, index] = matrix[y][x]
@@ -188,17 +196,16 @@ class GameGraph extends Component {
                         ? setting.get('graph.node_collapsed_color')
                     : setting.get('graph.node_color')
 
-                let left = x * gridSize - cx
-                let top = y * gridSize - cy
+                let left = x * gridSize
+                let top = y * gridSize
 
-                let isHovered = Math.max(Math.abs(left - mx), Math.abs(top - my)) < gridSize / 2
+                let isHovered = Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
                 let style = isHovered ? {stroke: 'white', strokeWidth: 2} : {}
 
                 if ('B' in node && node.B[0] === '' || 'W' in node && node.W[0] === '') {
                     // Render pass node
 
                     nodes.push(h('rect', {
-                        key: tree.id + '-' + index,
                         x: left - nodeSize,
                         y: top - nodeSize,
                         width: nodeSize * 2,
@@ -209,8 +216,7 @@ class GameGraph extends Component {
                 } else if (!('B' in node || 'W' in node)) {
                     // Render non-move node
 
-                    nodes.push(h('rect', {
-                        key: tree.id + '-' + index,
+                    nodes.push(h('g', {}, h('rect', {
                         x: left - nodeSize,
                         y: top - nodeSize,
                         width: nodeSize * 2,
@@ -218,10 +224,9 @@ class GameGraph extends Component {
                         transform: `rotate(45 ${left} ${top})`,
                         fill,
                         style
-                    }))
+                    })))
                 } else {
                     nodes.push(h('circle', {
-                        key: tree.id + '-' + index,
                         cx: left,
                         cy: top,
                         r: nodeSize,
@@ -247,7 +252,6 @@ class GameGraph extends Component {
                             // Draw straight line
 
                             edges[method](h('polyline', {
-                                key: tree.id + '-' + index + '-ep',
                                 points: [
                                     [left, top],
                                     [left, top - gridSize]
@@ -260,11 +264,10 @@ class GameGraph extends Component {
                             // Draw angled line
 
                             edges[method](h('polyline', {
-                                key: tree.id + '-' + index + '-ep',
                                 points: [
                                     [left, top],
                                     [left - gridSize, top - gridSize],
-                                    [px * gridSize - cx, py * gridSize - cy]
+                                    [px * gridSize, py * gridSize]
                                 ].map(z => z.join(',')).join(' '),
                                 fill: 'none',
                                 stroke: stroke(onCurrentTrack),
@@ -283,7 +286,6 @@ class GameGraph extends Component {
                     let method = current ? 'unshift' : 'push'
 
                     edges[method](h('polyline', {
-                        key: tree.id + '-' + index + '-es',
                         points: [
                             [left, top],
                             [left, top + gridSize]
@@ -302,10 +304,9 @@ class GameGraph extends Component {
                             // Draw straight line
 
                             edges[method](h('polyline', {
-                                key: tree.id + '-' + index + '-es-' + subtree.id,
                                 points: [
                                     [left, top],
-                                    [nx * gridSize - cx, ny * gridSize - cy]
+                                    [nx * gridSize, ny * gridSize]
                                 ].map(z => z.join(',')).join(' '),
                                 fill: 'none',
                                 stroke: stroke(current),
@@ -315,11 +316,10 @@ class GameGraph extends Component {
                             // Draw angled line
 
                             edges[method](h('polyline', {
-                                key: tree.id + '-' + index + '-es-' + subtree.id,
                                 points: [
                                     [left, top],
-                                    [(nx - 1) * gridSize - cx, (ny - 1) * gridSize - cy],
-                                    [nx * gridSize - cx, ny * gridSize - cy]
+                                    [(nx - 1) * gridSize, (ny - 1) * gridSize],
+                                    [nx * gridSize, ny * gridSize]
                                 ].map(z => z.join(',')).join(' '),
                                 fill: 'none',
                                 stroke: stroke(current),
@@ -331,10 +331,11 @@ class GameGraph extends Component {
             }
         }
 
-        return [...edges, ...nodes]
+        edges.push(...nodes)
+        return edges
     }
 
-    render({height, treePosition}, {matrixDict, viewportSize}) {
+    render({height, treePosition}, {matrixDict, cameraPosition: [cx, cy], viewportSize}) {
         let [tree, index] = treePosition
         let rootTree = gametree.getRoot(tree)
         let level = gametree.getLevel(...treePosition)
@@ -349,15 +350,19 @@ class GameGraph extends Component {
 
             matrixDict && viewportSize && h('svg',
                 {
+                    ref: el => this.svgElement = el,
                     width: viewportSize[0],
                     height: viewportSize[1],
 
                     onClick: this.handleNodeClick,
                     onContextMenu: this.handleNodeClick,
                     onMouseDown: this.handleGraphMouseDown,
-                    onMouseUp: this.handleGraphMouseUp,
-                    onMouseMove: this.handleGraphMouseMove
+                    onMouseUp: this.handleGraphMouseUp
                 },
+
+                h('style', {}, `#graph svg > * {
+                    transform: translate(${-cx}px, ${-cy}px);
+                }`),
 
                 this.renderNodes(this.state)
             ),
