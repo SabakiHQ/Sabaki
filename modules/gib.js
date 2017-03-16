@@ -42,7 +42,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         } else if (line.startsWith('\\[GAMECONDITION=')) {
 
             // Find komi if it's recorded in English.
-            // It could also be in other languages, in which case we won't find it.
+            // Also check for the most common komi written in Chinese.
 
             let regex = new RegExp('Black (.+) Dum')
             let match = regex.exec(line)
@@ -52,6 +52,10 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                 if (Number.isNaN(komi) === false) {
                     root.KM = [komi.toString()]
                 }
+            } else if (line.includes('黑贴6目半') || line.includes('黑貼6目半')) {
+                root.KM = ['6.5']
+            } else if (line.includes('黑贴7目半') || line.includes('黑貼7目半')) {
+                root.KM = ['7.5']
             }
 
         } else if (line.startsWith('\\[GAMERESULT=')) {
