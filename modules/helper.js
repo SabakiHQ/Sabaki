@@ -56,7 +56,7 @@ exports.equals = function(a, b) {
 }
 
 exports.shallowEquals = function(a, b) {
-    return a === b || a.length === b.length && a.every((x, i) => x == b[i])
+    return a == null || b == null ? a === b : a === b || a.length === b.length && a.every((x, i) => x == b[i])
 }
 
 exports.lexicalCompare = function(a, b) {

@@ -8,6 +8,13 @@ const Slider = require('./Slider')
 
 let gridSize = setting.get('graph.grid_size')
 let nodeSize = setting.get('graph.node_size')
+let delay = setting.get('graph.delay')
+let commentProperties = setting.get('sgf.comment_properties')
+
+let stroke = current => current ? setting.get('graph.edge_color')
+    : setting.get('graph.edge_inactive_color')
+let strokeWidth = current => current ? setting.get('graph.edge_size')
+    : setting.get('graph.edge_inactive_size')
 
 class GameGraph extends Component {
     constructor() {
@@ -64,17 +71,29 @@ class GameGraph extends Component {
         })
 
         this.remeasure()
-        this.componentWillReceiveProps(this.props)
+        this.componentWillReceiveProps()
     }
 
-    componentWillReceiveProps({treePosition}) {
+    componentWillReceiveProps({treePosition = null} = {}) {
         // Adjust camera position and recalculate matrix-dict of game tree
+
+        let treeHash
+        let treeChanged = true
+        let treePositionChanged = !helper.shallowEquals(treePosition, this.props.treePosition)
+
+        if (treePosition != null) {
+            let rootTree = gametree.getRoot(...treePosition)
+            treeHash = gametree.getHash(rootTree)
+
+            treeChanged = treeHash !== this.treeHash
+        }
 
         clearTimeout(this.renderId)
 
         this.renderId = setTimeout(() => {
-            let [tree, index] = treePosition
-            let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
+            let [tree, index] = treePosition || this.props.treePosition
+            let [matrix, dict] = !treeChanged ? this.state.matrixDict
+                : gametree.getMatrixDict(gametree.getRoot(tree))
 
             let id = tree.id + '-' + index
             let [x, y] = dict[id]
@@ -85,13 +104,16 @@ class GameGraph extends Component {
             let diff = (width - 1) * gridSize / 2
             diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
-            this.setState({matrixDict: [matrix, dict]})
+            if (treeChanged) {
+                this.treeHash = treeHash
+                this.setState({matrixDict: [matrix, dict]})
+            }
 
-            this.animateCameraPosition([
+            if (treePositionChanged) this.animateCameraPosition([
                 x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
                 y * gridSize - this.state.viewportSize[1] / 2
             ].map(z => Math.round(z)))
-        }, setting.get('graph.delay'))
+        }, delay)
     }
 
     componentDidUpdate({height}) {
@@ -101,7 +123,7 @@ class GameGraph extends Component {
     }
 
     animateCameraPosition(toPosition, duration = null) {
-        if (duration == null) duration = setting.get('graph.delay')
+        if (duration == null) duration = delay
 
         let [cx, cy] = this.state.cameraPosition
         let [ncx, ncy] = toPosition
@@ -125,6 +147,8 @@ class GameGraph extends Component {
         }
 
         window.requestAnimationFrame(step)
+
+        // this.setState({cameraPosition: toPosition})
     }
 
     handleMouseWheel(evt) {
@@ -161,14 +185,7 @@ class GameGraph extends Component {
         let nodes = []
         let edges = []
 
-        let stroke = current => current ? setting.get('graph.edge_color')
-            : setting.get('graph.edge_inactive_color')
-        let strokeWidth = current => current ? setting.get('graph.edge_size')
-            : setting.get('graph.edge_inactive_size')
-
-        let commentProperties = setting.get('sgf.comment_properties')
-
-        let [minX, minY] = [cx, cy].map(z => Math.ceil(z / gridSize) - 1)
+        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 1, 0))
         let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 1)
 
         // Render only nodes that are visible
@@ -199,36 +216,46 @@ class GameGraph extends Component {
                 let top = y * gridSize
 
                 let isHovered = Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
-                let style = isHovered ? {stroke: 'white', strokeWidth: 2} : {}
+                let style = isHovered ? {stroke: 'white', strokeWidth: 3, strokeLinecap: 'square'} : {}
 
                 if ('B' in node && node.B[0] === '' || 'W' in node && node.W[0] === '') {
                     // Render pass node
 
-                    nodes.push(h('rect', {
-                        x: left - nodeSize,
-                        y: top - nodeSize,
-                        width: nodeSize * 2,
-                        height: nodeSize * 2,
+                    nodes.push(h('path', {
+                        d: [
+                            `M ${left - nodeSize} ${top - nodeSize}`,
+                            `h ${nodeSize * 2}`,
+                            `v ${nodeSize * 2}`,
+                            `h ${-nodeSize * 2}`,
+                            `v ${-nodeSize * 2}`
+                        ].join(' '),
                         fill,
                         style
                     }))
                 } else if (!('B' in node || 'W' in node)) {
                     // Render non-move node
 
-                    nodes.push(h('g', {}, h('rect', {
-                        x: left - nodeSize,
-                        y: top - nodeSize,
-                        width: nodeSize * 2,
-                        height: nodeSize * 2,
-                        transform: `rotate(45 ${left} ${top})`,
+                    let s = Math.round(Math.sqrt(2) * nodeSize)
+
+                    nodes.push(h('path', {
+                        d: [
+                            `M ${left} ${top - s}`,
+                            `L ${left - s} ${top}`,
+                            `L ${left} ${top + s}`,
+                            `L ${left + s} ${top}`,
+                            `L ${left} ${top - s}`
+                        ].join(' '),
                         fill,
                         style
-                    })))
+                    }))
                 } else {
-                    nodes.push(h('circle', {
-                        cx: left,
-                        cy: top,
-                        r: nodeSize,
+                    nodes.push(h('path', {
+                        d: [
+                            `M ${left} ${top}`,
+                            `m ${-nodeSize} 0`,
+                            `a ${nodeSize} ${nodeSize} 0 1 0 ${2 * nodeSize} 0`,
+                            `a ${nodeSize} ${nodeSize} 0 1 0 ${-2 * nodeSize} 0`
+                        ].join(' '),
                         fill,
                         style
                     }))
@@ -243,18 +270,17 @@ class GameGraph extends Component {
                     // Render edge only if node is not visible,
                     // otherwise this edge is already rendered as successor edge
 
-                    if (px < cx / gridSize || px > (cx + width) / gridSize + 1
-                    || py < cy / gridSize || py > (cy + height) / gridSize + 1) {
-                        let method = onCurrentTrack ? 'unshift' : 'push'
+                    if (px < minX || px > maxX || py < minY || py > maxY) {
+                        let method = onCurrentTrack ? 'push' : 'push'
 
                         if (px === x) {
                             // Draw straight line
 
                             edges[method](h('polyline', {
                                 points: [
-                                    [left, top],
-                                    [left, top - gridSize]
-                                ].map(z => z.join(',')).join(' '),
+                                    `${left},${top}`,
+                                    `${left},${top - gridSize}`
+                                ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(onCurrentTrack),
                                 strokeWidth: strokeWidth(onCurrentTrack)
@@ -264,10 +290,10 @@ class GameGraph extends Component {
 
                             edges[method](h('polyline', {
                                 points: [
-                                    [left, top],
-                                    [left - gridSize, top - gridSize],
-                                    [px * gridSize, py * gridSize]
-                                ].map(z => z.join(',')).join(' '),
+                                    `${left},${top}`,
+                                    `${left - gridSize},${top - gridSize}`,
+                                    `${px * gridSize},${py * gridSize}`
+                                ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(onCurrentTrack),
                                 strokeWidth: strokeWidth(onCurrentTrack)
@@ -282,13 +308,13 @@ class GameGraph extends Component {
                     // Draw straight line
 
                     let current = onCurrentTrack && (index < tree.nodes.length - 1 || tree.current === 0)
-                    let method = current ? 'unshift' : 'push'
+                    let method = current ? 'push' : 'push'
 
                     edges[method](h('polyline', {
                         points: [
-                            [left, top],
-                            [left, top + gridSize]
-                        ].map(z => z.join(',')).join(' '),
+                            `${left},${top}`,
+                            `${left},${top + gridSize}`
+                        ].join(' '),
                         fill: 'none',
                         stroke: stroke(current),
                         strokeWidth: strokeWidth(current)
@@ -297,16 +323,16 @@ class GameGraph extends Component {
                     for (let subtree of tree.subtrees) {
                         let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
                         let [nx, ny] = dict[subtree.id + '-0']
-                        let method = current ? 'unshift' : 'push'
+                        let method = current ? 'push' : 'push'
 
                         if (nx === x) {
                             // Draw straight line
 
                             edges[method](h('polyline', {
                                 points: [
-                                    [left, top],
-                                    [nx * gridSize, ny * gridSize]
-                                ].map(z => z.join(',')).join(' '),
+                                    `${left},${top}`,
+                                    `${nx * gridSize},${ny * gridSize}`
+                                ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(current),
                                 strokeWidth: strokeWidth(current)
@@ -316,10 +342,10 @@ class GameGraph extends Component {
 
                             edges[method](h('polyline', {
                                 points: [
-                                    [left, top],
-                                    [(nx - 1) * gridSize, (ny - 1) * gridSize],
-                                    [nx * gridSize, ny * gridSize]
-                                ].map(z => z.join(',')).join(' '),
+                                    `${left},${top}`,
+                                    `${(nx - 1) * gridSize},${(ny - 1) * gridSize}`,
+                                    `${nx * gridSize},${ny * gridSize}`
+                                ].join(' '),
                                 fill: 'none',
                                 stroke: stroke(current),
                                 strokeWidth: strokeWidth(current)
@@ -333,7 +359,7 @@ class GameGraph extends Component {
         return [h('g', {}, edges), h('g', {}, nodes)]
     }
 
-    render({height, treePosition}, {matrixDict, cameraPosition: [cx, cy], viewportSize}) {
+    render({height, treePosition, showGameGraph}, {matrixDict, cameraPosition: [cx, cy], viewportSize}) {
         let [tree, index] = treePosition
         let rootTree = gametree.getRoot(tree)
         let level = gametree.getLevel(...treePosition)
@@ -346,7 +372,7 @@ class GameGraph extends Component {
                 onMouseWheel: this.handleMouseWheel
             },
 
-            matrixDict && viewportSize && h('svg',
+            showGameGraph && matrixDict && viewportSize && h('svg',
                 {
                     ref: el => this.svgElement = el,
                     width: viewportSize[0],

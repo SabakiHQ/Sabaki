@@ -34,6 +34,7 @@ class Sidebar extends Component {
 
             h(GameGraph, {
                 treePosition,
+                showGameGraph,
                 viewportWidth: sidebarWidth,
                 height: !showGameGraph ? 0
                     : !showCommentBox ? 100 : 100 - sidebarSplit

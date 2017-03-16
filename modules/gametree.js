@@ -108,7 +108,7 @@ exports.getSection = function(tree, level) {
 }
 
 exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
-    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
+    if (!matrix) matrix = [...Array(exports.getHeight(tree))].map(_ => [])
 
     let hasCollisions = true
     while (hasCollisions) {
@@ -240,8 +240,8 @@ exports.reduce = function(tree) {
 }
 
 exports.getMatrixWidth = function(y, matrix) {
-    let keys = Object.keys(new Int8Array(10))
-        .map(i => parseFloat(i) + y - 4)
+    let keys = [...Array(10)]
+        .map((_, i) => i + y - 4)
         .filter(i => i >= 0 && i < matrix.length)
 
     let padding = Math.min(...keys.map(i => {
@@ -564,5 +564,5 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(sgf.stringify(tree))
+    return helper.hash(exports.getJson(tree))
 }

@@ -13,6 +13,8 @@ class EditBar extends Component {
     }
 
     componentWillReceiveProps({selectedTool}) {
+        if (selectedTool === this.props.selectedTool) return
+
         if (selectedTool.indexOf('stone') === 0) {
             this.setState({stoneTool: +selectedTool.replace('stone_', '')})
         }
