@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "argv-split": "^1.0.0",
-    "jschardet": "^1.4.2",
     "iconv-lite": "^0.4.13",
+    "jschardet": "^1.4.2",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
