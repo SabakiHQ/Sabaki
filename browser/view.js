@@ -1413,7 +1413,7 @@ exports.openAddGameMenu = function() {
 
                 if (filenames) {
                     for (let filename of filenames) {
-                        let trees = sgf.parseFile(filename).subtrees
+                        let trees = sgf.parseFile(filename)
 
                         sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
                         sabaki.setGameIndex(sabaki.getGameIndex())

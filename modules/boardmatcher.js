@@ -2,7 +2,7 @@ const sgf = require('./sgf')
 const helper = require('./helper')
 
 exports.readShapes = function(filename) {
-    let tree = sgf.parseFile(filename).subtrees[0]
+    let tree = sgf.parseFile(filename)[0]
     let result = []
 
     for (let i = 0; i < tree.subtrees.length; i++) {

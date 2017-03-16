@@ -9,6 +9,8 @@ const Pikaday = require('pikaday')
 const view = require('./view')
 const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
+const gib = require('../modules/gib')
+const ngf = require('../modules/ngf')
 const fuzzyfinder = require('../modules/fuzzyfinder')
 const gametree = require('../modules/gametree')
 const sound = require('../modules/sound')
@@ -396,14 +398,15 @@ sabaki.getEmptyGameTree = function() {
     let stones = new Board(size[0], size.slice(-1)[0]).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
     let buffer = [
-        `;GM[1]FF[4]CA[UTF-8]`,
+        `(;GM[1]FF[4]CA[UTF-8]`,
         `AP[${app.getName()}:${app.getVersion()}]`,
         `KM[${setting.get('game.default_komi')}]`,
         `SZ[${size[0]}:${size.slice(-1)[0]}]`,
-        stones.length > 0 ? `HA[${handicap}]AB[${stones.join('][')}]` : ''
+        stones.length > 0 ? `HA[${handicap}]AB[${stones.join('][')}]` : '',
+        ')'
     ].join('')
 
-    return sgf.parse(sgf.tokenize(buffer))
+    return sgf.parse(buffer)[0]
 }
 
 sabaki.getAutoplaying = function() {
@@ -2118,14 +2121,25 @@ sabaki.loadFile = function(filename, dontask = false) {
     if (!filename) {
         let result = view.showOpenDialog({
             properties: ['openFile'],
-            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+            filters: [{name: 'Go Records', extensions: ['sgf', 'gib', 'ngf']}, {name: 'All Files', extensions: ['*']}]
         })
 
         if (result) filename = result[0]
     }
 
     if (filename) {
-        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), true, false, err => {
+
+        let format = 'sgf'
+
+        if (filename.toLowerCase().endsWith('.gib')) {
+            format = 'gib'
+        }
+
+        if (filename.toLowerCase().endsWith('.ngf')) {
+            format = 'ngf'
+        }
+
+        sabaki.loadFileFromSgf(fs.readFileSync(filename, {encoding: 'binary'}), format, true, false, err => {
             if (err) return
             view.setRepresentedFilename(filename)
             sabaki.updateFileHash()
@@ -2133,7 +2147,7 @@ sabaki.loadFile = function(filename, dontask = false) {
     }
 }
 
-sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = false, callback = () => {}) {
+sabaki.loadFileFromSgf = function(content, format = 'sgf', dontask = false, ignoreEncoding = false, callback = () => {}) {
     if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
     view.setIsBusy(true)
     view.closeDrawers()
@@ -2145,12 +2159,13 @@ sabaki.loadFileFromSgf = function(content, dontask = false, ignoreEncoding = fal
         let trees = []
 
         try {
-            trees = sgf.parse(sgf.tokenize(content), progress => {
-                if (progress - lastprogress < 0.1) return
+            let fileFormatModule = {sgf, gib, ngf}[format]
 
+            trees = fileFormatModule.parse(content, progress => {
+                if (progress - lastprogress < 0.1) return
                 view.setProgressIndicator(progress, win)
                 lastprogress = progress
-            }, ignoreEncoding ? null : undefined).subtrees
+            }, ignoreEncoding)
 
             if (trees.length == 0) throw true
         } catch (err) {
