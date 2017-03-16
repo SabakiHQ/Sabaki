@@ -12,8 +12,14 @@ exports.meta = {
 
 exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
 
+    // NGF files have a huge amount of ASCII-looking text. To help
+    // the detector, we just send it the first few lines.
+
+    let rawlines = content.split('\n')
+    let raw = rawlines.slice(0, 12).join()
+
     let encoding = 'utf8'
-    let detected = jschardet.detect(content)
+    let detected = jschardet.detect(raw)
     if (detected.confidence > 0.2) {
         encoding = detected.encoding
     }
