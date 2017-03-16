@@ -9,6 +9,7 @@ const Slider = require('./Slider')
 let gridSize = setting.get('graph.grid_size')
 let nodeSize = setting.get('graph.node_size')
 let delay = setting.get('graph.delay')
+let animationDuration = setting.get('graph.animation_duration')
 let commentProperties = setting.get('sgf.comment_properties')
 
 let stroke = current => current ? setting.get('graph.edge_color')
@@ -104,15 +105,15 @@ class GameGraph extends Component {
             let diff = (width - 1) * gridSize / 2
             diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
-            if (treeChanged) {
-                this.treeHash = treeHash
-                this.setState({matrixDict: [matrix, dict]})
-            }
+            if (treeChanged) this.treeHash = treeHash
 
-            if (treePositionChanged) this.animateCameraPosition([
-                x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
-                y * gridSize - this.state.viewportSize[1] / 2
-            ].map(z => Math.round(z)))
+            this.setState(({matrixDict, cameraPosition}) => ({
+                matrixDict: [matrix, dict],
+                cameraPosition: treePositionChanged ? [
+                    x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
+                    y * gridSize - this.state.viewportSize[1] / 2
+                ].map(z => Math.round(z)) : cameraPosition
+            }))
         }, delay)
     }
 
@@ -120,35 +121,6 @@ class GameGraph extends Component {
         if (height === this.props.height) return
 
         setTimeout(() => this.remeasure(), 200)
-    }
-
-    animateCameraPosition(toPosition, duration = null) {
-        if (duration == null) duration = delay
-
-        let [cx, cy] = this.state.cameraPosition
-        let [ncx, ncy] = toPosition
-        let startTime = null
-
-        let step = timestamp => {
-            if (!startTime) {
-                startTime = timestamp
-                this.animationId = startTime
-            } else if (this.animationId != startTime) {
-                return
-            }
-
-            let t = this.easing((timestamp - startTime) / duration)
-            let cameraPosition = [cx + (ncx - cx) * t, cy + (ncy - cy) * t].map(z => Math.round(z))
-
-            this.setState({cameraPosition})
-
-            if (timestamp - startTime < duration)
-                window.requestAnimationFrame(step)
-        }
-
-        window.requestAnimationFrame(step)
-
-        // this.setState({cameraPosition: toPosition})
     }
 
     handleMouseWheel(evt) {
@@ -185,13 +157,13 @@ class GameGraph extends Component {
         let nodes = []
         let edges = []
 
-        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 1, 0))
-        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 1)
+        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 5, 0))
+        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 5)
 
         // Render only nodes that are visible
 
-        for (let y = minY; y <= maxY; y++) {
-            for (let x = minX; x <= maxX; x++) {
+        for (let x = minX; x <= maxX; x++) {
+            for (let y = minY; y <= maxY; y++) {
                 if (matrix[y] == null || matrix[y][x] == null) continue
 
                 let [tree, index] = matrix[y][x]
@@ -216,7 +188,6 @@ class GameGraph extends Component {
                 let top = y * gridSize
 
                 let isHovered = Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
-                let style = isHovered ? {stroke: 'white', strokeWidth: 3, strokeLinecap: 'square'} : {}
 
                 if ('B' in node && node.B[0] === '' || 'W' in node && node.W[0] === '') {
                     // Render pass node
@@ -230,7 +201,7 @@ class GameGraph extends Component {
                             `v ${-nodeSize * 2}`
                         ].join(' '),
                         fill,
-                        style
+                        class: {hover: isHovered}
                     }))
                 } else if (!('B' in node || 'W' in node)) {
                     // Render non-move node
@@ -246,7 +217,7 @@ class GameGraph extends Component {
                             `L ${left} ${top - s}`
                         ].join(' '),
                         fill,
-                        style
+                        class: {hover: isHovered}
                     }))
                 } else {
                     nodes.push(h('path', {
@@ -257,7 +228,7 @@ class GameGraph extends Component {
                             `a ${nodeSize} ${nodeSize} 0 1 0 ${-2 * nodeSize} 0`
                         ].join(' '),
                         fill,
-                        style
+                        class: {hover: isHovered}
                     }))
                 }
 
@@ -359,7 +330,15 @@ class GameGraph extends Component {
         return [h('g', {}, edges), h('g', {}, nodes)]
     }
 
-    render({height, treePosition, showGameGraph}, {matrixDict, cameraPosition: [cx, cy], viewportSize}) {
+    render({
+        height,
+        treePosition,
+        showGameGraph
+    }, {
+        matrixDict,
+        viewportSize,
+        cameraPosition: [cx, cy],
+    }) {
         let [tree, index] = treePosition
         let rootTree = gametree.getRoot(tree)
         let level = gametree.getLevel(...treePosition)
@@ -384,9 +363,17 @@ class GameGraph extends Component {
                     onMouseUp: this.handleGraphMouseUp
                 },
 
-                h('style', {}, `#graph svg > * {
-                    transform: translate(${-cx}px, ${-cy}px);
-                }`),
+                h('style', {}, `
+                    #graph svg > * {
+                        transform: translate(${-cx}px, ${-cy}px);
+                        transition: transform ${animationDuration / 1000}s;
+                    }
+                    #graph svg path.hover {
+                        stroke: white;
+                        stroke-width: 3px;
+                        stroke-linecap: square;
+                    }
+                `),
 
                 this.renderNodes(this.state)
             ),
