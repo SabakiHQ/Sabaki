@@ -54,7 +54,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
+function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
@@ -109,7 +109,7 @@ exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding
         if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            let t = exports.parse(tokens, callback, encoding, start, depth + Math.min(tree.subtrees.length, 1))
+            let t = _parseTokens(tokens, callback, encoding, start, depth + Math.min(tree.subtrees.length, 1))
 
             if (t.nodes.length > 0) {
                 t.parent = tree
@@ -130,11 +130,19 @@ exports.parse = function(tokens, callback = () => {}, encoding = defaultEncoding
     return tree
 }
 
+exports.parseTokens = function(tokens, callback, ignoreEncoding = false) {
+    let tree = _parseTokens(tokens, callback, ignoreEncoding ? null : undefined)
+    tree.subtrees.forEach(subtree => subtree.parent = null)
+    return tree.subtrees
+}
+
+exports.parse = function(input, callback, ignoreEncoding = false) {
+    return exports.parseTokens(exports.tokenize(input), callback, ignoreEncoding)
+}
+
 exports.parseFile = function(filename, callback, ignoreEncoding = false) {
     let input = fs.readFileSync(filename, {encoding: 'binary'})
-    let tokens = exports.tokenize(input)
-
-    return exports.parse(tokens, callback, ignoreEncoding ? null : undefined)
+    return exports.parse(input, callback, ignoreEncoding)
 }
 
 exports.string2dates = function(input) {
@@ -217,6 +225,10 @@ exports.compressed2list = function(compressed) {
 }
 
 exports.stringify = function(tree) {
+    if (Object.prototype.toString.call(tree) === '[object Array]') {
+        return exports.stringify({nodes: [], subtrees: tree})
+    }
+
     let output = ''
 
     for (let node of tree.nodes) {

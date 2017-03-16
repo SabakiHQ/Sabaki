@@ -3,6 +3,7 @@ const fs = require('fs')
 const util = require('util')
 const tmp = require('tmp')
 
+const helper = require('../modules/helper')
 const sgf = require('../modules/sgf')
 const gametree = require('../modules/gametree')
 
@@ -51,7 +52,7 @@ describe('sgf', () => {
 
     describe('parse', () => {
         it('should parse multiple nodes', () => {
-            assert.equal(gametree.getJson(sgf.parse([
+            assert.equal(gametree.getJson(sgf.parseTokens([
                 ['parenthesis', '('],
                 ['semicolon', ';'],
                 ['prop_ident', 'B'], ['c_value_type', '[aa]'],
@@ -59,37 +60,27 @@ describe('sgf', () => {
                 ['semicolon', ';'],
                 ['prop_ident', 'AB'], ['c_value_type', '[cc]'], ['c_value_type', '[dd:ee]'],
                 ['parenthesis', ')']
-            ])), gametree.getJson({
-                nodes: [],
-                subtrees: [
-                    {
-                        nodes: [
-                            {B: ['aa'], SZ: ['19']},
-                            {AB: ['cc', 'dd:ee']}
-                        ],
-                        subtrees: []
-                    }
-                ]
+            ])[0]), gametree.getJson({
+                nodes: [
+                    {B: ['aa'], SZ: ['19']},
+                    {AB: ['cc', 'dd:ee']}
+                ],
+                subtrees: []
             }))
         })
         it('should parse variations', () => {
             assert.equal(
-                gametree.getJson(sgf.parse(sgf.tokenize('(;B[hh](;W[ii])(;W[hi]C[h]))'))),
+                gametree.getJson(sgf.parse('(;B[hh](;W[ii])(;W[hi]C[h]))')[0]),
                 gametree.getJson({
-                    nodes: [],
+                    nodes: [{B: ['hh']}],
                     subtrees: [
                         {
-                            nodes: [{B: ['hh']}],
-                            subtrees: [
-                                {
-                                    nodes: [{W: ['ii']}],
-                                    subtrees: []
-                                },
-                                {
-                                    nodes: [{W: ['hi'], C: ['h']}],
-                                    subtrees: []
-                                }
-                            ]
+                            nodes: [{W: ['ii']}],
+                            subtrees: []
+                        },
+                        {
+                            nodes: [{W: ['hi'], C: ['h']}],
+                            subtrees: []
                         }
                     ]
                 })
@@ -97,52 +88,41 @@ describe('sgf', () => {
         })
         it('should convert lower case properties', () => {
             assert.equal(
-                gametree.getJson(sgf.parse(sgf.tokenize('(;CoPyright[hello](;White[ii])(;White[hi]Comment[h]))'))),
+                gametree.getJson(sgf.parse('(;CoPyright[hello](;White[ii])(;White[hi]Comment[h]))')[0]),
                 gametree.getJson({
-                    nodes: [],
+                    nodes: [{CP: ['hello']}],
                     subtrees: [
                         {
-                            nodes: [{CP: ['hello']}],
-                            subtrees: [
-                                {
-                                    nodes: [{W: ['ii']}],
-                                    subtrees: []
-                                },
-                                {
-                                    nodes: [{W: ['hi'], C: ['h']}],
-                                    subtrees: []
-                                }
-                            ]
+                            nodes: [{W: ['ii']}],
+                            subtrees: []
+                        },
+                        {
+                            nodes: [{W: ['hi'], C: ['h']}],
+                            subtrees: []
                         }
                     ]
                 })
             )
         })
         it('should parse a relatively complex file', () => {
-            let contents = fs.readFileSync(__dirname + '/complex.sgf', 'utf8')
-            let tokens = sgf.tokenize(contents)
-            let tree = sgf.parse(tokens)
+            let contents = fs.readFileSync(__dirname + '/sgf/complex.sgf', 'utf8')
+            let trees = sgf.parse(contents)
 
-            assert.equal(tree.subtrees.length, 1)
+            assert.equal(trees.length, 1)
         })
         it('should ignore empty subtrees', () => {
             assert.equal(
-                gametree.getJson(sgf.parse(sgf.tokenize('(;B[hh]()(;W[ii])()(;W[hi]C[h]))'))),
+                gametree.getJson(sgf.parse('(;B[hh]()(;W[ii])()(;W[hi]C[h]))')[0]),
                 gametree.getJson({
-                    nodes: [],
+                    nodes: [{B: ['hh']}],
                     subtrees: [
                         {
-                            nodes: [{B: ['hh']}],
-                            subtrees: [
-                                {
-                                    nodes: [{W: ['ii']}],
-                                    subtrees: []
-                                },
-                                {
-                                    nodes: [{W: ['hi'], C: ['h']}],
-                                    subtrees: []
-                                }
-                            ]
+                            nodes: [{W: ['ii']}],
+                            subtrees: []
+                        },
+                        {
+                            nodes: [{W: ['hi'], C: ['h']}],
+                            subtrees: []
                         }
                     ]
                 })
@@ -159,7 +139,7 @@ describe('sgf', () => {
 
         it('should be able to read out the CA property', () => {
             assert.equal(
-                sgf.parse(sgf.tokenize('(;CA[UTF-8])')).subtrees[0].nodes[0].CA[0],
+                sgf.parse('(;CA[UTF-8])')[0].nodes[0].CA[0],
                 'UTF-8'
             )
         })
@@ -167,36 +147,36 @@ describe('sgf', () => {
         for (language in languageMap) {
             it('should be able to decode non-UTF-8 text nodes', () => {
                 assert.equal(
-                    sgf.parseFile(util.format('%s/%s.sgf', __dirname, language)).subtrees[0].nodes[2].C[0],
+                    sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))[0].nodes[2].C[0],
                     util.format('%s is fun', languageMap[language])
                 )
             })
             it('should save SGFs back to UTF-8 regardless of input encoding', () => {
-                let parsedSgf = sgf.parseFile(util.format('%s/%s.sgf', __dirname, language))
+                let parsedSgf = sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))
                 let savedSgfName = tmp.tmpNameSync()
 
                 fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
 
                 let savedSgf = sgf.parseFile(savedSgfName)
 
-                assert.equal(savedSgf.subtrees[0].nodes[0].CA[0], 'UTF-8')
-                assert.equal(savedSgf.subtrees[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
+                assert.equal(savedSgf[0].nodes[0].CA[0], 'UTF-8')
+                assert.equal(savedSgf[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
             })
         }
 
         it('should be able to go back and re-parse attributes set before CA', () => {
             assert.equal(
-                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PW[0],
+                sgf.parseFile(__dirname + '/sgf/chinese.sgf')[0].nodes[0].PW[0],
                 '柯洁'
             )
             assert.equal(
-                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PB[0],
+                sgf.parseFile(__dirname + '/sgf/chinese.sgf')[0].nodes[0].PB[0],
                 '古力'
             )
         })
         it('should ignore unknown encodings', () => {
             assert.notEqual(
-                sgf.parseFile(__dirname + '/japanese_bad.sgf').subtrees[0].nodes[2].C[0],
+                sgf.parseFile(__dirname + '/sgf/japanese_bad.sgf')[0].nodes[2].C[0],
                 util.format('%s is fun', languageMap['japanese'])
             )
         })
@@ -367,7 +347,7 @@ describe('sgf', () => {
                 '(;B[ee]SZ[19]',
                 ';W[dd]',
                 ')'
-            ].join('\n')
+            ].join(helper.linebreak)
 
             assert.equal(sgf.stringify(gametree), content)
         })
@@ -382,7 +362,7 @@ describe('sgf', () => {
                 ]
             }
 
-            assert.equal(sgf.stringify(gametree), '(;HS[]\n)')
+            assert.equal(sgf.stringify(gametree), `(;HS[]${helper.linebreak})`)
         })
         it('should handle variations', () => {
             let gametree = {
@@ -409,7 +389,7 @@ describe('sgf', () => {
                 '(;W[ii]',
                 ')(;W[hi]C[h]',
                 '))'
-            ].join('\n')
+            ].join(helper.linebreak)
 
             assert.equal(sgf.stringify(gametree), content)
         })

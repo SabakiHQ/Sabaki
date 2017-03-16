@@ -39,24 +39,3 @@ See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/e7e
 ## License
 
 This project is licensed under the [MIT license](https://github.com/yishn/Sabaki/blob/master/LICENSE.md).
-
-## Third Party Libraries
-
-* [Electron](http://electron.atom.io/)
-  ([MIT License](https://github.com/atom/electron/blob/master/LICENSE))
-* [Sprint](https://github.com/philpl/sprint/)
-  ([MIT License](https://github.com/philpl/sprint/blob/master/LICENSE.txt))
-* [sigma](http://sigmajs.org/)
-  ([MIT License](https://github.com/jacomyal/sigma.js/blob/master/LICENSE.txt))
-* [marked](https://github.com/chjj/marked)
-  ([MIT License](https://github.com/chjj/marked/blob/master/LICENSE))
-* [natsort](https://github.com/bubkoo/natsort)
-  ([MIT License](https://github.com/bubkoo/natsort/blob/master/LICENSE))
-* [Pikaday](https://github.com/dbushell/Pikaday)
-  ([MIT License](https://github.com/dbushell/Pikaday/blob/master/LICENSE))
-* [iconv-lite](https://github.com/ashtuchkin/iconv-lite)
-  ([MIT License](https://github.com/ashtuchkin/iconv-lite/blob/master/LICENSE))
-* [argv-split](https://github.com/kaelzhang/node-argv-split)
-  ([MIT License](https://github.com/kaelzhang/node-argv-split/blob/master/LICENSE-MIT))
-* [Octicons](https://octicons.github.com/)
-  ([License](https://github.com/github/octicons/blob/master/LICENSE.txt))
