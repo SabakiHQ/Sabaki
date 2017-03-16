@@ -12,12 +12,14 @@ exports.meta = {
 
 function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
 
-    // The GRLT tag contains the type of result:
-    // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
-    // If there is a score, the ZIPSU tag contains it (multiplied by 10).
+    // Given a game result type and a score, return a text result.
 
     let winner = ''
     let margin = ''
+
+    // The GRLT tag contains the type of result:
+    // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
+    // If there is a score, the ZIPSU tag contains it (multiplied by 10).
 
     if (grlt === 0 || grlt === 3 || grlt === 7) {
         winner = 'B'
@@ -41,6 +43,10 @@ function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
 }
 
 function getResult(line, grltRegex, zipsuRegex) {
+
+    // Takes a line and two regexes, the first finding the GRLT (game
+    // result type, e.g. 3 == B+R) and the second finding the score.
+
     let result = ''
     let match = grltRegex.exec(line)
     if (match) {
@@ -76,6 +82,9 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
     let node = root
 
+    let regex
+    let match
+
     for (let n = 0; n < lines.length; n++) {
 
         let line = lines[n].trim()
@@ -92,51 +101,46 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
         } else if (line.startsWith('\\[GAMEINFOMAIN=')) {
 
-            // Result...
-
-            let result = getResult(line, /GRLT:(\d+),/, /ZIPSU:(\d+),/)
-
-            if (result !== '') {
-                root.RE = [result]
+            if (root.RE === undefined) {
+                let result = getResult(line, /GRLT:(\d+),/, /ZIPSU:(\d+),/)
+                if (result !== '') {
+                    root.RE = [result]
+                }
             }
 
-            // Komi...
-
-            regex = /GONGJE:(\d+),/
-            match = regex.exec(line)
-
-            if (match) {
-                let komi = parseFloat(match[1]) / 10
-                root.KM = [komi.toString()]
+            if (root.KM === undefined) {
+                regex = /GONGJE:(\d+),/
+                match = regex.exec(line)
+                if (match) {
+                    let komi = parseFloat(match[1]) / 10
+                    root.KM = [komi.toString()]
+                }
             }
 
         } else if (line.startsWith('\\[GAMETAG=')) {
 
-            // Date...
-
-            let regex = /C(\d\d\d\d):(\d\d):(\d\d)/
-            let match = regex.exec(line)
-
-            if (match) {
-                root.DT = [match[1] + '-' + match[2] + '-' + match[3]]
+            if (root.DT === undefined) {
+                regex = /C(\d\d\d\d):(\d\d):(\d\d)/
+                match = regex.exec(line)
+                if (match) {
+                    root.DT = [match[1] + '-' + match[2] + '-' + match[3]]
+                }
             }
 
-            // Result...
-
-            let result = getResult(line, /,W(\d+),/, /,Z(\d+),/)
-
-            if (result !== '') {
-                root.RE = [result]
+            if (root.RE === undefined) {
+                let result = getResult(line, /,W(\d+),/, /,Z(\d+),/)
+                if (result !== '') {
+                    root.RE = [result]
+                }
             }
 
-            // Komi...
-
-            regex = /,G(\d+),/
-            match = regex.exec(line)
-
-            if (match) {
-                let komi = parseFloat(match[1]) / 10
-                root.KM = [komi.toString()]
+            if (root.KM === undefined) {
+                regex = /,G(\d+),/
+                match = regex.exec(line)
+                if (match) {
+                    let komi = parseFloat(match[1]) / 10
+                    root.KM = [komi.toString()]
+                }
             }
 
         } else if (line.slice(0, 3) === 'INI') {
