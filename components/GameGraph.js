@@ -20,12 +20,12 @@ class GameGraph extends Component {
 
     remeasure() {
         let $element = $(this.element)
-        this.setState({viewportSize: [$element.width(), $element.height()]})
+        this.setState({viewportSize: [$element.width(), $element.height()].map(x => Math.round(x))})
     }
 
     componentDidMount() {
         window.addEventListener('resize', () => {
-            clearInterval(this.remeasureId)
+            clearTimeout(this.remeasureId)
             this.remeasureId = setTimeout(() => this.remeasure(), 500)
         })
 
@@ -36,26 +36,30 @@ class GameGraph extends Component {
     componentWillReceiveProps({treePosition}) {
         // Adjust camera position and recalculate matrix-dict of game tree
 
-        let [tree, index] = treePosition
-        let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
-        let gridSize = setting.get('graph.grid_size')
+        clearTimeout(this.renderId)
 
-        let id = tree.id + '-' + index
-        let [x, y] = dict[id]
-        let [width, padding] = gametree.getMatrixWidth(y, matrix)
-        x -= padding
+        this.renderId = setTimeout(() => {
+            let [tree, index] = treePosition
+            let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
+            let gridSize = setting.get('graph.grid_size')
 
-        let relX = width === 1 ? 1 : 1 - 2 * x / (width - 1)
-        let diff = (width - 1) * gridSize / 2
-        diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
+            let id = tree.id + '-' + index
+            let [x, y] = dict[id]
+            let [width, padding] = gametree.getMatrixWidth(y, matrix)
+            x -= padding
 
-        this.setState({
-            cameraPosition: [
-                x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
-                y * gridSize - this.state.viewportSize[1] / 2
-            ],
-            matrixDict: [matrix, dict]
-        })
+            let relX = width === 1 ? 1 : 1 - 2 * x / (width - 1)
+            let diff = (width - 1) * gridSize / 2
+            diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
+
+            this.setState({
+                cameraPosition: [
+                    x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
+                    y * gridSize - this.state.viewportSize[1] / 2
+                ].map(z => Math.round(z)),
+                matrixDict: [matrix, dict]
+            })
+        }, setting.get('graph.delay'))
     }
 
     componentDidUpdate({height}) {
