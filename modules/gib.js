@@ -14,30 +14,24 @@ function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
 
     // Given a game result type and a score, return a text result.
 
-    let winner = ''
-    let margin = ''
-
     // The GRLT tag contains the type of result:
     // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
+
+    let easycases = {'3': 'B+R', '4': 'W+R', '7': 'B+T', '8': 'W+T'}
+
+    if (easycases[grlt] !== undefined) {
+        return easycases[grlt]
+    }
+
     // If there is a score, the ZIPSU tag contains it (multiplied by 10).
 
-    if (grlt === 0 || grlt === 3 || grlt === 7) {
-        winner = 'B'
-    } else if (grlt === 1 || grlt === 4 || grlt === 8) {
-        winner = 'W'
-    }
-
-    if (grlt === 3 || grlt === 4) {
-        margin = 'R'
-    } else if (grlt === 7 || grlt === 8) {
-        margin = 'T'
-    } else if (grlt === 0 || grlt === 1) {
-        margin = (zipsu / 10).toString()
-    }
-
-    if (winner !== '') {
+    if (grlt === 0 || grlt === 1) {
+        let winner = grlt === 0 ? 'B' : 'W'
+        let margin = (zipsu / 10).toString()
         return winner + '+' + margin
     }
+
+    // We couldn't work it out...
 
     return ''
 }
