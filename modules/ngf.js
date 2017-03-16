@@ -32,10 +32,10 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     let root = {}
     tree.nodes.push(root)
 
-    root.CA = ['utf8']
-    root.FF = ['4']
-    root.GM = ['1']
-    root.SZ = ['19']
+    root.CA = ['UTF-8']
+    root.FF = [4]
+    root.GM = [1]
+    root.SZ = [19]
 
     // These array accesses might throw if out of range, that's fine.
     // The caller will deal with the exception.
@@ -132,7 +132,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     }
 
     if (komi) {
-        root.KM = [komi.toString()]
+        root.KM = [komi]
     }
 
     if (rawdate.length === 8) {
@@ -185,7 +185,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         }
     }
 
-    return tree
+    return [tree]
 }
 
 exports.parseFile = function (filename, callback = () => {}) {

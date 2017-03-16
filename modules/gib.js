@@ -98,10 +98,10 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     let root = {}
     tree.nodes.push(root)
 
-    root.CA = ['utf8']
-    root.FF = ['4']
-    root.GM = ['1']
-    root.SZ = ['19']
+    root.CA = ['UTF-8']
+    root.FF = [4]
+    root.GM = [1]
+    root.SZ = [19]
 
     let node = root
 
@@ -148,7 +148,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                 match = regex.exec(line)
                 if (match) {
                     let komi = parseFloat(match[1]) / 10
-                    root.KM = [komi.toString()]
+                    root.KM = [komi]
                 }
             }
 
@@ -174,7 +174,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                 match = regex.exec(line)
                 if (match) {
                     let komi = parseFloat(match[1]) / 10
-                    root.KM = [komi.toString()]
+                    root.KM = [komi]
                 }
             }
 
@@ -189,7 +189,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
             }
 
             if (handicap >= 2 && handicap <= 9) {
-                root.HA = [handicap.toString()]
+                root.HA = [handicap]
                 root.AB = []
 
                 let tmp = new Board()       // Created solely for .getHandicapPlacement()
@@ -233,7 +233,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         }
     }
 
-    return tree
+    return [tree]
 }
 
 exports.parseFile = function (filename, callback = () => {}) {
