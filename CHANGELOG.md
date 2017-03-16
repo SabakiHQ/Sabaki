@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+
 ## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
 
 **Added**
