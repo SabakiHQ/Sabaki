@@ -1,5 +1,6 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
+const jschardet = require('jschardet')
 const gametree = require('./gametree')
 const sgf = require('./sgf')
 const Board = require('./board')
@@ -11,7 +12,13 @@ exports.meta = {
 
 exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
 
-    content = iconv.decode(Buffer.from(content, 'binary'), 'utf8')
+    let encoding = 'utf8'
+    let detected = jschardet.detect(content)
+    if (detected.confidence > 0.2) {
+        encoding = detected.encoding
+    }
+
+    content = iconv.decode(Buffer.from(content, 'binary'), encoding)
 
     let lines = content.split('\n')
 
