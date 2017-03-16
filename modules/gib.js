@@ -48,7 +48,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
             let winner = ''
             let margin = ''
 
-            let regex = new RegExp('GRLT:(\\d+),')
+            let regex = /GRLT:(\d+),/
             let match = regex.exec(line)
 
             if (match) {
@@ -66,7 +66,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                 } else if (num === 7 || num === 8) {
                     margin = 'T'
                 } else if (num === 0 || num === 1) {
-                    regex = new RegExp('ZIPSU:(\\d+),')
+                    regex = /ZIPSU:(\d+),/
                     match = regex.exec(line)
                     if (match) {
                         let score = parseFloat(match[1]) / 10
@@ -81,7 +81,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
             // Komi is apparently stored in the GONGJE tag.
 
-            regex = new RegExp('GONGJE:(\\d+),')
+            regex = /GONGJE:(\d+),/
             match = regex.exec(line)
 
             if (match) {
@@ -91,7 +91,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
         } else if (line.startsWith('\\[GAMETAG=')) {
 
-            let regex = new RegExp('C(\\d\\d\\d\\d):(\\d\\d):(\\d\\d)')
+            let regex = /C(\d\d\d\d):(\d\d):(\d\d)/
             let match = regex.exec(line)
 
             if (match) {
