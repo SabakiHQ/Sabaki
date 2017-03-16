@@ -141,6 +141,9 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     root.PW = [pw]
     root.PB = [pb]
 
+    // We currently search for moves in all lines. Current files start moves at line 12.
+    // But some older files have less headers and start moves earlier.
+
     for (let n = 0; n < lines.length; n++) {
 
         let line = lines[n].trim().toUpperCase()
