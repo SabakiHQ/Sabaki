@@ -54,6 +54,34 @@ function getResult(line, grltRegex, zipsuRegex) {
     return result
 }
 
+function parsePlayerName(raw) {
+
+    let name = ''
+    let rank = ''
+
+    // If there's exactly one opening bracket...
+
+    let foo = raw.split('(')
+    if (foo.length === 2) {
+
+        // And if the closing bracket is right at the end...
+
+        if (foo[1].indexOf(')') === foo[1].length - 1) {
+
+            // Then extract the rank...
+
+            name = foo[0].trim()
+            rank = foo[1].slice(0, foo[1].length - 1)
+        }
+    }
+
+    if (name === '') {
+        return [raw, '']
+    } else {
+        return [name, rank]
+    }
+}
+
 exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
 
     let encoding = 'utf8'
@@ -87,12 +115,24 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         if (line.startsWith('\\[GAMEBLACKNAME=') && line.endsWith('\\]')) {
 
             let s = line.slice(16, -2)
-            root.PB = [s]
+            let [name, rank] = parsePlayerName(s)
+            if (name) {
+                root.PB = [name]
+            }
+            if (rank) {
+                root.BR = [rank]
+            }
 
         } else if (line.startsWith('\\[GAMEWHITENAME=') && line.endsWith('\\]')) {
 
             let s = line.slice(16, -2)
-            root.PW = [s]
+            let [name, rank] = parsePlayerName(s)
+            if (name) {
+                root.PW = [name]
+            }
+            if (rank) {
+                root.WR = [rank]
+            }
 
         } else if (line.startsWith('\\[GAMEINFOMAIN=')) {
 
