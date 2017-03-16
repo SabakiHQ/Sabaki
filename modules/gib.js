@@ -10,6 +10,50 @@ exports.meta = {
     extensions: ['gib']
 }
 
+function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
+
+    // The GRLT tag contains the type of result:
+    // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
+    // If there is a score, the ZIPSU tag contains it (multiplied by 10).
+
+    let winner = ''
+    let margin = ''
+
+    if (grlt === 0 || grlt === 3 || grlt === 7) {
+        winner = 'B'
+    } else if (grlt === 1 || grlt === 4 || grlt === 8) {
+        winner = 'W'
+    }
+
+    if (grlt === 3 || grlt === 4) {
+        margin = 'R'
+    } else if (grlt === 7 || grlt === 8) {
+        margin = 'T'
+    } else if (grlt === 0 || grlt === 1) {
+        margin = (zipsu / 10).toString()
+    }
+
+    if (winner !== '') {
+        return winner + '+' + margin
+    }
+
+    return ''
+}
+
+function getResult(line, grltRegex, zipsuRegex) {
+    let result = ''
+    let match = grltRegex.exec(line)
+    if (match) {
+        let grlt = parseFloat(match[1])
+        match = zipsuRegex.exec(line)
+        if (match) {
+            let zipsu = parseFloat(match[1])
+            result = makeResult(grlt, zipsu)
+        }
+    }
+    return result
+}
+
 exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
 
     let encoding = 'utf8'
@@ -48,45 +92,15 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
         } else if (line.startsWith('\\[GAMEINFOMAIN=')) {
 
-            // The GRLT tag contains the type of result:
-            // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
-            // If there is a score, the ZIPSU tag contains it (multiplied by 10).
+            // Result...
 
-            let winner = ''
-            let margin = ''
+            let result = getResult(line, /GRLT:(\d+),/, /ZIPSU:(\d+),/)
 
-            let regex = /GRLT:(\d+),/
-            let match = regex.exec(line)
-
-            if (match) {
-
-                let num = parseFloat(match[1])
-
-                if (num === 0 || num === 3 || num === 7) {
-                    winner = 'B'
-                } else if (num === 1 || num === 4 || num === 8) {
-                    winner = 'W'
-                }
-
-                if (num === 3 || num === 4) {
-                    margin = 'R'
-                } else if (num === 7 || num === 8) {
-                    margin = 'T'
-                } else if (num === 0 || num === 1) {
-                    regex = /ZIPSU:(\d+),/
-                    match = regex.exec(line)
-                    if (match) {
-                        let score = parseFloat(match[1]) / 10
-                        margin = score.toString()
-                    }
-                }
+            if (result !== '') {
+                root.RE = [result]
             }
 
-            if (winner !== '') {
-                root.RE = [winner + '+' + margin]
-            }
-
-            // Komi is apparently stored in the GONGJE tag.
+            // Komi...
 
             regex = /GONGJE:(\d+),/
             match = regex.exec(line)
@@ -98,11 +112,31 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
 
         } else if (line.startsWith('\\[GAMETAG=')) {
 
+            // Date...
+
             let regex = /C(\d\d\d\d):(\d\d):(\d\d)/
             let match = regex.exec(line)
 
             if (match) {
                 root.DT = [match[1] + '-' + match[2] + '-' + match[3]]
+            }
+
+            // Result...
+
+            let result = getResult(line, /,W(\d+),/, /,Z(\d+),/)
+
+            if (result !== '') {
+                root.RE = [result]
+            }
+
+            // Komi...
+
+            regex = /,G(\d+),/
+            match = regex.exec(line)
+
+            if (match) {
+                let komi = parseFloat(match[1]) / 10
+                root.KM = [komi.toString()]
             }
 
         } else if (line.slice(0, 3) === 'INI') {
