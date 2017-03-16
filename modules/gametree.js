@@ -396,7 +396,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             let size = [19, 19]
 
             if ('SZ' in node) {
-                size = node.SZ[0]
+                size = node.SZ[0].toString()
 
                 if (size.includes(':')) size = size.split(':')
                 else size = [size, size]
