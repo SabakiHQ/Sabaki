@@ -3,6 +3,7 @@ const fs = require('fs')
 const util = require('util')
 const tmp = require('tmp')
 
+const helper = require('../modules/helper')
 const sgf = require('../modules/sgf')
 const gametree = require('../modules/gametree')
 
@@ -119,7 +120,7 @@ describe('sgf', () => {
             )
         })
         it('should parse a relatively complex file', () => {
-            let contents = fs.readFileSync(__dirname + '/complex.sgf', 'utf8')
+            let contents = fs.readFileSync(__dirname + '/sgf/complex.sgf', 'utf8')
             let tokens = sgf.tokenize(contents)
             let tree = sgf.parse(tokens)
 
@@ -167,12 +168,12 @@ describe('sgf', () => {
         for (language in languageMap) {
             it('should be able to decode non-UTF-8 text nodes', () => {
                 assert.equal(
-                    sgf.parseFile(util.format('%s/%s.sgf', __dirname, language)).subtrees[0].nodes[2].C[0],
+                    sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language)).subtrees[0].nodes[2].C[0],
                     util.format('%s is fun', languageMap[language])
                 )
             })
             it('should save SGFs back to UTF-8 regardless of input encoding', () => {
-                let parsedSgf = sgf.parseFile(util.format('%s/%s.sgf', __dirname, language))
+                let parsedSgf = sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))
                 let savedSgfName = tmp.tmpNameSync()
 
                 fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
@@ -186,17 +187,17 @@ describe('sgf', () => {
 
         it('should be able to go back and re-parse attributes set before CA', () => {
             assert.equal(
-                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PW[0],
+                sgf.parseFile(__dirname + '/sgf/chinese.sgf').subtrees[0].nodes[0].PW[0],
                 '柯洁'
             )
             assert.equal(
-                sgf.parseFile(__dirname + '/chinese.sgf').subtrees[0].nodes[0].PB[0],
+                sgf.parseFile(__dirname + '/sgf/chinese.sgf').subtrees[0].nodes[0].PB[0],
                 '古力'
             )
         })
         it('should ignore unknown encodings', () => {
             assert.notEqual(
-                sgf.parseFile(__dirname + '/japanese_bad.sgf').subtrees[0].nodes[2].C[0],
+                sgf.parseFile(__dirname + '/sgf/japanese_bad.sgf').subtrees[0].nodes[2].C[0],
                 util.format('%s is fun', languageMap['japanese'])
             )
         })
@@ -367,7 +368,7 @@ describe('sgf', () => {
                 '(;B[ee]SZ[19]',
                 ';W[dd]',
                 ')'
-            ].join('\n')
+            ].join(helper.linebreak)
 
             assert.equal(sgf.stringify(gametree), content)
         })
@@ -382,7 +383,7 @@ describe('sgf', () => {
                 ]
             }
 
-            assert.equal(sgf.stringify(gametree), '(;HS[]\n)')
+            assert.equal(sgf.stringify(gametree), `(;HS[]${helper.linebreak})`)
         })
         it('should handle variations', () => {
             let gametree = {
@@ -409,7 +410,7 @@ describe('sgf', () => {
                 '(;W[ii]',
                 ')(;W[hi]C[h]',
                 '))'
-            ].join('\n')
+            ].join(helper.linebreak)
 
             assert.equal(sgf.stringify(gametree), content)
         })
