@@ -113,11 +113,11 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         root.RE = [winner + '+' + margin]
     }
 
-    root.SZ = [boardsize.toString()]
+    root.SZ = [boardsize]
 
     if (handicap >= 2) {
 
-        root.HA = [handicap.toString()]
+        root.HA = [handicap]
         root.AB = []
 
         let tmp = new Board()       // Created solely for .getHandicapPlacement()
