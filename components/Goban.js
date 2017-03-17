@@ -283,7 +283,6 @@ class Goban extends Component {
 
                     return h('li',
                         {
-                            key: `${x}-${y}`,
                             'data-vertex': `${x}-${y}`,
 
                             class: Object.assign({

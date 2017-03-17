@@ -22,7 +22,7 @@ class GameGraph extends Component {
         super()
 
         this.state = {
-            cameraPosition: [-50, -50],
+            cameraPosition: [-gridSize, -gridSize],
             viewportSize: null,
             matrixDict: null,
             mousePosition: [-100, -100]
@@ -44,20 +44,25 @@ class GameGraph extends Component {
         document.addEventListener('mousemove', evt => {
             if (!this.svgElement) return
 
-            let {left, top} = this.svgElement.getBoundingClientRect()
-            let mousePosition = [evt.x - left, evt.y - top].map(z => Math.round(z))
-            let {movementX, movementY} = evt
+            let {left, top, right, bottom} = this.svgElement.getBoundingClientRect()
+            let {x, y, movementX, movementY} = evt
+
+            if (x < left || x > right || y < top || y > bottom) {
+                [x, y] = [-gridSize, -gridSize]
+            } else {
+                [x, y] = [x - left, y - top].map(z => Math.round(z))
+            }
 
             if (!this.mouseDown) {
                 [movementX, movementY] = [0, 0]
                 this.drag = false
-                if (Math.min(...mousePosition) < -10) return
+                if (helper.shallowEquals([x, y], this.state.mousePosition)) return
             } else {
                 this.drag = true
             }
 
             this.setState(({cameraPosition: [cx, cy]}) => ({
-                mousePosition,
+                mousePosition: [x, y],
                 cameraPosition: [cx - movementX, cy - movementY]
             }))
         })
@@ -154,7 +159,7 @@ class GameGraph extends Component {
         viewportSize: [width, height],
         mousePosition: [mx, my]
     }) {
-        let nodes = []
+        let nodeColumns = []
         let edges = []
 
         let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 5, 0))
@@ -164,6 +169,8 @@ class GameGraph extends Component {
         // Render only nodes that are visible
 
         for (let x = minX; x <= maxX; x++) {
+            let column = []
+
             for (let y = minY; y <= maxY; y++) {
                 if (matrix[y] == null || matrix[y][x] == null) continue
 
@@ -188,13 +195,14 @@ class GameGraph extends Component {
                 let left = x * gridSize
                 let top = y * gridSize
 
-                let isHovered = Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
+                let isHovered = !this.drag
+                    && Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
 
                 if ('B' in node && node.B[0] === '' || 'W' in node && node.W[0] === '') {
                     // Render pass node
 
-                    nodes.push(h('path', {
-                        key: `${x}-${y}`,
+                    column.push(h('path', {
+                        key: y,
                         d: [
                             `M ${left - nodeSize} ${top - nodeSize}`,
                             `h ${nodeSize * 2}`,
@@ -210,8 +218,8 @@ class GameGraph extends Component {
 
                     let s = Math.round(Math.sqrt(2) * nodeSize)
 
-                    nodes.push(h('path', {
-                        key: `${x}-${y}`,
+                    column.push(h('path', {
+                        key: y,
                         d: [
                             `M ${left} ${top - s}`,
                             `L ${left - s} ${top}`,
@@ -223,8 +231,8 @@ class GameGraph extends Component {
                         class: {hover: isHovered}
                     }))
                 } else {
-                    nodes.push(h('path', {
-                        key: `${x}-${y}`,
+                    column.push(h('path', {
+                        key: y,
                         d: [
                             `M ${left} ${top}`,
                             `m ${-nodeSize} 0`,
@@ -338,9 +346,11 @@ class GameGraph extends Component {
                     }
                 }
             }
+
+            if (column.length > 0) nodeColumns.push(h('g', {key: x}, column))
         }
 
-        return [h('g', {}, edges), h('g', {}, nodes)]
+        return [h('g', {}, edges), h('g', {}, nodeColumns)]
     }
 
     render({
@@ -376,19 +386,9 @@ class GameGraph extends Component {
                     onMouseUp: this.handleGraphMouseUp
                 },
 
-                h('style', {}, `
-                    #graph svg > * {
-                        transform: translate(${-cx}px, ${-cy}px);
-                    }
-                    #graph svg:not(:active) > * {
-                        transition: transform ${animationDuration / 1000}s;
-                    }
-                    #graph svg path.hover {
-                        stroke: white;
-                        stroke-width: 3px;
-                        stroke-linecap: square;
-                    }
-                `),
+                h('style', {}, `#graph svg > * {
+                    transform: translate(${-cx}px, ${-cy}px);
+                }`),
 
                 this.renderNodes(this.state)
             ),

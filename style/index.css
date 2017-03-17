@@ -424,6 +424,17 @@ header, #bar .bar {
         height: 100%;
         z-index: 1;
     }
+    #graph svg:active {
+        cursor: -webkit-grabbing;
+    }
+    #graph svg:not(:active) > * {
+        transition: transform .2s;
+    }
+    #graph svg path.hover {
+        stroke: white;
+        stroke-width: 3px;
+        stroke-linecap: square;
+    }
     #graph .slider {
         position: absolute;
         top: 0;
