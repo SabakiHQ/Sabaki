@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const helper = require('../modules/helper')
 const Bar = require('./Bar')
 
 class EditBar extends Component {
@@ -21,7 +22,7 @@ class EditBar extends Component {
     }
 
     handleToolButtonClick(evt) {
-        let {selectedTool, onToolButtonClick = () => {}} = this.props
+        let {selectedTool, onToolButtonClick = helper.noop} = this.props
 
         evt.toolId = evt.currentTarget.dataset.id
 

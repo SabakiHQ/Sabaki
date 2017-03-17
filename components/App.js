@@ -2,21 +2,14 @@ const fs = require('fs')
 const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, dialog, Menu} = remote
 const {h, render, Component} = require('preact')
-const Pikaday = require('pikaday')
 
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
 const Sidebar = require('./Sidebar')
 
-const $ = require('../modules/sprint')
 const sgf = require('../modules/sgf')
-const fuzzyfinder = require('../modules/fuzzyfinder')
 const gametree = require('../modules/gametree')
-const sound = require('../modules/sound')
-const helper = require('../modules/helper')
 const setting = require('../modules/setting')
-const gtp = require('../modules/gtp')
-const Board = require('../modules/board')
 
 class App extends Component {
     constructor() {
@@ -25,7 +18,6 @@ class App extends Component {
         let emptyTree = this.getEmptyGameTree()
 
         this.state = {
-            title: app.getName(),
             mode: 'play',
             openDrawer: null,
             busy: false,
@@ -64,16 +56,16 @@ class App extends Component {
             autoscrolling: 0
         }
 
+        window.sabaki = this
         this.componentWillUpdate({}, this.state)
     }
 
     componentDidMount() {
-        window.sabaki = this
         remote.getCurrentWindow().show()
     }
 
     componentWillUpdate(_, nextState) {
-        document.title = nextState.title
+        document.title = app.getName()
     }
 
     getEmptyGameTree() {
@@ -91,6 +83,11 @@ class App extends Component {
         ].join('')
 
         return sgf.parse(sgf.tokenize(buffer))
+    }
+
+    goStep(step) {
+        let treePosition = gametree.navigate(...this.state.treePosition, step)
+        if (treePosition) this.setState({treePosition})
     }
 
     render(_, state) {

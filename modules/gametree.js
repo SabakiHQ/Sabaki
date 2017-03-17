@@ -477,7 +477,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             let p1 = composed.slice(0, sep)
             let p2 = composed.slice(sep + 1)
 
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type === 'AR'])
         }
     }
 
@@ -496,12 +496,14 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             return
         }
 
-        if (v in board.ghosts || !board.hasVertex(v))
+        if (!board.hasVertex(v) || v in board.ghosts)
             return
 
-        let types = [type]
+        let types = []
 
-        if (type == 'child') {
+        if (type === 'child') {
+            types.push(`ghost_${sign}`)
+
             if ('BM' in node) {
                 types.push('badmove')
             } else if ('DO' in node) {
@@ -511,21 +513,23 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             } else if ('TE' in node) {
                 types.push('goodmove')
             }
+        } else if (type === 'sibling') {
+            types.push(`siblingghost_${sign}`)
         }
 
         board.ghosts[v] = [sign, types]
     }
 
-    if (index == tree.nodes.length - 1) {
+    if (index === tree.nodes.length - 1) {
         for (let subtree of tree.subtrees) {
-            if (subtree.nodes.length == 0) continue
+            if (subtree.nodes.length === 0) continue
             addOverlay(subtree.nodes[0], 'child')
         }
     } else if (index < tree.nodes.length - 1) {
         addOverlay(tree.nodes[index + 1], 'child')
     }
 
-    if (index == 0 && tree.parent) {
+    if (index === 0 && tree.parent) {
         for (let subtree of tree.parent.subtrees) {
             if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'sibling')

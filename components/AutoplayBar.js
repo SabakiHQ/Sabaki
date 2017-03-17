@@ -1,12 +1,13 @@
 const {h, Component} = require('preact')
+const helper = require('../modules/helper')
 const Bar = require('./Bar')
 
 class AutoplayBar extends Component {
     render({
         playing,
         secondsPerMove,
-        onValueChange = () => {},
-        onButtonClick = () => {},
+        onValueChange = helper.noop,
+        onButtonClick = helper.noop,
     }) {
         return h(Bar, Object.assign({type: 'autoplay', class: {playing}}, this.props),
             h('form', {},

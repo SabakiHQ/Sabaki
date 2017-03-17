@@ -6,6 +6,57 @@ const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 const range = n => [...Array(n)].map((_, i) => i)
 const random = n => Math.floor(Math.random() * n)
 
+class GobanVertex extends Component {
+    render({
+        position: [x, y],
+        shift,
+        random,
+        sign,
+        hoshi,
+        animate,
+        markupType,
+        label,
+        ghostTypes,
+
+        onMouseDown = helper.noop,
+        onMouseUp = helper.noop,
+        onMouseMove = helper.noop
+    }) {
+        let classes = {
+            [`pos_${x}-${y}`]: true,
+            [`shift_${shift}`]: true,
+            [`random_${random}`]: true,
+            [`sign_${sign}`]: true,
+            [markupType]: !!markupType,
+
+            hoshi,
+            animate,
+            smalllabel: label.length >= 3
+        }
+
+        for (let type of ghostTypes) {
+            classes[type] = true
+        }
+
+        return h('li',
+            {
+                'data-vertex': `${x}-${y}`,
+                class: classes,
+                onMouseDown,
+                onMouseUp,
+                onMouseMove
+            },
+
+            h('div', {class: 'stone'},
+                h('img', {src: './img/goban/blank.svg'}),
+                h('span', {title: label})
+            ),
+
+            h('div', {class: 'paint'})
+        )
+    }
+}
+
 class Goban extends Component {
     constructor(props) {
         super()
@@ -72,7 +123,7 @@ class Goban extends Component {
     }
 
     resize() {
-        let {board, showCoordinates, onBeforeResize = () => {}} = this.props
+        let {board, showCoordinates, onBeforeResize = helper.noop} = this.props
         onBeforeResize()
 
         let $goban = $(this.element)
@@ -169,7 +220,7 @@ class Goban extends Component {
     handleVertexMouseUp(evt) {
         if (!this.mouseDown) return
 
-        let {onVertexClick = () => {}} = this.props
+        let {onVertexClick = helper.noop} = this.props
         let {currentTarget} = evt
 
         this.mouseDown = false
@@ -179,12 +230,24 @@ class Goban extends Component {
     }
 
     handleVertexMouseMove(evt) {
-        let {onVertexMouseMove = () => {}} = this.props
+        let {onVertexMouseMove = helper.noop} = this.props
         let {currentTarget} = evt
 
         evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
 
         onVertexMouseMove(evt)
+    }
+
+    renderCoordX() {
+        return h('ol', {class: 'coordx'},
+            this.state.rangeX.map(i => h('li', {}, alpha[i]))
+        )
+    }
+
+    renderCoordY(left = null) {
+        return h('ol', {class: 'coordy'},
+            this.state.rangeY.map(i => h('li', {}, this.props.board.height - i))
+        )
     }
 
     render({
@@ -195,32 +258,11 @@ class Goban extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animatedStonePlacement,
-
-        onVertexClick = () => {},
-        onMouseMove = () => {}
     }, state) {
-        let {rangeX, rangeY, hoshis, fieldSize} = state
+        let {fieldSize, rangeY, rangeX} = state
 
-        let rowStyle = {
-            height: fieldSize,
-            lineHeight: fieldSize + 'px',
-            marginLeft: showCoordinates ? fieldSize : 0
-        }
-
-        let renderCoordX = () => h('ol', {class: 'coordx'},
-            rangeX.map(i => h('li', {style: rowStyle}, alpha[i]))
-        )
-
-        let renderCoordY = ({left = null} = {}) => h('ol', {class: 'coordy'},
-            rangeY.map(i => h('li', {
-                style: {
-                    width: fieldSize,
-                    top: fieldSize,
-                    lineHeight: fieldSize + 'px',
-                    left
-                }
-            }, board.height - i))
-        )
+        let coordX = this.renderCoordX()
+        let coordY = this.renderCoordY()
 
         return h('section',
             {
@@ -234,99 +276,79 @@ class Goban extends Component {
                     siblings: showSiblings,
                     fuzzy: fuzzyStonePlacement,
                     animation: animatedStonePlacement
-                },
-                style: {
-                    fontSize: fieldSize,
-                    width: state.width,
-                    height: state.height,
-                    marginLeft: state.marginLeft,
-                    marginTop: state.marginTop
                 }
             },
 
-            h('div',
-                {
-                    style: {
-                        width: state.innerWidth,
-                        height: state.innerHeight,
-                        marginLeft: state.innerMarginLeft,
-                        marginTop: state.innerMarginTop
-                    }
-                },
+            h('style', {}, `
+                #goban {
+                    font-size: ${fieldSize}px;
+                    width: ${state.width}px;
+                    height: ${state.height}px;
+                    margin-left: ${state.marginLeft}px;
+                    margin-top: ${state.marginTop}px;
+                }
+                #goban > div {
+                    width: ${state.innerWidth}px;
+                    height: ${state.innerHeight}px;
+                    margin-left: ${state.innerMarginLeft}px;
+                    margin-top: ${state.innerMarginTop}px;
+                }
+                #goban > div > ol > li {
+                    width: ${fieldSize}px;
+                    height: ${fieldSize}px;
+                }
+                #goban > div > ol:not(.coordy) {
+                    height: ${fieldSize}px;
+                    line-height: ${fieldSize}px;
+                    margin-left: ${showCoordinates ? fieldSize : 0};
+                }
+                #goban > div > ol.coordy {
+                    width: ${fieldSize}px,
+                    top: ${fieldSize}px,
+                    line-height: ${fieldSize}px,
+                }
+                #goban > div > ol.coordy:last-child {
+                    left: ${fieldSize * (board.width + 1)}px;
+                }
+            `),
 
-                renderCoordY(),
-                renderCoordX(),
+            h('div', {},
+                coordY,
+                coordX,
 
-                rangeY.map(y => h('ol', {class: 'row', style: rowStyle}, rangeX.map(x => {
+                rangeY.map(y => h('ol', {class: 'row'}, rangeX.map(x => {
                     let sign = board.get([x, y])
                     let [markupType, label] = board.markups[[x, y]] || [null, '']
-                    let ghostClasses = {}
 
-                    if ([x, y] in board.ghosts) {
-                        let [s, types] = board.ghosts[[x, y]]
+                    return h(GobanVertex, {
+                        position: [x, y],
+                        shift: this.state.shifts[y][x],
+                        random: this.state.randomizer[y][x],
+                        sign,
+                        hoshi: this.state.hoshis.some(v => helper.shallowEquals(v, [x, y])),
+                        animate: this.state.animate.some(v => helper.shallowEquals(v, [x, y])),
+                        smalllabel: label.length >= 3,
+                        markupType,
+                        label,
+                        ghostTypes: board.ghosts[[x, y]] || [],
 
-                        for (let type of types) {
-                            if (type === 'child')
-                                ghostClasses[`ghost_${s}`] = true
-                            else if (type === 'sibling')
-                                ghostClasses[`siblingghost_${s}`] = true
-                            else if (type === 'badmove')
-                                ghostClasses['badmove'] = true
-                            else if (type === 'doubtfulmove')
-                                ghostClasses['doubtfulmove'] = true
-                            else if (type === 'interestingmove')
-                                ghostClasses['interestingmove'] = true
-                            else if (type === 'goodmove')
-                                ghostClasses['goodmove'] = true
-                        }
-                    }
-
-                    return h('li',
-                        {
-                            'data-vertex': `${x}-${y}`,
-
-                            class: Object.assign({
-                                [`pos_${x}-${y}`]: true,
-                                [`shift_${state.shifts[y][x]}`]: true,
-                                [`random_${state.randomizer[y][x]}`]: true,
-                                [`sign_${sign}`]: true,
-                                [markupType]: !!markupType,
-                                hoshi: hoshis.some(v => helper.shallowEquals(v, [x, y])),
-                                animate: state.animate.some(v => helper.shallowEquals(v, [x, y])),
-                                smalllabel: label.length >= 3
-                            }, ghostClasses),
-
-                            style: {
-                                width: fieldSize,
-                                height: fieldSize
-                            },
-
-                            onMouseDown: this.handleVertexMouseDown,
-                            onMouseUp: this.handleVertexMouseUp,
-                            onMouseMove: this.handleVertexMouseMove
-                        },
-                        h('div', {class: 'stone'},
-                            h('img', {src: './img/goban/blank.svg'}),
-                            h('span', {title: label})
-                        ),
-                        h('div', {class: 'paint'})
-                    )
+                        onMouseUp: this.handleVertexMouseUp,
+                        onMouseDown: this.handleVertexMouseDown,
+                        onMouseMove: this.handleVertexMouseMove
+                    })
                 }))),
 
-                renderCoordX(),
-                renderCoordY({left: fieldSize * (board.width + 1)})
+                coordX,
+                coordY
             ),
 
             // Draw lines & arrows
 
             board.lines.map(([v1, v2, arrow]) => {
-                let $li1 = $(`#goban .pos_${v1.join('-')}`)
-                let $li2 = $(`#goban .pos_${v2.join('-')}`)
-                let pos1 = $li1.position(), pos2 = $li2.position()
-                let dy = pos2.top - pos1.top, dx = pos2.left - pos1.left
+                let [pos1, pos2] = [v1, v2].map(v => v.map(x => (showCoordinates ? x + 1 : x) * fieldSize))
+                let [dx, dy] = pos1.map((x, i) => pos2[i] - x)
+                let [left, top] = pos1.map((x, i) => (x + pos2[i] + fieldSize) / 2)
 
-                let top = (pos1.top + $li1.height() / 2 + pos2.top + $li2.height() / 2) / 2
-                let left = (pos1.left + $li1.width() / 2 + pos2.left + $li2.width() / 2) / 2
                 let angle = Math.atan2(dy, dx) * 180 / Math.PI
                 let length = Math.sqrt(dx * dx + dy * dy)
 

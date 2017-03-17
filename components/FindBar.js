@@ -1,8 +1,9 @@
 const {h, Component} = require('preact')
+const helper = require('../modules/helper')
 const Bar = require('./Bar')
 
 class FindBar extends Component {
-    render({findText, onFindNextClick = () => {}, onFindPreviousClick = () => {}}) {
+    render({findText, onFindNextClick = helper.noop, onFindPreviousClick = helper.noop}) {
         return h(Bar, Object.assign({type: 'find'}, this.props),
             h('form', {},
                 h('input', {type: 'text', placeholder: 'Find', value: findText}),
