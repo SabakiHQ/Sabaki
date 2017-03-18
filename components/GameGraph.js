@@ -45,6 +45,12 @@ let shapes = (type, left, top) => ({
 })[type]
 
 class GameGraphNode extends Component {
+    shouldComponentUpdate({type, fill, hover}) {
+        return type !== this.props.type
+            || fill !== this.props.fill
+            || hover !== this.props.hover
+    }
+
     render({
         position: [left, top],
         type,
@@ -56,6 +62,13 @@ class GameGraphNode extends Component {
 }
 
 class GameGraphEdge extends Component {
+    shouldComponentUpdate({positionAbove, positionBelow, current, length}) {
+        return length !== this.props.length
+            || current !== this.props.current
+            || !helper.shallowEquals(positionAbove, this.props.positionAbove)
+            || !helper.shallowEquals(positionBelow, this.props.positionBelow)
+    }
+
     render({
         positionAbove: [left1, top1],
         positionBelow: [left2, top2],

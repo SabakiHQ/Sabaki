@@ -7,6 +7,24 @@ const range = n => [...Array(n)].map((_, i) => i)
 const random = n => Math.floor(Math.random() * n)
 
 class GobanVertex extends Component {
+    shouldComponentUpdate({
+        sign,
+        hoshi,
+        shift,
+        animate,
+        label,
+        markupType,
+        ghostTypes
+    }) {
+        return sign !== this.props.sign
+            || hoshi !== this.props.hoshi
+            || shift !== this.props.shift
+            || animate !== this.props.animate
+            || label !== this.props.label
+            || markupType !== this.props.markupType
+            || !helper.shallowEquals(ghostTypes, this.props.ghostTypes)
+    }
+
     render({
         position: [x, y],
         shift,
@@ -257,7 +275,7 @@ class Goban extends Component {
         showNextMoves,
         showSiblings,
         fuzzyStonePlacement,
-        animatedStonePlacement,
+        animatedStonePlacement
     }, state) {
         let {fieldSize, rangeY, rangeX} = state
 
