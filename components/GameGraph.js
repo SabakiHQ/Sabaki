@@ -153,30 +153,22 @@ class GameGraph extends Component {
         this.componentWillReceiveProps()
     }
 
+    shouldComponentUpdate() {
+        return !this.dirty
+    }
+
     componentWillReceiveProps({treePosition = null} = {}) {
         // Adjust camera position and recalculate matrix-dict of game tree
 
         let treePositionChanged = !helper.shallowEquals(treePosition, this.props.treePosition)
+        this.dirty = true
 
         clearTimeout(this.renderId)
         this.renderId = setTimeout(() => {
-            let treeHash
-            let treeChanged = true
-
-            if (treePosition != null) {
-                let rootTree = gametree.getRoot(...treePosition)
-                treeHash = gametree.getHash(rootTree)
-
-                treeChanged = treeHash !== this.treeHash
-            }
-
-            let [tree, index] = treePosition || this.props.treePosition
+            let [tree, index] = this.props.treePosition
             let id = tree.id + '-' + index
 
-            if (!treeChanged && !(id in this.state.matrixDict[1])) treeChanged = true
-
-            let [matrix, dict] = !treeChanged ? this.state.matrixDict
-                : gametree.getMatrixDict(gametree.getRoot(tree))
+            let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
             let [x, y] = dict[id]
             let [width, padding] = gametree.getMatrixWidth(y, matrix)
 
@@ -184,8 +176,7 @@ class GameGraph extends Component {
             let diff = (width - 1) * gridSize / 2
             diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
-            if (treeChanged) this.treeHash = treeHash
-
+            this.dirty = false
             this.setState(({matrixDict, cameraPosition}) => ({
                 matrixDict: [matrix, dict],
                 cameraPosition: treePositionChanged ? [
@@ -219,7 +210,7 @@ class GameGraph extends Component {
 
         let {onNodeClick = helper.noop} = this.props
         let {matrixDict: [matrix, ], mousePosition: [mx, my], cameraPosition: [cx, cy]} = this.state
-        let [nearestX, nearestY] = [(mx + cx) / gridSize, (my + cy) / gridSize].map(z => Math.round(z))
+        let [nearestX, nearestY] = [mx + cx, my + cy].map(z => Math.round(z / gridSize))
 
         if (!matrix[nearestY] || !matrix[nearestY][nearestX]) return
 

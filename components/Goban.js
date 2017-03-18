@@ -135,8 +135,7 @@ class Goban extends Component {
             rangeY,
             hoshis,
             randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
-            shifts,
-            animate: []
+            shifts
         })
     }
 
@@ -275,7 +274,9 @@ class Goban extends Component {
         showNextMoves,
         showSiblings,
         fuzzyStonePlacement,
-        animatedStonePlacement
+        animatedStonePlacement,
+
+        animatedVertices = []
     }, state) {
         let {fieldSize, rangeY, rangeX} = state
 
@@ -344,7 +345,7 @@ class Goban extends Component {
                         random: this.state.randomizer[y][x],
                         sign,
                         hoshi: this.state.hoshis.some(v => helper.shallowEquals(v, [x, y])),
-                        animate: this.state.animate.some(v => helper.shallowEquals(v, [x, y])),
+                        animate: animatedVertices.some(v => helper.shallowEquals(v, [x, y])),
                         smalllabel: label.length >= 3,
                         markupType,
                         label,

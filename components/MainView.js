@@ -50,6 +50,7 @@ class MainView extends Component {
     }
 
     handleGobanVertexClick(evt) {
+        sabaki.makeMove(evt.vertex)
         console.log(evt.vertex)
     }
 
@@ -62,6 +63,7 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animatedStonePlacement,
+        animatedVertices,
 
         undoable,
         undoText,
@@ -103,6 +105,7 @@ class MainView extends Component {
                     showSiblings,
                     fuzzyStonePlacement,
                     animatedStonePlacement,
+                    animatedVertices,
 
                     onBeforeResize: this.handleGobanResize,
                     onVertexClick: this.handleGobanVertexClick

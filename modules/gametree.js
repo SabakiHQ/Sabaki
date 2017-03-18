@@ -68,7 +68,7 @@ exports.getRootProperty = function(tree, property, fallback = null) {
     let result = ''
     if (property in node) result = node[property][0]
 
-    return result.trim() == '' ? fallback : result
+    return result === '' ? fallback : result
 }
 
 exports.getCurrentPlayer = function(tree, index) {

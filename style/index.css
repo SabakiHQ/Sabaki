@@ -428,7 +428,7 @@ header, #bar .bar {
         cursor: -webkit-grabbing;
     }
     #graph svg:not(:active) > * {
-        transition: transform .2s;
+        transition: transform .3s;
     }
     #graph svg path.hover {
         stroke: white;

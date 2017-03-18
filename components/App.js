@@ -55,6 +55,7 @@ class App extends Component {
             showSiblings: setting.get('view.show_siblings'),
             fuzzyStonePlacement: setting.get('view.fuzzy_stone_placement'),
             animatedStonePlacement: setting.get('view.animated_stone_placement'),
+            animatedVertices: [],
 
             // Sidebar state
 
@@ -123,21 +124,6 @@ class App extends Component {
         else delete node.HO
 
         this.setState(this.state)
-    }
-
-    setCurrentTreePosition(tree, index, {ignoreAutoplay = false} = {}) {
-        if (['scoring', 'estimator'].includes(this.state.mode))
-            return
-        if (!ignoreAutoplay && this.state.autoplaying)
-            this.setState({autoplaying: false})
-
-        let t = tree
-        while (t.parent != null) {
-            t.parent.current = t.parent.subtrees.indexOf(t)
-            t = t.parent
-        }
-
-        this.setState({treePosition: [tree, index]})
     }
 
     getEmptyGameTree() {
@@ -225,6 +211,169 @@ class App extends Component {
         this.setOpenDrawer(null)
     }
 
+    // Playing
+
+    makeMove(vertex, {ignoreAutoplay = false} = {}) {
+        if (!['play', 'autoplay', 'guess'].includes(this.state.mode))
+            this.closeDrawers()
+
+        let [tree, index] = this.state.treePosition
+        let board = gametree.getBoard(tree, index)
+        let pass = !board.hasVertex(vertex)
+        if (!pass && board.get(vertex) != 0) return
+
+        let prev = gametree.navigate(tree, index, -1)
+        let sign = gametree.getCurrentPlayer(tree, index)
+        let color = sign > 0 ? 'B' : 'W'
+        let capture = false, suicide = false
+        let createNode = true
+
+        if (!pass) {
+            // Check for ko
+
+            if (prev && setting.get('game.show_ko_warning')) {
+                let ko = false
+                let hash = board.makeMove(sign, vertex).getHash()
+
+                ko = prev[0].nodes[prev[1]].board.getHash() == hash
+
+                if (ko && this.showMessageBox(
+                    ['You are about to play a move which repeats a previous board position.',
+                    'This is invalid in some rulesets.'].join('\n'),
+                    'info',
+                    ['Play Anyway', 'Don’t Play'], 1
+                ) != 0) return
+            }
+
+            let vertexNeighbors = board.getNeighbors(vertex)
+
+            // Check for suicide
+
+            capture = vertexNeighbors
+                .some(v => board.get(v) == -sign && board.getLiberties(v).length == 1)
+
+            suicide = !capture
+            && vertexNeighbors.filter(v => board.get(v) == sign)
+                .every(v => board.getLiberties(v).length == 1)
+            && vertexNeighbors.filter(v => board.get(v) == 0).length == 0
+
+            if (suicide && setting.get('game.show_suicide_warning')) {
+                if (view.showMessageBox(
+                    ['You are about to play a suicide move.',
+                    'This is invalid in some rulesets.'].join('\n'),
+                    'info',
+                    ['Play Anyway', 'Don’t Play'], 1
+                ) != 0) return
+            }
+
+            // Animate board
+
+            this.setState({animatedVertices: [...vertexNeighbors, vertex]})
+
+            setTimeout(() => {
+                this.setState({animatedVertices: []})
+            }, 200)
+        }
+
+        // Update data
+
+        let nextTreePosition
+
+        if (tree.current == null && tree.nodes.length - 1 == index) {
+            // Append move
+
+            let node = {}
+            node[color] = [sgf.vertex2point(vertex)]
+            tree.nodes.push(node)
+
+            nextTreePosition = [tree, tree.nodes.length - 1]
+        } else {
+            if (index != tree.nodes.length - 1) {
+                // Search for next move
+
+                let nextNode = tree.nodes[index + 1]
+                let moveExists = color in nextNode
+                    && helper.shallowEquals(sgf.point2vertex(nextNode[color][0]), vertex)
+
+                if (moveExists) {
+                    nextTreePosition = [tree, index + 1]
+                    createNode = false
+                }
+            } else {
+                // Search for variation
+
+                let variations = tree.subtrees.filter(subtree => {
+                    return subtree.nodes.length > 0
+                        && color in subtree.nodes[0]
+                        && helper.shallowEquals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
+                })
+
+                if (variations.length > 0) {
+                    nextTreePosition = [variations[0], 0]
+                    createNode = false
+                }
+            }
+
+            if (createNode) {
+                // Create variation
+
+                let updateRoot = tree.parent == null
+                let splitted = gametree.split(tree, index)
+                let newTree = gametree.new()
+                let node = {}
+
+                node[color] = [sgf.vertex2point(vertex)]
+                newTree.nodes = [node]
+                newTree.parent = splitted
+
+                splitted.subtrees.push(newTree)
+                splitted.current = splitted.subtrees.length - 1
+
+                if (updateRoot) {
+                    let {gameTrees} = this.state
+                    gameTrees[gameTrees.indexOf(tree)] = splitted
+                }
+
+                nextTreePosition = [newTree, 0]
+            }
+        }
+
+        this.setCurrentTreePosition(...nextTreePosition)
+
+        // Play sounds
+
+        if (!pass) {
+            let delay = setting.get('sound.capture_delay_min')
+            delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
+
+            if (capture || suicide)
+                sound.playCapture(delay)
+
+            sound.playPachi()
+        } else {
+            sound.playPass()
+        }
+
+        // Clear undo point
+
+        if (createNode) this.clearUndoPoint()
+
+        // Enter scoring mode after two consecutive passes
+
+        let enterScoring = false
+
+        if (pass && createNode && prev) {
+            let prevNode = prev[0].nodes[prev[1]]
+            let prevColor = sign > 0 ? 'W' : 'B'
+            let prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+
+            if (prevPass) {
+                enterScoring = true
+                this.setMode('scoring')
+            }
+        }
+    }
+
     // File hashes
 
     generateTreeHash() {
@@ -307,9 +456,17 @@ class App extends Component {
         if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
+            let extensions = [sgf, gib, ngf].map(x => x.meta)
+            let combinedExtensions = extensions.map(x => x.extensions)
+                .reduce((acc, x) => [...acc, ...x], [])
+
             let result = this.showOpenDialog({
                 properties: ['openFile'],
-                filters: [{name: 'Go Records', extensions: ['sgf', 'gib', 'ngf']}, {name: 'All Files', extensions: ['*']}]
+                filters: [
+                    {name: 'Game Records', extensions: combinedExtensions},
+                    ...extensions,
+                    {name: 'All Files', extensions: ['*']}
+                ]
             })
 
             if (result) filename = result[0]
@@ -408,6 +565,21 @@ class App extends Component {
     }
 
     // Navigation
+
+    setCurrentTreePosition(tree, index, {ignoreAutoplay = false} = {}) {
+        if (['scoring', 'estimator'].includes(this.state.mode))
+            return
+        if (!ignoreAutoplay && this.state.autoplaying)
+            this.setState({autoplaying: false})
+
+        let t = tree
+        while (t.parent != null) {
+            t.parent.current = t.parent.subtrees.indexOf(t)
+            t = t.parent
+        }
+
+        this.setState({treePosition: [tree, index]})
+    }
 
     goStep(step) {
         let treePosition = gametree.navigate(...this.state.treePosition, step)
@@ -672,10 +844,7 @@ class App extends Component {
         this.setCurrentTreePosition(tree, index)
     }
 
-    removeNode(tree, index, {
-        suppressConfirmation = false,
-        setUndoPoint = true
-    } = {}) {
+    removeNode(tree, index, {suppressConfirmation = false, setUndoPoint = true} = {}) {
         if (!tree.parent && index === 0) {
             this.showMessageBox('The root node cannot be removed.', 'warning')
             return
