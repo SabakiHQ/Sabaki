@@ -16,12 +16,9 @@ class MainView extends Component {
     constructor() {
         super()
 
+        this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.toolId)
         this.handleGobanResize = this.handleGobanResize.bind(this)
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
-        this.handleEditToolClick = this.handleEditToolClick.bind(this)
-        this.handleBarCloseButtonClick = this.handleBarCloseButtonClick.bind(this)
-        this.handleAutoplayValueChange = this.handleAutoplayValueChange.bind(this)
-        this.handleAutoplayButtonClick = this.handleAutoplayButtonClick.bind(this)
     }
 
     componentDidMount() {
@@ -54,22 +51,6 @@ class MainView extends Component {
 
     handleGobanVertexClick(evt) {
         console.log(evt.vertex)
-    }
-
-    handleEditToolClick(evt) {
-        sabaki.setState({selectedTool: evt.toolId})
-    }
-
-    handleBarCloseButtonClick() {
-        sabaki.setState({mode: 'play'})
-    }
-
-    handleAutoplayButtonClick() {
-        sabaki.setState(({autoplaying}) => ({autoplaying: !autoplaying}))
-    }
-
-    handleAutoplayValueChange(evt) {
-        sabaki.setState({secondsPerMove: +evt.currentTarget.value})
     }
 
     render({
@@ -146,25 +127,12 @@ class MainView extends Component {
                     undoText
                 }),
 
-                h(EditBar, {
-                    selectedTool,
-                    onToolButtonClick: this.handleEditToolClick,
-                    onCloseButtonClick: this.handleBarCloseButtonClick
-                }),
-
-                h(GuessBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
-
-                h(AutoplayBar, {
-                    playing: autoplaying,
-                    secondsPerMove,
-                    onValueChange: this.handleAutoplayValueChange,
-                    onButtonClick: this.handleAutoplayButtonClick,
-                    onCloseButtonClick: this.handleBarCloseButtonClick
-                }),
-
-                h(ScoringBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
-                h(EstimatorBar, {onCloseButtonClick: this.handleBarCloseButtonClick}),
-                h(FindBar, {onCloseButtonClick: this.handleBarCloseButtonClick})
+                h(EditBar, {selectedTool, onToolButtonClick: this.handleToolButtonClick}),
+                h(GuessBar),
+                h(AutoplayBar, {playing: autoplaying, secondsPerMove}),
+                h(ScoringBar),
+                h(EstimatorBar),
+                h(FindBar)
             )
         )
     }

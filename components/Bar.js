@@ -2,10 +2,16 @@ const {h, Component} = require('preact')
 const helper = require('../modules/helper')
 
 class Bar extends Component {
-    render({children, type, class: c = {}, onCloseButtonClick = helper.noop}) {
+    constructor() {
+        super()
+
+        this.onCloseButtonClick = () => sabaki.setMode('play')
+    }
+
+    render({children, type, class: c = {}}) {
         return h('section', {id: type, class: Object.assign({bar: true}, c)},
             children,
-            h('a', {class: 'close', href: '#', onClick: onCloseButtonClick})
+            h('a', {class: 'close', href: '#', onClick: this.onCloseButtonClick})
         )
     }
 }

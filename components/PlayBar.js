@@ -1,6 +1,14 @@
 const {h, Component} = require('preact')
 
 class PlayBar extends Component {
+    constructor() {
+        super()
+
+        this.handleCurrentPlayerClick = () => sabaki.setCurrentPlayer(-this.props.currentPlayer)
+        this.handleUndoButtonClick = () => {}
+        this.handleMenuClick = () => {}
+    }
+
     render({
         playerNames,
         playerRanks,
@@ -28,21 +36,31 @@ class PlayBar extends Component {
                 h('span', {class: 'name', title: playerRanks[1]}, playerNames[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
-            
+
             h('img', {
                 src: `./img/ui/player_${currentPlayer}.svg`,
                 class: 'current-player',
                 height: 22,
-                title: 'Change Player'
+                title: 'Change Player',
+                onClick: this.handleCurrentPlayerClick
             }),
 
             h('div', {class: 'hotspot', title: 'Hotspot'}),
 
-            h('a', {class: 'undo', title: undoText},
+            h('a',
+                {
+                    class: 'undo',
+                    title: undoText,
+                    onClick: this.handleUndoButtonClick
+                },
                 h('img', {src: './node_modules/octicons/build/svg/mail-reply.svg', height: 21})
             ),
 
-            h('a', {id: 'headermenu'},
+            h('a',
+                {
+                    id: 'headermenu',
+                    onClick: this.handleMenuClick
+                },
                 h('img', {src: './node_modules/octicons/build/svg/three-bars.svg', height: 21})
             )
         )
