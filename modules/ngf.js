@@ -120,7 +120,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
         root.HA = [handicap]
         root.AB = []
 
-        let tmp = new Board()       // Created solely for .getHandicapPlacement()
+        let tmp = new Board(boardsize, boardsize)       // Created solely for .getHandicapPlacement()
 
         let points = tmp.getHandicapPlacement(handicap)
 
