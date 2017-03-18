@@ -1,7 +1,7 @@
 const fs = require('fs')
 const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, dialog, Menu} = remote
-const {h, render, Component} = require('preact')
+const {h, render, options, Component} = require('preact')
 
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
@@ -10,6 +10,8 @@ const Sidebar = require('./Sidebar')
 const sgf = require('../modules/sgf')
 const gametree = require('../modules/gametree')
 const setting = require('../modules/setting')
+
+options.syncComponentUpdates = true
 
 class App extends Component {
     constructor() {
@@ -65,7 +67,7 @@ class App extends Component {
     }
 
     componentWillUpdate(_, nextState) {
-        document.title = app.getName()
+        // document.title = app.getName()
     }
 
     getEmptyGameTree() {

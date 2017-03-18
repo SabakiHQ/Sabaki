@@ -12,6 +12,7 @@ let delay = setting.get('graph.delay')
 let animationDuration = setting.get('graph.animation_duration')
 let commentProperties = setting.get('sgf.comment_properties')
 
+let squareSide = nodeSize * 2
 let diamondSide = Math.round(Math.sqrt(2) * nodeSize)
 
 let stroke = current => current ? setting.get('graph.edge_color')
@@ -22,25 +23,19 @@ let strokeWidth = current => current ? setting.get('graph.edge_size')
 let shapes = (type, left, top) => ({
     square: [
         `M ${left - nodeSize} ${top - nodeSize}`,
-        `h ${nodeSize * 2}`,
-        `v ${nodeSize * 2}`,
-        `h ${-nodeSize * 2}`,
-        `v ${-nodeSize * 2}`
+        `h ${squareSide} v ${squareSide} h ${-squareSide} v ${-squareSide}`
     ].join(' '),
 
     circle: [
-        `M ${left} ${top}`,
-        `m ${-nodeSize} 0`,
-        `a ${nodeSize} ${nodeSize} 0 1 0 ${2 * nodeSize} 0`,
-        `a ${nodeSize} ${nodeSize} 0 1 0 ${-2 * nodeSize} 0`
+        `M ${left} ${top} m ${-nodeSize} 0`,
+        `a ${nodeSize} ${nodeSize} 0 1 0 ${squareSide} 0`,
+        `a ${nodeSize} ${nodeSize} 0 1 0 ${-squareSide} 0`
     ].join(' '),
 
     diamond: [
         `M ${left} ${top - diamondSide}`,
-        `L ${left - diamondSide} ${top}`,
-        `L ${left} ${top + diamondSide}`,
-        `L ${left + diamondSide} ${top}`,
-        `L ${left} ${top - diamondSide}`
+        `L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}`,
+        `L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
     ].join(' ')
 })[type]
 
@@ -78,16 +73,11 @@ class GameGraphEdge extends Component {
         let points
 
         if (left1 === left2) {
-            points = [
-                `${left1},${top1}`,
-                `${left1},${top2 + length}`
-            ].join(' ')
+            points = `${left1},${top1} ${left1},${top2 + length}`
         } else {
             points = [
-                `${left1},${top1}`,
-                `${left2 - gridSize},${top2 - gridSize}`,
-                `${left2},${top2}`,
-                `${left2},${top2 + length}`
+                `${left1},${top1} ${left2 - gridSize},${top2 - gridSize}`,
+                `${left2},${top2} ${left2},${top2 + length}`
             ].join(' ')
         }
 
@@ -95,7 +85,7 @@ class GameGraphEdge extends Component {
             points,
             fill: 'none',
             stroke: stroke(current),
-            strokeWidth: strokeWidth(current)
+            'stroke-width': strokeWidth(current)
         })
     }
 }
@@ -166,26 +156,20 @@ class GameGraph extends Component {
     componentWillReceiveProps({treePosition = null} = {}) {
         // Adjust camera position and recalculate matrix-dict of game tree
 
-        let treeHash
-        let treeChanged = true
         let treePositionChanged = !helper.shallowEquals(treePosition, this.props.treePosition)
-
-        if (treePosition != null) {
-            let rootTree = gametree.getRoot(...treePosition)
-            treeHash = gametree.getHash(rootTree)
-
-            treeChanged = treeHash !== this.treeHash
-
-            // Update root tree height
-
-            if (treeChanged) {
-                let rootTreeHeight = gametree.getHeight(gametree.getRoot(...treePosition))
-                this.setState({rootTreeHeight})
-            }
-        }
 
         clearTimeout(this.renderId)
         this.renderId = setTimeout(() => {
+            let treeHash
+            let treeChanged = true
+
+            if (treePosition != null) {
+                let rootTree = gametree.getRoot(...treePosition)
+                treeHash = gametree.getHash(rootTree)
+
+                treeChanged = treeHash !== this.treeHash
+            }
+
             let [tree, index] = treePosition || this.props.treePosition
             let [matrix, dict] = !treeChanged ? this.state.matrixDict
                 : gametree.getMatrixDict(gametree.getRoot(tree))
@@ -299,16 +283,14 @@ class GameGraph extends Component {
                     hover: isHovered
                 }))
 
-                // Render precedent edge with tree bone
+                if (!doneTreeBones.includes(tree.id)) {
+                    // A *tree bone* denotes a straight edge through the whole tree
 
-                if (index === 0 && tree.parent) {
-                    let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
-                    let [px, py] = dict[prevTree.id + '-' + prevIndex]
+                    if (index === 0 && tree.parent) {
+                        // Render precedent edge with tree bone
 
-                    // Render edge only if parent node is not visible,
-                    // otherwise this edge is already rendered as successor edge
-
-                    if (px < minX || px > maxX || py < minY || py > maxY) {
+                        let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
+                        let [px, py] = dict[prevTree.id + '-' + prevIndex]
                         let method = onCurrentTrack ? 'unshift' : 'push'
 
                         edges[method](h(GameGraphEdge, {
@@ -320,26 +302,22 @@ class GameGraph extends Component {
                         }))
 
                         doneTreeBones.push(tree.id)
+                    } else {
+                        // Render successor edges
+
+                        let method = onCurrentTrack ? 'unshift' : 'push'
+                        let position = dict[tree.id + '-0'].map(z => z * gridSize)
+
+                        edges[method](h(GameGraphEdge, {
+                            key: tree.id,
+                            positionAbove: position,
+                            positionBelow: position,
+                            length: (tree.nodes.length - 1) * gridSize,
+                            current: onCurrentTrack
+                        }))
+
+                        doneTreeBones.push(tree.id)
                     }
-                }
-
-                // Render successor edges
-
-                if (!doneTreeBones.includes(tree.id)) {
-                    // Draw straight edge through whole tree, a so-called "tree bone"
-
-                    let method = onCurrentTrack ? 'unshift' : 'push'
-                    let [left, top] = dict[tree.id + '-0'].map(z => z * gridSize)
-
-                    edges[method](h(GameGraphEdge, {
-                        key: tree.id,
-                        positionAbove: [left, top],
-                        positionBelow: [left, top],
-                        length: (tree.nodes.length - 1) * gridSize,
-                        current: onCurrentTrack
-                    }))
-
-                    doneTreeBones.push(tree.id)
                 }
 
                 if (index === tree.nodes.length - 1) {
@@ -374,8 +352,7 @@ class GameGraph extends Component {
     }, {
         matrixDict,
         viewportSize,
-        cameraPosition: [cx, cy],
-        rootTreeHeight
+        cameraPosition: [cx, cy]
     }) {
         let [tree, index] = treePosition
         let rootTree = gametree.getRoot(tree)
@@ -414,7 +391,7 @@ class GameGraph extends Component {
 
             h(Slider, {
                 text: level,
-                percent: (level / rootTreeHeight) * 100
+                percent: (level / gametree.getHeight(rootTree)) * 100
             })
         )
     }

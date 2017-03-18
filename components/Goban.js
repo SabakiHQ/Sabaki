@@ -17,12 +17,12 @@ class GobanVertex extends Component {
         ghostTypes
     }) {
         return sign !== this.props.sign
-            || hoshi !== this.props.hoshi
+            || ghostTypes !== this.props.ghostTypes
+            || markupType !== this.props.markupType
+            || label !== this.props.label
             || shift !== this.props.shift
             || animate !== this.props.animate
-            || label !== this.props.label
-            || markupType !== this.props.markupType
-            || !helper.shallowEquals(ghostTypes, this.props.ghostTypes)
+            || hoshi !== this.props.hoshi
     }
 
     render({
