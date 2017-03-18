@@ -158,13 +158,14 @@ class GameGraph extends Component {
     }
 
     componentWillReceiveProps({treePosition = null} = {}) {
-        // Adjust camera position and recalculate matrix-dict of game tree
+        // Debounce rendering
 
-        let treePositionChanged = !helper.shallowEquals(treePosition, this.props.treePosition)
         this.dirty = true
 
         clearTimeout(this.renderId)
         this.renderId = setTimeout(() => {
+            // Adjust camera position and recalculate matrix-dict of game tree
+
             let [tree, index] = this.props.treePosition
             let id = tree.id + '-' + index
 
@@ -177,13 +178,14 @@ class GameGraph extends Component {
             diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
             this.dirty = false
-            this.setState(({matrixDict, cameraPosition}) => ({
+
+            this.setState({
                 matrixDict: [matrix, dict],
-                cameraPosition: treePositionChanged ? [
+                cameraPosition: [
                     x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
                     y * gridSize - this.state.viewportSize[1] / 2
-                ].map(z => Math.round(z)) : cameraPosition
-            }))
+                ].map(z => Math.round(z))
+            })
         }, delay)
     }
 

@@ -10,15 +10,22 @@ class CommentBox extends Component {
     constructor(props) {
         super()
 
-        this.state = Object.assign({}, props)
-
         this.shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
     }
 
-    componentWillReceiveProps(props) {
+    shouldComponentUpdate() {
+        return !this.dirty
+    }
+
+    componentWillReceiveProps() {
+        // Debounce rendering
+        
+        this.dirty = true
+
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
-            this.setState(props)
+            this.dirty = false
+            this.setState(this.state)
 
             this.element.scrollTop = 0
             this.textareaElement.scrollTop = 0
@@ -26,7 +33,7 @@ class CommentBox extends Component {
     }
 
     getCurrentMoveInterpretation() {
-        let [tree, index] = this.state.treePosition
+        let [tree, index] = this.props.treePosition
         let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
 
@@ -61,7 +68,7 @@ class CommentBox extends Component {
         let ptp = gametree.navigate(tree, index, -1)
 
         if (ptp) {
-            let prevBoard = ptp[0].nodes[ptp[1]].board
+            let prevBoard = ptp[0].nodes[ptp[1]].board || gametree.getBoard(...ptp)
 
             if (!helper.equals(prevBoard.captures, board.captures))
                 return 'Take'
@@ -127,7 +134,8 @@ class CommentBox extends Component {
         return ''
     }
 
-    render({height}, {
+    render({
+        height,
         moveAnnotation: [ma, mv],
         positionAnnotation: [pa, pv],
         title,

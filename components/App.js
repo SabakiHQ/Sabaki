@@ -18,7 +18,7 @@ const sgf = require('../modules/sgf')
 const ngf = require('../modules/ngf')
 const gib = require('../modules/gib')
 
-options.syncComponentUpdates = true
+options.syncComponentUpdates = false
 
 class App extends Component {
     constructor() {

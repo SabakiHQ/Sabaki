@@ -96,7 +96,7 @@ let defaults = {
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
     'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
-    'setting.overwrite.rewrite7': ['graph.delay', 'graph.edge_color'],
+    'setting.overwrite.rewrite10': ['graph.delay'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
