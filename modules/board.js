@@ -2,10 +2,10 @@ const helper = require('./helper')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class Board {
-    constructor(width = 19, height = 19, arrangement = [], captures = {'-1': 0, '1': 0}) {
+    constructor(width = 19, height = 19, arrangement = [], captures = null) {
         this.width = width
         this.height = height
-        this.captures = {'-1': captures['-1'], '1': captures['1']}
+        this.captures = captures ? captures.slice() : [0, 0]
         this.arrangement = []
         this.markups = {}
         this.ghosts = {}
@@ -332,8 +332,8 @@ class Board {
         score['area_-1'] = 0
         score['territory_1'] = 0
         score['territory_-1'] = 0
-        score['captures_1'] = this.captures['1']
-        score['captures_-1'] = this.captures['-1']
+        score['captures_1'] = this.captures[0]
+        score['captures_-1'] = this.captures[1]
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
@@ -394,7 +394,7 @@ class Board {
 
             for (let c of this.getChain(n)) {
                 move.set(c, 0)
-                move.captures[sign.toString()]++
+                move.captures[(-sign + 1) / 2]++
             }
         }
 
@@ -405,7 +405,7 @@ class Board {
         if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
             for (let c of move.getChain(vertex)) {
                 move.set(c, 0)
-                move.captures[-sign]++
+                move.captures[(sign + 1) / 2]++
             }
         }
 

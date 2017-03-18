@@ -7,14 +7,32 @@ const GameChooserDrawer = require('./GameChooserDrawer')
 const CleanMarkupDrawer = require('./CleanMarkupDrawer')
 
 class DrawerManager extends Component {
-    render() {
-        return h('section', {}, {
-            h(InfoDrawer),
-            h(ScoreDrawer),
-            h(PreferencesDrawer),
-            h(GameChooserDrawer),
-            h(CleanMarkupDrawer),
-        })
+    render({
+        treePosition,
+        openDrawer
+    }) {
+        return h('section', {},
+            h(InfoDrawer, {
+                treePosition,
+                show: openDrawer === 'info'
+            }),
+
+            h(ScoreDrawer, {
+                show: openDrawer === 'score'
+            }),
+
+            h(PreferencesDrawer, {
+                show: openDrawer === 'preferences'
+            }),
+
+            h(GameChooserDrawer, {
+                show: openDrawer === 'gamechooser'
+            }),
+
+            h(CleanMarkupDrawer, {
+                show: openDrawer === 'cleanmarkup'
+            })
+        )
     }
 }
 

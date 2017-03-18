@@ -54,7 +54,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
+function _parseTokens(tokens, onProgress = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
@@ -109,7 +109,7 @@ function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, s
         if (type == 'parenthesis' && value == '(') {
             start[0] = i + 1
 
-            let t = _parseTokens(tokens, callback, encoding, start, depth + Math.min(tree.subtrees.length, 1))
+            let t = _parseTokens(tokens, onProgress, encoding, start, depth + Math.min(tree.subtrees.length, 1))
 
             if (t.nodes.length > 0) {
                 t.parent = tree
@@ -120,7 +120,7 @@ function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, s
             i = start[0]
         } else if (type == 'parenthesis' && value == ')') {
             start[0] = i
-            callback(i / tokens.length)
+            onProgress({progress: i / tokens.length})
             break
         }
 
@@ -130,19 +130,19 @@ function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, s
     return tree
 }
 
-exports.parseTokens = function(tokens, callback, ignoreEncoding = false) {
-    let tree = _parseTokens(tokens, callback, ignoreEncoding ? null : undefined)
+exports.parseTokens = function(tokens, onProgress, ignoreEncoding = false) {
+    let tree = _parseTokens(tokens, onProgress, ignoreEncoding ? null : undefined)
     tree.subtrees.forEach(subtree => subtree.parent = null)
     return tree.subtrees
 }
 
-exports.parse = function(input, callback, ignoreEncoding = false) {
-    return exports.parseTokens(exports.tokenize(input), callback, ignoreEncoding)
+exports.parse = function(input, onProgress, ignoreEncoding = false) {
+    return exports.parseTokens(exports.tokenize(input), onProgress, ignoreEncoding)
 }
 
-exports.parseFile = function(filename, callback, ignoreEncoding = false) {
+exports.parseFile = function(filename, onProgress, ignoreEncoding = false) {
     let input = fs.readFileSync(filename, {encoding: 'binary'})
-    return exports.parse(input, callback, ignoreEncoding)
+    return exports.parse(input, onProgress, ignoreEncoding)
 }
 
 exports.string2dates = function(input) {

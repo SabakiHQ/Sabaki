@@ -79,6 +79,7 @@ class MainView extends Component {
     }) {
         let board = gametree.getBoard(...treePosition)
         let [tree, index] = treePosition
+        let gameInfo = gametree.getGameInfo(tree)
         let node = tree.nodes[index]
         let showSidebar = showGameGraph || showCommentBox
 
@@ -110,18 +111,10 @@ class MainView extends Component {
 
             h('section', {id: 'bar'},
                 h(PlayBar, {
-                    playerNames: [[1, 'Black'], [-1, 'White']].map(([s, fallback]) =>
-                        gametree.getPlayerName(tree, s, fallback)
-                    ),
-                    playerRanks: ['BR', 'WR'].map(p =>
-                        gametree.getRootProperty(tree, p, '')
-                    ),
-                    playerCaptures: [1, -1].map(s =>
-                        board.captures[s]
-                    ),
-                    currentPlayer: 'PL' in node ? (node.PL[0] == 'W' ? -1 : 1)
-                        : 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1
-                        : 1,
+                    playerNames: gameInfo.playerNames,
+                    playerRanks: gameInfo.playerRanks,
+                    playerCaptures: board.captures,
+                    currentPlayer: gametree.getCurrentPlayer(...treePosition),
                     showHotspot: 'HO' in node,
                     undoable,
                     undoText

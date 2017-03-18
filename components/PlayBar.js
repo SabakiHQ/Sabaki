@@ -30,10 +30,10 @@ class PlayBar extends Component {
 
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
-                h('span', {class: 'name', title: playerRanks[0]}, playerNames[0])
+                h('span', {class: 'name', title: playerRanks[0]}, playerNames[0] || 'Black')
             ),
             h('span', {id: 'player_-1'},
-                h('span', {class: 'name', title: playerRanks[1]}, playerNames[1]), ' ',
+                h('span', {class: 'name', title: playerRanks[1]}, playerNames[1] || 'White'), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
 

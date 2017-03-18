@@ -53,7 +53,7 @@ exports.getRoot = function(tree) {
     return tree
 }
 
-exports.getPlayerName = function(tree, sign, fallback = '') {
+exports.getPlayerName = function(tree, sign, fallback = null) {
     let color = sign > 0 ? 'B' : 'W'
 
     return exports.getRootProperty(tree, `P${color}`,
@@ -69,6 +69,45 @@ exports.getRootProperty = function(tree, property, fallback = null) {
     if (property in node) result = node[property][0]
 
     return result.trim() == '' ? fallback : result
+}
+
+exports.getCurrentPlayer = function(tree, index) {
+    let node = tree.nodes[index]
+
+    return 'PL' in node ? (node.PL[0] == 'W' ? -1 : 1)
+        : 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1
+        : 1
+}
+
+exports.getGameInfo = function(tree) {
+    let root = exports.getRoot(tree)
+
+    let komi = exports.getRootProperty(root, 'KM')
+    if (komi != null && !isNaN(komi)) komi = +komi
+    else komi = null
+
+    let size = exports.getRootProperty(root, 'SZ')
+    if (size == null) size = [19, 19]
+    else {
+        let s = size.toString().split(':')
+        size = [+s[0], +s[s.length - 1]]
+    }
+
+    let handicap = ~~exports.getRootProperty(root, 'HA', 0)
+    handicap = Math.max(1, Math.min(9, handicap))
+    if (handicap === 1) handicap = 0
+
+    return {
+        playerNames: [-1, 1].map(s => exports.getPlayerName(root, s)),
+        playerRanks: ['WR', 'BR'].map(s => exports.getRootProperty(root, s)),
+        gameName: exports.getRootProperty(root, 'GN'),
+        eventName: exports.getRootProperty(root, 'EV'),
+        date: exports.getRootProperty(root, 'DT'),
+        result: exports.getRootProperty(root, 'RE'),
+        komi,
+        handicap,
+        size
+    }
 }
 
 exports.getHeight = function(tree) {
