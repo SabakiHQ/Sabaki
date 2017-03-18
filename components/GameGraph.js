@@ -171,15 +171,16 @@ class GameGraph extends Component {
             }
 
             let [tree, index] = treePosition || this.props.treePosition
+            let id = tree.id + '-' + index
+
+            if (!treeChanged && !(id in this.state.matrixDict[1])) treeChanged = true
+
             let [matrix, dict] = !treeChanged ? this.state.matrixDict
                 : gametree.getMatrixDict(gametree.getRoot(tree))
-
-            let id = tree.id + '-' + index
             let [x, y] = dict[id]
             let [width, padding] = gametree.getMatrixWidth(y, matrix)
-            x -= padding
 
-            let relX = width === 1 ? 1 : 1 - 2 * x / (width - 1)
+            let relX = width === 1 ? 0 : 1 - 2 * (x - padding) / (width - 1)
             let diff = (width - 1) * gridSize / 2
             diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
@@ -291,7 +292,7 @@ class GameGraph extends Component {
 
                         let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
                         let [px, py] = dict[prevTree.id + '-' + prevIndex]
-                        let method = onCurrentTrack ? 'unshift' : 'push'
+                        let method = !onCurrentTrack ? 'unshift' : 'push'
 
                         edges[method](h(GameGraphEdge, {
                             key: tree.id,
@@ -305,7 +306,7 @@ class GameGraph extends Component {
                     } else {
                         // Render successor edges
 
-                        let method = onCurrentTrack ? 'unshift' : 'push'
+                        let method = !onCurrentTrack ? 'unshift' : 'push'
                         let position = dict[tree.id + '-0'].map(z => z * gridSize)
 
                         edges[method](h(GameGraphEdge, {
@@ -324,7 +325,7 @@ class GameGraph extends Component {
                     for (let subtree of tree.subtrees) {
                         let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
                         let [nx, ny] = dict[subtree.id + '-0']
-                        let method = current ? 'unshift' : 'push'
+                        let method = !current ? 'unshift' : 'push'
 
                         edges[method](h(GameGraphEdge, {
                             key: subtree.id,

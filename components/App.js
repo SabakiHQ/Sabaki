@@ -9,9 +9,10 @@ const Sidebar = require('./Sidebar')
 const DrawerManager = require('./DrawerManager')
 
 const Board = require('../modules/board')
-const sound = require('../modules/sound')
 const gametree = require('../modules/gametree')
+const helper = require('../modules/helper')
 const setting = require('../modules/setting')
+const sound = require('../modules/sound')
 
 const sgf = require('../modules/sgf')
 const ngf = require('../modules/ngf')
@@ -24,7 +25,8 @@ class App extends Component {
         super()
         window.sabaki = this
 
-        let emptyTree = this.getEmptyGameTree()
+        let emptyTree = gametree.new()
+        emptyTree.nodes.push({})
 
         this.state = {
             mode: 'play',
@@ -65,17 +67,35 @@ class App extends Component {
         }
 
         this.window = remote.getCurrentWindow()
+        this.treeHash = this.generateTreeHash()
 
         this.componentWillUpdate({}, this.state)
     }
 
     componentDidMount() {
+        this.newFile()
         this.window.show()
     }
 
     componentWillUpdate(_, nextState) {
-        // document.title = app.getName()
+        // Update title
+
+        let {basename} = require('path')
+        let title = app.getName()
+        let {representedFilename, gameTrees, treePosition: [tree, ]} = this.state
+
+        if (representedFilename)
+            title = basename(representedFilename)
+        if (gameTrees.length > 1)
+            title += ' — Game ' + (gameTrees.indexOf(gametree.getRoot(tree)) + 1)
+        if (representedFilename && process.platform != 'darwin')
+            title += ' — ' + app.getName()
+
+        if (document.title !== title)
+            document.title = title
     }
+
+    // Sabaki API
 
     setSelectedTool(toolId) {
         this.setState({selectedTool: toolId})
@@ -111,6 +131,12 @@ class App extends Component {
         if (!ignoreAutoplay && this.state.autoplaying)
             this.setState({autoplaying: false})
 
+        let t = tree
+        while (t.parent != null) {
+            t.parent.current = t.parent.subtrees.indexOf(t)
+            t = t.parent
+        }
+
         this.setState({treePosition: [tree, index]})
     }
 
@@ -141,7 +167,51 @@ class App extends Component {
         return sgf.stringify(gameTrees)
     }
 
-    // Modes & Drawers
+    // Shell
+
+    showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
+        this.setState({busy: true})
+        ipcRenderer.send('build-menu', true)
+
+        let result = dialog.showMessageBox(remote.getCurrentWindow(), {
+            type,
+            buttons,
+            title: app.getName(),
+            message,
+            cancelId,
+            noLink: true
+        })
+
+        ipcRenderer.send('build-menu')
+        this.setState({busy: false})
+
+        return result
+    }
+
+    showFileDialog(type, options) {
+        this.setState({busy: true})
+        ipcRenderer.send('build-menu', true)
+
+        let [t, ...ype] = [...type]
+        type = t.toUpperCase() + ype.join('').toLowerCase()
+
+        let result = dialog[`show${type}Dialog`](this.window, options)
+
+        ipcRenderer.send('build-menu')
+        this.setState({busy: false})
+
+        return result
+    }
+
+    showOpenDialog(options) {
+        return this.showFileDialog('open', options)
+    }
+
+    showSaveDialog(options) {
+        return this.showFileDialog('save', options)
+    }
+
+    // Modes & drawers
 
     setMode(mode) {
         this.setState({mode})
@@ -206,7 +276,7 @@ class App extends Component {
             ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
 
             if (answer === 0) {
-                sabaki.loadFile(this.state.representedFilename, {suppressAskForSave: true})
+                this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
             }
 
             this.fileHash = hash
@@ -247,7 +317,7 @@ class App extends Component {
         }
 
         let {extname} = require('path')
-        let format = extname.slice(1).toLowerCase()
+        let format = extname(filename).slice(1).toLowerCase()
         let content = fs.readFileSync(filename, {encoding: 'binary'})
 
         this.loadContent(content, format, {
@@ -280,7 +350,8 @@ class App extends Component {
 
                 gameTrees = fileFormatModule.parse(content, evt => {
                     if (evt.progress - lastProgress < 0.1) return
-                    this.window.setProgressBar(progress)
+                    this.window.setProgressBar(evt.progress)
+                    lastProgress = evt.progress
                 }, ignoreEncoding)
 
                 if (gameTrees.length == 0) throw true
@@ -402,7 +473,7 @@ class App extends Component {
     goToEnd() {
         let rootTree = gametree.getRoot(...this.state.treePosition)
         let tp = gametree.navigate(rootTree, 0, gametree.getCurrentHeight(rootTree) - 1)
-        sabaki.setCurrentTreePosition(...tp)
+        this.setCurrentTreePosition(...tp)
     }
 
     goToSiblingVariation(sign) {
@@ -418,7 +489,7 @@ class App extends Component {
 
     goToMainVariation() {
         let tp = this.state.treePosition
-        let root = sabaki.getRootTree()
+        let root = gametree.getRoot(...tp)
 
         let [tree] = tp
 
@@ -437,6 +508,251 @@ class App extends Component {
             this.setCurrentTreePosition(tree, tree.nodes.length - 1)
         }
     }
+
+    // Undo methods
+
+    setUndoPoint(undoText = 'Undo') {
+        let {treePosition: [tree, index]} = this.state
+        let rootTree = gametree.clone(gametree.getRoot(tree))
+        let level = gametree.getLevel(tree, index)
+
+        this.undoData = [rootTree, level]
+
+        this.setState({
+            undoable: true,
+            undoText
+        })
+    }
+
+    clearUndoPoint() {
+        this.undoData = null
+        this.setState({undoable: false})
+    }
+
+    undo() {
+        if (!this.state.undoable || !this.undoData) return
+
+        this.setState({busy: true})
+
+        setTimeout(() => {
+            let [undoRoot, undoLevel] = this.undoData
+            let {treePosition, gameTrees} = this.state
+            let rootTree = gametree.getRoot(...treePosition)
+
+            gameTrees[gameTrees.indexOf(rootTree)] = undoRoot
+            treePosition = gametree.navigate(undoRoot, 0, undoLevel)
+
+            this.setCurrentTreePosition(...treePosition)
+            this.clearUndoPoint()
+            this.setState({busy: false})
+        }, setting.get('edit.undo_delay'))
+    }
+
+    // Node actions
+
+    copyVariation(tree, index) {
+        let clone = gametree.clone(tree)
+        if (index != 0) gametree.split(clone, index - 1)
+
+        this.copyVariationData = clone
+    }
+
+    cutVariation(tree, index) {
+        this.setUndoPoint('Undo Cut Variation')
+        this.copyVariation(tree, index)
+        this.removeNode(tree, index, {
+            suppressConfirmation: true,
+            setUndoPoint: false
+        })
+    }
+
+    pasteVariation(tree, index) {
+        if (this.copyVariationData == null) return
+
+        this.setUndoPoint('Undo Paste Variation')
+
+        let rootTree = gametree.getRoot(tree)
+        let updateRoot = tree === rootTree
+        let oldLength = tree.nodes.length
+        let splitted = gametree.split(tree, index)
+        let copied = gametree.clone(this.copyVariationData, true)
+
+        copied.parent = splitted
+        splitted.subtrees.push(copied)
+
+        if (updateRoot) {
+            let {gameTrees} = this.state
+            gameTrees[gameTrees.indexOf(rootTree)] = splitted
+            this.setState({gameTrees})
+        }
+
+        if (splitted.subtrees.length === 1) {
+            gametree.reduce(splitted)
+            this.setCurrentTreePosition(splitted, oldLength)
+        } else {
+            this.setCurrentTreePosition(copied, 0)
+        }
+    }
+
+    flattenVariation(tree, index) {
+        this.setUndoPoint('Undo Flatten')
+
+        let board = gametree.getBoard(tree, index)
+        let rootTree = gametree.getRoot(tree)
+        let rootNode = rootTree.nodes[0]
+        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
+
+        let clone = gametree.clone(tree)
+        if (index !== 0) gametree.split(clone, index - 1)
+        let node = clone.nodes[0]
+
+        node.AB = []
+        node.AW = []
+        node.AE = []
+        delete node.B
+        delete node.W
+        clone.parent = null
+        inherit.forEach(x => x in rootNode ? node[x] = rootNode[x] : null)
+
+        for (let x = 0; x < board.width; x++) {
+            for (let y = 0; y < board.height; y++) {
+                let sign = board.get([x, y])
+                if (sign == 0) continue
+
+                node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
+            }
+        }
+
+        let {gameTrees} = this.state
+        gameTrees[gameTrees.indexOf(rootTree)] = clone
+        this.setState({gameTrees})
+    }
+
+    makeMainVariation(tree, index) {
+        this.setUndoPoint('Restore Main Variation')
+        this.closeDrawers()
+
+        let t = tree
+
+        while (t.parent != null) {
+            t.parent.subtrees.splice(t.parent.subtrees.indexOf(t), 1)
+            t.parent.subtrees.unshift(t)
+            t.parent.current = 0
+
+            t = t.parent
+        }
+
+        t = tree
+
+        while (t.current != null) {
+            let [x] = t.subtrees.splice(t.current, 1)
+            t.subtrees.unshift(x)
+            t.current = 0
+
+            t = x
+        }
+
+        this.setCurrentTreePosition(tree, index)
+    }
+
+    shiftVariation(tree, index, step) {
+        if (!tree.parent) return
+
+        this.setUndoPoint('Undo Shift Variation')
+        this.closeDrawers()
+
+        let subtrees = tree.parent.subtrees
+        let m = subtrees.length
+        let i = subtrees.indexOf(tree)
+        let iNew = ((i + step) % m + m) % m
+
+        subtrees.splice(i, 1)
+        subtrees.splice(iNew, 0, tree)
+
+        this.setCurrentTreePosition(tree, index)
+    }
+
+    removeNode(tree, index, {
+        suppressConfirmation = false,
+        setUndoPoint = true
+    } = {}) {
+        if (!tree.parent && index === 0) {
+            this.showMessageBox('The root node cannot be removed.', 'warning')
+            return
+        }
+
+        if (suppressConfirmation !== true && setting.get('edit.show_removenode_warning') && this.showMessageBox(
+            'Do you really want to remove this node?',
+            'warning',
+            ['Remove Node', 'Cancel'], 1
+        ) === 1) return
+
+        // Save undo information
+
+        if (setUndoPoint) this.setUndoPoint('Undo Remove Node')
+
+        // Remove node
+
+        this.closeDrawers()
+        let prev = gametree.navigate(tree, index, -1)
+
+        if (index != 0) {
+            tree.nodes.splice(index, tree.nodes.length)
+            tree.current = null
+            tree.subtrees.length = 0
+        } else {
+            let parent = tree.parent
+            let i = parent.subtrees.indexOf(tree)
+
+            parent.subtrees.splice(i, 1)
+            if (parent.current >= 1) parent.current--
+            gametree.reduce(parent)
+        }
+
+        if (!prev) prev = this.state.treePosition
+        this.setCurrentTreePosition(...prev)
+    }
+
+    removeOtherVariations(tree, index, {
+        suppressConfirmation = false
+    } = {}) {
+        if (suppressConfirmation !== true && setting.get('edit.show_removeothervariations_warning') && this.showMessageBox(
+            'Do you really want to remove all other variations?',
+            'warning',
+            ['Remove Variations', 'Cancel'], 1
+        ) == 1) return
+
+        // Save undo information
+
+        this.setUndoPoint('Undo Remove Other Variations')
+        this.closeDrawers()
+
+        // Remove all subsequent variations
+
+        let t = tree
+
+        while (t.subtrees.length != 0) {
+            t.subtrees = [t.subtrees[t.current]]
+            t.current = 0
+
+            t = t.subtrees[0]
+        }
+
+        // Remove all precedent variations
+
+        t = tree
+
+        while (t.parent != null) {
+            t.parent.subtrees = [t]
+            t.parent.current = 0
+
+            t = t.parent
+        }
+
+        this.setCurrentTreePosition(tree, index)
+    }
+
+    // Render
 
     render(_, state) {
         return h('section',

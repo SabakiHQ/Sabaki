@@ -11,6 +11,12 @@ class Sidebar extends Component {
         this.state = {
             sidebarSplit: setting.get('view.properties_height')
         }
+
+        this.handleGraphNodeClick = evt => {
+            if (evt.button === 0) {
+                sabaki.setCurrentTreePosition(...evt.treePosition)
+            }
+        }
     }
 
     render({
@@ -37,7 +43,9 @@ class Sidebar extends Component {
                 showGameGraph,
                 viewportWidth: sidebarWidth,
                 height: !showGameGraph ? 0
-                    : !showCommentBox ? 100 : 100 - sidebarSplit
+                    : !showCommentBox ? 100 : 100 - sidebarSplit,
+
+                onNodeClick: this.handleGraphNodeClick
             }),
 
             h(CommentBox, {
