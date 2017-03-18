@@ -15,7 +15,7 @@ describe('Board', () => {
         })
         it('should have no capture information', () => {
             let board = new Board()
-            assert.deepEqual(board.captures, {'-1': 0, '1': 0})
+            assert.deepEqual(board.captures, [0, 0])
         })
         it('should have no markups and lines', () => {
             let board = new Board()
@@ -244,8 +244,8 @@ describe('Board', () => {
             white.forEach(x => board.set(x, -1))
 
             let move = board.makeMove(1, [3, 1])
-            assert.equal(move.captures[-1], 0)
-            assert.equal(move.captures[1], white.length)
+            assert.equal(move.captures[1], 0)
+            assert.equal(move.captures[0], white.length)
 
             board = new Board()
 
@@ -253,8 +253,8 @@ describe('Board', () => {
 
             move = board.makeMove(1, [1, 0])
 
-            assert.equal(move.captures[-1], 0)
-            assert.equal(move.captures[1], 1)
+            assert.equal(move.captures[1], 0)
+            assert.equal(move.captures[0], 1)
         })
         it('should handle suicide correctly', () => {
             let board = new Board()
