@@ -60,8 +60,8 @@ class GameGraphEdge extends Component {
     shouldComponentUpdate({positionAbove, positionBelow, current, length}) {
         return length !== this.props.length
             || current !== this.props.current
-            || !helper.shallowEquals(positionAbove, this.props.positionAbove)
-            || !helper.shallowEquals(positionBelow, this.props.positionBelow)
+            || !helper.vertexEquals(positionAbove, this.props.positionAbove)
+            || !helper.vertexEquals(positionBelow, this.props.positionBelow)
     }
 
     render({
@@ -129,7 +129,7 @@ class GameGraph extends Component {
             if (!this.mouseDown) {
                 [movementX, movementY] = [0, 0]
                 this.drag = false
-                if (helper.shallowEquals([x, y], this.state.mousePosition)) return
+                if (helper.vertexEquals([x, y], this.state.mousePosition)) return
             } else {
                 this.drag = true
             }
@@ -249,7 +249,7 @@ class GameGraph extends Component {
 
                 let fill = !onCurrentTrack
                         ? setting.get('graph.node_inactive_color')
-                    : helper.shallowEquals(this.props.treePosition, [tree, index])
+                    : helper.vertexEquals(this.props.treePosition, [tree, index])
                         ? setting.get('graph.node_active_color')
                     : commentProperties.some(x => x in node)
                         ? setting.get('graph.node_comment_color')

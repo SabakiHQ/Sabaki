@@ -18,7 +18,7 @@ const sgf = require('../modules/sgf')
 const ngf = require('../modules/ngf')
 const gib = require('../modules/gib')
 
-options.syncComponentUpdates = false
+options.syncComponentUpdates = true
 
 class App extends Component {
     constructor() {
@@ -293,7 +293,7 @@ class App extends Component {
 
                 let nextNode = tree.nodes[index + 1]
                 let moveExists = color in nextNode
-                    && helper.shallowEquals(sgf.point2vertex(nextNode[color][0]), vertex)
+                    && helper.vertexEquals(sgf.point2vertex(nextNode[color][0]), vertex)
 
                 if (moveExists) {
                     nextTreePosition = [tree, index + 1]
@@ -305,7 +305,7 @@ class App extends Component {
                 let variations = tree.subtrees.filter(subtree => {
                     return subtree.nodes.length > 0
                         && color in subtree.nodes[0]
-                        && helper.shallowEquals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
+                        && helper.vertexEquals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
                 })
 
                 if (variations.length > 0) {

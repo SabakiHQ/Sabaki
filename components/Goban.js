@@ -75,6 +75,30 @@ class GobanVertex extends Component {
     }
 }
 
+class CoordX extends Component {
+    shouldComponentUpdate({rangeX}) {
+        return rangeX.length !== this.props.rangeX.length
+    }
+
+    render({rangeX}) {
+        return h('ol', {class: 'coordx'},
+            rangeX.map(i => h('li', {}, alpha[i]))
+        )
+    }
+}
+
+class CoordY extends Component {
+    shouldComponentUpdate({rangeY}) {
+        return rangeY.length !== this.props.rangeY.length
+    }
+
+    render({rangeY}) {
+        return h('ol', {class: 'coordy'},
+            rangeY.map(i => h('li', {}, rangeY.length - i))
+        )
+    }
+}
+
 class Goban extends Component {
     constructor(props) {
         super()
@@ -120,7 +144,7 @@ class Goban extends Component {
 
         let dim = board => [board.width, board.height]
 
-        if (this.props && helper.shallowEquals(dim(nextProps.board), dim(this.props.board)))
+        if (this.props && helper.vertexEquals(dim(nextProps.board), dim(this.props.board)))
             return
 
         let rangeX = range(nextProps.board.width)
@@ -255,18 +279,6 @@ class Goban extends Component {
         onVertexMouseMove(evt)
     }
 
-    renderCoordX() {
-        return h('ol', {class: 'coordx'},
-            this.state.rangeX.map(i => h('li', {}, alpha[i]))
-        )
-    }
-
-    renderCoordY(left = null) {
-        return h('ol', {class: 'coordy'},
-            this.state.rangeY.map(i => h('li', {}, this.props.board.height - i))
-        )
-    }
-
     render({
         board,
         showCoordinates,
@@ -279,9 +291,6 @@ class Goban extends Component {
         animatedVertices = []
     }, state) {
         let {fieldSize, rangeY, rangeX} = state
-
-        let coordX = this.renderCoordX()
-        let coordY = this.renderCoordY()
 
         return h('section',
             {
@@ -319,12 +328,12 @@ class Goban extends Component {
                 #goban > div > ol:not(.coordy) {
                     height: ${fieldSize}px;
                     line-height: ${fieldSize}px;
-                    margin-left: ${showCoordinates ? fieldSize : 0};
+                    margin-left: ${showCoordinates ? fieldSize : 0}px;
                 }
                 #goban > div > ol.coordy {
-                    width: ${fieldSize}px,
-                    top: ${fieldSize}px,
-                    line-height: ${fieldSize}px,
+                    width: ${fieldSize}px;
+                    top: ${fieldSize}px;
+                    line-height: ${fieldSize}px;
                 }
                 #goban > div > ol.coordy:last-child {
                     left: ${fieldSize * (board.width + 1)}px;
@@ -332,8 +341,8 @@ class Goban extends Component {
             `),
 
             h('div', {},
-                coordY,
-                coordX,
+                h(CoordY, {rangeY}),
+                h(CoordX, {rangeX}),
 
                 rangeY.map(y => h('ol', {class: 'row'}, rangeX.map(x => {
                     let sign = board.get([x, y])
@@ -344,8 +353,8 @@ class Goban extends Component {
                         shift: this.state.shifts[y][x],
                         random: this.state.randomizer[y][x],
                         sign,
-                        hoshi: this.state.hoshis.some(v => helper.shallowEquals(v, [x, y])),
-                        animate: animatedVertices.some(v => helper.shallowEquals(v, [x, y])),
+                        hoshi: this.state.hoshis.some(v => helper.vertexEquals(v, [x, y])),
+                        animate: animatedVertices.some(v => helper.vertexEquals(v, [x, y])),
                         smalllabel: label.length >= 3,
                         markupType,
                         label,
@@ -357,8 +366,8 @@ class Goban extends Component {
                     })
                 }))),
 
-                coordX,
-                coordY
+                h(CoordX, {rangeX}),
+                h(CoordY, {rangeY})
             ),
 
             // Draw lines & arrows

@@ -19,7 +19,7 @@ class CommentBox extends Component {
 
     componentWillReceiveProps() {
         // Debounce rendering
-        
+
         this.dirty = true
 
         clearTimeout(this.updateId)
@@ -125,7 +125,7 @@ class CommentBox extends Component {
         let diff = board.getCanonicalVertex(vertex).map(x => x + 1)
 
         if ((diff[0] != 4 || diff[1] != 4)
-        && board.getHandicapPlacement(9).some(v => helper.shallowEquals(v, vertex)))
+        && board.getHandicapPlacement(9).some(v => helper.vertexEquals(v, vertex)))
             return 'Hoshi'
 
         if (diff[1] <= 6)
