@@ -55,7 +55,7 @@ class App extends Component {
             showSiblings: setting.get('view.show_siblings'),
             fuzzyStonePlacement: setting.get('view.fuzzy_stone_placement'),
             animatedStonePlacement: setting.get('view.animated_stone_placement'),
-            animatedVertices: [],
+            animatedVertex: null,
 
             // Sidebar state
 
@@ -268,11 +268,8 @@ class App extends Component {
 
             // Animate board
 
-            this.setState({animatedVertices: [...vertexNeighbors, vertex]})
-
-            setTimeout(() => {
-                this.setState({animatedVertices: []})
-            }, 200)
+            this.setState({animatedVertex: vertex})
+            setTimeout(() => this.setState({animatedVertex: null}), 200)
         }
 
         // Update data

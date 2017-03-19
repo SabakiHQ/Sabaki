@@ -139,28 +139,38 @@ class Goban extends Component {
         this.resize()
     }
 
-    componentWillReceiveProps(nextProps) {
-        // Update state to accomodate new board size
-
+    componentWillReceiveProps({board, animatedVertex}) {
         let dim = board => [board.width, board.height]
 
-        if (this.props && helper.vertexEquals(dim(nextProps.board), dim(this.props.board)))
-            return
+        if (!this.props || !helper.vertexEquals(dim(board), dim(this.props.board))) {
+            // Update state to accomodate new board size
 
-        let rangeX = range(nextProps.board.width)
-        let rangeY = range(nextProps.board.height)
-        let hoshis = nextProps.board.getHandicapPlacement(9)
+            let rangeX = range(board.width)
+            let rangeY = range(board.height)
+            let hoshis = board.getHandicapPlacement(9)
 
-        let shifts = rangeY.map(_ => rangeX.map(__ => random(9)))
-        this.readjustShifts(shifts)
+            let shifts = rangeY.map(_ => rangeX.map(__ => random(9)))
+            this.readjustShifts(shifts)
 
-        this.setState({
-            rangeX,
-            rangeY,
-            hoshis,
-            randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
-            shifts
-        })
+            this.setState({
+                rangeX,
+                rangeY,
+                hoshis,
+                randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
+                shifts
+            })
+        } else if (animatedVertex
+        && !(this.props.animatedVertex && helper.vertexEquals(animatedVertex, this.props.animatedVertex))) {
+            // Update shift
+
+            let [x, y] = animatedVertex
+            let {shifts} = this.state
+
+            shifts[y][x] = random(9)
+            this.readjustShifts(shifts, animatedVertex)
+
+            this.setState({shifts})
+        }
     }
 
     resize() {
@@ -288,9 +298,11 @@ class Goban extends Component {
         fuzzyStonePlacement,
         animatedStonePlacement,
 
-        animatedVertices = []
+        animatedVertex = null
     }, state) {
         let {fieldSize, rangeY, rangeX} = state
+        let animatedVertices = animatedVertex
+            ? [animatedVertex, ...board.getNeighbors(animatedVertex)] : []
 
         return h('section',
             {

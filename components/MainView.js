@@ -63,7 +63,7 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animatedStonePlacement,
-        animatedVertices,
+        animatedVertex,
 
         undoable,
         undoText,
@@ -105,7 +105,7 @@ class MainView extends Component {
                     showSiblings,
                     fuzzyStonePlacement,
                     animatedStonePlacement,
-                    animatedVertices,
+                    animatedVertex,
 
                     onBeforeResize: this.handleGobanResize,
                     onVertexClick: this.handleGobanVertexClick
