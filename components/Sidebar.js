@@ -13,8 +13,12 @@ class Sidebar extends Component {
         }
 
         this.handleGraphNodeClick = evt => {
-            if (evt.button === 0) {
-                sabaki.setCurrentTreePosition(...evt.treePosition)
+            let {button, treePosition, x, y} = evt
+
+            if (button === 0) {
+                sabaki.setCurrentTreePosition(...treePosition)
+            } else {
+                sabaki.openNodeMenu(...treePosition)
             }
         }
     }

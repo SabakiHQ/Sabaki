@@ -258,6 +258,8 @@ class App extends Component {
         this.closeDrawers()
 
         let {board} = this.inferredState
+        let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
 
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
@@ -266,7 +268,7 @@ class App extends Component {
                 } else if (vertex in board.markups
                 && board.markups[vertex][0] === 'point'
                 && setting.get('edit.click_currentvertex_to_remove')) {
-                    this.removeNode(...this.state.treePosition)
+                    this.removeNode(tree, index)
                 }
             } else if (button === 2) {
                 if (vertex in board.markups && board.markups[vertex][0] === 'point') {
@@ -278,8 +280,6 @@ class App extends Component {
                 // Add coordinates to comment
 
                 let coord = board.vertex2coord(vertex)
-                let [tree, index] = this.state.treePosition
-                let node = tree.nodes[index]
                 let commentText = node.C ? node.C[0] : ''
 
                 node.C = commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
@@ -1004,7 +1004,7 @@ class App extends Component {
     flattenVariation(tree, index) {
         this.setUndoPoint('Undo Flatten')
 
-        let {board, rootTree} = this.inferredState
+        let {board, rootTree, gameIndex} = this.inferredState
         let rootNode = rootTree.nodes[0]
         let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
 
@@ -1030,8 +1030,9 @@ class App extends Component {
         }
 
         let {gameTrees} = this.state
-        gameTrees[this.inferredState.gameIndex] = clone
+        gameTrees[gameIndex] = clone
         this.setState({gameTrees})
+        this.setCurrentTreePosition(clone, 0)
     }
 
     makeMainVariation(tree, index) {
@@ -1084,7 +1085,9 @@ class App extends Component {
             return
         }
 
-        if (suppressConfirmation !== true && setting.get('edit.show_removenode_warning') && this.showMessageBox(
+        if (suppressConfirmation !== true
+        && setting.get('edit.show_removenode_warning')
+        && this.showMessageBox(
             'Do you really want to remove this node?',
             'warning',
             ['Remove Node', 'Cancel'], 1
@@ -1116,9 +1119,7 @@ class App extends Component {
         this.setCurrentTreePosition(...prev)
     }
 
-    removeOtherVariations(tree, index, {
-        suppressConfirmation = false
-    } = {}) {
+    removeOtherVariations(tree, index, {suppressConfirmation = false} = {}) {
         if (suppressConfirmation !== true && setting.get('edit.show_removeothervariations_warning') && this.showMessageBox(
             'Do you really want to remove all other variations?',
             'warning',
@@ -1153,6 +1154,56 @@ class App extends Component {
         }
 
         this.setCurrentTreePosition(tree, index)
+    }
+
+    // Menus
+
+    openNodeMenu(tree, index, options) {
+        if (this.state.mode === 'scoring') return
+
+        let template = [
+            {
+                label: 'C&opy Variation',
+                click: () => this.copyVariation(tree, index)
+            },
+            {
+                label: 'C&ut Variation',
+                click: () => this.cutVariation(tree, index)
+            },
+            {
+                label: '&Paste Variation',
+                click: () => this.pasteVariation(tree, index)
+            },
+            {type: 'separator'},
+            {
+                label: 'Make &Main Variation',
+                click: () => this.makeMainVariation(tree, index)
+            },
+            {
+                label: "Shift &Left",
+                click: () => this.shiftVariation(tree, index, -1)
+            },
+            {
+                label: "Shift Ri&ght",
+                click: () => this.shiftVariation(tree, index, 1)
+            },
+            {type: 'separator'},
+            {
+                label: '&Flatten',
+                click: () => this.flattenVariation(tree, index)
+            },
+            {
+                label: '&Remove Node',
+                click: () => this.removeNode(tree, index)
+            },
+            {
+                label: 'Remove &Other Variations',
+                click: () => this.removeOtherVariations(tree, index)
+            }
+        ]
+
+        let menu = Menu.buildFromTemplate(template)
+        menu.popup(this.window, options)
     }
 
     // Render
