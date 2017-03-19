@@ -34,7 +34,7 @@ class CommentBox extends Component {
 
     getCurrentMoveInterpretation() {
         let [tree, index] = this.props.treePosition
-        let board = gametree.getBoard(tree, index)
+        let board = this.props.board
         let node = tree.nodes[index]
 
         // Determine root node

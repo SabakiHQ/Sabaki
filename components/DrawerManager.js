@@ -9,11 +9,15 @@ const CleanMarkupDrawer = require('./CleanMarkupDrawer')
 class DrawerManager extends Component {
     render({
         treePosition,
+        gameInfo,
+        currentPlayer,
         openDrawer
     }) {
         return h('section', {},
             h(InfoDrawer, {
                 treePosition,
+                gameInfo,
+                currentPlayer,
                 show: openDrawer === 'info'
             }),
 

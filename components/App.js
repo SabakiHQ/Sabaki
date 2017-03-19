@@ -32,6 +32,7 @@ class App extends Component {
             mode: 'play',
             openDrawer: null,
             busy: false,
+            fullScreen: false,
 
             representedFilename: null,
             gameTrees: [emptyTree],
@@ -74,6 +75,38 @@ class App extends Component {
     }
 
     componentDidMount() {
+        // Handle file drag & drop
+
+        document.body.addEventListener('dragover', evt => evt.preventDefault())
+        document.body.addEventListener('drop', evt => {
+            evt.preventDefault()
+
+            if (evt.dataTransfer.files.length === 0) return
+            sabaki.loadFile(evt.dataTransfer.files[0].path)
+        })
+
+        // Handle escape key
+
+        document.addEventListener('keydown', evt => {
+            if (evt.keyCode === 27) {
+                // Escape
+
+                if (this.state.openDrawer != null) {
+                    this.closeDrawers()
+                } else if (this.state.mode !== 'play') {
+                    this.setMode('play')
+                } else if (this.state.fullScreen) {
+                    this.setState({fullScreen: false})
+                }
+            }
+        })
+
+        // Handle window closing
+
+        window.addEventListener('beforeunload', evt => {
+            if (!sabaki.askForSave()) evt.returnValue = ' '
+        })
+
         this.newFile()
         this.window.show()
     }
@@ -88,12 +121,20 @@ class App extends Component {
         if (representedFilename)
             title = basename(representedFilename)
         if (gameTrees.length > 1)
-            title += ' — Game ' + (gameTrees.indexOf(gametree.getRoot(tree)) + 1)
+            title += ' — Game ' + (this.inferredState.gameIndex + 1)
         if (representedFilename && process.platform != 'darwin')
             title += ' — ' + app.getName()
 
         if (document.title !== title)
             document.title = title
+
+        // Handle full screen
+
+        if (nextState.fullScreen !== this.state.fullScreen) {
+            this.window.setFullScreen(nextState.fullScreen)
+            this.window.setMenuBarVisibility(!nextState.fullScreen)
+            this.window.setAutoHideMenuBar(nextState.fullScreen)
+        }
     }
 
     // Sabaki API
@@ -218,12 +259,12 @@ class App extends Component {
             this.closeDrawers()
 
         let [tree, index] = this.state.treePosition
-        let board = gametree.getBoard(tree, index)
+        let {board} = this.inferredState
         let pass = !board.hasVertex(vertex)
         if (!pass && board.get(vertex) != 0) return
 
         let prev = gametree.navigate(tree, index, -1)
-        let sign = gametree.getCurrentPlayer(tree, index)
+        let sign = this.inferredState.currentPlayer
         let color = sign > 0 ? 'B' : 'W'
         let capture = false, suicide = false
         let createNode = true
@@ -699,9 +740,8 @@ class App extends Component {
         setTimeout(() => {
             let [undoRoot, undoLevel] = this.undoData
             let {treePosition, gameTrees} = this.state
-            let rootTree = gametree.getRoot(...treePosition)
 
-            gameTrees[gameTrees.indexOf(rootTree)] = undoRoot
+            gameTrees[this.inferredState.gameIndex] = undoRoot
             treePosition = gametree.navigate(undoRoot, 0, undoLevel)
 
             this.setCurrentTreePosition(...treePosition)
@@ -733,8 +773,7 @@ class App extends Component {
 
         this.setUndoPoint('Undo Paste Variation')
 
-        let rootTree = gametree.getRoot(tree)
-        let updateRoot = tree === rootTree
+        let updateRoot = !tree.parent
         let oldLength = tree.nodes.length
         let splitted = gametree.split(tree, index)
         let copied = gametree.clone(this.copyVariationData, true)
@@ -744,7 +783,7 @@ class App extends Component {
 
         if (updateRoot) {
             let {gameTrees} = this.state
-            gameTrees[gameTrees.indexOf(rootTree)] = splitted
+            gameTrees[this.inferredState.gameIndex] = splitted
             this.setState({gameTrees})
         }
 
@@ -759,8 +798,7 @@ class App extends Component {
     flattenVariation(tree, index) {
         this.setUndoPoint('Undo Flatten')
 
-        let board = gametree.getBoard(tree, index)
-        let rootTree = gametree.getRoot(tree)
+        let {board, rootTree} = this.inferredState
         let rootNode = rootTree.nodes[0]
         let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
 
@@ -786,7 +824,7 @@ class App extends Component {
         }
 
         let {gameTrees} = this.state
-        gameTrees[gameTrees.indexOf(rootTree)] = clone
+        gameTrees[this.inferredState.gameIndex] = clone
         this.setState({gameTrees})
     }
 
@@ -914,6 +952,20 @@ class App extends Component {
     // Render
 
     render(_, state) {
+        // Calculate some inferred values
+
+        let rootTree = gametree.getRoot(...state.treePosition)
+
+        this.inferredState = {
+            rootTree,
+            gameIndex: state.gameTrees.indexOf(rootTree),
+            gameInfo: gametree.getGameInfo(rootTree),
+            board: gametree.getBoard(...state.treePosition),
+            currentPlayer: gametree.getCurrentPlayer(...state.treePosition)
+        }
+
+        state = Object.assign(state, this.inferredState)
+
         return h('section',
             {
                 class: {

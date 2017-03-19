@@ -42,14 +42,15 @@ class InfoDrawer extends Component {
         }
     }
 
-    componentWillReceiveProps({treePosition, show}) {
+    componentWillReceiveProps({gameInfo, show}) {
         if (!this.props.show && show) {
-            this.setState(gametree.getGameInfo(...treePosition))
+            this.setState(gameInfo)
         }
     }
 
     render({
         treePosition,
+        currentPlayer,
         show
     }, {
         playerNames = [null, null],
@@ -100,7 +101,7 @@ class InfoDrawer extends Component {
 
                     h('img', {
                         class: 'current-player',
-                        src: `./img/ui/player_${gametree.getCurrentPlayer(...treePosition)}.svg`,
+                        src: `./img/ui/player_${currentPlayer}.svg`,
                         height: 31,
                         title: 'Swap'
                     }),

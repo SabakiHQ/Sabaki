@@ -56,6 +56,9 @@ class MainView extends Component {
 
     render({
         treePosition,
+        board,
+        currentPlayer,
+        gameInfo,
 
         showCoordinates,
         showMoveColorization,
@@ -79,9 +82,7 @@ class MainView extends Component {
         width,
         height
     }) {
-        let board = gametree.getBoard(...treePosition)
         let [tree, index] = treePosition
-        let gameInfo = gametree.getGameInfo(tree)
         let node = tree.nodes[index]
         let showSidebar = showGameGraph || showCommentBox
 
@@ -117,7 +118,7 @@ class MainView extends Component {
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,
-                    currentPlayer: gametree.getCurrentPlayer(...treePosition),
+                    currentPlayer,
                     showHotspot: 'HO' in node,
                     undoable,
                     undoText

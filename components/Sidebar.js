@@ -21,6 +21,7 @@ class Sidebar extends Component {
 
     render({
         treePosition,
+        board,
 
         showGameGraph,
         showCommentBox,
@@ -49,6 +50,7 @@ class Sidebar extends Component {
             }),
 
             h(CommentBox, {
+                board,
                 treePosition,
                 moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
                     : 'TE' in node ? [2, node.TE[0]]

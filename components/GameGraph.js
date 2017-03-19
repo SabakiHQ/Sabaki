@@ -126,12 +126,15 @@ class GameGraph extends Component {
                 [x, y] = [x - left, y - top].map(z => Math.round(z))
             }
 
-            if (!this.mouseDown) {
+            if (this.mouseDown == null) {
                 [movementX, movementY] = [0, 0]
                 this.drag = false
                 if (helper.vertexEquals([x, y], this.state.mousePosition)) return
-            } else {
+            } else if (this.mouseDown === 0) {
                 this.drag = true
+            } else {
+                [movementX, movementY] = [0, 0]
+                this.drag = false
             }
 
             this.setState(({cameraPosition: [cx, cy]}) => ({
@@ -141,7 +144,7 @@ class GameGraph extends Component {
         })
 
         document.addEventListener('mouseup', () => {
-            this.mouseDown = false
+            this.mouseDown = null
         })
 
         window.addEventListener('resize', () => {
@@ -201,7 +204,7 @@ class GameGraph extends Component {
     }
 
     handleGraphMouseDown(evt) {
-        this.mouseDown = true
+        this.mouseDown = evt.button
     }
 
     handleNodeClick(evt) {
@@ -231,7 +234,10 @@ class GameGraph extends Component {
 
         let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 5, 0))
         let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 5)
+
         let doneTreeBones = []
+        let currentTracks = []
+        let notCurrentTracks = []
 
         // Render only nodes that are visible
 
@@ -243,7 +249,34 @@ class GameGraph extends Component {
 
                 let [tree, index] = matrix[y][x]
                 let node = tree.nodes[index]
-                let onCurrentTrack = gametree.onCurrentTrack(tree)
+                let onCurrentTrack
+
+                if (currentTracks.includes(tree.id)) {
+                    onCurrentTrack = true
+                } else if (notCurrentTracks.includes(tree.id)) {
+                    onCurrentTrack = false
+                } else {
+                    if (!tree.parent) {
+                        onCurrentTrack = true
+                        currentTracks.push(tree.id)
+                    } else if (currentTracks.includes(tree.parent.id)) {
+                        if (tree.parent.subtrees[tree.parent.current] !== tree) {
+                            onCurrentTrack = false
+                            notCurrentTracks.push(tree.id)
+                        } else {
+                            onCurrentTrack = true
+                            currentTracks.push(tree.id)
+                        }
+                    } else if (notCurrentTracks.includes(tree.parent.id)) {
+                        onCurrentTrack = false
+                        notCurrentTracks.push(tree.id)
+                    } else {
+                        onCurrentTrack = gametree.onCurrentTrack(tree)
+
+                        if (onCurrentTrack) currentTracks.push(tree.id)
+                        else notCurrentTracks.push(tree.id)
+                    }
+                }
 
                 // Render node
 
@@ -263,7 +296,7 @@ class GameGraph extends Component {
                 let top = y * gridSize
 
                 let isHovered = !this.drag
-                    && Math.max(Math.abs(left - cx - mx), Math.abs(top - cy - my)) < gridSize / 2
+                    && helper.vertexEquals([mx + cx, my + cy].map(z => Math.round(z / gridSize)), [x, y])
 
                 column.push(h(GameGraphNode, {
                     key: y,
@@ -280,32 +313,30 @@ class GameGraph extends Component {
                 if (!doneTreeBones.includes(tree.id)) {
                     // A *tree bone* denotes a straight edge through the whole tree
 
+                    let positionAbove, positionBelow
+
                     if (index === 0 && tree.parent) {
                         // Render precedent edge with tree bone
 
                         let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
                         let [px, py] = dict[prevTree.id + '-' + prevIndex]
-                        let method = !onCurrentTrack ? 'unshift' : 'push'
 
-                        edges[method](h(GameGraphEdge, {
-                            key: tree.id,
-                            positionAbove: [px * gridSize, py * gridSize],
-                            positionBelow: [left, top],
-                            length: (tree.nodes.length - 1) * gridSize,
-                            current: onCurrentTrack
-                        }))
-
-                        doneTreeBones.push(tree.id)
+                        positionAbove = [px * gridSize, py * gridSize]
+                        positionBelow = [left, top]
                     } else {
-                        // Render successor edges
+                        // Render tree bone only
 
-                        let method = !onCurrentTrack ? 'unshift' : 'push'
-                        let position = dict[tree.id + '-0'].map(z => z * gridSize)
+                        let [sx, sy] = dict[tree.id + '-0']
 
-                        edges[method](h(GameGraphEdge, {
+                        positionAbove = [sx * gridSize, sy * gridSize]
+                        positionBelow = positionAbove
+                    }
+
+                    if (positionAbove != null && positionBelow != null) {
+                        edges[!onCurrentTrack ? 'unshift' : 'push'](h(GameGraphEdge, {
                             key: tree.id,
-                            positionAbove: position,
-                            positionBelow: position,
+                            positionAbove,
+                            positionBelow,
                             length: (tree.nodes.length - 1) * gridSize,
                             current: onCurrentTrack
                         }))
@@ -315,12 +346,13 @@ class GameGraph extends Component {
                 }
 
                 if (index === tree.nodes.length - 1) {
+                    // Render successor edges with subtree bones
+
                     for (let subtree of tree.subtrees) {
                         let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
                         let [nx, ny] = dict[subtree.id + '-0']
-                        let method = !current ? 'unshift' : 'push'
 
-                        edges[method](h(GameGraphEdge, {
+                        edges[!current ? 'unshift' : 'push'](h(GameGraphEdge, {
                             key: subtree.id,
                             positionAbove: [left, top],
                             positionBelow: [nx * gridSize, ny * gridSize],
