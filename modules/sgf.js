@@ -58,8 +58,6 @@ function _parseTokens(tokens, onProgress = () => {}, encoding = defaultEncoding,
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
-    tree.collapsed = false
-
     while (i < tokens.length) {
         let [type, value] = tokens[i]
 

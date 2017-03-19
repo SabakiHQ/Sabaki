@@ -320,9 +320,8 @@ class App extends Component {
                 let updateRoot = tree.parent == null
                 let splitted = gametree.split(tree, index)
                 let newTree = gametree.new()
-                let node = {}
+                let node = {[color]: [sgf.vertex2point(vertex)]}
 
-                node[color] = [sgf.vertex2point(vertex)]
                 newTree.nodes = [node]
                 newTree.parent = splitted
 
@@ -377,13 +376,7 @@ class App extends Component {
     // File hashes
 
     generateTreeHash() {
-        let hash = []
-
-        for (let tree of this.state.gameTrees) {
-            hash.push(gametree.getHash(tree))
-        }
-
-        return hash.join('')
+        return this.state.gameTrees.map(tree => gametree.getHash(tree)).join('')
     }
 
     generateFileHash() {

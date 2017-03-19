@@ -10,8 +10,7 @@ exports.new = function() {
         nodes: [],
         subtrees: [],
         current: null,
-        parent: null,
-        collapsed: false
+        parent: null
     }
 }
 
@@ -463,7 +462,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 
 exports.getJson = function(tree) {
     return JSON.stringify(tree, (name, val) => {
-        let list = ['id', 'board', 'parent', 'collapsed', 'current']
+        let list = ['id', 'board', 'parent', 'current']
         return list.includes(name) ? undefined : val
     })
 }
