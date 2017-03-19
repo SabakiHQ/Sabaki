@@ -270,7 +270,7 @@ class App extends Component {
                 }
             } else if (button === 2) {
                 if (vertex in board.markups && board.markups[vertex][0] === 'point') {
-                    // TODO: open comment menu
+                    this.openCommentMenu({x, y})
                 }
             }
         } else if (this.state.mode === 'edit') {
@@ -292,7 +292,13 @@ class App extends Component {
                         : tool
                 }
 
-                this.useTool(vertex, tool)
+                if (!this.editVertexData || this.editVertexData[0] !== tool) {
+                    this.editVertexData = [tool, vertex]
+                    this.useTool(tool, vertex)
+                } else {
+                    this.useTool(tool, vertex, this.editVertexData[1])
+                    this.editVertexData = null
+                }
             }
         }
     }
@@ -454,7 +460,7 @@ class App extends Component {
         }
     }
 
-    useTool(vertex, tool, endVertex = null) {
+    useTool(tool, vertex, endVertex = null) {
         let [tree, index] = this.state.treePosition
         let {board, currentPlayer, gameIndex} = this.inferredState
         let node = tree.nodes[index]
@@ -522,17 +528,17 @@ class App extends Component {
 
             // Check whether to remove a line
 
-            let toDelete = board.lines.findIndex(x => helper.equals(x, [vertex, endVertex, tool]))
+            let toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [vertex, endVertex]))
 
             if (tool === 'line' && toDelete === -1)
-                toDelete = board.lines.findIndex(x => helper.equals(x, [endVertex, vertex, tool]))
+                toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [endVertex, vertex]))
 
             // Mutate board first, then apply changes to actual game tree
 
             if (toDelete >= 0) {
                 board.lines.splice(toDelete, 1)
             } else {
-                board.lines.push([vertex, endVertex, tool])
+                board.lines.push([vertex, endVertex, tool === 'arrow'])
             }
 
             node.LN = []
@@ -540,7 +546,6 @@ class App extends Component {
 
             for (let [v1, v2, arrow] of board.lines) {
                 let [p1, p2] = [v1, v2].map(sgf.vertex2point)
-
                 if (p1 === p2) continue
 
                 node[arrow ? 'AR' : 'LN'].push([p1, p2].join(':'))

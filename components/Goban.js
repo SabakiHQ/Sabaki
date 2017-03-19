@@ -75,6 +75,40 @@ class GobanVertex extends Component {
     }
 }
 
+class GobanLine extends Component {
+    shouldComponentUpdate(nextProps) {
+        for (let i in nextProps) {
+            if (nextProps[i] !== this.props[i]) return true
+        }
+
+        return false
+    }
+
+    render({v1, v2, type, showCoordinates, fieldSize, borderTopWidth, borderLeftWidth}) {
+        if (helper.vertexEquals(v1, v2)) return
+
+        let [pos1, pos2] = [v1, v2].map(v => v.map(x => (showCoordinates ? x + 1 : x) * fieldSize))
+        let [dx, dy] = pos1.map((x, i) => pos2[i] - x)
+        let [left, top] = pos1.map((x, i) => (x + pos2[i] + fieldSize) / 2)
+
+        let angle = Math.atan2(dy, dx) * 180 / Math.PI
+        let length = Math.sqrt(dx * dx + dy * dy)
+
+        return h('hr',
+            {
+                class: type,
+                style: {
+                    top: top + borderTopWidth,
+                    left: left + borderLeftWidth,
+                    marginLeft: -length / 2,
+                    width: length,
+                    transform: `rotate(${angle}deg)`
+                }
+            }
+        )
+    }
+}
+
 class CoordX extends Component {
     shouldComponentUpdate({rangeX}) {
         return rangeX.length !== this.props.rangeX.length
@@ -113,6 +147,7 @@ class Goban extends Component {
     componentDidMount() {
         document.addEventListener('mouseup', () => {
             this.mouseDown = false
+            this.setState({temporaryLine: null})
         })
 
         // Measure CSS
@@ -264,45 +299,66 @@ class Goban extends Component {
         return movedVertices
     }
 
-    handleVertexMouseDown() {
+    handleVertexMouseDown(evt) {
+        let {currentTarget} = evt
+
         this.mouseDown = true
+        this.startVertex = currentTarget.dataset.vertex.split('-').map(x => +x)
     }
 
     handleVertexMouseUp(evt) {
         if (!this.mouseDown) return
 
-        let {onVertexClick = helper.noop} = this.props
+        let {onVertexClick = helper.noop, onLineDraw = helper.noop} = this.props
         let {currentTarget} = evt
 
         this.mouseDown = false
         evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        evt.line = this.state.temporaryLine
 
-        onVertexClick(evt)
+        if (evt.line) {
+            onLineDraw(evt)
+        } else {
+            onVertexClick(evt)
+        }
     }
 
     handleVertexMouseMove(evt) {
-        let {onVertexMouseMove = helper.noop} = this.props
+        let {drawLineMode, onVertexMouseMove = helper.noop} = this.props
         let {currentTarget} = evt
 
-        evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        onVertexMouseMove(Object.assign(evt, {
+            mouseDown: this.mouseDown,
+            startVertex: this.startVertex,
+            vertex: currentTarget.dataset.vertex.split('-').map(x => +x)
+        }))
 
-        onVertexMouseMove(evt)
+        if (!!drawLineMode && evt.mouseDown && evt.button === 0) {
+            let temporaryLine = [evt.startVertex, evt.vertex]
+
+            if (!helper.equals(temporaryLine, this.state.temporaryLine)) {
+                this.setState({temporaryLine})
+            }
+        }
     }
 
     render({
         board,
-        showCoordinates,
-        showMoveColorization,
-        showNextMoves,
-        showSiblings,
-        fuzzyStonePlacement,
-        animatedStonePlacement,
 
+        showCoordinates = false,
+        showMoveColorization = true,
+        showNextMoves = true,
+        showSiblings = true,
+        fuzzyStonePlacement = true,
+        animatedStonePlacement = true,
+
+        drawLineMode = null,
         animatedVertex = null
     }, state) {
-        let {fieldSize, rangeY, rangeX} = state
+        let {fieldSize, rangeY, rangeX, temporaryLine} = state
         let animatedVertices = animatedVertex
             ? [animatedVertex, ...board.getNeighbors(animatedVertex)] : []
+        let drawTemporaryLine = !!drawLineMode && !!temporaryLine
 
         return h('section',
             {
@@ -385,25 +441,29 @@ class Goban extends Component {
             // Draw lines & arrows
 
             board.lines.map(([v1, v2, arrow]) => {
-                let [pos1, pos2] = [v1, v2].map(v => v.map(x => (showCoordinates ? x + 1 : x) * fieldSize))
-                let [dx, dy] = pos1.map((x, i) => pos2[i] - x)
-                let [left, top] = pos1.map((x, i) => (x + pos2[i] + fieldSize) / 2)
-
-                let angle = Math.atan2(dy, dx) * 180 / Math.PI
-                let length = Math.sqrt(dx * dx + dy * dy)
-
-                return h('hr',
-                    {
-                        class: arrow ? 'arrow' : 'line',
-                        style: {
-                            top: top + state.borderTopWidth,
-                            left: left + state.borderLeftWidth,
-                            marginLeft: -length / 2,
-                            width: length,
-                            transform: `rotate(${angle}deg)`
-                        }
+                if (drawTemporaryLine) {
+                    if (helper.equals([v1, v2], temporaryLine)
+                    || (!arrow || drawLineMode === 'line')
+                    && helper.equals([v2, v1], temporaryLine)) {
+                        drawTemporaryLine = false
+                        return
                     }
-                )
+                }
+
+                return h(GobanLine, {
+                    v1, v2, showCoordinates, fieldSize,
+                    borderLeftWidth: state.borderLeftWidth,
+                    borderTopWidth: state.borderTopWidth,
+                    type: arrow ? 'arrow' : 'line'
+                })
+            }),
+
+            drawTemporaryLine && h(GobanLine, {
+                v1: temporaryLine[0], v2: temporaryLine[1],
+                showCoordinates, fieldSize,
+                borderLeftWidth: state.borderLeftWidth,
+                borderTopWidth: state.borderTopWidth,
+                type: drawLineMode
             })
         )
     }

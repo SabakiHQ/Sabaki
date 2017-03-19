@@ -19,6 +19,7 @@ class MainView extends Component {
         this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.toolId)
         this.handleGobanResize = this.handleGobanResize.bind(this)
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
+        this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
     }
 
     componentDidMount() {
@@ -53,7 +54,14 @@ class MainView extends Component {
         sabaki.clickVertex(evt.vertex, evt)
     }
 
+    handleGobanLineDraw(evt) {
+        let [v1, v2] = evt.line
+        sabaki.useTool(this.props.selectedTool, v1, v2)
+        sabaki.editVertexData = null
+    }
+
     render({
+        mode,
         treePosition,
         board,
         currentPlayer,
@@ -107,8 +115,12 @@ class MainView extends Component {
                     animatedStonePlacement,
                     animatedVertex,
 
+                    drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
+                        ? selectedTool : null,
+
                     onBeforeResize: this.handleGobanResize,
-                    onVertexClick: this.handleGobanVertexClick
+                    onVertexClick: this.handleGobanVertexClick,
+                    onLineDraw: this.handleGobanLineDraw
                 })
             ),
 
