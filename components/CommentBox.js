@@ -8,33 +8,17 @@ const sgf = require('../modules/sgf')
 
 let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
 
-class CommentBox extends Component {
-    constructor(props) {
-        super()
-    }
-
-    shouldComponentUpdate(nextProps) {
-        return nextProps.height !== this.props.height || !this.dirty
-    }
-
-    componentWillReceiveProps() {
-        // Debounce rendering
-
-        this.dirty = true
-
-        clearTimeout(this.updateId)
-        this.updateId = setTimeout(() => {
-            this.dirty = false
-            this.setState(this.state)
-
-            this.element.scrollTop = 0
-            this.textareaElement.scrollTop = 0
-        }, setting.get('graph.delay'))
+class CommentTitle extends Component {
+    shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
+        return title !== this.props.title
+            || !helper.vertexEquals(treePosition, this.props.treePosition)
+            || !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation)
+            || !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
     }
 
     getCurrentMoveInterpretation() {
         let [tree, index] = this.props.treePosition
-        let board = this.props.board
+        let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
 
         // Determine root node
@@ -135,14 +119,9 @@ class CommentBox extends Component {
     }
 
     render({
-        height,
-        sidebarSplitTransition,
         moveAnnotation: [ma, mv],
         positionAnnotation: [pa, pv],
-        title,
-        comment,
-
-        onResizerMouseDown = helper.noop
+        title
     }) {
         let moveData = {
             '-1': ['Bad move', 'badmove'],
@@ -172,6 +151,81 @@ class CommentBox extends Component {
 
         let showMoveInterpretation = setting.get('comments.show_move_interpretation')
 
+        return h('p',
+            {
+                class: {
+                    header: true,
+                    movestatus: ma != null,
+                    positionstatus: pa != null
+                }
+            },
+
+            h('img', {
+                width: 16,
+                height: 16,
+                class: 'positionstatus',
+                title: pa in positionData ? positionData[pa][0] : '',
+                src: pa in positionData ? `./img/ui/${positionData[pa][1]}.svg` : ''
+            }),
+
+            h('img', {
+                width: 16,
+                height: 16,
+                class: 'movestatus',
+                title: ma in moveData ? moveData[ma][0] : '',
+                src: ma in moveData ? `./img/ui/${moveData[ma][1]}.svg` : ''
+            }),
+
+            h('img', {
+                src: './node_modules/octicons/build/svg/pencil.svg',
+                class: 'edit-button',
+                title: 'Edit',
+                width: 16,
+                height: 16
+            }),
+
+            h('span', {}, title != '' ? title
+                : showMoveInterpretation ? this.getCurrentMoveInterpretation()
+                : '')
+        )
+    }
+}
+
+class CommentBox extends Component {
+    constructor(props) {
+        super()
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.height !== this.props.height || !this.dirty
+    }
+
+    componentWillReceiveProps() {
+        // Debounce rendering
+
+        this.dirty = true
+
+        clearTimeout(this.updateId)
+        this.updateId = setTimeout(() => {
+            this.dirty = false
+            this.setState(this.state)
+
+            this.element.scrollTop = 0
+            this.textareaElement.scrollTop = 0
+        }, setting.get('graph.delay'))
+    }
+
+    render({
+        treePosition,
+        height,
+        sidebarSplitTransition,
+        moveAnnotation,
+        positionAnnotation,
+        title,
+        comment,
+
+        onResizerMouseDown = helper.noop
+    }) {
         return h('section',
             {
                 ref: el => this.element = el,
@@ -188,43 +242,12 @@ class CommentBox extends Component {
             }),
 
             h('div', {class: 'inner'},
-                h('p',
-                    {
-                        class: {
-                            header: true,
-                            movestatus: ma != null,
-                            positionstatus: pa != null
-                        }
-                    },
-
-                    h('img', {
-                        width: 16,
-                        height: 16,
-                        class: 'positionstatus',
-                        title: pa in positionData ? positionData[pa][0] : '',
-                        src: pa in positionData ? `./img/ui/${positionData[pa][1]}.svg` : ''
-                    }),
-
-                    h('img', {
-                        width: 16,
-                        height: 16,
-                        class: 'movestatus',
-                        title: ma in moveData ? moveData[ma][0] : '',
-                        src: ma in moveData ? `./img/ui/${moveData[ma][1]}.svg` : ''
-                    }),
-
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/pencil.svg',
-                        class: 'edit-button',
-                        title: 'Edit',
-                        width: 16,
-                        height: 16
-                    }),
-
-                    h('span', {}, title != '' ? title
-                        : showMoveInterpretation ? this.getCurrentMoveInterpretation()
-                        : '')
-                ),
+                h(CommentTitle, {
+                    treePosition,
+                    moveAnnotation,
+                    positionAnnotation,
+                    title
+                }),
                 h('div', {
                     class: 'comment',
                     dangerouslySetInnerHTML: {__html: helper.markdown(comment)}

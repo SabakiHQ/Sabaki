@@ -381,8 +381,9 @@ class GameGraph extends Component {
         cameraPosition: [cx, cy]
     }) {
         let [tree, index] = treePosition
-        let rootTree = gametree.getRoot(tree)
         let level = gametree.getLevel(...treePosition)
+        let treeHeight = matrixDict ? matrixDict[0].length
+            : gametree.getHeight(gametree.getRoot(tree))
 
         return h('section',
             {
@@ -417,7 +418,7 @@ class GameGraph extends Component {
 
             h(Slider, {
                 text: level,
-                percent: (level / (gametree.getHeight(rootTree) - 1)) * 100
+                percent: (level / (treeHeight - 1)) * 100
             })
         )
     }

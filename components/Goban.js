@@ -77,9 +77,8 @@ class GobanVertex extends Component {
 
 class GobanLine extends Component {
     shouldComponentUpdate(nextProps) {
-        for (let i in nextProps) {
+        for (let i in nextProps)
             if (nextProps[i] !== this.props[i]) return true
-        }
 
         return false
     }

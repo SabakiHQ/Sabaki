@@ -65,7 +65,6 @@ class App extends Component {
             showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
-            sidebarSplit: setting.get('view.properties_height'),
             autoscrolling: 0
         }
 
@@ -175,7 +174,6 @@ class App extends Component {
 
     setSidebarSplit(sidebarSplit) {
         this.setState({sidebarSplit})
-        window.dispatchEvent(new Event('resize'))
     }
 
     getEmptyGameTree() {
@@ -268,8 +266,8 @@ class App extends Component {
     clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
         this.closeDrawers()
 
-        let {board} = this.inferredState
         let [tree, index] = this.state.treePosition
+        let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
 
         if (['play', 'autoplay'].includes(this.state.mode)) {
@@ -319,7 +317,7 @@ class App extends Component {
             this.closeDrawers()
 
         let [tree, index] = this.state.treePosition
-        let {board} = this.inferredState
+        let board = gametree.getBoard(tree, index)
         let pass = !board.hasVertex(vertex)
         if (!pass && board.get(vertex) != 0) return
 
@@ -473,7 +471,8 @@ class App extends Component {
 
     useTool(tool, vertex, endVertex = null) {
         let [tree, index] = this.state.treePosition
-        let {board, currentPlayer, gameIndex} = this.inferredState
+        let {currentPlayer, gameIndex} = this.inferredState
+        let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
 
         let data = {
@@ -1015,7 +1014,8 @@ class App extends Component {
     flattenVariation(tree, index) {
         this.setUndoPoint('Undo Flatten')
 
-        let {board, rootTree, gameIndex} = this.inferredState
+        let {rootTree, gameIndex} = this.inferredState
+        let board = gametree.get(tree, index)
         let rootNode = rootTree.nodes[0]
         let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
 
@@ -1228,7 +1228,6 @@ class App extends Component {
             rootTree,
             gameIndex: state.gameTrees.indexOf(rootTree),
             gameInfo: gametree.getGameInfo(rootTree),
-            board: gametree.getBoard(...state.treePosition),
             currentPlayer: gametree.getCurrentPlayer(...state.treePosition)
         }
 

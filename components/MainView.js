@@ -63,7 +63,6 @@ class MainView extends Component {
     render({
         mode,
         treePosition,
-        board,
         currentPlayer,
         gameInfo,
 
@@ -90,13 +89,14 @@ class MainView extends Component {
         height
     }) {
         let [tree, index] = treePosition
+        let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
         let showSidebar = showGameGraph || showCommentBox
 
         return h('section',
             {
                 id: 'main',
-                style: {right: showSidebar ? sidebarWidth: null}
+                style: {right: showSidebar ? sidebarWidth : null}
             },
 
             h('main',

@@ -11,6 +11,11 @@ class Sidebar extends Component {
     constructor() {
         super()
 
+        this.state = {
+            sidebarSplit: setting.get('view.properties_height'),
+            sidebarSplitTransition: true
+        }
+
         this.handleGraphNodeClick = evt => {
             let {button, treePosition, x, y} = evt
 
@@ -36,6 +41,10 @@ class Sidebar extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.showSidebar
+    }
+
     componentDidMount() {
         document.addEventListener('mouseup', () => {
             if (this.verticalResizerMouseDown || this.horizontalResizerMouseDown) {
@@ -54,24 +63,23 @@ class Sidebar extends Component {
                 sabaki.setSidebarWidth(sidebarWidth)
             } else if (this.horizontalResizerMouseDown) {
                 let sidebarSplit = Math.min(100 - sidebarMinSplit,
-                        Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
+                    Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
 
-                this.setState({sidebarSplitTransition: false})
-                sabaki.setSidebarSplit(sidebarSplit)
+                this.setState({sidebarSplit, sidebarSplitTransition: false})
             }
         })
     }
 
     render({
         treePosition,
-        board,
-
         showGameGraph,
         showCommentBox,
         sidebarWidth,
-        sidebarSplit,
         autoscrolling
-    }, {sidebarSplitTransition = true}) {
+    }, {
+        sidebarSplit,
+        sidebarSplitTransition
+    }) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
 
@@ -98,7 +106,6 @@ class Sidebar extends Component {
             }),
 
             h(CommentBox, {
-                board,
                 treePosition,
                 moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
                     : 'TE' in node ? [2, node.TE[0]]
