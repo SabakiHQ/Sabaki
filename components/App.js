@@ -254,6 +254,49 @@ class App extends Component {
 
     // Playing
 
+    clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
+        this.closeDrawers()
+
+        let {board} = this.inferredState
+
+        if (['play', 'autoplay'].includes(this.state.mode)) {
+            if (button === 0) {
+                if (board.get(vertex) === 0) {
+                    this.makeMove(vertex)
+                } else if (vertex in board.markups
+                && board.markups[vertex][0] === 'point'
+                && setting.get('edit.click_currentvertex_to_remove')) {
+                    this.removeNode(...this.state.treePosition)
+                }
+            } else if (button === 2) {
+                if (vertex in board.markups && board.markups[vertex][0] === 'point') {
+                    // TODO: open comment menu
+                }
+            }
+        } else if (this.state.mode === 'edit') {
+            if (ctrlKey) {
+                // Add coordinates to comment
+
+                let coord = board.vertex2coord(vertex)
+                let [tree, index] = this.state.treePosition
+                let node = tree.nodes[index]
+                let commentText = node.C ? node.C[0] : ''
+
+                node.C = commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
+            } else {
+                let tool = this.state.selectedTool
+
+                if (button === 2) {
+                    tool = tool === 'stone_1' ? 'stone_-1'
+                        : tool === 'stone_-1' ? 'stone_1'
+                        : tool
+                }
+
+                this.useTool(vertex, tool)
+            }
+        }
+    }
+
     makeMove(vertex, {ignoreAutoplay = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode))
             this.closeDrawers()
@@ -409,6 +452,164 @@ class App extends Component {
                 this.setMode('scoring')
             }
         }
+    }
+
+    useTool(vertex, tool, endVertex = null) {
+        let [tree, index] = this.state.treePosition
+        let {board, currentPlayer, gameIndex} = this.inferredState
+        let node = tree.nodes[index]
+
+        let data = {
+            cross: 'MA',
+            triangle: 'TR',
+            circle: 'CR',
+            square: 'SQ',
+            number: 'LB',
+            label: 'LB'
+        }
+
+        if (['stone_-1', 'stone_1'].includes(tool)) {
+            if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
+                // New variation needed
+
+                let updateRoot = tree.parent == null
+                let splitted = gametree.split(tree, index)
+
+                if (splitted != tree || splitted.subtrees.length != 0) {
+                    tree = gametree.new()
+                    tree.parent = splitted
+                    splitted.subtrees.push(tree)
+                }
+
+                node = {PL: currentPlayer > 0 ? ['B'] : ['W']}
+                index = tree.nodes.length
+                tree.nodes.push(node)
+
+                if (updateRoot) {
+                    let {gameTrees} = this.state
+                    gameTrees[gameIndex] = splitted
+                }
+            }
+
+            let sign = tool === 'stone_1' ? 1 : -1
+            let oldSign = board.get(vertex)
+            let props = ['AW', 'AE', 'AB']
+            let point = sgf.vertex2point(vertex)
+
+            for (let prop of props) {
+                if (!(prop in node)) continue
+
+                // Resolve compressed lists
+
+                if (node[prop].some(x => x.includes(':'))) {
+                    node[prop] = node[prop]
+                        .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
+                        .reduce((list, x) => [...list, x])
+                }
+
+                // Remove residue
+
+                node[prop] = node[prop].filter(x => x !== point)
+                if (node[prop].length === 0) delete node[prop]
+            }
+
+            let prop = oldSign !== sign ? props[sign + 1] : 'AE'
+
+            if (prop in node) node[prop].push(point)
+            else node[prop] = [point]
+        } else if (['line', 'arrow'].includes(tool)) {
+            if (!endVertex || helper.vertexEquals(vertex, endVertex)) return
+
+            // Check whether to remove a line
+
+            let toDelete = board.lines.findIndex(x => helper.equals(x, [vertex, endVertex, tool]))
+
+            if (tool === 'line' && toDelete === -1)
+                toDelete = board.lines.findIndex(x => helper.equals(x, [endVertex, vertex, tool]))
+
+            // Mutate board first, then apply changes to actual game tree
+
+            if (toDelete >= 0) {
+                board.lines.splice(toDelete, 1)
+            } else {
+                board.lines.push([vertex, endVertex, tool])
+            }
+
+            node.LN = []
+            node.AR = []
+
+            for (let [v1, v2, arrow] of board.lines) {
+                let [p1, p2] = [v1, v2].map(sgf.vertex2point)
+
+                if (p1 === p2) continue
+
+                node[arrow ? 'AR' : 'LN'].push([p1, p2].join(':'))
+            }
+
+            if (node.LN.length === 0) delete node.LN
+            if (node.AR.length === 0) delete node.AR
+        } else {
+            // Mutate board first, then apply changes to actual game tree
+
+            if (tool === 'number') {
+                if (vertex in board.markups && board.markups[vertex][0] === 'label') {
+                    delete board.markups[vertex]
+                } else {
+                    let number = !node.LB ? 1 : node.LB
+                        .map(x => parseFloat(x.substr(3)))
+                        .filter(x => !isNaN(x))
+                        .sort((a, b) => a - b)
+                        .concat([null])
+                        .findIndex((x, i, a) => i + 1 !== x) + 1
+
+                    board.markups[vertex] = [tool, number.toString()]
+                }
+            } else if (tool === 'label') {
+                if (vertex in board.markups && board.markups[vertex][0] === 'label') {
+                    delete board.markups[vertex]
+                } else {
+                    let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                    let letterIndex = !node.LB ? 0 : node.LB
+                        .filter(x => x.length === 4)
+                        .map(x => alpha.indexOf(x[3]))
+                        .filter(x => x >= 0)
+                        .sort((a, b) => a - b)
+                        .concat([null])
+                        .findIndex((x, i, a) => i !== x)
+
+                    board.markups[vertex] = [tool, alpha[Math.min(letterIndex, alpha.length - 1)]]
+                }
+            } else {
+                if (vertex in board.markups && board.markups[vertex][0] == tool) {
+                    delete board.markups[vertex]
+                } else {
+                    board.markups[vertex] = [tool, '']
+                }
+            }
+
+            for (let id in data) delete node[data[id]]
+
+            // Now apply changes to game tree
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    let v = [x, y]
+                    if (!(v in board.markups)) continue
+
+                    let prop = data[board.markups[v][0]]
+                    let value = sgf.vertex2point(v)
+
+                    if (prop === 'LB')
+                        value += ':' + board.markups[v][1]
+
+                    if (prop in node) node[prop].push(value)
+                    else node[prop] = [value]
+                }
+            }
+        }
+
+        this.clearUndoPoint()
+        this.setCurrentTreePosition(tree, index)
     }
 
     // File hashes

@@ -50,8 +50,7 @@ class MainView extends Component {
     }
 
     handleGobanVertexClick(evt) {
-        sabaki.makeMove(evt.vertex)
-        console.log(evt.vertex)
+        sabaki.clickVertex(evt.vertex, evt)
     }
 
     render({
