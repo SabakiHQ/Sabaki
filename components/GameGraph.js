@@ -156,8 +156,8 @@ class GameGraph extends Component {
         this.componentWillReceiveProps()
     }
 
-    shouldComponentUpdate() {
-        return !this.dirty
+    shouldComponentUpdate(nextProps) {
+        return nextProps.height !== this.props.height || !this.dirty
     }
 
     componentWillReceiveProps({treePosition = null} = {}) {
@@ -417,7 +417,7 @@ class GameGraph extends Component {
 
             h(Slider, {
                 text: level,
-                percent: (level / gametree.getHeight(rootTree)) * 100
+                percent: (level / (gametree.getHeight(rootTree) - 1)) * 100
             })
         )
     }

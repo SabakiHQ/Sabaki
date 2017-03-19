@@ -6,15 +6,15 @@ const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const sgf = require('../modules/sgf')
 
+let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
+
 class CommentBox extends Component {
     constructor(props) {
         super()
-
-        this.shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
     }
 
-    shouldComponentUpdate() {
-        return !this.dirty
+    shouldComponentUpdate(nextProps) {
+        return nextProps.height !== this.props.height || !this.dirty
     }
 
     componentWillReceiveProps() {
@@ -105,7 +105,7 @@ class CommentBox extends Component {
 
         // Match shape
 
-        for (let shape of this.shapes) {
+        for (let shape of shapes) {
             if ('size' in shape && (board.width != board.height || board.width != shape.size))
                 continue
 
@@ -136,10 +136,13 @@ class CommentBox extends Component {
 
     render({
         height,
+        sidebarSplitTransition,
         moveAnnotation: [ma, mv],
         positionAnnotation: [pa, pv],
         title,
-        comment
+        comment,
+
+        onResizerMouseDown = helper.noop
     }) {
         let moveData = {
             '-1': ['Bad move', 'badmove'],
@@ -174,11 +177,15 @@ class CommentBox extends Component {
                 ref: el => this.element = el,
                 id: 'properties',
                 style: {
+                    transition: sidebarSplitTransition ? null : 'none',
                     height: height + '%'
                 }
             },
 
-            h('div', {class: 'horizontalresizer'}),
+            h('div', {
+                class: 'horizontalresizer',
+                onMouseDown: onResizerMouseDown
+            }),
 
             h('div', {class: 'inner'},
                 h('p',

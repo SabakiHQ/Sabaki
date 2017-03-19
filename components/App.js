@@ -65,6 +65,7 @@ class App extends Component {
             showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
+            sidebarSplit: setting.get('view.properties_height'),
             autoscrolling: 0
         }
 
@@ -165,6 +166,16 @@ class App extends Component {
         else delete node.HO
 
         this.setState(this.state)
+    }
+
+    setSidebarWidth(sidebarWidth) {
+        this.setState({sidebarWidth})
+        window.dispatchEvent(new Event('resize'))
+    }
+
+    setSidebarSplit(sidebarSplit) {
+        this.setState({sidebarSplit})
+        window.dispatchEvent(new Event('resize'))
     }
 
     getEmptyGameTree() {

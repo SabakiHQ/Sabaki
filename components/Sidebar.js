@@ -4,13 +4,12 @@ const setting = require('../modules/setting')
 const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
 
+let sidebarMinWidth = setting.get('view.sidebar_minwidth')
+let sidebarMinSplit = setting.get('view.properties_minheight')
+
 class Sidebar extends Component {
     constructor() {
         super()
-
-        this.state = {
-            sidebarSplit: setting.get('view.properties_height')
-        }
 
         this.handleGraphNodeClick = evt => {
             let {button, treePosition, x, y} = evt
@@ -21,6 +20,46 @@ class Sidebar extends Component {
                 sabaki.openNodeMenu(...treePosition)
             }
         }
+
+        this.handleVerticalResizerMouseDown = evt => {
+            if (evt.button !== 0) return
+
+            this.oldSidebarWidth = this.props.sidebarWidth
+            this.oldMousePosition = [evt.x, evt.y]
+            this.verticalResizerMouseDown = true
+        }
+
+        this.handleHorizontalResizerMouseDown = evt => {
+            if (evt.button !== 0) return
+
+            this.horizontalResizerMouseDown = true
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('mouseup', () => {
+            if (this.verticalResizerMouseDown || this.horizontalResizerMouseDown) {
+                this.verticalResizerMouseDown = false
+                this.horizontalResizerMouseDown = false
+                this.setState({sidebarSplitTransition: false})
+            }
+        })
+
+        document.addEventListener('mousemove', evt => {
+            if (this.verticalResizerMouseDown) {
+                let {sidebarWidth} = this.props
+                let diff = [evt.x, evt.y].map((x, i) => x - this.oldMousePosition[i])
+
+                sidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth - diff[0])
+                sabaki.setSidebarWidth(sidebarWidth)
+            } else if (this.horizontalResizerMouseDown) {
+                let sidebarSplit = Math.min(100 - sidebarMinSplit,
+                        Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
+
+                this.setState({sidebarSplitTransition: false})
+                sabaki.setSidebarSplit(sidebarSplit)
+            }
+        })
     }
 
     render({
@@ -30,18 +69,23 @@ class Sidebar extends Component {
         showGameGraph,
         showCommentBox,
         sidebarWidth,
+        sidebarSplit,
         autoscrolling
-    }, {sidebarSplit}) {
+    }, {sidebarSplitTransition = true}) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
 
         return h('section',
             {
+                ref: el => this.element = el,
                 id: 'sidebar',
                 style: {width: sidebarWidth}
             },
 
-            h('div', {class: 'verticalresizer'}),
+            h('div', {
+                class: 'verticalresizer',
+                onMouseDown: this.handleVerticalResizerMouseDown
+            }),
 
             h(GameGraph, {
                 treePosition,
@@ -69,7 +113,10 @@ class Sidebar extends Component {
                 title: 'N' in node ? node.N[0].trim() : '',
                 comment: 'C' in node ? node.C[0] : '',
                 height: !showCommentBox ? 0
-                    : !showGameGraph ? 100 : sidebarSplit
+                    : !showGameGraph ? 100 : sidebarSplit,
+                sidebarSplitTransition,
+
+                onResizerMouseDown: this.handleHorizontalResizerMouseDown
             })
         )
     }
