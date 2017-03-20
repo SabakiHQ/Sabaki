@@ -12,14 +12,15 @@ sabaki.events.on('preparation-complete', () => {
 })
 ~~~
 
-### Event: 'preparation-complete'
+### Event: 'ready'
 
-The `preparation-complete` event is emitted after the page is ready, Sabaki has loaded all settings, and all components are ready to use.
+The `ready` event is emitted after the page is ready, Sabaki has loaded all settings, and all components are ready to use.
 
 ### Event: 'navigating'
 
-* `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `evt` `<Object>`
+    * `tree` [`<GameTree>`](gametree.md)
+    * `index` `<Integer>`
 
 The `navigating` event is triggered when Sabaki is about to load the game tree position at `index` in `tree`.
 
@@ -28,6 +29,12 @@ The `navigating` event is triggered when Sabaki is about to load the game tree p
 The `navigated` event is emitted when Sabaki has finished loading a game tree position.
 
 ### Event: 'move-made'
+
+* `evt` `<Object>`
+    * `pass` `<Boolean>` - Specifies whether the move was a pass
+    * `capture` `<Boolean>` - Specifies whether the move has captured some stones
+    * `suicide` `<Boolean>` - Specifies whether the move was a suicide
+    * `ko` `<Boolean>` - Specifies whether the move violates the simple ko rule
 
 The `move-made` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
 
@@ -39,63 +46,63 @@ The `resigned` event is triggered after someone resigns. `player` is `1` if blac
 
 ### Event: 'tool-used'
 
-* `tool` `<String>`
+* `evt` `<Object>`
+    * `tool` `<String>`
+    * `vertex` [`<Vertex>`](vertex.md)
+    * `endVertex` [`<Vertex>`](vertex.md)
 
-The `tool-used` event is triggered after the user used `tool` by clicking on the board in edit mode. `tool` can be one of the following: `stone_1`, `stone_-1`, `cross`, `triangle`, `square`, `circle`, `line`, `arrow`, `label`, `number`.
+The `tool-used` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `stone_1`, `stone_-1`, `cross`, `triangle`, `square`, `circle`, `line`, `arrow`, `label`, `number`. If `tool` is `line` or `arrow`, `endVertex` is specified as well.
 
-### Event: 'commenttext-updated'
+### Event: 'file-loaded'
 
-The `commenttext-updated` event is emitted when Sabaki tries to update the comment text or title on the current node.
-
-### Event: 'gameinfo-updated'
-
-The `gameinfo-updated` event is triggered when the user updates the data in the game info drawer.
-
-### Event: 'sgf-loaded'
-
-The `sgf-loaded` event is triggered when Sabaki finishes loading some SGF.
+The `file-loaded` event is triggered when Sabaki finishes loading some file.
 
 ## Methods
 
 ### File Management
 
-#### sabaki.newFile([showInfo[, dontAsk]])
+#### sabaki.newFile([options])
 
-* `showInfo` `<Boolean>` - Default: `false`
-* `dontAsk` `<Boolean>` - Default: `false`
+* `options` `<Object>`
+    * `sound` `<Boolean>` - Default: `false`
+    * `showInfo` `<Boolean>` - Default: `false`
+    * `suppressAskForSave` `<Boolean>` - Default: `false`
 
 Resets file name, returns to play mode, and replaces current file with an empty file. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
-#### sabaki.loadFile([filename[, dontAsk[, callback]]])
+#### sabaki.loadFile([filename[, options]])
 
 * `filename` `<String>`
-* `dontAsk` `<Boolean>` - Default: `false`
-* `callback` `<Function>`
+* `options` `<Object>`
+    * `suppressAskForSave` `<Boolean>` - Default: `false`
+    * `callback` `<Function>`
 
 Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show an open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
-#### sabaki.loadFileFromSgf(sgf[, dontAsk[, ignoreEncoding[, callback]]])
+#### sabaki.loadContent(content, format[, options])
 
-* `sgf` `<String>`
-* `dontAsk` `<Boolean>` - Default: `false`
-* `ignoreEncoding` `<Boolean>` - Default: `false`
-* `callback` `<Function>`
+* `content` `<String>`
+* `format` `<String>` - One of `'sgf'`, `'ngf'`, `'gib'`
+* `options` `<Object>`
+    * `suppressAskForSave` `<Boolean>` - Default: `false`
+    * `ignoreEncoding` `<Boolean>` - Default: `false`
+    * `callback` `<Function>`
 
-Returns to play mode and replaces current file with the SGF specified in `sgf`. If `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
+Returns to play mode and parses `content` as `format`, whicch replaces current file. If `format` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
-If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `dontAsk` is `false`. Set `dontAsk` to `true` to supress this question.
+If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
 #### sabaki.saveFile([filename])
 
 * `filename` `<String>`
 
-Saves current file in given `filename`. If `filename` is not set, Sabaki will show a save file dialog. On the web version `filename` is ignored and treated as if not set.
+Saves current file in given `filename` as SGF. If `filename` is not set, Sabaki will show a save file dialog. On the web version `filename` is ignored and treated as if not set.
 
-#### sabaki.saveFileToSgf()
+#### sabaki.getSGF()
 
 Returns the SGF of the current file as a string.
 
@@ -105,18 +112,20 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 ### Playing
 
-#### sabaki.vertexClick(vertex[, buttonIndex[, ctrlKey[, position]]])
+#### sabaki.clickVertex(vertex[, options])
 
-* `vertex` [`<Vertex>`](vertex.md) or `<String>`
-* `buttonIndex` `<Integer>` - Default: `0`
-* `ctrlKey` `<Boolean>` - Default: `false`
-* `position` `<Integer[]>` - Default: `null`
+* `vertex` [`<Vertex>`](vertex.md)
+* `options` `<Object>`
+    * `button` `<Integer>` - Default: `0`
+    * `ctrlKey` `<Boolean>` - Default: `false`
+    * `x` `<Integer>` - Default: `0`
+    * `y` `<Integer>` - Default: `0`
 
 Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for showing context menus.
 
 #### sabaki.makeMove(vertex)
 
-* `vertex` [`<Vertex>`](vertex.md) or `<String>`
+* `vertex` [`<Vertex>`](vertex.md)
 
 Makes a proper move on the given vertex on the current board as the current player. If `vertex` is occupied, the game tree doesn't change. If `vertex` is not on the board, Sabaki will make a pass instead.
 
@@ -126,30 +135,33 @@ Depending on the settings, Sabaki may notify the user about ko and suicide, play
 
 Updates game information that the current player has resigned and shows the game info drawer for the user.
 
-#### sabaki.useTool(vertex[, tool[, buttonIndex]])
+#### sabaki.useTool(tool, vertex[, endVertex])
 
-* `vertex` [`<Vertex>`](vertex.md) or `<String>`
-* `tool` `<String>` - One of `stone_1`, `stone_-1`, `cross`, `triangle`, `square`, `circle`, `line`, `arrow`, `label`, `number`. Default is currently selected tool.
-* `buttonIndex` `<Integer>` - Default: `0`
+* `vertex` [`<Vertex>`](vertex.md)
+* `tool` `<String>` - One of `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`
 
-### Updating User Interface
+### Undo
 
-#### sabaki.updateSidebar()
+#### sabaki.setUndoPoint([undoText])
 
-#### sabaki.updateGraph()
+* `undoText` `<String>`
 
-#### sabaki.updateSlider()
-
-#### sabaki.updateCommentText()
-
-#### sabaki.centerGraphCameraAt(node)
-
-* `node` [`<GameTreeNode>`](gametree.md)
+#### sabaki.clearUndoPoint()
+#### sabaki.undo()
 
 ### Navigation
 
-#### sabaki.goBack()
-#### sabaki.goForward()
+#### sabaki.setCurrentTreePosition(tree, index)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `Integer`
+
+Jumps to the position specified by `tree` and `index`.
+
+#### sabaki.goStep(step)
+
+* `step` `<Integer>`
+
 #### sabaki.goMoveNumber(number)
 
 * `number` `<Integer>`
@@ -162,8 +174,10 @@ Updates game information that the current player has resigned and shows the game
 
 #### sabaki.goToBeginning()
 #### sabaki.goToEnd()
-#### sabaki.goToNextVariation()
-#### sabaki.goToPreviousVariation()
+#### sabaki.goToSiblingVariation(step)
+
+* `step` `<Integer>`
+
 #### sabaki.goToMainVariation()
 
 #### sabaki.findPosition(step, condition[, callback])

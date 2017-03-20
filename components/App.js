@@ -1,4 +1,5 @@
 const fs = require('fs')
+const EventEmitter = require('events')
 const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, dialog, Menu} = remote
 const {h, render, options, Component} = require('preact')
@@ -68,6 +69,7 @@ class App extends Component {
             autoscrolling: 0
         }
 
+        this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
 
@@ -109,6 +111,8 @@ class App extends Component {
 
         this.newFile()
         this.window.show()
+
+        this.events.emit('ready')
     }
 
     componentWillUpdate(_, nextState) {
@@ -139,8 +143,8 @@ class App extends Component {
 
     // Sabaki API
 
-    setSelectedTool(toolId) {
-        this.setState({selectedTool: toolId})
+    setSelectedTool(tool) {
+        this.setState({selectedTool: tool})
     }
 
     setCurrentPlayer(sign) {
@@ -324,14 +328,13 @@ class App extends Component {
         let prev = gametree.navigate(tree, index, -1)
         let sign = this.inferredState.currentPlayer
         let color = sign > 0 ? 'B' : 'W'
-        let capture = false, suicide = false
+        let capture = false, suicide = false, ko = false
         let createNode = true
 
         if (!pass) {
             // Check for ko
 
             if (prev && setting.get('game.show_ko_warning')) {
-                let ko = false
                 let hash = board.makeMove(sign, vertex).getHash()
 
                 ko = prev[0].nodes[prev[1]].board.getHash() == hash
@@ -467,6 +470,14 @@ class App extends Component {
                 this.setMode('scoring')
             }
         }
+
+        // Emit event
+
+        this.events.emit('move-made', {pass, capture, suicide, ko})
+    }
+
+    makeResign() {
+        // TODO
     }
 
     useTool(tool, vertex, endVertex = null) {
@@ -625,6 +636,8 @@ class App extends Component {
 
         this.clearUndoPoint()
         this.setCurrentTreePosition(tree, index)
+
+        this.events.emit('tool-used', {tool, vertex, endVertex})
     }
 
     // File hashes
@@ -681,8 +694,8 @@ class App extends Component {
 
     // File methods
 
-    newFile({sound = false, showInfo = false} = {}) {
-        if (this.state.busy || !this.askForSave()) return
+    newFile({sound = false, showInfo = false, suppressAskForSave = false} = {}) {
+        if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
 
         let emptyTree = this.getEmptyGameTree()
 
@@ -742,7 +755,7 @@ class App extends Component {
     } = {}) {
         if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
 
-        this.setState({busy: true, openDrawer: null})
+        this.setState({busy: true, openDrawer: null, mode: 'play'})
 
         setTimeout(() => {
             let lastProgress = -1
@@ -784,6 +797,8 @@ class App extends Component {
 
             this.window.setProgressBar(0)
             callback(error)
+
+            if (!error) this.events.emit('file-loaded')
         }, setting.get('app.loadgame_delay'))
     }
 
@@ -819,6 +834,8 @@ class App extends Component {
         if (!ignoreAutoplay && this.state.autoplaying)
             this.setState({autoplaying: false})
 
+        this.events.emit('navigating', {tree, index})
+
         let t = tree
         while (t.parent != null) {
             t.parent.current = t.parent.subtrees.indexOf(t)
@@ -826,6 +843,7 @@ class App extends Component {
         }
 
         this.setState({treePosition: [tree, index]})
+        this.events.emit('navigated')
     }
 
     goStep(step) {
@@ -895,13 +913,13 @@ class App extends Component {
         this.setCurrentTreePosition(...tp)
     }
 
-    goToSiblingVariation(sign) {
+    goToSiblingVariation(step) {
         let [tree, index] = this.state.treePosition
 
-        sign = sign < 0 ? -1 : 1
+        step = step < 0 ? -1 : 1
 
         let mod = tree.parent.subtrees.length
-        let i = (tree.parent.current + mod + sign) % mod
+        let i = (tree.parent.current + mod + step) % mod
 
         this.setCurrentTreePosition(tree.parent.subtrees[i], 0)
     }
