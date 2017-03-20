@@ -23,27 +23,29 @@ class CommentTitle extends Component {
 
         // Determine root node
 
-        if (!tree.parent && index == 0) {
+        if (!tree.parent && index === 0) {
             let result = []
 
             if ('EV' in node) result.push(node.EV[0])
             if ('GN' in node) result.push(node.GN[0])
 
-            result = result.filter(x => x.trim() != '').join(' — ')
-            if (result != '')
+            result = result.filter(x => x.trim() !== '').join(' — ')
+            if (result !== '')
                 return result
 
             let today = new Date()
-            if (today.getDate() == 25 && today.getMonth() == 3)
+            if (today.getDate() === 25 && today.getMonth() === 3)
                 return 'Happy Birthday, Sabaki!'
         }
 
         // Determine end of main variation and show game result
 
-        if (gametree.onMainTrack(tree) && !gametree.navigate(tree, index, 1)) {
+        if (tree.subtrees.length === 0
+        && index === tree.nodes.length - 1
+        && gametree.onMainTrack(tree)) {
             let rootNode = gametree.getRoot(tree).nodes[0]
 
-            if ('RE' in rootNode && rootNode.RE[0].trim() != '')
+            if ('RE' in rootNode && rootNode.RE[0].trim() !== '')
                 return 'Result: ' + rootNode.RE[0]
         }
 
@@ -54,7 +56,7 @@ class CommentTitle extends Component {
         if (ptp) {
             let prevBoard = ptp[0].nodes[ptp[1]].board || gametree.getBoard(...ptp)
 
-            if (!helper.equals(prevBoard.captures, board.captures))
+            if (!helper.vertexEquals(prevBoard.captures, board.captures))
                 return 'Take'
         }
 
@@ -62,9 +64,9 @@ class CommentTitle extends Component {
 
         let vertex
 
-        if ('B' in node && node.B[0] != '')
+        if ('B' in node && node.B[0] !== '')
             vertex = sgf.point2vertex(node.B[0])
-        else if ('W' in node && node.W[0] != '')
+        else if ('W' in node && node.W[0] !== '')
             vertex = sgf.point2vertex(node.W[0])
         else if ('W' in node || 'B' in node)
             return 'Pass'
@@ -78,37 +80,37 @@ class CommentTitle extends Component {
 
         // Check atari
 
-        if (neighbors.some(v => board.get(v) == -sign && board.getLiberties(v).length == 1))
+        if (neighbors.some(v => board.get(v) === -sign && board.getLiberties(v).length === 1))
             return 'Atari'
 
         // Check connection
 
-        let friendly = neighbors.filter(v => board.get(v) == sign)
-        if (friendly.length == neighbors.length) return 'Fill'
+        let friendly = neighbors.filter(v => board.get(v) === sign)
+        if (friendly.length === neighbors.length) return 'Fill'
         if (friendly.length >= 2) return 'Connect'
 
         // Match shape
 
         for (let shape of shapes) {
-            if ('size' in shape && (board.width != board.height || board.width != shape.size))
+            if ('size' in shape && (board.width !== board.height || board.width !== shape.size))
                 continue
 
-            let corner = 'type' in shape && shape.type == 'corner'
+            let corner = 'type' in shape && shape.type === 'corner'
 
             if (boardmatcher.shapeMatch(shape, board, vertex, corner))
                 return shape.name
         }
 
-        if (friendly.length == 1) return 'Stretch'
+        if (friendly.length === 1) return 'Stretch'
 
         // Determine position to edges
 
-        if (vertex[0] == (board.width - 1) / 2 && vertex[1] == (board.height - 1) / 2)
+        if (vertex[0] === (board.width - 1) / 2 && vertex[1] === (board.height - 1) / 2)
             return 'Tengen'
 
         let diff = board.getCanonicalVertex(vertex).map(x => x + 1)
 
-        if ((diff[0] != 4 || diff[1] != 4)
+        if ((diff[0] !== 4 || diff[1] !== 4)
         && board.getHandicapPlacement(9).some(v => helper.vertexEquals(v, vertex)))
             return 'Hoshi'
 
@@ -155,8 +157,8 @@ class CommentTitle extends Component {
             {
                 class: {
                     header: true,
-                    movestatus: ma != null,
-                    positionstatus: pa != null
+                    movestatus: ma !== null,
+                    positionstatus: pa !== null
                 }
             },
 
@@ -184,7 +186,7 @@ class CommentTitle extends Component {
                 height: 16
             }),
 
-            h('span', {}, title != '' ? title
+            h('span', {}, title !== '' ? title
                 : showMoveInterpretation ? this.getCurrentMoveInterpretation()
                 : '')
         )

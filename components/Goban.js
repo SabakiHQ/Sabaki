@@ -203,7 +203,8 @@ class Goban extends Component {
             shifts[y][x] = random(9)
             this.readjustShifts(shifts, animatedVertex)
 
-            this.setState({shifts})
+            this.setState({shifts, animatedVertex})
+            setTimeout(() => this.setState({animatedVertex: null}), 200)
         }
     }
 
@@ -351,10 +352,9 @@ class Goban extends Component {
         fuzzyStonePlacement = true,
         animatedStonePlacement = true,
 
-        drawLineMode = null,
-        animatedVertex = null
+        drawLineMode = null
     }, state) {
-        let {fieldSize, rangeY, rangeX, temporaryLine} = state
+        let {fieldSize, rangeY, rangeX, temporaryLine, animatedVertex} = state
         let animatedVertices = animatedVertex
             ? [animatedVertex, ...board.getNeighbors(animatedVertex)] : []
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine

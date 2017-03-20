@@ -69,6 +69,8 @@ class App extends Component {
             autoscrolling: 0
         }
 
+        this.appName = app.getName()
+        this.version = app.getVersion()
         this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
@@ -119,7 +121,7 @@ class App extends Component {
         // Update title
 
         let {basename} = require('path')
-        let title = app.getName()
+        let title = this.appName
         let {representedFilename, gameTrees, treePosition: [tree, ]} = this.state
 
         if (representedFilename)
@@ -127,7 +129,7 @@ class App extends Component {
         if (gameTrees.length > 1)
             title += ' — Game ' + (this.inferredState.gameIndex + 1)
         if (representedFilename && process.platform != 'darwin')
-            title += ' — ' + app.getName()
+            title += ' — ' + this.appName
 
         if (document.title !== title)
             document.title = title
@@ -316,7 +318,7 @@ class App extends Component {
         }
     }
 
-    makeMove(vertex, {ignoreAutoplay = false} = {}) {
+    makeMove(vertex, {ignoreAutoplay = false, clearUndoPoint = true} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode))
             this.closeDrawers()
 
@@ -371,7 +373,6 @@ class App extends Component {
             // Animate board
 
             this.setState({animatedVertex: vertex})
-            setTimeout(() => this.setState({animatedVertex: null}), 200)
         }
 
         // Update data

@@ -162,10 +162,7 @@ exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, ysh
     }
 
     for (let y = 0; y < tree.nodes.length; y++) {
-        while (xshift >= matrix[yshift + y].length) {
-            matrix[yshift + y].push(null)
-        }
-
+        matrix[yshift + y].length = xshift + 1
         matrix[yshift + y][xshift] = [tree, y]
         dict[tree.id + '-' + y] = [xshift, yshift + y]
     }
@@ -173,7 +170,7 @@ exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, ysh
     if (!tree.collapsed) {
         for (let k = 0; k < tree.subtrees.length; k++) {
             let subtree = tree.subtrees[k]
-            exports.getMatrixDict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
+            exports.getMatrixDict(subtree, matrix, dict, xshift + k, yshift + tree.nodes.length)
         }
     }
 
