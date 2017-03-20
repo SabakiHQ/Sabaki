@@ -188,11 +188,11 @@ class App extends Component {
         let [width, height] = [size[0], size.slice(-1)[0]]
         let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
-        let sizeInfo = width === height ? width : `SZ[${width}:${height}]`
+        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
         let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
 
         let buffer = `(;GM[1]FF[4]CA[UTF-8]
-            AP[${app.getName()}:${app.getVersion()}]
+            AP[${this.appName}:${this.version}]
             KM[${setting.get('game.default_komi')}]
             ${sizeInfo}${handicapInfo})`
 
@@ -437,6 +437,7 @@ class App extends Component {
             }
         }
 
+        prev = gametree.navigate(tree, index, -1)
         this.setCurrentTreePosition(...nextTreePosition)
 
         // Play sounds
@@ -455,7 +456,7 @@ class App extends Component {
 
         // Clear undo point
 
-        if (createNode) this.clearUndoPoint()
+        if (createNode && clearUndoPoint) this.clearUndoPoint()
 
         // Enter scoring mode after two consecutive passes
 
@@ -478,7 +479,14 @@ class App extends Component {
     }
 
     makeResign() {
-        // TODO
+        let {rootTree, currentPlayer} = this.inferredState
+        let player = currentPlayer > 0 ? 'W' : 'B'
+        let rootNode = rootTree.nodes[0]
+
+        this.setUndoPoint('Undo Resignation')
+        rootNode.RE = [player + '+Resign']
+        this.makeMove([-1, -1], {clearUndoPoint: false})
+        this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
     }
 
     useTool(tool, vertex, endVertex = null) {
@@ -552,8 +560,14 @@ class App extends Component {
 
             let toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [vertex, endVertex]))
 
-            if (tool === 'line' && toDelete === -1)
+            if (toDelete === -1) {
                 toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [endVertex, vertex]))
+
+                if (toDelete >= 0 && tool !== 'line' && board.lines[toDelete][2]) {
+                    // Do not delete after all
+                    toDelete = -1
+                }
+            }
 
             // Mutate board first, then apply changes to actual game tree
 
@@ -1065,8 +1079,8 @@ class App extends Component {
         this.setCurrentTreePosition(clone, 0)
     }
 
-    makeMainVariation(tree, index) {
-        this.setUndoPoint('Restore Main Variation')
+    makeMainVariation(tree, index, {setUndoPoint = true} = {}) {
+        if (setUndoPoint) this.setUndoPoint('Restore Main Variation')
         this.closeDrawers()
 
         let t = tree
