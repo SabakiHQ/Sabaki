@@ -1,5 +1,6 @@
 build.js
 
+browser/
 dist/
 gnugo/
 node_modules/
