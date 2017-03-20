@@ -126,6 +126,7 @@ class MainView extends Component {
 
             h('section', {id: 'bar'},
                 h(PlayBar, {
+                    mode,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,
@@ -135,12 +136,33 @@ class MainView extends Component {
                     undoText
                 }),
 
-                h(EditBar, {selectedTool, onToolButtonClick: this.handleToolButtonClick}),
-                h(GuessBar),
-                h(AutoplayBar, {playing: autoplaying, secondsPerMove}),
-                h(ScoringBar),
-                h(EstimatorBar),
-                h(FindBar)
+                h(EditBar, {
+                    mode,
+                    selectedTool,
+                    onToolButtonClick: this.handleToolButtonClick
+                }),
+
+                h(GuessBar, {
+                    mode
+                }),
+
+                h(AutoplayBar, {
+                    mode,
+                    playing: autoplaying,
+                    secondsPerMove
+                }),
+
+                h(ScoringBar, {
+                    mode
+                }),
+
+                h(EstimatorBar, {
+                    mode
+                }),
+
+                h(FindBar, {
+                    mode
+                })
             )
         )
     }

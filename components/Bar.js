@@ -8,6 +8,10 @@ class Bar extends Component {
         this.onCloseButtonClick = () => sabaki.setMode('play')
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.mode === nextProps.type
+    }
+
     render({children, type, class: c = {}}) {
         return h('section', {id: type, class: Object.assign({bar: true}, c)},
             children,

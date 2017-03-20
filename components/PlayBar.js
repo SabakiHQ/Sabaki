@@ -1,12 +1,60 @@
 const {h, Component} = require('preact')
+const {Menu} = require('electron').remote
+const $ = require('../modules/sprint')
 
 class PlayBar extends Component {
     constructor() {
         super()
 
         this.handleCurrentPlayerClick = () => sabaki.setCurrentPlayer(-this.props.currentPlayer)
-        this.handleUndoButtonClick = () => {}
-        this.handleMenuClick = () => {}
+        this.handleUndoButtonClick = () => sabaki.undo()
+
+        this.handleMenuClick = () => {
+            let template = [
+                {
+                    label: '&Pass',
+                    click: () => sabaki.makeMove([-1, -1])
+                },
+                {
+                    label: '&Resign',
+                    click: () => sabaki.makeResign()
+                },
+                {type: 'separator'},
+                {
+                    label: 'Es&timate',
+                    click: () => sabaki.setMode('estimator')
+                },
+                {
+                    label: '&Score',
+                    click: () => sabaki.setMode('scoring')
+                },
+                {
+                    label: '&Edit',
+                    click: () => sabaki.setMode('edit')
+                },
+                {
+                    label: '&Find',
+                    click: () => sabaki.setMode('find')
+                },
+                {type: 'separator'},
+                {
+                    label: '&Info',
+                    click: () => sabaki.setOpenDrawer('info')
+                }
+            ]
+
+            let menu = Menu.buildFromTemplate(template)
+            let {left, top} = $(this.menuButtonElement).offset()
+            menu.popup(
+                sabaki.window,
+                Math.round(left),
+                Math.round(top)
+            )
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return nextProps.mode === 'play'
     }
 
     render({
@@ -58,6 +106,7 @@ class PlayBar extends Component {
 
             h('a',
                 {
+                    ref: el => this.menuButtonElement = el,
                     id: 'headermenu',
                     onClick: this.handleMenuClick
                 },
