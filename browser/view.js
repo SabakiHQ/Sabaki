@@ -899,7 +899,7 @@ exports.buildBoard = function() {
 
                     $('#goban').data('mousedown', false)
                     let pos = [evt.clientX, evt.clientY]
-                    sabaki.vertexClicked(vertex, evt.button, evt.ctrlKey, pos)
+                    sabaki.vertexClick(vertex, evt.button, evt.ctrlKey, pos)
                 })
                 .on('touchend', evt => {
                     if (!exports.getEditMode()
@@ -907,7 +907,7 @@ exports.buildBoard = function() {
                         return
 
                     evt.preventDefault()
-                    sabaki.vertexClicked(null, 0)
+                    sabaki.vertexClick(null, 0)
                 })
                 .on('mousemove', evt => {
                     if (!$('#goban').data('mousedown')) return

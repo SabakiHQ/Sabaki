@@ -16,7 +16,7 @@ let menudata = {
     managegames: () => view.showGameChooser(),
     preferences: () => view.showPreferences(),
 
-    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClicked),
+    selectposition: () => view.showInputBox('Enter a coordinate to select a point', sabaki.vertexClick),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
     toggleplayer: () => sabaki.setCurrentPlayer(-sabaki.getCurrentPlayer()),
@@ -53,8 +53,8 @@ let menudata = {
         sabaki.findMove(view.getIndicatorVertex(), view.getFindText(), -1)
     },
     togglehotspot: () => sabaki.setHotspot(!sabaki.getHotspot()),
-    nexthotspot: () => sabaki.findBookmark(1),
-    previoushotspot: () => sabaki.findBookmark(-1),
+    nexthotspot: () => sabaki.findHotspot(1),
+    previoushotspot: () => sabaki.findHotspot(-1),
 
     goback: () => sabaki.goBack(),
     goforward: () => sabaki.goForward(),

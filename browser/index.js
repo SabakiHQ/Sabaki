@@ -20,9 +20,8 @@ const gtp = require('../modules/gtp')
 const Board = require('../modules/board')
 
 window.sabaki = {
-    view,
     events: new EventEmitter(),
-    modules: {sgf, gametree, sound, setting}
+    modules: {view, sgf, gametree, sound, setting}
 }
 
 /**
@@ -140,6 +139,8 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
     if (!tree || view.getScoringMode() || view.getEstimatorMode()) return
     if (!ignoreAutoplay && sabaki.getAutoplaying()) sabaki.setAutoplaying(false)
 
+    sabaki.events.emit('navigating', tree, index)
+
     // Remove old graph node color
 
     let oldGraphNode = sabaki.getCurrentGraphNode()
@@ -184,6 +185,10 @@ sabaki.setCurrentTreePosition = function(tree, index, now = false, redraw = fals
         currentplayer = node.PL[0] == 'W' ? -1 : 1
 
     view.setCurrentPlayer(currentplayer)
+
+    // Emit event
+
+    sabaki.events.emit('navigated')
 }
 
 sabaki.getCurrentGraphNode = function() {
@@ -1136,7 +1141,7 @@ sabaki.generateMove = function(ignoreBusy = false) {
         view.setIsBusy(false)
         if (r.content.toLowerCase() == 'resign') {
             view.showMessageBox(sabaki.getEngineName() + ' has resigned.')
-            sabaki.getRootTree().nodes[0].RE = [opponent + '+Resign']
+            sabaki.makeResign()
             return
         }
 
@@ -1223,12 +1228,11 @@ sabaki.askForReload = function() {
  * Game Board Methods
  */
 
-sabaki.vertexClicked = function(vertex, buttonIndex = 0, ctrlKey = false, position = null) {
+sabaki.vertexClick = function(vertex, buttonIndex = 0, ctrlKey = false, position = null) {
     view.closeGameInfo()
 
-    if (typeof vertex == 'string') {
+    if (typeof vertex == 'string')
         vertex = sabaki.getBoard().coord2vertex(vertex)
-    }
 
     if (view.getScoringMode() || view.getEstimatorMode()) {
         if ($('#score').hasClass('show')) return
@@ -1330,6 +1334,9 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
 
     if (sendCommand == null)
         sendCommand = view.getPlayMode() && sabaki.getEngineController() != null
+
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
 
     let board = sabaki.getBoard()
     let pass = !board.hasVertex(vertex)
@@ -1496,6 +1503,10 @@ sabaki.makeMove = function(vertex, sendCommand = null, ignoreAutoplay = false) {
         view.setIsBusy(true)
         setTimeout(() => sabaki.generateMove(true), setting.get('gtp.move_delay'))
     }
+
+    // Emit event
+
+    sabaki.events.emit('move-made')
 }
 
 sabaki.makeResign = function() {
@@ -1503,10 +1514,15 @@ sabaki.makeResign = function() {
 
     view.showGameInfo()
     $('#info input[name="result"]').val(player + '+Resign')
+
+    sabaki.events.emit('resigned', view.getCurrentPlayer())
 }
 
 sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
     if (!tool) tool = sabaki.getSelectedTool()
+
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
 
     let [tree, index] = sabaki.getCurrentTreePosition()
     let node = tree.nodes[index]
@@ -1696,12 +1712,17 @@ sabaki.useTool = function(vertex, tool = null, buttonIndex = 0) {
 
     sabaki.setUndoable(false)
     sabaki.setCurrentTreePosition(tree, index)
+
+    sabaki.events.emit('tool-used', tool)
 }
 
 sabaki.drawLine = function(vertex) {
     let tool = sabaki.getSelectedTool()
 
     if (!vertex || !view.getEditMode() || tool != 'line' && tool != 'arrow') return
+
+    if (typeof vertex == 'string')
+        vertex = sabaki.getBoard().coord2vertex(vertex)
 
     if (!$('#goban').data('edittool-data')) {
         let $hr = $('<hr/>').addClass(tool).data('v1', vertex).data('v2', vertex)
@@ -1718,7 +1739,7 @@ sabaki.drawLine = function(vertex) {
  * Find Methods
  */
 
-sabaki.findPosition = function(step, condition) {
+sabaki.findPosition = function(step, condition, callback = () => {}) {
     if (isNaN(step)) step = 1
     else step = step >= 0 ? 1 : -1
 
@@ -1750,14 +1771,15 @@ sabaki.findPosition = function(step, condition) {
 
         sabaki.setCurrentTreePosition(...tp)
         view.setIsBusy(false)
+        callback()
     }, setting.get('find.delay'))
 }
 
-sabaki.findBookmark = function(step) {
-    sabaki.findPosition(step, (tree, index) => 'HO' in tree.nodes[index])
+sabaki.findHotspot = function(step, callback) {
+    sabaki.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
 }
 
-sabaki.findMove = function(vertex, text, step) {
+sabaki.findMove = function(vertex, text, step, callback) {
     if (vertex == null && text.trim() == '') return
     let point = vertex ? sgf.vertex2point(vertex) : null
 
@@ -1768,7 +1790,7 @@ sabaki.findMove = function(vertex, text, step) {
 
         return (!point || ['B', 'W'].some(x => cond(x, point)))
             && (!text || cond('C', text) || cond('N', text))
-    })
+    }, callback)
 }
 
 /**
@@ -1937,6 +1959,8 @@ sabaki.commitCommentText = function() {
 
     sabaki.updateSidebar(true)
     sabaki.setUndoable(false)
+
+    sabaki.events.emit('commenttext-updated')
 }
 
 sabaki.commitGameInfo = function() {
@@ -2045,6 +2069,10 @@ sabaki.commitGameInfo = function() {
         let command = new gtp.Command(null, 'komi', [komi])
         sabaki.sendGTPCommand(command, true)
     }
+
+    // Emit event
+
+    sabaki.events.emit('gameinfo-updated')
 }
 
 sabaki.commitScore = function() {
@@ -2099,8 +2127,8 @@ sabaki.commitPreferences = function() {
  * Menu Methods
  */
 
-sabaki.newFile = function(playSound) {
-    if (view.getIsBusy() || !sabaki.askForSave()) return
+sabaki.newFile = function(showInfo = false, dontAsk = false) {
+    if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
 
     view.closeDrawers()
     sabaki.setGameTrees([sabaki.getEmptyGameTree()])
@@ -2109,14 +2137,14 @@ sabaki.newFile = function(playSound) {
     sabaki.updateTreeHash()
     sabaki.updateFileHash()
 
-    if (playSound) {
+    if (showInfo) {
         sound.playNewGame()
         view.showGameInfo()
     }
 }
 
-sabaki.loadFile = function(filename, dontask = false) {
-    if (view.getIsBusy() || !dontask && !sabaki.askForSave()) return
+sabaki.loadFile = function(filename = null, dontAsk = false, callback = () => {}) {
+    if (view.getIsBusy() || !dontAsk && !sabaki.askForSave()) return
 
     if (!filename) {
         let result = view.showOpenDialog({
@@ -2185,10 +2213,12 @@ sabaki.loadFileFromSgf = function(content, format = 'sgf', dontask = false, igno
         view.setProgressIndicator(-1, win)
         view.setIsBusy(false)
         callback(error)
+
+        sabaki.events.emit('sgf-loaded')
     }, setting.get('app.loadgame_delay'))
 }
 
-sabaki.saveFile = function(filename) {
+sabaki.saveFile = function(filename = null) {
     if (view.getIsBusy()) return
 
     if (!filename) {
@@ -2300,13 +2330,13 @@ sabaki.goToEnd = function() {
     sabaki.setCurrentTreePosition(...tp)
 }
 
-sabaki.goToSiblingVariation = function(sign) {
+sabaki.goToSiblingVariation = function(step) {
     let [tree, index] = sabaki.getCurrentTreePosition()
 
-    sign = sign < 0 ? -1 : 1
+    step = step < 0 ? -1 : 1
 
     let mod = tree.parent.subtrees.length
-    let i = (tree.parent.current + mod + sign) % mod
+    let i = (tree.parent.current + mod + step) % mod
 
     sabaki.setCurrentTreePosition(tree.parent.subtrees[i], 0)
 }
@@ -2577,6 +2607,8 @@ $(document).ready(function() {
     $('body').on('mouseup', function() {
         $('#goban').data('mousedown', false)
     })
+
+    sabaki.events.emit('preparation-complete')
 }).on('keydown', function(evt) {
     if (evt.keyCode == 27) {
         // Escape
