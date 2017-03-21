@@ -1,6 +1,9 @@
 const {h, Component} = require('preact')
+const gametree = require('../modules/gametree')
+const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
+const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
 
@@ -8,7 +11,7 @@ let sidebarMinWidth = setting.get('view.sidebar_minwidth')
 let sidebarMinSplit = setting.get('view.properties_minheight')
 
 class Sidebar extends Component {
-    constructor() {
+    constructor(props) {
         super()
 
         this.state = {
@@ -16,9 +19,7 @@ class Sidebar extends Component {
             sidebarSplitTransition: true
         }
 
-        this.handleGraphNodeClick = evt => {
-            let {button, treePosition, x, y} = evt
-
+        this.handleGraphNodeClick = ({button, treePosition, x, y}) => {
             if (button === 0) {
                 sabaki.setCurrentTreePosition(...treePosition)
             } else {
@@ -26,23 +27,44 @@ class Sidebar extends Component {
             }
         }
 
-        this.handleVerticalResizerMouseDown = evt => {
-            if (evt.button !== 0) return
+        this.handleVerticalResizerMouseDown = ({button, x, y}) => {
+            if (button !== 0) return
 
             this.oldSidebarWidth = this.props.sidebarWidth
-            this.oldMousePosition = [evt.x, evt.y]
+            this.oldMousePosition = [x, y]
             this.verticalResizerMouseDown = true
         }
 
-        this.handleHorizontalResizerMouseDown = evt => {
-            if (evt.button !== 0) return
-
+        this.handleHorizontalResizerMouseDown = ({button}) => {
+            if (button !== 0) return
             this.horizontalResizerMouseDown = true
         }
+
+        this.handleSliderChange = ({percent}) => {
+            let moveNumber = Math.round((this.state.treeHeight - 1) * percent)
+            sabaki.goToMoveNumber(moveNumber)
+        }
+
+        this.handleStartAutoscrolling = ({step}) => {
+            sabaki.startAutoscrolling(step)
+        }
+
+        this.handleStopAutoscrolling = () => {
+            sabaki.stopAutoscrolling()
+        }
+
+        this.componentWillReceiveProps(props)
     }
 
     shouldComponentUpdate(nextProps) {
         return nextProps.showSidebar
+    }
+
+    componentWillReceiveProps({treePosition, rootTree} = {}) {
+        // Update tree height
+
+        if (this.props && helper.vertexEquals(treePosition, this.props.treePosition)) return
+        this.setState({treeHeight: gametree.getHeight(rootTree)})
     }
 
     componentDidMount() {
@@ -72,16 +94,19 @@ class Sidebar extends Component {
 
     render({
         treePosition,
+        rootTree,
         showGameGraph,
         showCommentBox,
         sidebarWidth,
         autoscrolling
     }, {
+        treeHeight,
         sidebarSplit,
         sidebarSplitTransition
     }) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
+        let level = gametree.getLevel(tree, index)
 
         return h('section',
             {
@@ -93,6 +118,18 @@ class Sidebar extends Component {
             h('div', {
                 class: 'verticalresizer',
                 onMouseDown: this.handleVerticalResizerMouseDown
+            }),
+
+            h(Slider, {
+                showSlider: showGameGraph,
+                text: level,
+                percent: (level / (treeHeight - 1)) * 100,
+                height: !showGameGraph ? 0
+                    : !showCommentBox ? 100 : 100 - sidebarSplit,
+
+                onChange: this.handleSliderChange,
+                onStartAutoscrolling: this.handleStartAutoscrolling,
+                onStopAutoscrolling: this.handleStopAutoscrolling
             }),
 
             h(GameGraph, {
@@ -107,6 +144,7 @@ class Sidebar extends Component {
 
             h(CommentBox, {
                 treePosition,
+                showCommentBox,
                 moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
                     : 'TE' in node ? [2, node.TE[0]]
                     : 'DO' in node ? [0, 1]

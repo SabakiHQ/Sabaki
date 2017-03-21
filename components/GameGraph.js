@@ -4,8 +4,6 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
-const Slider = require('./Slider')
-
 let gridSize = setting.get('graph.grid_size')
 let nodeSize = setting.get('graph.node_size')
 let delay = setting.get('graph.delay')
@@ -156,12 +154,14 @@ class GameGraph extends Component {
         this.componentWillReceiveProps()
     }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.height !== this.props.height || !this.dirty
+    shouldComponentUpdate({showGameGraph, height}) {
+        return showGameGraph && (height !== this.props.height || !this.dirty)
     }
 
-    componentWillReceiveProps({treePosition = null} = {}) {
+    componentWillReceiveProps({treePosition = [null, -1]} = {}) {
         // Debounce rendering
+
+        if (helper.vertexEquals(treePosition, this.props.treePosition)) return
 
         this.dirty = true
 
@@ -380,11 +380,6 @@ class GameGraph extends Component {
         viewportSize,
         cameraPosition: [cx, cy]
     }) {
-        let [tree, index] = treePosition
-        let level = gametree.getLevel(...treePosition)
-        let treeHeight = matrixDict ? matrixDict[0].length
-            : gametree.getHeight(gametree.getRoot(tree))
-
         return h('section',
             {
                 ref: el => this.element = el,
@@ -414,12 +409,7 @@ class GameGraph extends Component {
                 },
 
                 this.renderNodes(this.state)
-            ),
-
-            h(Slider, {
-                text: level,
-                percent: (level / (treeHeight - 1)) * 100
-            })
+            )
         )
     }
 }

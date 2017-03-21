@@ -149,30 +149,6 @@ class App extends Component {
         this.setState({selectedTool: tool})
     }
 
-    setCurrentPlayer(sign) {
-        let [tree, index] = this.state.treePosition
-        let node = tree.nodes[index]
-        let intendedSign = 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1 : +('W' in node)
-
-        if (intendedSign == sign) {
-            delete node.PL
-        } else {
-            node.PL = [sign > 0 ? 'B' : 'W']
-        }
-
-        this.setState(this.state)
-    }
-
-    setHotspot(hotspot) {
-        let [tree, index] = this.state.treePosition
-        let node = tree.nodes[index]
-
-        if (hotspot) node.HO = [1]
-        else delete node.HO
-
-        this.setState(this.state)
-    }
-
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth})
         window.dispatchEvent(new Event('resize'))
@@ -861,6 +837,22 @@ class App extends Component {
         this.events.emit('navigated')
     }
 
+    startAutoscrolling(step) {
+        let minDelay = setting.get('autoscroll.min_interval')
+        let diff = setting.get('autoscroll.diff')
+
+        let scroll = (delay = null) => {
+            this.goStep(step)
+            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+        }
+
+        scroll(setting.get('autoscroll.max_interval'))
+    }
+
+    stopAutoscrolling() {
+        clearTimeout(this.autoscrollId)
+    }
+
     goStep(step) {
         let treePosition = gametree.navigate(...this.state.treePosition, step)
         if (treePosition) this.setCurrentTreePosition(...treePosition)
@@ -875,9 +867,9 @@ class App extends Component {
         let {treePosition} = this.state
         let root = gametree.getRoot(...treePosition)
 
-        tp = gametree.navigate(root, 0, Math.round(number))
+        treePosition = gametree.navigate(root, 0, Math.round(number))
 
-        if (tp) this.setCurrentTreePosition(...tp)
+        if (treePosition) this.setCurrentTreePosition(...treePosition)
         else this.goToEnd()
     }
 
@@ -1001,6 +993,30 @@ class App extends Component {
 
     // Node actions
 
+    setCurrentPlayer(sign) {
+        let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
+        let intendedSign = 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1 : +('W' in node)
+
+        if (intendedSign == sign) {
+            delete node.PL
+        } else {
+            node.PL = [sign > 0 ? 'B' : 'W']
+        }
+
+        this.setState(this.state)
+    }
+
+    setHotspot(hotspot) {
+        let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
+
+        if (hotspot) node.HO = [1]
+        else delete node.HO
+
+        this.setState(this.state)
+    }
+
     copyVariation(tree, index) {
         let clone = gametree.clone(tree)
         if (index != 0) gametree.split(clone, index - 1)
@@ -1008,8 +1024,9 @@ class App extends Component {
         this.copyVariationData = clone
     }
 
-    cutVariation(tree, index) {
-        this.setUndoPoint('Undo Cut Variation')
+    cutVariation(tree, index, {setUndoPoint = true} = {}) {
+        if (setUndoPoint) this.setUndoPoint('Undo Cut Variation')
+
         this.copyVariation(tree, index)
         this.removeNode(tree, index, {
             suppressConfirmation: true,
@@ -1017,10 +1034,10 @@ class App extends Component {
         })
     }
 
-    pasteVariation(tree, index) {
+    pasteVariation(tree, index, {setUndoPoint = true} = {}) {
         if (this.copyVariationData == null) return
 
-        this.setUndoPoint('Undo Paste Variation')
+        if (setUndoPoint) this.setUndoPoint('Undo Paste Variation')
 
         let updateRoot = !tree.parent
         let oldLength = tree.nodes.length
@@ -1044,8 +1061,8 @@ class App extends Component {
         }
     }
 
-    flattenVariation(tree, index) {
-        this.setUndoPoint('Undo Flatten')
+    flattenVariation(tree, index, {setUndoPoint = true} = {}) {
+        if (setUndoPoint) this.setUndoPoint('Undo Flatten')
 
         let {rootTree, gameIndex} = this.inferredState
         let board = gametree.get(tree, index)
@@ -1106,10 +1123,10 @@ class App extends Component {
         this.setCurrentTreePosition(tree, index)
     }
 
-    shiftVariation(tree, index, step) {
+    shiftVariation(tree, index, step, {setUndoPoint = true} = {}) {
         if (!tree.parent) return
 
-        this.setUndoPoint('Undo Shift Variation')
+        if (setUndoPoint) this.setUndoPoint('Undo Shift Variation')
         this.closeDrawers()
 
         let subtrees = tree.parent.subtrees
@@ -1163,8 +1180,10 @@ class App extends Component {
         this.setCurrentTreePosition(...prev)
     }
 
-    removeOtherVariations(tree, index, {suppressConfirmation = false} = {}) {
-        if (suppressConfirmation !== true && setting.get('edit.show_removeothervariations_warning') && this.showMessageBox(
+    removeOtherVariations(tree, index, {suppressConfirmation = false, setUndoPoint = true} = {}) {
+        if (suppressConfirmation !== true
+        && setting.get('edit.show_removeothervariations_warning')
+        && this.showMessageBox(
             'Do you really want to remove all other variations?',
             'warning',
             ['Remove Variations', 'Cancel'], 1
@@ -1172,7 +1191,7 @@ class App extends Component {
 
         // Save undo information
 
-        this.setUndoPoint('Undo Remove Other Variations')
+        if (setUndoPoint) this.setUndoPoint('Undo Remove Other Variations')
         this.closeDrawers()
 
         // Remove all subsequent variations
