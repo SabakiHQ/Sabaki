@@ -124,8 +124,7 @@ class Sidebar extends Component {
                 showSlider: showGameGraph,
                 text: level,
                 percent: (level / (treeHeight - 1)) * 100,
-                height: !showGameGraph ? 0
-                    : !showCommentBox ? 100 : 100 - sidebarSplit,
+                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
                 onChange: this.handleSliderChange,
                 onStartAutoscrolling: this.handleStartAutoscrolling,
@@ -136,8 +135,7 @@ class Sidebar extends Component {
                 treePosition,
                 showGameGraph,
                 viewportWidth: sidebarWidth,
-                height: !showGameGraph ? 0
-                    : !showCommentBox ? 100 : 100 - sidebarSplit,
+                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
                 onNodeClick: this.handleGraphNodeClick
             }),
@@ -157,8 +155,7 @@ class Sidebar extends Component {
                     : [null, 1],
                 title: 'N' in node ? node.N[0].trim() : '',
                 comment: 'C' in node ? node.C[0] : '',
-                height: !showCommentBox ? 0
-                    : !showGameGraph ? 100 : sidebarSplit,
+                height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
                 sidebarSplitTransition,
 
                 onResizerMouseDown: this.handleHorizontalResizerMouseDown

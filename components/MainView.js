@@ -16,6 +16,7 @@ class MainView extends Component {
     constructor() {
         super()
 
+        this.handleTogglePlayer = () => sabaki.setPlayer(...this.props.treePosition, -this.props.currentPlayer)
         this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.toolId)
         this.handleGobanResize = this.handleGobanResize.bind(this)
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
@@ -133,7 +134,8 @@ class MainView extends Component {
                     currentPlayer,
                     showHotspot: 'HO' in node,
                     undoable,
-                    undoText
+                    undoText,
+                    onCurrentPlayerClick: this.handleTogglePlayer
                 }),
 
                 h(EditBar, {

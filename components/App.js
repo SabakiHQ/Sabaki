@@ -179,7 +179,7 @@ class App extends Component {
         let {gameTrees} = this.state
 
         gameTrees.forEach(tree => {
-            tree.nodes[0].AP = [`${app.getName()}:${app.getVersion()}`]
+            tree.nodes[0].AP = [`${this.appName}:${this.version}`]
         })
 
         return sgf.stringify(gameTrees)
@@ -194,7 +194,7 @@ class App extends Component {
         let result = dialog.showMessageBox(remote.getCurrentWindow(), {
             type,
             buttons,
-            title: app.getName(),
+            title: this.appName,
             message,
             cancelId,
             noLink: true
@@ -294,7 +294,7 @@ class App extends Component {
         }
     }
 
-    makeMove(vertex, {ignoreAutoplay = false, clearUndoPoint = true} = {}) {
+    makeMove(vertex, {cancelAutoplay = false, clearUndoPoint = true} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode))
             this.closeDrawers()
 
@@ -454,13 +454,14 @@ class App extends Component {
         this.events.emit('move-made', {pass, capture, suicide, ko})
     }
 
-    makeResign() {
+    makeResign({setUndoPoint = true} = {}) {
         let {rootTree, currentPlayer} = this.inferredState
         let player = currentPlayer > 0 ? 'W' : 'B'
         let rootNode = rootTree.nodes[0]
 
-        this.setUndoPoint('Undo Resignation')
+        if (setUndoPoint) this.setUndoPoint('Undo Resignation')
         rootNode.RE = [player + '+Resign']
+
         this.makeMove([-1, -1], {clearUndoPoint: false})
         this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
     }
@@ -671,7 +672,7 @@ class App extends Component {
 
         if (hash != null && hash !== this.fileHash) {
             let answer = this.showMessageBox([
-                `This file has been changed outside of ${app.getName()}.`,
+                `This file has been changed outside of ${this.appName}.`,
                 'Do you want to reload the file? Your changes will be lost.'
             ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
 
@@ -739,11 +740,7 @@ class App extends Component {
         })
     }
 
-    loadContent(content, format, {
-        suppressAskForSave = false,
-        ignoreEncoding = false,
-        callback = helper.noop
-    } = {}) {
+    loadContent(content, format, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
         if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
 
         this.setState({busy: true, openDrawer: null, mode: 'play'})
@@ -819,11 +816,9 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {ignoreAutoplay = false} = {}) {
+    setCurrentTreePosition(tree, index, {cancelAutoplay = true} = {}) {
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
-        if (!ignoreAutoplay && this.state.autoplaying)
-            this.setState({autoplaying: false})
 
         this.events.emit('navigating', {tree, index})
 
@@ -833,7 +828,11 @@ class App extends Component {
             t = t.parent
         }
 
-        this.setState({treePosition: [tree, index]})
+        this.setState(({autoplaying}) => ({
+            autoplaying: cancelAutoplay && autoplaying ? false : autoplaying,
+            treePosition: [tree, index]
+        }))
+
         this.events.emit('navigated')
     }
 
@@ -993,12 +992,11 @@ class App extends Component {
 
     // Node actions
 
-    setCurrentPlayer(sign) {
-        let [tree, index] = this.state.treePosition
+    setPlayer(tree, index, sign) {
         let node = tree.nodes[index]
         let intendedSign = 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1 : +('W' in node)
 
-        if (intendedSign == sign) {
+        if (intendedSign === sign || sign === 0) {
             delete node.PL
         } else {
             node.PL = [sign > 0 ? 'B' : 'W']
@@ -1007,8 +1005,7 @@ class App extends Component {
         this.setState(this.state)
     }
 
-    setHotspot(hotspot) {
-        let [tree, index] = this.state.treePosition
+    setHotspot(tree, index, hotspot) {
         let node = tree.nodes[index]
 
         if (hotspot) node.HO = [1]

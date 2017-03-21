@@ -1,12 +1,12 @@
 const {h, Component} = require('preact')
 const {Menu} = require('electron').remote
-const $ = require('../modules/sprint')
+const helper = require('../modules/helper')
 
 class PlayBar extends Component {
     constructor() {
         super()
 
-        this.handleCurrentPlayerClick = () => sabaki.setCurrentPlayer(-this.props.currentPlayer)
+        this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
         this.handleUndoButtonClick = () => sabaki.undo()
 
         this.handleMenuClick = () => {
@@ -44,12 +44,8 @@ class PlayBar extends Component {
             ]
 
             let menu = Menu.buildFromTemplate(template)
-            let {left, top} = $(this.menuButtonElement).offset()
-            menu.popup(
-                sabaki.window,
-                Math.round(left),
-                Math.round(top)
-            )
+            let {left, top} = this.menuButtonElement.getBoundingClientRect()
+            menu.popup(sabaki.window, {x: Math.round(left), y: Math.round(top), async: true})
         }
     }
 
@@ -64,7 +60,9 @@ class PlayBar extends Component {
         currentPlayer,
         showHotspot,
         undoable,
-        undoText
+        undoText,
+
+        onCurrentPlayerClick = helper.noop
     }) {
         let captureStyle = index => ({opacity: playerCaptures[index] == 0 ? 0 : .7})
 
@@ -90,7 +88,7 @@ class PlayBar extends Component {
                 class: 'current-player',
                 height: 22,
                 title: 'Change Player',
-                onClick: this.handleCurrentPlayerClick
+                onClick: onCurrentPlayerClick
             }),
 
             h('div', {class: 'hotspot', title: 'Hotspot'}),
