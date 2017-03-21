@@ -16,7 +16,17 @@ class CommentTitle extends Component {
     }
 
     shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
+        let [tree, index] = treePosition
+
+        if (!tree.parent && index === 0 || !tree.current && index === tree.nodes.length - 1)
+            return true
+
         return title !== this.props.title
+            // First node
+            || !tree.parent && index === 0
+            // Last node
+            || !tree.current && index === tree.nodes.length - 1
+            // Other data changed
             || !helper.vertexEquals(treePosition, this.props.treePosition)
             || !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation)
             || !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
@@ -214,7 +224,7 @@ class CommentBox extends Component {
 
         this.handleMenuButtonClick = () => {
             let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
-            
+
             sabaki.openCommentMenu(...this.props.treePosition, {
                 x: Math.round(left),
                 y: Math.round(bottom)

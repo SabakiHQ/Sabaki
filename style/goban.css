@@ -139,9 +139,7 @@
  * Dimming & Paint
  */
 
-.scoring .goban .row li.dead img,
-.estimator .goban .row li.dead img,
-body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
+.goban .row li.dimmed img {
     opacity: .5;
 }
 
@@ -153,15 +151,11 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
         opacity: .3;
         z-index: 3;
     }
-    .scoring .goban .row li.area_1 div.paint,
-    .estimator .goban .row li.area_1 div.paint,
-    body:not(.scoring):not(.estimator) .goban .row li.paint_1 div.paint {
+    .goban .row li.paint_1 div.paint {
         display: block;
         background-color: black;
     }
-    .scoring .goban .row li.area_-1 div.paint,
-    .estimator .goban .row li.area_-1 div.paint,
-    body:not(.scoring):not(.estimator) .goban .row li.paint_-1 div.paint {
+    .goban .row li.paint_-1 div.paint {
         display: block;
         background-color: white;
 }

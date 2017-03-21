@@ -760,7 +760,8 @@ header, #bar .bar {
         border-color: transparent;
         background: rgba(0, 0, 0, .2);
     }
-    #score .tabs li:not(.current) a:hover {
+    #score .tabs li:not(.current) a:hover,
+    #score .tabs li:not(.current) a:focus {
         border-color: transparent;
         background: rgba(0, 0, 0, .1);
     }

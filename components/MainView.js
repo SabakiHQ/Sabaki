@@ -67,6 +67,10 @@ class MainView extends Component {
         currentPlayer,
         gameInfo,
 
+        deadStones,
+        scoreBoard,
+        areaMap,
+
         highlightVertices,
         showCoordinates,
         showMoveColorization,
@@ -111,6 +115,9 @@ class MainView extends Component {
                 h(Goban, {
                     board,
                     highlightVertices: findVertex ? [findVertex] : highlightVertices,
+                    paintMap: areaMap,
+                    dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
+
                     showCoordinates,
                     showMoveColorization,
                     showNextMoves,
@@ -158,11 +165,13 @@ class MainView extends Component {
                 }),
 
                 h(ScoringBar, {
-                    mode
+                    mode,
+                    scoreBoard
                 }),
 
                 h(EstimatorBar, {
-                    mode
+                    mode,
+                    scoreBoard
                 }),
 
                 h(FindBar, {

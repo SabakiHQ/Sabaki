@@ -12,6 +12,8 @@ class GobanVertex extends Component {
         hoshi,
         shift,
         highlight,
+        paint,
+        dimmed,
         animate,
         label,
         markupType,
@@ -24,6 +26,8 @@ class GobanVertex extends Component {
             || label !== this.props.label
             || shift !== this.props.shift
             || animate !== this.props.animate
+            || paint !== this.props.paint
+            || dimmed !== this.props.dimmed
             || hoshi !== this.props.hoshi
     }
 
@@ -33,6 +37,8 @@ class GobanVertex extends Component {
         random,
         sign,
         highlight,
+        paint,
+        dimmed,
         hoshi,
         animate,
         markupType,
@@ -48,8 +54,9 @@ class GobanVertex extends Component {
             [`shift_${shift}`]: true,
             [`random_${random}`]: true,
             [`sign_${sign}`]: true,
+            [`paint_${paint}`]: !!paint,
             [markupType]: !!markupType,
-
+            dimmed,
             hoshi,
             animate,
             smalllabel: label.length >= 3
@@ -351,8 +358,10 @@ class Goban extends Component {
 
     render({
         board,
-
         highlightVertices = [],
+        paintMap,
+        dimmedStones = [],
+
         showCoordinates = false,
         showMoveColorization = true,
         showNextMoves = true,
@@ -429,6 +438,8 @@ class Goban extends Component {
                         shift: this.state.shifts[y][x],
                         random: this.state.randomizer[y][x],
                         sign,
+                        paint: paintMap && paintMap[y] && paintMap[y][x],
+                        dimmed: dimmedStones.some(equalsVertex),
                         highlight: highlightVertices.some(equalsVertex),
                         hoshi: this.state.hoshis.some(equalsVertex),
                         animate: animatedVertices.some(equalsVertex),

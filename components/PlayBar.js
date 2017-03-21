@@ -39,7 +39,7 @@ class PlayBar extends Component {
                 {type: 'separator'},
                 {
                     label: '&Info',
-                    click: () => sabaki.setOpenDrawer('info')
+                    click: () => sabaki.openDrawer('info')
                 }
             ]
 

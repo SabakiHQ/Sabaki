@@ -326,22 +326,21 @@ class Board {
     }
 
     getScore(areaMap) {
-        let score = {}
-
-        score['area_1'] = 0
-        score['area_-1'] = 0
-        score['territory_1'] = 0
-        score['territory_-1'] = 0
-        score['captures_1'] = this.captures[0]
-        score['captures_-1'] = this.captures[1]
+        let score = {
+            area: [0, 0],
+            territory: [0, 0],
+            captures: this.captures
+        }
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let sign = areaMap[y][x]
                 if (sign === 0) continue
 
-                score['area_' + sign]++
-                if (this.get([x, y]) === 0) score['territory_' + sign]++
+                let index = sign > 0 ? 0 : 1
+
+                score.area[index]++
+                if (this.get([x, y]) === 0) score.territory[index]++
             }
         }
 

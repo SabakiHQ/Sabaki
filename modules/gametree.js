@@ -434,7 +434,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             types.push(`siblingghost_${sign}`)
         }
 
-        board.ghosts[v] = [sign, types]
+        board.ghosts[v] = types
     }
 
     if (index === tree.nodes.length - 1) {

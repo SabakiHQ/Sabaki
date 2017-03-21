@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const gametree = require('../modules/gametree')
 
 const InfoDrawer = require('./InfoDrawer')
 const ScoreDrawer = require('./ScoreDrawer')
@@ -8,21 +9,23 @@ const CleanMarkupDrawer = require('./CleanMarkupDrawer')
 
 class DrawerManager extends Component {
     render({
+        mode,
+        openDrawer,
         treePosition,
+        rootTree,
         gameInfo,
         currentPlayer,
-        openDrawer
+
+        scoringMethod,
+        scoreBoard,
+        areaMap
     }) {
         return h('section', {},
             h(InfoDrawer, {
+                show: openDrawer === 'info',
                 treePosition,
                 gameInfo,
-                currentPlayer,
-                show: openDrawer === 'info'
-            }),
-
-            h(ScoreDrawer, {
-                show: openDrawer === 'score'
+                currentPlayer
             }),
 
             h(PreferencesDrawer, {
@@ -35,6 +38,21 @@ class DrawerManager extends Component {
 
             h(CleanMarkupDrawer, {
                 show: openDrawer === 'cleanmarkup'
+            }),
+
+            h(ScoreDrawer, {
+                show: openDrawer === 'score',
+                estimating: mode === 'estimator',
+                areaMap,
+                board: scoreBoard,
+                method: scoringMethod,
+                komi: +gametree.getRootProperty(treePosition[0], 'KM', 0),
+
+                onSubmitButtonClick: ({resultString}) => {
+                    rootTree.nodes[0].RE = [resultString]
+                    sabaki.closeDrawers()
+                    setTimeout(() => sabaki.setMode('play'), 500)
+                }
             })
         )
     }

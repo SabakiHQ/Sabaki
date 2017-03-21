@@ -49,6 +49,7 @@ class App extends Component {
             scoringMethod: setting.get('scoring.method'),
             findText: '',
             findVertex: null,
+            deadStones: [],
 
             // Board state
 
@@ -232,15 +233,28 @@ class App extends Component {
     // Modes & drawers
 
     setMode(mode) {
-        this.setState({mode})
+        let stateChange = {mode}
+
+        if (['scoring', 'estimator'].includes(mode)) {
+            // Guess dead stones
+
+            let {guess} = require('../modules/deadstones')
+            let {treePosition} = this.state
+            let iterations = setting.get('score.estimator_iterations')
+            let deadStones = guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
+
+            Object.assign(stateChange, {deadStones})
+        }
+
+        this.setState(stateChange)
     }
 
-    setOpenDrawer(drawer) {
+    openDrawer(drawer) {
         this.setState({openDrawer: drawer})
     }
 
     closeDrawers() {
-        this.setOpenDrawer(null)
+        this.openDrawer(null)
     }
 
     // Playing
@@ -291,6 +305,20 @@ class App extends Component {
                     this.editVertexData = null
                 }
             }
+        } else if (['scoring', 'estimator'].includes(this.state.mode)) {
+            if (button !== 0 || board.get(vertex) === 0) return
+
+            let {mode, deadStones} = this.state
+            let dead = deadStones.some(v => helper.vertexEquals(v, vertex))
+            let stones = mode === 'estimator' ? board.getChain(vertex) : board.getRelatedChains(vertex)
+
+            if (!dead) {
+                deadStones.push(...stones)
+            } else {
+                deadStones = deadStones.filter(v => !stones.some(w => helper.vertexEquals(v, w)))
+            }
+
+            this.setState({deadStones})
         }
     }
 
@@ -960,11 +988,7 @@ class App extends Component {
         let level = gametree.getLevel(tree, index)
 
         this.undoData = [rootTree, level]
-
-        this.setState({
-            undoable: true,
-            undoText
-        })
+        this.setState({undoable: true, undoText})
     }
 
     clearUndoPoint() {
@@ -1192,7 +1216,7 @@ class App extends Component {
         this.closeDrawers()
         let prev = gametree.navigate(tree, index, -1)
 
-        if (index != 0) {
+        if (index !== 0) {
             tree.nodes.splice(index, tree.nodes.length)
             tree.current = null
             tree.subtrees.length = 0
@@ -1388,12 +1412,30 @@ class App extends Component {
         // Calculate some inferred values
 
         let rootTree = gametree.getRoot(...state.treePosition)
+        let scoreBoard, areaMap
+
+        if (['scoring', 'estimator'].includes(state.mode)) {
+            // Calculate area map
+
+            scoreBoard = gametree.getBoard(...state.treePosition).clone()
+
+            for (let vertex of state.deadStones) {
+                let sign = scoreBoard.get(vertex)
+                scoreBoard.captures[sign > 0 ? 0 : 1]++
+                scoreBoard.set(vertex, 0)
+            }
+
+            areaMap = state.mode === 'estimator' ? scoreBoard.getAreaEstimateMap()
+                : scoreBoard.getAreaMap()
+        }
 
         this.inferredState = {
             rootTree,
             gameIndex: state.gameTrees.indexOf(rootTree),
             gameInfo: gametree.getGameInfo(rootTree),
-            currentPlayer: gametree.getCurrentPlayer(...state.treePosition)
+            currentPlayer: gametree.getCurrentPlayer(...state.treePosition),
+            scoreBoard,
+            areaMap
         }
 
         state = Object.assign(state, this.inferredState)
