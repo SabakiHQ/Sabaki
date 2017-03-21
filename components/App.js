@@ -48,9 +48,11 @@ class App extends Component {
             secondsPerMove: setting.get('autoplay.sec_per_move'),
             scoringMethod: setting.get('scoring.method'),
             findText: '',
+            findVertex: null,
 
             // Board state
 
+            highlightVertices: [],
             showCoordinates: setting.get('view.show_coordinates'),
             showMoveColorization: setting.get('view.show_move_colorization'),
             showNextMoves: setting.get('view.show_next_moves'),
@@ -86,7 +88,7 @@ class App extends Component {
             evt.preventDefault()
 
             if (evt.dataTransfer.files.length === 0) return
-            sabaki.loadFile(evt.dataTransfer.files[0].path)
+            this.loadFile(evt.dataTransfer.files[0].path)
         })
 
         // Handle escape key
@@ -108,7 +110,7 @@ class App extends Component {
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
-            if (!sabaki.askForSave()) evt.returnValue = ' '
+            if (!this.askForSave()) evt.returnValue = ' '
         })
 
         this.newFile()
@@ -167,10 +169,8 @@ class App extends Component {
         let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
         let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
 
-        let buffer = `(;GM[1]FF[4]CA[UTF-8]
-            AP[${this.appName}:${this.version}]
-            KM[${setting.get('game.default_komi')}]
-            ${sizeInfo}${handicapInfo})`
+        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
+            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
 
         return sgf.parse(buffer)[0]
     }
@@ -263,7 +263,7 @@ class App extends Component {
                 }
             } else if (button === 2) {
                 if (vertex in board.markups && board.markups[vertex][0] === 'point') {
-                    this.openCommentMenu({x, y})
+                    this.openCommentMenu(tree, index, {x, y})
                 }
             }
         } else if (this.state.mode === 'edit') {
@@ -1005,13 +1005,45 @@ class App extends Component {
         this.setState(this.state)
     }
 
-    setHotspot(tree, index, hotspot) {
+    setComment(tree, index, data) {
         let node = tree.nodes[index]
 
-        if (hotspot) node.HO = [1]
-        else delete node.HO
+        if ('title' in data) {
+            if (data.title && data.title.trim() !== '') node.N = [data.title]
+            else delete node.N
+        }
 
-        this.setState(this.state)
+        if ('comment' in data) {
+            if (data.comment && data.comment.trim() !== '') node.C = [data.comment]
+            else delete node.C
+        }
+
+        if ('hotspot' in data) {
+            if (data.hotspot) node.HO = [1]
+            else delete node.HO
+        }
+
+        let clearProperties = properties => properties.forEach(p => delete node[p])
+
+        if ('moveAnnotation' in data) {
+            let moveData = {'BM': 1, 'DO': '', 'IT': '', 'TE': 1}
+
+            clearProperties(Object.keys(moveData))
+
+            if (data.moveAnnotation != null)
+                node[data.moveAnnotation] = moveData[data.moveAnnotation]
+        }
+
+        if ('positionAnnotation' in data) {
+            let positionData = {'UC': 1, 'GW': 1, 'GB': 1, 'DM': 1}
+
+            clearProperties(Object.keys(positionData))
+
+            if (data.positionAnnotation != null)
+                node[data.positionAnnotation] = positionData[data.positionAnnotation]
+        }
+
+        this.clearUndoPoint()
     }
 
     copyVariation(tree, index) {
@@ -1218,7 +1250,7 @@ class App extends Component {
 
     // Menus
 
-    openNodeMenu(tree, index, options) {
+    openNodeMenu(tree, index, options = {}) {
         if (this.state.mode === 'scoring') return
 
         let template = [
@@ -1263,7 +1295,91 @@ class App extends Component {
         ]
 
         let menu = Menu.buildFromTemplate(template)
-        menu.popup(this.window, options)
+        menu.popup(this.window, Object.assign({async: true}, options))
+    }
+
+    openCommentMenu(tree, index, options = {}) {
+        let node = tree.nodes[index]
+
+        let template = [
+            {
+                label: '&Clear Annotations',
+                click: () => {
+                    this.setComment({positionAnnotation: null, moveAnnotation: null})
+                }
+            },
+            {type: 'separator'},
+            {
+                label: 'Good for &Black',
+                type: 'checkbox',
+                data: {positionAnnotation: 'GB'}
+            },
+            {
+                label: '&Unclear Position',
+                type: 'checkbox',
+                data: {positionAnnotation: 'UC'}
+            },
+            {
+                label: '&Even Position',
+                type: 'checkbox',
+                data: {positionAnnotation: 'DM'}
+            },
+            {
+                label: 'Good for &White',
+                type: 'checkbox',
+                data: {positionAnnotation: 'GW'}
+            }
+        ]
+
+        if ('B' in node || 'W' in node) {
+            template.push(
+                {type: 'separator'},
+                {
+                    label: '&Good Move',
+                    type: 'checkbox',
+                    data: {moveAnnotation: 'TE'}
+                },
+                {
+                    label: '&Interesting Move',
+                    type: 'checkbox',
+                    data: {moveAnnotation: 'IT'}
+                },
+                {
+                    label: '&Doubtful Move',
+                    type: 'checkbox',
+                    data: {moveAnnotation: 'DO'}
+                },
+                {
+                    label: 'B&ad Move',
+                    type: 'checkbox',
+                    data: {moveAnnotation: 'BM'}
+                }
+            )
+        }
+
+        template.push(
+            {type: 'separator'},
+            {
+                label: '&Hotspot',
+                type: 'checkbox',
+                data: {hotspot: true}
+            }
+        )
+
+        for (let item of template) {
+            if (!('data' in item)) continue
+
+            let [key] = Object.keys(item.data)
+            let prop = key === 'hotspot' ? 'HO' : item.data[key]
+
+            item.checked = prop in node
+            if (item.checked) item.data[key] = null
+
+            item.click = () => this.setComment(tree, index, item.data)
+        }
+
+        let menu = Menu.buildFromTemplate(template)
+        menu.popup(remote.getCurrentWindow(), Object.assign({async: true}, options))
     }
 
     // Render

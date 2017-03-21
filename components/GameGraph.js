@@ -135,10 +135,12 @@ class GameGraph extends Component {
                 this.drag = false
             }
 
-            this.setState(({cameraPosition: [cx, cy]}) => ({
-                mousePosition: [x, y],
-                cameraPosition: [cx - movementX, cy - movementY]
-            }))
+            if (!helper.vertexEquals([x, y], this.state.mousePosition) || movementX !== 0 || movementY !== 0) {
+                this.setState(({cameraPosition: [cx, cy]}) => ({
+                    mousePosition: [x, y],
+                    cameraPosition: [cx - movementX, cy - movementY]
+                }))
+            }
         })
 
         document.addEventListener('mouseup', () => {

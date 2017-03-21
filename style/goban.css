@@ -120,6 +120,22 @@
 }
 
 /**
+ * Highlight
+ */
+
+.goban .row li .highlight {
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: -2px;
+    bottom: -2px;
+    border: 2px solid #0082F0;
+    border-radius: 5px;
+    background: rgba(0, 130, 240, .2);
+    z-index: 4;
+}
+
+/**
  * Dimming & Paint
  */
 

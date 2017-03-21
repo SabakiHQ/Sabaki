@@ -1,4 +1,6 @@
+const {shell} = require('electron')
 const {h, Component} = require('preact')
+
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
@@ -51,6 +53,41 @@ class Sidebar extends Component {
 
         this.handleStopAutoscrolling = () => {
             sabaki.stopAutoscrolling()
+        }
+
+        this.handleCommentLinkClick = evt => {
+            let el = evt.currentTarget
+
+            if (el.classList.contains('external')) {
+                if (!shell) {
+                    this.target = '_blank'
+                    return
+                }
+
+                evt.preventDefault()
+                shell.openExternal(el.href)
+            } else if (el.classList.contains('movenumber')) {
+                evt.preventDefault()
+
+                let moveNumber = +el.innerText.slice(1)
+                sabaki.setUndoPoint('Go Back')
+                sabaki.goToMainVariation()
+
+                let treePosition = gametree.navigate(this.props.rootTree, 0, moveNumber)
+                if (treePosition) sabaki.setCurrentTreePosition(...treePosition)
+            }
+        }
+
+        this.handleCoordinateMouseEnter = ({vertex}) => {
+            sabaki.setState({highlightVertices: [vertex]})
+        }
+
+        this.handleCoordinateMouseLeave = () => {
+            sabaki.setState({highlightVertices: []})
+        }
+
+        this.handleCommentInput = evt => {
+            sabaki.setComment(...this.props.treePosition, evt)
         }
 
         this.componentWillReceiveProps(props)
@@ -158,7 +195,11 @@ class Sidebar extends Component {
                 height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
                 sidebarSplitTransition,
 
-                onResizerMouseDown: this.handleHorizontalResizerMouseDown
+                onResizerMouseDown: this.handleHorizontalResizerMouseDown,
+                onLinkClick: this.handleCommentLinkClick,
+                onCoordinateMouseEnter: this.handleCoordinateMouseEnter,
+                onCoordinateMouseLeave: this.handleCoordinateMouseLeave,
+                onCommentInput: this.handleCommentInput
             })
         )
     }

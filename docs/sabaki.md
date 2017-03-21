@@ -118,10 +118,10 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 * `options` `<Object>`
     * `button` `<Integer>` - Default: `0`
     * `ctrlKey` `<Boolean>` - Default: `false`
-    * `x` `<Integer>` - Default: `0`
-    * `y` `<Integer>` - Default: `0`
+    * `x` `<Boolean>` - Default: `0`
+    * `y` `<Boolean>` - Default: `0`
 
-Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for showing context menus.
+Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for displaying the context menu.
 
 #### sabaki.makeMove(vertex)
 

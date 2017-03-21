@@ -9,6 +9,12 @@ const sgf = require('../modules/sgf')
 let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
 
 class CommentTitle extends Component {
+    constructor() {
+        super()
+
+        this.handleEditButtonClick = () => sabaki.setMode('edit')
+    }
+
     shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
         return title !== this.props.title
             || !helper.vertexEquals(treePosition, this.props.treePosition)
@@ -17,8 +23,7 @@ class CommentTitle extends Component {
     }
 
     getCurrentMoveInterpretation() {
-        let [tree, index] = this.props.treePosition
-        let board = gametree.getBoard(tree, index)
+        let {treePosition: [tree, index], board} = this.props
         let node = tree.nodes[index]
 
         // Determine root node
@@ -183,7 +188,8 @@ class CommentTitle extends Component {
                 class: 'edit-button',
                 title: 'Edit',
                 width: 16,
-                height: 16
+                height: 16,
+                onClick: this.handleEditButtonClick
             }),
 
             h('span', {}, title !== '' ? title
@@ -196,25 +202,79 @@ class CommentTitle extends Component {
 class CommentBox extends Component {
     constructor(props) {
         super()
+
+        this.handleCommentInput = () => {
+            let {onCommentInput = helper.noop} = this.props
+
+            onCommentInput({
+                title: this.titleInputElement.value,
+                comment: this.textareaElement.value
+            })
+        }
+
+        this.handleMenuButtonClick = () => {
+            let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
+            
+            sabaki.openCommentMenu(...this.props.treePosition, {
+                x: Math.round(left),
+                y: Math.round(bottom)
+            })
+        }
     }
 
     shouldComponentUpdate({showCommentBox, height}) {
         return showCommentBox && (height !== this.props.height || !this.dirty)
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
         // Debounce rendering
 
         this.dirty = true
 
+        let scrollToTop = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
+
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
             this.dirty = false
-            this.setState(this.state)
 
-            this.element.scrollTop = 0
-            this.textareaElement.scrollTop = 0
+            this.setState({
+                board: gametree.getBoard(...nextProps.treePosition)
+            })
+
+            if (scrollToTop) {
+                this.element.scrollTop = 0
+                this.textareaElement.scrollTop = 0
+            }
         }, setting.get('graph.delay'))
+    }
+
+    componentDidUpdate({treePosition}) {
+        let container = this.commentDisplayElement
+
+        // Handle link clicks
+
+        for (let el of container.querySelectorAll('a')) {
+            el.addEventListener('click', evt => {
+                let {onLinkClick = helper.noop} = this.props
+                onLinkClick(evt)
+            })
+        }
+
+        // Hover on coordinates
+
+        for (let el of container.querySelectorAll('.coord')) {
+            el.addEventListener('mouseenter', evt => {
+                let {onCoordinateMouseEnter = helper.noop} = this.props
+                evt.vertex = this.state.board.coord2vertex(el.innerText)
+                onCoordinateMouseEnter(evt)
+            })
+
+            el.addEventListener('mouseleave', evt => {
+                let {onCoordinateMouseLeave = helper.noop} = this.props
+                evt.vertex = this.state.board.coord2vertex(el.innerText)
+                onCoordinateMouseLeave(evt)
+            })
+        }
     }
 
     render({
@@ -226,7 +286,9 @@ class CommentBox extends Component {
         title,
         comment,
 
-        onResizerMouseDown = helper.noop
+        onResizerMouseDown = helper.noop,
+    }, {
+        board
     }) {
         return h('section',
             {
@@ -245,12 +307,14 @@ class CommentBox extends Component {
 
             h('div', {class: 'inner'},
                 h(CommentTitle, {
+                    board,
                     treePosition,
                     moveAnnotation,
                     positionAnnotation,
                     title
                 }),
                 h('div', {
+                    ref: el => this.commentDisplayElement = el,
                     class: 'comment',
                     dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
                 })
@@ -259,20 +323,31 @@ class CommentBox extends Component {
             h('div', {class: 'edit'},
                 h('div', {class: 'header'},
                     h('img', {
+                        ref: el => this.menuButtonElement = el,
                         src: './node_modules/octicons/build/svg/chevron-down.svg',
                         width: 16,
-                        height: 16
+                        height: 16,
+                        onClick: this.handleMenuButtonClick
                     }),
 
                     h('div', {},
-                        h('input', {type: 'text', name: 'title', value: title, placeholder: 'Title'})
+                        h('input', {
+                            ref: el => this.titleInputElement = el,
+                            type: 'text',
+                            name: 'title',
+                            value: title,
+                            placeholder: 'Title',
+                            onInput: this.handleCommentInput
+                        })
                     )
                 ),
 
                 h('textarea', {
                     ref: el => this.textareaElement = el,
-                    placeholder: 'Comment'
-                }, comment)
+                    placeholder: 'Comment',
+                    value: comment,
+                    onInput: this.handleCommentInput
+                })
             )
         )
     }

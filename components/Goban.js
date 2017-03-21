@@ -11,12 +11,14 @@ class GobanVertex extends Component {
         sign,
         hoshi,
         shift,
+        highlight,
         animate,
         label,
         markupType,
         ghostTypes
     }) {
         return sign !== this.props.sign
+            || highlight !== this.props.highlight
             || ghostTypes !== this.props.ghostTypes
             || markupType !== this.props.markupType
             || label !== this.props.label
@@ -30,6 +32,7 @@ class GobanVertex extends Component {
         shift,
         random,
         sign,
+        highlight,
         hoshi,
         animate,
         markupType,
@@ -70,7 +73,9 @@ class GobanVertex extends Component {
                 h('span', {title: label})
             ),
 
-            h('div', {class: 'paint'})
+            h('div', {class: 'paint'}),
+
+            highlight && h('div', {class: 'highlight'})
         )
     }
 }
@@ -146,7 +151,9 @@ class Goban extends Component {
     componentDidMount() {
         document.addEventListener('mouseup', () => {
             this.mouseDown = false
-            this.setState({temporaryLine: null})
+
+            if (this.state.temporaryLine)
+                this.setState({temporaryLine: null})
         })
 
         // Measure CSS
@@ -345,6 +352,7 @@ class Goban extends Component {
     render({
         board,
 
+        highlightVertices = [],
         showCoordinates = false,
         showMoveColorization = true,
         showNextMoves = true,
@@ -414,14 +422,16 @@ class Goban extends Component {
                 rangeY.map(y => h('ol', {class: 'row'}, rangeX.map(x => {
                     let sign = board.get([x, y])
                     let [markupType, label] = board.markups[[x, y]] || [null, '']
+                    let equalsVertex = v => helper.vertexEquals(v, [x, y])
 
                     return h(GobanVertex, {
                         position: [x, y],
                         shift: this.state.shifts[y][x],
                         random: this.state.randomizer[y][x],
                         sign,
-                        hoshi: this.state.hoshis.some(v => helper.vertexEquals(v, [x, y])),
-                        animate: animatedVertices.some(v => helper.vertexEquals(v, [x, y])),
+                        highlight: highlightVertices.some(equalsVertex),
+                        hoshi: this.state.hoshis.some(equalsVertex),
+                        animate: animatedVertices.some(equalsVertex),
                         smalllabel: label.length >= 3,
                         markupType,
                         label,

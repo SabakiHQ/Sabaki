@@ -67,6 +67,7 @@ class MainView extends Component {
         currentPlayer,
         gameInfo,
 
+        highlightVertices,
         showCoordinates,
         showMoveColorization,
         showNextMoves,
@@ -81,6 +82,7 @@ class MainView extends Component {
         secondsPerMove,
         autoplaying,
         findText,
+        findVertex,
 
         showGameGraph,
         showCommentBox,
@@ -108,6 +110,7 @@ class MainView extends Component {
 
                 h(Goban, {
                     board,
+                    highlightVertices: findVertex ? [findVertex] : highlightVertices,
                     showCoordinates,
                     showMoveColorization,
                     showNextMoves,
