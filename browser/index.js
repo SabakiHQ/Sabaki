@@ -2387,9 +2387,10 @@ sabaki.flattenVariation = function(tree, index) {
 
     node.AB = []
     node.AW = []
-    node.AE = []
+    delete node.AE
     delete node.B
     delete node.W
+
     clone.parent = null
     inherit.forEach(x => x in rootNode ? node[x] = rootNode[x] : null)
 
@@ -2401,6 +2402,9 @@ sabaki.flattenVariation = function(tree, index) {
             node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
         }
     }
+
+    if (node.AB.length === 0) delete node.AB
+    if (node.AW.length === 0) delete node.AW
 
     sabaki.setRootTree(clone)
 }
