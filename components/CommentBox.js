@@ -5,6 +5,7 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const sgf = require('../modules/sgf')
+const Board = require('../modules/board')
 
 let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
 
@@ -18,14 +19,11 @@ class CommentTitle extends Component {
     shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
         let [tree, index] = treePosition
 
-        if (!tree.parent && index === 0 || !tree.current && index === tree.nodes.length - 1)
-            return true
-
         return title !== this.props.title
             // First node
             || !tree.parent && index === 0
             // Last node
-            || !tree.current && index === tree.nodes.length - 1
+            || tree.subtrees.length === 0 && index === tree.nodes.length - 1
             // Other data changed
             || !helper.vertexEquals(treePosition, this.props.treePosition)
             || !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation)
@@ -209,9 +207,56 @@ class CommentTitle extends Component {
     }
 }
 
+class CommentText extends Component {
+    shouldComponentUpdate({board, comment}) {
+        return comment !== this.props.comment
+            || board.width !== this.props.board.width
+            || board.height !== this.props.board.height
+    }
+
+    componentDidUpdate() {
+        // Handle link clicks
+
+        for (let el of this.element.querySelectorAll('a')) {
+            el.addEventListener('click', evt => {
+                let {onLinkClick = helper.noop} = this.props
+                onLinkClick(evt)
+            })
+        }
+
+        // Hover on coordinates
+
+        for (let el of this.element.querySelectorAll('.coord')) {
+            el.addEventListener('mouseenter', evt => {
+                let {board, onCoordinateMouseEnter = helper.noop} = this.props
+                evt.vertex = board.coord2vertex(el.innerText)
+                onCoordinateMouseEnter(evt)
+            })
+
+            el.addEventListener('mouseleave', evt => {
+                let {board, onCoordinateMouseLeave = helper.noop} = this.props
+                evt.vertex = board.coord2vertex(el.innerText)
+                onCoordinateMouseLeave(evt)
+            })
+        }
+    }
+
+    render({comment}) {
+        return h('div', {
+            ref: el => this.element = el,
+            class: 'comment',
+            dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
+        })
+    }
+}
+
 class CommentBox extends Component {
     constructor(props) {
         super()
+
+        this.state = {
+            board: new Board()
+        }
 
         this.handleCommentInput = () => {
             let {onCommentInput = helper.noop} = this.props
@@ -241,50 +286,21 @@ class CommentBox extends Component {
 
         this.dirty = true
 
-        let scrollToTop = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
+        let treePositionChanged = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
 
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
             this.dirty = false
 
-            this.setState({
-                board: gametree.getBoard(...nextProps.treePosition)
-            })
+            if (treePositionChanged) {
+                this.setState({
+                    board: gametree.getBoard(...nextProps.treePosition)
+                })
 
-            if (scrollToTop) {
                 this.element.scrollTop = 0
                 this.textareaElement.scrollTop = 0
             }
         }, setting.get('graph.delay'))
-    }
-
-    componentDidUpdate({treePosition}) {
-        let container = this.commentDisplayElement
-
-        // Handle link clicks
-
-        for (let el of container.querySelectorAll('a')) {
-            el.addEventListener('click', evt => {
-                let {onLinkClick = helper.noop} = this.props
-                onLinkClick(evt)
-            })
-        }
-
-        // Hover on coordinates
-
-        for (let el of container.querySelectorAll('.coord')) {
-            el.addEventListener('mouseenter', evt => {
-                let {onCoordinateMouseEnter = helper.noop} = this.props
-                evt.vertex = this.state.board.coord2vertex(el.innerText)
-                onCoordinateMouseEnter(evt)
-            })
-
-            el.addEventListener('mouseleave', evt => {
-                let {onCoordinateMouseLeave = helper.noop} = this.props
-                evt.vertex = this.state.board.coord2vertex(el.innerText)
-                onCoordinateMouseLeave(evt)
-            })
-        }
     }
 
     render({
@@ -297,6 +313,9 @@ class CommentBox extends Component {
         comment,
 
         onResizerMouseDown = helper.noop,
+        onLinkClick = helper.noop,
+        onCoordinateMouseEnter = helper.noop,
+        onCoordinateMouseLeave = helper.noop
     }, {
         board
     }) {
@@ -323,10 +342,13 @@ class CommentBox extends Component {
                     positionAnnotation,
                     title
                 }),
-                h('div', {
-                    ref: el => this.commentDisplayElement = el,
-                    class: 'comment',
-                    dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
+
+                h(CommentText, {
+                    board,
+                    comment,
+                    onLinkClick,
+                    onCoordinateMouseEnter,
+                    onCoordinateMouseLeave
                 })
             ),
 
