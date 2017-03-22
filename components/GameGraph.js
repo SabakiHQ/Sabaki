@@ -95,6 +95,7 @@ class GameGraph extends Component {
         this.state = {
             cameraPosition: [-gridSize, -gridSize],
             viewportSize: null,
+            viewportPosition: null,
             matrixDict: null,
             mousePosition: [-100, -100]
         }
@@ -107,27 +108,19 @@ class GameGraph extends Component {
     }
 
     remeasure() {
-        let {clientWidth, clientHeight} = this.element
-        this.setState({viewportSize: [clientWidth, clientHeight]})
+        let {left, top, width, height} = this.element.getBoundingClientRect()
+        this.setState({viewportSize: [width, height], viewportPosition: [left, top]})
     }
 
     componentDidMount() {
         document.addEventListener('mousemove', evt => {
             if (!this.svgElement) return
 
-            let {left, top, right, bottom} = this.svgElement.getBoundingClientRect()
             let {x, y, movementX, movementY} = evt
-
-            if (x < left || x > right || y < top || y > bottom) {
-                [x, y] = [-gridSize, -gridSize]
-            } else {
-                [x, y] = [x - left, y - top].map(z => Math.round(z))
-            }
 
             if (this.mouseDown == null) {
                 [movementX, movementY] = [0, 0]
                 this.drag = false
-                if (helper.vertexEquals([x, y], this.state.mousePosition)) return
             } else if (this.mouseDown === 0) {
                 this.drag = true
             } else {
@@ -135,12 +128,10 @@ class GameGraph extends Component {
                 this.drag = false
             }
 
-            if (!helper.vertexEquals([x, y], this.state.mousePosition) || movementX !== 0 || movementY !== 0) {
-                this.setState(({cameraPosition: [cx, cy]}) => ({
-                    mousePosition: [x, y],
-                    cameraPosition: [cx - movementX, cy - movementY]
-                }))
-            }
+            this.setState(({cameraPosition: [cx, cy], viewportPosition: [vx, vy]}) => ({
+                mousePosition: [x - vx, y - vy],
+                cameraPosition: [cx - movementX, cy - movementY]
+            }))
         })
 
         document.addEventListener('mouseup', () => {
@@ -228,8 +219,8 @@ class GameGraph extends Component {
     renderNodes({
         matrixDict: [matrix, dict],
         cameraPosition: [cx, cy],
-        viewportSize: [width, height],
-        mousePosition: [mx, my]
+        mousePosition: [mx, my],
+        viewportSize: [width, height]
     }) {
         let nodeColumns = []
         let edges = []

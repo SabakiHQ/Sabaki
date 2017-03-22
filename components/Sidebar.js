@@ -110,6 +110,7 @@ class Sidebar extends Component {
                 this.verticalResizerMouseDown = false
                 this.horizontalResizerMouseDown = false
                 this.setState({sidebarSplitTransition: false})
+                window.dispatchEvent(new Event('resize'))
             }
         })
 
@@ -130,6 +131,7 @@ class Sidebar extends Component {
     }
 
     render({
+        mode,
         treePosition,
         rootTree,
         showGameGraph,
@@ -178,6 +180,7 @@ class Sidebar extends Component {
             }),
 
             h(CommentBox, {
+                mode,
                 treePosition,
                 showCommentBox,
                 moveAnnotation: 'BM' in node ? [-1, node.BM[0]]

@@ -281,12 +281,17 @@ class CommentBox extends Component {
         return showCommentBox && (height !== this.props.height || !this.dirty)
     }
 
-    componentWillReceiveProps({treePosition}) {
+    componentWillReceiveProps({treePosition, mode}) {
         // Debounce rendering
 
         this.dirty = true
 
         let treePositionChanged = !helper.vertexEquals(treePosition, this.props.treePosition)
+
+        if (mode === 'edit') {
+            this.element.scrollTop = 0
+            this.textareaElement.scrollTop = 0
+        }
 
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
@@ -298,7 +303,6 @@ class CommentBox extends Component {
                 })
 
                 this.element.scrollTop = 0
-                this.textareaElement.scrollTop = 0
             } else {
                 this.setState(this.state)
             }

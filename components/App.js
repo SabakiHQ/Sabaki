@@ -735,7 +735,7 @@ class App extends Component {
     // File methods
 
     newFile({sound = false, showInfo = false, suppressAskForSave = false} = {}) {
-        if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
+        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         let emptyTree = this.getEmptyGameTree()
 
@@ -753,7 +753,7 @@ class App extends Component {
     }
 
     loadFile(filename = null, {suppressAskForSave = false} = {}) {
-        if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
+        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
             let extensions = [sgf, gib, ngf].map(x => x.meta)
@@ -789,7 +789,7 @@ class App extends Component {
     }
 
     loadContent(content, format, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
-        if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
+        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
         this.setState({openDrawer: null, mode: 'play'})
@@ -840,7 +840,7 @@ class App extends Component {
     }
 
     saveFile(filename = null) {
-        if (this.state.busy) return false
+        if (this.isBusy()) return false
 
         if (!filename) {
             filename = this.showSaveDialog({
@@ -905,7 +905,7 @@ class App extends Component {
         this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
     }
 
-    findMove(step, {vertex = null, text = '', callback = helper.noop}) {
+    findMove(step, {vertex = null, text = ''}, callback = helper.noop) {
         if (vertex == null && text.trim() === '') return
         let point = vertex ? sgf.vertex2point(vertex) : null
 
