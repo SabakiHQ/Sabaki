@@ -266,6 +266,15 @@ describe('Board', () => {
             assert.equal(move.get([3, 1]), 1)
             assert.equal(move.get([1, 2]), 1)
         })
+        it('should handle stone overwrites correctly' () => {
+            let board = new Board()
+            ;[[10, 9], [10, 10], [10, 11]].forEach(x => board.set(x, 1))
+            ;[[10, 8], [9, 9], [11, 9]].forEach(x => board.set(x, -1))
+            let move = board.makeMove(-1, [10, 10])
+            assert.equal(move.get([10, 10]), -1)
+            assert.equal(move.get([10, 9]), 0)
+            assert.equal(move.get([10, 11]), 1)
+        })
         it('should make a pass', () => {
             let board = new Board()
             assert.deepEqual(board.makeMove(1, [-1, -1]).arrangement, board.arrangement)
