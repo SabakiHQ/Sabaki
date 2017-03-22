@@ -380,9 +380,6 @@ class Board {
 
         if (sign === 0 || !this.hasVertex(vertex)) return move
 
-        // Next line commented out to allow moves to overwrite stones...
-        // if (this.get(vertex) !== 0) return null
-
         sign = sign > 0 ? 1 : -1
         move.set(vertex, sign)
 
