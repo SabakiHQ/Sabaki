@@ -1,7 +1,7 @@
 const fs = require('fs')
 const EventEmitter = require('events')
-const {ipcRenderer, clipboard, remote} = require('electron')
-const {app, dialog, Menu} = remote
+const {clipboard, remote} = require('electron')
+const {app, Menu} = remote
 const {h, render, options, Component} = require('preact')
 
 const MainView = require('./MainView')
@@ -10,6 +10,7 @@ const Sidebar = require('./Sidebar')
 const DrawerManager = require('./DrawerManager')
 
 const Board = require('../modules/board')
+const dialog = require('../modules/dialog')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
@@ -197,50 +198,6 @@ class App extends Component {
         return sgf.stringify(gameTrees)
     }
 
-    // Shell
-
-    showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-        this.setBusy(true)
-        ipcRenderer.send('build-menu', true)
-
-        let result = dialog.showMessageBox(remote.getCurrentWindow(), {
-            type,
-            buttons,
-            title: this.appName,
-            message,
-            cancelId,
-            noLink: true
-        })
-
-        ipcRenderer.send('build-menu')
-        this.setBusy(false)
-
-        return result
-    }
-
-    showFileDialog(type, options) {
-        this.setBusy(true)
-        ipcRenderer.send('build-menu', true)
-
-        let [t, ...ype] = [...type]
-        type = t.toUpperCase() + ype.join('').toLowerCase()
-
-        let result = dialog[`show${type}Dialog`](this.window, options)
-
-        ipcRenderer.send('build-menu')
-        this.setBusy(false)
-
-        return result
-    }
-
-    showOpenDialog(options) {
-        return this.showFileDialog('open', options)
-    }
-
-    showSaveDialog(options) {
-        return this.showFileDialog('save', options)
-    }
-
     // Modes & drawers
 
     setMode(mode) {
@@ -365,7 +322,7 @@ class App extends Component {
 
                 ko = prev[0].nodes[prev[1]].board.getHash() == hash
 
-                if (ko && this.showMessageBox(
+                if (ko && dialog.showMessageBox(
                     ['You are about to play a move which repeats a previous board position.',
                     'This is invalid in some rulesets.'].join('\n'),
                     'info',
@@ -702,7 +659,7 @@ class App extends Component {
         let hash = this.generateTreeHash()
 
         if (hash !== this.treeHash) {
-            let answer = this.showMessageBox(
+            let answer = dialog.showMessageBox(
                 'Your changes will be lost if you close this file without saving.',
                 'warning',
                 ['Save', 'Don’t Save', 'Cancel'], 2
@@ -719,7 +676,7 @@ class App extends Component {
         let hash = this.generateFileHash()
 
         if (hash != null && hash !== this.fileHash) {
-            let answer = this.showMessageBox([
+            let answer = dialog.showMessageBox([
                 `This file has been changed outside of ${this.appName}.`,
                 'Do you want to reload the file? Your changes will be lost.'
             ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
@@ -760,7 +717,7 @@ class App extends Component {
             let combinedExtensions = extensions.map(x => x.extensions)
                 .reduce((acc, x) => [...acc, ...x], [])
 
-            let result = this.showOpenDialog({
+            let result = dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [
                     {name: 'Game Records', extensions: combinedExtensions},
@@ -810,7 +767,7 @@ class App extends Component {
 
                 if (gameTrees.length == 0) throw true
             } catch (err) {
-                this.showMessageBox('This file is unreadable.', 'warning')
+                dialog.showMessageBox('This file is unreadable.', 'warning')
                 error = true
             }
 
@@ -843,7 +800,7 @@ class App extends Component {
         if (this.isBusy()) return false
 
         if (!filename) {
-            filename = this.showSaveDialog({
+            filename = dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
             })
 
@@ -1276,13 +1233,13 @@ class App extends Component {
 
     removeNode(tree, index, {suppressConfirmation = false, setUndoPoint = true} = {}) {
         if (!tree.parent && index === 0) {
-            this.showMessageBox('The root node cannot be removed.', 'warning')
+            dialog.showMessageBox('The root node cannot be removed.', 'warning')
             return
         }
 
         if (suppressConfirmation !== true
         && setting.get('edit.show_removenode_warning')
-        && this.showMessageBox(
+        && dialog.showMessageBox(
             'Do you really want to remove this node?',
             'warning',
             ['Remove Node', 'Cancel'], 1
@@ -1317,7 +1274,7 @@ class App extends Component {
     removeOtherVariations(tree, index, {suppressConfirmation = false, setUndoPoint = true} = {}) {
         if (suppressConfirmation !== true
         && setting.get('edit.show_removeothervariations_warning')
-        && this.showMessageBox(
+        && dialog.showMessageBox(
             'Do you really want to remove all other variations?',
             'warning',
             ['Remove Variations', 'Cancel'], 1
