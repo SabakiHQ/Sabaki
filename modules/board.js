@@ -73,11 +73,11 @@ class Board {
 
     getNeighbors(vertex, ignoreBoard = false) {
         if (!ignoreBoard && !this.hasVertex(vertex)) return []
-        let [x, y] = vertex
 
-        return [
-            [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(v => ignoreBoard || this.hasVertex(v))
+        let [x, y] = vertex
+        let allNeighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
+
+        return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.hasVertex(v))
     }
 
     getConnectedComponent(vertex, func, result = null) {
@@ -96,7 +96,7 @@ class Board {
 
         for (let v of this.getNeighbors(vertex)) {
             if (!func(v)) continue
-            if (result.some(w => w[0] === v[0] && w[1] === v[1])) continue
+            if (result.some(w => helper.vertexEquals(v, w))) continue
 
             result.push(v)
             this.getConnectedComponent(v, func, result)
@@ -279,14 +279,13 @@ class Board {
 
     getInfluenceMap(sign) {
         let map = [...Array(this.height)].map(_ => Array(this.width).fill(0))
+        let size = [this.width, this.height]
         let done = []
 
         // Cast influence
 
         let getVertex = v => {
             if (this.hasVertex(v)) return v
-
-            let size = [this.width, this.height]
             return v.map((z, i) => z < 0 ? -z - 1 : z >= size[i] ? 2 * size[i] - z - 1 : z)
         }
 
@@ -295,29 +294,30 @@ class Board {
             let visited = []
 
             while (stack.length > 0) {
-                let [v, d] = stack.shift()
-
-                if (visited.some(w => w[0] === v[0] && w[1] === v[1])) continue
-                visited.push(v)
-
+                let [v, d] = stack.pop()
                 let [x, y] = getVertex(v)
+                
                 map[y][x] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
-                stack.push(...this.getNeighbors(v, true).filter(n => {
-                    return d + 1 <= distance
-                    && this.get(n) !== -sign
-                    && !visited.some(w => w[0] === n[0] && w[1] === n[1])
-                }).map(n => [n, d + 1]))
+                for (let n of this.getNeighbors(v, true)) {
+                    if (d + 1 > distance
+                    || this.get(n) === -sign
+                    || visited.some(w => helper.vertexEquals(n, w))) continue
+
+                    visited.push(n)
+                    stack.push([n, d + 1])
+                }
             }
         }
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let v = [x, y]
-                if (done.some(w => w[0] === v[0] && w[1] === v[1]) || this.get(v) !== sign) continue
-                let chain = this.getChain(v)
+                if (this.get(v) !== sign || done.some(w => helper.vertexEquals(v, w))) continue
 
+                let chain = this.getChain(v)
                 chain.forEach(w => done.push(w))
+
                 castInfluence(chain, 6)
             }
         }

@@ -19,7 +19,7 @@ const sgf = require('../modules/sgf')
 const ngf = require('../modules/ngf')
 const gib = require('../modules/gib')
 
-options.syncComponentUpdates = true
+options.syncComponentUpdates = false
 
 class App extends Component {
     constructor() {
@@ -313,6 +313,15 @@ class App extends Component {
             }
 
             this.setState({deadStones})
+        } else if (this.state.mode === 'find') {
+            if (button !== 0) return
+
+            if (helper.vertexEquals(this.state.findVertex || [-1, -1], vertex)) {
+                this.setState({findVertex: null})
+            } else {
+                this.setState({findVertex: vertex})
+                this.findMove(1, {vertex, text: this.state.findText})
+            }
         }
     }
 
@@ -528,10 +537,10 @@ class App extends Component {
 
             let sign = tool === 'stone_1' ? 1 : -1
             let oldSign = board.get(vertex)
-            let props = ['AW', 'AE', 'AB']
+            let properties = ['AW', 'AE', 'AB']
             let point = sgf.vertex2point(vertex)
 
-            for (let prop of props) {
+            for (let prop of properties) {
                 if (!(prop in node)) continue
 
                 // Resolve compressed lists
@@ -548,7 +557,7 @@ class App extends Component {
                 if (node[prop].length === 0) delete node[prop]
             }
 
-            let prop = oldSign !== sign ? props[sign + 1] : 'AE'
+            let prop = oldSign !== sign ? properties[sign + 1] : 'AE'
 
             if (prop in node) node[prop].push(point)
             else node[prop] = [point]
@@ -834,6 +843,62 @@ class App extends Component {
         this.fileHash = this.generateFileHash()
 
         return true
+    }
+
+    // Find methods
+
+    findPosition(step, condition, callback = helper.noop) {
+        if (isNaN(step)) step = 1
+        else step = step >= 0 ? 1 : -1
+
+        this.setState({busy: true})
+
+        setTimeout(() => {
+            let tp = this.state.treePosition
+            let iterator = gametree.makeHorizontalNavigator(...tp)
+
+            while (true) {
+                tp = step >= 0 ? iterator.next() : iterator.prev()
+
+                if (!tp) {
+                    let root = this.inferredState.rootTree
+
+                    if (step === 1) {
+                        tp = [root, 0]
+                    } else {
+                        let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
+                        tp = sections[sections.length - 1]
+                    }
+
+                    iterator = gametree.makeHorizontalNavigator(...tp)
+                }
+
+                if (helper.vertexEquals(tp, this.state.treePosition) || condition(...tp))
+                    break
+            }
+
+            this.setCurrentTreePosition(...tp)
+            this.setState({busy: false})
+            callback()
+        }, setting.get('find.delay'))
+    }
+
+    findHotspot(step, callback = helper.noop) {
+        this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
+    }
+
+    findMove(step, {vertex = null, text = '', callback = helper.noop}) {
+        if (vertex == null && text.trim() === '') return
+        let point = vertex ? sgf.vertex2point(vertex) : null
+
+        this.findPosition(step, (tree, index) => {
+            let node = tree.nodes[index]
+            let cond = (prop, value) => prop in node
+                && node[prop][0].toLowerCase().includes(value.toLowerCase())
+
+            return (!point || ['B', 'W'].some(x => cond(x, point)))
+                && (!text || cond('C', text) || cond('N', text))
+        }, callback)
     }
 
     // Navigation
@@ -1439,6 +1504,7 @@ class App extends Component {
                 class: {
                     leftsidebar: state.showLeftSidebar,
                     sidebar: state.showGameGraph || state.showCommentBox,
+                    busy: state.busy,
                     [state.mode]: true
                 }
             },
@@ -1446,7 +1512,9 @@ class App extends Component {
             h(MainView, state),
             h(LeftSidebar, state),
             h(Sidebar, state),
-            h(DrawerManager, state)
+            h(DrawerManager, state),
+
+            h('section', {id: 'busy'})
         )
     }
 }

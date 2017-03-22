@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
-**Added**
-
 * Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* The game tree is more accessible, the nodes have a bigger click surface and dragging the graph can go beyond the component
+* Show score/estimator results directly in the corresponding bars
 
 ## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
 

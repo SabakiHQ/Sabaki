@@ -24,10 +24,10 @@ class EditBar extends Component {
     handleToolButtonClick(evt) {
         let {selectedTool, onToolButtonClick = helper.noop} = this.props
 
-        evt.toolId = evt.currentTarget.dataset.id
+        evt.tool = evt.currentTarget.dataset.id
 
-        if (evt.toolId.indexOf('stone') === 0 && selectedTool.indexOf('stone') === 0) {
-            evt.toolId = `stone_${-this.state.stoneTool}`
+        if (evt.tool.indexOf('stone') === 0 && selectedTool.indexOf('stone') === 0) {
+            evt.tool = `stone_${-this.state.stoneTool}`
             this.setState(({stoneTool}) => ({stoneTool: -stoneTool}))
         }
 

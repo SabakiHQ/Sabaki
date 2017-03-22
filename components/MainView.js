@@ -16,7 +16,12 @@ class MainView extends Component {
         super()
 
         this.handleTogglePlayer = () => sabaki.setPlayer(...this.props.treePosition, -this.props.currentPlayer)
-        this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.toolId)
+        this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.tool)
+        this.handleFindButtonClick = evt => sabaki.findMove(evt.step, {
+            vertex: this.props.findVertex,
+            text: this.props.findText
+        })
+
         this.handleGobanResize = this.handleGobanResize.bind(this)
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
         this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
@@ -135,7 +140,8 @@ class MainView extends Component {
 
                 h(Goban, {
                     board,
-                    highlightVertices: findVertex ? [findVertex] : highlightVertices,
+                    highlightVertices: findVertex && mode === 'find' ? [findVertex]
+                        : highlightVertices,
                     paintMap: areaMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 
@@ -205,7 +211,9 @@ class MainView extends Component {
                 }, 'Toggle group status.'),
 
                 h(FindBar, {
-                    mode
+                    mode,
+                    findText,
+                    onButtonClick: this.handleFindButtonClick,
                 })
             )
         )

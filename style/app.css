@@ -69,7 +69,7 @@ img {
         cursor: wait;
         z-index: 999;
     }
-    body.busy #busy {
+    .busy #busy {
         display: block;
 }
 

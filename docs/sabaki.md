@@ -63,10 +63,10 @@ The `file-loaded` event is triggered when Sabaki finishes loading some file.
 
 #### sabaki.newFile([options])
 
-* `options` `<Object>`
-    * `sound` `<Boolean>` - Default: `false`
-    * `showInfo` `<Boolean>` - Default: `false`
-    * `suppressAskForSave` `<Boolean>` - Default: `false`
+* `options` `<Object>` *(optional)*
+    * `sound` `<Boolean>` *(optional)* - Default: `false`
+    * `showInfo` `<Boolean>` *(optional)* - Default: `false`
+    * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
 
 Resets file name, returns to play mode, and replaces current file with an empty file. Set `showInfo` to `true` if you want the 'Game Info' drawer to show afterwards.
 
@@ -74,10 +74,10 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 #### sabaki.loadFile([filename[, options]])
 
-* `filename` `<String>`
-* `options` `<Object>`
-    * `suppressAskForSave` `<Boolean>` - Default: `false`
-    * `callback` `<Function>`
+* `filename` `<String>` *(optional)*
+* `options` `<Object>` *(optional)*
+    * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
+    * `callback` `<Function>` *(optional)*
 
 Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show an open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
@@ -87,10 +87,10 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 * `content` `<String>`
 * `format` `<String>` - One of `'sgf'`, `'ngf'`, `'gib'`
-* `options` `<Object>`
-    * `suppressAskForSave` `<Boolean>` - Default: `false`
-    * `ignoreEncoding` `<Boolean>` - Default: `false`
-    * `callback` `<Function>`
+* `options` `<Object>` *(optional)*
+    * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
+    * `ignoreEncoding` `<Boolean>` *(optional)* - Default: `false`
+    * `callback` `<Function>` *(optional)*
 
 Returns to play mode and parses `content` as `format`, whicch replaces current file. If `format` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
@@ -98,7 +98,7 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 #### sabaki.saveFile([filename])
 
-* `filename` `<String>`
+* `filename` `<String>` *(optional)*
 
 Saves current file in given `filename` as SGF. If `filename` is not set, Sabaki will show a save file dialog. On the web version `filename` is ignored and treated as if not set.
 
@@ -115,11 +115,11 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 #### sabaki.clickVertex(vertex[, options])
 
 * `vertex` [`<Vertex>`](vertex.md)
-* `options` `<Object>`
-    * `button` `<Integer>` - Default: `0`
-    * `ctrlKey` `<Boolean>` - Default: `false`
-    * `x` `<Boolean>` - Default: `0`
-    * `y` `<Boolean>` - Default: `0`
+* `options` `<Object>` *(optional)*
+    * `button` `<Integer>` *(optional)* - Default: `0`
+    * `ctrlKey` `<Boolean>` *(optional)* - Default: `false`
+    * `x` `<Boolean>` *(optional)* - Default: `0`
+    * `y` `<Boolean>` *(optional)* - Default: `0`
 
 Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for displaying the context menu.
 
@@ -137,14 +137,15 @@ Updates game information that the current player has resigned and shows the game
 
 #### sabaki.useTool(tool, vertex[, endVertex])
 
-* `vertex` [`<Vertex>`](vertex.md)
 * `tool` `<String>` - One of `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`
+* `vertex` [`<Vertex>`](vertex.md)
+* `endVertex` [`<Vertex>`](vertex.md) *(optional)*
 
 ### Undo
 
 #### sabaki.setUndoPoint([undoText])
 
-* `undoText` `<String>`
+* `undoText` `<String>` *(optional)*
 
 #### sabaki.clearUndoPoint()
 #### sabaki.undo()
@@ -184,16 +185,17 @@ Jumps to the position specified by `tree` and `index`.
 
 * `step` `<Integer>`
 * `condition` `<Function>`
-* `callback` `<Function>`
+* `callback` `<Function>` *(optional)*
 
 #### sabaki.findHotspot(step[, callback])
 
 * `step` `<Integer>`
-* `callback` `<Function>`
+* `callback` `<Function>` *(optional)*
 
-#### sabaki.findMove(vertex, text, step[, callback])
+#### sabaki.findMove(step, data[, callback])
 
-* `vertex` [`<Vertex>`](vertex.md)
-* `text` `<String>`
 * `step` `<Integer>`
-* `callback` `<Function>`
+* `data` `<Object>`
+    * `vertex` [`<Vertex>`](vertex.md) *(optional)*
+    * `text` `<String>` *(optional)*
+* `callback` `<Function>` *(optional)*
