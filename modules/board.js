@@ -378,7 +378,6 @@ class Board {
         let move = new Board(this.width, this.height, this.arrangement, this.captures)
 
         if (sign === 0 || !this.hasVertex(vertex)) return move
-        if (this.get(vertex) !== 0) return null
 
         sign = sign > 0 ? 1 : -1
         move.set(vertex, sign)
@@ -391,7 +390,7 @@ class Board {
         for (let n of deadNeighbors) {
             if (move.get(n) === 0) continue
 
-            for (let c of this.getChain(n)) {
+            for (let c of move.getChain(n)) {
                 move.set(c, 0)
                 move.captures[(-sign + 1) / 2]++
             }
