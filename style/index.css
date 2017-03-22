@@ -171,11 +171,26 @@ header, #bar .bar {
         height: 32px;
         left: 10px;
         top: 50%;
-        background: #400000;
+        background: #600000;
         transform: translateY(-50%);
     }
-    #scoring button:hover, #scoring button:focus,
-    #estimator button:hover, #estimator button:focus { background: #600000; }
+    #scoring button strong, #estimator button strong {
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: #400000;
+        line-height: 32px;
+        text-align: center;
+        opacity: 1;
+        transition: opacity .2s;
+    }
+    #scoring button:hover strong, #scoring button:focus strong,
+    #estimator button:hover strong, #estimator button:focus strong {
+        opacity: 0;
+    }
     #bar .bar button:active {
         transform: translateY(-46%);
 }

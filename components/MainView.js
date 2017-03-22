@@ -6,7 +6,6 @@ const EditBar = require('./EditBar')
 const GuessBar = require('./GuessBar')
 const AutoplayBar = require('./AutoplayBar')
 const ScoringBar = require('./ScoringBar')
-const EstimatorBar = require('./EstimatorBar')
 const FindBar = require('./FindBar')
 
 const $ = require('../modules/sprint')
@@ -82,10 +81,12 @@ class MainView extends Component {
     render({
         mode,
         treePosition,
+        rootTree,
         currentPlayer,
         gameInfo,
 
         deadStones,
+        scoringMethod,
         scoreBoard,
         areaMap,
 
@@ -118,6 +119,7 @@ class MainView extends Component {
         let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
         let showSidebar = showGameGraph || showCommentBox
+        let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
         return h('section',
             {
@@ -185,14 +187,22 @@ class MainView extends Component {
                 }),
 
                 h(ScoringBar, {
+                    type: 'scoring',
                     mode,
-                    scoreBoard
-                }),
+                    method: scoringMethod,
+                    scoreBoard,
+                    areaMap,
+                    komi
+                }, 'Please select dead stones.'),
 
-                h(EstimatorBar, {
+                h(ScoringBar, {
+                    type: 'estimator',
                     mode,
-                    scoreBoard
-                }),
+                    method: scoringMethod,
+                    scoreBoard,
+                    areaMap,
+                    komi
+                }, 'Toggle group status.'),
 
                 h(FindBar, {
                     mode
