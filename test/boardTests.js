@@ -266,7 +266,7 @@ describe('Board', () => {
             assert.equal(move.get([3, 1]), 1)
             assert.equal(move.get([1, 2]), 1)
         })
-        it('should handle stone overwrites correctly' () => {
+        it('should handle stone overwrites correctly', () => {
             let board = new Board()
             ;[[10, 9], [10, 10], [10, 11]].forEach(x => board.set(x, 1))
             ;[[10, 8], [9, 9], [11, 9]].forEach(x => board.set(x, -1))
