@@ -10,7 +10,7 @@ let isReady = false
 
 function newWindow(path) {
     let window = new BrowserWindow({
-        icon: process.platform == 'linux' ? `${__dirname}/logo.png` : null,
+        icon: process.platform === 'linux' ? `${__dirname}/logo.png` : null,
         title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
@@ -51,22 +51,23 @@ function newWindow(path) {
 
 function buildMenu(disableAll = false) {
     let template = JSON.parse(fs.readFileSync(`${__dirname}/menu.json`))
+    let findMenuItem = str => template.find(x => x.label.replace('&', '') === str)
 
     // Create app menu for OS X
 
-    if (process.platform == 'darwin') {
+    if (process.platform === 'darwin') {
         let appMenu = [{role: 'about'}]
 
         // Remove original 'Check for Updates' menu item
 
-        let helpMenu = template.find(x => x.label.replace('&', '') == 'Help')
+        let helpMenu = findMenuItem('Help')
         let items = helpMenu.submenu.splice(0, 3)
 
         appMenu.push(...items.slice(0, 2))
 
         // Remove original 'Preferences' menu item
 
-        let fileMenu = template.find(x => x.label.replace('&', '') == 'File')
+        let fileMenu = findMenuItem('File')
         let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
 
         appMenu.push(
@@ -117,7 +118,7 @@ function buildMenu(disableAll = false) {
 
     // Load engines
 
-    let engineMenu = template.find(x => x.label && x.label.replace('&', '') == 'Engine')
+    let engineMenu = findMenuItem('Engine')
 
     if (engineMenu) {
         let attachMenu = engineMenu.submenu[0].submenu
@@ -137,7 +138,7 @@ function buildMenu(disableAll = false) {
             })
         })
 
-        if (setting.getEngines().length != 0) {
+        if (setting.getEngines().length !== 0) {
             attachMenu.push({type: 'separator'})
         }
 
@@ -193,7 +194,7 @@ function buildMenu(disableAll = false) {
 
     // Create dock menu
 
-    if (process.platform == 'darwin') {
+    if (process.platform === 'darwin') {
         app.dock.setMenu(Menu.buildFromTemplate([{
             label: 'New Window',
             click: () => newWindow()
@@ -212,10 +213,10 @@ function checkForUpdates(showNoUpdatesDialog) {
                 type: 'info',
                 buttons: ['Download Update', 'Not Now'],
                 title: app.getName(),
-                message: 'There is a new version of ' + app.getName() + ' available.',
+                message: `There is a new version of ${app.getName()} available.`,
                 noLink: true,
                 cancelId: 1
-            }, response => response == 0 ? shell.openExternal(url) : null)
+            }, response => response === 0 ? shell.openExternal(url) : null)
         } else if (showNoUpdatesDialog) {
             dialog.showMessageBox({
                 type: 'info',
@@ -232,7 +233,7 @@ ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
 ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
 
 app.on('window-all-closed', () => {
-    if (process.platform != 'darwin') {
+    if (process.platform !== 'darwin') {
         app.quit()
     } else {
         buildMenu(true)
@@ -269,8 +270,7 @@ app.on('open-file', (evt, path) => {
 process.on('uncaughtException', err => {
     dialog.showErrorBox(`${app.getName()} v${app.getVersion()}`, [
         'Something weird happened. ',
-        app.getName(),
-        ' will shut itself down. ',
+        `${app.getName()} will shut itself down. `,
         'If possible, please report this on ',
         `${app.getName()}’s repository on GitHub.\n\n`,
         err.stack

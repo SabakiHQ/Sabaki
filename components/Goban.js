@@ -362,6 +362,7 @@ class Goban extends Component {
         paintMap,
         dimmedStones = [],
 
+        crosshair = false,
         showCoordinates = false,
         showMoveColorization = true,
         showNextMoves = true,
@@ -382,6 +383,7 @@ class Goban extends Component {
                 id: 'goban',
                 class: {
                     goban: true,
+                    crosshair,
                     coordinates: showCoordinates,
                     movecolorization: showMoveColorization,
                     variations: showNextMoves,

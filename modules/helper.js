@@ -24,7 +24,7 @@ exports.hash = function(str) {
 
 exports.floorEven = function(float) {
     let value = Math.floor(float)
-    return value % 2 == 0 ? value : value - 1
+    return value % 2 === 0 ? value : value - 1
 }
 
 exports.equals = function(a, b) {

@@ -30,6 +30,24 @@ class MainView extends Component {
             evt.preventDefault()
             sabaki.goStep(Math.sign(evt.deltaY))
         })
+
+        // Pressing shift should show crosshair cursor on Goban in edit mode
+
+        document.addEventListener('keydown', evt => {
+            if (evt.keyCode !== 17) return
+
+            if (this.props.mode === 'edit') {
+                this.setState({gobanCrosshair: true})
+            }
+        })
+
+        document.addEventListener('keyup', evt => {
+            if (evt.keyCode !== 17) return
+
+            if (this.props.mode === 'edit') {
+                this.setState({gobanCrosshair: false})
+            }
+        })
     }
 
     handleGobanResize() {
@@ -93,7 +111,8 @@ class MainView extends Component {
         sidebarWidth
     }, {
         width,
-        height
+        height,
+        gobanCrosshair
     }) {
         let [tree, index] = treePosition
         let board = gametree.getBoard(tree, index)
@@ -118,6 +137,7 @@ class MainView extends Component {
                     paintMap: areaMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 
+                    crosshair: gobanCrosshair,
                     showCoordinates,
                     showMoveColorization,
                     showNextMoves,

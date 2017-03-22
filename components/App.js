@@ -77,8 +77,6 @@ class App extends Component {
         this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
-
-        this.componentWillUpdate({}, this.state)
     }
 
     componentDidMount() {
@@ -120,7 +118,7 @@ class App extends Component {
         this.events.emit('ready')
     }
 
-    componentWillUpdate(_, nextState) {
+    componentDidUpdate(_, prevState) {
         // Update title
 
         let {basename} = require('path')
@@ -139,10 +137,10 @@ class App extends Component {
 
         // Handle full screen
 
-        if (nextState.fullScreen !== this.state.fullScreen) {
-            this.window.setFullScreen(nextState.fullScreen)
-            this.window.setMenuBarVisibility(!nextState.fullScreen)
-            this.window.setAutoHideMenuBar(nextState.fullScreen)
+        if (prevState.fullScreen !== this.state.fullScreen) {
+            this.window.setFullScreen(this.state.fullScreen)
+            this.window.setMenuBarVisibility(!this.state.fullScreen)
+            this.window.setAutoHideMenuBar(this.state.fullScreen)
         }
     }
 
@@ -155,10 +153,6 @@ class App extends Component {
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth})
         window.dispatchEvent(new Event('resize'))
-    }
-
-    setSidebarSplit(sidebarSplit) {
-        this.setState({sidebarSplit})
     }
 
     getEmptyGameTree() {
@@ -1459,7 +1453,7 @@ class App extends Component {
 
 // Load userstyle
 
-document.querySelector('head link.userstyle').href = setting.stylesPath
+document.querySelector('link.userstyle').href = setting.stylesPath
 
 // Render
 
