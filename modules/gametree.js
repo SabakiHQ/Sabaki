@@ -354,6 +354,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 
         for (let value of node[ids[i]]) {
             for (let vertex of sgf.compressed2list(value)) {
+                if (!board.hasVertex(vertex)) continue
                 board.set(vertex, i - 1)
             }
         }
