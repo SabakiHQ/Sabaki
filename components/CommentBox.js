@@ -281,12 +281,12 @@ class CommentBox extends Component {
         return showCommentBox && (height !== this.props.height || !this.dirty)
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps({treePosition}) {
         // Debounce rendering
 
         this.dirty = true
 
-        let treePositionChanged = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
+        let treePositionChanged = !helper.vertexEquals(treePosition, this.props.treePosition)
 
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
@@ -294,11 +294,13 @@ class CommentBox extends Component {
 
             if (treePositionChanged) {
                 this.setState({
-                    board: gametree.getBoard(...nextProps.treePosition)
+                    board: gametree.getBoard(...this.props.treePosition)
                 })
 
                 this.element.scrollTop = 0
                 this.textareaElement.scrollTop = 0
+            } else {
+                this.setState(this.state)
             }
         }, setting.get('graph.delay'))
     }

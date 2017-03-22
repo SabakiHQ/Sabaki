@@ -160,7 +160,7 @@ class GameGraph extends Component {
         return showGameGraph && (height !== this.props.height || !this.dirty)
     }
 
-    componentWillReceiveProps({treePosition = [null, -1]} = {}) {
+    componentWillReceiveProps({treePosition = [{}, -1]} = {}) {
         // Debounce rendering
 
         if (helper.vertexEquals(treePosition, this.props.treePosition)) return

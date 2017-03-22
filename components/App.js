@@ -146,6 +146,23 @@ class App extends Component {
 
     // Sabaki API
 
+    isBusy() {
+        return this.busy
+    }
+
+    setBusy(busy) {
+        this.busy = busy
+
+        if (busy) {
+            this.setState({busy: true})
+        } else {
+            let delay = setting.get('app.hide_busy_delay')
+
+            clearTimeout(this.busyId)
+            this.busyId = setTimeout(() => this.setState({busy: false}), delay)
+        }
+    }
+
     setSelectedTool(tool) {
         this.setState({selectedTool: tool})
     }
@@ -183,7 +200,7 @@ class App extends Component {
     // Shell
 
     showMessageBox(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-        this.setState({busy: true})
+        this.setBusy(true)
         ipcRenderer.send('build-menu', true)
 
         let result = dialog.showMessageBox(remote.getCurrentWindow(), {
@@ -196,13 +213,13 @@ class App extends Component {
         })
 
         ipcRenderer.send('build-menu')
-        this.setState({busy: false})
+        this.setBusy(false)
 
         return result
     }
 
     showFileDialog(type, options) {
-        this.setState({busy: true})
+        this.setBusy(true)
         ipcRenderer.send('build-menu', true)
 
         let [t, ...ype] = [...type]
@@ -211,7 +228,7 @@ class App extends Component {
         let result = dialog[`show${type}Dialog`](this.window, options)
 
         ipcRenderer.send('build-menu')
-        this.setState({busy: false})
+        this.setBusy(false)
 
         return result
     }
@@ -774,7 +791,8 @@ class App extends Component {
     loadContent(content, format, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
         if (this.state.busy || !suppressAskForSave && !this.askForSave()) return
 
-        this.setState({busy: true, openDrawer: null, mode: 'play'})
+        this.setBusy(true)
+        this.setState({openDrawer: null, mode: 'play'})
 
         setTimeout(() => {
             let lastProgress = -1
@@ -797,8 +815,8 @@ class App extends Component {
             }
 
             if (gameTrees.length != 0) {
+                this.setBusy(false)
                 this.setState({
-                    busy: false,
                     representedFilename: null,
                     gameTrees,
                     treePosition: [gameTrees[0], 0]
@@ -851,7 +869,7 @@ class App extends Component {
         if (isNaN(step)) step = 1
         else step = step >= 0 ? 1 : -1
 
-        this.setState({busy: true})
+        this.setBusy(true)
 
         setTimeout(() => {
             let tp = this.state.treePosition
@@ -878,7 +896,7 @@ class App extends Component {
             }
 
             this.setCurrentTreePosition(...tp)
-            this.setState({busy: false})
+            this.setBusy(false)
             callback()
         }, setting.get('find.delay'))
     }
@@ -1058,7 +1076,7 @@ class App extends Component {
     undo() {
         if (!this.state.undoable || !this.undoData) return
 
-        this.setState({busy: true})
+        this.setBusy(true)
 
         setTimeout(() => {
             let [undoRoot, undoLevel] = this.undoData
@@ -1069,7 +1087,7 @@ class App extends Component {
 
             this.setCurrentTreePosition(...treePosition)
             this.clearUndoPoint()
-            this.setState({busy: false})
+            this.setBusy(false)
         }, setting.get('edit.undo_delay'))
     }
 
@@ -1176,8 +1194,9 @@ class App extends Component {
     flattenVariation(tree, index, {setUndoPoint = true} = {}) {
         if (setUndoPoint) this.setUndoPoint('Undo Flatten')
 
+        let {gameTrees} = this.state
         let {rootTree, gameIndex} = this.inferredState
-        let board = gametree.get(tree, index)
+        let board = gametree.getBoard(tree, index)
         let rootNode = rootTree.nodes[0]
         let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
 
@@ -1187,9 +1206,10 @@ class App extends Component {
 
         node.AB = []
         node.AW = []
-        node.AE = []
+        delete node.AE
         delete node.B
         delete node.W
+
         clone.parent = null
         inherit.forEach(x => x in rootNode ? node[x] = rootNode[x] : null)
 
@@ -1202,7 +1222,9 @@ class App extends Component {
             }
         }
 
-        let {gameTrees} = this.state
+        if (node.AB.length === 0) delete node.AB
+        if (node.AW.length === 0) delete node.AW
+
         gameTrees[gameIndex] = clone
         this.setState({gameTrees})
         this.setCurrentTreePosition(clone, 0)
