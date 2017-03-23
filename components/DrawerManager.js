@@ -8,11 +8,29 @@ const GameChooserDrawer = require('./GameChooserDrawer')
 const CleanMarkupDrawer = require('./CleanMarkupDrawer')
 
 class DrawerManager extends Component {
+    constructor() {
+        super()
+
+        this.handleScoreSubmit = ({resultString}) => {
+            this.rootTree.nodes[0].RE = [resultString]
+            sabaki.closeDrawers()
+            setTimeout(() => sabaki.setMode('play'), 500)
+        }
+
+        this.handleGameSelect = ({selectedTree}) => {
+            sabaki.setCurrentTreePosition(selectedTree, 0)
+            sabaki.closeDrawers()
+        }
+    }
+
     render({
         mode,
         openDrawer,
+        gameTrees,
+        gameIndex,
         treePosition,
         rootTree,
+
         gameInfo,
         currentPlayer,
 
@@ -33,7 +51,12 @@ class DrawerManager extends Component {
             }),
 
             h(GameChooserDrawer, {
-                show: openDrawer === 'gamechooser'
+                show: openDrawer === 'gamechooser',
+                treePosition,
+                gameTrees,
+                gameIndex,
+
+                onGameSelect: this.handleGameSelect
             }),
 
             h(CleanMarkupDrawer, {
@@ -48,11 +71,7 @@ class DrawerManager extends Component {
                 method: scoringMethod,
                 komi: +gametree.getRootProperty(treePosition[0], 'KM', 0),
 
-                onSubmitButtonClick: ({resultString}) => {
-                    rootTree.nodes[0].RE = [resultString]
-                    sabaki.closeDrawers()
-                    setTimeout(() => sabaki.setMode('play'), 500)
-                }
+                onSubmitButtonClick: this.handleScoreSubmit
             })
         )
     }

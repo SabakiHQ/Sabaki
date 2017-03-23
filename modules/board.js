@@ -296,7 +296,7 @@ class Board {
             while (stack.length > 0) {
                 let [v, d] = stack.pop()
                 let [x, y] = getVertex(v)
-                
+
                 map[y][x] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
                 for (let n of this.getNeighbors(v, true)) {
@@ -435,65 +435,6 @@ class Board {
         }
 
         return result.slice(0, count)
-    }
-
-    getSvg(pixelsize) {
-        if (!document) return null
-
-        let ns = 'http://www.w3.org/2000/svg'
-        let svg = document.createElementNS(ns, 'svg')
-        let tileSize = (pixelsize - 1) / Math.max(this.width, this.height)
-        let radius = tileSize / 2
-        svg.setAttribute('width', tileSize * this.width + 1)
-        svg.setAttribute('height', tileSize * this.height + 1)
-
-        // Draw hoshi
-
-        for (let [x, y] of this.getHandicapPlacement(9)) {
-            let circle = document.createElementNS(ns, 'circle')
-            circle.setAttribute('cx', x * tileSize + radius + 1)
-            circle.setAttribute('cy', y * tileSize + radius + 1)
-            circle.setAttribute('r', 2)
-            circle.setAttribute('fill', '#5E2E0C')
-
-            svg.appendChild(circle)
-        }
-
-        // Draw shadows
-
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (this.get([x, y]) === 0) continue
-
-                let circle = document.createElementNS(ns, 'circle')
-                circle.setAttribute('cx', x * tileSize + radius + 1)
-                circle.setAttribute('cy', y * tileSize + radius + 2)
-                circle.setAttribute('r', radius)
-                circle.setAttribute('fill', 'rgba(0, 0, 0, .5)')
-
-                svg.appendChild(circle)
-            }
-        }
-
-        // Draw stones
-
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (this.get([x, y]) === 0) continue
-
-                let circle = document.createElementNS(ns, 'circle')
-                circle.setAttribute('cx', x * tileSize + radius + 1)
-                circle.setAttribute('cy', y * tileSize + radius + 1)
-                circle.setAttribute('r', radius)
-
-                if (this.get([x, y]) === -1)
-                    circle.setAttribute('fill', 'white')
-
-                svg.appendChild(circle)
-            }
-        }
-
-        return svg
     }
 
     generateAscii() {

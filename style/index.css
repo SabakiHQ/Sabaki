@@ -882,6 +882,7 @@ header, #bar .bar {
         height: 100%;
         bottom: -100%;
         padding: 0;
+        background: rgb(38, 41, 44);
     }
     #gamechooser > input {
         position: absolute;
@@ -912,15 +913,20 @@ header, #bar .bar {
         overflow: auto;
         background: rgba(0, 0, 0, .2);
     }
+    #gamechooser .games-list .placeholder {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1px;
+    }
     #gamechooser h2 {
         padding: 20px;
     }
     #gamechooser ol {
         list-style: none;
-        margin: 10px;
     }
     #gamechooser li {
-        float: left;
+        position: absolute;
         height: 253px;
         margin: 10px 10px 20px 10px;
     }
