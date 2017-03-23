@@ -95,7 +95,7 @@ class GobanLine extends Component {
         return false
     }
 
-    render({v1, v2, type, showCoordinates, fieldSize, borderTopWidth, borderLeftWidth}) {
+    render({v1, v2, type, temporary, showCoordinates, fieldSize}) {
         if (helper.vertexEquals(v1, v2)) return
 
         let [pos1, pos2] = [v1, v2].map(v => v.map(x => (showCoordinates ? x + 1 : x) * fieldSize))
@@ -107,13 +107,13 @@ class GobanLine extends Component {
 
         return h('hr',
             {
-                class: type,
+                class: {[type]: true, temporary},
                 style: {
-                    top: top + borderTopWidth,
-                    left: left + borderLeftWidth,
-                    marginLeft: -length / 2,
                     width: length,
-                    transform: `rotate(${angle}deg)`
+                    transform: `
+                        translate(${left - length / 2}px, ${top}px)
+                        rotate(${angle}deg)
+                    `
                 }
             }
         )
@@ -474,17 +474,14 @@ class Goban extends Component {
 
                 return h(GobanLine, {
                     v1, v2, showCoordinates, fieldSize,
-                    borderLeftWidth: state.borderLeftWidth,
-                    borderTopWidth: state.borderTopWidth,
                     type: arrow ? 'arrow' : 'line'
                 })
             }),
 
             drawTemporaryLine && h(GobanLine, {
+                temporary: true,
                 v1: temporaryLine[0], v2: temporaryLine[1],
                 showCoordinates, fieldSize,
-                borderLeftWidth: state.borderLeftWidth,
-                borderTopWidth: state.borderTopWidth,
                 type: drawLineMode
             })
         )

@@ -50,7 +50,7 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    let template = JSON.parse(fs.readFileSync(`${__dirname}/menu.json`))
+    let template = JSON.parse(fs.readFileSync(`${__dirname}/data/menu.json`))
     let findMenuItem = str => template.find(x => x.label.replace('&', '') === str)
 
     // Create app menu for OS X

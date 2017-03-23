@@ -660,11 +660,11 @@ header, #bar .bar {
         padding: 20px;
         background: rgba(38, 41, 44, .97);
         color: #eee;
-        transition: bottom .5s;
+        transition: transform .5s;
         z-index: 15;
     }
     .drawer.show {
-        bottom: 0;
+        transform: translateY(-100%);
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
     .drawer h2 {
@@ -883,7 +883,6 @@ header, #bar .bar {
         bottom: -100%;
         padding: 0;
     }
-    #gamechooser.show { bottom: 0; }
     #gamechooser > input {
         position: absolute;
         top: 23px;

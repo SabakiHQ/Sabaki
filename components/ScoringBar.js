@@ -23,7 +23,7 @@ class ScoringBar extends Component {
                 h('strong', {}, resultString)
             ),
 
-            ...children
+            children
         )
     }
 }

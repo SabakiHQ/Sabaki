@@ -349,6 +349,8 @@
 .goban .line, .goban .arrow,
 .goban .arrow::before, .goban .arrow::after {
     position: absolute;
+    top: 7px;
+    left: 7px;
     border: none;
     height: .11em;
     background: #5E2E0C;
@@ -359,6 +361,7 @@
 .goban .arrow::before, .goban .arrow::after {
         content: '';
         width: .36em;
+        left: auto;
         right: 0;
         top: -.07em;
         transform: rotate(30deg);
