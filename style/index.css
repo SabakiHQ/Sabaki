@@ -930,12 +930,12 @@ header, #bar .bar {
         height: 253px;
         margin: 10px 10px 20px 10px;
     }
-    #gamechooser li.insertleft {
+    #gamechooser li.insertbefore {
         margin-left: -3px;
         border-left: 3px solid #0050C0;
         padding-left: 10px;
     }
-    #gamechooser li.insertright {
+    #gamechooser li.insertafter {
         margin-right: 0;
         border-right: 3px solid #0050C0;
         padding-right: 7px;

@@ -55,7 +55,7 @@ class DrawerManager extends Component {
                 gameTrees,
                 gameIndex,
 
-                onGameSelect: this.handleGameSelect
+                onItemClick: this.handleGameSelect
             }),
 
             h(CleanMarkupDrawer, {

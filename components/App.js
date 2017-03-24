@@ -343,7 +343,7 @@ class App extends Component {
             && vertexNeighbors.filter(v => board.get(v) == 0).length == 0
 
             if (suicide && setting.get('game.show_suicide_warning')) {
-                if (view.showMessageBox(
+                if (dialog.showMessageBox(
                     ['You are about to play a suicide move.',
                     'This is invalid in some rulesets.'].join('\n'),
                     'info',
