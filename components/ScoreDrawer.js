@@ -47,6 +47,10 @@ class ScoreDrawer extends Component {
         }
     }
 
+    shouldComponentUpdate({areaMap}) {
+        return areaMap != null
+    }
+
     render({show, estimating, method, areaMap, board, komi}) {
         if (isNaN(komi)) komi = 0
 

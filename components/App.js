@@ -749,7 +749,8 @@ class App extends Component {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
-        this.setState({openDrawer: null, mode: 'play'})
+        if (this.state.openDrawer !== 'gamechooser') this.closeDrawers()
+        this.setState({mode: 'play'})
 
         setTimeout(() => {
             let lastProgress = -1

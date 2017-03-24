@@ -480,7 +480,7 @@ header, #bar .bar {
         text-align: center;
         transition: top .2s, background .2s;
     }
-    #slider .inner:active span {
+    #slider:active .inner span {
         transition: none;
     }
     #slider .inner:active span, #graph .slider .inner span:hover {
@@ -941,21 +941,17 @@ header, #bar .bar {
         padding-right: 7px;
     }
     #gamechooser li.hide { display: none; }
-    #gamechooser li div {
+    #gamechooser li > div {
         margin: 0 auto;
         width: 165px;
     }
-    #gamechooser li div:active { opacity: .5; }
+    #gamechooser li > div:active { opacity: .5; }
     #gamechooser li svg {
         border: 5px solid #ca933a;
         margin-top: 5px;
         padding: 1px;
         background: url('../img/goban/board.png') center #ECB55A;
         background-size: 200%;
-    }
-    #gamechooser li.add svg {
-        border-color: #393939;
-        background: transparent;
     }
     #gamechooser li span {
         display: block;
@@ -972,6 +968,21 @@ header, #bar .bar {
     }
     #gamechooser li span.white {
         background-image: url('../img/ui/white.svg');
+}
+
+#gamechooser-animation {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: top left;
+    z-index: 16;
+}
+
+#gamechooser-animation svg {
+    border: 5px solid #ca933a;
+    padding: 1px;
+    background: url('../img/goban/board.png') center #ECB55A;
+    background-size: 200%;
 }
 
 .tabs {

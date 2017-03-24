@@ -12,7 +12,7 @@ class DrawerManager extends Component {
         super()
 
         this.handleScoreSubmit = ({resultString}) => {
-            this.rootTree.nodes[0].RE = [resultString]
+            this.props.rootTree.nodes[0].RE = [resultString]
             sabaki.closeDrawers()
             setTimeout(() => sabaki.setMode('play'), 500)
         }
@@ -52,7 +52,6 @@ class DrawerManager extends Component {
 
             h(GameChooserDrawer, {
                 show: openDrawer === 'gamechooser',
-                treePosition,
                 gameTrees,
                 gameIndex,
 
