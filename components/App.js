@@ -725,10 +725,10 @@ class App extends Component {
         }
 
         let {extname} = require('path')
-        let format = extname(filename).slice(1).toLowerCase()
+        let extension = extname(filename).slice(1)
         let content = fs.readFileSync(filename, {encoding: 'binary'})
 
-        this.loadContent(content, format, {
+        this.loadContent(content, extension, {
             suppressAskForSave: true,
             callback: err => {
                 if (err) return
@@ -739,7 +739,7 @@ class App extends Component {
         })
     }
 
-    loadContent(content, format, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
+    loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
@@ -752,7 +752,7 @@ class App extends Component {
             let gameTrees = []
 
             try {
-                let fileFormatModule = fileformats[format] || sgf
+                let fileFormatModule = fileformats.getModuleByExtension(extension)
 
                 gameTrees = fileFormatModule.parse(content, evt => {
                     if (evt.progress - lastProgress < 0.1) return

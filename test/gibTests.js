@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const gib = require('../modules/gib')
+const {gib} = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 
 describe('gib', () => {

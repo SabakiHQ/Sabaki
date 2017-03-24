@@ -82,7 +82,7 @@ function parsePlayerName(raw) {
     }
 }
 
-exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
+exports.parse = function (content) {
 
     let encoding = 'utf8'
     let detected = jschardet.detect(content)
@@ -236,6 +236,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     return [tree]
 }
 
-exports.parseFile = function (filename, callback = () => {}) {
-    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}), callback)
+exports.parseFile = function (filename) {
+    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }
