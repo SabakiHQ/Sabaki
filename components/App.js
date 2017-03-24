@@ -714,10 +714,7 @@ class App extends Component {
         if (!filename) {
             let result = dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [
-                    ...fileformats.meta,
-                    {name: 'All Files', extensions: ['*']}
-                ]
+                filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
             })
 
             if (result) filename = result[0]

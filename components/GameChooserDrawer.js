@@ -1,10 +1,13 @@
 const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
+const natsort = require('natsort')
 
 const dialog = require('../modules/dialog')
+const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
+const {sgf} = fileformats
 
 const MiniGoban = require('./MiniGoban')
 const Drawer = require('./Drawer')
@@ -230,24 +233,35 @@ class GameChooserDrawer extends Component {
                 {
                     label: 'Add &Existing File…',
                     click: () => {
-                        exports.setIsBusy(true)
+                        let {extname} = require('path')
 
-                        let filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                        let filenames = dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
-                            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+                            filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
                         })
 
-                        if (filenames) {
-                            for (let filename of filenames) {
-                                let trees = sgf.parseFile(filename)
+                        sabaki.setBusy(true)
 
-                                sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
-                                sabaki.setGameIndex(sabaki.getGameIndex())
-                                exports.showGameChooser('bottom')
+                        if (filenames != null) {
+                            try {
+                                for (let filename of filenames) {
+                                    let trees = fileformats.parseFile(filename)
+                                    let {gameTrees} = this.props
+
+                                    gameTrees.push(...trees)
+
+                                    sabaki.setState({gameTrees})
+                                    this.forceUpdate()
+
+                                    this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight
+                                    this.setState({scrollTop: this.gamesListElement.scrollTop})
+                                }
+                            } catch (err) {
+                                dialog.showMessageBox('Some files are unreadable.', 'warning')
                             }
                         }
 
-                        exports.setIsBusy(false)
+                        sabaki.setBusy(false)
                     }
                 }
             ]
@@ -264,7 +278,73 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleSortButtonClick = evt => {
+            let template = [
+                {label: '&Black Player', property: 'PB'},
+                {label: '&White Player', property: 'PW'},
+                {label: 'Black R&ank', property: 'BR'},
+                {label: 'White Ran&k', property: 'WR'},
+                {label: 'Game &Name', property: 'GN'},
+                {label: 'Game &Event', property: 'EV'},
+                {label: '&Date', property: 'DT'},
+                {type: 'separator'},
+                {label: '&Reverse', property: '-1'}
+            ]
 
+            for (let item of template) {
+                let {property} = item
+                delete item.property
+
+                item.click = () => {
+                    sabaki.setBusy(true)
+
+                    let {gameTrees} = this.props
+
+                    // Stable sort
+
+                    gameTrees = gameTrees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
+                        let s
+                        let [x1, x2] = property === '-1' ? [i2, i1]
+                            : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
+
+                        if (['BR', 'WR'].includes(property)) {
+                            // Transform ranks
+
+                            [x1, x2] = [x1, x2]
+                            .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
+                            .map(x => isNaN(x) ? -Infinity : x)
+                        } else if (property === 'DT') {
+                            // Transform dates
+
+                            [x1, x2] = [x1, x2]
+                            .map(x => sgf.string2dates(x))
+                            .map(x => x ? sgf.dates2string(x.sort(helper.lexicalCompare)) : '')
+                        }
+
+                        if (['GN', 'EV'].includes(property)) {
+                            // Sort names
+
+                            s = natsort({insensitive: true})(x1, x2)
+                        } else {
+                            s = x1 < x2 ? -1 : +(x1 !== x2)
+                        }
+
+                        return s !== 0 ? s : i1 - i2
+                    }).map(x => x[0])
+
+                    sabaki.setState({gameTrees})
+                    sabaki.setBusy(false)
+                }
+            }
+
+            let element = evt.currentTarget
+            let {left, top, height} = element.getBoundingClientRect()
+            let menu = Menu.buildFromTemplate(template)
+
+            menu.popup(sabaki.window, {
+                x: Math.round(left),
+                y: Math.round(top + height),
+                async: true
+            })
         }
     }
 
