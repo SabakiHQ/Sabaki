@@ -1,9 +1,9 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
 const jschardet = require('jschardet')
-const gametree = require('./gametree')
 const sgf = require('./sgf')
-const Board = require('./board')
+const gametree = require('../gametree')
+const Board = require('../board')
 
 exports.meta = {
     name: 'wBaduk NGF',

@@ -4,7 +4,7 @@ const util = require('util')
 const tmp = require('tmp')
 
 const helper = require('../modules/helper')
-const sgf = require('../modules/sgf')
+const {sgf} = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 
 describe('sgf', () => {

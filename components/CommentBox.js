@@ -4,7 +4,7 @@ const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
-const sgf = require('../modules/sgf')
+const {sgf} = require('../modules/fileformats')
 const Board = require('../modules/board')
 
 let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')

@@ -11,14 +11,13 @@ const DrawerManager = require('./DrawerManager')
 
 const Board = require('../modules/board')
 const dialog = require('../modules/dialog')
+const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const sound = require('../modules/sound')
 
-const sgf = require('../modules/sgf')
-const ngf = require('../modules/ngf')
-const gib = require('../modules/gib')
+const {sgf} = fileformats
 
 options.syncComponentUpdates = false
 
@@ -713,15 +712,10 @@ class App extends Component {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
-            let extensions = [sgf, gib, ngf].map(x => x.meta)
-            let combinedExtensions = extensions.map(x => x.extensions)
-                .reduce((acc, x) => [...acc, ...x], [])
-
             let result = dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [
-                    {name: 'Game Records', extensions: combinedExtensions},
-                    ...extensions,
+                    ...fileformats.meta,
                     {name: 'All Files', extensions: ['*']}
                 ]
             })
@@ -758,7 +752,7 @@ class App extends Component {
             let gameTrees = []
 
             try {
-                let fileFormatModule = {sgf, gib, ngf}[format] || sgf
+                let fileFormatModule = fileformats[format] || sgf
 
                 gameTrees = fileFormatModule.parse(content, evt => {
                     if (evt.progress - lastProgress < 0.1) return

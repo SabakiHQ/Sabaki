@@ -1,4 +1,4 @@
-const sgf = require('./sgf')
+const {sgf} = require('./fileformats')
 const helper = require('./helper')
 
 exports.readShapes = function(filename) {

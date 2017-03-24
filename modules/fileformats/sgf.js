@@ -1,8 +1,7 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
-const gametree = require('./gametree')
-const setting = require('./setting')
-const helper = require('./helper')
+const gametree = require('../gametree')
+const helper = require('../helper')
 
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 

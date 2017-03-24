@@ -208,6 +208,64 @@ class GameChooserDrawer extends Component {
 
             onItemClick(evt)
         }
+
+        this.handleAddButtonClick = evt => {
+            let template = [
+                {
+                    label: 'Add &New Game',
+                    click: () => {
+                        let tree = sabaki.getEmptyGameTree()
+                        let {gameTrees} = this.props
+
+                        gameTrees.push(tree)
+                        sabaki.setCurrentTreePosition(tree, 0)
+                        this.forceUpdate()
+
+                        this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight
+                        this.setState({scrollTop: this.gamesListElement.scrollTop})
+
+                        setTimeout(() => sabaki.openDrawer('info'), 200)
+                    }
+                },
+                {
+                    label: 'Add &Existing File…',
+                    click: () => {
+                        exports.setIsBusy(true)
+
+                        let filenames = dialog.showOpenDialog(remote.getCurrentWindow(), {
+                            properties: ['openFile', 'multiSelections'],
+                            filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+                        })
+
+                        if (filenames) {
+                            for (let filename of filenames) {
+                                let trees = sgf.parseFile(filename)
+
+                                sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
+                                sabaki.setGameIndex(sabaki.getGameIndex())
+                                exports.showGameChooser('bottom')
+                            }
+                        }
+
+                        exports.setIsBusy(false)
+                    }
+                }
+            ]
+
+            let element = evt.currentTarget
+            let {left, top, height} = element.getBoundingClientRect()
+            let menu = Menu.buildFromTemplate(template)
+
+            menu.popup(sabaki.window, {
+                x: Math.round(left),
+                y: Math.round(top + height),
+                async: true
+            })
+        }
+
+        this.handleSortButtonClick = evt => {
+
+        }
     }
 
     componentDidMount() {
@@ -249,7 +307,7 @@ class GameChooserDrawer extends Component {
             let drawerRect = document.getElementById('gamechooser').getBoundingClientRect()
 
             let itemElement = this.itemElements[this.props.gameIndex]
-            let svgElement = itemElement.querySelector('svg')
+            let svgElement = itemElement != null ? itemElement.querySelector('svg') : null
 
             if (itemElement != null && svgElement != null) {
                 let {width, height, left, top} = itemElement.querySelector('svg').getBoundingClientRect()
@@ -398,8 +456,16 @@ class GameChooserDrawer extends Component {
                 ),
 
                 h('p', {},
-                    h('button', {class: 'dropdown'}, 'Add'),
-                    h('button', {class: 'dropdown'}, 'Sort By'),
+                    h('button', {
+                        class: 'dropdown',
+                        onClick: this.handleAddButtonClick
+                    }, 'Add'),
+
+                    h('button', {
+                        class: 'dropdown',
+                        onClick: this.handleSortButtonClick
+                    }, 'Sort By'),
+
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
             ),
