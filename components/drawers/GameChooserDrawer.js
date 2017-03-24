@@ -2,14 +2,14 @@ const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
 const natsort = require('natsort')
 
-const dialog = require('../modules/dialog')
-const fileformats = require('../modules/fileformats')
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
-const setting = require('../modules/setting')
+const dialog = require('../../modules/dialog')
+const fileformats = require('../../modules/fileformats')
+const gametree = require('../../modules/gametree')
+const helper = require('../../modules/helper')
+const setting = require('../../modules/setting')
 const {sgf} = fileformats
 
-const MiniGoban = require('./MiniGoban')
+const MiniGoban = require('../MiniGoban')
 const Drawer = require('./Drawer')
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')

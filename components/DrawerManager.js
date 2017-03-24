@@ -1,11 +1,11 @@
 const {h, Component} = require('preact')
 const gametree = require('../modules/gametree')
 
-const InfoDrawer = require('./InfoDrawer')
-const ScoreDrawer = require('./ScoreDrawer')
-const PreferencesDrawer = require('./PreferencesDrawer')
-const GameChooserDrawer = require('./GameChooserDrawer')
-const CleanMarkupDrawer = require('./CleanMarkupDrawer')
+const InfoDrawer = require('./drawers/InfoDrawer')
+const ScoreDrawer = require('./drawers/ScoreDrawer')
+const PreferencesDrawer = require('./drawers/PreferencesDrawer')
+const GameChooserDrawer = require('./drawers/GameChooserDrawer')
+const CleanMarkupDrawer = require('./drawers/CleanMarkupDrawer')
 
 class DrawerManager extends Component {
     constructor() {

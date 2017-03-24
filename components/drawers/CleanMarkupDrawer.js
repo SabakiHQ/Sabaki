@@ -1,7 +1,7 @@
 const {h, Component} = require('preact')
 
-const gametree = require('../modules/gametree')
-const setting = require('../modules/setting')
+const gametree = require('../../modules/gametree')
+const setting = require('../../modules/setting')
 
 const Drawer = require('./Drawer')
 

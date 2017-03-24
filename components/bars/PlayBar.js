@@ -1,6 +1,6 @@
 const {h, Component} = require('preact')
 const {Menu} = require('electron').remote
-const helper = require('../modules/helper')
+const helper = require('../../modules/helper')
 
 class PlayBar extends Component {
     constructor() {

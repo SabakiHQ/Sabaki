@@ -1,12 +1,13 @@
 const {h, Component} = require('preact')
 
 const Goban = require('./Goban')
-const PlayBar = require('./PlayBar')
-const EditBar = require('./EditBar')
-const GuessBar = require('./GuessBar')
-const AutoplayBar = require('./AutoplayBar')
-const ScoringBar = require('./ScoringBar')
-const FindBar = require('./FindBar')
+
+const PlayBar = require('./bars/PlayBar')
+const EditBar = require('./bars/EditBar')
+const GuessBar = require('./bars/GuessBar')
+const AutoplayBar = require('./bars/AutoplayBar')
+const ScoringBar = require('./bars/ScoringBar')
+const FindBar = require('./bars/FindBar')
 
 const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')

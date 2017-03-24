@@ -1,8 +1,8 @@
 const {h, Component} = require('preact')
 const Drawer = require('./Drawer')
 
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
+const gametree = require('../../modules/gametree')
+const helper = require('../../modules/helper')
 
 class InfoDrawerItem extends Component {
     render({title, children}) {
