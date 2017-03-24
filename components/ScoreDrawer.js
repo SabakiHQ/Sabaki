@@ -36,7 +36,7 @@ class ScoreDrawer extends Component {
 
         this.handleTerritoryButtonClick = () => sabaki.setState({scoringMethod: 'territory'})
         this.handleAreaButtonClick = () => sabaki.setState({scoringMethod: 'area'})
-        this.handleCloseButtonClick = () => sabaki.closeDrawers()
+        this.handleCloseButtonClick = () => sabaki.closeDrawer()
 
         this.handleSubmitButtonClick = evt => {
             evt.preventDefault()

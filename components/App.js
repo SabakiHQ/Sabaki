@@ -97,7 +97,7 @@ class App extends Component {
                 // Escape
 
                 if (this.state.openDrawer != null) {
-                    this.closeDrawers()
+                    this.closeDrawer()
                 } else if (this.state.mode !== 'play') {
                     this.setMode('play')
                 } else if (this.state.fullScreen) {
@@ -220,14 +220,14 @@ class App extends Component {
         this.setState({openDrawer: drawer})
     }
 
-    closeDrawers() {
+    closeDrawer() {
         this.openDrawer(null)
     }
 
     // Playing
 
     clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
-        this.closeDrawers()
+        this.closeDrawer()
 
         let [tree, index] = this.state.treePosition
         let board = gametree.getBoard(tree, index)
@@ -300,7 +300,7 @@ class App extends Component {
 
     makeMove(vertex, {cancelAutoplay = false, clearUndoPoint = true} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode))
-            this.closeDrawers()
+            this.closeDrawer()
 
         let [tree, index] = this.state.treePosition
         let board = gametree.getBoard(tree, index)
@@ -740,7 +740,7 @@ class App extends Component {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
-        if (this.state.openDrawer !== 'gamechooser') this.closeDrawers()
+        if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
         this.setState({mode: 'play'})
 
         setTimeout(() => {
@@ -1181,7 +1181,7 @@ class App extends Component {
 
     makeMainVariation(tree, index, {setUndoPoint = true} = {}) {
         if (setUndoPoint) this.setUndoPoint('Restore Main Variation')
-        this.closeDrawers()
+        this.closeDrawer()
 
         let t = tree
 
@@ -1210,7 +1210,7 @@ class App extends Component {
         if (!tree.parent) return
 
         if (setUndoPoint) this.setUndoPoint('Undo Shift Variation')
-        this.closeDrawers()
+        this.closeDrawer()
 
         let subtrees = tree.parent.subtrees
         let m = subtrees.length
@@ -1243,7 +1243,7 @@ class App extends Component {
 
         // Remove node
 
-        this.closeDrawers()
+        this.closeDrawer()
         let prev = gametree.navigate(tree, index, -1)
 
         if (index !== 0) {
@@ -1275,7 +1275,7 @@ class App extends Component {
         // Save undo information
 
         if (setUndoPoint) this.setUndoPoint('Undo Remove Other Variations')
-        this.closeDrawers()
+        this.closeDrawer()
 
         // Remove all subsequent variations
 

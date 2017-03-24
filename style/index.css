@@ -664,7 +664,7 @@ header, #bar .bar {
         z-index: 15;
     }
     .drawer.show {
-        transform: translateY(-100%);
+        transform: translateY(-285px);
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }
     .drawer h2 {
@@ -883,6 +883,9 @@ header, #bar .bar {
         bottom: -100%;
         padding: 0;
         background: rgb(38, 41, 44);
+    }
+    #gamechooser.show {
+        transform: translateY(-100%);
     }
     #gamechooser > input {
         position: absolute;

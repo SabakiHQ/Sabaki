@@ -102,7 +102,7 @@ class GameChooserDrawer extends Component {
             filterText: evt.currentTarget.value.trim()
         })
 
-        this.handleCloseButtonClick = () => sabaki.closeDrawers()
+        this.handleCloseButtonClick = () => sabaki.closeDrawer()
 
         this.handleListScroll = evt => {
             this.setState({scrollTop: evt.currentTarget.scrollTop})

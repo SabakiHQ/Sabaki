@@ -13,13 +13,13 @@ class DrawerManager extends Component {
 
         this.handleScoreSubmit = ({resultString}) => {
             this.props.rootTree.nodes[0].RE = [resultString]
-            sabaki.closeDrawers()
+            sabaki.closeDrawer()
             setTimeout(() => sabaki.setMode('play'), 500)
         }
 
         this.handleGameSelect = ({selectedTree}) => {
             sabaki.setCurrentTreePosition(selectedTree, 0)
-            sabaki.closeDrawers()
+            sabaki.closeDrawer()
         }
     }
 
@@ -59,7 +59,8 @@ class DrawerManager extends Component {
             }),
 
             h(CleanMarkupDrawer, {
-                show: openDrawer === 'cleanmarkup'
+                show: openDrawer === 'cleanmarkup',
+                treePosition
             }),
 
             h(ScoreDrawer, {

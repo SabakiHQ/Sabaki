@@ -22,7 +22,7 @@ class InfoDrawer extends Component {
 
         this.handleCancelButtonClick = evt => {
             evt.preventDefault()
-            sabaki.closeDrawers()
+            sabaki.closeDrawer()
         }
 
         this.handleBoardWidthFocus = () => {
