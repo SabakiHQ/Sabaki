@@ -108,8 +108,6 @@ class MainView extends Component {
         undoable,
         undoText,
         selectedTool,
-        secondsPerMove,
-        autoplaying,
         findText,
         findVertex,
 
@@ -188,9 +186,7 @@ class MainView extends Component {
                 }),
 
                 h(AutoplayBar, {
-                    mode,
-                    playing: autoplaying,
-                    secondsPerMove
+                    mode
                 }),
 
                 h(ScoringBar, {

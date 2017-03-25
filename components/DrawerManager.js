@@ -37,7 +37,9 @@ class DrawerManager extends Component {
 
         scoringMethod,
         scoreBoard,
-        areaMap
+        areaMap,
+
+        engines
     }) {
         return h('section', {},
             h(InfoDrawer, {
@@ -48,7 +50,8 @@ class DrawerManager extends Component {
             }),
 
             h(PreferencesDrawer, {
-                show: openDrawer === 'preferences'
+                show: openDrawer === 'preferences',
+                engines
             }),
 
             h(GameChooserDrawer, {

@@ -44,8 +44,6 @@ class App extends Component {
             undoable: false,
             undoText: 'Undo',
             selectedTool: 'stone_1',
-            autoplaying: false,
-            secondsPerMove: setting.get('autoplay.sec_per_move'),
             scoringMethod: setting.get('scoring.method'),
             findText: '',
             findVertex: null,
@@ -69,7 +67,10 @@ class App extends Component {
             showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
-            autoscrolling: 0
+
+            // Engines
+
+            engines: setting.get('engines.list')
         }
 
         this.appName = app.getName()
@@ -872,7 +873,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {cancelAutoplay = true} = {}) {
+    setCurrentTreePosition(tree, index) {
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
 
@@ -884,11 +885,7 @@ class App extends Component {
             t = t.parent
         }
 
-        this.setState(({autoplaying}) => ({
-            autoplaying: cancelAutoplay && autoplaying ? false : autoplaying,
-            treePosition: [tree, index]
-        }))
-
+        this.setState({treePosition: [tree, index]})
         this.events.emit('navigated')
     }
 

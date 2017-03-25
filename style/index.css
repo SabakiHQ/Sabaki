@@ -822,7 +822,7 @@ header, #bar .bar {
         bottom: -440px;
         height: 400px;
     }
-    #preferences.show { bottom: 0; }
+    #preferences.show { transform: translateY(-440px); }
     #preferences form ul { margin: 0 0 1.5em; }
     #preferences form ul li,
     #cleanmarkup form ul li { margin: 0 0 7px; }

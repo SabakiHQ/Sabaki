@@ -136,8 +136,7 @@ class Sidebar extends Component {
         rootTree,
         showGameGraph,
         showCommentBox,
-        sidebarWidth,
-        autoscrolling
+        sidebarWidth
     }, {
         treeHeight,
         sidebarSplit,
