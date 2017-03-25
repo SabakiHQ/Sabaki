@@ -67,6 +67,8 @@ class App extends Component {
             showGameGraph: setting.get('view.show_graph'),
             showCommentBox: setting.get('view.show_comments'),
             sidebarWidth: setting.get('view.sidebar_width'),
+            graphGridSize: setting.get('graph.grid_size'),
+            graphNodeSize: setting.get('graph.node_size'),
 
             // Engines
 

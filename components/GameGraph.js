@@ -4,69 +4,85 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 
-let gridSize = setting.get('graph.grid_size')
-let nodeSize = setting.get('graph.node_size')
 let delay = setting.get('graph.delay')
 let animationDuration = setting.get('graph.animation_duration')
 let commentProperties = setting.get('sgf.comment_properties')
 
-let squareSide = nodeSize * 2
-let diamondSide = Math.round(Math.sqrt(2) * nodeSize)
-
-let stroke = current => current ? setting.get('graph.edge_color')
-    : setting.get('graph.edge_inactive_color')
-let strokeWidth = current => current ? setting.get('graph.edge_size')
-    : setting.get('graph.edge_inactive_size')
-
-let shapes = (type, left, top) => ({
-    square: [
-        `M ${left - nodeSize} ${top - nodeSize}`,
-        `h ${squareSide} v ${squareSide} h ${-squareSide} v ${-squareSide}`
-    ].join(' '),
-
-    circle: [
-        `M ${left} ${top} m ${-nodeSize} 0`,
-        `a ${nodeSize} ${nodeSize} 0 1 0 ${squareSide} 0`,
-        `a ${nodeSize} ${nodeSize} 0 1 0 ${-squareSide} 0`
-    ].join(' '),
-
-    diamond: [
-        `M ${left} ${top - diamondSide}`,
-        `L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}`,
-        `L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
-    ].join(' ')
-})[type]
-
 class GameGraphNode extends Component {
-    shouldComponentUpdate({type, fill, hover}) {
+    shouldComponentUpdate({position, type, fill, hover, nodeSize}) {
         return type !== this.props.type
             || fill !== this.props.fill
             || hover !== this.props.hover
+            || nodeSize !== this.props.nodeSize
+            || !helper.vertexEquals(position, this.props.position)
     }
 
     render({
         position: [left, top],
         type,
         fill,
-        hover
+        hover,
+        nodeSize
     }) {
-        return h('path', {d: shapes(type, left, top), class: {hover}, fill})
+        return h('path', {
+            d: (() => {
+                let nodeSize2 = nodeSize * 2
+
+                if (type === 'square') {
+                    return [
+                        `M ${left - nodeSize} ${top - nodeSize}`,
+                        `h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} v ${-nodeSize2}`
+                    ].join(' ')
+                } else if (type === 'circle') {
+                    return [
+                        `M ${left} ${top} m ${-nodeSize} 0`,
+                        `a ${nodeSize} ${nodeSize} 0 1 0 ${nodeSize2} 0`,
+                        `a ${nodeSize} ${nodeSize} 0 1 0 ${-nodeSize2} 0`
+                    ].join(' ')
+                } else if (type === 'diamond') {
+                    let diamondSide = Math.round(Math.sqrt(2) * nodeSize)
+
+                    return [
+                        `M ${left} ${top - diamondSide}`,
+                        `L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}`,
+                        `L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
+                    ].join(' ')
+                }
+
+                return ''
+            })(),
+
+            class: {hover},
+            fill
+        })
     }
 }
 
 class GameGraphEdge extends Component {
-    shouldComponentUpdate({positionAbove, positionBelow, current, length}) {
+    shouldComponentUpdate({positionAbove, positionBelow, current, length, gridSize}) {
         return length !== this.props.length
             || current !== this.props.current
+            || gridSize !== this.props.gridSize
             || !helper.vertexEquals(positionAbove, this.props.positionAbove)
             || !helper.vertexEquals(positionBelow, this.props.positionBelow)
+    }
+
+    stroke() {
+        return this.props.current ? setting.get('graph.edge_color')
+            : setting.get('graph.edge_inactive_color')
+    }
+
+    strokeWidth() {
+        return this.props.current ? setting.get('graph.edge_size')
+            : setting.get('graph.edge_inactive_size')
     }
 
     render({
         positionAbove: [left1, top1],
         positionBelow: [left2, top2],
         current,
-        length
+        length,
+        gridSize
     }) {
         let points
 
@@ -82,8 +98,8 @@ class GameGraphEdge extends Component {
         return h('polyline', {
             points,
             fill: 'none',
-            stroke: stroke(current),
-            'stroke-width': strokeWidth(current)
+            stroke: this.stroke(),
+            'stroke-width': this.strokeWidth()
         })
     }
 }
@@ -92,6 +108,8 @@ class GameGraph extends Component {
     constructor() {
         super()
 
+        let gridSize = setting.get('graph.grid_size')
+
         this.state = {
             cameraPosition: [-gridSize, -gridSize],
             viewportSize: null,
@@ -99,8 +117,6 @@ class GameGraph extends Component {
             matrixDict: null,
             mousePosition: [-100, -100]
         }
-
-        this.easing = x => (Math.sin(Math.PI * (x - 0.5)) + 1) / 2
 
         this.handleNodeClick = this.handleNodeClick.bind(this)
         this.handleMouseWheel = this.handleMouseWheel.bind(this)
@@ -162,7 +178,7 @@ class GameGraph extends Component {
         this.renderId = setTimeout(() => {
             // Adjust camera position and recalculate matrix-dict of game tree
 
-            let [tree, index] = this.props.treePosition
+            let {gridSize, treePosition: [tree, index]} = this.props
             let id = tree.id + '-' + index
 
             let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
@@ -206,7 +222,7 @@ class GameGraph extends Component {
             return
         }
 
-        let {onNodeClick = helper.noop} = this.props
+        let {onNodeClick = helper.noop, gridSize} = this.props
         let {matrixDict: [matrix, ], mousePosition: [mx, my], cameraPosition: [cx, cy]} = this.state
         let [nearestX, nearestY] = [mx + cx, my + cy].map(z => Math.round(z / gridSize))
 
@@ -217,6 +233,9 @@ class GameGraph extends Component {
     }
 
     renderNodes({
+        gridSize,
+        nodeSize
+    }, {
         matrixDict: [matrix, dict],
         cameraPosition: [cx, cy],
         mousePosition: [mx, my],
@@ -300,7 +319,8 @@ class GameGraph extends Component {
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
                     fill,
-                    hover: isHovered
+                    hover: isHovered,
+                    nodeSize
                 }))
 
                 if (!doneTreeBones.includes(tree.id)) {
@@ -331,7 +351,8 @@ class GameGraph extends Component {
                             positionAbove,
                             positionBelow,
                             length: (tree.nodes.length - 1) * gridSize,
-                            current: onCurrentTrack
+                            current: onCurrentTrack,
+                            gridSize
                         }))
 
                         doneTreeBones.push(tree.id)
@@ -350,7 +371,8 @@ class GameGraph extends Component {
                             positionAbove: [left, top],
                             positionBelow: [nx * gridSize, ny * gridSize],
                             length: (subtree.nodes.length - 1) * gridSize,
-                            current
+                            current,
+                            gridSize
                         }))
 
                         doneTreeBones.push(subtree.id)
@@ -401,7 +423,7 @@ class GameGraph extends Component {
                     onMouseUp: this.handleGraphMouseUp
                 },
 
-                this.renderNodes(this.state)
+                this.renderNodes(this.props, this.state)
             )
         )
     }

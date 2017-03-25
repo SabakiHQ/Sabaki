@@ -136,7 +136,10 @@ class Sidebar extends Component {
         rootTree,
         showGameGraph,
         showCommentBox,
-        sidebarWidth
+        sidebarWidth,
+
+        graphGridSize,
+        graphNodeSize
     }, {
         treeHeight,
         sidebarSplit,
@@ -174,6 +177,8 @@ class Sidebar extends Component {
                 showGameGraph,
                 viewportWidth: sidebarWidth,
                 height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                gridSize: graphGridSize,
+                nodeSize: graphNodeSize,
 
                 onNodeClick: this.handleGraphNodeClick
             }),
