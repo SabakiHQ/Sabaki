@@ -18,8 +18,9 @@ class DrawerManager extends Component {
         }
 
         this.handleGameSelect = ({selectedTree}) => {
-            sabaki.setCurrentTreePosition(selectedTree, 0)
             sabaki.closeDrawer()
+            sabaki.setMode('play')
+            sabaki.setCurrentTreePosition(selectedTree, 0)
         }
     }
 
