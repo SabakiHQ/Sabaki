@@ -122,11 +122,12 @@ function buildMenu(disableAll = false) {
 
     if (engineMenu) {
         let attachMenu = engineMenu.submenu[0].submenu
+        let engines = setting.get('engines.list')
 
         attachMenu.length = 0
 
         setting.load()
-        setting.getEngines().forEach(engine => {
+        engines.forEach(engine => {
             attachMenu.push({
                 label: engine.name,
                 click: () => {
@@ -138,7 +139,7 @@ function buildMenu(disableAll = false) {
             })
         })
 
-        if (setting.getEngines().length !== 0) {
+        if (engines.length !== 0) {
             attachMenu.push({type: 'separator'})
         }
 

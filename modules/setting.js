@@ -7,8 +7,6 @@ try {
     app = remote ? remote.app : require('electron').app
 } catch (err) {}
 
-let namesort = (x, y) => x.name < y.name ? -1 : +(x.name != y.name)
-
 if (app && path) {
     let directory = app.getPath('userData')
     try { fs.mkdirSync(directory) } catch (err) {}
@@ -27,7 +25,6 @@ if (app && path) {
 }
 
 let settings = {}
-let engines = []
 
 let defaults = {
     'app.startup_check_updates': true,
@@ -62,7 +59,7 @@ let defaults = {
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,
     'edit.undo_delay': 100,
-    'engines.list': engines,
+    'engines.list': [],
     'file.show_reload_warning': true,
     'find.delay': 100,
     'game.default_board_size': 19,
@@ -139,9 +136,6 @@ exports.load = function() {
         settings[key] = defaults[key]
     }
 
-    engines = settings['engines.list']
-    engines.sort(namesort)
-
     // Overwrite settings
 
     for (let overwriteKey in settings) {
@@ -176,21 +170,6 @@ exports.get = function(key) {
 exports.set = function(key, value) {
     settings[key] = value
     return exports.save()
-}
-
-exports.addEngine = function(name, path, args) {
-    engines.push({name, path, args})
-    engines.sort(namesort)
-    return exports
-}
-
-exports.getEngines = function() {
-    return engines.slice(0)
-}
-
-exports.clearEngines = function() {
-    engines.length = 0
-    return exports
 }
 
 exports.load()

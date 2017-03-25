@@ -19,7 +19,7 @@ const sound = require('../modules/sound')
 
 const {sgf} = fileformats
 
-options.syncComponentUpdates = false
+options.syncComponentUpdates = true
 
 class App extends Component {
     constructor() {
@@ -70,9 +70,10 @@ class App extends Component {
             graphGridSize: setting.get('graph.grid_size'),
             graphNodeSize: setting.get('graph.node_size'),
 
-            // Engines
+            // Drawers
 
-            engines: setting.get('engines.list')
+            engines: setting.get('engines.list'),
+            preferencesTab: 'general'
         }
 
         this.appName = app.getName()

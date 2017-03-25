@@ -1,10 +1,14 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
+const natsort = require('natsort')
 
+const dialog = require('../../modules/dialog')
 const setting = require('../../modules/setting')
 const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
+
+let defaultEngineName = '(Unnamed Engine)'
 
 class PreferencesItem extends Component {
     constructor() {
@@ -54,9 +58,18 @@ class GeneralTab extends Component {
 
             sabaki.setState({[data[evt.id]]: evt.checked})
         }
+
+        this.handleTreeStyleChange = evt => {
+            let data = {compact: [16, 4], spacious: [22, 4], big: [26, 6]}
+            let [graphGridSize, graphNodeSize] = data[evt.currentTarget.value]
+
+            setting.set('graph.grid_size', graphGridSize)
+            setting.set('graph.node_size', graphNodeSize)
+            sabaki.setState({graphGridSize, graphNodeSize})
+        }
     }
 
-    render() {
+    render({graphGridSize}) {
         return h('div', {class: 'general'},
             h('ul', {},
                 h(PreferencesItem, {
@@ -119,10 +132,21 @@ class GeneralTab extends Component {
                 h('p', {}, h('label', {},
                     'Game Tree Style: ',
 
-                    h('select', {},
-                        h('option', {value: 'compact'}, 'Compact'),
-                        h('option', {value: 'spacious'}, 'Spacious'),
-                        h('option', {value: 'big'}, 'Big')
+                    h('select', {onChange: this.handleTreeStyleChange},
+                        h('option', {
+                            value: 'compact',
+                            selected: graphGridSize < 22
+                        }, 'Compact'),
+
+                        h('option', {
+                            value: 'spacious',
+                            selected: graphGridSize === 22
+                        }, 'Spacious'),
+
+                        h('option', {
+                            value: 'big',
+                            selected: graphGridSize > 22
+                        }, 'Big')
                     )
                 ))
             )
@@ -131,6 +155,37 @@ class GeneralTab extends Component {
 }
 
 class EngineItem extends Component {
+    constructor() {
+        super()
+
+        this.handleChange = evt => {
+            let {onChange = helper.noop} = this.props
+            let element = evt.currentTarget
+            let data = Object.assign({}, this.props, {
+                [element.name]: element.value
+            })
+
+            onChange(data)
+        }
+
+        this.handleBrowseButtonClick = () => {
+            let result = dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [{name: 'All Files', extensions: ['*']}]
+            })
+
+            if (result) {
+                let {id, name, args, onChange = helper.noop} = this.props
+                onChange({id, name, args, path: result[0]})
+            }
+        }
+
+        this.handleRemoveButtonClick = () => {
+            let {onRemove = helper.noop} = this.props
+            onRemove(this.props)
+        }
+    }
+
     shouldComponentUpdate({name, path, args}) {
         return name !== this.props.name
             || path !== this.props.path
@@ -142,17 +197,26 @@ class EngineItem extends Component {
             h('h3', {},
                 h('input', {
                     type: 'text',
-                    placeholder: '(Unnamed engine)',
-                    value: name
+                    placeholder: defaultEngineName,
+                    value: name,
+                    name: 'name',
+                    onChange: this.handleChange
                 })
             ),
             h('p', {},
                 h('input', {
                     type: 'text',
                     placeholder: 'Path',
-                    value: path
+                    value: path,
+                    name: 'path',
+                    onChange: this.handleChange
                 }),
-                h('a', {class: 'browse'},
+                h('a',
+                    {
+                        class: 'browse',
+                        onClick: this.handleBrowseButtonClick
+                    },
+
                     h('img', {
                         src: './node_modules/octicons/build/svg/file-directory.svg',
                         title: 'Browse…',
@@ -164,13 +228,16 @@ class EngineItem extends Component {
                 h('input', {
                     type: 'text',
                     placeholder: 'No arguments',
-                    value: args
+                    value: args,
+                    name: 'args',
+                    onChange: this.handleChange
                 })
             ),
             h('a', {class: 'remove'},
                 h('img', {
                     src: './node_modules/octicons/build/svg/x.svg',
-                    height: 14
+                    height: 14,
+                    onClick: this.handleRemoveButtonClick
                 })
             )
         )
@@ -178,16 +245,55 @@ class EngineItem extends Component {
 }
 
 class EnginesTab extends Component {
+    constructor() {
+        super()
+
+        this.handleItemChange = ({id, name, path, args}) => {
+            let {engines} = this.props
+
+            engines[id] = {name, path, args}
+            sabaki.setState({engines})
+            setting.set('engines.list', engines)
+        }
+
+        this.handleItemRemove = ({id}) => {
+            let {engines} = this.props
+
+            engines.splice(id, 1)
+
+            sabaki.setState({engines})
+            setting.set('engines.list', engines)
+        }
+
+        this.handleAddButtonClick = evt => {
+            evt.preventDefault()
+
+            let {engines} = this.props
+
+            engines.unshift({name: '', path: '', args: ''})
+            sabaki.setState({engines})
+            setting.set('engines.list', engines)
+        }
+    }
+
     render({engines}) {
         return h('div', {class: 'engines'},
             h('div', {class: 'engines-list'},
-                h('ul', {}, engines.map(engine =>
-                    h(EngineItem, engine)
+                h('ul', {}, engines.map(({name, path, args}, id) =>
+                    h(EngineItem, {
+                        id,
+                        name,
+                        path,
+                        args,
+
+                        onChange: this.handleItemChange,
+                        onRemove: this.handleItemRemove
+                    })
                 ))
             ),
 
             h('p', {},
-                h('button', {}, 'Add')
+                h('button', {onClick: this.handleAddButtonClick}, 'Add')
             )
         )
     }
@@ -201,9 +307,50 @@ class PreferencesDrawer extends Component {
             evt.preventDefault()
             sabaki.closeDrawer()
         }
+
+        this.handleTabClick = evt => {
+            let tabs = ['general', 'engines']
+            let tab = tabs.find(x => evt.currentTarget.classList.contains(x))
+
+            sabaki.setState({preferencesTab: tab})
+        }
     }
 
-    render({show, tab = 'general', engines}) {
+    shouldComponentUpdate({show}) {
+        return show || show !== this.props.show
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.show && !this.props.show) {
+            // On closing
+
+            let {engines} = this.props
+            let cmp = natsort({insensitive: true})
+
+            // Name unnamed engines
+
+            for (let engine of engines) {
+                if (engine.name.trim() === '') {
+                    engine.name = defaultEngineName
+                }
+            }
+
+            // Sort engines.
+
+            engines.sort((x, y) => {
+                return cmp(x.name, y.name)
+            })
+
+            sabaki.setState({engines})
+            setting.set('engines.list', engines)
+
+            // Reset tab selection
+
+            setTimeout(() => sabaki.setState({preferencesTab: 'general'}), 500)
+        }
+    }
+
+    render({show, tab, engines, graphGridSize}) {
         return h(Drawer,
             {
                 type: 'preferences',
@@ -211,16 +358,26 @@ class PreferencesDrawer extends Component {
             },
 
             h('ul', {class: 'tabs'},
-                h('li', {class: {current: tab === 'general'}},
+                h('li',
+                    {
+                        class: {general: true, current: tab === 'general'},
+                        onClick: this.handleTabClick
+                    },
+
                     h('a', {href: '#'}, 'General')
                 ),
-                h('li', {class: {current: tab === 'engines'}},
+                h('li',
+                    {
+                        class: {engines: true, current: tab === 'engines'},
+                        onClick: this.handleTabClick
+                    },
+
                     h('a', {href: '#'}, 'Engines')
                 )
             ),
 
-            h('form', {class: {[tab]: true}},
-                h(GeneralTab),
+            h('form', {class: tab},
+                h(GeneralTab, {graphGridSize}),
                 h(EnginesTab, {engines}),
 
                 h('p', {},
