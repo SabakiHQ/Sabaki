@@ -25,7 +25,7 @@ class CommentTitle extends Component {
             // Last node
             || tree.subtrees.length === 0 && index === tree.nodes.length - 1
             // Other data changed
-            || !helper.vertexEquals(treePosition, this.props.treePosition)
+            || treePosition !== this.props.treePosition
             || !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation)
             || !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
     }
@@ -286,7 +286,7 @@ class CommentBox extends Component {
 
         this.dirty = true
 
-        let treePositionChanged = !helper.vertexEquals(treePosition, this.props.treePosition)
+        let treePositionChanged = treePosition !== this.props.treePosition
 
         if (mode === 'edit') {
             this.element.scrollTop = 0

@@ -170,7 +170,7 @@ class GameGraph extends Component {
     componentWillReceiveProps({treePosition = [{}, -1]} = {}) {
         // Debounce rendering
 
-        if (helper.vertexEquals(treePosition, this.props.treePosition)) return
+        if (treePosition === this.props.treePosition) return
 
         this.dirty = true
 

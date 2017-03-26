@@ -349,10 +349,7 @@ class GameChooserDrawer extends Component {
     }
 
     componentDidMount() {
-        window.addEventListener('resize', () => {
-            if (!this.props.show) return
-            this.resize()
-        })
+        window.addEventListener('resize', () => this.resize())
 
         this.resize()
         this.forceUpdate()

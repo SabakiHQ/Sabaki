@@ -19,7 +19,7 @@ const sound = require('../modules/sound')
 
 const {sgf} = fileformats
 
-options.syncComponentUpdates = true
+options.syncComponentUpdates = false
 
 class App extends Component {
     constructor() {
