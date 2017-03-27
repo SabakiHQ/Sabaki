@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix Sabaki being unresponsive when adding invalid files to a game collection
+* Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
 
 ## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
 

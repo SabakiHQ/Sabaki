@@ -395,16 +395,14 @@ sabaki.setHotspot = function(bookmark) {
 sabaki.getEmptyGameTree = function() {
     let handicap = setting.get('game.default_handicap')
     let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
-    let stones = new Board(size[0], size.slice(-1)[0]).getHandicapPlacement(handicap).map(sgf.vertex2point)
+    let [width, height] = [size[0], size.slice(-1)[0]]
+    let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
-    let buffer = [
-        `(;GM[1]FF[4]CA[UTF-8]`,
-        `AP[${app.getName()}:${app.getVersion()}]`,
-        `KM[${setting.get('game.default_komi')}]`,
-        `SZ[${size[0]}:${size.slice(-1)[0]}]`,
-        stones.length > 0 ? `HA[${handicap}]AB[${stones.join('][')}]` : '',
-        ')'
-    ].join('')
+    let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
+    let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
+
+    let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${app.getName()}:${app.getVersion()}]
+        KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
 
     return sgf.parse(buffer)[0]
 }
