@@ -1411,14 +1411,18 @@ exports.openAddGameMenu = function() {
                     filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
                 })
 
-                if (filenames) {
-                    for (let filename of filenames) {
-                        let trees = sgf.parseFile(filename)
+                try {
+                    if (filenames) {
+                        for (let filename of filenames) {
+                            let trees = sgf.parseFile(filename)
 
-                        sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
-                        sabaki.setGameIndex(sabaki.getGameIndex())
-                        exports.showGameChooser('bottom')
+                            sabaki.setGameTrees([...sabaki.getGameTrees(), ...trees])
+                            sabaki.setGameIndex(sabaki.getGameIndex())
+                            exports.showGameChooser('bottom')
+                        }
                     }
+                } catch (err) {
+                    view.showMessageBox('Some files are unreadable.', 'warning')
                 }
 
                 exports.setIsBusy(false)

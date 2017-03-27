@@ -2,11 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.20.3][v0.20.3] (2017-04-01)
 
 **Added**
 
 * Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+
+**Fixed**
+
+* Fix Sabaki being unresponsive when adding invalid files to a game collection
 
 ## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
 
