@@ -19,7 +19,7 @@ const sound = require('../modules/sound')
 
 const {sgf} = fileformats
 
-options.syncComponentUpdates = false
+options.syncComponentUpdates = true
 
 class App extends Component {
     constructor() {
@@ -52,27 +52,27 @@ class App extends Component {
             // Board state
 
             highlightVertices: [],
-            showCoordinates: setting.get('view.show_coordinates'),
-            showMoveColorization: setting.get('view.show_move_colorization'),
-            showNextMoves: setting.get('view.show_next_moves'),
-            showSiblings: setting.get('view.show_siblings'),
-            fuzzyStonePlacement: setting.get('view.fuzzy_stone_placement'),
-            animatedStonePlacement: setting.get('view.animated_stone_placement'),
+            showCoordinates: null,
+            showMoveColorization: null,
+            showNextMoves: null,
+            showSiblings: null,
+            fuzzyStonePlacement: null,
+            animatedStonePlacement: null,
             animatedVertex: null,
 
             // Sidebar state
 
-            showLeftSidebar: setting.get('view.show_leftsidebar'),
-            leftSidebarWidth: setting.get('view.leftsidebar_width'),
-            showGameGraph: setting.get('view.show_graph'),
-            showCommentBox: setting.get('view.show_comments'),
-            sidebarWidth: setting.get('view.sidebar_width'),
-            graphGridSize: setting.get('graph.grid_size'),
-            graphNodeSize: setting.get('graph.node_size'),
+            showLeftSidebar: null,
+            leftSidebarWidth: null,
+            showGameGraph: null,
+            showCommentBox: null,
+            sidebarWidth: null,
+            graphGridSize: null,
+            graphNodeSize: null,
 
             // Drawers
 
-            engines: setting.get('engines.list'),
+            engines: null,
             preferencesTab: 'general'
         }
 
@@ -81,6 +81,11 @@ class App extends Component {
         this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
+
+        // Bind state to settings
+
+        setting.events.on('change', ({key}) => this.updateSettingState(key))
+        this.updateSettingState()
     }
 
     componentDidMount() {
@@ -149,6 +154,34 @@ class App extends Component {
     }
 
     // Sabaki API
+
+    updateSettingState(key = null) {
+        let data = {
+            'view.show_coordinates': 'showCoordinates',
+            'view.show_move_colorization': 'showMoveColorization',
+            'view.show_next_moves': 'showNextMoves',
+            'view.show_siblings': 'showSiblings',
+            'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
+            'view.animated_stone_placement': 'animatedStonePlacement',
+            'view.show_leftsidebar': 'showLeftSidebar',
+            'view.leftsidebar_width': 'leftSidebarWidth',
+            'view.show_graph': 'showGameGraph',
+            'view.show_comments': 'showCommentBox',
+            'view.sidebar_width': 'sidebarWidth',
+            'graph.grid_size': 'graphGridSize',
+            'graph.node_size': 'graphNodeSize',
+            'engines.list': 'engines'
+        }
+
+        if (key == null) {
+            for (let k in data) this.updateSettingState(k)
+            return
+        }
+
+        if (key in data) {
+            this.setState({[data[key]]: setting.get(key)})
+        }
+    }
 
     isBusy() {
         return this.busy

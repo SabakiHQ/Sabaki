@@ -50,22 +50,12 @@ class GeneralTab extends Component {
             remote.getCurrentWindow().webContents.setAudioMuted(!evt.checked)
         }
 
-        this.handleStateChange = evt => {
-            let data = {
-                'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
-                'view.animated_stone_placement': 'animatedStonePlacement'
-            }
-
-            sabaki.setState({[data[evt.id]]: evt.checked})
-        }
-
         this.handleTreeStyleChange = evt => {
             let data = {compact: [16, 4], spacious: [22, 4], big: [26, 6]}
             let [graphGridSize, graphNodeSize] = data[evt.currentTarget.value]
 
             setting.set('graph.grid_size', graphGridSize)
             setting.set('graph.node_size', graphNodeSize)
-            sabaki.setState({graphGridSize, graphNodeSize})
         }
     }
 
@@ -87,13 +77,11 @@ class GeneralTab extends Component {
                 }),
                 h(PreferencesItem, {
                     id: 'view.fuzzy_stone_placement',
-                    text: 'Fuzzy stone placement',
-                    onChange: this.handleStateChange
+                    text: 'Fuzzy stone placement'
                 }),
                 h(PreferencesItem, {
                     id: 'view.animated_stone_placement',
-                    text: 'Animate fuzzy placement',
-                    onChange: this.handleStateChange
+                    text: 'Animate fuzzy placement'
                 }),
                 h(PreferencesItem, {
                     id: 'file.show_reload_warning',
@@ -249,29 +237,25 @@ class EnginesTab extends Component {
         super()
 
         this.handleItemChange = ({id, name, path, args}) => {
-            let {engines} = this.props
+            let engines = this.props.engines.slice()
 
             engines[id] = {name, path, args}
-            sabaki.setState({engines})
             setting.set('engines.list', engines)
         }
 
         this.handleItemRemove = ({id}) => {
-            let {engines} = this.props
+            let engines = this.props.engines.slice()
 
             engines.splice(id, 1)
-
-            sabaki.setState({engines})
             setting.set('engines.list', engines)
         }
 
         this.handleAddButtonClick = evt => {
             evt.preventDefault()
 
-            let {engines} = this.props
+            let engines = this.props.engines.slice()
 
             engines.unshift({name: '', path: '', args: ''})
-            sabaki.setState({engines})
             setting.set('engines.list', engines)
         }
     }
@@ -324,7 +308,7 @@ class PreferencesDrawer extends Component {
         if (prevProps.show && !this.props.show) {
             // On closing
 
-            let {engines} = this.props
+            let engines = this.props.engines.slice()
             let cmp = natsort({insensitive: true})
 
             // Name unnamed engines
@@ -341,7 +325,6 @@ class PreferencesDrawer extends Component {
                 return cmp(x.name, y.name)
             })
 
-            sabaki.setState({engines})
             setting.set('engines.list', engines)
 
             // Reset tab selection

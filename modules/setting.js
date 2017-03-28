@@ -1,18 +1,14 @@
-let app
+const app = require('electron').app || require('electron').remote.app
 const fs = require('fs')
-const path = require('path')
+const EventEmitter = require('events')
 
-try {
-    let remote = require('electron').remote
-    app = remote ? remote.app : require('electron').app
-} catch (err) {}
-
-if (app && path) {
+if (app) {
+    let {join} = require('path')
     let directory = app.getPath('userData')
     try { fs.mkdirSync(directory) } catch (err) {}
 
-    exports.settingsPath = path.join(directory, 'settings.json')
-    exports.stylesPath = path.join(directory, 'styles.css')
+    exports.settingsPath = join(directory, 'settings.json')
+    exports.stylesPath = join(directory, 'styles.css')
 
     try {
         fs.accessSync(exports.stylesPath, fs.R_OK)
@@ -120,6 +116,8 @@ let defaults = {
     'window.width': 564
 }
 
+exports.events = new EventEmitter()
+
 exports.load = function() {
     if (!app) return settings = defaults
 
@@ -169,7 +167,9 @@ exports.get = function(key) {
 
 exports.set = function(key, value) {
     settings[key] = value
-    return exports.save()
+    exports.save()
+    exports.events.emit('change', {key})
+    return exports
 }
 
 exports.load()
