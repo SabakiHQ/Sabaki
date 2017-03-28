@@ -35,6 +35,16 @@
         "ext": "sgf",
         "name": "SGF",
         "description": "Smart Game Format"
+      },
+      {
+        "ext": "ngf",
+        "name": "NGF",
+        "description": "wBaduk NGF"
+      },
+      {
+        "ext": "gib",
+        "name": "GIB",
+        "description": "Tygem GIB"
       }
     ],
     "files": [
