@@ -11,10 +11,13 @@ class InputBox extends Component {
         this.stopPropagation = evt => evt.stopPropagation()
 
         this.handleKeyUp = evt => {
+            if (!this.props.show) return
+
             if (evt.keyCode === 27) {
                 // Escape
 
-                this.close()
+                evt.stopPropagation()
+                this.cancel()
             } else if (evt.keyCode == 13) {
                 // Enter
 
@@ -26,7 +29,7 @@ class InputBox extends Component {
             }
         }
 
-        this.close = this.close.bind(this)
+        this.cancel = this.cancel.bind(this)
     }
 
     shouldComponentUpdate({show, text, onSubmit, onCancel}) {
@@ -36,8 +39,8 @@ class InputBox extends Component {
             || onCancel !== this.props.onCancel
     }
 
-    componentWillReceiveProps(prevProps) {
-        if (!prevProps.show && this.props.show) {
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.show && !this.props.show) {
             this.setState({value: ''})
         }
     }
@@ -48,8 +51,11 @@ class InputBox extends Component {
         }
     }
 
-    close() {
+    cancel() {
         if (!this.props.show) return
+
+        if (document.activeElement === this.inputElement)
+            this.inputElement.blur()
 
         let {onCancel = helper.noop} = this.props
         sabaki.setState({showInputBox: false})
@@ -62,7 +68,7 @@ class InputBox extends Component {
                 id: 'input-box',
                 class: {show},
 
-                onClick: this.close
+                onClick: this.cancel
             },
 
             h('div', {class: 'inner', onClick: this.stopPropagation},
@@ -75,7 +81,7 @@ class InputBox extends Component {
 
                     onInput: this.handleInput,
                     onKeyUp: this.handleKeyUp,
-                    onBlur: this.close
+                    onBlur: this.cancel
                 })
             )
         )

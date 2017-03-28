@@ -1,4 +1,5 @@
-const app = require('electron').app || require('electron').remote.app
+const electron = require('electron')
+const app = electron && (require('electron').app || require('electron').remote.app)
 const fs = require('fs')
 const EventEmitter = require('events')
 

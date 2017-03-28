@@ -222,7 +222,7 @@ exports.compressed2list = function(compressed) {
 }
 
 exports.stringify = function(tree) {
-    if (Object.prototype.toString.call(tree) === '[object Array]') {
+    if (Array.isArray(tree)) {
         return exports.stringify({nodes: [], subtrees: tree})
     }
 
