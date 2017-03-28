@@ -306,16 +306,39 @@ class App extends Component {
                 let tool = this.state.selectedTool
 
                 if (button === 2) {
-                    tool = tool === 'stone_1' ? 'stone_-1'
-                        : tool === 'stone_-1' ? 'stone_1'
-                        : tool
+                    // Right mouse click
+
+                    if (['stone_1', 'stone_-1'].includes(tool)) {
+                        // Switch stone tool
+
+                        tool = tool === 'stone_1' ? 'stone_-1' : 'stone_1'
+                    } else if (['number', 'label'].includes(tool)) {
+                        // Show label editing context menu
+
+                        let click = () => dialog.showInputBox('Enter label text', ({value}) => {
+                            this.useTool('label', vertex, value)
+                        })
+
+                        let template = [{label: '&Edit Label', click}]
+                        let menu = Menu.buildFromTemplate(template)
+                        menu.popup(this.window, {x, y, async: true})
+
+                        return
+                    }
                 }
 
-                if (!this.editVertexData || this.editVertexData[0] !== tool) {
-                    this.editVertexData = [tool, vertex]
-                    this.useTool(tool, vertex)
+                if (['line', 'arrow'].includes(tool)) {
+                    // Remember clicked vertex and pass as an argument the second time
+
+                    if (!this.editVertexData || this.editVertexData[0] !== tool) {
+                        this.useTool(tool, vertex)
+                        this.editVertexData = [tool, vertex]
+                    } else {
+                        this.useTool(tool, vertex, this.editVertexData[1])
+                        this.editVertexData = null
+                    }
                 } else {
-                    this.useTool(tool, vertex, this.editVertexData[1])
+                    this.useTool(tool, vertex)
                     this.editVertexData = null
                 }
             }
@@ -519,7 +542,7 @@ class App extends Component {
         this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
     }
 
-    useTool(tool, vertex, endVertex = null) {
+    useTool(tool, vertex, argument = null) {
         let [tree, index] = this.state.treePosition
         let {currentPlayer, gameIndex} = this.inferredState
         let board = gametree.getBoard(tree, index)
@@ -584,6 +607,8 @@ class App extends Component {
             if (prop in node) node[prop].push(point)
             else node[prop] = [point]
         } else if (['line', 'arrow'].includes(tool)) {
+            let endVertex = argument
+
             if (!endVertex || helper.vertexEquals(vertex, endVertex)) return
 
             // Check whether to remove a line
@@ -630,28 +655,37 @@ class App extends Component {
                         .map(x => parseFloat(x.substr(3)))
                         .filter(x => !isNaN(x))
                         .sort((a, b) => a - b)
+                        .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
                         .concat([null])
-                        .findIndex((x, i, a) => i + 1 !== x) + 1
+                        .findIndex((x, i) => i + 1 !== x) + 1
 
                     board.markups[vertex] = [tool, number.toString()]
                 }
             } else if (tool === 'label') {
-                if (vertex in board.markups && board.markups[vertex][0] === 'label') {
+                let label = argument
+
+                if (label != null && label.trim() === ''
+                || label == null && vertex in board.markups && board.markups[vertex][0] === 'label') {
                     delete board.markups[vertex]
                 } else {
-                    let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                    let letterIndex = !node.LB ? 0 : node.LB
-                        .filter(x => x.length === 4)
-                        .map(x => alpha.indexOf(x[3]))
-                        .filter(x => x >= 0)
-                        .sort((a, b) => a - b)
-                        .concat([null])
-                        .findIndex((x, i, a) => i !== x)
+                    if (label == null || label.trim() === '') {
+                        let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                        let letterIndex = !node.LB ? 0 : node.LB
+                            .filter(x => x.length === 4)
+                            .map(x => alpha.indexOf(x[3]))
+                            .filter(x => x >= 0)
+                            .sort((a, b) => a - b)
+                            .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+                            .concat([null])
+                            .findIndex((x, i) => i !== x)
 
-                    board.markups[vertex] = [tool, alpha[Math.min(letterIndex, alpha.length - 1)]]
+                        label = alpha[Math.min(letterIndex, alpha.length - 1)]
+                    }
+
+                    board.markups[vertex] = [tool, label]
                 }
             } else {
-                if (vertex in board.markups && board.markups[vertex][0] == tool) {
+                if (vertex in board.markups && board.markups[vertex][0] === tool) {
                     delete board.markups[vertex]
                 } else {
                     board.markups[vertex] = [tool, '']
@@ -682,7 +716,7 @@ class App extends Component {
         this.clearUndoPoint()
         this.setCurrentTreePosition(tree, index)
 
-        this.events.emit('tool-used', {tool, vertex, endVertex})
+        this.events.emit('tool-used', {tool, vertex, argument})
     }
 
     // File hashes

@@ -39,6 +39,11 @@ class InputBox extends Component {
     componentWillReceiveProps(prevProps) {
         if (!prevProps.show && this.props.show) {
             this.setState({value: ''})
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.show && this.props.show) {
             this.inputElement.focus()
         }
     }
