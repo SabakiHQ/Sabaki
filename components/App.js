@@ -8,6 +8,7 @@ const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
 const Sidebar = require('./Sidebar')
 const DrawerManager = require('./DrawerManager')
+const InputBox = require('./InputBox')
 
 const Board = require('../modules/board')
 const dialog = require('../modules/dialog')
@@ -15,11 +16,8 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
-const sound = require('../modules/sound')
-
 const {sgf} = fileformats
-
-options.syncComponentUpdates = true
+const sound = require('../modules/sound')
 
 class App extends Component {
     constructor() {
@@ -44,7 +42,7 @@ class App extends Component {
             undoable: false,
             undoText: 'Undo',
             selectedTool: 'stone_1',
-            scoringMethod: setting.get('scoring.method'),
+            scoringMethod: null,
             findText: '',
             findVertex: null,
             deadStones: [],
@@ -73,7 +71,14 @@ class App extends Component {
             // Drawers
 
             engines: null,
-            preferencesTab: 'general'
+            preferencesTab: 'general',
+
+            // Input box
+
+            showInputBox: false,
+            inputBoxText: '',
+            onInputBoxSubmit: helper.noop,
+            onInputBoxCancel: helper.noop
         }
 
         this.appName = app.getName()
@@ -81,6 +86,10 @@ class App extends Component {
         this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
+
+        // Expose submodules
+
+        this.modules = {Board, dialog, fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
 
@@ -101,7 +110,7 @@ class App extends Component {
 
         // Handle escape key
 
-        document.addEventListener('keydown', evt => {
+        document.addEventListener('keyup', evt => {
             if (evt.keyCode === 27) {
                 // Escape
 
@@ -153,8 +162,6 @@ class App extends Component {
         }
     }
 
-    // Sabaki API
-
     updateSettingState(key = null) {
         let data = {
             'view.show_coordinates': 'showCoordinates',
@@ -170,7 +177,8 @@ class App extends Component {
             'view.sidebar_width': 'sidebarWidth',
             'graph.grid_size': 'graphGridSize',
             'graph.node_size': 'graphNodeSize',
-            'engines.list': 'engines'
+            'engines.list': 'engines',
+            'scoring.method': 'scoringMethod'
         }
 
         if (key == null) {
@@ -182,6 +190,8 @@ class App extends Component {
             this.setState({[data[key]]: setting.get(key)})
         }
     }
+
+    // Sabaki API
 
     isBusy() {
         return this.busy
@@ -964,9 +974,9 @@ class App extends Component {
     goToNextFork() {
         let [tree, index] = this.state.treePosition
 
-        if (index != tree.nodes.length - 1)
+        if (index != tree.nodes.length - 1) {
             this.setCurrentTreePosition(tree, tree.nodes.length - 1)
-        else if (tree.current != null) {
+        } else if (tree.current != null) {
             let subtree = tree.subtrees[tree.current]
             this.setCurrentTreePosition(subtree, subtree.nodes.length - 1)
         }
@@ -1474,7 +1484,7 @@ class App extends Component {
         }
 
         let menu = Menu.buildFromTemplate(template)
-        menu.popup(remote.getCurrentWindow(), Object.assign({async: true}, options))
+        menu.popup(this.window, Object.assign({async: true}, options))
     }
 
     // Render
@@ -1521,19 +1531,24 @@ class App extends Component {
                 }
             },
 
+            h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath}),
+
             h(MainView, state),
             h(LeftSidebar, state),
             h(Sidebar, state),
             h(DrawerManager, state),
 
+            h(InputBox, {
+                text: state.inputBoxText,
+                show: state.showInputBox,
+                onSubmit: state.onInputBoxSubmit,
+                onCancel: state.onInputBoxCancel
+            }),
+
             h('section', {id: 'busy'})
         )
     }
 }
-
-// Load userstyle
-
-document.querySelector('link.userstyle').href = setting.stylesPath
 
 // Render
 

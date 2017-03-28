@@ -1,4 +1,3 @@
-const {remote} = require('electron')
 const {h, Component} = require('preact')
 const natsort = require('natsort')
 
@@ -47,7 +46,7 @@ class GeneralTab extends Component {
         super()
 
         this.handleSoundEnabledChange = evt => {
-            remote.getCurrentWindow().webContents.setAudioMuted(!evt.checked)
+            sabaki.window.webContents.setAudioMuted(!evt.checked)
         }
 
         this.handleTreeStyleChange = evt => {

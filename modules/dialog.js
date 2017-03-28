@@ -1,14 +1,15 @@
 const {ipcRenderer, remote} = require('electron')
 const {app, dialog} = remote
+const helper = require('./helper')
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     sabaki.setBusy(true)
     ipcRenderer.send('build-menu', true)
 
-    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
+    let result = dialog.showMessageBox(sabaki.window, {
         type,
         buttons,
-        title: app.getName(),
+        title: sabaki.appName,
         message,
         cancelId,
         noLink: true
@@ -27,7 +28,7 @@ exports.showFileDialog = function(type, options) {
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
-    let result = dialog[`show${type}Dialog`](remote.getCurrentWindow(), options)
+    let result = dialog[`show${type}Dialog`](sabaki.window, options)
 
     ipcRenderer.send('build-menu')
     sabaki.setBusy(false)
@@ -41,4 +42,13 @@ exports.showOpenDialog = function(options) {
 
 exports.showSaveDialog = function(options) {
     return exports.showFileDialog('save', options)
+}
+
+exports.showInputBox = function(message, onSubmit = helper.noop, onCancel = helper.noop) {
+    sabaki.setState({
+        inputBoxText: message,
+        showInputBox: true,
+        onInputBoxSubmit: onSubmit,
+        onInputBoxCancel: onCancel
+    })
 }

@@ -74,8 +74,16 @@ img {
 }
 
 #input-box {
-        position: absolute;
         position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        pointer-events: none;
+    }
+    #input-box .inner {
+        position: absolute;
         margin-left: -205px;
         top: 0;
         left: 50%;
@@ -85,9 +93,11 @@ img {
         color: #eee;
         transform: translateY(-100%);
         transition: transform .1s;
-        z-index: 1000;
     }
     #input-box.show {
+        pointer-events: auto;
+    }
+    #input-box.show .inner {
         transform: translateY(0);
         box-shadow: 0 0 10px rgba(0, 0, 0, .5);
     }

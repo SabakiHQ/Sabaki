@@ -1,5 +1,6 @@
 const {h, Component} = require('preact')
 const helper = require('../../modules/helper')
+const setting = require('../../modules/setting')
 
 const Drawer = require('./Drawer')
 
@@ -34,8 +35,8 @@ class ScoreDrawer extends Component {
     constructor() {
         super()
 
-        this.handleTerritoryButtonClick = () => sabaki.setState({scoringMethod: 'territory'})
-        this.handleAreaButtonClick = () => sabaki.setState({scoringMethod: 'area'})
+        this.handleTerritoryButtonClick = () => setting.set('scoring.method', 'territory')
+        this.handleAreaButtonClick = () => setting.set('scoring.method', 'area')
         this.handleCloseButtonClick = () => sabaki.closeDrawer()
 
         this.handleSubmitButtonClick = evt => {

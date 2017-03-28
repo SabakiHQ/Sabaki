@@ -53,7 +53,7 @@ exports.tokenize = function(input) {
     return tokens
 }
 
-function _parseTokens(tokens, onProgress = () => {}, encoding = defaultEncoding, start = [0], depth = 0) {
+function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncoding, start = [0], depth = 0) {
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
