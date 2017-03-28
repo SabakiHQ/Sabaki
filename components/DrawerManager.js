@@ -22,6 +22,26 @@ class DrawerManager extends Component {
             sabaki.setMode('play')
             sabaki.setCurrentTreePosition(selectedTree, 0)
         }
+
+        this.handleGameTreesChange = this.handleGameTreesChange.bind(this)
+    }
+
+    handleGameTreesChange(evt) {
+        let newGameTrees = evt.gameTrees
+        let {gameTrees, gameIndex, rootTree} = this.props
+
+        if (!newGameTrees.includes(rootTree)) {
+            if (newGameTrees.length === 0) {
+                newGameTrees = [sabaki.getEmptyGameTree()]
+            }
+
+            let newIndex = Math.min(Math.max(gameIndex - 1, 0), newGameTrees.length - 1)
+            let newTreePosition = [newGameTrees[newIndex], 0]
+
+            sabaki.setState({treePosition: newTreePosition})
+        }
+
+        sabaki.setState({gameTrees: newGameTrees})
     }
 
     render({
@@ -63,7 +83,8 @@ class DrawerManager extends Component {
                 gameTrees,
                 gameIndex,
 
-                onItemClick: this.handleGameSelect
+                onItemClick: this.handleGameSelect,
+                onChange: this.handleGameTreesChange
             }),
 
             h(CleanMarkupDrawer, {

@@ -119,18 +119,10 @@ class GameChooserDrawer extends Component {
                             ['Remove Game', 'Cancel'], 1
                         ) === 1) return
 
-                        let {gameTrees} = this.props
+                        let {gameTrees, onChange = helper.noop} = this.props
                         let index = gameTrees.indexOf(evt.tree)
 
-                        gameTrees.splice(index, 1)
-                        sabaki.setState({gameTrees})
-
-                        if (gameTrees.length === 0) {
-                            let tree = sabaki.getEmptyGameTree()
-                            gameTrees.push(tree)
-                        }
-
-                        sabaki.setCurrentTreePosition(gameTrees[Math.max(index - 1, 0)], 0)
+                        onChange({gameTrees: gameTrees.filter((_, i) => i !== index)})
                     }
                 },
                 {
@@ -142,8 +134,8 @@ class GameChooserDrawer extends Component {
                             ['Remove Games', 'Cancel'], 1
                         ) === 1) return
 
-                        sabaki.setState({gameTrees: [evt.tree]})
-                        sabaki.setCurrentTreePosition(evt.tree, 0)
+                        let {onChange = helper.noop} = this.props
+                        onChange({gameTrees: [evt.tree]})
                     }
                 }
             ]
@@ -181,19 +173,20 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleItemDrop = evt => {
-            let {gameTrees} = this.props
+            let {gameTrees, onChange = helper.noop} = this.props
             let {insertBefore} = this.state
+            let newGameTrees = gameTrees.slice()
 
             if (this.dragData == null || insertBefore < 0) return
-
             if (insertBefore > this.dragData) insertBefore--
 
-            let [tree] = gameTrees.splice(this.dragData, 1)
-            gameTrees.splice(insertBefore, 0, tree)
+            let [tree] = newGameTrees.splice(this.dragData, 1)
+            newGameTrees.splice(insertBefore, 0, tree)
 
             this.dragData = null
             this.setState({insertBefore: -1})
-            sabaki.setState({gameTrees})
+
+            onChange({gameTrees: newGameTrees})
         }
 
         this.handleCancelDrag = () => {
@@ -218,22 +211,17 @@ class GameChooserDrawer extends Component {
                     label: 'Add &New Game',
                     click: () => {
                         let tree = sabaki.getEmptyGameTree()
-                        let {gameTrees} = this.props
+                        let {gameTrees, onChange = helper.noop} = this.props
 
-                        gameTrees.push(tree)
-                        sabaki.setCurrentTreePosition(tree, 0)
-                        this.forceUpdate()
-
-                        this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight
-                        this.setState({scrollTop: this.gamesListElement.scrollTop})
-
-                        setTimeout(() => sabaki.openDrawer('info'), 200)
+                        onChange({gameTrees: [...gameTrees, tree]})
                     }
                 },
                 {
                     label: 'Add &Existing File…',
                     click: () => {
                         let {extname} = require('path')
+                        let {gameTrees, onChange = helper.noop} = this.props
+                        let newTrees = []
 
                         let filenames = dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
@@ -246,20 +234,14 @@ class GameChooserDrawer extends Component {
                             try {
                                 for (let filename of filenames) {
                                     let trees = fileformats.parseFile(filename)
-                                    let {gameTrees} = this.props
-
-                                    gameTrees.push(...trees)
-
-                                    sabaki.setState({gameTrees})
-                                    this.forceUpdate()
-
-                                    this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight
-                                    this.setState({scrollTop: this.gamesListElement.scrollTop})
+                                    newTrees.push(...trees)
                                 }
                             } catch (err) {
                                 dialog.showMessageBox('Some files are unreadable.', 'warning')
                             }
                         }
+
+                        onChange({gameTrees: [...gameTrees, ...newTrees]})
 
                         sabaki.setBusy(false)
                     }
@@ -297,7 +279,7 @@ class GameChooserDrawer extends Component {
                 item.click = () => {
                     sabaki.setBusy(true)
 
-                    let {gameTrees} = this.props
+                    let {gameTrees, onChange = helper.noop} = this.props
 
                     // Stable sort
 
@@ -331,7 +313,7 @@ class GameChooserDrawer extends Component {
                         return s !== 0 ? s : i1 - i2
                     }).map(x => x[0])
 
-                    sabaki.setState({gameTrees})
+                    onChange({gameTrees})
                     sabaki.setBusy(false)
                 }
             }
