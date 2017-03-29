@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.20.3][v0.20.3] (2017-04-01)
+## [Sabaki v0.20.3][v0.20.3] (2017-03-30)
 
 **Added**
 
@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Windows installers create app folder if necessary
 * Fix Sabaki being unresponsive when adding invalid files to a game collection
 * Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
 
