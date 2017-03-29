@@ -1,4 +1,4 @@
-Integer# Sabaki Object
+# Sabaki Object
 
 `sabaki` is a global object, giving users access to the Sabaki API.
 
@@ -7,7 +7,7 @@ Integer# Sabaki Object
 To listen to events, use the [`EventEmitter`](https://nodejs.org/api/events.html#events_class_eventemitter) `sabaki.events` like this:
 
 ~~~js
-sabaki.events.on('preparation-complete', () => {
+sabaki.events.on('ready', () => {
     console.log('Preparation complete!')
 })
 ~~~
@@ -16,19 +16,27 @@ sabaki.events.on('preparation-complete', () => {
 
 The `ready` event is emitted after the page is ready, Sabaki has loaded all settings, and all components are ready to use.
 
-### Event: 'navigating'
+### Event: 'modeChange'
+
+The `modeChange` event is emitted after Sabaki changes its mode.
+
+### Event: 'navigate'
+
+The `navigate` event is emitted when Sabaki has finished loading a game tree position.
+
+### Event: 'vertexClick'
 
 * `evt` `<Object>`
-    * `tree` [`<GameTree>`](gametree.md)
-    * `index` `<Integer>`
+    * `vertex` [`<Vertex>`](vertex.md)
+    * `options` `<Object>`
+        * `button` `<Integer>`
+        * `ctrlKey` `<Boolean>`
+        * `x` `<Integer>`
+        * `y` `<Integer>`
 
-The `navigating` event is triggered when Sabaki is about to load the game tree position at `index` in `tree`.
+The `vertexClick` event is emitted when the user clicks on the board.
 
-### Event: 'navigated'
-
-The `navigated` event is emitted when Sabaki has finished loading a game tree position.
-
-### Event: 'move-made'
+### Event: 'makeMove'
 
 * `evt` `<Object>`
     * `pass` `<Boolean>` - Specifies whether the move was a pass
@@ -36,30 +44,53 @@ The `navigated` event is emitted when Sabaki has finished loading a game tree po
     * `suicide` `<Boolean>` - Specifies whether the move was a suicide
     * `ko` `<Boolean>` - Specifies whether the move violates the simple ko rule
 
-The `move-made` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
+The `makeMove` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
 
-### Event: 'resigned'
+### Event: 'resign'
 
 * `player` `<Integer>`
 
-The `resigned` event is triggered after someone resigns. `player` is `1` if black resigns, otherwise `-1`.
+The `resign` event is triggered after someone resigns. `player` is `1` if black resigns, otherwise `-1`.
 
-### Event: 'tool-used'
+### Event: 'toolUsed'
 
 * `evt` `<Object>`
     * `tool` `<String>`
     * `vertex` [`<Vertex>`](vertex.md)
-    * `endVertex` [`<Vertex>`](vertex.md)
+    * `argument` [`<Vertex>`](vertex.md)
 
-The `tool-used` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `stone_1`, `stone_-1`, `cross`, `triangle`, `square`, `circle`, `line`, `arrow`, `label`, `number`. If `tool` is `line` or `arrow`, `endVertex` is specified as well.
+The `toolUsed` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`. If `tool` is `'line'` or `'arrow'`, `argument` is the end vertex. If `tool` is `'label'` or `'number'`, `argument` is the label text.
 
-### Event: 'file-loaded'
+### Event: 'fileLoad'
 
-The `file-loaded` event is triggered when Sabaki finishes loading some file.
+The `fileLoad` event is triggered when Sabaki finishes loading some file.
 
 ## Methods
 
+### User Interface
+
+#### sabaki.isBusy()
+#### sabaki.setBusy(busy)
+
+* `busy` `<Boolean>`
+
+#### sabaki.setMode(mode)
+
+* `mode` `<String>` - One of `'play'`, `'edit'`, `'find'`, `'scoring'`, `'estimator'`, `'guess'`, `'autoplay'`
+
+#### sabaki.openDrawer(drawer)
+
+* `drawer` `<String>` - One of `'info'`, `'gamechooser'`, `'cleanmarkup'`, `'score'`, `'preferences'`
+
+The score drawer should only be opened in scoring mode or estimator mode.
+
+#### sabaki.closeDrawer()
+
 ### File Management
+
+#### sabaki.getEmptyGameTree()
+
+Returns an empty [game tree](gametree.md) with the default board size, komi, and handicap settings.
 
 #### sabaki.newFile([options])
 
@@ -86,13 +117,13 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 #### sabaki.loadContent(content, format[, options])
 
 * `content` `<String>`
-* `format` `<String>` - One of `'sgf'`, `'ngf'`, `'gib'`
+* `extension` `<String>` - File extension, e.g. `'sgf'`
 * `options` `<Object>` *(optional)*
     * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
     * `ignoreEncoding` `<Boolean>` *(optional)* - Default: `false`
     * `callback` `<Function>` *(optional)*
 
-Returns to play mode and parses `content` as `format`, whicch replaces current file. If `format` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
+Returns to play mode and parses `content` which replaces current file. Sabaki will automatically detect file format by `extension`. If `extension` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
@@ -135,11 +166,13 @@ Depending on the settings, Sabaki may notify the user about ko and suicide, play
 
 Updates game information that the current player has resigned and shows the game info drawer for the user.
 
-#### sabaki.useTool(tool, vertex[, endVertex])
+#### sabaki.useTool(tool, vertex[, argument])
 
 * `tool` `<String>` - One of `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`
 * `vertex` [`<Vertex>`](vertex.md)
-* `endVertex` [`<Vertex>`](vertex.md) *(optional)*
+* `argument`
+
+Uses `tool` to mark the board at `vertex`. If `tool` is `'arrow'` or `'line'`, `argument` has to be set as the second [vertex](vertex.md). Otherwise `argument` is optional. If `tool` is `label`, `argument` can be a string specifying the label text.
 
 ### Undo
 
@@ -155,9 +188,15 @@ Updates game information that the current player has resigned and shows the game
 #### sabaki.setCurrentTreePosition(tree, index)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `Integer`
+* `index` `<Integer>`
 
 Jumps to the position specified by `tree` and `index`.
+
+#### sabaki.startAutoscrolling(step)
+
+* `step` `<Integer>`
+
+#### sabaki.stopAutoscrolling()
 
 #### sabaki.goStep(step)
 
@@ -199,3 +238,79 @@ Jumps to the position specified by `tree` and `index`.
     * `vertex` [`<Vertex>`](vertex.md) *(optional)*
     * `text` `<String>` *(optional)*
 * `callback` `<Function>` *(optional)*
+
+### Node actions
+
+#### sabaki.setPlayer(tree, index, sign)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `sign` `<Integer>`
+
+#### sabaki.setComment(tree, index, data)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `data` `<Object>`
+    * `title` `<String>` *(optional)*
+    * `comment` `<String>` *(optional)*
+    * `hotspot` `<Boolean>` *(optional)*
+    * `moveAnnotation` `<String>` *(optional)* - One of `'BM'`, `'DO'`, `'IT'`, and `'TE'`
+    * `positionAnnotation` `<String>` *(optional)* - One of `'UC'`, `'GW'`, `'GB'`, and `'DM'`
+
+#### sabaki.copyVariation(tree, index)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+
+#### sabaki.cutVariation(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.pasteVariation(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.flattenVariation(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.makeMainVariation(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.shiftVariation(tree, index, step, [, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `step` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.removeNode(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `suppressConfirmation` `<Boolean>` - Default: `false`
+    * `setUndoPoint` `<Boolean>` - Default: `true`
+
+#### sabaki.removeOtherVariations(tree, index[, options])
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `suppressConfirmation` `<Boolean>` - Default: `false`
+    * `setUndoPoint` `<Boolean>` - Default: `true`

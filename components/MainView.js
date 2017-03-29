@@ -17,7 +17,11 @@ class MainView extends Component {
         super()
 
         this.handleTogglePlayer = () => sabaki.setPlayer(...this.props.treePosition, -this.props.currentPlayer)
-        this.handleToolButtonClick = evt => sabaki.setSelectedTool(evt.tool)
+
+        this.handleToolButtonClick = evt => {
+            sabaki.setState({selectedTool: evt.tool})
+        }
+
         this.handleFindButtonClick = evt => sabaki.findMove(evt.step, {
             vertex: this.props.findVertex,
             text: this.props.findText

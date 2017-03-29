@@ -137,6 +137,8 @@ header, #bar .bar {
         transition: background .2s;
     }
     #bar .bar { top: -40px; }
+    #bar .bar.current { top: 0; }
+    #bar header:not(.current) { top: 40px; }
     #bar .bar .close {
         display: block;
         position: absolute;
@@ -157,10 +159,6 @@ header, #bar .bar {
     .scoring #bar, .estimator #bar { background: #C42311; }
     .find #bar { background: #0050C0; }
     .guess #bar { background: #823499; }
-    .edit #edit, .scoring #scoring, .estimator #estimator,
-    .find #find, .guess #guess, .autoplay #autoplay { top: 0; }
-    .edit header, .scoring header, .estimator header,
-    .find header, .guess header, .autoplay header { top: 40px; }
     #bar .bar input {
         box-sizing: border-box;
         height: 32px;

@@ -8,11 +8,19 @@ class Bar extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.mode === nextProps.type
+        return nextProps.mode !== this.props.mode || nextProps.mode === nextProps.type
     }
 
-    render({children, type, class: c = {}}) {
-        return h('section', {id: type, class: Object.assign({bar: true}, c)},
+    render({children, type, mode, class: c = {}}) {
+        return h('section',
+            {
+                id: type,
+                class: Object.assign({
+                    bar: true,
+                    current: type === mode
+                }, c)
+            },
+
             children,
             h('a', {class: 'close', href: '#', onClick: this.onCloseButtonClick})
         )

@@ -50,10 +50,11 @@ class PlayBar extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.mode === 'play'
+        return nextProps.mode !== this.props.mode || nextProps.mode === 'play'
     }
 
     render({
+        mode,
         playerNames,
         playerRanks,
         playerCaptures,
@@ -64,13 +65,14 @@ class PlayBar extends Component {
 
         onCurrentPlayerClick = helper.noop
     }) {
-        let captureStyle = index => ({opacity: playerCaptures[index] == 0 ? 0 : .7})
+        let captureStyle = index => ({opacity: playerCaptures[index] === 0 ? 0 : .7})
 
         return h('header',
             {
                 class: {
                     undoable,
-                    hotspot: showHotspot
+                    hotspot: showHotspot,
+                    current: mode === 'play'
                 }
             },
 

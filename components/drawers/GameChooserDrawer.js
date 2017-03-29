@@ -350,6 +350,13 @@ class GameChooserDrawer extends Component {
             this.setState({scrollTop: this.gamesListElement.scrollTop})
         }
 
+        if (this.props.show && prevProps.gameTrees.length !== this.props.gameTrees.length) {
+            // Scroll down
+
+            this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight
+            this.setState({scrollTop: this.gamesListElement.scrollTop})
+        }
+
         if (!prevProps.show && this.props.show) {
             // Scroll current list element into view
 

@@ -210,41 +210,10 @@ class App extends Component {
         }
     }
 
-    setSelectedTool(tool) {
-        this.setState({selectedTool: tool})
-    }
-
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth})
         window.dispatchEvent(new Event('resize'))
     }
-
-    getEmptyGameTree() {
-        let handicap = setting.get('game.default_handicap')
-        let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
-        let [width, height] = [size[0], size.slice(-1)[0]]
-        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
-
-        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
-        let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
-
-        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
-            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
-
-        return sgf.parse(buffer)[0]
-    }
-
-    getSGF() {
-        let {gameTrees} = this.state
-
-        gameTrees.forEach(tree => {
-            tree.nodes[0].AP = [`${this.appName}:${this.version}`]
-        })
-
-        return sgf.stringify(gameTrees)
-    }
-
-    // Modes & drawers
 
     setMode(mode) {
         let stateChange = {mode}
@@ -261,6 +230,7 @@ class App extends Component {
         }
 
         this.setState(stateChange)
+        this.events.emit('modeChange')
     }
 
     openDrawer(drawer) {
@@ -366,6 +336,8 @@ class App extends Component {
                 this.findMove(1, {vertex, text: this.state.findText})
             }
         }
+
+        this.events.emit('vertexClick')
     }
 
     makeMove(vertex, {cancelAutoplay = false, clearUndoPoint = true} = {}) {
@@ -527,7 +499,7 @@ class App extends Component {
 
         // Emit event
 
-        this.events.emit('move-made', {pass, capture, suicide, ko})
+        this.events.emit('makeMove', {pass, capture, suicide, ko})
     }
 
     makeResign({setUndoPoint = true} = {}) {
@@ -540,6 +512,8 @@ class App extends Component {
 
         this.makeMove([-1, -1], {clearUndoPoint: false})
         this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
+
+        this.events.emit('resign', {player: currentPlayer})
     }
 
     useTool(tool, vertex, argument = null) {
@@ -659,6 +633,7 @@ class App extends Component {
                         .concat([null])
                         .findIndex((x, i) => i + 1 !== x) + 1
 
+                    argument = number.toString()
                     board.markups[vertex] = [tool, number.toString()]
                 }
             } else if (tool === 'label') {
@@ -680,6 +655,7 @@ class App extends Component {
                             .findIndex((x, i) => i !== x)
 
                         label = alpha[Math.min(letterIndex, alpha.length - 1)]
+                        argument = label
                     }
 
                     board.markups[vertex] = [tool, label]
@@ -716,7 +692,7 @@ class App extends Component {
         this.clearUndoPoint()
         this.setCurrentTreePosition(tree, index)
 
-        this.events.emit('tool-used', {tool, vertex, argument})
+        this.events.emit('toolUsed', {tool, vertex, argument})
     }
 
     // File hashes
@@ -772,6 +748,21 @@ class App extends Component {
     }
 
     // File methods
+
+    getEmptyGameTree() {
+        let handicap = setting.get('game.default_handicap')
+        let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
+        let [width, height] = [size[0], size.slice(-1)[0]]
+        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
+
+        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
+        let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
+
+        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
+            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
+
+        return sgf.parse(buffer)[0]
+    }
 
     newFile({sound = false, showInfo = false, suppressAskForSave = false} = {}) {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
@@ -867,8 +858,18 @@ class App extends Component {
             this.window.setProgressBar(0)
             callback(error)
 
-            if (!error) this.events.emit('file-loaded')
+            if (!error) this.events.emit('fileLoad')
         }, setting.get('app.loadgame_delay'))
+    }
+
+    getSGF() {
+        let {gameTrees} = this.state
+
+        gameTrees.forEach(tree => {
+            tree.nodes[0].AP = [`${this.appName}:${this.version}`]
+        })
+
+        return sgf.stringify(gameTrees)
     }
 
     saveFile(filename = null) {
@@ -957,8 +958,6 @@ class App extends Component {
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
 
-        this.events.emit('navigating', {tree, index})
-
         let t = tree
         while (t.parent != null) {
             t.parent.current = t.parent.subtrees.indexOf(t)
@@ -966,7 +965,7 @@ class App extends Component {
         }
 
         this.setState({treePosition: [tree, index]})
-        this.events.emit('navigated')
+        this.events.emit('navigate')
     }
 
     startAutoscrolling(step) {
@@ -975,6 +974,8 @@ class App extends Component {
 
         let scroll = (delay = null) => {
             this.goStep(step)
+
+            clearTimeout(this.autoscrollId)
             this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
         }
 
@@ -1305,7 +1306,7 @@ class App extends Component {
         subtrees.splice(i, 1)
         subtrees.splice(iNew, 0, tree)
 
-        this.setCurrentTreePosition(tree, index)
+        this.setCurrentTreePosition(...this.state.treePosition)
     }
 
     removeNode(tree, index, {suppressConfirmation = false, setUndoPoint = true} = {}) {
