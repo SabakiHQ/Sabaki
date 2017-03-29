@@ -1,7 +1,11 @@
-const electron = require('electron')
-const app = electron && (require('electron').app || require('electron').remote.app)
+let app
 const fs = require('fs')
 const EventEmitter = require('events')
+
+try {
+    let electron = require('electron')
+    app = electron.app || electron.remote.app
+} catch (err) {}
 
 if (app) {
     let {join} = require('path')

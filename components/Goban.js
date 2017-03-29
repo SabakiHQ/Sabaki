@@ -278,7 +278,7 @@ class Goban extends Component {
 
         let [x, y] = vertex
         let direction = shifts[y][x]
-        if (direction == 0) return []
+        if (direction === 0) return []
 
         let query, removeShifts
 

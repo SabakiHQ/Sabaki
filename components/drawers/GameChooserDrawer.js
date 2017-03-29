@@ -341,11 +341,13 @@ class GameChooserDrawer extends Component {
         return animation !== this.props.animation || show || show !== this.props.show
     }
 
-    componentDidUpdate(prevProps) {
-        if (this.state.scrollTop !== this.gamesListElement.scrollTop) {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.scrollTop !== prevState.scrollTop
+        && this.state.scrollTop !== this.gamesListElement.scrollTop) {
             // Update scroll top
 
             this.gamesListElement.scrollTop = this.state.scrollTop
+            this.setState({scrollTop: this.gamesListElement.scrollTop})
         }
 
         if (!prevProps.show && this.props.show) {
