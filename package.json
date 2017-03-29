@@ -69,7 +69,7 @@
   },
   "devDependencies": {
     "electron": "1.6.2",
-    "electron-builder": "^16.4.2",
+    "electron-builder": "^16.5.1",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
   },
