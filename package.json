@@ -37,6 +37,16 @@
         "ext": "sgf",
         "name": "SGF",
         "description": "Smart Game Format"
+      },
+      {
+        "ext": "ngf",
+        "name": "NGF",
+        "description": "wBaduk NGF"
+      },
+      {
+        "ext": "gib",
+        "name": "GIB",
+        "description": "Tygem GIB"
       }
     ],
     "files": [
@@ -51,7 +61,7 @@
     ]
   },
   "dependencies": {
-    "argv-split": "^1.0.0",
+    "argv-split": "^2.0.1",
     "iconv-lite": "^0.4.13",
     "jschardet": "^1.4.2",
     "natsort": "^1.0.6",
@@ -61,7 +71,7 @@
   },
   "devDependencies": {
     "electron": "1.6.2",
-    "electron-builder": "^15.2.0",
+    "electron-builder": "^16.5.1",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
   },
