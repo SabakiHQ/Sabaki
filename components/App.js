@@ -403,7 +403,7 @@ class App extends Component {
 
         let nextTreePosition
 
-        if (tree.current == null && tree.nodes.length - 1 == index) {
+        if (tree.subtrees.length === 0 && tree.nodes.length - 1 === index) {
             // Append move
 
             let node = {}
@@ -412,7 +412,7 @@ class App extends Component {
 
             nextTreePosition = [tree, tree.nodes.length - 1]
         } else {
-            if (index != tree.nodes.length - 1) {
+            if (index !== tree.nodes.length - 1) {
                 // Search for next move
 
                 let nextNode = tree.nodes[index + 1]
@@ -489,7 +489,7 @@ class App extends Component {
         if (pass && createNode && prev) {
             let prevNode = prev[0].nodes[prev[1]]
             let prevColor = sign > 0 ? 'W' : 'B'
-            let prevPass = prevColor in prevNode && prevNode[prevColor][0] == ''
+            let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
 
             if (prevPass) {
                 enterScoring = true
@@ -1009,9 +1009,9 @@ class App extends Component {
     goToNextFork() {
         let [tree, index] = this.state.treePosition
 
-        if (index != tree.nodes.length - 1) {
+        if (index !== tree.nodes.length - 1) {
             this.setCurrentTreePosition(tree, tree.nodes.length - 1)
-        } else if (tree.current != null) {
+        } else if (tree.subtrees.length !== 0) {
             let subtree = tree.subtrees[tree.current]
             this.setCurrentTreePosition(subtree, subtree.nodes.length - 1)
         }
@@ -1020,7 +1020,7 @@ class App extends Component {
     goToPreviousFork() {
         let [tree, index] = this.state.treePosition
 
-        if (tree.parent == null || tree.parent.nodes.length == 0) {
+        if (tree.parent == null || tree.parent.nodes.length === 0) {
             if (index != 0) this.setCurrentTreePosition(tree, 0)
         } else {
             this.setCurrentTreePosition(tree.parent, tree.parent.nodes.length - 1)
@@ -1074,7 +1074,7 @@ class App extends Component {
             tree = tree.parent
         }
 
-        while (root.current != null) {
+        while (root.subtrees.length !== 0) {
             root.current = 0
             root = root.subtrees[0]
         }
@@ -1122,6 +1122,81 @@ class App extends Component {
 
     // Node actions
 
+    getGameInfo(tree) {
+        let root = gametree.getRoot(tree)
+
+        let komi = gametree.getRootProperty(root, 'KM')
+        if (komi != null && !isNaN(komi)) komi = +komi
+        else komi = null
+
+        let size = gametree.getRootProperty(root, 'SZ')
+        if (size == null) {
+            size = [19, 19]
+        } else {
+            let s = size.toString().split(':')
+            size = [+s[0], +s[s.length - 1]]
+        }
+
+        let handicap = ~~gametree.getRootProperty(root, 'HA', 0)
+        handicap = Math.max(1, Math.min(9, handicap))
+        if (handicap === 1) handicap = 0
+
+        let playerNames = ['B', 'W'].map(x =>
+            gametree.getRootProperty(tree, `P${x}`) || gametree.getRootProperty(tree, `${x}T`)
+        )
+
+        let playerRanks = ['BR', 'WR'].map(x => gametree.getRootProperty(root, x))
+
+        return {
+            playerNames,
+            playerRanks,
+            blackName: playerNames[0],
+            blackRank: playerRanks[0],
+            whiteName: playerNames[1],
+            whiteRank: playerRanks[1],
+            gameName: gametree.getRootProperty(root, 'GN'),
+            eventName: gametree.getRootProperty(root, 'EV'),
+            date: gametree.getRootProperty(root, 'DT'),
+            result: gametree.getRootProperty(root, 'RE'),
+            komi,
+            handicap,
+            size
+        }
+    }
+
+    setGameInfo(tree, data) {
+        let node = gametree.getRoot(tree).nodes[0]
+
+        let props = {
+            blackName: 'PB',
+            blackRank: 'BR',
+            whiteName: 'PW',
+            whiteRank: 'WR',
+            gameName: 'GN',
+            eventNmae: 'EV',
+            date: 'DT',
+            result: 'RE',
+            komi: 'KM',
+            handicap: 'HA',
+            size: 'SZ'
+        }
+
+        for (let key in props) {
+            if (key in data) {
+                if (data[key] && data[key].trim() !== '') node[props[key]] = [data[key]]
+                else delete node[props[key]]
+            }
+        }
+    }
+
+    getPlayer(tree, index) {
+        let node = tree.nodes[index]
+
+        return 'PL' in node ? (node.PL[0] == 'W' ? -1 : 1)
+            : 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1
+            : 1
+    }
+
     setPlayer(tree, index, sign) {
         let node = tree.nodes[index]
         let intendedSign = 'B' in node || 'HA' in node && +node.HA[0] >= 1 ? -1 : +('W' in node)
@@ -1138,14 +1213,11 @@ class App extends Component {
     setComment(tree, index, data) {
         let node = tree.nodes[index]
 
-        if ('title' in data) {
-            if (data.title && data.title.trim() !== '') node.N = [data.title]
-            else delete node.N
-        }
-
-        if ('comment' in data) {
-            if (data.comment && data.comment.trim() !== '') node.C = [data.comment]
-            else delete node.C
+        for (let [key, prop] of [['title', 'N'], ['comment', 'C']]) {
+            if (key in data) {
+                if (data[key] && data[key].trim() !== '') node[prop] = [data[key]]
+                else delete node[prop]
+            }
         }
 
         if ('hotspot' in data) {
@@ -1156,21 +1228,21 @@ class App extends Component {
         let clearProperties = properties => properties.forEach(p => delete node[p])
 
         if ('moveAnnotation' in data) {
-            let moveData = {'BM': 1, 'DO': '', 'IT': '', 'TE': 1}
+            let moveProps = {'BM': 1, 'DO': '', 'IT': '', 'TE': 1}
 
-            clearProperties(Object.keys(moveData))
+            clearProperties(Object.keys(moveProps))
 
             if (data.moveAnnotation != null)
-                node[data.moveAnnotation] = moveData[data.moveAnnotation]
+                node[data.moveAnnotation] = moveProps[data.moveAnnotation]
         }
 
         if ('positionAnnotation' in data) {
-            let positionData = {'UC': 1, 'GW': 1, 'GB': 1, 'DM': 1}
+            let positionProps = {'UC': 1, 'GW': 1, 'GB': 1, 'DM': 1}
 
-            clearProperties(Object.keys(positionData))
+            clearProperties(Object.keys(positionProps))
 
             if (data.positionAnnotation != null)
-                node[data.positionAnnotation] = positionData[data.positionAnnotation]
+                node[data.positionAnnotation] = positionProps[data.positionAnnotation]
         }
 
         this.clearUndoPoint()
@@ -1280,7 +1352,7 @@ class App extends Component {
 
         t = tree
 
-        while (t.current != null) {
+        while (t.subtrees.length !== 0) {
             let [x] = t.subtrees.splice(t.current, 1)
             t.subtrees.unshift(x)
             t.current = 0
@@ -1548,8 +1620,8 @@ class App extends Component {
         this.inferredState = {
             rootTree,
             gameIndex: state.gameTrees.indexOf(rootTree),
-            gameInfo: gametree.getGameInfo(rootTree),
-            currentPlayer: gametree.getCurrentPlayer(...state.treePosition),
+            gameInfo: this.getGameInfo(rootTree),
+            currentPlayer: this.getPlayer(...state.treePosition),
             scoreBoard,
             areaMap
         }

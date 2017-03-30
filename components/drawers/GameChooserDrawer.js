@@ -45,11 +45,9 @@ class GameListItem extends Component {
     }
 
     render({tree, left, top, draggable, showThumbnail, insertBefore, insertAfter}) {
-        let name = gametree.getRootProperty(tree, 'GN', gametree.getRootProperty(tree, 'EV', ''))
-        let blackPlayer = gametree.getPlayerName(tree, 1, 'Black')
-        let blackRank = gametree.getRootProperty(tree, 'BR')
-        let whitePlayer = gametree.getPlayerName(tree, -1, 'White')
-        let whiteRank = gametree.getRootProperty(tree, 'WR')
+        let gameInfo = sabaki.getGameInfo(tree)
+        let {gameName, eventName, blackPlayer, blackRank, whitePlayer, whiteRank} = gameInfo
+        let name = gameName || eventName || ''
 
         return h('li',
             {
@@ -78,8 +76,8 @@ class GameListItem extends Component {
                     visible: showThumbnail
                 }),
 
-                h('span', {class: 'black', title: blackRank}, blackPlayer),
-                h('span', {class: 'white', title: whiteRank}, whitePlayer)
+                h('span', {class: 'black', title: blackRank}, blackPlayer || 'Black'),
+                h('span', {class: 'white', title: whiteRank}, whitePlayer || 'White')
             )
         )
     }
@@ -425,16 +423,10 @@ class GameChooserDrawer extends Component {
         this.shownGameTrees = gameTrees.map((tree, index) => {
             return [tree, index]
         }).filter(([tree]) => {
-            let data = [
-                gametree.getRootProperty(tree, 'GN', ''),
-                gametree.getRootProperty(tree, 'EV', ''),
-                gametree.getPlayerName(tree, 1, 'Black'),
-                gametree.getRootProperty(tree, 'BR', ''),
-                gametree.getPlayerName(tree, -1, 'White'),
-                gametree.getRootProperty(tree, 'WR', '')
-            ]
+            let gameInfo = sabaki.getGameInfo(tree)
+            let data = Object.keys(gameInfo).map(x => gameInfo[x])
 
-            return data.some(x => x.includes(filterText))
+            return data.join(' ').toLowerCase().includes(filterText.toLowerCase())
         })
 
         return h('div', {onDrop: this.handleCancelDrag},
