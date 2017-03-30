@@ -1,8 +1,11 @@
 const {h, Component} = require('preact')
+const Pikaday = require('pikaday')
 const Drawer = require('./Drawer')
 
+const $ = require('../../modules/sprint')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
+const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {
     render({title, children}) {
@@ -40,6 +43,32 @@ class InfoDrawer extends Component {
         this.handleSizeSwapButtonClick = () => {
             this.setState({size: this.state.size.reverse()})
         }
+
+        this.handleSwapPlayers = () => {
+            this.setState(({engines, blackName, blackRank, whiteName, whiteRank}) => ({
+                engines: (engines || [null, null]).reverse(),
+                blackName: whiteName,
+                whiteName: blackName,
+                blackRank: whiteRank,
+                whiteRank: blackRank
+            }))
+        }
+
+        this.handleDateInputChange = evt => {
+            this.setState({date: evt.currentTarget.value})
+            this.markDates()
+        }
+
+        this.handleDateInputFocus = () => {
+            this.pikaday.show()
+        }
+
+        this.handleDateInputBlur = () => {
+            setTimeout(() => {
+                if ($(document.activeElement).parents('.pika-lendar').length === 0)
+                    this.pikaday.hide()
+            }, 50)
+        }
     }
 
     componentWillReceiveProps({gameInfo, show}) {
@@ -48,13 +77,104 @@ class InfoDrawer extends Component {
         }
     }
 
+    componentDidMount() {
+        this.preparePikaday()
+    }
+
+    markDates(pikaday = null) {
+        if (pikaday == null) pikaday = this.pikaday
+
+        let dates = (sgf.string2dates(this.state.date || '') || []).filter(x => x.length === 3)
+
+        for (let el of pikaday.el.querySelectorAll('.pika-button')) {
+            let year = +el.dataset.pikaYear
+            let month = +el.dataset.pikaMonth
+            let day = +el.dataset.pikaDay
+
+            el.parentElement.classList.toggle('is-multi-selected', dates.some(d => {
+                return helper.equals(d, [year, month + 1, day])
+            }))
+        }
+    }
+
+    adjustPikadayPosition(pikaday = null) {
+        if (pikaday == null) pikaday = this.pikaday
+
+        let {left, top} = this.dateInputElement.getBoundingClientRect()
+        let {height} = pikaday.el.getBoundingClientRect()
+
+        $(pikaday.el).css({
+            position: 'absolute',
+            left: Math.round(left),
+            top: Math.round(top - height)
+        })
+    }
+
+    preparePikaday() {
+        let self = this
+
+        this.pikaday = new Pikaday({
+            position: 'top left',
+            firstDay: 1,
+            yearRange: 6,
+            onOpen() {
+                let dates = (sgf.string2dates(self.state.date || '') || []).filter(x => x.length === 3)
+
+                if (dates.length > 0) {
+                    this.setDate(dates[0].join('-'), true)
+                } else {
+                    this.gotoToday()
+                }
+
+                self.adjustPikadayPosition(this)
+            },
+            onDraw() {
+                if (!this.isVisible()) return
+
+                self.adjustPikadayPosition(this)
+                self.markDates(this)
+
+                self.dateInputElement.focus()
+            },
+            onSelect() {
+                let dates = sgf.string2dates(self.state.date || '') || []
+                let date = this.getDate()
+                date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+
+                if (!dates.some(x => helper.equals(x, date))) {
+                    dates.push(date)
+                } else {
+                    dates = dates.filter(x => !helper.equals(x, date))
+                }
+
+                self.setState({date: sgf.dates2string(dates.sort(helper.lexicalCompare))})
+            }
+        })
+
+        this.pikaday.hide()
+
+        document.body.appendChild(this.pikaday.el)
+        document.body.addEventListener('click', evt => {
+            if (this.pikaday.isVisible()
+            && document.activeElement !== this.dateInputElement
+            && evt.target !== this.dateInputElement
+            && $(evt.target).parents('.pika-lendar').length === 0)
+                this.pikaday.hide()
+        })
+
+        window.addEventListener('resize', () => this.adjustPikadayPosition())
+    }
+
     render({
         treePosition,
         currentPlayer,
         show
     }, {
-        playerNames = [null, null],
-        playerRanks = [null, null],
+        engines = [null, null],
+        blackName = null,
+        blackRank = null,
+        whiteName = null,
+        whiteRank = null,
         gameName = null,
         eventName = null,
         date = null,
@@ -75,27 +195,27 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        emptyTree && h('img', {
+                        h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: 'menu'
+                            class: {menu: true, active: engines[0] != null}
                         }), ' ',
 
                         h('input', {
                             type: 'text',
                             name: 'rank_1',
                             placeholder: 'Rank',
-                            value: playerRanks[0],
-                            onInput: this.linkState('playerRanks.0')
+                            value: blackRank,
+                            onInput: this.linkState('blackRank')
                         }),
 
                         h('input', {
                             type: 'text',
                             name: 'name_1',
                             placeholder: 'Black',
-                            value: playerNames[0],
-                            onInput: this.linkState('playerNames.0')
+                            value: blackName,
+                            onInput: this.linkState('blackName')
                         })
                     ),
 
@@ -103,7 +223,8 @@ class InfoDrawer extends Component {
                         class: 'current-player',
                         src: `./img/ui/player_${currentPlayer}.svg`,
                         height: 31,
-                        title: 'Swap'
+                        title: 'Swap',
+                        onClick: this.handleSwapPlayers
                     }),
 
                     h('span', {},
@@ -111,23 +232,23 @@ class InfoDrawer extends Component {
                             type: 'text',
                             name: 'name_-1',
                             placeholder: 'White',
-                            value: playerNames[1],
-                            onInput: this.linkState('playerNames.1')
+                            value: whiteName,
+                            onInput: this.linkState('whiteName')
                         }),
 
                         h('input', {
                             type: 'text',
                             name: 'rank_-1',
                             placeholder: 'Rank',
-                            value: playerRanks[1],
-                            onInput: this.linkState('playerRanks.1')
+                            value: whiteRank,
+                            onInput: this.linkState('whiteRank')
                         }), ' ',
 
-                        emptyTree && h('img', {
+                        h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: 'menu'
+                            class: {menu: true, active: engines[1] != null}
                         })
                     )
                 ),
@@ -151,10 +272,14 @@ class InfoDrawer extends Component {
                     ),
                     h(InfoDrawerItem, {title: 'Date'},
                         h('input', {
+                            ref: el => this.dateInputElement = el,
                             type: 'text',
                             placeholder: 'None',
                             value: date,
-                            onInput: this.linkState('date')
+
+                            onFocus: this.handleDateInputFocus,
+                            onBlur: this.handleDateInputBlur,
+                            onInput: this.handleDateInputChange
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Komi'},
