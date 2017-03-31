@@ -71,6 +71,7 @@ class App extends Component {
             // Drawers
 
             engines: null,
+            attachedEngines: [null, null],
             preferencesTab: 'general',
 
             // Input box
@@ -1168,20 +1169,9 @@ class App extends Component {
         let root = gametree.getRoot(tree)
         let node = root.nodes[0]
 
-        let props = {
-            blackName: 'PB',
-            blackRank: 'BR',
-            whiteName: 'PW',
-            whiteRank: 'WR',
-            gameName: 'GN',
-            eventName: 'EV',
-            date: 'DT',
-            result: 'RE',
-            komi: 'KM',
-            handicap: 'HA'
-        }
-
         if ('size' in data) {
+            // Update board size
+
             if (data.size) {
                 let value = data.size
 
@@ -1200,6 +1190,19 @@ class App extends Component {
             } else {
                 delete node.SZ
             }
+        }
+
+        let props = {
+            blackName: 'PB',
+            blackRank: 'BR',
+            whiteName: 'PW',
+            whiteRank: 'WR',
+            gameName: 'GN',
+            eventName: 'EV',
+            date: 'DT',
+            result: 'RE',
+            komi: 'KM',
+            handicap: 'HA'
         }
 
         for (let key in props) {

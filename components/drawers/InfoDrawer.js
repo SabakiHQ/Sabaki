@@ -1,3 +1,4 @@
+const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
 const Pikaday = require('pikaday')
 const Drawer = require('./Drawer')
@@ -5,6 +6,7 @@ const Drawer = require('./Drawer')
 const $ = require('../../modules/sprint')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
+const setting = require('../../modules/setting')
 const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {
@@ -38,6 +40,7 @@ class InfoDrawer extends Component {
                 data.size = this.state.size
             }
 
+            sabaki.setState({attachedEngines: this.state.engines})
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
         }
@@ -88,11 +91,58 @@ class InfoDrawer extends Component {
                     this.pikaday.hide()
             }, 50)
         }
+
+        this.handleEngineMenuClick = [0, 1].map(index => evt => {
+            let nameKeys = ['blackName', 'whiteName']
+            let template = [
+                {
+                    label: 'Manual',
+                    type: 'checkbox',
+                    checked: this.state.engines[index] == null,
+                    click: () => {
+                        let {engines} = this.state
+                        if (engines[index] == null) return
+
+                        engines[index] = null
+                        this.setState({engines, [nameKeys[index]]: ''})
+                    }
+                },
+                {type: 'separator'},
+                ...setting.get('engines.list').map(engine => ({
+                    label: engine.name,
+                    type: 'checkbox',
+                    checked: engine === this.state.engines[index],
+                    click: () => {
+                        let {engines} = this.state
+                        engines[index] = engine
+                        this.setState({engines, [nameKeys[index]]: engine.name})
+                    }
+                })),
+                {type: 'separator'},
+                {
+                    label: 'Manage Engines…',
+                    click: () => {
+                        sabaki.setState({preferencesTab: 'engines'})
+                        sabaki.openDrawer('preferences')
+                    }
+                }
+            ]
+
+            let {left, bottom} = evt.currentTarget.getBoundingClientRect()
+            let menu = Menu.buildFromTemplate(template)
+
+            menu.popup(sabaki.window, {
+                async: true,
+                x: Math.round(left),
+                y: Math.round(bottom)
+            })
+        })
     }
 
-    componentWillReceiveProps({gameInfo, show}) {
+    componentWillReceiveProps({gameInfo, engines, show}) {
         if (!this.props.show && show) {
             this.setState(gameInfo)
+            this.setState({engines: [...engines]})
         }
     }
 
@@ -214,11 +264,12 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        false && h('img', {
+                        h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: {menu: true, active: engines[0] != null}
+                            class: {menu: true, active: engines[0] != null},
+                            onClick: this.handleEngineMenuClick[0]
                         }), ' ',
 
                         h('input', {
@@ -263,11 +314,12 @@ class InfoDrawer extends Component {
                             onInput: this.linkState('whiteRank')
                         }), ' ',
 
-                        false && h('img', {
+                        h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: {menu: true, active: engines[1] != null}
+                            class: {menu: true, active: engines[1] != null},
+                            onClick: this.handleEngineMenuClick[1]
                         })
                     )
                 ),
