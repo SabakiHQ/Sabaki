@@ -121,20 +121,21 @@ function buildMenu(disableAll = false) {
     let engineMenu = findMenuItem('Engine')
 
     if (engineMenu) {
+        setting.load()
+
         let attachMenu = engineMenu.submenu[0].submenu
         let engines = setting.get('engines.list')
 
         attachMenu.length = 0
 
-        setting.load()
         engines.forEach(engine => {
             attachMenu.push({
-                label: engine.name,
+                label: engine.name.trim() === '' ? '(Unnamed Engine)' : engine.name,
                 click: () => {
                     let window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
-                    window.webContents.send('attach-engine', engine.path, engine.args)
+                    window.webContents.send('attach-engine', engine)
                 }
             })
         })

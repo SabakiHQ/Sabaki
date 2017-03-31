@@ -52,3 +52,9 @@ exports.showInputBox = function(message, onSubmit = helper.noop, onCancel = help
         onInputBoxCancel: onCancel
     })
 }
+
+exports.closeInputBox = function() {
+    let {onInputBoxCancel = helper.noop} = sabaki.state
+    sabaki.setState({showInputBox: false})
+    onInputBoxCancel()
+}

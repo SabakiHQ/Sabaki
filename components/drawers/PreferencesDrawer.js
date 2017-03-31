@@ -7,8 +7,6 @@ const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
 
-let defaultEngineName = '(Unnamed Engine)'
-
 class PreferencesItem extends Component {
     constructor() {
         super()
@@ -184,7 +182,7 @@ class EngineItem extends Component {
             h('h3', {},
                 h('input', {
                     type: 'text',
-                    placeholder: defaultEngineName,
+                    placeholder: '(Unnamed Engine)',
                     value: name,
                     name: 'name',
                     onChange: this.handleChange
@@ -309,14 +307,6 @@ class PreferencesDrawer extends Component {
 
             let engines = this.props.engines.slice()
             let cmp = natsort({insensitive: true})
-
-            // Name unnamed engines
-
-            for (let engine of engines) {
-                if (engine.name.trim() === '') {
-                    engine.name = defaultEngineName
-                }
-            }
 
             // Sort engines.
 

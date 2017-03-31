@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.20.3][v0.20.3] (2017-04-01)
+## [Sabaki v0.21.0][v0.21.0] (2017-03-30)
 
 * Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 * The game tree is more accessible, the nodes have a bigger click surface and dragging the graph can go beyond the component
@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Windows installers create app folder if necessary
 * Fix Sabaki being unresponsive when adding invalid files to a game collection
 * Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
 
@@ -517,7 +518,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.20.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.21.0...master
+[v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0
 [v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
 [v0.20.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.20.0

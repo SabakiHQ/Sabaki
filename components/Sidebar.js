@@ -109,6 +109,8 @@ class Sidebar extends Component {
             if (this.verticalResizerMouseDown || this.horizontalResizerMouseDown) {
                 this.verticalResizerMouseDown = false
                 this.horizontalResizerMouseDown = false
+
+                setting.set('view.properties_height', this.state.sidebarSplit)
                 this.setState({sidebarSplitTransition: false})
                 window.dispatchEvent(new Event('resize'))
             }

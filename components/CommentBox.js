@@ -278,7 +278,7 @@ class CommentBox extends Component {
     }
 
     shouldComponentUpdate({showCommentBox, height}) {
-        return showCommentBox && (height !== this.props.height || !this.dirty)
+        return height !== this.props.height || showCommentBox && !this.dirty
     }
 
     componentWillReceiveProps({treePosition, mode}) {

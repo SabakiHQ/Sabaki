@@ -5,52 +5,52 @@
             {
                 "label": "&New",
                 "accelerator": "CmdOrCtrl+N",
-                "action": "newfile"
+                "action": "newFile"
             },
             {
                 "label": "New &Window",
                 "accelerator": "CmdOrCtrl+Shift+N",
-                "action": "newwindow"
+                "action": "newWindow"
             },
             {"type": "separator"},
             {
                 "label": "&Open…",
                 "accelerator": "CmdOrCtrl+O",
-                "action": "loadfile"
+                "action": "loadFile"
             },
             {
                 "label": "&Save",
                 "accelerator": "CmdOrCtrl+S",
-                "action": "savefile"
+                "action": "saveFile"
             },
             {
                 "label": "Sa&ve As…",
                 "accelerator": "CmdOrCtrl+Shift+S",
-                "action": "saveas"
+                "action": "saveAs"
             },
             {"type": "separator"},
             {
                 "label": "Load from &Clipboard",
-                "action": "loadclipboard"
+                "action": "loadClipboard"
             },
             {
                 "label": "Copy &to Clipboard",
-                "action": "copytoclipboard"
+                "action": "copyToClipboard"
             },
             {
                 "label": "Copy &ASCII Diagram",
-                "action": "copyascii"
+                "action": "copyAscii"
             },
             {"type": "separator"},
             {
                 "label": "Game &Info",
                 "accelerator": "CmdOrCtrl+I",
-                "action": "gameinfo"
+                "action": "gameInfo"
             },
             {
                 "label": "&Manage Games…",
                 "accelerator": "CmdOrCtrl+Shift+M",
-                "action": "managegames"
+                "action": "manageGames"
             },
             {"type": "separator"},
             {
@@ -65,13 +65,13 @@
         "submenu": [
             {
                 "label": "&Toggle Player",
-                "action": "toggleplayer"
+                "action": "togglePlayer"
             },
             {"type": "separator"},
             {
                 "label": "&Select Point",
                 "accelerator": "CmdOrCtrl+L",
-                "action": "selectposition"
+                "action": "selectPosition"
             },
             {
                 "label": "&Pass",
@@ -99,11 +99,11 @@
             {
                 "label": "Toggle &Edit Mode",
                 "accelerator": "CmdOrCtrl+E",
-                "action": "editmode"
+                "action": "editMode"
             },
             {
                 "label": "Clean &Markup…",
-                "action": "cleanmarkup"
+                "action": "cleanMarkup"
             },
             {
                 "label": "&Select Tool",
@@ -111,70 +111,75 @@
                     {
                         "label": "&Stone Tool",
                         "accelerator": "CmdOrCtrl+1",
-                        "action": "stonetool"
+                        "action": "stoneTool"
                     },
                     {
                         "label": "&Cross Tool",
                         "accelerator": "CmdOrCtrl+2",
-                        "action": "crosstool"
+                        "action": "crossTool"
                     },
                     {
                         "label": "&Triangle Tool",
                         "accelerator": "CmdOrCtrl+3",
-                        "action": "triangletool"
+                        "action": "triangleTool"
                     },
                     {
                         "label": "S&quare Tool",
                         "accelerator": "CmdOrCtrl+4",
-                        "action": "squaretool"
+                        "action": "squareTool"
                     },
                     {
                         "label": "C&ircle Tool",
                         "accelerator": "CmdOrCtrl+5",
-                        "action": "circletool"
+                        "action": "circleTool"
                     },
                     {
-                        "label": "&Line/Arrow Tool",
+                        "label": "&Line Tool",
                         "accelerator": "CmdOrCtrl+6",
-                        "action": "linetool"
+                        "action": "lineTool"
+                    },
+                    {
+                        "label": "&Arrow Tool",
+                        "accelerator": "CmdOrCtrl+7",
+                        "action": "arrowTool"
                     },
                     {
                         "label": "La&bel Tool",
-                        "accelerator": "CmdOrCtrl+7",
-                        "action": "labeltool"
+                        "accelerator": "CmdOrCtrl+8",
+                        "action": "labelTool"
                     },
                     {
                         "label": "&Number Tool",
-                        "accelerator": "CmdOrCtrl+8",
-                        "action": "numbertool"
+                        "accelerator": "CmdOrCtrl+9",
+                        "action": "numberTool"
                     }
                 ]
             },
             {"type": "separator"},
             {
                 "label": "&Copy Variation",
-                "action": "copyvariation"
+                "action": "copyVariation"
             },
             {
                 "label": "Cu&t Variation",
-                "action": "cutvariation"
+                "action": "cutVariation"
             },
             {
                 "label": "&Paste Variation",
-                "action": "pastevariation"
+                "action": "pasteVariation"
             },
             {"type": "separator"},
             {
                 "label": "Make Main &Variation",
-                "action": "makemainvariation"
+                "action": "makeMainVariation"
             },
             {
                 "label": "Shift &Left",
-                "action": "shiftleft"
+                "action": "shiftLeft"
             },
             {
                 "label": "Shift Ri&ght",
-                "action": "shiftright"
+                "action": "shiftRight"
             },
             {"type": "separator"},
             {
@@ -184,11 +189,11 @@
             {
                 "label": "&Remove Node",
                 "accelerator": "CmdOrCtrl+Delete",
-                "action": "removenode"
+                "action": "removeNode"
             },
             {
                 "label": "Remove &Other Variations",
-                "action": "removeothervariations"
+                "action": "removeOtherVariations"
             }
         ]
     },
@@ -198,33 +203,33 @@
             {
                 "label": "Toggle &Find Mode",
                 "accelerator": "CmdOrCtrl+F",
-                "action": "findmode"
+                "action": "findMode"
             },
             {
                 "label": "Find &Next",
                 "accelerator": "F3",
-                "action": "findnext"
+                "action": "findNext"
             },
             {
                 "label": "Find &Previous",
                 "accelerator": "Shift+F3",
-                "action": "findprevious"
+                "action": "findPrevious"
             },
             {"type": "separator"},
             {
                 "label": "Toggle &Hotspot",
                 "accelerator": "CmdOrCtrl+B",
-                "action": "togglehotspot"
+                "action": "toggleHotspot"
             },
             {
                 "label": "Jump to Ne&xt Hotspot",
                 "accelerator": "F2",
-                "action": "nexthotspot"
+                "action": "nextHotspot"
             },
             {
                 "label": "Jump to Pre&vious Hotspot",
                 "accelerator": "Shift+F2",
-                "action": "previoushotspot"
+                "action": "previousHotspot"
             }
         ]
     },
@@ -234,67 +239,67 @@
             {
                 "label": "&Back",
                 "accelerator": "Up",
-                "action": "goback"
+                "action": "goBack"
             },
             {
                 "label": "&Forward",
                 "accelerator": "Down",
-                "action": "goforward"
+                "action": "goForward"
             },
             {"type": "separator"},
             {
                 "label": "Go to &Previous Fork",
                 "accelerator": "CmdOrCtrl+Up",
-                "action": "gotopreviousfork"
+                "action": "goToPreviousFork"
             },
             {
                 "label": "Go to &Next Fork",
                 "accelerator": "CmdOrCtrl+Down",
-                "action": "gotonextfork"
+                "action": "goToNextFork"
             },
             {"type": "separator"},
             {
                 "label": "Go to Previous Commen&t",
                 "accelerator": "CmdOrCtrl+Shift+Up",
-                "action": "previouscomment"
+                "action": "previousComment"
             },
             {
                 "label": "Go to Next &Comment",
                 "accelerator": "CmdOrCtrl+Shift+Down",
-                "action": "nextcomment"
+                "action": "nextComment"
             },
             {"type": "separator"},
             {
                 "label": "Go to Be&ginning",
                 "accelerator": "Home",
-                "action": "gotobeginning"
+                "action": "goToBeginning"
             },
             {
                 "label": "Go to &End",
                 "accelerator": "End",
-                "action": "gotoend"
+                "action": "goToEnd"
             },
             {"type": "separator"},
             {
                 "label": "Go to &Main Variation",
                 "accelerator": "CmdOrCtrl+Left",
-                "action": "gotomainvariation"
+                "action": "goToMainVariation"
             },
             {
                 "label": "Go to Previous &Variation",
                 "accelerator": "Left",
-                "action": "gotopreviousvariation"
+                "action": "goToPreviousVariation"
             },
             {
                 "label": "Go to Next Va&riation",
                 "accelerator": "Right",
-                "action": "gotonextvariation"
+                "action": "goToNextVariation"
             },
             {"type": "separator"},
             {
                 "label": "Go to Move N&umber",
                 "accelerator": "CmdOrCtrl+G",
-                "action": "gotomovenumber"
+                "action": "goToMoveNumber"
             }
         ]
     },
@@ -307,22 +312,22 @@
             },
             {
                 "label": "&Detach",
-                "action": "detachengine"
+                "action": "detachEngine"
             },
             {"type": "separator"},
             {
                 "label": "Generate &Move",
                 "accelerator": "F5",
-                "action": "generatemove"
+                "action": "generateMove"
             },
             {"type": "separator"},
             {
                 "label": "Toggle &GTP Console",
-                "action": "gtpconsole"
+                "action": "gtpConsole"
             },
             {
                 "label": "&Clear Console",
-                "action": "clearconsole"
+                "action": "clearConsole"
             }
         ]
     },
@@ -331,51 +336,51 @@
         "submenu": [
             {
                 "label": "Toggle Auto&play Mode",
-                "action": "toggleautoplaymode"
+                "action": "toggleAutoplayMode"
             },
             {
                 "label": "Toggle G&uess Mode",
-                "action": "toggleguessmode"
+                "action": "toggleGuessMode"
             },
             {
                 "label": "Toggle &Full Screen",
                 "accelerator": "CmdOrCtrl+Shift+F",
-                "action": "togglefullscreen"
+                "action": "toggleFullScreen"
             },
             {"type": "separator"},
             {
                 "label": "Show &Coordinates",
                 "accelerator": "CmdOrCtrl+Shift+C",
                 "checked": "view.show_coordinates",
-                "action": "togglecoordinates"
+                "action": "toggleCoordinates"
             },
             {
                 "label": "Show Move Colori&zation",
                 "checked": "view.show_move_colorization",
-                "action": "toggleshowmovecolorization"
+                "action": "toggleShowMoveColorization"
             },
             {
                 "label": "Show &Next Moves",
                 "checked": "view.show_next_moves",
-                "action": "toggleshownextmoves"
+                "action": "toggleShowNextMoves"
             },
             {
                 "label": "Show &Sibling Variations",
                 "checked": "view.show_siblings",
-                "action": "toggleshowsiblings"
+                "action": "toggleShowSiblings"
             },
             {"type": "separator"},
             {
                 "label": "Show Game &Tree",
                 "checked": "view.show_graph",
                 "accelerator": "CmdOrCtrl+T",
-                "action": "togglegamegraph"
+                "action": "toggleGameGraph"
             },
             {
                 "label": "Show Co&mments",
                 "checked": "view.show_comments",
                 "accelerator": "CmdOrCtrl+Shift+T",
-                "action": "togglecomments"
+                "action": "toggleComments"
             }
         ]
     },
@@ -388,7 +393,7 @@
             },
             {
                 "label": "Check for &Updates",
-                "action": "checkforupdates"
+                "action": "checkForUpdates"
             },
             {"type": "separator"},
             {
@@ -397,7 +402,7 @@
             },
             {
                 "label": "Report &Issue",
-                "action": "reportissue"
+                "action": "reportIssue"
             }
         ]
     }

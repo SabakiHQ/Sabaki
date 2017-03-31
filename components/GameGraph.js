@@ -29,24 +29,18 @@ class GameGraphNode extends Component {
                 let nodeSize2 = nodeSize * 2
 
                 if (type === 'square') {
-                    return [
-                        `M ${left - nodeSize} ${top - nodeSize}`,
-                        `h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} v ${-nodeSize2}`
-                    ].join(' ')
+                    return `M ${left - nodeSize} ${top - nodeSize}
+                        h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} v ${-nodeSize2}`
                 } else if (type === 'circle') {
-                    return [
-                        `M ${left} ${top} m ${-nodeSize} 0`,
-                        `a ${nodeSize} ${nodeSize} 0 1 0 ${nodeSize2} 0`,
-                        `a ${nodeSize} ${nodeSize} 0 1 0 ${-nodeSize2} 0`
-                    ].join(' ')
+                    return `M ${left} ${top} m ${-nodeSize} 0
+                        a ${nodeSize} ${nodeSize} 0 1 0 ${nodeSize2} 0
+                        a ${nodeSize} ${nodeSize} 0 1 0 ${-nodeSize2} 0`
                 } else if (type === 'diamond') {
                     let diamondSide = Math.round(Math.sqrt(2) * nodeSize)
 
-                    return [
-                        `M ${left} ${top - diamondSide}`,
-                        `L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}`,
-                        `L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
-                    ].join(' ')
+                    return `M ${left} ${top - diamondSide}
+                        L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}
+                        L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
                 }
 
                 return ''
@@ -80,7 +74,6 @@ class GameGraphEdge extends Component {
     render({
         positionAbove: [left1, top1],
         positionBelow: [left2, top2],
-        current,
         length,
         gridSize
     }) {
@@ -89,10 +82,8 @@ class GameGraphEdge extends Component {
         if (left1 === left2) {
             points = `${left1},${top1} ${left1},${top2 + length}`
         } else {
-            points = [
-                `${left1},${top1} ${left2 - gridSize},${top2 - gridSize}`,
-                `${left2},${top2} ${left2},${top2 + length}`
-            ].join(' ')
+            points = `${left1},${top1} ${left2 - gridSize},${top2 - gridSize}
+                ${left2},${top2} ${left2},${top2 + length}`
         }
 
         return h('polyline', {
@@ -118,6 +109,7 @@ class GameGraph extends Component {
             mousePosition: [-100, -100]
         }
 
+        this.matrixDictHash = null
         this.matrixDictCache = {}
 
         this.handleNodeClick = this.handleNodeClick.bind(this)
@@ -207,11 +199,12 @@ class GameGraph extends Component {
     getMatrixDict(tree) {
         let hash = gametree.getMatrixHash(tree)
 
-        if (!(hash in this.matrixDictCache)) {
-            this.matrixDictCache[hash] = gametree.getMatrixDict(tree)
+        if (hash !== this.matrixDictHash) {
+            this.matrixDictHash = hash
+            this.matrixDictCache = gametree.getMatrixDict(tree)
         }
 
-        return this.matrixDictCache[hash]
+        return this.matrixDictCache
     }
 
     remeasure() {
@@ -256,8 +249,8 @@ class GameGraph extends Component {
         let nodeColumns = []
         let edges = []
 
-        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 1, 0))
-        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 1)
+        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 2, 0))
+        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 2)
 
         let doneTreeBones = []
         let currentTracks = []

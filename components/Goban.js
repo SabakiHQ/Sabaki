@@ -222,6 +222,12 @@ class Goban extends Component {
         }
     }
 
+    componentDidUpdate({showCoordinates}) {
+        if (showCoordinates !== this.props.showCoordinates) {
+            this.resize()
+        }
+    }
+
     resize() {
         let {board, showCoordinates, onBeforeResize = helper.noop} = this.props
         onBeforeResize()

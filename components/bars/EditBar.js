@@ -56,6 +56,7 @@ class EditBar extends Component {
             h('ul', {},
                 [
                     ['Stone Tool', `stone_${stoneTool}`],
+                    ['Cross Tool', 'cross'],
                     ['Triangle Tool', 'triangle'],
                     ['Square Tool', 'square'],
                     ['Circle Tool', 'circle'],
