@@ -1,5 +1,6 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
+const jschardet = require('jschardet')
 const gametree = require('./gametree')
 const setting = require('./setting')
 const helper = require('./helper')
@@ -131,14 +132,35 @@ function _parseTokens(tokens, callback = () => {}, encoding = defaultEncoding, s
     return tree
 }
 
-exports.parseTokens = function(tokens, callback, ignoreEncoding = false) {
-    let tree = _parseTokens(tokens, callback, ignoreEncoding ? null : undefined)
+exports.parseTokens = function(tokens, callback, encoding = defaultEncoding) {
+    let tree = _parseTokens(tokens, callback, encoding)
     tree.subtrees.forEach(subtree => subtree.parent = null)
     return tree.subtrees
 }
 
 exports.parse = function(input, callback, ignoreEncoding = false) {
-    return exports.parseTokens(exports.tokenize(input), callback, ignoreEncoding)
+
+    let tokens = exports.tokenize(input)
+
+    let encoding = ignoreEncoding ? null : defaultEncoding
+
+    if (ignoreEncoding === false) {
+        let found_encoding = false
+        for (let i = 0; i < tokens.length; i += 1) {
+            if (tokens[i][0] === 'prop_ident' && tokens[i][1] === 'CA') {
+                found_encoding = true
+                break
+            }
+        }
+        if (found_encoding === false) {
+            let detected = jschardet.detect(input)
+            if (detected.confidence > 0.2) {
+                encoding = detected.encoding
+            }
+        }
+    }
+
+    return exports.parseTokens(tokens, callback, encoding)
 }
 
 exports.parseFile = function(filename, callback, ignoreEncoding = false) {
