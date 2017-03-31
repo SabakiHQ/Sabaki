@@ -1165,7 +1165,8 @@ class App extends Component {
     }
 
     setGameInfo(tree, data) {
-        let node = gametree.getRoot(tree).nodes[0]
+        let root = gametree.getRoot(tree)
+        let node = root.nodes[0]
 
         let props = {
             blackName: 'PB',
@@ -1173,18 +1174,57 @@ class App extends Component {
             whiteName: 'PW',
             whiteRank: 'WR',
             gameName: 'GN',
-            eventNmae: 'EV',
+            eventName: 'EV',
             date: 'DT',
             result: 'RE',
             komi: 'KM',
-            handicap: 'HA',
-            size: 'SZ'
+            handicap: 'HA'
+        }
+
+        if ('size' in data) {
+            if (data.size) {
+                let value = data.size
+
+                if (value.some(x => isNaN(x))) {
+                    value = setting.get('game.default_board_size').toString().split(':')
+                    value = [+value[0], +value[value.length - 1]]
+                }
+
+                value = value.map(x => Math.min(25, Math.max(3, x)))
+
+                if (value[0] === value[1]) value = value[0]
+                else value = value.join(':')
+
+                setting.set('game.default_board_size', value)
+                node.SZ = [value]
+            } else {
+                delete node.SZ
+            }
         }
 
         for (let key in props) {
             if (key in data) {
-                if (data[key] && data[key].trim() !== '') node[props[key]] = [data[key]]
-                else delete node[props[key]]
+                let value = data[key]
+
+                if (value && value.toString().trim() !== '') {
+                    if (key === 'komi') {
+                        if (isNaN(value)) value = 0
+
+                        setting.set('game.default_komi', value)
+                    } else if (key === 'handicap') {
+                        let board = gametree.getBoard(root, 0)
+                        let stones = board.getHandicapPlacement(+value)
+
+                        value = stones.length
+                        node.AB = stones.map(sgf.vertex2point)
+
+                        setting.set('game.default_handicap', value)
+                    }
+
+                    node[props[key]] = [value]
+                } else {
+                    delete node[props[key]]
+                }
             }
         }
     }

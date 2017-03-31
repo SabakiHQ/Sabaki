@@ -206,7 +206,7 @@ class Goban extends Component {
                 hoshis,
                 randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
                 shifts
-            })
+            }, () => this.resize())
         } else if (animatedVertex
         && !(this.props.animatedVertex && helper.vertexEquals(animatedVertex, this.props.animatedVertex))) {
             // Update shift

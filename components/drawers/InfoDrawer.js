@@ -23,6 +23,25 @@ class InfoDrawer extends Component {
     constructor() {
         super()
 
+        this.handleSubmitButtonClick = evt => {
+            evt.preventDefault()
+
+            let [tree, index] = this.props.treePosition
+            let emptyTree = !tree.parent && tree.nodes.length === 1 && tree.subtrees.length === 0
+
+            let keys = ['blackName', 'blackRank', 'whiteName', 'whiteRank',
+                'gameName', 'eventName', 'date', 'result', 'komi', 'handicap', 'size']
+            let data = keys.reduce((acc, key) => (acc[key] = this.state[key], acc), {})
+
+            if (emptyTree) {
+                data.handicap = this.state.handicap
+                data.size = this.state.size
+            }
+
+            sabaki.setGameInfo(this.props.treePosition[0], data)
+            sabaki.closeDrawer()
+        }
+
         this.handleCancelButtonClick = evt => {
             evt.preventDefault()
             sabaki.closeDrawer()
@@ -32,7 +51,7 @@ class InfoDrawer extends Component {
             this.combinedSizeFields = this.state.size[0] === this.state.size[1]
         }
 
-        this.handleBoardWidthInput = evt => {
+        this.handleBoardWidthChange = evt => {
             let {value} = evt.currentTarget
 
             this.setState(({size: [, height]}) => ({
@@ -195,7 +214,7 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        h('img', {
+                        false && h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
@@ -244,7 +263,7 @@ class InfoDrawer extends Component {
                             onInput: this.linkState('whiteRank')
                         }), ' ',
 
-                        h('img', {
+                        false && h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
@@ -303,12 +322,13 @@ class InfoDrawer extends Component {
                         h('select',
                             {
                                 selectedIndex: Math.max(0, handicap - 1),
-                                disabled: !emptyTree
+                                disabled: !emptyTree,
+                                onChange: this.linkState('handicap')
                             },
 
-                            h('option', {}, 'No stones'),
+                            h('option', {value: 0}, 'No stones'),
                             [...Array(8)].map((_, i) =>
-                                h('option', {}, i + 2)
+                                h('option', {value: i + 2}, i + 2)
                             )
                         )
                     ),
@@ -321,7 +341,7 @@ class InfoDrawer extends Component {
                             value: size[0],
                             disabled: !emptyTree,
                             onFocus: this.handleBoardWidthFocus,
-                            onInput: this.handleBoardWidthInput
+                            onInput: this.handleBoardWidthChange
                         }), ' ',
 
                         h('span', {
@@ -343,7 +363,7 @@ class InfoDrawer extends Component {
                 ),
 
                 h('p', {},
-                    h('button', {type: 'submit'}, 'OK'), ' ',
+                    h('button', {type: 'submit', onClick: this.handleSubmitButtonClick}, 'OK'), ' ',
                     h('button', {type: 'reset', onClick: this.handleCancelButtonClick}, 'Cancel')
                 )
             )
