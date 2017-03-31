@@ -139,20 +139,19 @@ exports.parseTokens = function(tokens, callback, encoding = defaultEncoding) {
 }
 
 exports.parse = function(input, callback, ignoreEncoding = false) {
-
     let tokens = exports.tokenize(input)
 
     let encoding = ignoreEncoding ? null : defaultEncoding
 
     if (ignoreEncoding === false) {
-        let found_encoding = false
+        let foundEncoding = false
         for (let t of tokens) {
             if (t[0] === 'prop_ident' && t[1] === 'CA') {
-                found_encoding = true
+                foundEncoding = true
                 break
             }
         }
-        if (found_encoding === false) {
+        if (foundEncoding === false) {
             let detected = jschardet.detect(input)
             if (detected.confidence > 0.2) {
                 encoding = detected.encoding

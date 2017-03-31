@@ -129,10 +129,10 @@ describe('sgf', () => {
             )
         })
         it('should auto-detect GB2312 encoding if given enough data', () => {
-        	assert.equal(
-        		sgf.parse('(;GM[1]FF[4]SZ[19]PB[\xBD\xA3\xB9\xFD\xCE\xDE\xC9\xF9])')[0].nodes[0].PB[0],                           // GB2312
-        		sgf.parse('(;GM[1]FF[4]SZ[19]CA[UTF-8]PB[\xE5\x89\x91\xE8\xBF\x87\xE6\x97\xA0\xE5\xA3\xB0])')[0].nodes[0].PB[0]   // UTF-8
-        	)
+            assert.equal(
+                sgf.parse('(;GM[1]FF[4]SZ[19]PB[\xBD\xA3\xB9\xFD\xCE\xDE\xC9\xF9])')[0].nodes[0].PB[0],                           // GB2312
+                sgf.parse('(;GM[1]FF[4]SZ[19]CA[UTF-8]PB[\xE5\x89\x91\xE8\xBF\x87\xE6\x97\xA0\xE5\xA3\xB0])')[0].nodes[0].PB[0]   // UTF-8
+            )
         })
     })
 
