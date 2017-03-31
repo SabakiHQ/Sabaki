@@ -146,8 +146,8 @@ exports.parse = function(input, callback, ignoreEncoding = false) {
 
     if (ignoreEncoding === false) {
         let found_encoding = false
-        for (let i = 0; i < tokens.length; i += 1) {
-            if (tokens[i][0] === 'prop_ident' && tokens[i][1] === 'CA') {
+        for (let t of tokens) {
+            if (t[0] === 'prop_ident' && t[1] === 'CA') {
                 found_encoding = true
                 break
             }
