@@ -118,14 +118,11 @@ class GameGraph extends Component {
             mousePosition: [-100, -100]
         }
 
+        this.matrixDictCache = {}
+
         this.handleNodeClick = this.handleNodeClick.bind(this)
         this.handleMouseWheel = this.handleMouseWheel.bind(this)
         this.handleGraphMouseDown = this.handleGraphMouseDown.bind(this)
-    }
-
-    remeasure() {
-        let {left, top, width, height} = this.element.getBoundingClientRect()
-        this.setState({viewportSize: [width, height], viewportPosition: [left, top]})
     }
 
     componentDidMount() {
@@ -164,7 +161,7 @@ class GameGraph extends Component {
     }
 
     shouldComponentUpdate({showGameGraph, height}) {
-        return showGameGraph && (height !== this.props.height || !this.dirty)
+        return height !== this.props.height || showGameGraph && !this.dirty
     }
 
     componentWillReceiveProps({treePosition = [{}, -1]} = {}) {
@@ -181,7 +178,7 @@ class GameGraph extends Component {
             let {gridSize, treePosition: [tree, index]} = this.props
             let id = tree.id + '-' + index
 
-            let [matrix, dict] = gametree.getMatrixDict(gametree.getRoot(tree))
+            let [matrix, dict] = this.getMatrixDict(gametree.getRoot(tree))
             let [x, y] = dict[id]
             let [width, padding] = gametree.getMatrixWidth(y, matrix)
 
@@ -205,6 +202,21 @@ class GameGraph extends Component {
         if (height === this.props.height) return
 
         setTimeout(() => this.remeasure(), 200)
+    }
+
+    getMatrixDict(tree) {
+        let hash = gametree.getMatrixHash(tree)
+
+        if (!(hash in this.matrixDictCache)) {
+            this.matrixDictCache[hash] = gametree.getMatrixDict(tree)
+        }
+
+        return this.matrixDictCache[hash]
+    }
+
+    remeasure() {
+        let {left, top, width, height} = this.element.getBoundingClientRect()
+        this.setState({viewportSize: [width, height], viewportPosition: [left, top]})
     }
 
     handleMouseWheel(evt) {
@@ -244,8 +256,8 @@ class GameGraph extends Component {
         let nodeColumns = []
         let edges = []
 
-        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 5, 0))
-        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 5)
+        let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 1, 0))
+        let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 1)
 
         let doneTreeBones = []
         let currentTracks = []

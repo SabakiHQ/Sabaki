@@ -441,3 +441,7 @@ exports.fromJson = function(json) {
 exports.getHash = function(tree) {
     return helper.hash(exports.getJson(tree))
 }
+
+exports.getMatrixHash = function(tree) {
+    return helper.hash(tree.nodes.length + '(' + tree.subtrees.map(exports.getMatrixHash).join(',') + ')')
+}
