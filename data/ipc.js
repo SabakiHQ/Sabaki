@@ -4,7 +4,7 @@ const dialog = require('../modules/dialog')
 const gametree = require('../modules/gametree')
 const setting = require('../modules/setting')
 
-let toggleSetting = key => setting.set(key, !setting.get(ey))
+let toggleSetting = key => setting.set(key, !setting.get(key))
 
 let menudata = {
     newFile: () => sabaki.newFile({playSound: true, showInfo: true}),

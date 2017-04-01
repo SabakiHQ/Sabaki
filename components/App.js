@@ -2,7 +2,7 @@ const fs = require('fs')
 const EventEmitter = require('events')
 const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, Menu} = remote
-const {h, render, options, Component} = require('preact')
+const {h, render, Component} = require('preact')
 
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')

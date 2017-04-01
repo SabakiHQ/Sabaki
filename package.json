@@ -51,13 +51,16 @@
     ],
     "files": [
       "**/*",
-      "!test${/*}",
-      "!browser/build.js",
-      "!**/{.c9,scss,docs}${/*}",
+      "!build.js",
+      "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
       "!node_modules/moment${/*}",
-      "!node_modules/{octicons,sigma}/{plugins,lib,src,build/font}${/*}",
-      "!node_modules/sigma/build/plugins/*.js",
-      "node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"
+      "!node_modules/octicons/build/*",
+      "node_modules/octicons/build/svg",
+      "!node_modules/jschardet/dist${/*}",
+      "node_modules/jschardet/src",
+      "!node_modules/preact/*.{map,js}",
+      "!node_modules/preact/dist/*",
+      "node_modules/preact/dist/preact.js"
     ]
   },
   "dependencies": {
@@ -70,7 +73,7 @@
     "preact": "^7.2.0"
   },
   "devDependencies": {
-    "electron": "1.6.2",
+    "electron": "1.6.5",
     "electron-builder": "^16.5.1",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
