@@ -1,43 +1,43 @@
 const {exec} = require('child_process')
 
-exports.Command = require('./command.js')
-exports.Response = require('./response.js')
-exports.Controller = require('./controller.js')
+const Command = exports.Command = require('./command')
+const Response = exports.Response = require('./response')
+const Controller = exports.Controller = require('./controller')
 
 // System paths are not inherited in macOS
 // This is a quick & dirty fix
 
-if (process.platform == 'darwin') {
+if (process.platform === 'darwin') {
     exec('/bin/bash -ilc "env; exit"', (err, result) => {
         if (err) return
 
         process.env.PATH = result.trim().split('\n')
             .map(x => x.split('='))
-            .find(x => x[0] == 'PATH')[1]
+            .find(x => x[0] === 'PATH')[1]
     })
 }
 
 exports.parseCommand = function(input) {
     input = input.replace(/\t/g, ' ').trim()
-    let inputs = input.split(' ').filter(x => x != '')
+    let inputs = input.split(' ').filter(x => x !== '')
     let id = parseFloat(inputs[0])
 
-    if (!isNaN(id)) inputs.splice(0, 1)
+    if (!isNaN(id)) inputs.shift()
     let name = inputs[0]
-    inputs.splice(0, 1)
+    inputs.shift()
 
-    return new exports.Command(id, name, inputs)
+    return new Command(id, name, inputs)
 }
 
 exports.parseResponse = function(input) {
     input = input.replace(/\t/g, ' ').trim()
-    let error = input[0] != '='
-    let hasId = input[1] != ' '
+    let error = input[0] !== '='
+    let hasId = input[1] !== ' '
 
     input = input.substr(1)
     let id = hasId ? parseFloat(input.split(' ')[0]) : null
 
     if (hasId) input = input.substr((id + '').length)
 
-    return new exports.Response(id, input.substr(1), error)
+    return new Response(id, input.substr(1), error)
 }

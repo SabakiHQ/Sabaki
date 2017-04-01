@@ -3,6 +3,7 @@ const {dirname} = require('path')
 const EventEmitter = require('events')
 
 const gtp = require('./index')
+const helper = require('../helper')
 
 class Controller extends EventEmitter {
     constructor(path, args) {
@@ -26,13 +27,13 @@ class Controller extends EventEmitter {
 
             let start = this._buffer.indexOf('\n\n')
 
-            while (start != -1) {
+            while (start !== -1) {
                 let response = gtp.parseResponse(this._buffer.substr(0, start))
                 this._buffer = this._buffer.substr(start + 2)
 
                 if (this.commands.length > 0) {
-                    this.emit('response-' + this.commands[0].internalId, response, this.commands[0])
-                    this.commands.splice(0, 1)
+                    let command = this.commands.shift()
+                    this.emit(`response-${command.internalId}`, response, command)
                 }
 
                 start = this._buffer.indexOf('\n\n')
@@ -44,19 +45,15 @@ class Controller extends EventEmitter {
         })
     }
 
-    sendCommand(command) {
-        this.commands.push(command)
+    sendCommand(command, callback = helper.noop) {
+        this.once(`response-${command.internalId}`, callback)
 
         try {
             this.process.stdin.write(command.toString() + '\n')
+            this.commands.push(command)
         } catch (err) {
-            this.emit(
-                'response-' + command.internalId,
-                new gtp.Response(command.id, 'connection error', true, true),
-                command
-            )
-
-            this.commands.splice(0, 1)
+            let response = new gtp.Response(command.id, 'connection error', true, true)
+            this.emit(`response-${command.internalId}`, response, command)
         }
     }
 }
