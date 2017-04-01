@@ -10,10 +10,6 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-* 'Flatten' operation doesn't create invalid SGF files anymore
-
-**Fixed**
-
 * Windows installers create app folder if necessary
 * Fix Sabaki being unresponsive when adding invalid files to a game collection
 * Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
