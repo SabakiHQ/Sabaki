@@ -154,11 +154,14 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 
 Performs a click on the given vertex position on the board with given button index, whether the control key is pressed, and the mouse position. The mouse position is only needed for displaying the context menu.
 
-#### sabaki.makeMove(vertex)
+#### sabaki.makeMove(vertex[, options])
 
 * `vertex` [`<Vertex>`](vertex.md)
+* `options` `<Object>` *(optional)*
+    * `player` `<Integer>` *(optional)* - One of `-1` or `1`. Default: Current player
+    * `clearUndoPoint` `<Boolean>` *(optional)* - Default: `true`
 
-Makes a proper move on the given vertex on the current board as the current player. If `vertex` is occupied, the game tree doesn't change. If `vertex` is not on the board, Sabaki will make a pass instead.
+Makes a proper move on the given vertex on the current board as given `player`. If `vertex` is not on the board, Sabaki will make a pass instead.
 
 Depending on the settings, Sabaki may notify the user about ko and suicide, plays a sound, or/and sends a command to the attached GTP engine.
 

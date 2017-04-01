@@ -46,6 +46,7 @@ class App extends Component {
             findText: '',
             findVertex: null,
             deadStones: [],
+            blockedGuesses: [],
 
             // Board state
 
@@ -283,45 +284,46 @@ class App extends Component {
                 let commentText = node.C ? node.C[0] : ''
 
                 node.C = commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
-            } else {
-                let tool = this.state.selectedTool
+                return
+            }
 
-                if (button === 2) {
-                    // Right mouse click
+            let tool = this.state.selectedTool
 
-                    if (['stone_1', 'stone_-1'].includes(tool)) {
-                        // Switch stone tool
+            if (button === 2) {
+                // Right mouse click
 
-                        tool = tool === 'stone_1' ? 'stone_-1' : 'stone_1'
-                    } else if (['number', 'label'].includes(tool)) {
-                        // Show label editing context menu
+                if (['stone_1', 'stone_-1'].includes(tool)) {
+                    // Switch stone tool
 
-                        let click = () => dialog.showInputBox('Enter label text', ({value}) => {
-                            this.useTool('label', vertex, value)
-                        })
+                    tool = tool === 'stone_1' ? 'stone_-1' : 'stone_1'
+                } else if (['number', 'label'].includes(tool)) {
+                    // Show label editing context menu
 
-                        let template = [{label: '&Edit Label', click}]
-                        let menu = Menu.buildFromTemplate(template)
-                        menu.popup(this.window, {x, y, async: true})
+                    let click = () => dialog.showInputBox('Enter label text', ({value}) => {
+                        this.useTool('label', vertex, value)
+                    })
 
-                        return
-                    }
+                    let template = [{label: '&Edit Label', click}]
+                    let menu = Menu.buildFromTemplate(template)
+                    menu.popup(this.window, {x, y, async: true})
+
+                    return
                 }
+            }
 
-                if (['line', 'arrow'].includes(tool)) {
-                    // Remember clicked vertex and pass as an argument the second time
+            if (['line', 'arrow'].includes(tool)) {
+                // Remember clicked vertex and pass as an argument the second time
 
-                    if (!this.editVertexData || this.editVertexData[0] !== tool) {
-                        this.useTool(tool, vertex)
-                        this.editVertexData = [tool, vertex]
-                    } else {
-                        this.useTool(tool, vertex, this.editVertexData[1])
-                        this.editVertexData = null
-                    }
-                } else {
+                if (!this.editVertexData || this.editVertexData[0] !== tool) {
                     this.useTool(tool, vertex)
+                    this.editVertexData = [tool, vertex]
+                } else {
+                    this.useTool(tool, vertex, this.editVertexData[1])
                     this.editVertexData = null
                 }
+            } else {
+                this.useTool(tool, vertex)
+                this.editVertexData = null
             }
         } else if (['scoring', 'estimator'].includes(this.state.mode)) {
             if (button !== 0 || board.get(vertex) === 0) return
@@ -345,6 +347,42 @@ class App extends Component {
             } else {
                 this.setState({findVertex: vertex})
                 this.findMove(1, {vertex, text: this.state.findText})
+            }
+        } else if (this.state.mode === 'guess') {
+            if (button !== 0) return
+
+            let tp = gametree.navigate(...this.state.treePosition, 1)
+            if (!tp) return this.setMode('play')
+
+            let nextNode = tp[0].nodes[tp[1]]
+            if (!('B' in nextNode || 'W' in nextNode)) return this.setMode('play')
+
+            let nextVertex = sgf.point2vertex(nextNode['B' in nextNode ? 'B' : 'W'][0])
+            let board = gametree.getBoard(...this.state.treePosition)
+            if (!board.hasVertex(nextVertex)) return this.setMode('play')
+
+            if (helper.vertexEquals(vertex, nextVertex)) {
+                this.makeMove(vertex, {player: 'B' in nextNode ? 1 : -1})
+            } else {
+                if (board.get(vertex) !== 0
+                || this.state.blockedGuesses.some(v => helper.vertexEquals(v, vertex)))
+                    return
+
+                let blocked = []
+                let [, i] = vertex.map((x, i) => Math.abs(x - nextVertex[i]))
+                    .reduce(([max, i], x, j) => x > max ? [x, j] : [max, i], [-Infinity, -1])
+
+                for (let x = 0; x < board.width; x++) {
+                    for (let y = 0; y < board.height; y++) {
+                        let z = i === 0 ? x : y
+                        if (Math.abs(z - vertex[i]) < Math.abs(z - nextVertex[i]))
+                            blocked.push([x, y])
+                    }
+                }
+
+                let {blockedGuesses} = this.state
+                blockedGuesses.push(...blocked)
+                this.setState({blockedGuesses})
             }
         }
 
@@ -985,6 +1023,7 @@ class App extends Component {
         }
 
         this.setState({
+            blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
         })

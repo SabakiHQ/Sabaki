@@ -99,6 +99,7 @@ class MainView extends Component {
         scoringMethod,
         scoreBoard,
         areaMap,
+        blockedGuesses,
 
         highlightVertices,
         showCoordinates,
@@ -132,6 +133,12 @@ class MainView extends Component {
 
         if (['scoring', 'estimator'].includes(mode)) {
             paintMap = areaMap
+        } else if (mode === 'guess') {
+            paintMap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
+
+            for (let [x, y] of blockedGuesses) {
+                paintMap[y][x] = 1
+            }
         }
 
         return h('section',
@@ -156,8 +163,8 @@ class MainView extends Component {
                     crosshair: gobanCrosshair,
                     showCoordinates,
                     showMoveColorization,
-                    showNextMoves,
-                    showSiblings,
+                    showNextMoves: mode !== 'guess' && showNextMoves,
+                    showSiblings: mode !== 'guess' && showSiblings,
                     fuzzyStonePlacement,
                     animatedStonePlacement,
                     animatedVertex,
