@@ -128,6 +128,11 @@ class MainView extends Component {
         let node = tree.nodes[index]
         let showSidebar = showGameGraph || showCommentBox
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+        let paintMap
+
+        if (['scoring', 'estimator'].includes(mode)) {
+            paintMap = areaMap
+        }
 
         return h('section',
             {
@@ -145,7 +150,7 @@ class MainView extends Component {
                     board,
                     highlightVertices: findVertex && mode === 'find' ? [findVertex]
                         : highlightVertices,
-                    paintMap: areaMap,
+                    paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 
                     crosshair: gobanCrosshair,
@@ -186,11 +191,13 @@ class MainView extends Component {
                 }),
 
                 h(GuessBar, {
-                    mode
+                    mode,
+                    treePosition
                 }),
 
                 h(AutoplayBar, {
-                    mode
+                    mode,
+                    treePosition
                 }),
 
                 h(ScoringBar, {

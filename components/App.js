@@ -351,7 +351,7 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {cancelAutoplay = false, clearUndoPoint = true} = {}) {
+    makeMove(vertex, {player = null, clearUndoPoint = true} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -368,8 +368,8 @@ class App extends Component {
         if (!pass && board.get(vertex) != 0) return
 
         let prev = gametree.navigate(tree, index, -1)
-        let sign = this.inferredState.currentPlayer
-        let color = sign > 0 ? 'B' : 'W'
+        if (!player) player = this.inferredState.currentPlayer
+        let color = player > 0 ? 'B' : 'W'
         let capture = false, suicide = false, ko = false
         let createNode = true
 
@@ -377,7 +377,7 @@ class App extends Component {
             // Check for ko
 
             if (prev && setting.get('game.show_ko_warning')) {
-                let hash = board.makeMove(sign, vertex).getHash()
+                let hash = board.makeMove(player, vertex).getHash()
 
                 ko = prev[0].nodes[prev[1]].board.getHash() == hash
 
@@ -394,10 +394,10 @@ class App extends Component {
             // Check for suicide
 
             capture = vertexNeighbors
-                .some(v => board.get(v) == -sign && board.getLiberties(v).length == 1)
+                .some(v => board.get(v) == -player && board.getLiberties(v).length == 1)
 
             suicide = !capture
-            && vertexNeighbors.filter(v => board.get(v) == sign)
+            && vertexNeighbors.filter(v => board.get(v) == player)
                 .every(v => board.getLiberties(v).length == 1)
             && vertexNeighbors.filter(v => board.get(v) == 0).length == 0
 
@@ -504,7 +504,7 @@ class App extends Component {
 
         if (pass && createNode && prev) {
             let prevNode = prev[0].nodes[prev[1]]
-            let prevColor = sign > 0 ? 'W' : 'B'
+            let prevColor = player > 0 ? 'W' : 'B'
             let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
 
             if (prevPass) {
@@ -984,7 +984,11 @@ class App extends Component {
             t = t.parent
         }
 
-        this.setState({treePosition: [tree, index]})
+        this.setState({
+            highlightVertices: [],
+            treePosition: [tree, index]
+        })
+
         this.events.emit('navigate')
     }
 

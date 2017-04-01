@@ -443,5 +443,5 @@ exports.getHash = function(tree) {
 }
 
 exports.getMatrixHash = function(tree) {
-    return helper.hash(tree.nodes.length + '(' + tree.subtrees.map(exports.getMatrixHash).join(',') + ')')
+    return helper.hash(`${tree.id}-${tree.nodes.length}-${tree.subtrees.map(exports.getMatrixHash).join('-')}`)
 }
