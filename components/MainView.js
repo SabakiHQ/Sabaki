@@ -1,7 +1,6 @@
 const {h, Component} = require('preact')
 
 const Goban = require('./Goban')
-
 const PlayBar = require('./bars/PlayBar')
 const EditBar = require('./bars/EditBar')
 const GuessBar = require('./bars/GuessBar')
@@ -9,7 +8,6 @@ const AutoplayBar = require('./bars/AutoplayBar')
 const ScoringBar = require('./bars/ScoringBar')
 const FindBar = require('./bars/FindBar')
 
-const $ = require('../modules/sprint')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
@@ -63,14 +61,15 @@ class MainView extends Component {
         /*  Because of board rendering issues, we want the width
             and the height of `<main>` to be even */
 
-        let $main = $(this.mainElement).css('width', '').css('height', '')
+        if (this.mainElement == null) return
 
-        let width = Math.round($main.width()
-            - parseFloat($main.css('padding-left'))
-            - parseFloat($main.css('padding-right')))
-        let height = Math.round($main.height()
-            - parseFloat($main.css('padding-top'))
-            - parseFloat($main.css('padding-bottom')))
+        this.mainElement.style.width = ''
+        this.mainElement.style.height = ''
+
+        let {width, height} = window.getComputedStyle(this.mainElement)
+
+        width = parseFloat(width)
+        height = parseFloat(height)
 
         if (width % 2 !== 0) width++
         if (height % 2 !== 0) height++

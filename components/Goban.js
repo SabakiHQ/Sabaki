@@ -1,5 +1,4 @@
 const {h, Component} = require('preact')
-const $ = require('../modules/sprint')
 const helper = require('../modules/helper')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
@@ -165,17 +164,18 @@ class Goban extends Component {
 
         // Measure CSS
 
-        let $goban = $(this.element)
+        let {borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth,
+            paddingLeft, paddingTop, paddingRight, paddingBottom} = window.getComputedStyle(this.element)
 
         this.setState({
-            borderLeftWidth: parseFloat($goban.css('border-left-width')),
-            borderTopWidth: parseFloat($goban.css('border-top-width')),
-            borderRightWidth: parseFloat($goban.css('border-right-width')),
-            borderBottomWidth: parseFloat($goban.css('border-bottom-width')),
-            paddingLeft: parseFloat($goban.css('padding-left')),
-            paddingTop: parseFloat($goban.css('padding-top')),
-            paddingRight: parseFloat($goban.css('padding-right')),
-            paddingBottom: parseFloat($goban.css('padding-bottom'))
+            borderLeftWidth: parseFloat(borderLeftWidth),
+            borderTopWidth: parseFloat(borderTopWidth),
+            borderRightWidth: parseFloat(borderRightWidth),
+            borderBottomWidth: parseFloat(borderBottomWidth),
+            paddingLeft: parseFloat(paddingLeft),
+            paddingTop: parseFloat(paddingTop),
+            paddingRight: parseFloat(paddingRight),
+            paddingBottom: parseFloat(paddingBottom)
         })
 
         // Resize board when window is resizing
@@ -229,14 +229,15 @@ class Goban extends Component {
     }
 
     resize() {
+        if (!this.element || !this.element.parentElement) return
+
         let {board, showCoordinates, onBeforeResize = helper.noop} = this.props
         onBeforeResize()
 
-        let $goban = $(this.element)
-        let $main = $goban.parent()
+        let {width: outerWidth, height: outerHeight} = window.getComputedStyle(this.element.parentElement)
+        outerWidth = parseFloat(outerWidth)
+        outerHeight = parseFloat(outerHeight)
 
-        let outerWidth = parseFloat($main.css('width'))
-        let outerHeight = parseFloat($main.css('height'))
         let boardWidth = board.width
         let boardHeight = board.height
 

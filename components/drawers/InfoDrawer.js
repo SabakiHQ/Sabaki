@@ -3,7 +3,6 @@ const {h, Component} = require('preact')
 const Pikaday = require('pikaday')
 const Drawer = require('./Drawer')
 
-const $ = require('../../modules/sprint')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = require('../../modules/setting')
@@ -87,7 +86,7 @@ class InfoDrawer extends Component {
 
         this.handleDateInputBlur = () => {
             setTimeout(() => {
-                if ($(document.activeElement).parents('.pika-lendar').length === 0)
+                if (!this.elementInPikaday(document.activeElement))
                     this.pikaday.hide()
             }, 50)
         }
@@ -172,11 +171,20 @@ class InfoDrawer extends Component {
         let {left, top} = this.dateInputElement.getBoundingClientRect()
         let {height} = pikaday.el.getBoundingClientRect()
 
-        $(pikaday.el).css({
-            position: 'absolute',
-            left: Math.round(left),
-            top: Math.round(top - height)
-        })
+        pikaday.el.style.position = 'absolute'
+        pikaday.el.style.left = Math.round(left) + 'px'
+        pikaday.el.style.top = Math.round(top - height) + 'px'
+    }
+
+    elementInPikaday(element, pikaday = null) {
+        if (pikaday == null) pikaday = this.pikaday
+
+        while (element.parentElement) {
+            if (element === pikaday.el) return true
+            element = element.parentElement
+        }
+
+        return false
     }
 
     preparePikaday() {
@@ -227,7 +235,7 @@ class InfoDrawer extends Component {
             if (this.pikaday.isVisible()
             && document.activeElement !== this.dateInputElement
             && evt.target !== this.dateInputElement
-            && $(evt.target).parents('.pika-lendar').length === 0)
+            && !this.elementInPikaday(evt.target))
                 this.pikaday.hide()
         })
 
