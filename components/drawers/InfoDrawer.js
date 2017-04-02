@@ -388,7 +388,7 @@ class InfoDrawer extends Component {
 
                             h('option', {value: 0}, 'No stones'),
                             [...Array(8)].map((_, i) =>
-                                h('option', {value: i + 2}, i + 2)
+                                h('option', {value: i + 2}, (i + 2) + ' stones')
                             )
                         )
                     ),

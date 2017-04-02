@@ -285,36 +285,27 @@ class Goban extends Component {
 
         let [x, y] = vertex
         let direction = shifts[y][x]
-        if (direction === 0) return []
 
-        let query, removeShifts
-
-        if ([1, 5, 8].includes(direction)) {
+        let data = [
             // Left
-            query = [x - 1, y]
-            removeShifts = [3, 7, 6]
-        } else if ([2, 5, 6].includes(direction)) {
+            [[1, 5, 8], [x - 1, y], [3, 7, 6]],
             // Top
-            query = [x, y - 1]
-            removeShifts = [4, 7, 8]
-        } else if ([3, 7, 6].includes(direction)) {
+            [[2, 5, 6], [x, y - 1], [4, 7, 8]],
             // Right
-            query = [x + 1, y]
-            removeShifts = [1, 5, 8]
-        } else if ([4, 7, 8].includes(direction)) {
+            [[3, 7, 6], [x + 1, y], [1, 5, 8]],
             // Bottom
-            query = [x, y + 1]
-            removeShifts = [2, 5, 6]
-        } else {
-            return []
-        }
+            [[4, 7, 8], [x, y + 1], [2, 5, 6]],
+        ]
 
-        let [qx, qy] = query
         let movedVertices = []
 
-        if (shifts[qy] && removeShifts.includes(shifts[qy][qx])) {
-            shifts[qy][qx] = 0
-            movedVertices.push(query)
+        for (let [directions, [qx, qy], removeShifts] of data) {
+            if (!directions.includes(direction)) continue
+
+            if (shifts[qy] && removeShifts.includes(shifts[qy][qx])) {
+                shifts[qy][qx] = 0
+                movedVertices.push([qx, qy])
+            }
         }
 
         return movedVertices
