@@ -115,9 +115,10 @@ class MainView extends Component {
         findText,
         findVertex,
 
-        showGameGraph,
-        showCommentBox,
-        sidebarWidth
+        showLeftSidebar,
+        showSidebar,
+        sidebarWidth,
+        leftSidebarWidth
     }, {
         width,
         height,
@@ -126,7 +127,6 @@ class MainView extends Component {
         let [tree, index] = treePosition
         let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
-        let showSidebar = showGameGraph || showCommentBox
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
         let paintMap
 
@@ -143,7 +143,10 @@ class MainView extends Component {
         return h('section',
             {
                 id: 'main',
-                style: {right: showSidebar ? sidebarWidth : null}
+                style: {
+                    left: showLeftSidebar ? leftSidebarWidth : null,
+                    right: showSidebar ? sidebarWidth : null
+                }
             },
 
             h('main',

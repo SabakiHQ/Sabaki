@@ -111,6 +111,7 @@ class Sidebar extends Component {
                 this.horizontalResizerMouseDown = false
 
                 setting.set('view.properties_height', this.state.sidebarSplit)
+                setting.set('view.sidebar_width', this.props.sidebarWidth)
                 this.setState({sidebarSplitTransition: false})
                 window.dispatchEvent(new Event('resize'))
             }

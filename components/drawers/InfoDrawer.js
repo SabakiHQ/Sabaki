@@ -108,7 +108,7 @@ class InfoDrawer extends Component {
                 },
                 {type: 'separator'},
                 ...setting.get('engines.list').map(engine => ({
-                    label: engine.name,
+                    label: engine.name.trim() === '' ? '(Unnamed Engine)' : '',
                     type: 'checkbox',
                     checked: engine === this.state.engines[index],
                     click: () => {

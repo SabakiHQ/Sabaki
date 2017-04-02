@@ -61,7 +61,7 @@ class App extends Component {
 
             // Sidebar state
 
-            showLeftSidebar: null,
+            showConsole: null,
             leftSidebarWidth: null,
             showGameGraph: null,
             showCommentBox: null,
@@ -174,7 +174,7 @@ class App extends Component {
             'view.show_siblings': 'showSiblings',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
             'view.animated_stone_placement': 'animatedStonePlacement',
-            'view.show_leftsidebar': 'showLeftSidebar',
+            'view.show_leftsidebar': 'showConsole',
             'view.leftsidebar_width': 'leftSidebarWidth',
             'view.show_graph': 'showGameGraph',
             'view.show_comments': 'showCommentBox',
@@ -219,8 +219,11 @@ class App extends Component {
     }
 
     setSidebarWidth(sidebarWidth) {
-        setting.set('view.sidebar_width', sidebarWidth)
-        window.dispatchEvent(new Event('resize'))
+        this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
+    }
+
+    setLeftSidebarWidth(leftSidebarWidth) {
+        this.setState({leftSidebarWidth}, () => window.dispatchEvent(new Event('resize')))
     }
 
     setMode(mode) {
@@ -1723,6 +1726,8 @@ class App extends Component {
         }
 
         this.inferredState = {
+            showSidebar: state.showGameGraph || state.showCommentBox,
+            showLeftSidebar: state.showConsole,
             rootTree,
             gameIndex: state.gameTrees.indexOf(rootTree),
             gameInfo: this.getGameInfo(rootTree),
@@ -1737,7 +1742,7 @@ class App extends Component {
             {
                 class: {
                     leftsidebar: state.showLeftSidebar,
-                    sidebar: state.showGameGraph || state.showCommentBox,
+                    sidebar: state.showSidebar,
                     busy: state.busy,
                     [state.mode]: true
                 }

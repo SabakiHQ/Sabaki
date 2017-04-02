@@ -146,7 +146,7 @@ function buildMenu(disableAll = false) {
 
         attachMenu.push({
             label: '&Manage Engines…',
-            action: 'manageengines'
+            action: 'manageEngines'
         })
     }
 
