@@ -1,4 +1,7 @@
-main {
+#main {
+        z-index: 10;
+    }
+    main {
         position: absolute;
         left: 0;
         top: 0;
@@ -106,7 +109,7 @@ header, #bar .bar {
     header .undo {
         right: auto;
         left: 0;
-        top: 53px;
+        top: 61px;
         transition: top .2s, left .2s;
     }
     header .undo img, #headermenu img {
@@ -332,62 +335,64 @@ header, #bar .bar {
         left: 0;
         right: 0;
         bottom: 0;
-        overflow: auto;
     }
-    #console, #console pre, #console input {
+    #console, #console pre, #console input,
+    #console select, #console option {
+        background: inherit;
         color: #d0d0d0;
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
     }
-    #console pre {
-        margin: 15px;
+    #console select {
+        padding-right: 0;
     }
-    #console .internal { opacity: .5; }
-    #console .success { color: #FFCC66; }
-    #console .error { color: #F25C3D; }
-    #console .id { color: #CC99CC; }
-    #console .inner form {
-        position: relative;
-        height: 1.3em;
-        margin: .7em 0;
-        background: #222;
-    }
-    #console .inner form label::before {
-        content: '';
-        display: block;
+    #console .log {
         position: absolute;
         top: 0;
         left: 0;
-        height: 1.3em;
-        width: 20px;
-        background: #393939;
-        transition: background-color .5s;
+        right: 0;
+        bottom: 40px;
+        padding: 15px;
+        overflow: auto;
+        list-style: none;
+        user-select: text;
+        cursor: auto;
     }
-    #console .inner form label::after {
-        content: '';
-        display: block;
+    #console .log .internal { color: #888; }
+    #console .log .success { color: #FFCC66; }
+    #console .log .error { color: #F25C3D; }
+    #console .log .id { color: #CC99CC; }
+    #console .log li {
+        margin: 5px 0;
+    }
+    #console .log li.response {
+        margin-left: 15px;
+    }
+    #console .input {
         position: absolute;
-        border-left: 10px #393939 solid;
-        border-top: .65em transparent solid;
-        border-bottom: .65em transparent solid;
-        top: 0;
-        left: 20px;
-        height: 0;
-        width: 0;
-        transition: border-left-color .5s;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: #202023;
     }
-    #console .inner form.waiting label::before { background: #FBF593; }
-    #console .inner form.waiting label::after { border-left-color: #FBF593; }
-    #console .inner form:last-child label::before { background: #F25C3D; }
-    #console .inner form:last-child label::after { border-left-color: #F25C3D; }
-    #console .inner form input {
+    #console .input select {
         box-sizing: border-box;
         position: absolute;
-        border: none;
+        left: 0;
+        width: 100px;
         top: 0;
-        width: 100%;
         bottom: 0;
-        padding: 0 10px 0 40px;
-        background: transparent;
+    }
+    #console .input select, #console .input option {
+        text-align: right;
+    }
+    #console .input input {
+        box-sizing: border-box;
+        position: absolute;
+        left: 100px;
+        width: calc(100% - 100px);
+        top: 0;
+        bottom: 0;
 }
 
 .coord {
@@ -395,6 +400,7 @@ header, #bar .bar {
         background: #101010;
         color: white;
         border-radius: 3px;
+        cursor: default;
     }
     .coord:hover {
         background: #0082F0;

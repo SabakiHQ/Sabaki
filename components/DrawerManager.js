@@ -35,7 +35,7 @@ class DrawerManager extends Component {
                 let newIndex = Math.min(Math.max(gameIndex - 1, 0), newGameTrees.length - 1)
                 let newTreePosition = [newGameTrees[newIndex], 0]
 
-                sabaki.setState({treePosition: newTreePosition})
+                sabaki.setCurrentTreePosition(...newTreePosition)
             }
 
             sabaki.setState({gameTrees: newGameTrees})

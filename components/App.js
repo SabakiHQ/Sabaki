@@ -14,6 +14,7 @@ const Board = require('../modules/board')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
+const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
 const setting = require('../modules/setting')
 const {sgf} = fileformats
@@ -62,6 +63,7 @@ class App extends Component {
             // Sidebar state
 
             showConsole: null,
+            consoleLog: [],
             leftSidebarWidth: null,
             showGameGraph: null,
             showCommentBox: null,
@@ -91,7 +93,7 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, dialog, fileformats, gametree, helper, setting, sound}
+        this.modules = {Board, dialog, fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
 
@@ -250,6 +252,67 @@ class App extends Component {
 
     closeDrawer() {
         this.openDrawer(null)
+    }
+
+    // GTP Engines
+
+    attachEngines(...engines) {
+        let {attachedEngines} = this.state
+        if (!this.attachedEngineControllers) this.attachedEngineControllers = [null, null]
+
+        for (let i = 0; i < attachedEngines.length; i++) {
+            if (attachedEngines[i] != engines[i]) {
+                this.sendGTPCommand(this.attachedEngineControllers[i], new gtp.Command(null, 'quit'))
+
+                try {
+                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
+
+                    this.attachedEngineControllers[i] = controller
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'name'))
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'version'))
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'protocol_version'))
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'list_commands'))
+                } catch (err) {
+                    this.attachedEngineControllers[i] = null
+                }
+            }
+        }
+
+        this.setState({attachedEngines: engines})
+    }
+
+    detachEngines() {
+        this.attachEngines(null, null)
+    }
+
+    sendGTPCommand(controller, command, callback = helper.noop) {
+        if (controller == null) return
+
+        let {consoleLog} = this.state
+        let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
+        if (sign > 1) sign = 0
+        let entry = [sign, controller.name, command]
+        let maxLength = setting.get('console.max_history_count')
+
+        let newLog = consoleLog.slice(consoleLog.length >= maxLength ? 1 : 0)
+        newLog.push(entry)
+
+        this.setState({consoleLog: newLog})
+
+        controller.sendCommand(command, response => {
+            this.setState(({consoleLog}) => {
+                let index = consoleLog.indexOf(entry)
+                if (index === -1) return {}
+
+                let [a, b, c] = entry
+                let newLog = [...consoleLog]
+                newLog[index] = [a, b, c, response]
+
+                return {consoleLog: newLog}
+            })
+            
+            callback(response, command)
+        })
     }
 
     // Playing
@@ -1121,6 +1184,7 @@ class App extends Component {
 
     goToSiblingVariation(step) {
         let [tree, index] = this.state.treePosition
+        if (!tree.parent) return
 
         step = step < 0 ? -1 : 1
 

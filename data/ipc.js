@@ -82,7 +82,7 @@ let menudata = {
     detachEngine: () => null,
     generateMove: () => null,
     gtpConsole: () => null,
-    clearConsole: () => null,
+    clearConsole: () => sabaki.setState({consoleLog: []}),
 
     toggleGuessMode: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess'),
     toggleAutoplayMode: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay'),

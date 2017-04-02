@@ -39,7 +39,7 @@ class InfoDrawer extends Component {
                 data.size = this.state.size
             }
 
-            sabaki.setState({attachedEngines: this.state.engines})
+            sabaki.attachEngines(...this.state.engines)
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
         }
@@ -62,7 +62,7 @@ class InfoDrawer extends Component {
         }
 
         this.handleSizeSwapButtonClick = () => {
-            this.setState({size: this.state.size.reverse()})
+            this.setState(({size}) => ({size: size.reverse()}))
         }
 
         this.handleSwapPlayers = () => {
@@ -108,7 +108,7 @@ class InfoDrawer extends Component {
                 },
                 {type: 'separator'},
                 ...setting.get('engines.list').map(engine => ({
-                    label: engine.name.trim() === '' ? '(Unnamed Engine)' : '',
+                    label: engine.name.trim() || '(Unnamed Engine)',
                     type: 'checkbox',
                     checked: engine === this.state.engines[index],
                     click: () => {

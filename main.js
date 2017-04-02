@@ -130,7 +130,7 @@ function buildMenu(disableAll = false) {
 
         engines.forEach(engine => {
             attachMenu.push({
-                label: engine.name.trim() === '' ? '(Unnamed Engine)' : engine.name,
+                label: engine.name.trim() || '(Unnamed Engine)',
                 click: () => {
                     let window = BrowserWindow.getFocusedWindow()
                     if (!window) return

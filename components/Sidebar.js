@@ -119,12 +119,16 @@ class Sidebar extends Component {
 
         document.addEventListener('mousemove', evt => {
             if (this.verticalResizerMouseDown) {
+                evt.preventDefault()
+
                 let {sidebarWidth} = this.props
                 let diff = [evt.x, evt.y].map((x, i) => x - this.oldMousePosition[i])
 
                 sidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth - diff[0])
                 sabaki.setSidebarWidth(sidebarWidth)
             } else if (this.horizontalResizerMouseDown) {
+                evt.preventDefault()
+                
                 let sidebarSplit = Math.min(100 - sidebarMinSplit,
                     Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
 

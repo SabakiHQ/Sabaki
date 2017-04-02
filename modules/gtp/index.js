@@ -23,6 +23,8 @@ exports.parseCommand = function(input) {
     let id = parseFloat(inputs[0])
 
     if (!isNaN(id)) inputs.shift()
+    else id = null
+
     let name = inputs[0]
     inputs.shift()
 
@@ -32,10 +34,10 @@ exports.parseCommand = function(input) {
 exports.parseResponse = function(input) {
     input = input.replace(/\t/g, ' ').trim()
     let error = input[0] !== '='
-    let hasId = input[1] !== ' '
+    let hasId = input.length >= 2 && input[1] !== ' '
 
     input = input.substr(1)
-    let id = hasId ? parseFloat(input.split(' ')[0]) : null
+    let id = hasId ? +input.split(' ')[0] : null
 
     if (hasId) input = input.substr((id + '').length)
 
