@@ -393,6 +393,16 @@ header, #bar .bar {
         width: calc(100% - 100px);
         top: 0;
         bottom: 0;
+        background: transparent;
+        z-index: 3;
+    }
+    #console .input .autocomplete {
+        display: none;
+        opacity: .4;
+        z-index: 2;
+    }
+    #console .input .command:focus + .autocomplete {
+        display: block;
 }
 
 .coord {

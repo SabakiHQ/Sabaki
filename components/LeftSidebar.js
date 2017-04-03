@@ -67,7 +67,7 @@ class LeftSidebar extends Component {
         })
     }
 
-    render({leftSidebarWidth, consoleLog, attachedEngines}) {
+    render({leftSidebarWidth, consoleLog, attachedEngines, engineCommands}) {
         return h('section',
             {
                 ref: el => this.element = el,
@@ -83,6 +83,8 @@ class LeftSidebar extends Component {
             h(GtpConsole, {
                 consoleLog,
                 attachedEngines,
+                engineCommands,
+
                 onSubmit: this.handleCommandSubmit
             })
         )

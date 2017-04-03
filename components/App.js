@@ -38,7 +38,7 @@ class App extends Component {
             gameTrees: [emptyTree],
             treePosition: [emptyTree, 0],
 
-            // Bar state
+            // Bars
 
             undoable: false,
             undoText: 'Undo',
@@ -49,7 +49,7 @@ class App extends Component {
             deadStones: [],
             blockedGuesses: [],
 
-            // Board state
+            // Goban
 
             highlightVertices: [],
             showCoordinates: null,
@@ -60,7 +60,7 @@ class App extends Component {
             animatedStonePlacement: null,
             animatedVertex: null,
 
-            // Sidebar state
+            // Sidebar
 
             showConsole: null,
             consoleLog: [],
@@ -71,13 +71,17 @@ class App extends Component {
             graphGridSize: null,
             graphNodeSize: null,
 
-            // Drawers
+            // Engines
 
             engines: null,
             attachedEngines: [null, null],
+            engineCommands: [[], []],
+
+            // Drawers
+
             preferencesTab: 'general',
 
-            // Input box
+            // Input Box
 
             showInputBox: false,
             inputBoxText: '',
@@ -257,21 +261,26 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
-        let {attachedEngines} = this.state
+        let {engineCommands, attachedEngines} = this.state
         if (!this.attachedEngineControllers) this.attachedEngineControllers = [null, null]
+        let command = name => new gtp.Command(null, name)
 
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] != engines[i]) {
-                this.sendGTPCommand(this.attachedEngineControllers[i], new gtp.Command(null, 'quit'))
+                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
 
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
-
                     this.attachedEngineControllers[i] = controller
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'name'))
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'version'))
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'protocol_version'))
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'list_commands'))
+
+                    this.sendGTPCommand(controller, command('name'))
+                    this.sendGTPCommand(controller, command('version'))
+                    this.sendGTPCommand(controller, command('protocol_version'))
+                    this.sendGTPCommand(controller, command('list_commands'), response => {
+                        engineCommands[i] = response.content.split('\n')
+                    })
+
+                    this.setState({engineCommands})
                 } catch (err) {
                     this.attachedEngineControllers[i] = null
                 }
@@ -304,13 +313,12 @@ class App extends Component {
                 let index = consoleLog.indexOf(entry)
                 if (index === -1) return {}
 
-                let [a, b, c] = entry
                 let newLog = [...consoleLog]
-                newLog[index] = [a, b, c, response]
+                newLog[index] = [...entry, response]
 
                 return {consoleLog: newLog}
             })
-            
+
             callback(response, command)
         })
     }

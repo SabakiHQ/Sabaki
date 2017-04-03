@@ -12,7 +12,7 @@ class ConsoleCommandEntry extends Component {
     render({sign, name, command}) {
         return h('li', {class: 'command'},
             h('pre', {},
-                h('span', {class: 'internal'}, `${sign > 0 ? '○' : sign < 0 ? '●' : ''} ${name}>`), ' ',
+                h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
 
                 command.id != null && [h('span', {class: 'id'}, command.id), ' '],
                 command.name, ' ',
@@ -32,8 +32,12 @@ class ConsoleResponseEntry extends Component {
             !waiting
 
             ? h('pre', {},
-                h('span', {class: response.error ? 'error' : 'success'}, response.error ? '?' : '='), ' ',
+                h('span', {
+                    class: response.error ? 'error' : 'success'
+                }, response.internal ? '*' : response.error ? '?' : '='), ' ',
+
                 response.id != null && [h('span', {class: 'id'}, response.id), ' '],
+
                 h('span', {
                     class: response.internal ? 'internal' : '',
                     dangerouslySetInnerHTML: {
@@ -62,24 +66,47 @@ class GtpConsole extends Component {
             this.inputElement.focus()
         }
 
-        this.handleSubmit = evt => {
-            evt.preventDefault()
+        this.handleKeyDown = evt => {
+            if (evt.keyCode === 13) {
+                // Enter
 
-            let {onSubmit = helper.noop} = this.props
-            let {engineIndex, commandInputText} = this.state
+                evt.preventDefault()
+                let {onSubmit = helper.noop} = this.props
+                let {engineIndex, commandInputText} = this.state
 
-            if (commandInputText.trim() === '') return
+                if (commandInputText.trim() === '') return
 
-            onSubmit({
-                engineIndex,
-                command: gtp.parseCommand(this.state.commandInputText)
-            })
+                onSubmit({
+                    engineIndex,
+                    command: gtp.parseCommand(this.state.commandInputText)
+                })
 
-            this.setState({commandInputText: ''})
+                this.setState({commandInputText: ''})
+            } else if ([38, 40].includes(evt.keyCode)) {
+                // Up and down
+
+                evt.preventDefault()
+                let sign = evt.keyCode === 38 ? -1 : 1
+
+                if (this.inputPointer == null) this.inputPointer = this.props.consoleLog.length
+                this.inputPointer = Math.min(this.props.consoleLog.length, Math.max(0, this.inputPointer + sign))
+
+                let command = (this.props.consoleLog[this.inputPointer] || [])[2]
+                this.setState({commandInputText: command ? command.toString() : ''})
+            } else if (evt.keyCode === 9) {
+                // Tab
+
+                evt.preventDefault()
+                let autocompleteText = this.getAutocompleteText()
+
+                if (autocompleteText !== '') {
+                    this.setState({commandInputText: autocompleteText})
+                }
+            }
         }
     }
 
-    componentWillReceiveProps({attachedEngines}) {
+    componentWillReceiveProps({consoleLog, attachedEngines}) {
         let index = attachedEngines.findIndex(x => x != null)
 
         if (index >= 0 && this.state.engineIndex === -1) {
@@ -87,6 +114,8 @@ class GtpConsole extends Component {
         } else if (index === -1 && this.state.engineIndex !== -1) {
             this.setState({engineIndex: -1})
         }
+
+        this.inputPointer = consoleLog.length
     }
 
     componentDidUpdate(prevProps) {
@@ -95,10 +124,23 @@ class GtpConsole extends Component {
         }
     }
 
-    render({consoleLog, attachedEngines}, {engineIndex, commandInputText}) {
+    getAutocompleteText() {
+        let {engineCommands} = this.props
+        let {engineIndex, commandInputText} = this.state
+
+        if (engineCommands[engineIndex] && commandInputText.length > 0) {
+            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0)
+        }
+
+        return ''
+    }
+
+    render({consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
         let selectedEngine = attachedEngines[engineIndex]
         let selectWidth = Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) * 10 + 15
         let hasEngines = attachedEngines.some(x => x != null)
+        let autocompleteText = this.getAutocompleteText()
+        let inputStyle = {left: selectWidth, width: `calc(100% - ${selectWidth}px)`}
 
         return h('section', {id: 'console'},
             h('ol',
@@ -113,7 +155,7 @@ class GtpConsole extends Component {
                 ])
             ),
 
-            h('form', {class: 'input', onSubmit: this.handleSubmit},
+            h('form', {class: 'input'},
                 h('select',
                     {
                         disabled: !hasEngines || attachedEngines.filter(x => x != null).length === 1,
@@ -126,21 +168,28 @@ class GtpConsole extends Component {
                         engine && h('option', {
                             value: i,
                             selected: engineIndex === i
-                        }, `${i === 0 ? '○' : '●'} ${engine.name.trim()}>`)
+                        }, `${['○', '●'][i]} ${engine.name.trim()}>`)
                     )
                 ),
 
                 h('input', {
                     ref: el => this.inputElement = el,
+                    class: 'command',
                     disabled: !hasEngines,
                     type: 'text',
                     value: commandInputText,
-                    style: {
-                        left: selectWidth,
-                        width: `calc(100% - ${selectWidth}px)`
-                    },
+                    style: inputStyle,
 
-                    onInput: this.linkState('commandInputText')
+                    onInput: this.linkState('commandInputText'),
+                    onKeyDown: this.handleKeyDown
+                }),
+
+                h('input', {
+                    class: 'autocomplete',
+                    disabled: !hasEngines,
+                    type: 'text',
+                    value: autocompleteText,
+                    style: inputStyle
                 })
             )
         )
