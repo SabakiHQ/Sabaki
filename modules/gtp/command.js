@@ -1,7 +1,7 @@
 const helper = require('../helper')
 
 class Command {
-    constructor(id, name, args) {
+    constructor(id, name, ...args) {
         this.internalId = helper.getId()
         this.id = id
         this.name = name

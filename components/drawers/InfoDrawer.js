@@ -39,9 +39,9 @@ class InfoDrawer extends Component {
                 data.size = this.state.size
             }
 
-            sabaki.attachEngines(...this.state.engines)
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
+            setTimeout(() => sabaki.attachEngines(...this.state.engines), 500)
         }
 
         this.handleCancelButtonClick = evt => {

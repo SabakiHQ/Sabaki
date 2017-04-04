@@ -15,8 +15,7 @@ class ConsoleCommandEntry extends Component {
                 h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
 
                 command.id != null && [h('span', {class: 'id'}, command.id), ' '],
-                command.name, ' ',
-                command.arguments.join(' ')
+                [command.name, ...command.arguments].join(' ')
             )
         )
     }
@@ -128,7 +127,7 @@ class GtpConsole extends Component {
         for (let key in nextProps) {
             if (nextProps[key] !== this.props[key]) return true
         }
-        
+
         for (let key in nextState) {
             if (nextState[key] !== this.state[key]) return true
         }

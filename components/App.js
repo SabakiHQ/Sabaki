@@ -288,6 +288,7 @@ class App extends Component {
         }
 
         this.setState({attachedEngines: engines})
+        this.syncEngines()
     }
 
     detachEngines() {
@@ -321,6 +322,52 @@ class App extends Component {
 
             callback(response, command)
         })
+    }
+
+    syncEngines() {
+        if (!this.engineBoardHashes) this.engineBoardHashes = [null, null]
+        if (this.attachedEngineControllers.every(x => x == null)) return
+
+        let board = gametree.getBoard(...this.state.treePosition)
+
+        if (!board.isSquare()) {
+            dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
+            return this.detachEngines()
+        } else if (!board.isValid()) {
+            dialog.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+            return this.detachEngines()
+        }
+
+        this.setBusy(true)
+
+        for (let i = 0; i < this.attachedEngineControllers.length; i++) {
+            if (this.attachedEngineControllers[i] == null || board.getHash() === this.engineBoardHashes[i]) continue
+
+            let controller = this.attachedEngineControllers[i]
+
+            this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
+            this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
+            this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
+
+            // Replay
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    let vertex = [x, y]
+                    let sign = board.get(vertex)
+                    if (sign === 0) continue
+
+                    let color = sign > 0 ? 'B' : 'W'
+                    let point = board.vertex2coord(vertex)
+
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                }
+            }
+
+            this.engineBoardHashes[i] = board.getHash()
+        }
+
+        this.setBusy(false)
     }
 
     // Playing
