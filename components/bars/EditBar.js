@@ -21,6 +21,10 @@ class EditBar extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.mode !== this.props.mode || nextProps.mode === 'edit'
+    }
+
     handleToolButtonClick(evt) {
         let {selectedTool, onToolButtonClick = helper.noop} = this.props
 

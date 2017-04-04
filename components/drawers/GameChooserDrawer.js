@@ -336,7 +336,7 @@ class GameChooserDrawer extends Component {
     }
 
     shouldComponentUpdate({show}, {animation}) {
-        return animation !== this.props.animation || show || show !== this.props.show
+        return animation !== this.state.animation || show || show !== this.props.show
     }
 
     componentDidUpdate(prevProps, prevState) {

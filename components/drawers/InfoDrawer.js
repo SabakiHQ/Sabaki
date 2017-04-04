@@ -149,6 +149,10 @@ class InfoDrawer extends Component {
         this.preparePikaday()
     }
 
+    shouldComponentUpdate({show}) {
+        return show !== this.props.show || show
+    }
+
     markDates(pikaday = null) {
         if (pikaday == null) pikaday = this.pikaday
 

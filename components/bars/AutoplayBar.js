@@ -37,7 +37,7 @@ class AutoplayBar extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.mode !== 'autoplay') this.stopAutoplay()
+        if (this.state.playing && nextProps.mode !== 'autoplay') this.stopAutoplay()
     }
 
     startAutoplay() {

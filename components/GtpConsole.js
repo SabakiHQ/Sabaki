@@ -124,6 +124,18 @@ class GtpConsole extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        for (let key in nextProps) {
+            if (nextProps[key] !== this.props[key]) return true
+        }
+        
+        for (let key in nextState) {
+            if (nextState[key] !== this.state[key]) return true
+        }
+
+        return false
+    }
+
     getAutocompleteText() {
         let {engineCommands} = this.props
         let {engineIndex, commandInputText} = this.state

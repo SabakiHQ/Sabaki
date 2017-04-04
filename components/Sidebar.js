@@ -100,7 +100,7 @@ class Sidebar extends Component {
     componentWillReceiveProps({treePosition, rootTree} = {}) {
         // Update tree height
 
-        if (this.props && helper.vertexEquals(treePosition, this.props.treePosition)) return
+        if (this.props && treePosition === this.props.treePosition) return
         this.setState({treeHeight: gametree.getHeight(rootTree)})
     }
 
@@ -128,7 +128,7 @@ class Sidebar extends Component {
                 sabaki.setSidebarWidth(sidebarWidth)
             } else if (this.horizontalResizerMouseDown) {
                 evt.preventDefault()
-                
+
                 let sidebarSplit = Math.min(100 - sidebarMinSplit,
                     Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
 
