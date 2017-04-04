@@ -95,6 +95,9 @@ class App extends Component {
         this.window = remote.getCurrentWindow()
         this.treeHash = this.generateTreeHash()
 
+        this.attachedEngineControllers = [null, null]
+        this.engineBoardHashes = [null, null]
+
         // Expose submodules
 
         this.modules = {Board, dialog, fileformats, gametree, gtp, helper, setting, sound}
@@ -262,7 +265,6 @@ class App extends Component {
 
     attachEngines(...engines) {
         let {engineCommands, attachedEngines} = this.state
-        if (!this.attachedEngineControllers) this.attachedEngineControllers = [null, null]
         let command = name => new gtp.Command(null, name)
 
         for (let i = 0; i < attachedEngines.length; i++) {
@@ -272,6 +274,7 @@ class App extends Component {
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
                     this.attachedEngineControllers[i] = controller
+                    this.engineBoardHashes[i] = null
 
                     this.sendGTPCommand(controller, command('name'))
                     this.sendGTPCommand(controller, command('version'))
@@ -325,7 +328,6 @@ class App extends Component {
     }
 
     syncEngines() {
-        if (!this.engineBoardHashes) this.engineBoardHashes = [null, null]
         if (this.attachedEngineControllers.every(x => x == null)) return
 
         let board = gametree.getBoard(...this.state.treePosition)
@@ -946,19 +948,25 @@ class App extends Component {
     newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
         if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
 
-        let emptyTree = this.getEmptyGameTree()
+        if (showInfo && this.state.openDrawer === 'info') {
+            this.closeDrawer()
+        }
 
-        this.setState({
-            openDrawer: showInfo ? 'info' : null,
-            gameTrees: [emptyTree],
-            treePosition: [emptyTree, 0],
-            representedFilename: null
+        this.setState(this.state, () => {
+            let emptyTree = this.getEmptyGameTree()
+
+            this.setState({
+                openDrawer: showInfo ? 'info' : null,
+                gameTrees: [emptyTree],
+                treePosition: [emptyTree, 0],
+                representedFilename: null
+            })
+
+            this.treeHash = this.generateTreeHash()
+            this.fileHash = this.generateFileHash()
+
+            if (playSound) sound.playNewGame()
         })
-
-        this.treeHash = this.generateTreeHash()
-        this.fileHash = this.generateFileHash()
-
-        if (playSound) sound.playNewGame()
     }
 
     loadFile(filename = null, {suppressAskForSave = false} = {}) {

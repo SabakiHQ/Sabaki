@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const ContentDisplay = require('./ContentDisplay')
 
 const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
@@ -214,39 +215,14 @@ class CommentText extends Component {
             || board.height !== this.props.board.height
     }
 
-    componentDidUpdate() {
-        // Handle link clicks
-
-        for (let el of this.element.querySelectorAll('a')) {
-            el.addEventListener('click', evt => {
-                let {onLinkClick = helper.noop} = this.props
-                onLinkClick(evt)
-            })
-        }
-
-        // Hover on coordinates
-
-        for (let el of this.element.querySelectorAll('.coord')) {
-            el.addEventListener('mouseenter', evt => {
-                let {board, onCoordinateMouseEnter = helper.noop} = this.props
-                evt.vertex = board.coord2vertex(el.innerText)
-                onCoordinateMouseEnter(evt)
-            })
-
-            el.addEventListener('mouseleave', evt => {
-                let {board, onCoordinateMouseLeave = helper.noop} = this.props
-                evt.vertex = board.coord2vertex(el.innerText)
-                onCoordinateMouseLeave(evt)
-            })
-        }
-    }
-
     render({comment}) {
         return h('div', {
             ref: el => this.element = el,
-            class: 'comment',
+            class: 'comment'
+        }, h(ContentDisplay, {
+            tag: 'div',
             dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
-        })
+        }))
     }
 }
 

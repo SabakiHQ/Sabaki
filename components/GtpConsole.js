@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const ContentDisplay = require('./ContentDisplay')
 
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
@@ -15,7 +16,15 @@ class ConsoleCommandEntry extends Component {
                 h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
 
                 command.id != null && [h('span', {class: 'id'}, command.id), ' '],
-                [command.name, ...command.arguments].join(' ')
+                command.name, ' ',
+
+                h(ContentDisplay, {
+                    tag: 'span',
+                    dangerouslySetInnerHTML: {
+                        __html: helper.htmlify(command.arguments.join(' ')
+                            .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+                    }
+                })
             )
         )
     }
@@ -28,7 +37,7 @@ class ConsoleResponseEntry extends Component {
 
     render({response, waiting}) {
         return h('li', {class: {response: true, waiting}},
-            !waiting
+            !waiting && response != null
 
             ? h('pre', {},
                 h('span', {
@@ -37,7 +46,8 @@ class ConsoleResponseEntry extends Component {
 
                 response.id != null && [h('span', {class: 'id'}, response.id), ' '],
 
-                h('span', {
+                h(ContentDisplay, {
+                    tag: 'span',
                     class: response.internal ? 'internal' : '',
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(response.content
