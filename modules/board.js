@@ -31,6 +31,21 @@ class Board {
         return this.makeMove(0)
     }
 
+    diff(board) {
+        let result = []
+
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let sign = board.get([x, y])
+                if (this.get([x, y]) === sign) continue
+
+                result.push([[x, y], sign])
+            }
+        }
+
+        return result
+    }
+
     hasVertex([x, y]) {
         return 0 <= x && x < this.width && 0 <= y && y < this.height
     }

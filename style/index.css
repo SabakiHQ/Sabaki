@@ -373,7 +373,7 @@ header, #bar .bar {
         left: 0;
         right: 0;
         height: 40px;
-        background: #202023;
+        background: #222;
     }
     #console .input select {
         box-sizing: border-box;

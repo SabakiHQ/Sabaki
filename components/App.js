@@ -96,7 +96,7 @@ class App extends Component {
         this.treeHash = this.generateTreeHash()
 
         this.attachedEngineControllers = [null, null]
-        this.engineBoardHashes = [null, null]
+        this.engineBoards = [null, null]
 
         // Expose submodules
 
@@ -216,13 +216,12 @@ class App extends Component {
 
     setBusy(busy) {
         this.busy = busy
+        clearTimeout(this.busyId)
 
         if (busy) {
             this.setState({busy: true})
         } else {
             let delay = setting.get('app.hide_busy_delay')
-
-            clearTimeout(this.busyId)
             this.busyId = setTimeout(() => this.setState({busy: false}), delay)
         }
     }
@@ -265,6 +264,21 @@ class App extends Component {
 
     attachEngines(...engines) {
         let {engineCommands, attachedEngines} = this.state
+
+        if (helper.vertexEquals([engines[1], engines[0]], attachedEngines)) {
+            // Just swap engines
+
+            this.attachedEngineControllers.reverse()
+            this.engineBoards.reverse()
+
+            this.setState({
+                engineCommands: engineCommands.reverse(),
+                attachedEngines: engines
+            })
+
+            return
+        }
+
         let command = name => new gtp.Command(null, name)
 
         for (let i = 0; i < attachedEngines.length; i++) {
@@ -274,7 +288,7 @@ class App extends Component {
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
                     this.attachedEngineControllers[i] = controller
-                    this.engineBoardHashes[i] = null
+                    this.engineBoards[i] = null
 
                     this.sendGTPCommand(controller, command('name'))
                     this.sendGTPCommand(controller, command('version'))
@@ -343,15 +357,41 @@ class App extends Component {
         this.setBusy(true)
 
         for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-            if (this.attachedEngineControllers[i] == null || board.getHash() === this.engineBoardHashes[i]) continue
+            if (this.attachedEngineControllers[i] == null
+                || this.engineBoards[i] != null
+                && board.getHash() === this.engineBoards[i].getHash()) continue
 
             let controller = this.attachedEngineControllers[i]
+
+            if (this.engineBoards[i] != null) {
+                // Diff boards
+
+                let synced = false
+                let diff = this.engineBoards[i].diff(board).filter(([, sign]) => sign !== 0)
+
+                if (diff.length === 1) {
+                    let [vertex, sign] = diff[0]
+                    let move = this.engineBoards[i].makeMove(sign, vertex)
+
+                    if (move.getHash() === board.getHash()) {
+                        // Incremental board update
+
+                        let color = sign > 0 ? 'B' : 'W'
+                        let point = board.vertex2coord(vertex)
+
+                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                        synced = true
+                    }
+                }
+
+                if (synced) continue
+            }
+
+            // Replay
 
             this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
             this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
             this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
-
-            // Replay
 
             for (let x = 0; x < board.width; x++) {
                 for (let y = 0; y < board.height; y++) {
@@ -366,10 +406,58 @@ class App extends Component {
                 }
             }
 
-            this.engineBoardHashes[i] = board.getHash()
+            this.engineBoards[i] = board
         }
 
         this.setBusy(false)
+    }
+
+    startGeneratingMoves() {
+        this.closeDrawer()
+
+        let {currentPlayer, rootTree} = this.inferredState
+        let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
+        let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
+        let playerEngineController = this.attachedEngineControllers[playerIndex]
+        let otherEngineController = this.attachedEngineControllers[otherIndex]
+
+        if (playerEngineController == null) {
+            if (otherEngineController != null) {
+                // Switch engines, so the attached engine can play
+
+                let engines = [...this.state.attachedEngines].reverse()
+                this.attachEngines(...engines)
+                ;[playerEngineController, otherEngineController] = [otherEngineController, playerEngineController]
+            } else {
+                return
+            }
+        }
+
+        this.syncEngines()
+        this.setBusy(true)
+
+        let command = (...args) => new gtp.Command(null, ...args)
+
+        this.sendGTPCommand(playerEngineController, command('genmove', color), response => {
+            if (response.content.toLowerCase() == 'resign') {
+                dialog.showMessageBox(`${playerEngineController.name} has resigned.`)
+                this.makeResign()
+                return
+            }
+
+            let vertex = [-1, -1]
+            if (response.content.toLowerCase() != 'pass')
+                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
+
+            this.makeMove(vertex)
+            this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
+
+            if (otherEngineController != null && !helper.vertexEquals(vertex, [-1, -1])) {
+                setTimeout(() => this.startGeneratingMoves(), 500)
+            } else {
+                this.setBusy(false)
+            }
+        })
     }
 
     // Playing
@@ -638,7 +726,6 @@ class App extends Component {
             }
         }
 
-        prev = gametree.navigate(tree, index, -1)
         this.setCurrentTreePosition(...nextTreePosition)
 
         // Play sounds
@@ -664,8 +751,8 @@ class App extends Component {
         let enterScoring = false
 
         if (pass && createNode && prev) {
-            let prevNode = prev[0].nodes[prev[1]]
-            let prevColor = player > 0 ? 'W' : 'B'
+            let prevNode = tree.nodes[index]
+            let prevColor = color === 'B' ? 'W' : 'B'
             let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
 
             if (prevPass) {
@@ -676,21 +763,22 @@ class App extends Component {
 
         // Emit event
 
-        this.events.emit('makeMove', {pass, capture, suicide, ko})
+        this.events.emit('makeMove', {pass, capture, suicide, ko, enterScoring})
     }
 
-    makeResign({setUndoPoint = true} = {}) {
+    makeResign({player = null, setUndoPoint = true} = {}) {
         let {rootTree, currentPlayer} = this.inferredState
-        let player = currentPlayer > 0 ? 'W' : 'B'
+        if (player == null) player = currentPlayer
+        let color = player > 0 ? 'W' : 'B'
         let rootNode = rootTree.nodes[0]
 
         if (setUndoPoint) this.setUndoPoint('Undo Resignation')
-        rootNode.RE = [player + '+Resign']
+        rootNode.RE = [`${color}+Resign`]
 
-        this.makeMove([-1, -1], {clearUndoPoint: false})
+        this.makeMove([-1, -1], {player, clearUndoPoint: false})
         this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
 
-        this.events.emit('resign', {player: currentPlayer})
+        this.events.emit('resign', {player})
     }
 
     useTool(tool, vertex, argument = null) {
@@ -946,7 +1034,7 @@ class App extends Component {
     }
 
     newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
-        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
+        if (!suppressAskForSave && !this.askForSave()) return
 
         if (showInfo && this.state.openDrawer === 'info') {
             this.closeDrawer()
@@ -970,7 +1058,7 @@ class App extends Component {
     }
 
     loadFile(filename = null, {suppressAskForSave = false} = {}) {
-        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
+        if (!suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
             let result = dialog.showOpenDialog({
@@ -998,7 +1086,7 @@ class App extends Component {
     }
 
     loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
-        if (this.isBusy() || !suppressAskForSave && !this.askForSave()) return
+        if (!suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
@@ -1060,8 +1148,6 @@ class App extends Component {
     }
 
     saveFile(filename = null) {
-        if (this.isBusy()) return false
-
         if (!filename) {
             filename = dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
@@ -1407,7 +1493,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(root, 0)
+                        let board = gametree.getBoard(root)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length

@@ -304,7 +304,7 @@
         ]
     },
     {
-        "label": "Eng&ine",
+        "label": "Eng&ines",
         "submenu": [
             {
                 "label": "&Attach",
@@ -312,7 +312,7 @@
             },
             {
                 "label": "&Detach",
-                "action": "detachEngine"
+                "action": "detachEngines"
             },
             {"type": "separator"},
             {

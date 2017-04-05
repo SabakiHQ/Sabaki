@@ -39,7 +39,7 @@ class ContentDisplay extends Component {
         for (let el of this.element.querySelectorAll('.coord')) {
             el.addEventListener('mouseenter', evt => {
                 let {treePosition} = sabaki.state
-                let board = gametree.getBoard(...treePosition)
+                let board = gametree.getBoard(sabaki.inferredState.rootTree)
                 let vertex = board.coord2vertex(el.innerText)
                 sabaki.setState({highlightVertices: [vertex]})
             })

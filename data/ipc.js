@@ -79,9 +79,9 @@ let menudata = {
     }),
 
     manageEngines: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences')),
-    detachEngine: () => null,
-    generateMove: () => null,
-    gtpConsole: () => null,
+    detachEngines: () => sabaki.detachEngines(),
+    generateMove: () => sabaki.startGeneratingMoves(),
+    gtpConsole: () => toggleSetting('view.show_leftsidebar'),
     clearConsole: () => sabaki.setState({consoleLog: []}),
 
     toggleGuessMode: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess'),
@@ -100,6 +100,7 @@ let menudata = {
 }
 
 ipcRenderer.on('menu-click', (evt, action) => {
+    if (sabaki.isBusy()) return
     dialog.closeInputBox()
     menudata[action]()
 })
