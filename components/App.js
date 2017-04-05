@@ -1452,13 +1452,7 @@ class App extends Component {
 
             if (data.size) {
                 let value = data.size
-
-                if (value.some(x => isNaN(x))) {
-                    value = setting.get('game.default_board_size').toString().split(':')
-                    value = [+value[0], +value[value.length - 1]]
-                }
-
-                value = value.map(x => Math.min(25, Math.max(3, x)))
+                value = value.map((x, i) => isNaN(x) || !x ? 19 : Math.min(25, Math.max(3, x)))
 
                 if (value[0] === value[1]) value = value[0]
                 else value = value.join(':')

@@ -32,12 +32,12 @@ class InfoDrawer extends Component {
 
             let keys = ['blackName', 'blackRank', 'whiteName', 'whiteRank',
                 'gameName', 'eventName', 'date', 'result', 'komi', 'handicap', 'size']
-            let data = keys.reduce((acc, key) => (acc[key] = this.state[key], acc), {})
 
-            if (emptyTree) {
-                data.handicap = this.state.handicap
-                data.size = this.state.size
-            }
+            let data = keys.reduce((acc, key) => {
+                acc[key] = this.state[key] === '' || Array.isArray(this.state[key])
+                    && this.state[key].every(x => x === '') ? null : this.state[key]
+                return acc
+            }, {})
 
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
