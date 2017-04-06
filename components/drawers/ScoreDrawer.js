@@ -1,8 +1,10 @@
 const {h, Component} = require('preact')
-const helper = require('../../modules/helper')
-const setting = require('../../modules/setting')
+const classNames = require('classnames')
 
 const Drawer = require('./Drawer')
+
+const helper = require('../../modules/helper')
+const setting = require('../../modules/setting')
 
 class ScoreRow extends Component {
     render({method, score, komi, sign}) {
@@ -22,9 +24,9 @@ class ScoreRow extends Component {
                     height: 24
                 })
             ),
-            h('td', {class: {disabled: method === 'territory'}}, score.area[index]),
-            h('td', {class: {disabled: method === 'area'}}, score.territory[index]),
-            h('td', {class: {disabled: method === 'area'}}, score.captures[index]),
+            h('td', {class: classNames({disabled: method === 'territory'})}, score.area[index]),
+            h('td', {class: classNames({disabled: method === 'area'})}, score.territory[index]),
+            h('td', {class: classNames({disabled: method === 'area'})}, score.captures[index]),
             h('td', {}, sign < 0 ? komi : '-'),
             h('td', {}, total)
         )
@@ -70,13 +72,13 @@ class ScoreDrawer extends Component {
             h('h2', {}, 'Score'),
 
             h('ul', {class: 'tabs'},
-                h('li', {class: {current: method === 'area'}},
+                h('li', {class: classNames({current: method === 'area'})},
                     h('a', {
                         href: '#',
                         onClick: this.handleAreaButtonClick
                     }, 'Area')
                 ),
-                h('li', {class: {current: method === 'territory'}},
+                h('li', {class: classNames({current: method === 'territory'})},
                     h('a', {
                         href: '#',
                         onClick: this.handleTerritoryButtonClick

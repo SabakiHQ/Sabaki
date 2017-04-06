@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
@@ -77,7 +78,7 @@ class AutoplayBar extends Component {
         secondsPerMove,
         playing
     }) {
-        return h(Bar, Object.assign({type: 'autoplay', class: {playing}}, this.props),
+        return h(Bar, Object.assign({type: 'autoplay', class: classNames({playing})}, this.props),
             h('form', {},
                 h('label', {},
                     h('input', {

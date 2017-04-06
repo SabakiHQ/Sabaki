@@ -1,4 +1,6 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
+
 const helper = require('../modules/helper')
 
 class InputBox extends Component {
@@ -66,7 +68,7 @@ class InputBox extends Component {
         return h('section',
             {
                 id: 'input-box',
-                class: {show},
+                class: classNames({show}),
 
                 onClick: this.cancel
             },

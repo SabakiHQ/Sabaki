@@ -3,6 +3,7 @@ const EventEmitter = require('events')
 const {ipcRenderer, clipboard, remote} = require('electron')
 const {app, Menu} = remote
 const {h, render, Component} = require('preact')
+const classNames = require('classnames')
 
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
@@ -1947,12 +1948,12 @@ class App extends Component {
 
         return h('section',
             {
-                class: {
+                class: classNames({
                     leftsidebar: state.showLeftSidebar,
                     sidebar: state.showSidebar,
                     busy: state.busy,
                     [state.mode]: true
-                }
+                })
             },
 
             h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath}),

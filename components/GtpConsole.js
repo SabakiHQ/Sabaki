@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 const ContentDisplay = require('./ContentDisplay')
 
 const gtp = require('../modules/gtp')
@@ -36,7 +37,7 @@ class ConsoleResponseEntry extends Component {
     }
 
     render({response, waiting}) {
-        return h('li', {class: {response: true, waiting}},
+        return h('li', {class: classNames({response: true, waiting})},
             !waiting && response != null
 
             ? h('pre', {},
@@ -73,6 +74,10 @@ class GtpConsole extends Component {
         this.handleSelectChange = evt => {
             this.setState({engineIndex: +evt.currentTarget.value})
             this.inputElement.focus()
+        }
+
+        this.handleInputChange = evt => {
+            this.setState({commandInputText: evt.currentTarget.value})
         }
 
         this.handleKeyDown = evt => {
@@ -201,7 +206,7 @@ class GtpConsole extends Component {
                     value: commandInputText,
                     style: inputStyle,
 
-                    onInput: this.linkState('commandInputText'),
+                    onInput: this.handleInputChange,
                     onKeyDown: this.handleKeyDown
                 }),
 

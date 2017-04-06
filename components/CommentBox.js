@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 const ContentDisplay = require('./ContentDisplay')
 
 const boardmatcher = require('../modules/boardmatcher')
@@ -169,11 +170,11 @@ class CommentTitle extends Component {
 
         return h('p',
             {
-                class: {
+                class: classNames({
                     header: true,
                     movestatus: ma !== null,
                     positionstatus: pa !== null
-                }
+                })
             },
 
             h('img', {

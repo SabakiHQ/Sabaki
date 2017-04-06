@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 
 class Bar extends Component {
     constructor() {
@@ -11,14 +12,14 @@ class Bar extends Component {
         return nextProps.mode !== this.props.mode || nextProps.mode === nextProps.type
     }
 
-    render({children, type, mode, class: c = {}}) {
+    render({children, type, mode, class: c = ''}) {
         return h('section',
             {
                 id: type,
-                class: Object.assign({
+                class: classNames(c, {
                     bar: true,
                     current: type === mode
-                }, c)
+                })
             },
 
             children,

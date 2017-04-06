@@ -1,4 +1,6 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
+
 const helper = require('../../modules/helper')
 const Bar = require('./Bar')
 
@@ -39,7 +41,7 @@ class EditBar extends Component {
     }
 
     renderButton(title, toolId, selected = false) {
-        return h('li', {class: {selected}},
+        return h('li', {class: classNames({selected})},
             h('a',
                 {
                     title,

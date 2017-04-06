@@ -1,5 +1,6 @@
 const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 const Pikaday = require('pikaday')
 const Drawer = require('./Drawer')
 
@@ -31,13 +32,18 @@ class InfoDrawer extends Component {
             let emptyTree = !tree.parent && tree.nodes.length === 1 && tree.subtrees.length === 0
 
             let keys = ['blackName', 'blackRank', 'whiteName', 'whiteRank',
-                'gameName', 'eventName', 'date', 'result', 'komi', 'handicap', 'size']
+                'gameName', 'eventName', 'date', 'result', 'komi']
 
             let data = keys.reduce((acc, key) => {
-                acc[key] = this.state[key] === '' || Array.isArray(this.state[key])
-                    && this.state[key].every(x => x === '') ? null : this.state[key]
+                acc[key] = Array.isArray(this.state[key])
+                    && this.state[key].every(x => x == null) ? null : this.state[key]
                 return acc
             }, {})
+
+            if (emptyTree) {
+                data.handicap = this.state.handicap
+                data.size = this.state.size
+            }
 
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
@@ -55,10 +61,18 @@ class InfoDrawer extends Component {
 
         this.handleBoardWidthChange = evt => {
             let {value} = evt.currentTarget
+            if (value === '') value = null
 
             this.setState(({size: [, height]}) => ({
                 size: [value, this.combinedSizeFields ? value : height]
             }))
+        }
+
+        this.handleBoardHeightChange = evt => {
+            let {value} = evt.currentTarget
+            if (value === '') value = null
+
+            this.setState(({size: [width, ]}) => ({size: [width, value]}))
         }
 
         this.handleSizeSwapButtonClick = () => {
@@ -90,6 +104,24 @@ class InfoDrawer extends Component {
                     this.pikaday.hide()
             }, 50)
         }
+
+        this.handleInputChange = [
+            'blackRank',
+            'blackName',
+            'whiteRanke',
+            'whiteName',
+            'gameName',
+            'eventName',
+            'komi',
+            'result',
+            'handicap'
+        ].reduce((acc, key) => {
+            acc[key] = ({currentTarget}) => {
+                this.setState({[key]: currentTarget.value === '' ? null : currentTarget.value})
+            }
+
+            return acc
+        }, {})
 
         this.handleEngineMenuClick = [0, 1].map(index => evt => {
             let nameKeys = ['blackName', 'whiteName']
@@ -280,7 +312,7 @@ class InfoDrawer extends Component {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: {menu: true, active: engines[0] != null},
+                            class: classNames({menu: true, active: engines[0] != null}),
                             onClick: this.handleEngineMenuClick[0]
                         }), ' ',
 
@@ -289,7 +321,7 @@ class InfoDrawer extends Component {
                             name: 'rank_1',
                             placeholder: 'Rank',
                             value: blackRank,
-                            onInput: this.linkState('blackRank')
+                            onInput: this.handleInputChange.blackRank
                         }),
 
                         h('input', {
@@ -297,7 +329,7 @@ class InfoDrawer extends Component {
                             name: 'name_1',
                             placeholder: 'Black',
                             value: blackName,
-                            onInput: this.linkState('blackName')
+                            onInput: this.handleInputChange.blackName
                         })
                     ),
 
@@ -315,7 +347,7 @@ class InfoDrawer extends Component {
                             name: 'name_-1',
                             placeholder: 'White',
                             value: whiteName,
-                            onInput: this.linkState('whiteName')
+                            onInput: this.handleInputChange.whiteName
                         }),
 
                         h('input', {
@@ -323,14 +355,14 @@ class InfoDrawer extends Component {
                             name: 'rank_-1',
                             placeholder: 'Rank',
                             value: whiteRank,
-                            onInput: this.linkState('whiteRank')
+                            onInput: this.handleInputChange.whiteRank
                         }), ' ',
 
                         h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
-                            class: {menu: true, active: engines[1] != null},
+                            class: classNames({menu: true, active: engines[1] != null}),
                             onClick: this.handleEngineMenuClick[1]
                         })
                     )
@@ -342,7 +374,7 @@ class InfoDrawer extends Component {
                             type: 'text',
                             placeholder: '(Unnamed)',
                             value: gameName,
-                            onInput: this.linkState('gameName')
+                            onInput: this.handleInputChange.gameName
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Event'},
@@ -350,7 +382,7 @@ class InfoDrawer extends Component {
                             type: 'text',
                             placeholder: 'None',
                             value: eventName,
-                            onInput: this.linkState('eventName')
+                            onInput: this.handleInputChange.eventName
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Date'},
@@ -371,7 +403,7 @@ class InfoDrawer extends Component {
                             step: 0.5,
                             placeholder: 0,
                             value: komi == null ? '' : komi,
-                            onInput: this.linkState('komi')
+                            onInput: this.handleInputChange.komi
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Result'},
@@ -379,7 +411,7 @@ class InfoDrawer extends Component {
                             type: 'text',
                             placeholder: 'None',
                             value: result,
-                            onInput: this.linkState('result')
+                            onInput: this.handleInputChange.result
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Handicap'},
@@ -387,7 +419,7 @@ class InfoDrawer extends Component {
                             {
                                 selectedIndex: Math.max(0, handicap - 1),
                                 disabled: !emptyTree,
-                                onChange: this.linkState('handicap')
+                                onChange: this.handleInputChange.handicap
                             },
 
                             h('option', {value: 0}, 'No stones'),
@@ -421,7 +453,7 @@ class InfoDrawer extends Component {
                             min: 3,
                             value: size[1],
                             disabled: !emptyTree,
-                            onInput: this.linkState('size.1')
+                            onInput: this.handleBoardHeightChange
                         })
                     )
                 ),

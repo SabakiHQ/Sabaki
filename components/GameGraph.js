@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
@@ -46,7 +47,7 @@ class GameGraphNode extends Component {
                 return ''
             })(),
 
-            class: {hover},
+            class: classNames({hover}),
             fill
         })
     }

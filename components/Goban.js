@@ -1,4 +1,6 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
+
 const helper = require('../modules/helper')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
@@ -68,7 +70,7 @@ class GobanVertex extends Component {
         return h('li',
             {
                 'data-vertex': `${x}-${y}`,
-                class: classes,
+                class: classNames(classes),
                 onMouseDown,
                 onMouseUp,
                 onMouseMove
@@ -106,7 +108,7 @@ class GobanLine extends Component {
 
         return h('hr',
             {
-                class: {[type]: true, temporary},
+                class: classNames({[type]: true, temporary}),
                 style: {
                     width: length,
                     transform: `
@@ -379,7 +381,7 @@ class Goban extends Component {
             {
                 ref: el => this.element = el,
                 id: 'goban',
-                class: {
+                class: classNames({
                     goban: true,
                     crosshair,
                     coordinates: showCoordinates,
@@ -388,7 +390,7 @@ class Goban extends Component {
                     siblings: showSiblings,
                     fuzzy: fuzzyStonePlacement,
                     animation: animatedStonePlacement
-                }
+                })
             },
 
             h('style', {}, `

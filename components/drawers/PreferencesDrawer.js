@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 const natsort = require('natsort')
 
 const dialog = require('../../modules/dialog')
@@ -332,7 +333,7 @@ class PreferencesDrawer extends Component {
             h('ul', {class: 'tabs'},
                 h('li',
                     {
-                        class: {general: true, current: tab === 'general'},
+                        class: classNames({general: true, current: tab === 'general'}),
                         onClick: this.handleTabClick
                     },
 
@@ -340,7 +341,7 @@ class PreferencesDrawer extends Component {
                 ),
                 h('li',
                     {
-                        class: {engines: true, current: tab === 'engines'},
+                        class: classNames({engines: true, current: tab === 'engines'}),
                         onClick: this.handleTabClick
                     },
 

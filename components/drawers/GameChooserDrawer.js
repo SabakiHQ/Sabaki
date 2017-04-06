@@ -1,5 +1,6 @@
 const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 const natsort = require('natsort')
 
 const dialog = require('../../modules/dialog')
@@ -52,10 +53,10 @@ class GameListItem extends Component {
         return h('li',
             {
                 ref: el => this.element = el,
-                class: {
+                class: classNames({
                     insertbefore: insertBefore,
                     insertafter: insertAfter
-                },
+                }),
                 style: {left, top}
             },
 

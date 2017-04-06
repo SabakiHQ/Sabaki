@@ -1,5 +1,7 @@
-const {h, Component} = require('preact')
 const {Menu} = require('electron').remote
+const {h, Component} = require('preact')
+const classNames = require('classnames')
+
 const helper = require('../../modules/helper')
 
 class PlayBar extends Component {
@@ -69,11 +71,11 @@ class PlayBar extends Component {
 
         return h('header',
             {
-                class: {
+                class: classNames({
                     undoable,
                     hotspot: showHotspot,
                     current: mode === 'play'
-                }
+                })
             },
 
             h('span', {id: 'player_1'},
