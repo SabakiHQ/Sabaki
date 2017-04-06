@@ -19,7 +19,7 @@ let menudata = {
     manageGames: () => sabaki.openDrawer('gamechooser'),
     preferences: () => sabaki.openDrawer('preferences'),
 
-    selectPosition: () => dialog.showInputBox('Enter a coordinate to select a point', sabaki.clickVertex),
+    selectPosition: () => dialog.showInputBox('Enter a coordinate to select a point', ({value}) => sabaki.clickVertex(value)),
     pass: () => sabaki.makeMove([-1, -1]),
     resign: () => sabaki.makeResign(),
     togglePlayer: () => sabaki.setPlayer(...sabaki.state.treePosition, -sabaki.getPlayer(...sabaki.state.treePosition)),

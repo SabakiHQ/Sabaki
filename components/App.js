@@ -112,6 +112,11 @@ class App extends Component {
     componentDidMount() {
         require('../data/ipc')
 
+        window.addEventListener('load', () => {
+            this.window.show()
+            this.events.emit('ready')
+        })
+
         // Handle file drag & drop
 
         document.body.addEventListener('dragover', evt => evt.preventDefault())
@@ -145,9 +150,6 @@ class App extends Component {
         })
 
         this.newFile()
-        this.window.show()
-
-        this.events.emit('ready')
     }
 
     componentDidUpdate(_, prevState) {
@@ -1348,20 +1350,20 @@ class App extends Component {
         let tp = this.state.treePosition
         let root = gametree.getRoot(...tp)
 
-        let [tree] = tp
-
-        while (!gametree.onMainTrack(tree)) {
-            tree = tree.parent
-        }
-
         while (root.subtrees.length !== 0) {
             root.current = 0
             root = root.subtrees[0]
         }
 
-        if (gametree.onMainTrack(tp[0])) {
-            this.setCurrentTreePosition(tree, tp[1])
+        if (gametree.onMainTrack(...tp)) {
+            this.setCurrentTreePosition(...tp)
         } else {
+            let [tree] = tp
+
+            while (!gametree.onMainTrack(tree)) {
+                tree = tree.parent
+            }
+
             this.setCurrentTreePosition(tree, tree.nodes.length - 1)
         }
     }
@@ -1591,7 +1593,7 @@ class App extends Component {
         let updateRoot = !tree.parent
         let oldLength = tree.nodes.length
         let splitted = gametree.split(tree, index)
-        let copied = gametree.clone(this.copyVariationData, true)
+        let copied = gametree.clone(this.copyVariationData)
 
         copied.parent = splitted
         splitted.subtrees.push(copied)

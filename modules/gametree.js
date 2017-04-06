@@ -14,9 +14,9 @@ exports.new = function() {
     }
 }
 
-exports.clone = function(tree, newIds = false, parent = null) {
+exports.clone = function(tree, parent = null) {
     let c = {
-        id: newIds ? helper.getId() : tree.id,
+        id: helper.getId(),
         nodes: [],
         subtrees: [],
         current: tree.current,
@@ -41,7 +41,7 @@ exports.clone = function(tree, newIds = false, parent = null) {
     }
 
     for (let subtree of tree.subtrees) {
-        c.subtrees.push(exports.clone(subtree, newIds, c))
+        c.subtrees.push(exports.clone(subtree, c))
     }
 
     return c

@@ -133,7 +133,7 @@ class GtpConsole extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.consoleLog.slice(-1)[0] !== this.props.consoleLog.slice(-1)[0]) {
+        if (prevProps.consoleLog !== this.props.consoleLog) {
             this.scrollElement.scrollTop = this.scrollElement.scrollHeight
         }
     }

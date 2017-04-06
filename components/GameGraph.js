@@ -10,22 +10,57 @@ let animationDuration = setting.get('graph.animation_duration')
 let commentProperties = setting.get('sgf.comment_properties')
 
 class GameGraphNode extends Component {
-    shouldComponentUpdate({position, type, fill, hover, nodeSize}) {
+    constructor() {
+        super()
+
+        this.state = {
+            hover: false
+        }
+
+        this.handleMouseMove = evt => {
+            if (!this.element) return
+
+            let {x, y} = evt
+            let {position, mouseShift: [sx, sy], gridSize} = this.props
+            let mousePosition = [x + sx, y + sy]
+            let hover = false
+
+            if (mousePosition.every((x, i) => position[i] - gridSize / 2 <= x && x <= position[i] + gridSize / 2)) {
+                hover = true
+            }
+
+            if (hover !== this.state.hover) {
+                this.setState({hover})
+            }
+        }
+    }
+
+    componentDidMount() {
+        document.addEventListener('mousemove', this.handleMouseMove)
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousemove', this.handleMouseMove)
+    }
+
+    shouldComponentUpdate({type, fill, nodeSize, gridSize}, {hover}) {
         return type !== this.props.type
             || fill !== this.props.fill
-            || hover !== this.props.hover
             || nodeSize !== this.props.nodeSize
-            || !helper.vertexEquals(position, this.props.position)
+            || gridSize !== this.props.gridSize
+            || hover !== this.state.hover
     }
 
     render({
         position: [left, top],
         type,
         fill,
-        hover,
         nodeSize
+    }, {
+        hover
     }) {
         return h('path', {
+            ref: el => this.element = el,
             d: (() => {
                 let nodeSize2 = nodeSize * 2
 
@@ -97,19 +132,17 @@ class GameGraphEdge extends Component {
 }
 
 class GameGraph extends Component {
-    constructor() {
-        super()
-
-        let gridSize = setting.get('graph.grid_size')
+    constructor(props) {
+        super(props)
 
         this.state = {
-            cameraPosition: [-gridSize, -gridSize],
+            cameraPosition: [-props.gridSize, -props.gridSize],
             viewportSize: null,
             viewportPosition: null,
-            matrixDict: null,
-            mousePosition: [-100, -100]
+            matrixDict: null
         }
 
+        this.mousePosition = [-100, -100]
         this.matrixDictHash = null
         this.matrixDictCache = {}
 
@@ -123,21 +156,23 @@ class GameGraph extends Component {
             if (!this.svgElement) return
 
             let {x, y, movementX, movementY} = evt
+            let {cameraPosition: [cx, cy], viewportPosition: [vx, vy]} = this.state
 
             if (this.mouseDown == null) {
-                [movementX, movementY] = [0, 0]
+                ;[movementX, movementY] = [0, 0]
                 this.drag = false
             } else if (this.mouseDown === 0) {
                 this.drag = true
             } else {
-                [movementX, movementY] = [0, 0]
+                ;[movementX, movementY] = [0, 0]
                 this.drag = false
             }
 
-            this.setState(({cameraPosition: [cx, cy], viewportPosition: [vx, vy]}) => ({
-                mousePosition: [x - vx, y - vy],
-                cameraPosition: [cx - movementX, cy - movementY]
-            }))
+            this.mousePosition = [x - vx, y - vy]
+
+            if (this.drag) {
+                this.setState({cameraPosition: [cx - movementX, cy - movementY]})
+            }
         })
 
         document.addEventListener('mouseup', () => {
@@ -192,9 +227,9 @@ class GameGraph extends Component {
     }
 
     componentDidUpdate({height}) {
-        if (height === this.props.height) return
-
-        setTimeout(() => this.remeasure(), 200)
+        if (height !== this.props.height) {
+            setTimeout(() => this.remeasure(), 200)
+        }
     }
 
     getMatrixDict(tree) {
@@ -229,7 +264,8 @@ class GameGraph extends Component {
         }
 
         let {onNodeClick = helper.noop, gridSize} = this.props
-        let {matrixDict: [matrix, ], mousePosition: [mx, my], cameraPosition: [cx, cy]} = this.state
+        let {matrixDict: [matrix, ], cameraPosition: [cx, cy]} = this.state
+        let [mx, my] = this.mousePosition
         let [nearestX, nearestY] = [mx + cx, my + cy].map(z => Math.round(z / gridSize))
 
         if (!matrix[nearestY] || !matrix[nearestY][nearestX]) return
@@ -244,14 +280,16 @@ class GameGraph extends Component {
     }, {
         matrixDict: [matrix, dict],
         cameraPosition: [cx, cy],
-        mousePosition: [mx, my],
-        viewportSize: [width, height]
+        viewportSize: [width, height],
+        viewportPosition: [vx, vy]
     }) {
         let nodeColumns = []
         let edges = []
 
         let [minX, minY] = [cx, cy].map(z => Math.max(Math.ceil(z / gridSize) - 2, 0))
         let [maxX, maxY] = [cx, cy].map((z, i) => (z + [width, height][i]) / gridSize + 2)
+        minY -= 3
+        maxY += 3
 
         let doneTreeBones = []
         let currentTracks = []
@@ -313,11 +351,9 @@ class GameGraph extends Component {
                 let left = x * gridSize
                 let top = y * gridSize
 
-                let isHovered = !this.drag
-                    && helper.vertexEquals([mx + cx, my + cy].map(z => Math.round(z / gridSize)), [x, y])
-
                 column.push(h(GameGraphNode, {
                     key: y,
+                    mouseShift: [cx - vx, cy - vy],
                     position: [left, top],
                     type: 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
                         ? 'square' // Pass node
@@ -325,8 +361,8 @@ class GameGraph extends Component {
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
                     fill,
-                    hover: isHovered,
-                    nodeSize
+                    nodeSize,
+                    gridSize
                 }))
 
                 if (!doneTreeBones.includes(tree.id)) {

@@ -490,7 +490,8 @@ class GameChooserDrawer extends Component {
                         let itemTop = row * itemHeight + 10
                         let itemLeft = (i - row * rowCount) * itemWidth + 10
 
-                        if (index !== gameIndex && (itemTop + itemHeight <= scrollTop || itemTop >= scrollTop + height))
+                        if (index !== gameIndex
+                        && (itemTop + itemHeight * 2 <= scrollTop || itemTop - itemHeight >= scrollTop + height))
                             return
 
                         return h(GameListItem, {
