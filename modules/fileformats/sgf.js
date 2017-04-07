@@ -48,7 +48,7 @@ exports.tokenize = function(input) {
             break
         }
 
-        if (token && token[0] != 'ignore') tokens.push(token)
+        if (token && token[0] !== 'ignore') tokens.push(token)
         input = input.substr(length)
     }
 
@@ -62,24 +62,24 @@ function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncodi
     while (i < tokens.length) {
         let [type, value] = tokens[i]
 
-        if (type == 'parenthesis' && value == '(') break
-        if (type == 'parenthesis' && value == ')') return tree
+        if (type === 'parenthesis' && value === '(') break
+        if (type === 'parenthesis' && value === ')') return tree
 
-        if (type == 'semicolon') {
+        if (type === 'semicolon') {
             node = {}
             tree.nodes.push(node)
-        } else if (type == 'prop_ident') {
-            id = value.split('').filter(x => x.toUpperCase() == x).join('')
+        } else if (type === 'prop_ident') {
+            id = value.split('').filter(x => x.toUpperCase() === x).join('')
 
-            if (id != '') {
+            if (id !== '') {
                 node[id] = []
                 property = node[id]
             }
-        } else if (type == 'c_value_type') {
+        } else if (type === 'c_value_type') {
             value = exports.unescapeString(value.substr(1, value.length - 2))
 
-            if (encoding != null) {
-                if (id == 'CA' && value != defaultEncoding && iconv.encodingExists(value)) {
+            if (encoding !== null) {
+                if (id === 'CA' && value !== defaultEncoding && iconv.encodingExists(value)) {
                     encoding = value
 
                     // We may have already incorrectly parsed some values in this root node
@@ -90,7 +90,7 @@ function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncodi
                             node[k] = node[k].map(x => iconv.decode(Buffer.from(x, 'binary'), encoding))
                         }
                     }
-                } else if (encodedProperties.includes(id) && encoding != defaultEncoding) {
+                } else if (encodedProperties.includes(id) && encoding !== defaultEncoding) {
                     let decodedValue = iconv.decode(Buffer.from(value, 'binary'), encoding)
                     value = decodedValue
                 }
@@ -105,7 +105,7 @@ function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncodi
     while (i < tokens.length) {
         let [type, value] = tokens[i]
 
-        if (type == 'parenthesis' && value == '(') {
+        if (type === 'parenthesis' && value === '(') {
             start[0] = i + 1
 
             let t = _parseTokens(tokens, onProgress, encoding, start, depth + Math.min(tree.subtrees.length, 1))
@@ -117,7 +117,7 @@ function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncodi
             }
 
             i = start[0]
-        } else if (type == 'parenthesis' && value == ')') {
+        } else if (type === 'parenthesis' && value === ')') {
             start[0] = i
             onProgress({progress: i / tokens.length})
             break
@@ -140,16 +140,19 @@ exports.parse = function(input, onProgress, ignoreEncoding = false) {
 
     let encoding = ignoreEncoding ? null : defaultEncoding
 
-    if (ignoreEncoding === false) {
+    if (!ignoreEncoding) {
         let foundEncoding = false
+
         for (let t of tokens) {
-            if (t[0] === 'prop_ident' && t[1] === 'CA') {
+            if (helper.vertexEquals(t, ['prop_ident', 'CA'])) {
                 foundEncoding = true
                 break
             }
         }
-        if (foundEncoding === false) {
+
+        if (!foundEncoding) {
             let detected = jschardet.detect(input)
+            
             if (detected.confidence > 0.2) {
                 encoding = detected.encoding
             }
@@ -167,7 +170,7 @@ exports.parseFile = function(filename, onProgress, ignoreEncoding = false) {
 exports.string2dates = function(input) {
     if (!input.match(/^(\d{4}(-\d{1,2}(-\d{1,2})?)?(\s*,\s*(\d{4}|(\d{4}-)?\d{1,2}(-\d{1,2})?))*)?$/))
         return null
-    if (input.trim() == '')
+    if (input.trim() === '')
         return []
 
     let dates = input.split(',').map(x => x.trim().split('-'))
@@ -176,10 +179,10 @@ exports.string2dates = function(input) {
         let date = dates[i]
         let prev = dates[i - 1]
 
-        if (date[0].length != 4) {
+        if (date[0].length !== 4) {
             // No year
 
-            if (date.length == 1 && prev.length == 3) {
+            if (date.length === 1 && prev.length === 3) {
                 // Add month
                 date.unshift(prev[1])
             }
@@ -193,7 +196,7 @@ exports.string2dates = function(input) {
 }
 
 exports.dates2string = function(dates) {
-    if (dates.length == 0) return ''
+    if (dates.length === 0) return ''
 
     let datesCopy = [dates[0].slice()]
 
@@ -203,7 +206,7 @@ exports.dates2string = function(dates) {
         let k = 0
 
         for (let j = 0; j < date.length; j++) {
-            if (date[j] == prev[j] && k == j) k++
+            if (date[j] === prev[j] && k === j) k++
             else break
         }
 
@@ -216,7 +219,7 @@ exports.dates2string = function(dates) {
 }
 
 exports.point2vertex = function(point) {
-    if (point.length != 2) return [-1, -1]
+    if (point.length !== 2) return [-1, -1]
     return point.split('').map(x => alpha.indexOf(x))
 }
 
@@ -254,15 +257,7 @@ exports.stringify = function(tree) {
         output += ';'
 
         for (let id in node) {
-            if (id.toUpperCase() != id) continue
-
-            if (id == 'CA') {
-                // Since we are outputting UTF8-encoded strings no matter what the input
-                // encoding was, we need to intercept the CA property and reset it.
-
-                output += 'CA[UTF-8]'
-                continue
-            }
+            if (id.toUpperCase() !== id) continue
 
             output += id + '[' + node[id].map(exports.escapeString).join('][') + ']'
         }
@@ -293,12 +288,12 @@ exports.unescapeString = function(input) {
 
     for (let i = 0; i < input.length; i++) {
         if (!inBackslash) {
-            if (input[i] != '\\')
+            if (input[i] !== '\\')
                 result += input[i]
-            else if (input[i] == '\\')
+            else if (input[i] === '\\')
                 inBackslash = true
         } else {
-            if (input[i] != '\n')
+            if (input[i] !== '\n')
                 result += input[i]
 
             inBackslash = false

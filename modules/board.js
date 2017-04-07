@@ -305,11 +305,11 @@ class Board {
         }
 
         let castInfluence = (chain, distance) => {
-            let stack = chain.map(x => [x, 0])
+            let queue = chain.map(x => [x, 0])
             let visited = []
 
-            while (stack.length > 0) {
-                let [v, d] = stack.pop()
+            while (queue.length > 0) {
+                let [v, d] = queue.shift()
                 let [x, y] = getVertex(v)
 
                 map[y][x] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
@@ -320,7 +320,7 @@ class Board {
                     || visited.some(w => helper.vertexEquals(n, w))) continue
 
                     visited.push(n)
-                    stack.push([n, d + 1])
+                    queue.push([n, d + 1])
                 }
             }
         }

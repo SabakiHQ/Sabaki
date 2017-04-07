@@ -77,6 +77,7 @@ class App extends Component {
             engines: null,
             attachedEngines: [null, null],
             engineCommands: [[], []],
+            generatingMoves: false,
 
             // Drawers
 
@@ -110,12 +111,41 @@ class App extends Component {
     }
 
     componentDidMount() {
-        require('../data/ipc')
-
         window.addEventListener('load', () => {
             this.window.show()
             this.events.emit('ready')
         })
+
+        ipcRenderer.on('load-file', (evt, ...args) => {
+            setTimeout(() => this.loadFile(...args), setting.get('app.loadgame_delay'))
+        })
+
+        this.window.on('focus', () => {
+            if (setting.get('file.show_reload_warning')) {
+                this.askForReload()
+            }
+        })
+
+        // Handle main menu items
+
+        let menuData = require('../data/menu')
+
+        let handleMenuClicks = menu => {
+            for (let item of menu) {
+                if ('click' in item) {
+                    ipcRenderer.on(`menu-click-${item.id}`, () => {
+                        dialog.closeInputBox()
+                        item.click()
+                    })
+                }
+
+                if ('submenu' in item) {
+                    handleMenuClicks(item.submenu)
+                }
+            }
+        }
+
+        handleMenuClicks(menuData)
 
         // Handle file drag & drop
 
@@ -133,7 +163,7 @@ class App extends Component {
             if (evt.keyCode === 27) {
                 // Escape
 
-                if (this.isBusy() && this.state.generatingMoves) {
+                if (this.state.generatingMoves) {
                     this.stopGeneratingMoves()
                 } else if (this.state.openDrawer != null) {
                     this.closeDrawer()
@@ -384,7 +414,7 @@ class App extends Component {
                     let move = this.engineBoards[i].makeMove(sign, vertex)
 
                     if (move.getHash() === board.getHash()) {
-                        // Incremental board update
+                        // Incremental board update possible
 
                         let color = sign > 0 ? 'B' : 'W'
                         let point = board.vertex2coord(vertex)
@@ -1029,6 +1059,8 @@ class App extends Component {
 
             if (answer === 0) {
                 this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
+            } else {
+                this.treeHash = null
             }
 
             this.fileHash = hash
@@ -1161,9 +1193,12 @@ class App extends Component {
     getSGF() {
         let {gameTrees} = this.state
 
-        gameTrees.forEach(tree => {
-            tree.nodes[0].AP = [`${this.appName}:${this.version}`]
-        })
+        for (let tree of gameTrees) {
+            Object.assign(tree.nodes[0], {
+                AP: [`${this.appName}:${this.version}`],
+                CA: ['UTF-8']
+            })
+        }
 
         return sgf.stringify(gameTrees)
     }

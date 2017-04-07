@@ -35,9 +35,7 @@ function newWindow(path) {
         evt.preventDefault()
     })
 
-    window.on('focus', () => {
-        window.webContents.send('window-focus')
-    }).on('closed', () => {
+    window.on('closed', () => {
         window = null
     })
 

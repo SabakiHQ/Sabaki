@@ -157,17 +157,6 @@ describe('sgf', () => {
                     util.format('%s is fun', languageMap[language])
                 )
             })
-            it('should save SGFs back to UTF-8 regardless of input encoding', () => {
-                let parsedSgf = sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))
-                let savedSgfName = tmp.tmpNameSync()
-
-                fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
-
-                let savedSgf = sgf.parseFile(savedSgfName)
-
-                assert.equal(savedSgf[0].nodes[0].CA[0], 'UTF-8')
-                assert.equal(savedSgf[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
-            })
         }
 
         it('should be able to go back and re-parse attributes set before CA', () => {
