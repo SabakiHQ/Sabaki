@@ -46,6 +46,9 @@ header, #bar .bar {
         padding-left: 30px;
         text-align: left;
     }
+    header > span > .engine {
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    }
     header > span > .captures {
         position: relative;
         top: -1px;

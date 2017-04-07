@@ -100,7 +100,6 @@ let menudata = {
 }
 
 ipcRenderer.on('menu-click', (evt, action) => {
-    if (sabaki.isBusy()) return
     dialog.closeInputBox()
     menudata[action]()
 })

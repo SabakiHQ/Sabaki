@@ -47,7 +47,7 @@ class InfoDrawer extends Component {
 
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
-            setTimeout(() => sabaki.attachEngines(...this.state.engines), 500)
+            sabaki.attachEngines(...this.state.engines)
         }
 
         this.handleCancelButtonClick = evt => {
@@ -135,7 +135,7 @@ class InfoDrawer extends Component {
                         if (engines[index] == null) return
 
                         engines[index] = null
-                        this.setState({engines, [nameKeys[index]]: ''})
+                        this.setState({engines})
                     }
                 },
                 {type: 'separator'},
@@ -146,7 +146,7 @@ class InfoDrawer extends Component {
                     click: () => {
                         let {engines} = this.state
                         engines[index] = engine
-                        this.setState({engines, [nameKeys[index]]: engine.name})
+                        this.setState({engines})
                     }
                 })),
                 {type: 'separator'},

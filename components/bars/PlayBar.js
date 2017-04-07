@@ -57,6 +57,7 @@ class PlayBar extends Component {
 
     render({
         mode,
+        attachedEngines,
         playerNames,
         playerRanks,
         playerCaptures,
@@ -68,6 +69,15 @@ class PlayBar extends Component {
         onCurrentPlayerClick = helper.noop
     }) {
         let captureStyle = index => ({opacity: playerCaptures[index] === 0 ? 0 : .7})
+        let isEngine = Array(attachedEngines.length).fill(false)
+
+        attachedEngines.forEach((engine, i) => {
+            if (engine == null) return
+
+            playerNames[i] = engine.name
+            playerRanks[i] = 'Engine'
+            isEngine[i] = true
+        })
 
         return h('header',
             {
@@ -80,10 +90,16 @@ class PlayBar extends Component {
 
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
-                h('span', {class: 'name', title: playerRanks[0]}, playerNames[0] || 'Black')
+                h('span', {
+                    class: classNames('name', {engine: isEngine[0]}),
+                    title: playerRanks[0]
+                }, playerNames[0] || 'Black')
             ),
             h('span', {id: 'player_-1'},
-                h('span', {class: 'name', title: playerRanks[1]}, playerNames[1] || 'White'), ' ',
+                h('span', {
+                    class: classNames('name', {engine: isEngine[1]}),
+                    title: playerRanks[1]
+                }, playerNames[1] || 'White'), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
 

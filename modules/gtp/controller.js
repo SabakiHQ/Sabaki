@@ -36,7 +36,7 @@ class Controller extends EventEmitter {
 
                 if (this.commands.length > 0) {
                     let command = this.commands.shift()
-                    this.emit(`response-${command.internalId}`, response, command)
+                    this.emit(`response-${command.internalId}`, {response, command})
                 }
 
                 start = this._buffer.indexOf('\n\n')
@@ -56,7 +56,7 @@ class Controller extends EventEmitter {
             this.commands.push(command)
         } catch (err) {
             let response = new gtp.Response(command.id, 'connection error', true, true)
-            this.emit(`response-${command.internalId}`, response, command)
+            this.emit(`response-${command.internalId}`, {response, command})
         }
     }
 }

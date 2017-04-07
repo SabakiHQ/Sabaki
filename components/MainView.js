@@ -93,6 +93,7 @@ class MainView extends Component {
         rootTree,
         currentPlayer,
         gameInfo,
+        attachedEngines,
 
         deadStones,
         scoringMethod,
@@ -183,6 +184,7 @@ class MainView extends Component {
             h('section', {id: 'bar'},
                 h(PlayBar, {
                     mode,
+                    attachedEngines,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,

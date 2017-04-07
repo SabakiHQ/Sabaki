@@ -133,7 +133,9 @@ class App extends Component {
             if (evt.keyCode === 27) {
                 // Escape
 
-                if (this.state.openDrawer != null) {
+                if (this.isBusy() && this.state.generatingMoves) {
+                    this.stopGeneratingMoves()
+                } else if (this.state.openDrawer != null) {
                     this.closeDrawer()
                 } else if (this.state.mode !== 'play') {
                     this.setMode('play')
@@ -222,8 +224,11 @@ class App extends Component {
         clearTimeout(this.busyId)
 
         if (busy) {
+            ipcRenderer.send('build-menu', true)
             this.setState({busy: true})
+            document.activeElement.blur()
         } else {
+            ipcRenderer.send('build-menu')
             let delay = setting.get('app.hide_busy_delay')
             this.busyId = setTimeout(() => this.setState({busy: false}), delay)
         }
@@ -260,6 +265,7 @@ class App extends Component {
     }
 
     closeDrawer() {
+        document.activeElement.blur()
         this.openDrawer(null)
     }
 
@@ -296,13 +302,14 @@ class App extends Component {
                     this.sendGTPCommand(controller, command('name'))
                     this.sendGTPCommand(controller, command('version'))
                     this.sendGTPCommand(controller, command('protocol_version'))
-                    this.sendGTPCommand(controller, command('list_commands'), response => {
+                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
                         engineCommands[i] = response.content.split('\n')
                     })
 
                     this.setState({engineCommands})
                 } catch (err) {
                     this.attachedEngineControllers[i] = null
+                    engines[i] = null
                 }
             }
         }
@@ -329,7 +336,7 @@ class App extends Component {
 
         this.setState({consoleLog: newLog})
 
-        controller.sendCommand(command, response => {
+        controller.sendCommand(command, ({response}) => {
             this.setState(({consoleLog}) => {
                 let index = consoleLog.indexOf(entry)
                 if (index === -1) return {}
@@ -340,7 +347,7 @@ class App extends Component {
                 return {consoleLog: newLog}
             })
 
-            callback(response, command)
+            callback({response, command})
         })
     }
 
@@ -415,22 +422,28 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    startGeneratingMoves() {
+    startGeneratingMoves({followUp = false} = {}) {
         this.closeDrawer()
+
+        if (followUp) {
+            if (!this.state.generatingMoves) return this.setBusy(false)
+        } else {
+            this.setState({generatingMoves: true})
+        }
 
         let {currentPlayer, rootTree} = this.inferredState
         let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
         let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
-        let playerEngineController = this.attachedEngineControllers[playerIndex]
-        let otherEngineController = this.attachedEngineControllers[otherIndex]
+        let playerController = this.attachedEngineControllers[playerIndex]
+        let otherController = this.attachedEngineControllers[otherIndex]
 
-        if (playerEngineController == null) {
-            if (otherEngineController != null) {
+        if (playerController == null) {
+            if (otherController != null) {
                 // Switch engines, so the attached engine can play
 
                 let engines = [...this.state.attachedEngines].reverse()
                 this.attachEngines(...engines)
-                ;[playerEngineController, otherEngineController] = [otherEngineController, playerEngineController]
+                ;[playerController, otherController] = [otherController, playerController]
             } else {
                 return
             }
@@ -439,11 +452,9 @@ class App extends Component {
         this.syncEngines()
         this.setBusy(true)
 
-        let command = (...args) => new gtp.Command(null, ...args)
-
-        this.sendGTPCommand(playerEngineController, command('genmove', color), response => {
+        this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
             if (response.content.toLowerCase() == 'resign') {
-                dialog.showMessageBox(`${playerEngineController.name} has resigned.`)
+                dialog.showMessageBox(`${playerController.name} has resigned.`)
                 this.makeResign()
                 return
             }
@@ -455,12 +466,17 @@ class App extends Component {
             this.makeMove(vertex)
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
 
-            if (otherEngineController != null && !helper.vertexEquals(vertex, [-1, -1])) {
-                setTimeout(() => this.startGeneratingMoves(), 500)
+            if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
+                setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
+                this.stopGeneratingMoves()
                 this.setBusy(false)
             }
         })
+    }
+
+    stopGeneratingMoves() {
+        this.setState({generatingMoves: false})
     }
 
     // Playing
@@ -1043,6 +1059,7 @@ class App extends Component {
             this.closeDrawer()
         }
 
+        this.detachEngines()
         this.setState(this.state, () => {
             let emptyTree = this.getEmptyGameTree()
 
@@ -1117,6 +1134,7 @@ class App extends Component {
 
             if (gameTrees.length != 0) {
                 this.setBusy(false)
+                this.detachEngines()
                 this.setState({
                     representedFilename: null,
                     gameTrees,

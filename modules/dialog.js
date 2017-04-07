@@ -4,7 +4,6 @@ const helper = require('./helper')
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     sabaki.setBusy(true)
-    ipcRenderer.send('build-menu', true)
 
     let result = dialog.showMessageBox(sabaki.window, {
         type,
@@ -15,24 +14,19 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
         noLink: true
     })
 
-    ipcRenderer.send('build-menu')
     sabaki.setBusy(false)
-
     return result
 }
 
 exports.showFileDialog = function(type, options) {
     sabaki.setBusy(true)
-    ipcRenderer.send('build-menu', true)
 
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
     let result = dialog[`show${type}Dialog`](sabaki.window, options)
 
-    ipcRenderer.send('build-menu')
     sabaki.setBusy(false)
-
     return result
 }
 
