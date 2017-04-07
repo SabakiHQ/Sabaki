@@ -1,6 +1,7 @@
 const {app, shell, dialog, ipcMain} = require('electron')
 const {BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
+
 const setting = require('./modules/setting')
 const updater = require('./modules/updater')
 
@@ -50,7 +51,7 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    let template = JSON.parse(fs.readFileSync(`${__dirname}/data/menu.json`))
+    let template = require('./data/menu').clone()
     let findMenuItem = str => template.find(x => x.label.replace('&', '') === str)
 
     // Create app menu for OS X
@@ -118,36 +119,25 @@ function buildMenu(disableAll = false) {
 
     // Load engines
 
-    let engineMenu = findMenuItem('Engine')
+    let enginesMenu = findMenuItem('Engines')
 
-    if (engineMenu) {
+    if (enginesMenu) {
         setting.load()
-
-        let attachMenu = engineMenu.submenu[0].submenu
         let engines = setting.get('engines.list')
 
-        attachMenu.length = 0
+        if (engines.length > 0) {
+            enginesMenu.submenu.unshift({type: 'separator'})
 
-        engines.forEach(engine => {
-            attachMenu.push({
+            enginesMenu.submenu.unshift(...engines.map((engine, i) => ({
                 label: engine.name.trim() || '(Unnamed Engine)',
                 click: () => {
                     let window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
-                    window.webContents.send('attach-engine', engine)
+                    window.webContents.send('attach-engine', i)
                 }
-            })
-        })
-
-        if (engines.length !== 0) {
-            attachMenu.push({type: 'separator'})
+            })))
         }
-
-        attachMenu.push({
-            label: '&Manage Engines…',
-            action: 'manageEngines'
-        })
     }
 
     // Process menu items
@@ -160,17 +150,14 @@ function buildMenu(disableAll = false) {
                 .replace('{version}', app.getVersion())
             }
 
-            if ('action' in item) {
-                let action = item.action
 
+            if ('click' in item) {
                 item.click = () => {
                     let window = BrowserWindow.getFocusedWindow()
                     if (!window) return
 
-                    window.webContents.send('menu-click', action)
+                    window.webContents.send(`menu-click-${item.id}`)
                 }
-
-                delete item.action
             }
 
             if ('checked' in item) {

@@ -10,21 +10,21 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 - Fuzzy stone placement
 - Read and save SGF games and collections
+- Open NGF and GIB files
 - Display formatted SGF comments using a [subset of Markdown](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki)
 - Personalize board appearance with [userstyles](https://github.com/yishn/Sabaki/wiki/Userstyles)
 - SGF editing tools
-- Lines & arrows markup
+- Lines & arrows board markup
 - Copy & paste variations
-- Game graph
-- Score estimator
-- Scoring tool
-- Find move
+- Fast game tree
+- Score estimator & scoring tool
+- Find move by move position and comment text
 - Position & move annotations
 - [GTP engines](https://github.com/yishn/Sabaki/wiki/Engines) support
 - Guess mode
 - Autoplay games
 
-For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You can support this project by [donating some money](https://paypal.me/yishn/4).
+For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You can support this project by [donating](https://paypal.me/yishn/4).
 
 ## Web Version
 
