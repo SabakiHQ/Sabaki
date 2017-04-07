@@ -1,4 +1,5 @@
-const {ipcRenderer, shell, clipboard} = require('electron')
+const {shell, clipboard, remote} = require('electron')
+const {app} = remote || require('electron')
 
 const sabaki = typeof window !== 'undefined' ? window.sabaki : {}
 const dialog = require('../modules/dialog')
@@ -21,7 +22,8 @@ let data = [
             {
                 label: 'New &Window',
                 accelerator: 'CmdOrCtrl+Shift+N',
-                click: () => ipcRenderer.send('new-window')
+                clickMain: 'newWindow',
+                enabled: true
             },
             {type: 'separator'},
             {
@@ -331,6 +333,10 @@ let data = [
         label: 'Eng&ines',
         submenu: [
             {
+                label: '&Attach…',
+                click: () => sabaki.openDrawer('info')
+            },
+            {
                 label: '&Detach',
                 click: () => sabaki.detachEngines()
             },
@@ -412,12 +418,13 @@ let data = [
         label: '&Help',
         submenu: [
             {
-                label: '{name} v{version}',
+                label: `${app.getName()} v${app.getVersion()}`,
                 enabled: false
             },
             {
                 label: 'Check for &Updates',
-                click: () => ipcRenderer.send('check-for-updates', true)
+                clickMain: 'checkForUpdates',
+                enabled: true
             },
             {type: 'separator'},
             {
@@ -431,6 +438,72 @@ let data = [
         ]
     }
 ]
+
+let findMenuItem = str => data.find(item => item.label.replace('&', '') === str)
+
+// Change menu for macOS
+
+if (process.platform === 'darwin') {
+    // Add 'App' menu
+
+    let appMenu = [{role: 'about'}]
+    let helpMenu = findMenuItem('Help')
+    let items = helpMenu.submenu.splice(0, 3)
+
+    appMenu.push(...items.slice(0, 2))
+
+    // Remove original 'Preferences' menu item
+
+    let fileMenu = findMenuItem('File')
+    let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
+
+    appMenu.push(
+        {type: 'separator'},
+        preferenceItem,
+        {type: 'separator'},
+        {submenu: [], role: 'services'},
+        {
+            label: 'Text',
+            submenu: [
+                {role: 'undo'},
+                {role: 'redo'},
+                {type: 'separator'},
+                {role: 'cut'},
+                {role: 'copy'},
+                {role: 'paste'},
+                {role: 'selectall'}
+            ]
+        },
+        {type: 'separator'},
+        {role: 'hide'},
+        {role: 'hideothers'},
+        {type: 'separator'},
+        {role: 'quit'}
+    )
+
+    data.unshift({
+        label: app.getName(),
+        submenu: appMenu
+    })
+
+    // Add 'Window' menu
+
+    data.splice(data.length - 1, 0, {
+        submenu: [
+            {
+                label: 'New Window',
+                clickMain: 'newWindow',
+                enabled: true
+            },
+            {role: 'minimize'},
+            {type: 'separator'},
+            {role: 'front'}
+        ],
+        role: 'window'
+    })
+}
+
+// Generate ids for all menu items
 
 let generateIds = (menu, idPrefix = '') => {
     menu.forEach((item, i) => {

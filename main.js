@@ -51,106 +51,14 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
+    setting.load()
+
     let template = require('./data/menu').clone()
-    let findMenuItem = str => template.find(x => x.label.replace('&', '') === str)
-
-    // Create app menu for OS X
-
-    if (process.platform === 'darwin') {
-        let appMenu = [{role: 'about'}]
-
-        // Remove original 'Check for Updates' menu item
-
-        let helpMenu = findMenuItem('Help')
-        let items = helpMenu.submenu.splice(0, 3)
-
-        appMenu.push(...items.slice(0, 2))
-
-        // Remove original 'Preferences' menu item
-
-        let fileMenu = findMenuItem('File')
-        let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
-
-        appMenu.push(
-            {type: 'separator'},
-            preferenceItem,
-            {type: 'separator'},
-            {submenu: [], role: 'services'},
-            {
-                label: 'Text',
-                submenu: [
-                    {role: 'undo'},
-                    {role: 'redo'},
-                    {type: 'separator'},
-                    {role: 'cut'},
-                    {role: 'copy'},
-                    {role: 'paste'},
-                    {role: 'selectall'}
-                ],
-            },
-            {type: 'separator'},
-            {role: 'hide'},
-            {role: 'hideothers'},
-            {type: 'separator'},
-            {role: 'quit'}
-        )
-
-        template.unshift({
-            label: '{name}',
-            submenu: appMenu
-        })
-
-        // Add 'Window' menu
-
-        template.splice(template.length - 1, 0, {
-            submenu: [
-                {
-                    label: 'New Window',
-                    click: () => newWindow(),
-                    enabled: true
-                },
-                {role: 'minimize'},
-                {type: 'separator'},
-                {role: 'front'}
-            ],
-            role: 'window'
-        })
-    }
-
-    // Load engines
-
-    let enginesMenu = findMenuItem('Engines')
-
-    if (enginesMenu) {
-        setting.load()
-        let engines = setting.get('engines.list')
-
-        if (engines.length > 0) {
-            enginesMenu.submenu.unshift({type: 'separator'})
-
-            enginesMenu.submenu.unshift(...engines.map((engine, i) => ({
-                label: engine.name.trim() || '(Unnamed Engine)',
-                click: () => {
-                    let window = BrowserWindow.getFocusedWindow()
-                    if (!window) return
-
-                    window.webContents.send('attach-engine', i)
-                }
-            })))
-        }
-    }
 
     // Process menu items
 
     let processMenu = items => {
         items.forEach(item => {
-            if ('label' in item) {
-                item.label = item.label
-                .replace('{name}', app.getName())
-                .replace('{version}', app.getVersion())
-            }
-
-
             if ('click' in item) {
                 item.click = () => {
                     let window = BrowserWindow.getFocusedWindow()
@@ -158,6 +66,17 @@ function buildMenu(disableAll = false) {
 
                     window.webContents.send(`menu-click-${item.id}`)
                 }
+            }
+
+            if ('clickMain' in item) {
+                let key = item.clickMain
+
+                item.click = ({
+                    newWindow,
+                    checkForUpdates: () => checkForUpdates(true)
+                })[key]
+
+                delete item.clickMain
             }
 
             if ('checked' in item) {
@@ -194,8 +113,13 @@ function buildMenu(disableAll = false) {
 function checkForUpdates(showNoUpdatesDialog) {
     let repo = `yishn/${app.getName()}`
 
-    updater.check(repo, (err, hasUpdates, url) => {
-        if (err) return
+    updater.check(repo, (err, {hasUpdates, url}) => {
+        if (err) return dialog.showMessageBox({
+            type: 'error',
+            buttons: ['OK'],
+            title: app.getName(),
+            message: 'An error occurred when checking for updates.'
+        })
 
         if (hasUpdates) {
             dialog.showMessageBox({
@@ -210,8 +134,8 @@ function checkForUpdates(showNoUpdatesDialog) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['OK'],
-                title: app.getName(),
-                message: 'There are no updates available.'
+                title: 'No update available',
+                message: `Sabaki v${app.getVersion()} is the latest version.`
             }, () => {})
         }
     })
