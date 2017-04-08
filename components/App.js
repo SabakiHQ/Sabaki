@@ -126,6 +126,17 @@ class App extends Component {
             }
         })
 
+        this.window.on('resize', () => {
+            clearTimeout(this.resizeId)
+
+            this.resizeId = setTimeout(() => {
+                if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
+                    let [width, height] = this.window.getContentSize()
+                    setting.set('window.width', width).set('window.height', height)
+                }
+            }, 500)
+        })
+
         // Handle main menu items
 
         let menuData = require('../data/menu')
@@ -178,7 +189,11 @@ class App extends Component {
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
-            if (!this.askForSave()) evt.returnValue = ' '
+            if (!this.askForSave()) {
+                evt.returnValue = ' '
+            } else {
+                this.detachEngines()
+            }
         })
 
         this.newFile()
