@@ -3,7 +3,7 @@ const {app, dialog} = remote || require('electron')
 const helper = require('./helper')
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-    sabaki.setBusy(true)
+    sabaki.setState({busy: true})
 
     let result = dialog.showMessageBox(sabaki.window, {
         type,
@@ -14,19 +14,19 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
         noLink: true
     })
 
-    sabaki.setBusy(false)
+    sabaki.setState({busy: false})
     return result
 }
 
 exports.showFileDialog = function(type, options) {
-    sabaki.setBusy(true)
+    sabaki.setState({busy: true})
 
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
     let result = dialog[`show${type}Dialog`](sabaki.window, options)
 
-    sabaki.setBusy(false)
+    sabaki.setState({busy: false})
     return result
 }
 

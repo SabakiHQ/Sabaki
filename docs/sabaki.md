@@ -69,11 +69,6 @@ The `fileLoad` event is triggered when Sabaki finishes loading some file.
 
 ### User Interface
 
-#### sabaki.isBusy()
-#### sabaki.setBusy(busy)
-
-* `busy` `<Boolean>`
-
 #### sabaki.setMode(mode)
 
 * `mode` `<String>` - One of `'play'`, `'edit'`, `'find'`, `'scoring'`, `'estimator'`, `'guess'`, `'autoplay'`

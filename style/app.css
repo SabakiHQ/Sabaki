@@ -60,17 +60,14 @@ img {
 }
 
 #busy {
-        display: none;
-        position: fixed;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        cursor: wait;
-        z-index: 999;
-    }
-    .busy #busy {
-        display: block;
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    cursor: wait;
+    z-index: 999;
 }
 
 #input-box {

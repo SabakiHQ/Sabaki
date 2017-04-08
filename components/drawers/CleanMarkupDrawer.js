@@ -45,7 +45,7 @@ class CleanMarkupDrawer extends Component {
         this.handleSubmitButtonClick = evt => {
             evt.preventDefault()
             sabaki.setUndoPoint('Undo Clean Markup')
-            sabaki.setBusy(true)
+            sabaki.setState({busy: true})
 
             let data = {
                 cross: ['MA'],
@@ -86,7 +86,7 @@ class CleanMarkupDrawer extends Component {
                     }
                 }
 
-                sabaki.setBusy(false)
+                sabaki.setState({busy: false})
                 sabaki.closeDrawer()
             }, 100)
         }

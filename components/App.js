@@ -10,6 +10,7 @@ const LeftSidebar = require('./LeftSidebar')
 const Sidebar = require('./Sidebar')
 const DrawerManager = require('./DrawerManager')
 const InputBox = require('./InputBox')
+const BusyScreen = require('./BusyScreen')
 
 const Board = require('../modules/board')
 const dialog = require('../modules/dialog')
@@ -278,25 +279,6 @@ class App extends Component {
 
     // Sabaki API
 
-    isBusy() {
-        return this.busy
-    }
-
-    setBusy(busy) {
-        this.busy = busy
-        clearTimeout(this.busyId)
-
-        if (busy) {
-            ipcRenderer.send('build-menu', true)
-            this.setState({busy: true})
-            document.activeElement.blur()
-        } else {
-            ipcRenderer.send('build-menu')
-            let delay = setting.get('app.hide_busy_delay')
-            this.busyId = setTimeout(() => this.setState({busy: false}), delay)
-        }
-    }
-
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
     }
@@ -427,7 +409,7 @@ class App extends Component {
             return this.detachEngines()
         }
 
-        this.setBusy(true)
+        this.setState({busy: true})
 
         for (let i = 0; i < this.attachedEngineControllers.length; i++) {
             if (this.attachedEngineControllers[i] == null
@@ -482,14 +464,14 @@ class App extends Component {
             this.engineBoards[i] = board
         }
 
-        this.setBusy(false)
+        this.setState({busy: false})
     }
 
     startGeneratingMoves({followUp = false} = {}) {
         this.closeDrawer()
 
         if (followUp) {
-            if (!this.state.generatingMoves) return this.setBusy(false)
+            if (!this.state.generatingMoves) return this.setState({busy: false})
         } else {
             this.setState({generatingMoves: true})
         }
@@ -513,7 +495,7 @@ class App extends Component {
         }
 
         this.syncEngines()
-        this.setBusy(true)
+        this.setState({busy: true})
 
         this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
             if (response.content.toLowerCase() == 'resign') {
@@ -533,7 +515,7 @@ class App extends Component {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
-                this.setBusy(false)
+                this.setState({busy: false})
             }
         })
     }
@@ -1173,7 +1155,7 @@ class App extends Component {
     loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
-        this.setBusy(true)
+        this.setState({busy: true})
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
         this.setMode('play')
 
@@ -1198,7 +1180,7 @@ class App extends Component {
             }
 
             if (gameTrees.length != 0) {
-                this.setBusy(false)
+                this.setState({busy: false})
                 this.detachEngines()
                 this.setState({
                     representedFilename: null,
@@ -1264,7 +1246,7 @@ class App extends Component {
         if (isNaN(step)) step = 1
         else step = step >= 0 ? 1 : -1
 
-        this.setBusy(true)
+        this.setState({busy: true})
 
         setTimeout(() => {
             let tp = this.state.treePosition
@@ -1291,7 +1273,7 @@ class App extends Component {
             }
 
             this.setCurrentTreePosition(...tp)
-            this.setBusy(false)
+            this.setState({busy: false})
             callback()
         }, setting.get('find.delay'))
     }
@@ -1473,7 +1455,7 @@ class App extends Component {
     undo() {
         if (!this.state.undoable || !this.undoData) return
 
-        this.setBusy(true)
+        this.setState({busy: true})
 
         setTimeout(() => {
             let [undoRoot, undoLevel] = this.undoData
@@ -1484,7 +1466,7 @@ class App extends Component {
 
             this.setCurrentTreePosition(...treePosition)
             this.clearUndoPoint()
-            this.setBusy(false)
+            this.setState({busy: false})
         }, setting.get('edit.undo_delay'))
     }
 
@@ -2039,7 +2021,6 @@ class App extends Component {
                 class: classNames({
                     leftsidebar: state.showLeftSidebar,
                     sidebar: state.showSidebar,
-                    busy: state.busy,
                     [state.mode]: true
                 })
             },
@@ -2058,7 +2039,7 @@ class App extends Component {
                 onCancel: state.onInputBoxCancel
             }),
 
-            h('section', {id: 'busy'})
+            h(BusyScreen, {show: state.busy})
         )
     }
 }
