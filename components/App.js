@@ -1999,7 +1999,9 @@ class App extends Component {
 
             for (let vertex of state.deadStones) {
                 let sign = scoreBoard.get(vertex)
-                scoreBoard.captures[sign > 0 ? 0 : 1]++
+                if (sign === 0) continue
+
+                scoreBoard.captures[sign > 0 ? 1 : 0]++
                 scoreBoard.set(vertex, 0)
             }
 
