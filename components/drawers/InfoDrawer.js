@@ -48,6 +48,14 @@ class InfoDrawer extends Component {
             sabaki.setGameInfo(this.props.treePosition[0], data)
             sabaki.closeDrawer()
             sabaki.attachEngines(...this.state.engines)
+
+            sabaki.setState(sabaki.state, () => {
+                let index = sabaki.inferredState.currentPlayer > 0 ? 0 : 1
+
+                if (sabaki.attachedEngineControllers[index] != null) {
+                    sabaki.startGeneratingMoves()
+                }
+            })
         }
 
         this.handleCancelButtonClick = evt => {
