@@ -208,6 +208,24 @@ class App extends Component {
             this.window.setMenuBarVisibility(!this.state.fullScreen)
             this.window.setAutoHideMenuBar(this.state.fullScreen)
         }
+
+        // Handle sidebar showing/hiding
+
+        if (prevState.showLeftSidebar !== this.state.showLeftSidebar
+        || prevState.showSidebar !== this.state.showSidebar) {
+            let [width, height] = this.window.getContentSize()
+            let widthDiff = 0
+
+            if (prevState.showSidebar !== this.state.showSidebar) {
+                widthDiff += this.state.sidebarWidth * (this.state.showSidebar ? 1 : -1)
+            }
+
+            if (prevState.showLeftSidebar !== this.state.showLeftSidebar) {
+                widthDiff += this.state.leftSidebarWidth * (this.state.showLeftSidebar ? 1 : -1)
+            }
+
+            this.window.setContentSize(width + widthDiff, height)
+        }
     }
 
     updateSettingState(key = null) {
