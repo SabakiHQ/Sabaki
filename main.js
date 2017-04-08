@@ -69,10 +69,10 @@ function buildMenu(disableAll = false) {
             if ('clickMain' in item) {
                 let key = item.clickMain
 
-                item.click = ({
+                item.click = () => ({
                     newWindow,
                     checkForUpdates: () => checkForUpdates(true)
-                })[key]
+                })[key]()
 
                 delete item.clickMain
             }
@@ -113,7 +113,7 @@ function checkForUpdates(showNoUpdatesDialog) {
 
     updater.check(repo, (err, {hasUpdates, url}) => {
         if (err) return dialog.showMessageBox({
-            type: 'error',
+            type: 'warning',
             buttons: ['OK'],
             title: app.getName(),
             message: 'An error occurred when checking for updates.'

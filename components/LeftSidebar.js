@@ -42,7 +42,7 @@ class LeftSidebar extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.showLeftSidebar
+        return nextProps.showLeftSidebar != this.props.showLeftSidebar || nextProps.showLeftSidebar
     }
 
     componentDidMount() {

@@ -400,6 +400,7 @@ class InfoDrawer extends Component {
                     h(InfoDrawerItem, {title: 'Komi'},
                         h('input', {
                             type: 'number',
+                            name: 'komi',
                             step: 0.5,
                             placeholder: 0,
                             value: komi == null ? '' : komi,
@@ -431,6 +432,7 @@ class InfoDrawer extends Component {
                     h(InfoDrawerItem, {title: 'Board Size'},
                         h('input', {
                             type: 'number',
+                            name: 'size-width',
                             placeholder: 19,
                             max: 25,
                             min: 3,
@@ -448,6 +450,7 @@ class InfoDrawer extends Component {
 
                         h('input', {
                             type: 'number',
+                            name: 'size-height',
                             placeholder: 19,
                             max: 25,
                             min: 3,

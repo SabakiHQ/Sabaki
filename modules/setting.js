@@ -94,7 +94,7 @@ let defaults = {
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
     'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
-    'setting.overwrite.rewrite12': ['graph.delay'],
+    'setting.overwrite.rewrite13': ['window.minwidth'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,
@@ -117,7 +117,7 @@ let defaults = {
     'view.sidebar_minwidth': 100,
     'window.height': 604,
     'window.minheight': 440,
-    'window.minwidth': 550,
+    'window.minwidth': 526,
     'window.width': 564
 }
 

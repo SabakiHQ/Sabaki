@@ -62,7 +62,7 @@ class Sidebar extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return nextProps.showSidebar
+        return nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
     }
 
     componentWillReceiveProps({treePosition, rootTree} = {}) {

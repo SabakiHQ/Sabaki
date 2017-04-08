@@ -541,6 +541,10 @@ class App extends Component {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     this.makeMove(vertex)
+
+                    if (this.attachedEngineControllers.some(x => x != null)) {
+                        setTimeout(() => this.startGeneratingMoves(), setting.get('gtp.move_delay'))
+                    }
                 } else if (vertex in board.markups
                 && board.markups[vertex][0] === 'point'
                 && setting.get('edit.click_currentvertex_to_remove')) {
