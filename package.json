@@ -71,7 +71,7 @@
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
-    "preact": "^8.0.1"
+    "preact": "^8.1.0"
   },
   "devDependencies": {
     "electron": "1.6.6",
