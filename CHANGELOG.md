@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* When encoding is not specified, Sabaki tries to infer the encoding from content instead of assuming ISO-8859-1 (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl)).
 * When `CA` property is missing from an opened file, Sabaki previously saves it without correct UTF-8 `CA` property. This results in Sabaki opening these files in ISO-8859-1, not correctly displaying text. This is fixed now.
 
 ## [Sabaki v0.21.0][v0.21.0] (2017-03-30)
@@ -528,8 +529,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.0-beta...master
-[v0.30.0]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.0-beta
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.0...master
+[v0.30.0]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.0
 [v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0
 [v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
