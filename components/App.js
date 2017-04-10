@@ -414,7 +414,7 @@ class App extends Component {
         for (let i = 0; i < this.attachedEngineControllers.length; i++) {
             if (this.attachedEngineControllers[i] == null
                 || this.engineBoards[i] != null
-                && board.getHash() === this.engineBoards[i].getHash()) continue
+                && board.getPositionHash() === this.engineBoards[i].getPositionHash()) continue
 
             let controller = this.attachedEngineControllers[i]
 
@@ -428,7 +428,7 @@ class App extends Component {
                     let [vertex, sign] = diff[0]
                     let move = this.engineBoards[i].makeMove(sign, vertex)
 
-                    if (move.getHash() === board.getHash()) {
+                    if (move.getPositionHash() === board.getPositionHash()) {
                         // Incremental board update possible
 
                         let color = sign > 0 ? 'B' : 'W'
@@ -612,7 +612,7 @@ class App extends Component {
             let stones = mode === 'estimator' ? board.getChain(vertex) : board.getRelatedChains(vertex)
 
             if (!dead) {
-                deadStones.push(...stones)
+                deadStones = [...deadStones, ...stones]
             } else {
                 deadStones = deadStones.filter(v => !stones.some(w => helper.vertexEquals(v, w)))
             }
@@ -694,9 +694,9 @@ class App extends Component {
             // Check for ko
 
             if (prev && setting.get('game.show_ko_warning')) {
-                let hash = board.makeMove(player, vertex).getHash()
+                let hash = board.makeMove(player, vertex).getPositionHash()
 
-                ko = prev[0].nodes[prev[1]].board.getHash() == hash
+                ko = prev[0].nodes[prev[1]].board.getPositionHash() == hash
 
                 if (ko && dialog.showMessageBox(
                     ['You are about to play a move which repeats a previous board position.',

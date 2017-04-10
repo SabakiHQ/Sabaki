@@ -189,6 +189,25 @@ class Goban extends Component {
         this.resize()
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        for (let key in nextProps) {
+            if (['board', 'highlightVertices', 'dimmedStones', 'paintMap'].includes(key)) continue
+
+            if (nextProps[key] !== this.props[key])
+                return true
+        }
+
+        for (let key in nextState) {
+            if (nextState[key] !== this.state[key])
+                return true
+        }
+
+        return nextProps.board.getHash() !== this.props.board.getHash()
+            || !helper.equals(nextProps.highlightVertices, this.props.highlightVertices)
+            || !helper.equals(nextProps.dimmedStones, this.props.dimmedStones)
+            || !helper.equals(nextProps.paintMap, this.props.paintMap)
+    }
+
     componentWillReceiveProps({board, animatedVertex}) {
         let dim = board => [board.width, board.height]
 
@@ -358,8 +377,8 @@ class Goban extends Component {
 
     render({
         board,
-        highlightVertices = [],
         paintMap,
+        highlightVertices = [],
         dimmedStones = [],
 
         crosshair = false,

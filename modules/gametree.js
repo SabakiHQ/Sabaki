@@ -28,9 +28,9 @@ exports.clone = function(tree, parent = null) {
         let cn = {}
 
         for (let key in node) {
-            if (key == 'board') continue
+            if (key === 'board') continue
 
-            if (Object.prototype.toString.call(node[key]) == '[object Array]') {
+            if (Object.prototype.toString.call(node[key]) === '[object Array]') {
                 cn[key] = [...node[key]]
             } else {
                 cn[key] = node[key]
@@ -48,7 +48,7 @@ exports.clone = function(tree, parent = null) {
 }
 
 exports.getRoot = function(tree) {
-    while (tree.parent != null) tree = tree.parent
+    while (tree.parent !== null) tree = tree.parent
     return tree
 }
 

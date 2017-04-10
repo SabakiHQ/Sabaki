@@ -521,8 +521,18 @@ class Board {
         return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
     }
 
-    getHash() {
+    getPositionHash() {
         return helper.hash(JSON.stringify(this.arrangement))
+    }
+
+    getHash() {
+        return helper.hash(JSON.stringify([
+            this.getPositionHash(),
+            this.captures,
+            this.markups,
+            this.ghosts,
+            this.lines
+        ]))
     }
 }
 

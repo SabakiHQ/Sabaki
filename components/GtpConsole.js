@@ -123,10 +123,8 @@ class GtpConsole extends Component {
     componentWillReceiveProps({consoleLog, attachedEngines}) {
         let index = attachedEngines.findIndex(x => x != null)
 
-        if (index >= 0 && this.state.engineIndex === -1) {
+        if (this.state.engineIndex !== index) {
             this.setState({engineIndex: index})
-        } else if (index === -1 && this.state.engineIndex !== -1) {
-            this.setState({engineIndex: -1})
         }
 
         this.inputPointer = consoleLog.length

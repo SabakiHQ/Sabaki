@@ -6,7 +6,7 @@ class MiniGoban extends Component {
     shouldComponentUpdate({board, maxSize, visible}) {
         return visible !== this.props.visible
             || maxSize !== this.props.maxSize
-            || board.getHash() !== this.props.board.getHash()
+            || board.getPositionHash() !== this.props.board.getPositionHash()
     }
 
     render({board, maxSize, visible = true}) {
