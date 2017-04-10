@@ -32,8 +32,9 @@ class ConsoleCommandEntry extends Component {
 }
 
 class ConsoleResponseEntry extends Component {
-    shouldComponentUpdate({waiting}) {
+    shouldComponentUpdate({response, waiting}) {
         return waiting !== this.props.waiting
+            || response !== this.props.response
     }
 
     render({response, waiting}) {
@@ -41,9 +42,9 @@ class ConsoleResponseEntry extends Component {
             !waiting && response != null
 
             ? h('pre', {},
-                h('span', {
+                !response.internal && [h('span', {
                     class: response.error ? 'error' : 'success'
-                }, response.internal ? '*' : response.error ? '?' : '='), ' ',
+                }, response.error ? '?' : '='), ' '],
 
                 response.id != null && [h('span', {class: 'id'}, response.id), ' '],
 
@@ -173,9 +174,13 @@ class GtpConsole extends Component {
                     class: 'log'
                 },
 
-                consoleLog.map(([sign, name, command, response]) => [
-                    h(ConsoleCommandEntry, {key: `c${command.internalId}`, sign, name, command}),
-                    h(ConsoleResponseEntry, {key: `r${command.internalId}`, response, waiting: response == null})
+                consoleLog.map(([sign, name, command, response], i) => [
+                    command
+                    ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
+                    : !command && (i == 0 || !helper.shallowEquals([sign, name], consoleLog[i - 1].slice(0, 2)))
+                    ? h(ConsoleCommandEntry, {sign, name, command: new gtp.Command(null, '')})
+                    : null,
+                    h(ConsoleResponseEntry, {response, waiting: response == null})
                 ])
             ),
 

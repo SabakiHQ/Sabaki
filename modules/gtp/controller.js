@@ -11,6 +11,7 @@ class Controller extends EventEmitter {
         super()
 
         this._buffer = ''
+        this._errbuffer = ''
         this.commands = []
         this.error = false
         this.process = spawn(engine.path, split(engine.args), {cwd: dirname(engine.path)})
@@ -44,7 +45,16 @@ class Controller extends EventEmitter {
         })
 
         this.process.stderr.on('data', data => {
-            this.emit('stderr', data)
+            this._errbuffer += (data + '').replace(/\r/g, '').replace(/\t/g, ' ')
+
+            let start = this._errbuffer.indexOf('\n')
+
+            while (start !== -1) {
+                this.emit('stderr', {content: this._errbuffer.substr(0, start)})
+                this._errbuffer = this._errbuffer.substr(start + 1)
+
+                start = this._errbuffer.indexOf('\n')
+            }
         })
     }
 

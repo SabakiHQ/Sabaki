@@ -351,6 +351,17 @@ class App extends Component {
                         engineCommands[i] = response.content.split('\n')
                     })
 
+                    controller.on('stderr', ({content}) => {
+                        this.setState(({consoleLog}) => ({
+                            consoleLog: [...consoleLog, [
+                                i === 0 ? 1 : -1,
+                                controller.name,
+                                null,
+                                new gtp.Response(null, content, false, true)
+                            ]]
+                        }))
+                    })
+
                     this.setState({engineCommands})
                 } catch (err) {
                     this.attachedEngineControllers[i] = null
@@ -376,7 +387,7 @@ class App extends Component {
         let entry = [sign, controller.name, command]
         let maxLength = setting.get('console.max_history_count')
 
-        let newLog = consoleLog.slice(consoleLog.length >= maxLength ? 1 : 0)
+        let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
         newLog.push(entry)
 
         this.setState({consoleLog: newLog})

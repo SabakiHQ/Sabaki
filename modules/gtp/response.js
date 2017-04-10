@@ -9,7 +9,7 @@ class Response {
     }
 
     toString() {
-        return `${this.error ? '?' : '='}${this.id != null ? this.id : ''} ${this.content}`
+        return `${this.internal ? '' : this.error ? '?' : '='}${this.id != null ? this.id : ''} ${this.content}`.trim()
     }
 }
 
