@@ -1220,7 +1220,7 @@ class App extends Component {
                 }, setting.get('gamechooser.show_delay'))
             }
 
-            this.window.setProgressBar(0)
+            this.window.setProgressBar(-1)
             callback(error)
 
             if (!error) this.events.emit('fileLoad')
