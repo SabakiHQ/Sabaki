@@ -471,7 +471,7 @@ class App extends Component {
         this.closeDrawer()
 
         if (followUp) {
-            if (!this.state.generatingMoves) return this.setState({busy: false})
+            if (!this.state.generatingMoves) return
         } else {
             this.setState({generatingMoves: true})
         }
@@ -498,30 +498,37 @@ class App extends Component {
         this.setState({busy: true})
 
         this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
-            if (response.content.toLowerCase() == 'resign') {
+            let sign = color === 'B' ? 1 : -1
+            let vertex = [-1, -1]
+
+            if (response.content.toLowerCase() !== 'pass') {
+                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
+            }
+
+            if (!this.state.generatingMoves) {
+                this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition).makeMove(sign, vertex)
+                return
+            }
+
+            if (response.content.toLowerCase() === 'resign') {
                 dialog.showMessageBox(`${playerController.name} has resigned.`)
                 this.makeResign()
                 return
             }
 
-            let vertex = [-1, -1]
-            if (response.content.toLowerCase() != 'pass')
-                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
-
-            this.makeMove(vertex)
+            this.makeMove(vertex, {player: sign})
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
 
             if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
-                this.setState({busy: false})
             }
         })
     }
 
     stopGeneratingMoves() {
-        this.setState({generatingMoves: false})
+        this.setState({generatingMoves: false, busy: false})
     }
 
     // Playing
