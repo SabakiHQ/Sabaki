@@ -10,8 +10,8 @@ class Controller extends EventEmitter {
     constructor(engine) {
         super()
 
-        this._buffer = ''
-        this._errbuffer = ''
+        this._outBuffer = ''
+        this._errBuffer = ''
         this.commands = []
         this.error = false
         this.process = spawn(engine.path, split(engine.args), {cwd: dirname(engine.path)})
@@ -27,33 +27,33 @@ class Controller extends EventEmitter {
         })
 
         this.process.stdout.on('data', data => {
-            this._buffer += (data + '').replace(/\r/g, '').replace(/#.*?\n/g, '').replace(/\t/g, ' ')
+            this._outBuffer += (data + '').replace(/\r/g, '').replace(/#.*?\n/g, '').replace(/\t/g, ' ')
 
-            let start = this._buffer.indexOf('\n\n')
+            let start = this._outBuffer.indexOf('\n\n')
 
             while (start !== -1) {
-                let response = gtp.parseResponse(this._buffer.substr(0, start))
-                this._buffer = this._buffer.substr(start + 2)
+                let response = gtp.parseResponse(this._outBuffer.substr(0, start))
+                this._outBuffer = this._outBuffer.substr(start + 2)
 
                 if (this.commands.length > 0) {
                     let command = this.commands.shift()
                     this.emit(`response-${command.internalId}`, {response, command})
                 }
 
-                start = this._buffer.indexOf('\n\n')
+                start = this._outBuffer.indexOf('\n\n')
             }
         })
 
         this.process.stderr.on('data', data => {
-            this._errbuffer += (data + '').replace(/\r/g, '').replace(/\t/g, ' ')
+            this._errBuffer += (data + '').replace(/\r/g, '').replace(/\t/g, ' ')
 
-            let start = this._errbuffer.indexOf('\n')
+            let start = this._errBuffer.indexOf('\n')
 
             while (start !== -1) {
-                this.emit('stderr', {content: this._errbuffer.substr(0, start)})
-                this._errbuffer = this._errbuffer.substr(start + 1)
+                this.emit('stderr', {content: this._errBuffer.substr(0, start)})
+                this._errBuffer = this._errBuffer.substr(start + 1)
 
-                start = this._errbuffer.indexOf('\n')
+                start = this._errBuffer.indexOf('\n')
             }
         })
     }

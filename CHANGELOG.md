@@ -2,7 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.30.0][v0.30.0] (2017-04-11)
+
+**Added**
+
+* The game graph has been rewritten from scratch and is now more efficient with large game trees without the need to collapse subtrees. The graph is more accessible, the nodes have a bigger click surface and dragging the graph can go beyond the component.
+* The game collection manager includes support for `ngf` and `gib` files. It also sports a slick board animation, which is very slick. Did I mention it's slick?
+* You can assign custom label texts to a vertex on the board by selecting the label or number tool and clicking 'Edit Label' in the context menu.
+* You can attach two engines to Sabaki and let them play each other while you can sip tea comfortably and watch them fight. The GTP console has been redesigned so you are able to address both engines separately. It also displays (usually) useful `stderr` information from the engines. Command autocompletion is more obvious now.
+* Drawing with the line/arrow tool makes it clear that drawing over an existing line/arrow removes that line/arrow.
+
+**Fixed**
+
+* When `CA` property is missing from an opened file, Sabaki previously saves it without correct UTF-8 `CA` property. This results in Sabaki opening these files in ISO-8859-1, not correctly displaying text. This is fixed now.
+
 ## [Sabaki v0.21.0][v0.21.0] (2017-03-30)
+
+**Added**
 
 * Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
@@ -512,7 +528,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.21.0...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.0-beta...master
+[v0.30.0]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.0-beta
 [v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0
 [v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
