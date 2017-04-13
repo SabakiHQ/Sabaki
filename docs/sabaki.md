@@ -90,7 +90,7 @@ Returns an empty [game tree](gametree.md) with the default board size, komi, and
 #### sabaki.newFile([options])
 
 * `options` `<Object>` *(optional)*
-    * `sound` `<Boolean>` *(optional)* - Default: `false`
+    * `playSound` `<Boolean>` *(optional)* - Default: `false`
     * `showInfo` `<Boolean>` *(optional)* - Default: `false`
     * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
 
@@ -103,7 +103,6 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 * `filename` `<String>` *(optional)*
 * `options` `<Object>` *(optional)*
     * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
-    * `callback` `<Function>` *(optional)*
 
 Resets file name, returns to play mode, and replaces current file with the file specified in `filename`. If `filename` is not set, Sabaki will show an open file dialog. On the web version, `filename` is ignored and treated as if not set.
 
@@ -190,17 +189,11 @@ Uses `tool` to mark the board at `vertex`. If `tool` is `'arrow'` or `'line'`, `
 
 Jumps to the position specified by `tree` and `index`.
 
-#### sabaki.startAutoscrolling(step)
-
-* `step` `<Integer>`
-
-#### sabaki.stopAutoscrolling()
-
 #### sabaki.goStep(step)
 
 * `step` `<Integer>`
 
-#### sabaki.goMoveNumber(number)
+#### sabaki.goToMoveNumber(number)
 
 * `number` `<Integer>`
 
@@ -217,6 +210,8 @@ Jumps to the position specified by `tree` and `index`.
 * `step` `<Integer>`
 
 #### sabaki.goToMainVariation()
+
+### Find Methods
 
 #### sabaki.findPosition(step, condition[, callback])
 
@@ -237,7 +232,50 @@ Jumps to the position specified by `tree` and `index`.
     * `text` `<String>` *(optional)*
 * `callback` `<Function>` *(optional)*
 
-### Node actions
+### Node Actions
+
+### sabaki.getGameInfo(tree)
+
+* `tree` [`<GameTree>`](gametree.md)
+
+Returns an object with the following values:
+
+* `blackName` `<String>`
+* `blackRank` `<String>`
+* `whiteName` `<String>`
+* `whiteRank` `<String>`
+* `gameName` `<String>`
+* `eventName` `<String>`
+* `date` `<String>`
+* `result` `<String>`
+* `komi` `<Float>`
+* `handicap` `<Integer>`
+* `size` `<Integer[]>` - An array of two numbers, representing the width and height of the game board
+
+### sabaki.setGameInfo(tree, data)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `data` `<Object>`
+    * `blackName` `<String>` *(optional)*
+    * `blackRank` `<String>` *(optional)*
+    * `whiteName` `<String>` *(optional)*
+    * `whiteRank` `<String>` *(optional)*
+    * `gameName` `<String>` *(optional)*
+    * `eventName` `<String>` *(optional)*
+    * `date` `<String>` *(optional)*
+    * `result` `<String>` *(optional)*
+    * `komi` `<Float>` *(optional)*
+    * `handicap` `<Integer>` *(optional)*
+    * `size` `<Integer[]>` *(optional)* - An array of two numbers, representing the width and height of the game board
+
+Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
+
+#### sabaki.getPlayer(tree, index)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+
+Returns a sign corresponding to the player that should be playing at the given tree position.
 
 #### sabaki.setPlayer(tree, index, sign)
 
@@ -255,6 +293,8 @@ Jumps to the position specified by `tree` and `index`.
     * `hotspot` `<Boolean>` *(optional)*
     * `moveAnnotation` `<String>` *(optional)* - One of `'BM'`, `'DO'`, `'IT'`, and `'TE'`
     * `positionAnnotation` `<String>` *(optional)* - One of `'UC'`, `'GW'`, `'GB'`, and `'DM'`
+
+Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
 
 #### sabaki.copyVariation(tree, index)
 

@@ -47,11 +47,21 @@ class Sidebar extends Component {
         }
 
         this.handleStartAutoscrolling = ({step}) => {
-            sabaki.startAutoscrolling(step)
+            let minDelay = setting.get('autoscroll.min_interval')
+            let diff = setting.get('autoscroll.diff')
+
+            let scroll = (delay = null) => {
+                sabaki.goStep(step)
+
+                clearTimeout(this.autoscrollId)
+                this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+            }
+
+            scroll(setting.get('autoscroll.max_interval'))
         }
 
         this.handleStopAutoscrolling = () => {
-            sabaki.stopAutoscrolling()
+            clearTimeout(this.autoscrollId)
         }
 
         this.handleCommentInput = evt => {

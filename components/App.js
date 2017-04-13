@@ -277,7 +277,7 @@ class App extends Component {
         }
     }
 
-    // Sabaki API
+    // User Interface
 
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
@@ -314,232 +314,214 @@ class App extends Component {
         this.openDrawer(null)
     }
 
-    // GTP Engines
+    // File Management
 
-    attachEngines(...engines) {
-        let {engineCommands, attachedEngines} = this.state
+    getEmptyGameTree() {
+        let handicap = setting.get('game.default_handicap')
+        let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
+        let [width, height] = [size[0], size.slice(-1)[0]]
+        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
-        if (helper.vertexEquals([engines[1], engines[0]], attachedEngines)) {
-            // Just swap engines
+        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
+        let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
 
-            this.attachedEngineControllers.reverse()
-            this.engineBoards.reverse()
+        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
+            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
+
+        return sgf.parse(buffer)[0]
+    }
+
+    newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
+
+        if (showInfo && this.state.openDrawer === 'info') {
+            this.closeDrawer()
+        }
+
+        this.detachEngines()
+        this.setState(this.state, () => {
+            let emptyTree = this.getEmptyGameTree()
 
             this.setState({
-                engineCommands: engineCommands.reverse(),
-                attachedEngines: engines
+                openDrawer: showInfo ? 'info' : null,
+                gameTrees: [emptyTree],
+                treePosition: [emptyTree, 0],
+                representedFilename: null
             })
 
-            return
-        }
+            this.treeHash = this.generateTreeHash()
+            this.fileHash = this.generateFileHash()
 
-        let command = name => new gtp.Command(null, name)
-
-        for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] != engines[i]) {
-                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
-
-                try {
-                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
-                    this.attachedEngineControllers[i] = controller
-                    this.engineBoards[i] = null
-
-                    this.sendGTPCommand(controller, command('name'))
-                    this.sendGTPCommand(controller, command('version'))
-                    this.sendGTPCommand(controller, command('protocol_version'))
-                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
-                        engineCommands[i] = response.content.split('\n')
-                    })
-
-                    controller.on('stderr', ({content}) => {
-                        this.setState(({consoleLog}) => ({
-                            consoleLog: [...consoleLog, [
-                                i === 0 ? 1 : -1,
-                                controller.name,
-                                null,
-                                new gtp.Response(null, content, false, true)
-                            ]]
-                        }))
-                    })
-
-                    this.setState({engineCommands})
-                } catch (err) {
-                    this.attachedEngineControllers[i] = null
-                    engines[i] = null
-                }
-            }
-        }
-
-        this.setState({attachedEngines: engines})
-        this.syncEngines()
-    }
-
-    detachEngines() {
-        this.attachEngines(null, null)
-    }
-
-    sendGTPCommand(controller, command, callback = helper.noop) {
-        if (controller == null) return
-
-        let {consoleLog} = this.state
-        let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
-        if (sign > 1) sign = 0
-        let entry = [sign, controller.name, command]
-        let maxLength = setting.get('console.max_history_count')
-
-        let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
-        newLog.push(entry)
-
-        this.setState({consoleLog: newLog})
-
-        controller.sendCommand(command, ({response}) => {
-            this.setState(({consoleLog}) => {
-                let index = consoleLog.indexOf(entry)
-                if (index === -1) return {}
-
-                let newLog = [...consoleLog]
-                newLog[index] = [...entry, response]
-
-                return {consoleLog: newLog}
-            })
-
-            callback({response, command})
+            if (playSound) sound.playNewGame()
         })
     }
 
-    syncEngines() {
-        if (this.attachedEngineControllers.every(x => x == null)) return
+    loadFile(filename = null, {suppressAskForSave = false} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
 
-        let board = gametree.getBoard(...this.state.treePosition)
+        if (!filename) {
+            let result = dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
+            })
 
-        if (!board.isSquare()) {
-            dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
-            return this.detachEngines()
-        } else if (!board.isValid()) {
-            dialog.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
-            return this.detachEngines()
+            if (result) filename = result[0]
+            if (!filename) return
         }
 
-        this.setState({busy: true})
+        let {extname} = require('path')
+        let extension = extname(filename).slice(1)
+        let content = fs.readFileSync(filename, {encoding: 'binary'})
 
-        for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-            if (this.attachedEngineControllers[i] == null
-                || this.engineBoards[i] != null
-                && board.getPositionHash() === this.engineBoards[i].getPositionHash()) continue
+        this.loadContent(content, extension, {
+            suppressAskForSave: true,
+            callback: err => {
+                if (err) return
 
-            let controller = this.attachedEngineControllers[i]
-
-            if (this.engineBoards[i] != null) {
-                // Diff boards
-
-                let synced = false
-                let diff = this.engineBoards[i].diff(board).filter(([, sign]) => sign !== 0)
-
-                if (diff.length === 1) {
-                    let [vertex, sign] = diff[0]
-                    let move = this.engineBoards[i].makeMove(sign, vertex)
-
-                    if (move.getPositionHash() === board.getPositionHash()) {
-                        // Incremental board update possible
-
-                        let color = sign > 0 ? 'B' : 'W'
-                        let point = board.vertex2coord(vertex)
-
-                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
-                        synced = true
-                    }
-                }
-
-                if (synced) continue
-            }
-
-            // Replay
-
-            this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
-            this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
-            this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
-
-            for (let x = 0; x < board.width; x++) {
-                for (let y = 0; y < board.height; y++) {
-                    let vertex = [x, y]
-                    let sign = board.get(vertex)
-                    if (sign === 0) continue
-
-                    let color = sign > 0 ? 'B' : 'W'
-                    let point = board.vertex2coord(vertex)
-
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
-                }
-            }
-
-            this.engineBoards[i] = board
-        }
-
-        this.setState({busy: false})
-    }
-
-    startGeneratingMoves({followUp = false} = {}) {
-        this.closeDrawer()
-
-        if (followUp) {
-            if (!this.state.generatingMoves) return
-        } else {
-            this.setState({generatingMoves: true})
-        }
-
-        let {currentPlayer, rootTree} = this.inferredState
-        let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
-        let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
-        let playerController = this.attachedEngineControllers[playerIndex]
-        let otherController = this.attachedEngineControllers[otherIndex]
-
-        if (playerController == null) {
-            if (otherController != null) {
-                // Switch engines, so the attached engine can play
-
-                let engines = [...this.state.attachedEngines].reverse()
-                this.attachEngines(...engines)
-                ;[playerController, otherController] = [otherController, playerController]
-            } else {
-                return
-            }
-        }
-
-        this.syncEngines()
-        this.setState({busy: true})
-
-        this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
-            let sign = color === 'B' ? 1 : -1
-            let vertex = [-1, -1]
-
-            if (response.content.toLowerCase() !== 'pass') {
-                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
-            }
-
-            if (!this.state.generatingMoves) {
-                this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition).makeMove(sign, vertex)
-                return
-            }
-
-            if (response.content.toLowerCase() === 'resign') {
-                dialog.showMessageBox(`${playerController.name} has resigned.`)
-                this.makeResign()
-                return
-            }
-
-            this.makeMove(vertex, {player: sign})
-            this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
-
-            if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
-                setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
-            } else {
-                this.stopGeneratingMoves()
+                this.setState({representedFilename: filename})
+                this.fileHash = this.generateFileHash()
             }
         })
     }
 
-    stopGeneratingMoves() {
-        this.setState({generatingMoves: false, busy: false})
+    loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
+
+        this.setState({busy: true})
+        if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
+        this.setMode('play')
+
+        setTimeout(() => {
+            let lastProgress = -1
+            let error = false
+            let gameTrees = []
+
+            try {
+                let fileFormatModule = fileformats.getModuleByExtension(extension)
+
+                gameTrees = fileFormatModule.parse(content, evt => {
+                    if (evt.progress - lastProgress < 0.1) return
+                    this.window.setProgressBar(evt.progress)
+                    lastProgress = evt.progress
+                }, ignoreEncoding)
+
+                if (gameTrees.length == 0) throw true
+            } catch (err) {
+                dialog.showMessageBox('This file is unreadable.', 'warning')
+                error = true
+            }
+
+            if (gameTrees.length != 0) {
+                this.setState({busy: false})
+                this.detachEngines()
+                this.setState({
+                    representedFilename: null,
+                    gameTrees,
+                    treePosition: [gameTrees[0], 0]
+                })
+
+                this.treeHash = this.generateTreeHash()
+                this.fileHash = this.generateFileHash()
+            }
+
+            if (gameTrees.length > 1) {
+                setTimeout(() => {
+                    this.setState({openDrawer: 'gamechooser'})
+                }, setting.get('gamechooser.show_delay'))
+            }
+
+            this.window.setProgressBar(-1)
+            callback(error)
+
+            if (!error) this.events.emit('fileLoad')
+        }, setting.get('app.loadgame_delay'))
+    }
+
+    saveFile(filename = null) {
+        if (!filename) {
+            filename = dialog.showSaveDialog({
+                filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+            })
+
+            if (!filename) return false
+        }
+
+        fs.writeFileSync(filename, this.getSGF())
+
+        this.setState({
+            busy: false,
+            representedFilename: filename
+        })
+
+        this.treeHash = this.generateTreeHash()
+        this.fileHash = this.generateFileHash()
+
+        return true
+    }
+
+    getSGF() {
+        let {gameTrees} = this.state
+
+        for (let tree of gameTrees) {
+            Object.assign(tree.nodes[0], {
+                AP: [`${this.appName}:${this.version}`],
+                CA: ['UTF-8']
+            })
+        }
+
+        return sgf.stringify(gameTrees)
+    }
+
+    generateTreeHash() {
+        return this.state.gameTrees.map(tree => gametree.getHash(tree)).join('')
+    }
+
+    generateFileHash() {
+        let {representedFilename} = this.state
+        if (!representedFilename) return null
+
+        try {
+            let content = fs.readFileSync(representedFilename, 'utf8')
+            return helper.hash(content)
+        } catch (err) {}
+
+        return null
+    }
+
+    askForSave() {
+        let hash = this.generateTreeHash()
+
+        if (hash !== this.treeHash) {
+            let answer = dialog.showMessageBox(
+                'Your changes will be lost if you close this file without saving.',
+                'warning',
+                ['Save', 'Don’t Save', 'Cancel'], 2
+            )
+
+            if (answer === 0) return this.saveFile(this.state.representedFilename)
+            else if (answer === 2) return false
+        }
+
+        return true
+    }
+
+    askForReload() {
+        let hash = this.generateFileHash()
+
+        if (hash != null && hash !== this.fileHash) {
+            let answer = dialog.showMessageBox([
+                `This file has been changed outside of ${this.appName}.`,
+                'Do you want to reload the file? Your changes will be lost.'
+            ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
+
+            if (answer === 0) {
+                this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
+            } else {
+                this.treeHash = null
+            }
+
+            this.fileHash = hash
+        }
     }
 
     // Playing
@@ -1050,272 +1032,38 @@ class App extends Component {
         this.events.emit('toolUsed', {tool, vertex, argument})
     }
 
-    // File hashes
+    // Undo Methods
 
-    generateTreeHash() {
-        return this.state.gameTrees.map(tree => gametree.getHash(tree)).join('')
+    setUndoPoint(undoText = 'Undo') {
+        let {treePosition: [tree, index]} = this.state
+        let rootTree = gametree.clone(gametree.getRoot(tree))
+        let level = gametree.getLevel(tree, index)
+
+        this.undoData = [rootTree, level]
+        this.setState({undoable: true, undoText})
     }
 
-    generateFileHash() {
-        let {representedFilename} = this.state
-        if (!representedFilename) return null
-
-        try {
-            let content = fs.readFileSync(representedFilename, 'utf8')
-            return helper.hash(content)
-        } catch (err) {}
-
-        return null
+    clearUndoPoint() {
+        this.undoData = null
+        this.setState({undoable: false})
     }
 
-    askForSave() {
-        let hash = this.generateTreeHash()
-
-        if (hash !== this.treeHash) {
-            let answer = dialog.showMessageBox(
-                'Your changes will be lost if you close this file without saving.',
-                'warning',
-                ['Save', 'Don’t Save', 'Cancel'], 2
-            )
-
-            if (answer === 0) return this.saveFile(this.state.representedFilename)
-            else if (answer === 2) return false
-        }
-
-        return true
-    }
-
-    askForReload() {
-        let hash = this.generateFileHash()
-
-        if (hash != null && hash !== this.fileHash) {
-            let answer = dialog.showMessageBox([
-                `This file has been changed outside of ${this.appName}.`,
-                'Do you want to reload the file? Your changes will be lost.'
-            ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
-
-            if (answer === 0) {
-                this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
-            } else {
-                this.treeHash = null
-            }
-
-            this.fileHash = hash
-        }
-    }
-
-    // File methods
-
-    getEmptyGameTree() {
-        let handicap = setting.get('game.default_handicap')
-        let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
-        let [width, height] = [size[0], size.slice(-1)[0]]
-        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
-
-        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
-        let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
-
-        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
-            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
-
-        return sgf.parse(buffer)[0]
-    }
-
-    newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
-        if (showInfo && this.state.openDrawer === 'info') {
-            this.closeDrawer()
-        }
-
-        this.detachEngines()
-        this.setState(this.state, () => {
-            let emptyTree = this.getEmptyGameTree()
-
-            this.setState({
-                openDrawer: showInfo ? 'info' : null,
-                gameTrees: [emptyTree],
-                treePosition: [emptyTree, 0],
-                representedFilename: null
-            })
-
-            this.treeHash = this.generateTreeHash()
-            this.fileHash = this.generateFileHash()
-
-            if (playSound) sound.playNewGame()
-        })
-    }
-
-    loadFile(filename = null, {suppressAskForSave = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
-        if (!filename) {
-            let result = dialog.showOpenDialog({
-                properties: ['openFile'],
-                filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
-            })
-
-            if (result) filename = result[0]
-            if (!filename) return
-        }
-
-        let {extname} = require('path')
-        let extension = extname(filename).slice(1)
-        let content = fs.readFileSync(filename, {encoding: 'binary'})
-
-        this.loadContent(content, extension, {
-            suppressAskForSave: true,
-            callback: err => {
-                if (err) return
-
-                this.setState({representedFilename: filename})
-                this.fileHash = this.generateFileHash()
-            }
-        })
-    }
-
-    loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
-        this.setState({busy: true})
-        if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
-        this.setMode('play')
-
-        setTimeout(() => {
-            let lastProgress = -1
-            let error = false
-            let gameTrees = []
-
-            try {
-                let fileFormatModule = fileformats.getModuleByExtension(extension)
-
-                gameTrees = fileFormatModule.parse(content, evt => {
-                    if (evt.progress - lastProgress < 0.1) return
-                    this.window.setProgressBar(evt.progress)
-                    lastProgress = evt.progress
-                }, ignoreEncoding)
-
-                if (gameTrees.length == 0) throw true
-            } catch (err) {
-                dialog.showMessageBox('This file is unreadable.', 'warning')
-                error = true
-            }
-
-            if (gameTrees.length != 0) {
-                this.setState({busy: false})
-                this.detachEngines()
-                this.setState({
-                    representedFilename: null,
-                    gameTrees,
-                    treePosition: [gameTrees[0], 0]
-                })
-
-                this.treeHash = this.generateTreeHash()
-                this.fileHash = this.generateFileHash()
-            }
-
-            if (gameTrees.length > 1) {
-                setTimeout(() => {
-                    this.setState({openDrawer: 'gamechooser'})
-                }, setting.get('gamechooser.show_delay'))
-            }
-
-            this.window.setProgressBar(-1)
-            callback(error)
-
-            if (!error) this.events.emit('fileLoad')
-        }, setting.get('app.loadgame_delay'))
-    }
-
-    getSGF() {
-        let {gameTrees} = this.state
-
-        for (let tree of gameTrees) {
-            Object.assign(tree.nodes[0], {
-                AP: [`${this.appName}:${this.version}`],
-                CA: ['UTF-8']
-            })
-        }
-
-        return sgf.stringify(gameTrees)
-    }
-
-    saveFile(filename = null) {
-        if (!filename) {
-            filename = dialog.showSaveDialog({
-                filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
-            })
-
-            if (!filename) return false
-        }
-
-        fs.writeFileSync(filename, this.getSGF())
-
-        this.setState({
-            busy: false,
-            representedFilename: filename
-        })
-
-        this.treeHash = this.generateTreeHash()
-        this.fileHash = this.generateFileHash()
-
-        return true
-    }
-
-    // Find methods
-
-    findPosition(step, condition, callback = helper.noop) {
-        if (isNaN(step)) step = 1
-        else step = step >= 0 ? 1 : -1
+    undo() {
+        if (!this.state.undoable || !this.undoData) return
 
         this.setState({busy: true})
 
         setTimeout(() => {
-            let tp = this.state.treePosition
-            let iterator = gametree.makeHorizontalNavigator(...tp)
+            let [undoRoot, undoLevel] = this.undoData
+            let {treePosition, gameTrees} = this.state
 
-            while (true) {
-                tp = step >= 0 ? iterator.next() : iterator.prev()
+            gameTrees[this.inferredState.gameIndex] = undoRoot
+            treePosition = gametree.navigate(undoRoot, 0, undoLevel)
 
-                if (!tp) {
-                    let root = this.inferredState.rootTree
-
-                    if (step === 1) {
-                        tp = [root, 0]
-                    } else {
-                        let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
-                        tp = sections[sections.length - 1]
-                    }
-
-                    iterator = gametree.makeHorizontalNavigator(...tp)
-                }
-
-                if (helper.vertexEquals(tp, this.state.treePosition) || condition(...tp))
-                    break
-            }
-
-            this.setCurrentTreePosition(...tp)
+            this.setCurrentTreePosition(...treePosition)
+            this.clearUndoPoint()
             this.setState({busy: false})
-            callback()
-        }, setting.get('find.delay'))
-    }
-
-    findHotspot(step, callback = helper.noop) {
-        this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
-    }
-
-    findMove(step, {vertex = null, text = ''}, callback = helper.noop) {
-        if (vertex == null && text.trim() === '') return
-        let point = vertex ? sgf.vertex2point(vertex) : null
-
-        this.findPosition(step, (tree, index) => {
-            let node = tree.nodes[index]
-            let cond = (prop, value) => prop in node
-                && node[prop][0].toLowerCase().includes(value.toLowerCase())
-
-            return (!point || ['B', 'W'].some(x => cond(x, point)))
-                && (!text || cond('C', text) || cond('N', text))
-        }, callback)
+        }, setting.get('edit.undo_delay'))
     }
 
     // Navigation
@@ -1337,24 +1085,6 @@ class App extends Component {
         })
 
         this.events.emit('navigate')
-    }
-
-    startAutoscrolling(step) {
-        let minDelay = setting.get('autoscroll.min_interval')
-        let diff = setting.get('autoscroll.diff')
-
-        let scroll = (delay = null) => {
-            this.goStep(step)
-
-            clearTimeout(this.autoscrollId)
-            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
-        }
-
-        scroll(setting.get('autoscroll.max_interval'))
-    }
-
-    stopAutoscrolling() {
-        clearTimeout(this.autoscrollId)
     }
 
     goStep(step) {
@@ -1458,41 +1188,63 @@ class App extends Component {
         }
     }
 
-    // Undo methods
+    // Find Methods
 
-    setUndoPoint(undoText = 'Undo') {
-        let {treePosition: [tree, index]} = this.state
-        let rootTree = gametree.clone(gametree.getRoot(tree))
-        let level = gametree.getLevel(tree, index)
-
-        this.undoData = [rootTree, level]
-        this.setState({undoable: true, undoText})
-    }
-
-    clearUndoPoint() {
-        this.undoData = null
-        this.setState({undoable: false})
-    }
-
-    undo() {
-        if (!this.state.undoable || !this.undoData) return
+    findPosition(step, condition, callback = helper.noop) {
+        if (isNaN(step)) step = 1
+        else step = step >= 0 ? 1 : -1
 
         this.setState({busy: true})
 
         setTimeout(() => {
-            let [undoRoot, undoLevel] = this.undoData
-            let {treePosition, gameTrees} = this.state
+            let tp = this.state.treePosition
+            let iterator = gametree.makeHorizontalNavigator(...tp)
 
-            gameTrees[this.inferredState.gameIndex] = undoRoot
-            treePosition = gametree.navigate(undoRoot, 0, undoLevel)
+            while (true) {
+                tp = step >= 0 ? iterator.next() : iterator.prev()
 
-            this.setCurrentTreePosition(...treePosition)
-            this.clearUndoPoint()
+                if (!tp) {
+                    let root = this.inferredState.rootTree
+
+                    if (step === 1) {
+                        tp = [root, 0]
+                    } else {
+                        let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
+                        tp = sections[sections.length - 1]
+                    }
+
+                    iterator = gametree.makeHorizontalNavigator(...tp)
+                }
+
+                if (helper.vertexEquals(tp, this.state.treePosition) || condition(...tp))
+                    break
+            }
+
+            this.setCurrentTreePosition(...tp)
             this.setState({busy: false})
-        }, setting.get('edit.undo_delay'))
+            callback()
+        }, setting.get('find.delay'))
     }
 
-    // Node actions
+    findHotspot(step, callback = helper.noop) {
+        this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
+    }
+
+    findMove(step, {vertex = null, text = ''}, callback = helper.noop) {
+        if (vertex == null && text.trim() === '') return
+        let point = vertex ? sgf.vertex2point(vertex) : null
+
+        this.findPosition(step, (tree, index) => {
+            let node = tree.nodes[index]
+            let cond = (prop, value) => prop in node
+                && node[prop][0].toLowerCase().includes(value.toLowerCase())
+
+            return (!point || ['B', 'W'].some(x => cond(x, point)))
+                && (!text || cond('C', text) || cond('N', text))
+        }, callback)
+    }
+
+    // Node Actions
 
     getGameInfo(tree) {
         let root = gametree.getRoot(tree)
@@ -2000,6 +1752,234 @@ class App extends Component {
 
         let menu = Menu.buildFromTemplate(template)
         menu.popup(this.window, Object.assign({async: true}, options))
+    }
+
+    // GTP Engines
+
+    attachEngines(...engines) {
+        let {engineCommands, attachedEngines} = this.state
+
+        if (helper.vertexEquals([engines[1], engines[0]], attachedEngines)) {
+            // Just swap engines
+
+            this.attachedEngineControllers.reverse()
+            this.engineBoards.reverse()
+
+            this.setState({
+                engineCommands: engineCommands.reverse(),
+                attachedEngines: engines
+            })
+
+            return
+        }
+
+        let command = name => new gtp.Command(null, name)
+
+        for (let i = 0; i < attachedEngines.length; i++) {
+            if (attachedEngines[i] != engines[i]) {
+                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
+
+                try {
+                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
+                    this.attachedEngineControllers[i] = controller
+                    this.engineBoards[i] = null
+
+                    this.sendGTPCommand(controller, command('name'))
+                    this.sendGTPCommand(controller, command('version'))
+                    this.sendGTPCommand(controller, command('protocol_version'))
+                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
+                        engineCommands[i] = response.content.split('\n')
+                    })
+
+                    controller.on('stderr', ({content}) => {
+                        this.setState(({consoleLog}) => ({
+                            consoleLog: [...consoleLog, [
+                                i === 0 ? 1 : -1,
+                                controller.name,
+                                null,
+                                new gtp.Response(null, content, false, true)
+                            ]]
+                        }))
+                    })
+
+                    this.setState({engineCommands})
+                } catch (err) {
+                    this.attachedEngineControllers[i] = null
+                    engines[i] = null
+                }
+            }
+        }
+
+        this.setState({attachedEngines: engines})
+        this.syncEngines()
+    }
+
+    detachEngines() {
+        this.attachEngines(null, null)
+    }
+
+    sendGTPCommand(controller, command, callback = helper.noop) {
+        if (controller == null) return
+
+        let {consoleLog} = this.state
+        let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
+        if (sign > 1) sign = 0
+        let entry = [sign, controller.name, command]
+        let maxLength = setting.get('console.max_history_count')
+
+        let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
+        newLog.push(entry)
+
+        this.setState({consoleLog: newLog})
+
+        controller.sendCommand(command, ({response}) => {
+            this.setState(({consoleLog}) => {
+                let index = consoleLog.indexOf(entry)
+                if (index === -1) return {}
+
+                let newLog = [...consoleLog]
+                newLog[index] = [...entry, response]
+
+                return {consoleLog: newLog}
+            })
+
+            callback({response, command})
+        })
+    }
+
+    syncEngines() {
+        if (this.attachedEngineControllers.every(x => x == null)) return
+
+        let board = gametree.getBoard(...this.state.treePosition)
+
+        if (!board.isSquare()) {
+            dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
+            return this.detachEngines()
+        } else if (!board.isValid()) {
+            dialog.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
+            return this.detachEngines()
+        }
+
+        this.setState({busy: true})
+
+        for (let i = 0; i < this.attachedEngineControllers.length; i++) {
+            if (this.attachedEngineControllers[i] == null
+                || this.engineBoards[i] != null
+                && board.getPositionHash() === this.engineBoards[i].getPositionHash()) continue
+
+            let controller = this.attachedEngineControllers[i]
+
+            if (this.engineBoards[i] != null) {
+                // Diff boards
+
+                let synced = false
+                let diff = this.engineBoards[i].diff(board).filter(([, sign]) => sign !== 0)
+
+                if (diff.length === 1) {
+                    let [vertex, sign] = diff[0]
+                    let move = this.engineBoards[i].makeMove(sign, vertex)
+
+                    if (move.getPositionHash() === board.getPositionHash()) {
+                        // Incremental board update possible
+
+                        let color = sign > 0 ? 'B' : 'W'
+                        let point = board.vertex2coord(vertex)
+
+                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                        synced = true
+                    }
+                }
+
+                if (synced) continue
+            }
+
+            // Replay
+
+            this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
+            this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
+            this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
+
+            for (let x = 0; x < board.width; x++) {
+                for (let y = 0; y < board.height; y++) {
+                    let vertex = [x, y]
+                    let sign = board.get(vertex)
+                    if (sign === 0) continue
+
+                    let color = sign > 0 ? 'B' : 'W'
+                    let point = board.vertex2coord(vertex)
+
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                }
+            }
+
+            this.engineBoards[i] = board
+        }
+
+        this.setState({busy: false})
+    }
+
+    startGeneratingMoves({followUp = false} = {}) {
+        this.closeDrawer()
+
+        if (followUp) {
+            if (!this.state.generatingMoves) return
+        } else {
+            this.setState({generatingMoves: true})
+        }
+
+        let {currentPlayer, rootTree} = this.inferredState
+        let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
+        let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
+        let playerController = this.attachedEngineControllers[playerIndex]
+        let otherController = this.attachedEngineControllers[otherIndex]
+
+        if (playerController == null) {
+            if (otherController != null) {
+                // Switch engines, so the attached engine can play
+
+                let engines = [...this.state.attachedEngines].reverse()
+                this.attachEngines(...engines)
+                ;[playerController, otherController] = [otherController, playerController]
+            } else {
+                return
+            }
+        }
+
+        this.syncEngines()
+        this.setState({busy: true})
+
+        this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
+            let sign = color === 'B' ? 1 : -1
+            let vertex = [-1, -1]
+
+            if (response.content.toLowerCase() !== 'pass') {
+                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
+            }
+
+            if (!this.state.generatingMoves) {
+                this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition).makeMove(sign, vertex)
+                return
+            }
+
+            if (response.content.toLowerCase() === 'resign') {
+                dialog.showMessageBox(`${playerController.name} has resigned.`)
+                this.makeResign()
+                return
+            }
+
+            this.makeMove(vertex, {player: sign})
+            this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
+
+            if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
+                setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
+            } else {
+                this.stopGeneratingMoves()
+            }
+        })
+    }
+
+    stopGeneratingMoves() {
+        this.setState({generatingMoves: false, busy: false})
     }
 
     // Render
