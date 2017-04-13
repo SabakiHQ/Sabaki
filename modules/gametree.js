@@ -15,14 +15,10 @@ exports.new = function() {
 }
 
 exports.clone = function(tree, parent = null) {
-    let c = {
-        id: helper.getId(),
-        nodes: [],
-        subtrees: [],
+    let c = Object.assign(exports.new(), {
         current: tree.current,
-        parent,
-        collapsed: tree.collapsed
-    }
+        parent
+    })
 
     for (let node of tree.nodes) {
         let cn = {}
@@ -30,7 +26,7 @@ exports.clone = function(tree, parent = null) {
         for (let key in node) {
             if (key === 'board') continue
 
-            if (Object.prototype.toString.call(node[key]) === '[object Array]') {
+            if (Array.isArray(node[key])) {
                 cn[key] = [...node[key]]
             } else {
                 cn[key] = node[key]
@@ -81,6 +77,16 @@ exports.getCurrentHeight = function(tree) {
     return height
 }
 
+exports.getTreesRecursive = function(tree) {
+    let result = [tree]
+
+    for (let subtree of tree.subtrees) {
+        result.push(...exports.getTreesRecursive(subtree))
+    }
+
+    return result
+}
+
 exports.getLevel = function(tree, index) {
     return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
 }
@@ -96,48 +102,6 @@ exports.getSection = function(tree, level) {
     }
 
     return sections
-}
-
-exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
-    if (!matrix) matrix = [...Array(exports.getHeight(tree))].map(_ => [])
-
-    let hasCollisions = true
-    while (hasCollisions) {
-        hasCollisions = false
-
-        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
-
-            hasCollisions = true
-            xshift++
-            break
-        }
-    }
-
-    for (let y = 0; y < tree.nodes.length; y++) {
-        matrix[yshift + y].length = xshift + 1
-        matrix[yshift + y][xshift] = [tree, y]
-        dict[tree.id + '-' + y] = [xshift, yshift + y]
-    }
-
-    if (!tree.collapsed) {
-        for (let k = 0; k < tree.subtrees.length; k++) {
-            let subtree = tree.subtrees[k]
-            exports.getMatrixDict(subtree, matrix, dict, xshift + k, yshift + tree.nodes.length)
-        }
-    }
-
-    return [matrix, dict]
-}
-
-exports.getTreesRecursive = function(tree) {
-    let result = [tree]
-
-    for (let subtree of tree.subtrees) {
-        result.push(...exports.getTreesRecursive(subtree))
-    }
-
-    return result
 }
 
 exports.navigate = function(tree, index, step) {
@@ -207,8 +171,9 @@ exports.split = function(tree, index) {
     newtree.current = 0
     tree.parent = newtree
 
-    if (newtree.parent)
+    if (newtree.parent) {
         newtree.parent.subtrees[newtree.parent.subtrees.indexOf(tree)] = newtree
+    }
 
     return newtree
 }
@@ -227,6 +192,48 @@ exports.reduce = function(tree) {
     return tree
 }
 
+exports.onCurrentTrack = function(tree) {
+    return !tree.parent
+    || tree.parent.subtrees[tree.parent.current] == tree
+    && exports.onCurrentTrack(tree.parent)
+}
+
+exports.onMainTrack = function(tree) {
+    return !tree.parent
+    || tree.parent.subtrees[0] == tree
+    && exports.onMainTrack(tree.parent)
+}
+
+exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
+    if (!matrix) matrix = [...Array(exports.getHeight(tree))].map(_ => [])
+
+    let hasCollisions = true
+    while (hasCollisions) {
+        hasCollisions = false
+
+        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
+
+            hasCollisions = true
+            xshift++
+            break
+        }
+    }
+
+    for (let y = 0; y < tree.nodes.length; y++) {
+        matrix[yshift + y].length = xshift + 1
+        matrix[yshift + y][xshift] = [tree, y]
+        dict[tree.id + '-' + y] = [xshift, yshift + y]
+    }
+
+    for (let k = 0; k < tree.subtrees.length; k++) {
+        let subtree = tree.subtrees[k]
+        exports.getMatrixDict(subtree, matrix, dict, xshift + k, yshift + tree.nodes.length)
+    }
+
+    return [matrix, dict]
+}
+
 exports.getMatrixWidth = function(y, matrix) {
     let keys = [...Array(10)]
         .map((_, i) => i + y - 4)
@@ -243,19 +250,7 @@ exports.getMatrixWidth = function(y, matrix) {
     return [width, padding]
 }
 
-exports.onCurrentTrack = function(tree) {
-    return !tree.parent
-    || tree.parent.subtrees[tree.parent.current] == tree
-    && exports.onCurrentTrack(tree.parent)
-}
-
-exports.onMainTrack = function(tree) {
-    return !tree.parent
-    || tree.parent.subtrees[0] == tree
-    && exports.onMainTrack(tree.parent)
-}
-
-exports.getBoard = function(tree, index = 0, baseboard = null) {
+exports.getBoard = function(tree, index, baseboard = null) {
     if (index >= tree.nodes.length) return null
 
     let node = tree.nodes[index]
@@ -421,7 +416,6 @@ exports.getJson = function(tree) {
 exports.fromJson = function(json) {
     let addInformation = tree => {
         tree.id = helper.getId()
-        tree.collapsed = false
 
         if (tree.subtrees.length > 0) tree.current = 0
 

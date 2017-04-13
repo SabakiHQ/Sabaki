@@ -79,7 +79,6 @@ let defaults = {
     'graph.grid_size': 22,
     'graph.node_active_color': '#f76047',
     'graph.node_bookmark_color': '#c678dd',
-    'graph.node_collapsed_color': '#333',
     'graph.node_color': '#eee',
     'graph.node_inactive_color': '#777',
     'graph.node_comment_color': '#6bb1ff',

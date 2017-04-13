@@ -82,7 +82,7 @@ class LeftSidebar extends Component {
             }),
 
             h(GtpConsole, {
-                board: gametree.getBoard(gametree.getRoot(...treePosition)),
+                board: gametree.getBoard(gametree.getRoot(...treePosition), 0),
                 consoleLog,
                 attachedEngines,
                 engineCommands,

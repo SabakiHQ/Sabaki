@@ -1332,7 +1332,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(root)
+                        let board = gametree.getBoard(root, 0)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
@@ -1953,7 +1953,7 @@ class App extends Component {
             let vertex = [-1, -1]
 
             if (response.content.toLowerCase() !== 'pass') {
-                vertex = gametree.getBoard(rootTree).coord2vertex(response.content)
+                vertex = gametree.getBoard(rootTree, 0).coord2vertex(response.content)
             }
 
             if (!this.state.generatingMoves) {

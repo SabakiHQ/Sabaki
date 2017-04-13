@@ -345,8 +345,6 @@ class GameGraph extends Component {
                         ? setting.get('graph.node_bookmark_color')
                     : commentProperties.some(x => x in node)
                         ? setting.get('graph.node_comment_color')
-                    : tree.collapsed && tree.subtrees.length > 0 && index === tree.nodes.length - 1
-                        ? setting.get('graph.node_collapsed_color')
                     : setting.get('graph.node_color')
 
                 let left = x * gridSize
