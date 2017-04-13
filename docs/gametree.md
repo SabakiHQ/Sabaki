@@ -1,7 +1,5 @@
 # Game Tree
 
-## Introduction
-
 The game trees in Sabaki are represented by simple JavaScript objects with the following properties:
 
 * `id` `<Integer>` - A unique id of the tree

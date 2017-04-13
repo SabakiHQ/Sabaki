@@ -1,5 +1,5 @@
 const {ipcRenderer, remote} = require('electron')
-const {app, dialog} = remote || require('electron')
+const {app, dialog} = remote
 const helper = require('./helper')
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {

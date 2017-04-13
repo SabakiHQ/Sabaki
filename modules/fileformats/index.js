@@ -1,4 +1,4 @@
-const path = require('path')
+const {extname} = require('path')
 
 let sgf = require('./sgf')
 let ngf = require('./ngf')
@@ -24,7 +24,7 @@ exports.getModuleByExtension = function(extension) {
 }
 
 exports.parseFile = function(filename, onProgress) {
-    let extension = path.extname(filename).slice(1)
+    let extension = extname(filename).slice(1)
     let m = exports.getModuleByExtension(extension)
 
     return m.parseFile(filename, onProgress)
