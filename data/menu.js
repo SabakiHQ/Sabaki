@@ -44,16 +44,21 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'Load from &Clipboard',
-                click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
-            },
-            {
-                label: 'Copy &to Clipboard',
-                click: () => clipboard.writeText(sabaki.getSGF())
-            },
-            {
-                label: 'Copy &ASCII Diagram',
-                click: () => clipboard.writeText(gametree.getBoard(...sabaki.state.treePosition).generateAscii())
+                label: '&Clipboard',
+                submenu: [
+                    {
+                        label: '&Load SGF',
+                        click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
+                    },
+                    {
+                        label: '&Copy SGF',
+                        click: () => clipboard.writeText(sabaki.getSGF())
+                    },
+                    {
+                        label: 'Copy &ASCII Diagram',
+                        click: () => clipboard.writeText(gametree.getBoard(...sabaki.state.treePosition).generateAscii())
+                    }
+                ]
             },
             {type: 'separator'},
             {
