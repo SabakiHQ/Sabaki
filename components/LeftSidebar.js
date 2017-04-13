@@ -1,6 +1,7 @@
 const {h, Component} = require('preact')
 const GtpConsole = require('./GtpConsole')
 
+const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
 const setting = require('../modules/setting')
 
@@ -67,7 +68,7 @@ class LeftSidebar extends Component {
         })
     }
 
-    render({leftSidebarWidth, consoleLog, attachedEngines, engineCommands}) {
+    render({treePosition, leftSidebarWidth, consoleLog, attachedEngines, engineCommands}) {
         return h('section',
             {
                 ref: el => this.element = el,
@@ -81,6 +82,7 @@ class LeftSidebar extends Component {
             }),
 
             h(GtpConsole, {
+                board: gametree.getBoard(gametree.getRoot(...treePosition)),
                 consoleLog,
                 attachedEngines,
                 engineCommands,

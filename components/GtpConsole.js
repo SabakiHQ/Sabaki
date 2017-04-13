@@ -11,7 +11,7 @@ class ConsoleCommandEntry extends Component {
         return false
     }
 
-    render({sign, name, command}) {
+    render({board, sign, name, command}) {
         return h('li', {class: 'command'},
             h('pre', {},
                 h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
@@ -21,6 +21,7 @@ class ConsoleCommandEntry extends Component {
 
                 h(ContentDisplay, {
                     tag: 'span',
+                    board,
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(command.arguments.join(' ')
                             .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
@@ -37,7 +38,7 @@ class ConsoleResponseEntry extends Component {
             || response !== this.props.response
     }
 
-    render({response, waiting}) {
+    render({board, response, waiting}) {
         return h('li', {class: classNames({response: true, waiting})},
             !waiting && response != null
 
@@ -51,6 +52,7 @@ class ConsoleResponseEntry extends Component {
                 h(ContentDisplay, {
                     tag: 'span',
                     class: response.internal ? 'internal' : '',
+                    board,
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(response.content
                             .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
@@ -160,7 +162,7 @@ class GtpConsole extends Component {
         return ''
     }
 
-    render({consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
+    render({board, consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
         let selectedEngine = attachedEngines[engineIndex]
         let selectWidth = Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) * 10 + 15
         let hasEngines = attachedEngines.some(x => x != null)
@@ -176,11 +178,11 @@ class GtpConsole extends Component {
 
                 consoleLog.map(([sign, name, command, response], i) => [
                     command
-                    ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
+                    ? h(ConsoleCommandEntry, {key: command.internalId, board, sign, name, command})
                     : !command && (i == 0 || !helper.shallowEquals([sign, name], consoleLog[i - 1].slice(0, 2)))
-                    ? h(ConsoleCommandEntry, {sign, name, command: new gtp.Command(null, '')})
+                    ? h(ConsoleCommandEntry, {board, sign, name, command: new gtp.Command(null, '')})
                     : null,
-                    h(ConsoleResponseEntry, {response, waiting: response == null})
+                    h(ConsoleResponseEntry, {board, response, waiting: response == null})
                 ])
             ),
 

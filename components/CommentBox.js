@@ -216,12 +216,13 @@ class CommentText extends Component {
             || board.height !== this.props.board.height
     }
 
-    render({comment}) {
+    render({board, comment}) {
         return h('div', {
             ref: el => this.element = el,
             class: 'comment'
         }, h(ContentDisplay, {
             tag: 'div',
+            board,
             dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
         }))
     }

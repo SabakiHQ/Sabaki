@@ -441,7 +441,7 @@ let data = [
 
 let findMenuItem = str => data.find(item => item.label.replace('&', '') === str)
 
-// Change menu for macOS
+// Modify menu for macOS
 
 if (process.platform === 'darwin') {
     // Add 'App' menu

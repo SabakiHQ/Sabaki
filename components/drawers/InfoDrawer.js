@@ -50,9 +50,9 @@ class InfoDrawer extends Component {
             sabaki.attachEngines(...this.state.engines)
 
             sabaki.setState(sabaki.state, () => {
-                let index = sabaki.inferredState.currentPlayer > 0 ? 0 : 1
+                let i = this.props.currentPlayer > 0 ? 0 : 1
 
-                if (sabaki.attachedEngineControllers[index] != null) {
+                if (sabaki.attachedEngineControllers[i] != null) {
                     sabaki.startGeneratingMoves()
                 }
             })
