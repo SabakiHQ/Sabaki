@@ -16,7 +16,7 @@ exports.readShapes = function(filename) {
                 let vs = sgf.compressed2list(value)
 
                 for (let v of vs) {
-                    if (!points.some(w => w[0] == v[0] && w[1] == v[1]))
+                    if (!points.some(w => helper.vertexEquals(w, v)))
                         points.push([...v, 0])
                 }
             }
@@ -46,9 +46,9 @@ exports.cornerMatch = function(points, target) {
         let representatives = target.getSymmetries([x, y])
 
         for (let i = 0; i < hypotheses.length; i++) {
-            if (hypotheses[i] && target.get(representatives[i]) != sign)
+            if (hypotheses[i] && target.get(representatives[i]) !== sign)
                 hypotheses[i] = false
-            if (hypothesesInvert[i] && target.get(representatives[i]) != -sign)
+            if (hypothesesInvert[i] && target.get(representatives[i]) !== -sign)
                 hypothesesInvert[i] = false
         }
 
@@ -63,14 +63,14 @@ exports.cornerMatch = function(points, target) {
 exports.shapeMatch = function(shape, board, vertex, corner = false) {
     if (!board.hasVertex(vertex)) return null
     let sign = board.get(vertex)
-    if (sign == 0) return null
+    if (sign === 0) return null
 
     for (let anchor of shape.candidates) {
         let hypotheses = [...Array(8)].map(() => true)
 
-        // Hypothesize vertex == anchor
+        // Hypothesize vertex === anchor
 
-        if (corner && board.getSymmetries(anchor).every(([x, y]) => x != vertex[0] || y != vertex[1]))
+        if (corner && board.getSymmetries(anchor).every(([x, y]) => x !== vertex[0] || y !== vertex[1]))
             continue
 
         for (let j = 0; j < shape.points.length; j++) {
@@ -82,7 +82,7 @@ exports.shapeMatch = function(shape, board, vertex, corner = false) {
                 if (!hypotheses[k]) continue
                 let w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
-                if (!board.hasVertex(w) || board.get(w) != s * sign)
+                if (!board.hasVertex(w) || board.get(w) !== s * sign)
                     hypotheses[k] = false
             }
 

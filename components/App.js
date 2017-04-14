@@ -92,12 +92,12 @@ class App extends Component {
             onInputBoxCancel: helper.noop
         }
 
+        this.events = new EventEmitter()
         this.appName = app.getName()
         this.version = app.getVersion()
-        this.events = new EventEmitter()
         this.window = remote.getCurrentWindow()
-        this.treeHash = this.generateTreeHash()
 
+        this.treeHash = this.generateTreeHash()
         this.attachedEngineControllers = [null, null]
         this.engineBoards = [null, null]
 
