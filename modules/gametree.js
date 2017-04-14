@@ -212,7 +212,7 @@ exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, ysh
         hasCollisions = false
 
         for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
+            if (xshift >= matrix[yshift + y].length - (y === tree.nodes.length)) continue
 
             hasCollisions = true
             xshift++

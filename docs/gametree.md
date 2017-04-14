@@ -54,10 +54,10 @@ Returns an array, consisting of `tree` and all of its descendant trees.
 * `tree` `<GameTree>`
 * `index` `<Integer>`
 
-### gametree.getSection(tree, index)
+### gametree.getSection(tree, level)
 
 * `tree` `<GameTree>`
-* `index` `<Integer>`
+* `level` `<Integer>`
 
 ### gametree.navigate(tree, index, step)
 
