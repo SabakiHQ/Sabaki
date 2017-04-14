@@ -28,7 +28,7 @@ class Board {
     }
 
     clone() {
-        return this.makeMove(0)
+        return new Board(this.width, this.height, this.arrangement, this.captures)
     }
 
     diff(board) {
@@ -390,7 +390,7 @@ class Board {
     }
 
     makeMove(sign, vertex) {
-        let move = new Board(this.width, this.height, this.arrangement, this.captures)
+        let move = this.clone()
 
         if (sign === 0 || !this.hasVertex(vertex)) return move
 
