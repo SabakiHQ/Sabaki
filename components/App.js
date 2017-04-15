@@ -13,6 +13,8 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 
 const Board = require('../modules/board')
+const boardmatcher = require('../modules/boardmatcher')
+const deadstones = require('../modules/deadstones')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
@@ -103,7 +105,8 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, dialog, fileformats, gametree, gtp, helper, setting, sound}
+        this.modules = {Board, boardmatcher, deadstones, dialog,
+            fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
 

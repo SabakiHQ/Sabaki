@@ -9,8 +9,6 @@ const setting = require('../modules/setting')
 const {sgf} = require('../modules/fileformats')
 const Board = require('../modules/board')
 
-let shapes = boardmatcher.readShapes(__dirname + '/../data/shapes.sgf')
-
 class CommentTitle extends Component {
     constructor() {
         super()
@@ -88,51 +86,7 @@ class CommentTitle extends Component {
         else
             return ''
 
-        if (!board.hasVertex(vertex)) return 'Pass'
-
-        let sign = board.get(vertex)
-        let neighbors = board.getNeighbors(vertex)
-
-        // Check atari
-
-        if (neighbors.some(v => board.get(v) === -sign && board.getLiberties(v).length === 1))
-            return 'Atari'
-
-        // Check connection
-
-        let friendly = neighbors.filter(v => board.get(v) === sign)
-        if (friendly.length === neighbors.length) return 'Fill'
-        if (friendly.length >= 2) return 'Connect'
-
-        // Match shape
-
-        for (let shape of shapes) {
-            if ('size' in shape && (board.width !== board.height || board.width !== shape.size))
-                continue
-
-            let corner = 'type' in shape && shape.type === 'corner'
-
-            if (boardmatcher.shapeMatch(shape, board, vertex, corner))
-                return shape.name
-        }
-
-        if (friendly.length === 1) return 'Stretch'
-
-        // Determine position to edges
-
-        if (vertex[0] === (board.width - 1) / 2 && vertex[1] === (board.height - 1) / 2)
-            return 'Tengen'
-
-        let diff = board.getCanonicalVertex(vertex).map(x => x + 1)
-
-        if ((diff[0] !== 4 || diff[1] !== 4)
-        && board.getHandicapPlacement(9).some(v => helper.vertexEquals(v, vertex)))
-            return 'Hoshi'
-
-        if (diff[1] <= 6)
-            return diff.join('-') + ' point'
-
-        return ''
+        return boardmatcher.getMoveInterpretation(board, vertex) || ''
     }
 
     render({

@@ -11,6 +11,8 @@ This documentation is incomplete and a work in progress.
 * [Sabaki Object](sabaki.md)
 * [Game Tree](gametree.md)
 * [Board](board.md)
+* [Board Matcher](boardmatcher.md)
+* [Dead Stones](deadstones.md)
 * [Dialog](dialog.md)
 * [File Formats](fileformats.md)
 * [Helper](helper.md)
