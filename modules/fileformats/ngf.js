@@ -11,7 +11,6 @@ exports.meta = {
 }
 
 exports.parse = function (content) {
-
     // NGF files have a huge amount of ASCII-looking text. To help
     // the detector, we just send it the first few lines.
 
@@ -116,7 +115,6 @@ exports.parse = function (content) {
     root.SZ = [boardsize]
 
     if (handicap >= 2) {
-
         root.HA = [handicap]
         root.AB = []
 
@@ -159,7 +157,6 @@ exports.parse = function (content) {
     // But some older files have less headers and start moves earlier.
 
     for (let n = 0; n < lines.length; n++) {
-
         let line = lines[n].trim()
 
         if (line.length >= 7) {
