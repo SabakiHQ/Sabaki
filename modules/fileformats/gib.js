@@ -80,7 +80,7 @@ function parsePlayerName(raw) {
     }
 }
 
-exports.parse = function (content) {
+exports.parse = function(content) {
     let encoding = 'utf8'
     let detected = jschardet.detect(content)
     if (detected.confidence > 0.2) {
@@ -224,6 +224,6 @@ exports.parse = function (content) {
     return [tree]
 }
 
-exports.parseFile = function (filename) {
+exports.parseFile = function(filename) {
     return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }

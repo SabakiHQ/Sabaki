@@ -21,8 +21,8 @@ exports.meta = {
     extensions: ['sgf']
 }
 
-exports.tokenize = function(input) {
-    input = helper.normalizeEndings(input)
+exports.tokenize = function(contents) {
+    contents = helper.normalizeEndings(contents)
 
     let tokens = []
     let rules = {
@@ -33,12 +33,12 @@ exports.tokenize = function(input) {
         c_value_type: /^\[([^\\\]]|\\[^])*\]/
     }
 
-    while (input.length > 0) {
+    while (contents.length > 0) {
         let token = null
         let length = 1
 
         for (let type in rules) {
-            let matches = rules[type].exec(input)
+            let matches = rules[type].exec(contents)
             if (!matches) continue
 
             let value = matches[0]
@@ -49,7 +49,7 @@ exports.tokenize = function(input) {
         }
 
         if (token && token[0] !== 'ignore') tokens.push(token)
-        input = input.substr(length)
+        contents = contents.substr(length)
     }
 
     return tokens
@@ -135,8 +135,8 @@ exports.parseTokens = function(tokens, onProgress, encoding = defaultEncoding) {
     return tree.subtrees
 }
 
-exports.parse = function(input, onProgress, ignoreEncoding = false) {
-    let tokens = exports.tokenize(input)
+exports.parse = function(contents, onProgress, ignoreEncoding = false) {
+    let tokens = exports.tokenize(contents)
 
     let encoding = ignoreEncoding ? null : defaultEncoding
 
@@ -151,8 +151,8 @@ exports.parse = function(input, onProgress, ignoreEncoding = false) {
         }
 
         if (!foundEncoding) {
-            let detected = jschardet.detect(input)
-            
+            let detected = jschardet.detect(contents)
+
             if (detected.confidence > 0.2) {
                 encoding = detected.encoding
             }
@@ -163,8 +163,8 @@ exports.parse = function(input, onProgress, ignoreEncoding = false) {
 }
 
 exports.parseFile = function(filename, onProgress, ignoreEncoding = false) {
-    let input = fs.readFileSync(filename, {encoding: 'binary'})
-    return exports.parse(input, onProgress, ignoreEncoding)
+    let contents = fs.readFileSync(filename, {encoding: 'binary'})
+    return exports.parse(contents, onProgress, ignoreEncoding)
 }
 
 exports.string2dates = function(input) {
@@ -281,7 +281,7 @@ exports.escapeString = function(input) {
 }
 
 exports.unescapeString = function(input) {
-    let result = ''
+    let result = []
     let inBackslash = false
 
     input = helper.normalizeEndings(input)
@@ -289,16 +289,16 @@ exports.unescapeString = function(input) {
     for (let i = 0; i < input.length; i++) {
         if (!inBackslash) {
             if (input[i] !== '\\')
-                result += input[i]
+                result.push(input[i])
             else if (input[i] === '\\')
                 inBackslash = true
         } else {
             if (input[i] !== '\n')
-                result += input[i]
+                result.push(input[i])
 
             inBackslash = false
         }
     }
 
-    return result
+    return result.join('')
 }

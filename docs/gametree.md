@@ -5,8 +5,8 @@ The game trees in Sabaki are represented by simple JavaScript objects with the f
 * `id` `<Integer>` - A unique id of the tree
 * `nodes` `<Object[]>`
 * `subtrees` `<GameTree[]>`
-* `current` `<Integer>` or `null` - The index of the corresponding subtree that is currently selected or `null` if `subtrees` is empty
-* `parent` `<GameTree>` or `null`
+* `current` `<Integer>` | `<Null>` - The index of the corresponding subtree that is currently selected or `null` if `subtrees` is empty
+* `parent` `<GameTree>` | `<Null>`
 
 The nodes are also simple objects. Their keys correspond to node properties which closely matches the [SGF specification](http://www.red-bean.com/sgf/). Each key has an array of strings as value.
 

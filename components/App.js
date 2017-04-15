@@ -413,6 +413,7 @@ class App extends Component {
 
             if (gameTrees.length != 0) {
                 this.setState({busy: false})
+                this.clearUndoPoint()
                 this.detachEngines()
                 this.setState({
                     representedFilename: null,
@@ -426,7 +427,7 @@ class App extends Component {
 
             if (gameTrees.length > 1) {
                 setTimeout(() => {
-                    this.setState({openDrawer: 'gamechooser'})
+                    this.openDrawer('gamechooser')
                 }, setting.get('gamechooser.show_delay'))
             }
 

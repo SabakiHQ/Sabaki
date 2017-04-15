@@ -10,7 +10,7 @@ exports.meta = {
     extensions: ['ngf']
 }
 
-exports.parse = function (content) {
+exports.parse = function(content) {
     // NGF files have a huge amount of ASCII-looking text. To help
     // the detector, we just send it the first few lines.
 
@@ -185,6 +185,6 @@ exports.parse = function (content) {
     return [tree]
 }
 
-exports.parseFile = function (filename) {
+exports.parseFile = function(filename) {
     return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }

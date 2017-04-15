@@ -353,7 +353,7 @@ class CommentBox extends Component {
                             name: 'title',
                             value: title,
                             placeholder: 'Title',
-                            onInput: this.handleCommentInput
+                            onChange: this.handleCommentInput
                         })
                     )
                 ),
@@ -362,7 +362,7 @@ class CommentBox extends Component {
                     ref: el => this.textareaElement = el,
                     placeholder: 'Comment',
                     value: comment,
-                    onInput: this.handleCommentInput
+                    onChange: this.handleCommentInput
                 })
             )
         )
