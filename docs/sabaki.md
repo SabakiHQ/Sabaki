@@ -234,7 +234,7 @@ Jumps to the position specified by `tree` and `index`.
 
 ### Node Actions
 
-### sabaki.getGameInfo(tree)
+#### sabaki.getGameInfo(tree)
 
 * `tree` [`<GameTree>`](gametree.md)
 
@@ -252,7 +252,7 @@ Returns an object with the following values:
 * `handicap` `<Integer>`
 * `size` `<Integer[]>` - An array of two numbers, representing the width and height of the game board
 
-### sabaki.setGameInfo(tree, data)
+#### sabaki.setGameInfo(tree, data)
 
 * `tree` [`<GameTree>`](gametree.md)
 * `data` `<Object>`
