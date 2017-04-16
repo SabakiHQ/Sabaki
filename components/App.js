@@ -193,11 +193,17 @@ class App extends Component {
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
-            if (!this.askForSave()) {
-                evt.returnValue = ' '
-            } else {
-                this.detachEngines()
-            }
+            if (this.closeWindow) return
+
+            evt.returnValue = ' '
+
+            setTimeout(() => {
+                if (this.askForSave()) {
+                    this.detachEngines()
+                    this.closeWindow = true
+                    this.window.close()
+                }
+            })
         })
 
         this.newFile()

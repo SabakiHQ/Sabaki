@@ -9,15 +9,16 @@ exports.readShapes = function(filename) {
 
     for (let i = 0; i < tree.subtrees.length; i++) {
         let node = tree.subtrees[i].nodes[0]
-        let points = ('AB' in node ? node.AB.map(x => [...sgf.point2vertex(x), 1]) : [])
-            .concat('AW' in node ? node.AW.map(x => [...sgf.point2vertex(x), -1]) : [])
+        let points = [
+            ...(node.AB || []).map(x => [...sgf.point2vertex(x), 1]),
+            ...(node.AW || []).map(x => [...sgf.point2vertex(x), -1])
+        ]
+
         let data = {}
 
         if ('CR' in node) {
             for (let value of node.CR) {
-                let vs = sgf.compressed2list(value)
-
-                for (let v of vs) {
+                for (let v of sgf.compressed2list(value)) {
                     if (!points.some(w => helper.vertexEquals(w, v)))
                         points.push([...v, 0])
                 }
@@ -32,8 +33,7 @@ exports.readShapes = function(filename) {
 
         result.push(Object.assign({
             name: node.N[0],
-            points,
-            candidates: node.AB.map(sgf.point2vertex)
+            points
         }, data))
     }
 
@@ -70,7 +70,10 @@ exports.shapeMatch = function(shape, board, vertex) {
 
     let corner = 'type' in shape && shape.type === 'corner'
 
-    for (let anchor of shape.candidates) {
+    for (let anchor of shape.points) {
+        if (anchor[2] !== 1) continue
+        anchor = anchor.slice(0, 2)
+
         let hypotheses = Array(8).fill(true)
         let i = 0
 
@@ -79,9 +82,8 @@ exports.shapeMatch = function(shape, board, vertex) {
         if (corner && board.getSymmetries(anchor).every(v => !helper.vertexEquals(v, vertex)))
             continue
 
-        for (let j = 0; j < shape.points.length; j++) {
-            let v = shape.points[j].slice(0, 2), s = shape.points[j][2]
-            let diff = [v[0] - anchor[0], v[1] - anchor[1]]
+        for (let [x, y, s] of shape.points) {
+            let diff = [x - anchor[0], y - anchor[1]]
             let symm = helper.getSymmetries(diff)
 
             for (let k = 0; k < symm.length; k++) {
@@ -105,14 +107,6 @@ exports.shapeMatch = function(shape, board, vertex) {
 exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
     if (!board.hasVertex(vertex)) return 'Pass'
 
-    if (shapes == null) {
-        if (exports.shapes == null) {
-            exports.shapes = exports.readShapes(`${__dirname}/../data/shapes.sgf`)
-        }
-
-        shapes = exports.shapes
-    }
-
     let sign = board.get(vertex)
     let neighbors = board.getNeighbors(vertex)
 
@@ -127,6 +121,16 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
     if (friendly.length === neighbors.length) return 'Fill'
     if (friendly.length >= 2) return 'Connect'
 
+    // Load shape library if needed
+
+    if (shapes == null) {
+        if (exports.shapes == null) {
+            exports.shapes = exports.readShapes(`${__dirname}/../data/shapes.sgf`)
+        }
+
+        shapes = exports.shapes
+    }
+
     // Match shape
 
     for (let shape of shapes) {
@@ -136,8 +140,6 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
         if (exports.shapeMatch(shape, board, vertex))
             return shape.name
     }
-
-    if (friendly.length === 1) return 'Stretch'
 
     // Determine position to edges
 

@@ -1,4 +1,4 @@
-(;GM[1]AP[Sabaki:0.19.1]CA[UTF-8]SZ[19]
+(;GM[1]AP[Sabaki:0.30.0]CA[UTF-8]SZ[19]
 (;AB[dd][kc][qd]CR[aa:se]N[Low Chinese opening]C[size: 19, type: corner]
 )(;AB[dd][kd][qd]CR[aa:se]N[High Chinese opening]AE[so]C[size: 19, type: corner]
 )(;AB[dd][pc][qe]CR[aa:sf]N[Orthodox opening]C[size: 19, type: corner]
@@ -30,6 +30,7 @@
 )(;CR[de]AB[dd][ce][ee][df]N[Diamond]
 )(;CR[ec][ed]AB[dd][ee][fd]N[Tiger’s mouth]
 )(;CR[ee]AB[dd][de][ed]N[Empty triangle]
+)(;AB[dd][ed][ee]AW[de]N[Turn]
 )(;AB[dd][de]N[Stretch]
 )(;CR[ed][de]AB[dd][ee]N[Diagonal]
 )(;AB[dd]AW[ed][cd]N[Wedge]CR[dc][de]

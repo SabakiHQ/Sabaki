@@ -69,12 +69,10 @@ class Board {
     getCanonicalVertex(vertex) {
         if (!this.hasVertex(vertex)) return [-1, -1]
 
-        let v = [
-            Math.min(vertex[0], this.width - vertex[0] - 1),
-            Math.min(vertex[1], this.height - vertex[1] - 1)
-        ]
+        let boardSize = [this.width, this.height]
 
-        return v.sort((x, y) => x - y)
+        return vertex.map((x, i) => Math.min(x, boardSize[i] - x - 1))
+            .sort((x, y) => x - y)
     }
 
     getSymmetries(vertex) {
