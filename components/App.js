@@ -325,6 +325,10 @@ class App extends Component {
         this.openDrawer(null)
     }
 
+    setBusy(busy) {
+        this.setState({busy})
+    }
+
     // File Management
 
     getEmptyGameTree() {
@@ -398,7 +402,7 @@ class App extends Component {
     loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
-        this.setState({busy: true})
+        this.setBusy(true)
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
         this.setMode('play')
 
@@ -423,7 +427,7 @@ class App extends Component {
             }
 
             if (gameTrees.length != 0) {
-                this.setState({busy: false})
+                this.setBusy(false)
                 this.clearUndoPoint()
                 this.detachEngines()
                 this.setState({
@@ -460,10 +464,8 @@ class App extends Component {
 
         fs.writeFileSync(filename, this.getSGF())
 
-        this.setState({
-            busy: false,
-            representedFilename: filename
-        })
+        this.setBusy(false)
+        this.setState({representedFilename: filename})
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
@@ -1063,7 +1065,7 @@ class App extends Component {
     undo() {
         if (!this.state.undoable || !this.undoData) return
 
-        this.setState({busy: true})
+        this.setBusy(true)
 
         setTimeout(() => {
             let [undoRoot, undoLevel] = this.undoData
@@ -1074,7 +1076,7 @@ class App extends Component {
 
             this.setCurrentTreePosition(...treePosition)
             this.clearUndoPoint()
-            this.setState({busy: false})
+            this.setBusy(false)
         }, setting.get('edit.undo_delay'))
     }
 
@@ -1206,7 +1208,7 @@ class App extends Component {
         if (isNaN(step)) step = 1
         else step = step >= 0 ? 1 : -1
 
-        this.setState({busy: true})
+        this.setBusy(true)
 
         setTimeout(() => {
             let tp = this.state.treePosition
@@ -1233,7 +1235,7 @@ class App extends Component {
             }
 
             this.setCurrentTreePosition(...tp)
-            this.setState({busy: false})
+            this.setBusy(false)
             callback()
         }, setting.get('find.delay'))
     }
@@ -1872,7 +1874,7 @@ class App extends Component {
             return this.detachEngines()
         }
 
-        this.setState({busy: true})
+        this.setBusy(true)
 
         for (let i = 0; i < this.attachedEngineControllers.length; i++) {
             if (this.attachedEngineControllers[i] == null
@@ -1927,14 +1929,14 @@ class App extends Component {
             this.engineBoards[i] = board
         }
 
-        this.setState({busy: false})
+        this.setBusy(false)
     }
 
     startGeneratingMoves({followUp = false} = {}) {
         this.closeDrawer()
 
         if (followUp) {
-            if (!this.state.generatingMoves) return this.setState({busy: false})
+            if (!this.state.generatingMoves) return this.setBusy(false)
         } else {
             this.setState({generatingMoves: true})
         }
@@ -1958,7 +1960,7 @@ class App extends Component {
         }
 
         this.syncEngines()
-        this.setState({busy: true})
+        this.setBusy(true)
 
         this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
             let sign = color === 'B' ? 1 : -1
@@ -1981,7 +1983,7 @@ class App extends Component {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
-                this.setState({busy: false})
+                this.setBusy(false)
             }
         })
     }

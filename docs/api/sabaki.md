@@ -65,6 +65,26 @@ The `toolUsed` event is triggered after the user used `tool` by clicking on `ver
 
 The `fileLoad` event is triggered when Sabaki finishes loading some file.
 
+## State
+
+State properties can be accessed through the object `sabaki.state`. Please do not change state directly through `sabaki.setState()`, or worse, mutating `sabaki.state`.
+
+* `mode` `<String>` - One of `'play'`, `'edit'`, `'find'`, `'scoring'`, `'estimator'`, `'guess'`, `'autoplay'`
+* `openDrawer` `<String>` | `<Null>` - One of `'info'`, `'gamechooser'`, `'cleanmarkup'`, `'score'`, `'preferences'` if a drawer is open, otherwise `null`
+* `busy` `<Boolean>`
+* `fullScreen` `<Boolean>`
+* `representedFilename` `<String>` | `<Null>`
+* `gameTrees` [`<GameTree[]>`](gametree.md)
+* `treePosition` [`<TreePosition>`](treeposition.md)
+* `undoable` `<Boolean>`
+* `selectedTool` `<String>` - One of `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`
+* `scoringMethod` `<String>` - One of `'territory'`, `'area'`
+* `findText` `<String>`
+* `findVertex` [`<Vertex>`](vertex.md) | `<Null>`
+* `attachedEngines` `<Object[]>`
+* `engineCommands` `<String[][]>`
+* `generatingMoves` `<Boolean>`
+
 ## Methods
 
 ### User Interface
@@ -80,6 +100,12 @@ The `fileLoad` event is triggered when Sabaki finishes loading some file.
 The score drawer should only be opened in scoring mode or estimator mode.
 
 #### sabaki.closeDrawer()
+
+#### sabaki.setBusy(busy)
+
+* `busy` `<Boolean>`
+
+Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. The user cannot interact with the UI in busy state.
 
 ### File Management
 
@@ -187,7 +213,7 @@ Uses `tool` to mark the board at `vertex`. If `tool` is `'arrow'` or `'line'`, `
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
 
-Jumps to the position specified by `tree` and `index`.
+Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
 
 #### sabaki.goStep(step)
 
@@ -275,7 +301,7 @@ Don't provide keys in `data` to leave corresponding information unchanged in the
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
 
-Returns a sign corresponding to the player that should be playing at the given tree position.
+Returns a sign corresponding to the player that should be playing at the given [tree position](treeposition.md).
 
 #### sabaki.setPlayer(tree, index, sign)
 

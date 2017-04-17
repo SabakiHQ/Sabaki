@@ -228,7 +228,7 @@ class GameChooserDrawer extends Component {
                             filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
                         })
 
-                        sabaki.setState({busy: true})
+                        sabaki.setBusy(true)
 
                         if (filenames != null) {
                             try {
@@ -243,7 +243,7 @@ class GameChooserDrawer extends Component {
 
                         onChange({gameTrees: [...gameTrees, ...newTrees]})
 
-                        sabaki.setState({busy: false})
+                        sabaki.setBusy(false)
                     }
                 }
             ]
@@ -277,7 +277,7 @@ class GameChooserDrawer extends Component {
                 delete item.property
 
                 item.click = () => {
-                    sabaki.setState({busy: true})
+                    sabaki.setBusy(true)
 
                     let {gameTrees, onChange = helper.noop} = this.props
 
@@ -314,7 +314,7 @@ class GameChooserDrawer extends Component {
                     }).map(x => x[0])
 
                     onChange({gameTrees})
-                    sabaki.setState({busy: false})
+                    sabaki.setBusy(false)
                 }
             }
 

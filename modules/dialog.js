@@ -3,7 +3,7 @@ const {app, dialog} = remote
 const helper = require('./helper')
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-    sabaki.setState({busy: true})
+    sabaki.setBusy(true)
 
     let result = dialog.showMessageBox(sabaki.window, {
         type,
@@ -14,19 +14,19 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
         noLink: true
     })
 
-    sabaki.setState({busy: false})
+    sabaki.setBusy(false)
     return result
 }
 
 exports.showFileDialog = function(type, options) {
-    sabaki.setState({busy: true})
+    sabaki.setBusy(true)
 
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
     let result = dialog[`show${type}Dialog`](sabaki.window, options)
 
-    sabaki.setState({busy: false})
+    sabaki.setBusy(false)
     return result
 }
 
