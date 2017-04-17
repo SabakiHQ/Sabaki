@@ -45,8 +45,8 @@ exports.readShapes = function(filename) {
 }
 
 exports.cornerMatch = function(vertices, board) {
-    let hypotheses = [...Array(8)].map(x => true)
-    let hypothesesInvert = [...Array(8)].map(x => true)
+    let hypotheses = Array(8).fill(true)
+    let hypothesesInvert = Array(8).fill(true)
 
     for (let [x, y, sign] of vertices) {
         let representatives = exports.getBoardSymmetries(board, [x, y])
@@ -77,10 +77,13 @@ exports.shapeMatch = function(shape, board, vertex) {
         let hypotheses = Array(8).fill(true)
         let i = 0
 
-        // Hypothesize vertex === anchor
+        if (shape.size != null && (board.width !== board.height || board.width !== +shape.size))
+            continue
 
         if (shape.type === 'corner' && !exports.getBoardSymmetries(board, anchor.slice(0, 2)).some(equalsVertex))
             continue
+
+        // Hypothesize vertex === anchor
 
         for (let [x, y, s] of shape.vertices) {
             let diff = [x - anchor[0], y - anchor[1]]
@@ -134,9 +137,6 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
     // Match shape
 
     for (let shape of shapes) {
-        if ('size' in shape && (board.width !== board.height || board.width !== +shape.size))
-            continue
-
         if (exports.shapeMatch(shape, board, vertex))
             return shape.name
     }

@@ -45,7 +45,7 @@ Checks whether the given vertices are equal.
 * `a` `<Array>`
 * `b` `<Array>`
 
-Performs a lexical comparison between two arrays. Returns `-1` iff `a < b`, `1` iff `a > b`, and `0` otherwise.
+Performs a shallow lexical comparison between two arrays. Returns `-1` iff `a < b`, `1` iff `a > b`, and `0` otherwise.
 
 ### helper.normalizeEndings(input)
 

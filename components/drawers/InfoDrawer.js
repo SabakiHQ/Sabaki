@@ -204,7 +204,7 @@ class InfoDrawer extends Component {
             let day = +el.dataset.pikaDay
 
             el.parentElement.classList.toggle('is-multi-selected', dates.some(d => {
-                return helper.equals(d, [year, month + 1, day])
+                return helper.shallowEquals(d, [year, month + 1, day])
             }))
         }
     }
@@ -262,10 +262,10 @@ class InfoDrawer extends Component {
                 let date = this.getDate()
                 date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
-                if (!dates.some(x => helper.equals(x, date))) {
+                if (!dates.some(x => helper.shallowEquals(x, date))) {
                     dates.push(date)
                 } else {
-                    dates = dates.filter(x => !helper.equals(x, date))
+                    dates = dates.filter(x => !helper.shallowEquals(x, date))
                 }
 
                 self.setState({date: sgf.dates2string(dates.sort(helper.lexicalCompare))})
