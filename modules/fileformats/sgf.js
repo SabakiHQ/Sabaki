@@ -2,7 +2,6 @@ const fs = require('fs')
 const iconv = require('iconv-lite')
 const jschardet = require('jschardet')
 const gametree = require('../gametree')
-const setting = require('../setting')
 const helper = require('../helper')
 
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'

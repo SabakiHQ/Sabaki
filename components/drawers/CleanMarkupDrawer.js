@@ -1,7 +1,8 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const gametree = require('../../modules/gametree')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 
 const Drawer = require('./Drawer')
 

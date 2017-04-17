@@ -1,10 +1,11 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
 const Drawer = require('./Drawer')
 
 const helper = require('../../modules/helper')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 
 class ScoreRow extends Component {
     render({method, score, komi, sign}) {

@@ -1,4 +1,5 @@
-const {Menu} = require('electron').remote
+const {remote} = require('electron')
+const {Menu} = remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const Pikaday = require('pikaday')
@@ -6,7 +7,7 @@ const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {

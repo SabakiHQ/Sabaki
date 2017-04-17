@@ -20,7 +20,7 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
-const setting = require('../modules/setting')
+const setting = remote.require('./modules/setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
 
@@ -128,6 +128,8 @@ class App extends Component {
             if (setting.get('file.show_reload_warning')) {
                 this.askForReload()
             }
+
+            ipcRenderer.send('build-menu', this.state.busy)
         })
 
         this.window.on('resize', () => {
@@ -1932,7 +1934,7 @@ class App extends Component {
         this.closeDrawer()
 
         if (followUp) {
-            if (!this.state.generatingMoves) return
+            if (!this.state.generatingMoves) return this.setState({busy: false})
         } else {
             this.setState({generatingMoves: true})
         }
@@ -1966,11 +1968,6 @@ class App extends Component {
                 vertex = gametree.getBoard(rootTree, 0).coord2vertex(response.content)
             }
 
-            if (!this.state.generatingMoves) {
-                this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition).makeMove(sign, vertex)
-                return
-            }
-
             if (response.content.toLowerCase() === 'resign') {
                 dialog.showMessageBox(`${playerController.name} has resigned.`)
                 this.makeResign()
@@ -1984,12 +1981,13 @@ class App extends Component {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
+                this.setState({busy: false})
             }
         })
     }
 
     stopGeneratingMoves() {
-        this.setState({generatingMoves: false, busy: false})
+        this.setState({generatingMoves: false})
     }
 
     // Render

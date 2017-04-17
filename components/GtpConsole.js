@@ -1,10 +1,11 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const ContentDisplay = require('./ContentDisplay')
 
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
-const setting = require('../modules/setting')
+const setting = remote.require('./modules/setting')
 
 class ConsoleCommandEntry extends Component {
     shouldComponentUpdate() {

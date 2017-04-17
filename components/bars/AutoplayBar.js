@@ -1,9 +1,10 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 const {sgf} = require('../../modules/fileformats')
 
 const Bar = require('./Bar')

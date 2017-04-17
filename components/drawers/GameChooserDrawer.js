@@ -1,4 +1,5 @@
-const {Menu} = require('electron').remote
+const {remote} = require('electron')
+const {Menu} = remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const natsort = require('natsort')
@@ -7,7 +8,7 @@ const dialog = require('../../modules/dialog')
 const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 const {sgf} = fileformats
 
 const MiniGoban = require('../MiniGoban')

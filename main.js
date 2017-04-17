@@ -48,8 +48,6 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    setting.load()
-
     let template = require('./data/menu').clone()
 
     // Process menu items

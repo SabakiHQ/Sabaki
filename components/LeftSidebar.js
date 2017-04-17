@@ -1,9 +1,10 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const GtpConsole = require('./GtpConsole')
 
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
-const setting = require('../modules/setting')
+const setting = remote.require('./modules/setting')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
 let maxConsoleLength = setting.get('console.max_history_count')

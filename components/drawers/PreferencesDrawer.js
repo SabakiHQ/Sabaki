@@ -1,9 +1,10 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const natsort = require('natsort')
 
 const dialog = require('../../modules/dialog')
-const setting = require('../../modules/setting')
+const setting = remote.require('./modules/setting')
 const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')

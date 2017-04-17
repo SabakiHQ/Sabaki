@@ -1,8 +1,9 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
-const setting = require('../modules/setting')
+const setting = remote.require('./modules/setting')
 
 const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
