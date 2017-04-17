@@ -36,7 +36,7 @@ Returns an array of [shapes](boardshape.md) included in the given SGF file.
 * `vertices` [`<SignedVertex[]>`](vertex.md)
 * `board` [`<Board>`](board.md)
 
-Tries to match the given signed `vertices` to `board` with regard to their distances to the board border. Returns `null` if no match is found, otherwise an array `[symmetryClass, invert]` where `symmetryClass` is an integer from `0` to `7` representing the symmetry class found in `board`, and a boolean `invert` whether to position on `board` is inverted or not.
+Tries to match the given signed `vertices` to `board` with regard to their distances to the board border. Returns `null` if no match is found, otherwise an array `[symmetryClass, invert]` where `symmetryClass` is an integer from `0` to `7` representing the symmetry class found on `board`, and a boolean `invert` whether the position on `board` is inverted or not.
 
 ### boardmatcher.shapeMatch(shape, board, vertex)
 
@@ -44,7 +44,7 @@ Tries to match the given signed `vertices` to `board` with regard to their dista
 * `board` [`<Board>`](board.md)
 * `vertex` [`<Vertex>`](vertex.md)
 
-Tries to match the given `shape` to `board`, where given `vertex` is part of the shape anchors. Returns `null` if no match is found, otherwise an array `[symmetryClass, invert]` where `symmetryClass` is an integer from `0` to `7` representing the symmetry class found in `board`, and a boolean `invert` whether to position on `board` is inverted or not.
+Tries to match the given `shape` to `board`, where given `vertex` is part of the shape anchors. Returns `null` if no match is found, otherwise an array `[symmetryClass, invert]` where `symmetryClass` is an integer from `0` to `7` representing the symmetry class found on `board`, and a boolean `invert` whether the position on `board` is inverted or not.
 
 ### boardmatcher.getMoveInterpretation(board, vertex[, options])
 
