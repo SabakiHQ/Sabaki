@@ -254,9 +254,9 @@ exports.playTillEnd = function(board, sign, iterations = Infinity) {
         }
     }
 
-    let finished = {'-1': false, '1': false}
+    let finished = [false, false]
 
-    while (iterations > 0 && freeVertices.length > 0 && !(finished[-sign] && finished[sign])) {
+    while (iterations > 0 && freeVertices.length > 0 && finished.includes(false)) {
         let madeMove = false
 
         while (freeVertices.length > 0) {
@@ -269,7 +269,7 @@ exports.playTillEnd = function(board, sign, iterations = Infinity) {
             if (freedVertices != null) {
                 freeVertices.push(...freedVertices)
 
-                finished[-sign] = false
+                finished[-sign > 0 ? 0 : 1] = false
                 madeMove = true
 
                 break
@@ -278,7 +278,7 @@ exports.playTillEnd = function(board, sign, iterations = Infinity) {
             }
         }
 
-        finished[sign] = !madeMove
+        finished[sign > 0 ? 0 : 1] = !madeMove
 
         freeVertices.push(...illegalVertices)
         illegalVertices.length = 0
