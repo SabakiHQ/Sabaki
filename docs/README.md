@@ -6,9 +6,14 @@ Note that the Sabaki API is in an early stage of development and is subject to c
 
 This documentation is incomplete and a work in progress.
 
+## Concepts
+
+* [Vertex Object](api/vertex.md)
+* [Tree Position Object](api/treeposition.md)
+
 ## API References
 
-* [Sabaki Object](api/sabaki.md)
+* [Sabaki](api/sabaki.md)
 * [Game Tree](api/gametree.md)
 * [Board](api/board.md)
 * [Board Matcher](api/boardmatcher.md)
