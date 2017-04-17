@@ -17,7 +17,7 @@ const {Board} = sabaki.modules
 
 ### board.captures
 
-An array consisting the capture count of the players. The value at index `0` represent the black player, while the value at index `1` represent the white player.
+An array consisting of the capture counts of the players. The value at index `0` represent the black player, while the value at index `1` represent the white player.
 
 ### board.markups
 
