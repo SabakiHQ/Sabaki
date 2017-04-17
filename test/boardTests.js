@@ -94,29 +94,6 @@ describe('Board', () => {
         })
     })
 
-    describe('getSymmetries', () => {
-        it('should work', () => {
-            let board = new Board()
-
-            assert.deepEqual(
-                board.getSymmetries([3, 4]).sort(helper.lexicalCompare),
-                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([4, 3]).sort(helper.lexicalCompare),
-                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([18, 3]).sort(helper.lexicalCompare),
-                [[0, 3], [0, 3], [0, 15], [0, 15], [3, 0], [3, 0], [15, 0], [15, 0]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([15, 5]).sort(helper.lexicalCompare),
-                [[3, 5], [3, 13], [5, 3], [5, 15], [13, 3], [13, 15], [15, 5], [15, 13]]
-            )
-        })
-    })
-
     describe('getNeighbors', () => {
         it('should return neighbors for vertices in the middle', () => {
             let board = new Board()

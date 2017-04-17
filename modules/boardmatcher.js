@@ -1,7 +1,19 @@
 const {sgf} = require('./fileformats')
-const helper = require('./helper')
 
-exports.shapes = null
+let _shapes = null
+let equals = v => w => w[0] === v[0] && w[1] === v[1]
+
+exports.getSymmetries = function([x, y]) {
+    let f = ([x, y]) => [[x, y], [-x, y], [x, -y], [-x, -y]]
+    return [...f([x, y]), ...f([y, x])]
+}
+
+exports.getBoardSymmetries = function(board, vertex) {
+    let [mx, my] = [board.width - 1, board.height - 1]
+    let mod = (x, m) => (x % m + m) % m
+
+    return exports.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
+}
 
 exports.readShapes = function(filename) {
     let tree = sgf.parseFile(filename)[0]
@@ -9,21 +21,12 @@ exports.readShapes = function(filename) {
 
     for (let i = 0; i < tree.subtrees.length; i++) {
         let node = tree.subtrees[i].nodes[0]
-        let points = [
-            ...(node.AB || []).map(x => [...sgf.point2vertex(x), 1]),
-            ...(node.AW || []).map(x => [...sgf.point2vertex(x), -1])
-        ]
+        let anchors = node.MA.map(x => [...sgf.point2vertex(x), node.AB.includes(x) ? 1 : -1])
+        let vertices = ['AW', 'CR', 'AB']
+            .map((x, i) => (node[x] || []).map(y => [...sgf.point2vertex(y), i - 1]))
+            .reduce((acc, x) => [...acc, ...x], [])
 
         let data = {}
-
-        if ('CR' in node) {
-            for (let value of node.CR) {
-                for (let v of sgf.compressed2list(value)) {
-                    if (!points.some(w => helper.vertexEquals(w, v)))
-                        points.push([...v, 0])
-                }
-            }
-        }
 
         if ('C' in node) {
             for (let [key, value] of node.C[0].trim().split(', ').map(x => x.split(': '))) {
@@ -33,24 +36,25 @@ exports.readShapes = function(filename) {
 
         result.push(Object.assign({
             name: node.N[0],
-            points
+            anchors,
+            vertices
         }, data))
     }
 
     return result
 }
 
-exports.cornerMatch = function(points, target) {
+exports.cornerMatch = function(vertices, board) {
     let hypotheses = [...Array(8)].map(x => true)
     let hypothesesInvert = [...Array(8)].map(x => true)
 
-    for (let [x, y, sign] of points) {
-        let representatives = target.getSymmetries([x, y])
+    for (let [x, y, sign] of vertices) {
+        let representatives = exports.getBoardSymmetries(board, [x, y])
 
         for (let i = 0; i < hypotheses.length; i++) {
-            if (hypotheses[i] && target.get(representatives[i]) !== sign)
+            if (hypotheses[i] && board.get(representatives[i]) !== sign)
                 hypotheses[i] = false
-            if (hypothesesInvert[i] && target.get(representatives[i]) !== -sign)
+            if (hypothesesInvert[i] && board.get(representatives[i]) !== -sign)
                 hypothesesInvert[i] = false
         }
 
@@ -67,30 +71,26 @@ exports.shapeMatch = function(shape, board, vertex) {
 
     let sign = board.get(vertex)
     if (sign === 0) return null
+    let equalsVertex = equals(vertex)
 
-    let corner = 'type' in shape && shape.type === 'corner'
-
-    for (let anchor of shape.points) {
-        if (anchor[2] !== 1) continue
-        anchor = anchor.slice(0, 2)
-
+    for (let anchor of shape.anchors) {
         let hypotheses = Array(8).fill(true)
         let i = 0
 
         // Hypothesize vertex === anchor
 
-        if (corner && board.getSymmetries(anchor).every(v => !helper.vertexEquals(v, vertex)))
+        if (shape.type === 'corner' && !exports.getBoardSymmetries(board, anchor.slice(0, 2)).some(equalsVertex))
             continue
 
-        for (let [x, y, s] of shape.points) {
+        for (let [x, y, s] of shape.vertices) {
             let diff = [x - anchor[0], y - anchor[1]]
-            let symm = helper.getSymmetries(diff)
+            let symm = exports.getSymmetries(diff)
 
             for (let k = 0; k < symm.length; k++) {
                 if (!hypotheses[k]) continue
                 let w = [vertex[0] + symm[k][0], vertex[1] + symm[k][1]]
 
-                if (!board.hasVertex(w) || board.get(w) !== s * sign)
+                if (!board.hasVertex(w) || board.get(w) !== s * sign * anchor[2])
                     hypotheses[k] = false
             }
 
@@ -98,7 +98,7 @@ exports.shapeMatch = function(shape, board, vertex) {
             if (i < 0) break
         }
 
-        if (i >= 0) return [i, sign < 0]
+        if (i >= 0) return [i, sign !== anchor[2]]
     }
 
     return null
@@ -124,11 +124,11 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
     // Load shape library if needed
 
     if (shapes == null) {
-        if (exports.shapes == null) {
-            exports.shapes = exports.readShapes(`${__dirname}/../data/shapes.sgf`)
+        if (_shapes == null) {
+            _shapes = exports.readShapes(`${__dirname}/../data/shapes.sgf`)
         }
 
-        shapes = exports.shapes
+        shapes = _shapes
     }
 
     // Match shape
@@ -143,12 +143,14 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
 
     // Determine position to edges
 
-    if (helper.vertexEquals(vertex, [(board.width - 1) / 2, (board.height - 1) / 2]))
+    let equalsVertex = equals(vertex)
+
+    if (equalsVertex([(board.width - 1) / 2, (board.height - 1) / 2]))
         return 'Tengen'
 
     let diff = board.getCanonicalVertex(vertex).map(x => x + 1)
 
-    if (!helper.vertexEquals(diff, [4, 4]) && board.getHandicapPlacement(9).some(v => helper.vertexEquals(v, vertex)))
+    if (!equals(diff)([4, 4]) && board.getHandicapPlacement(9).some(equalsVertex))
         return 'Hoshi'
 
     if (diff[1] <= 6)

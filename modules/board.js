@@ -75,15 +75,6 @@ class Board {
             .sort((x, y) => x - y)
     }
 
-    getSymmetries(vertex) {
-        if (!this.hasVertex(vertex)) return []
-
-        let [mx, my] = [this.width - 1, this.height - 1]
-        let mod = (x, m) => (x % m + m) % m
-
-        return helper.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
-    }
-
     getNeighbors(vertex, ignoreBoard = false) {
         if (!ignoreBoard && !this.hasVertex(vertex)) return []
 
