@@ -45,10 +45,12 @@ where `v` is the start [vertex](vertex.md), `w` the end [vertex](vertex.md), and
 
 * `vertex` [`<Vertex>`](vertex.md)
 
+Returns a [sign](sign.md).
+
 ### board.set(vertex, sign)
 
 * `vertex` [`<Vertex>`](vertex.md)
-* `sign` `<Integer>` - One of `-1`, `0`, or `1`
+* `sign` [`<Sign>`](sign.md)
 
 ### board.clone()
 
@@ -133,7 +135,7 @@ Returns whether the board has chains with no liberties.
 
 ### board.makeMove(sign, vertex)
 
-* `sign` `<Integer>`
+* `sign` [`<Sign>`](sign.md)
 * `vertex` [`<Vertex>`](vertex.md)
 
 Creates a new `Board` object that represent the board arrangement when the player that corresponds to `sign` plays a stone at given `vertex`.

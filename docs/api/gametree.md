@@ -95,7 +95,9 @@ Returns an array, consisting of `tree` and all of its descendant trees.
 
 * `tree` `<GameTree>`
 * `index` `<Integer>`
-* `baseboard` [`<Board>`](board.md) *(optional)*
+* `baseboard` [`<Board>`](board.md) *(optional)* - Default: Previous board
+
+Returns a [board object](board.ms) at the given [tree position](treeposition.md) with the assumption that the previous board position is `baseboard`.
 
 ### gametree.getJson(tree)
 

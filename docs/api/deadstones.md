@@ -25,7 +25,7 @@ A fast method that returns an array of [vertices](vertex.md) that do not surroun
 ### deadstones.playTillEnd(board, sign[, iterations])
 
 * `board` [`<Board>`](board.md)
-* `sign` `<Integer>` - One of `-1`, `1`, or `0`
+* `sign` [`<Sign>`](sign.md)
 * `iterations` `<Integer>` *(optional)* - Default: `Infinity`
 
 Makes random alternating moves, starting with the player corresponding to `sign`, until `iterations` is reached, or no more moves can be made, and returns the final board. This method doesn't mutate `board`.

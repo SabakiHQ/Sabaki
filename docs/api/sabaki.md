@@ -48,9 +48,9 @@ The `makeMove` event is emitted after a move has been played, either a stone has
 
 ### Event: 'resign'
 
-* `player` `<Integer>`
+* `player` [`<Sign>`](sign.md)
 
-The `resign` event is triggered after someone resigns. `player` is `1` if black resigns, otherwise `-1`.
+The `resign` event is triggered after someone resigns.
 
 ### Event: 'toolUsed'
 
@@ -178,10 +178,10 @@ Performs a click on the given vertex position on the board with given button ind
 
 * `vertex` [`<Vertex>`](vertex.md)
 * `options` `<Object>` *(optional)*
-    * `player` `<Integer>` *(optional)* - One of `-1` or `1`. Default: Current player
+    * `player` [`<Sign>`](sign.md) *(optional)* - Default: Current player
     * `clearUndoPoint` `<Boolean>` *(optional)* - Default: `true`
 
-Makes a proper move on the given vertex on the current board as given `player`. If `vertex` is not on the board, Sabaki will make a pass instead.
+Makes a proper move on the given vertex on the current board as given `player`. If `vertex` is not on the board or `player` equals `0`, Sabaki will make a pass instead.
 
 Depending on the settings, Sabaki may notify the user about ko and suicide, plays a sound, or/and sends a command to the attached GTP engine.
 
@@ -301,13 +301,13 @@ Don't provide keys in `data` to leave corresponding information unchanged in the
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
 
-Returns a sign corresponding to the player that should be playing at the given [tree position](treeposition.md).
+Returns a [sign](sign.md) corresponding to the player that should be playing at the given [tree position](treeposition.md).
 
 #### sabaki.setPlayer(tree, index, sign)
 
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
-* `sign` `<Integer>`
+* `sign` [`<Sign>`](sign.md) - Cannot be `0`
 
 #### sabaki.setComment(tree, index, data)
 

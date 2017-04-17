@@ -8,6 +8,7 @@ This documentation is incomplete and a work in progress.
 
 ## Concepts
 
+* [Sign Object](api/sign.md)
 * [Vertex Object](api/vertex.md)
 * [Tree Position Object](api/treeposition.md)
 
