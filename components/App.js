@@ -349,9 +349,8 @@ class App extends Component {
     newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
-        if (showInfo && this.state.openDrawer === 'info') {
-            this.closeDrawer()
-        }
+        if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
+        this.setMode('play')
 
         this.detachEngines()
         this.setState(this.state, () => {
