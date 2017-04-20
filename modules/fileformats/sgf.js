@@ -71,7 +71,7 @@ function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncodi
             id = value.split('').filter(x => x.toUpperCase() === x).join('')
 
             if (id !== '') {
-                node[id] = []
+                if (!(id in node)) node[id] = []
                 property = node[id]
             }
         } else if (type === 'c_value_type') {
