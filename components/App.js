@@ -352,6 +352,7 @@ class App extends Component {
         if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
         this.setMode('play')
 
+        this.clearUndoPoint()
         this.detachEngines()
         this.setState(this.state, () => {
             let emptyTree = this.getEmptyGameTree()
