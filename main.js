@@ -4,6 +4,10 @@ const fs = require('fs')
 const setting = require('./modules/setting')
 const updater = require('./modules/updater')
 
+setting.events.on('change', ({key}) => {
+    if (key == 'engines.list') buildMenu()
+})
+
 let windows = []
 let openfile = null
 let isReady = false
@@ -17,6 +21,7 @@ function newWindow(path) {
         height: setting.get('window.height'),
         minWidth: setting.get('window.minwidth'),
         minHeight: setting.get('window.minheight'),
+        autoHideMenuBar: !setting.get('view.show_menubar'),
         backgroundColor: '#111111',
         show: false,
         webPreferences: {

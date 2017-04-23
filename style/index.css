@@ -1102,3 +1102,24 @@ header, #bar .bar {
     .engines-list li a.browse:active {
         opacity: 1;
 }
+
+#info-overlay {
+        position: absolute;
+        top: 33%;
+        left: 50%;
+        padding: .5em 3em;
+        border-radius: 1.5em;
+        background: rgba(0, 0, 0, .6);
+        color: white;
+        font-size: 1.5em;
+        white-space: nowrap;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity .5s;
+        pointer-events: none;
+        z-index: 999;
+    }
+    #info-overlay.show {
+        opacity: 1;
+        transition: opacity .1s;
+}

@@ -11,6 +11,7 @@ const Sidebar = require('./Sidebar')
 const DrawerManager = require('./DrawerManager')
 const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
+const InfoOverlay = require('./InfoOverlay')
 
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
@@ -37,6 +38,7 @@ class App extends Component {
             openDrawer: null,
             busy: false,
             fullScreen: false,
+            showMenuBar: null,
 
             representedFilename: null,
             gameTrees: [emptyTree],
@@ -91,7 +93,12 @@ class App extends Component {
             showInputBox: false,
             inputBoxText: '',
             onInputBoxSubmit: helper.noop,
-            onInputBoxCancel: helper.noop
+            onInputBoxCancel: helper.noop,
+
+            // Info Overlay
+
+            infoOverlayText: '',
+            showInfoOverlay: false
         }
 
         this.events = new EventEmitter()
@@ -140,7 +147,7 @@ class App extends Component {
                     let [width, height] = this.window.getContentSize()
                     setting.set('window.width', width).set('window.height', height)
                 }
-            }, 500)
+            }, 1000)
         })
 
         // Handle main menu items
@@ -151,6 +158,7 @@ class App extends Component {
             for (let item of menu) {
                 if ('click' in item) {
                     ipcRenderer.on(`menu-click-${item.id}`, () => {
+                        if (!this.state.showMenuBar) this.window.setMenuBarVisibility(false)
                         dialog.closeInputBox()
                         item.click()
                     })
@@ -211,7 +219,7 @@ class App extends Component {
         this.newFile()
     }
 
-    componentDidUpdate(_, prevState) {
+    componentDidUpdate(_, prevState = {}) {
         // Update title
 
         let {basename} = require('path')
@@ -228,12 +236,17 @@ class App extends Component {
         if (document.title !== title)
             document.title = title
 
-        // Handle full screen
+        // Handle full screen & menu bar
 
         if (prevState.fullScreen !== this.state.fullScreen) {
+            if (this.state.fullScreen) this.showInfoOverlay('Press Esc to exit full screen mode')
             this.window.setFullScreen(this.state.fullScreen)
-            this.window.setMenuBarVisibility(!this.state.fullScreen)
-            this.window.setAutoHideMenuBar(this.state.fullScreen)
+        }
+
+        if (prevState.showMenuBar !== this.state.showMenuBar) {
+            if (!this.state.showMenuBar) this.showInfoOverlay('Press Alt to show menu bar')
+            this.window.setMenuBarVisibility(this.state.showMenuBar)
+            this.window.setAutoHideMenuBar(!this.state.showMenuBar)
         }
 
         // Handle sidebar showing/hiding
@@ -257,6 +270,7 @@ class App extends Component {
 
     updateSettingState(key = null) {
         let data = {
+            'view.show_menubar': 'showMenuBar',
             'view.show_coordinates': 'showCoordinates',
             'view.show_move_colorization': 'showMoveColorization',
             'view.show_next_moves': 'showNextMoves',
@@ -281,10 +295,6 @@ class App extends Component {
 
         if (key in data) {
             this.setState({[data[key]]: setting.get(key)})
-        }
-
-        if (key === 'engines.list') {
-            ipcRenderer.send('build-menu')
         }
     }
 
@@ -327,6 +337,17 @@ class App extends Component {
 
     setBusy(busy) {
         this.setState({busy})
+    }
+
+    showInfoOverlay(text) {
+        this.setState({
+            infoOverlayText: text,
+            showInfoOverlay: true
+        })
+
+        setTimeout(() => {
+            this.setState({showInfoOverlay: false})
+        }, setting.get('infooverlay.duration'))
     }
 
     // File Management
@@ -2053,7 +2074,8 @@ class App extends Component {
                 onCancel: state.onInputBoxCancel
             }),
 
-            h(BusyScreen, {show: state.busy})
+            h(BusyScreen, {show: state.busy}),
+            h(InfoOverlay, {text: state.infoOverlayText, show: state.showInfoOverlay})
         )
     }
 }

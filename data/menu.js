@@ -371,17 +371,22 @@ let data = [
         label: '&View',
         submenu: [
             {
+                label: 'Toggle Menu &Bar',
+                click: () => toggleSetting('view.show_menubar')
+            },
+            {
+                label: 'Toggle &Full Screen',
+                accelerator: 'CmdOrCtrl+Shift+F',
+                click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
+            },
+            {type: 'separator'},
+            {
                 label: 'Toggle Auto&play Mode',
                 click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
             },
             {
                 label: 'Toggle G&uess Mode',
                 click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
-            },
-            {
-                label: 'Toggle &Full Screen',
-                accelerator: 'CmdOrCtrl+Shift+F',
-                click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
             },
             {type: 'separator'},
             {
@@ -507,6 +512,11 @@ if (process.platform === 'darwin') {
         ],
         role: 'window'
     })
+
+    // Remove 'Toggle Menu Bar' menu item
+
+    let viewMenu = findMenuItem('View')
+    viewMenu.submenu.splice(0, 1)
 }
 
 // Generate ids for all menu items
