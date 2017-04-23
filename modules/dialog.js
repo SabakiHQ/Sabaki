@@ -18,7 +18,7 @@ exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], canc
     return result
 }
 
-exports.showFileDialog = function(type, options) {
+exports.showFileDialog = function(type, options, callback = helper.noop) {
     sabaki.setBusy(true)
 
     let [t, ...ype] = [...type]
@@ -27,15 +27,15 @@ exports.showFileDialog = function(type, options) {
     let result = dialog[`show${type}Dialog`](sabaki.window, options)
 
     sabaki.setBusy(false)
-    return result
+    callback({result})
 }
 
-exports.showOpenDialog = function(options) {
-    return exports.showFileDialog('open', options)
+exports.showOpenDialog = function(options, callback) {
+    return exports.showFileDialog('open', options, callback)
 }
 
-exports.showSaveDialog = function(options) {
-    return exports.showFileDialog('save', options)
+exports.showSaveDialog = function(options, callback) {
+    return exports.showFileDialog('save', options, callback)
 }
 
 exports.showInputBox = function(message, onSubmit = helper.noop, onCancel = helper.noop) {

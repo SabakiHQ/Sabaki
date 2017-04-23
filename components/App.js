@@ -406,13 +406,15 @@ class App extends Component {
         if (!suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
-            let result = dialog.showOpenDialog({
+            dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
+            }, ({result}) => {
+                if (result) filename = result[0]
+                if (filename) this.loadFile(filename, {suppressAskForSave: true})
             })
 
-            if (result) filename = result[0]
-            if (!filename) return
+            return
         }
 
         let {extname} = require('path')
@@ -486,11 +488,13 @@ class App extends Component {
 
     saveFile(filename = null) {
         if (!filename) {
-            filename = dialog.showSaveDialog({
+            dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
+            }, ({result}) => {
+                if (result) this.saveFile(result)
             })
 
-            if (!filename) return false
+            return
         }
 
         fs.writeFileSync(filename, this.getSGF())
