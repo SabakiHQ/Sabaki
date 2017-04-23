@@ -134,6 +134,7 @@ class InfoDrawer extends Component {
         }, {})
 
         this.handleEngineMenuClick = [0, 1].map(index => evt => {
+            let engines = setting.get('engines.list')
             let nameKeys = ['blackName', 'whiteName']
             let template = [
                 {
@@ -149,7 +150,7 @@ class InfoDrawer extends Component {
                     }
                 },
                 {type: 'separator'},
-                ...setting.get('engines.list').map(engine => ({
+                ...engines.map(engine => ({
                     label: engine.name.trim() || '(Unnamed Engine)',
                     type: 'checkbox',
                     checked: engine === this.state.engines[index],
@@ -159,7 +160,7 @@ class InfoDrawer extends Component {
                         this.setState({engines})
                     }
                 })),
-                {type: 'separator'},
+                engines.length > 0 && {type: 'separator'},
                 {
                     label: 'Manage Engines…',
                     click: () => {
@@ -167,7 +168,7 @@ class InfoDrawer extends Component {
                         sabaki.openDrawer('preferences')
                     }
                 }
-            ]
+            ].filter(x => !!x)
 
             let {left, bottom} = evt.currentTarget.getBoundingClientRect()
             let menu = Menu.buildFromTemplate(template)
