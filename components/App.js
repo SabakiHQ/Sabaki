@@ -518,15 +518,6 @@ class App extends Component {
     }
 
     generateFileHash() {
-        let {representedFilename} = this.state
-        if (!representedFilename) return null
-
-        try {
-            let content = fs.readFileSync(representedFilename, 'utf8')
-            return helper.hash(content)
-        } catch (err) {}
-
-        return null
     }
 
     askForSave() {
@@ -547,22 +538,6 @@ class App extends Component {
     }
 
     askForReload() {
-        let hash = this.generateFileHash()
-
-        if (hash != null && hash !== this.fileHash) {
-            let answer = dialog.showMessageBox([
-                `This file has been changed outside of ${this.appName}.`,
-                'Do you want to reload the file? Your changes will be lost.'
-            ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
-
-            if (answer === 0) {
-                this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
-            } else {
-                this.treeHash = null
-            }
-
-            this.fileHash = hash
-        }
     }
 
     // Playing
@@ -1798,235 +1773,21 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
-        let {engineCommands, attachedEngines} = this.state
-
-        if (helper.vertexEquals([engines[1], engines[0]], attachedEngines)) {
-            // Just swap engines
-
-            this.attachedEngineControllers.reverse()
-            this.engineBoards.reverse()
-
-            this.setState({
-                engineCommands: engineCommands.reverse(),
-                attachedEngines: engines
-            })
-
-            return
-        }
-
-        let command = name => new gtp.Command(null, name)
-
-        for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] != engines[i]) {
-                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
-
-                try {
-                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
-                    this.attachedEngineControllers[i] = controller
-                    this.engineBoards[i] = null
-
-                    this.sendGTPCommand(controller, command('name'))
-                    this.sendGTPCommand(controller, command('version'))
-                    this.sendGTPCommand(controller, command('protocol_version'))
-                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
-                        engineCommands[i] = response.content.split('\n')
-                    })
-
-                    controller.on('stderr', ({content}) => {
-                        this.setState(({consoleLog}) => ({
-                            consoleLog: [...consoleLog, [
-                                i === 0 ? 1 : -1,
-                                controller.name,
-                                null,
-                                new gtp.Response(null, content, false, true)
-                            ]]
-                        }))
-                    })
-
-                    this.setState({engineCommands})
-                } catch (err) {
-                    this.attachedEngineControllers[i] = null
-                    engines[i] = null
-                }
-            }
-        }
-
-        this.setState({attachedEngines: engines})
-        this.syncEngines()
     }
 
     detachEngines() {
-        this.attachEngines(null, null)
     }
 
     sendGTPCommand(controller, command, callback = helper.noop) {
-        if (controller == null) return
-
-        let {consoleLog} = this.state
-        let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
-        if (sign > 1) sign = 0
-        let entry = [sign, controller.name, command]
-        let maxLength = setting.get('console.max_history_count')
-
-        let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
-        newLog.push(entry)
-
-        this.setState({consoleLog: newLog})
-
-        controller.sendCommand(command, ({response}) => {
-            this.setState(({consoleLog}) => {
-                let index = consoleLog.indexOf(entry)
-                if (index === -1) return {}
-
-                let newLog = [...consoleLog]
-                newLog[index] = [...entry, response]
-
-                return {consoleLog: newLog}
-            })
-
-            callback({response, command})
-        })
     }
 
     syncEngines() {
-        if (this.attachedEngineControllers.every(x => x == null)) return
-
-        let board = gametree.getBoard(...this.state.treePosition)
-
-        if (!board.isSquare()) {
-            dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
-            return this.detachEngines()
-        } else if (!board.isValid()) {
-            dialog.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
-            return this.detachEngines()
-        }
-
-        this.setBusy(true)
-
-        for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-            if (this.attachedEngineControllers[i] == null
-                || this.engineBoards[i] != null
-                && board.getPositionHash() === this.engineBoards[i].getPositionHash()) continue
-
-            let controller = this.attachedEngineControllers[i]
-
-            if (this.engineBoards[i] != null) {
-                // Diff boards
-
-                let synced = false
-                let diff = this.engineBoards[i].diff(board).filter(([, sign]) => sign !== 0)
-
-                if (diff.length === 1) {
-                    let [vertex, sign] = diff[0]
-                    let move = this.engineBoards[i].makeMove(sign, vertex)
-
-                    if (move.getPositionHash() === board.getPositionHash()) {
-                        // Incremental board update possible
-
-                        let color = sign > 0 ? 'B' : 'W'
-                        let point = board.vertex2coord(vertex)
-
-                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
-                        synced = true
-                    }
-                }
-
-                if (synced) continue
-            }
-
-            // Replay
-
-            this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
-            this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
-            this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
-
-            for (let x = 0; x < board.width; x++) {
-                for (let y = 0; y < board.height; y++) {
-                    let vertex = [x, y]
-                    let sign = board.get(vertex)
-                    if (sign === 0) continue
-
-                    let color = sign > 0 ? 'B' : 'W'
-                    let point = board.vertex2coord(vertex)
-
-                    this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
-                }
-            }
-
-            this.engineBoards[i] = board
-        }
-
-        this.setBusy(false)
     }
 
     startGeneratingMoves({followUp = false} = {}) {
-        this.closeDrawer()
-
-        if (followUp) {
-            if (!this.state.generatingMoves) {
-                this.hideInfoOverlay()
-                this.setBusy(false)
-                return
-            }
-        } else {
-            this.setState({generatingMoves: true})
-        }
-
-        let {currentPlayer, rootTree} = this.inferredState
-        let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
-        let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
-        let playerController = this.attachedEngineControllers[playerIndex]
-        let otherController = this.attachedEngineControllers[otherIndex]
-
-        if (playerController == null) {
-            if (otherController != null) {
-                // Switch engines, so the attached engine can play
-
-                let engines = [...this.state.attachedEngines].reverse()
-                this.attachEngines(...engines)
-                ;[playerController, otherController] = [otherController, playerController]
-            } else {
-                return
-            }
-        }
-
-        if (!followUp && playerController != null && otherController != null) {
-            this.flashInfoOverlay('Press Esc to stop generating moves')
-        }
-
-        this.syncEngines()
-        this.setBusy(true)
-
-        this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
-            let sign = color === 'B' ? 1 : -1
-            let vertex = [-1, -1]
-
-            if (response.content.toLowerCase() !== 'pass') {
-                vertex = gametree.getBoard(rootTree, 0).coord2vertex(response.content)
-            }
-
-            if (response.content.toLowerCase() === 'resign') {
-                dialog.showMessageBox(`${playerController.name} has resigned.`)
-                this.makeResign()
-                return
-            }
-
-            this.makeMove(vertex, {player: sign})
-            this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
-
-            if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
-                setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
-            } else {
-                this.stopGeneratingMoves()
-                this.hideInfoOverlay()
-                this.setBusy(false)
-            }
-        })
     }
 
     stopGeneratingMoves() {
-        this.showInfoOverlay('Please wait…')
-        this.setState({generatingMoves: false})
     }
 
     // Render
