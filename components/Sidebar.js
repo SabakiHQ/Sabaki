@@ -25,7 +25,7 @@ class Sidebar extends Component {
             if (button === 0) {
                 sabaki.setCurrentTreePosition(...treePosition)
             } else {
-                sabaki.openNodeMenu(...treePosition)
+                sabaki.openNodeMenu(...treePosition, {x, y})
             }
         }
 
