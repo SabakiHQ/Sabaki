@@ -294,6 +294,7 @@ class App extends Component {
         }
 
         if (key in data) {
+            ipcRenderer.send('build-menu', this.state.busy)
             this.setState({[data[key]]: setting.get(key)})
         }
     }

@@ -4,10 +4,6 @@ const fs = require('fs')
 const setting = require('./modules/setting')
 const updater = require('./modules/updater')
 
-setting.events.on('change', ({key}) => {
-    if (key == 'engines.list') buildMenu()
-})
-
 let windows = []
 let openfile = null
 let isReady = false
