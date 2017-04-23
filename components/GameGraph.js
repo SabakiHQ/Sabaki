@@ -139,8 +139,8 @@ class GameGraph extends Component {
 
         this.state = {
             cameraPosition: [-props.gridSize, -props.gridSize],
-            viewportSize: null,
-            viewportPosition: null,
+            viewportSize: [props.viewportWidth, props.height],
+            viewportPosition: [0, 0],
             matrixDict: null
         }
 
@@ -202,35 +202,16 @@ class GameGraph extends Component {
         this.dirty = true
 
         clearTimeout(this.renderId)
-        this.renderId = setTimeout(() => {
-            // Adjust camera position and recalculate matrix-dict of game tree
-
-            let {gridSize, treePosition: [tree, index]} = this.props
-            let id = tree.id + '-' + index
-
-            let [matrix, dict] = this.getMatrixDict(gametree.getRoot(tree))
-            let [x, y] = dict[id]
-            let [width, padding] = gametree.getMatrixWidth(y, matrix)
-
-            let relX = width === 1 ? 0 : 1 - 2 * (x - padding) / (width - 1)
-            let diff = (width - 1) * gridSize / 2
-            diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
-
-            this.dirty = false
-
-            this.setState({
-                matrixDict: [matrix, dict],
-                cameraPosition: [
-                    x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
-                    y * gridSize - this.state.viewportSize[1] / 2
-                ].map(z => Math.round(z))
-            })
-        }, delay)
+        this.renderId = setTimeout(() => this.updateCameraPosition(), delay)
     }
 
-    componentDidUpdate({height}) {
+    componentDidUpdate({height, showGameGraph}) {
         if (height !== this.props.height) {
             setTimeout(() => this.remeasure(), 200)
+        }
+
+        if (showGameGraph !== this.props.showGameGraph) {
+            setTimeout(() => this.updateCameraPosition(), 200)
         }
     }
 
@@ -243,6 +224,29 @@ class GameGraph extends Component {
         }
 
         return this.matrixDictCache
+    }
+
+    updateCameraPosition() {
+        let {gridSize, treePosition: [tree, index]} = this.props
+        let id = tree.id + '-' + index
+
+        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(tree))
+        let [x, y] = dict[id]
+        let [width, padding] = gametree.getMatrixWidth(y, matrix)
+
+        let relX = width === 1 ? 0 : 1 - 2 * (x - padding) / (width - 1)
+        let diff = (width - 1) * gridSize / 2
+        diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
+
+        this.dirty = false
+
+        this.setState({
+            matrixDict: [matrix, dict],
+            cameraPosition: [
+                x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
+                y * gridSize - this.state.viewportSize[1] / 2
+            ].map(z => Math.round(z))
+        })
     }
 
     remeasure() {
