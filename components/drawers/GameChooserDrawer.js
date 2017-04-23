@@ -219,14 +219,14 @@ class GameChooserDrawer extends Component {
                 {
                     label: 'Add &Existing File…',
                     click: () => {
-                        let {extname} = require('path')
-                        let {gameTrees, onChange = helper.noop} = this.props
-                        let newTrees = []
 
                         dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
                             filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
                         }, ({result}) => {
+                            let {gameTrees, onChange = helper.noop} = this.props
+                            let newTrees = []
+
                             sabaki.setBusy(true)
 
                             if (result) {
@@ -241,7 +241,6 @@ class GameChooserDrawer extends Component {
                             }
 
                             onChange({gameTrees: [...gameTrees, ...newTrees]})
-
                             sabaki.setBusy(false)
                         })
                     }
