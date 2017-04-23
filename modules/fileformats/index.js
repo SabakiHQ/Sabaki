@@ -24,8 +24,4 @@ exports.getModuleByExtension = function(extension) {
 }
 
 exports.parseFile = function(filename, onProgress) {
-    let extension = extname(filename).slice(1)
-    let m = exports.getModuleByExtension(extension)
-
-    return m.parseFile(filename, onProgress)
 }

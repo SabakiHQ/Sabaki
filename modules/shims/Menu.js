@@ -1,6 +1,41 @@
 const {h, render} = require('preact')
 const classNames = require('classnames')
 
+function hide() {
+    document.getElementById('popupmenu-overlay').remove()
+}
+
+function show(velement, x, y) {
+    let element = render(velement, document.body).childNodes[0]
+
+    let {width, height} = element.getBoundingClientRect()
+    let {width: bodyWidth, height: bodyHeight} = document.body.getBoundingClientRect()
+
+    element.style.left = (x + width <= bodyWidth ? x : Math.max(0, x - width)) + 'px'
+    element.style.top = (y + height <= bodyHeight ? y : Math.max(0, y - height)) + 'px'
+}
+
+exports.buildFromTemplate = function(template) {
+    return {
+        popup: (_, {x, y}) => show(h('section',
+            {
+                id: 'popupmenu-overlay',
+                onClick: () => hide()
+            },
+
+            h('ul', {class: 'popupmenu'}, template.map(item =>
+                h('li', {
+                    class: classNames({
+                        checked: item.checked,
+                        [item.type]: item.type
+                    }),
+                    onClick: () => item.click && item.click()
+                }, item.label && item.label.replace(/&/g, ''))
+            ))
+        ), x, y)
+    }
+}
+
 render(h('style', {}, `
     #popupmenu-overlay {
         position: absolute;
@@ -52,43 +87,3 @@ render(h('style', {}, `
             background-color: #0030A0;
     }
 `), document.body)
-
-function hide() {
-    document.getElementById('popupmenu-overlay').remove()
-}
-
-function show(velement, x, y) {
-    let element = render(velement, document.body).childNodes[0]
-
-    let {width: menuWidth, height: menuHeight} = element.getBoundingClientRect()
-    let {width: bodyWidth, height: bodyHeight} = document.body.getBoundingClientRect()
-
-    element.style.left = `${x}px`
-    element.style.top = `${y}px`
-
-    if (y + menuHeight > bodyHeight) element.style.top = Math.max(0, y - menuHeight) + 'px'
-    if (x + menuWidth > bodyWidth) element.style.left = Math.max(0, x - menuWidth) + 'px'
-}
-
-exports.buildFromTemplate = function(template) {
-    return {
-        popup: (_, {x, y}) => show(h('section',
-            {
-                id: 'popupmenu-overlay',
-                onClick: () => hide()
-            },
-
-            h('ul', {class: 'popupmenu'}, template.map(item =>
-                item.type === 'separator'
-                ? h('li', {class: 'separator'})
-                : h('li', {
-                    class: classNames({
-                        checked: item.checked,
-                        'copy-to-clipboard': item.type === 'copy-to-clipboard'
-                    }),
-                    onClick: () => item.click()
-                }, item.label.replace(/&/g, ''))
-            ))
-        ), x, y)
-    }
-}

@@ -186,5 +186,4 @@ exports.parse = function(content) {
 }
 
 exports.parseFile = function(filename) {
-    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }

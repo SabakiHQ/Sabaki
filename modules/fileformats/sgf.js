@@ -162,8 +162,6 @@ exports.parse = function(contents, onProgress, ignoreEncoding = false) {
 }
 
 exports.parseFile = function(filename, onProgress, ignoreEncoding = false) {
-    let contents = fs.readFileSync(filename, {encoding: 'binary'})
-    return exports.parse(contents, onProgress, ignoreEncoding)
 }
 
 exports.string2dates = function(input) {
