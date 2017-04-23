@@ -8,6 +8,8 @@ module.exports = function(env) {
             filename: 'bundle.js',
             path: __dirname
         },
+        
+        devtool: 'source-map',
 
         module: {
             loaders: [
@@ -24,7 +26,7 @@ module.exports = function(env) {
 
         resolve: {
             alias: {
-                fs$: path.join(__dirname, 'modules/shims/empty'),
+                fs$: path.join(__dirname, 'modules/shims/fs'),
                 moment$: path.join(__dirname, 'modules/shims/empty'),
                 'argv-split$': path.join(__dirname, 'modules/shims/empty'),
                 '../modules/gtp$': path.join(__dirname, 'modules/shims/empty'),
