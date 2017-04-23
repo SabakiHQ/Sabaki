@@ -36,13 +36,13 @@ module.exports = {
             showMessageBox: (_, {message, buttons, cancelId}) => {
                 if (cancelId == null) cancelId = buttons.length - 1
 
-                let result = confirm(message)
+                let result = (buttons.length <= 1 ? alert : confirm)(message)
                 return result ? 0 : cancelId
             },
             showOpenDialog: noop,
             showSaveDialog: noop
         },
 
-        Menu: {}
+        Menu: require('./Menu')
     }
 }
