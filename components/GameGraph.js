@@ -194,7 +194,7 @@ class GameGraph extends Component {
         return height !== this.props.height || showGameGraph && !this.dirty
     }
 
-    componentWillReceiveProps({treePosition = [{}, -1]} = {}) {
+    componentWillReceiveProps({treePosition} = {}) {
         // Debounce rendering
 
         if (treePosition === this.props.treePosition) return
@@ -246,6 +246,8 @@ class GameGraph extends Component {
     }
 
     remeasure() {
+        if (!this.props.showGameGraph) return
+
         let {left, top, width, height} = this.element.getBoundingClientRect()
         this.setState({viewportSize: [width, height], viewportPosition: [left, top]})
     }
