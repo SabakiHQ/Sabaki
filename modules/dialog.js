@@ -1,41 +1,35 @@
-const {ipcRenderer, remote} = require('electron')
-const {app, dialog} = remote
+const {h, render} = require('preact')
 const helper = require('./helper')
 
-exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-    sabaki.setBusy(true)
+let fileInput = render(h('input', {
+    type: 'file',
+    style: {
+        opacity: 0,
+        pointerEvents: 'none'
+    }
+}), document.body)
 
-    let result = dialog.showMessageBox(sabaki.window, {
-        type,
-        buttons,
-        title: sabaki.appName,
-        message,
-        cancelId,
-        noLink: true
+exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
+    return (buttons.length <= 1 ? alert : confirm)(message)
+}
+
+exports.showOpenDialog = function({properties}, callback) {
+    let clone = fileInput.cloneNode()
+    fileInput.parentNode.replaceChild(clone, fileInput)
+    fileInput = clone
+
+    fileInput.multiple = properties.includes('multiSelections')
+    fileInput.value = ''
+
+    fileInput.addEventListener('change', evt => {
+        let result = evt.currentTarget.files
+        callback({result})
     })
 
-    sabaki.setBusy(false)
-    return result
-}
-
-exports.showFileDialog = function(type, options, callback = helper.noop) {
-    sabaki.setBusy(true)
-
-    let [t, ...ype] = [...type]
-    type = t.toUpperCase() + ype.join('').toLowerCase()
-
-    let result = dialog[`show${type}Dialog`](sabaki.window, options)
-
-    sabaki.setBusy(false)
-    callback({result})
-}
-
-exports.showOpenDialog = function(options, callback) {
-    return exports.showFileDialog('open', options, callback)
+    fileInput.click()
 }
 
 exports.showSaveDialog = function(options, callback) {
-    return exports.showFileDialog('save', options, callback)
 }
 
 exports.showInputBox = function(message, onSubmit = helper.noop, onCancel = helper.noop) {

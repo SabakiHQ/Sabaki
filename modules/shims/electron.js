@@ -32,17 +32,6 @@ module.exports = {
             webContents: {setAudioMuted: noop}
         }),
 
-        dialog: {
-            showMessageBox: (_, {message, buttons, cancelId}) => {
-                if (cancelId == null) cancelId = buttons.length - 1
-
-                let result = (buttons.length <= 1 ? alert : confirm)(message)
-                return result ? 0 : cancelId
-            },
-            showOpenDialog: noop,
-            showSaveDialog: noop
-        },
-
         Menu: require('./Menu')
     }
 }
