@@ -1,6 +1,7 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+
 const ContentDisplay = require('./ContentDisplay')
 
 const gtp = require('../modules/gtp')

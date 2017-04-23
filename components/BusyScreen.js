@@ -1,5 +1,4 @@
-const {remote} = require('electron')
-const {ipcRenderer} = require('electron')
+const {remote, ipcRenderer} = require('electron')
 const {h, Component} = require('preact')
 
 const setting = remote.require('./modules/setting')

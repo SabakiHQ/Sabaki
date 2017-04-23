@@ -3,11 +3,11 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const natsort = require('natsort')
 
-const dialog = require('../../modules/dialog')
-const setting = remote.require('./modules/setting')
-const helper = require('../../modules/helper')
-
 const Drawer = require('./Drawer')
+
+const dialog = require('../../modules/dialog')
+const helper = require('../../modules/helper')
+const setting = remote.require('./modules/setting')
 
 class PreferencesItem extends Component {
     constructor() {

@@ -3,6 +3,7 @@ const {Menu} = remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const Pikaday = require('pikaday')
+
 const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')

@@ -1,10 +1,10 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 
+const Drawer = require('./Drawer')
+
 const gametree = require('../../modules/gametree')
 const setting = remote.require('./modules/setting')
-
-const Drawer = require('./Drawer')
 
 class CleanMarkupItem extends Component {
     constructor() {
