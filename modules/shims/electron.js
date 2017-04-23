@@ -1,5 +1,4 @@
-const path = require('path')
-const helper = require('../helper')
+const {noop} = require('../helper')
 
 let app = {
     getName: () => 'Sabaki',
@@ -8,40 +7,40 @@ let app = {
 }
 
 module.exports = {
-    ipcRenderer: {on: helper.noop, send: helper.noop},
-    clipboard: {readText: helper.noop, writeText: helper.noop},
-    shell: {openExternal: helper.noop},
-
     app,
+    ipcRenderer: {on: noop, send: noop},
+    clipboard: {readText: noop, writeText: noop},
+    shell: {openExternal: noop},
 
     remote: {
+        app,
         require: x => x === './modules/setting' ? require('../setting') : {},
 
         getCurrentWindow: () => ({
-            show: helper.noop,
-            close: helper.noop,
-            on: helper.noop,
+            show: noop,
+            close: noop,
+            on: noop,
             isMaximized: false,
             isMinimized: false,
             isFullScreen: false,
-            setFullScreen: helper.noop,
-            setMenuBarVisibility: helper.noop,
-            setAutoHideMenuBar: helper.noop,
-            setProgressBar: helper.noop,
-            setContentSize: helper.noop,
-            getContentSize: [],
-            webContents: {setAudioMuted: helper.noop}
+            setFullScreen: noop,
+            setMenuBarVisibility: noop,
+            setAutoHideMenuBar: noop,
+            setProgressBar: noop,
+            setContentSize: noop,
+            getContentSize: [0, 0],
+            webContents: {setAudioMuted: noop}
         }),
 
-        app,
-
         dialog: {
-            showMessageBox: (_, {message, cancelId}) => {
+            showMessageBox: (_, {message, buttons, cancelId}) => {
+                if (cancelId == null) cancelId = buttons.length - 1
+
                 let result = confirm(message)
                 return result ? 0 : cancelId
             },
-            showOpenDialog: helper.noop,
-            showSaveDialog: helper.noop
+            showOpenDialog: noop,
+            showSaveDialog: noop
         },
 
         Menu: {}
