@@ -460,7 +460,6 @@ class App extends Component {
             }
 
             if (gameTrees.length != 0) {
-                this.setBusy(false)
                 this.clearUndoPoint()
                 this.detachEngines()
                 this.setState({
@@ -472,6 +471,8 @@ class App extends Component {
                 this.treeHash = this.generateTreeHash()
                 this.fileHash = this.generateFileHash()
             }
+            
+            this.setBusy(false)
 
             if (gameTrees.length > 1) {
                 setTimeout(() => {
