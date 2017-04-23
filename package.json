@@ -74,17 +74,16 @@
     "preact": "^8.1.0"
   },
   "devDependencies": {
-    "electron": "1.6.7",
-    "electron-builder": "^16.8.4",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
     "mocha": "^3.0.2",
-    "tmp": "~0.0.29"
+    "tmp": "~0.0.29",
+    "webpack": "^2.4.1"
   },
   "scripts": {
     "test": "mocha",
-    "pack": "build --dir",
-    "dist:macos": "build -m --x64",
-    "dist:linux": "build -l --ia32 --x64",
-    "dist:win32": "build -w --ia32",
-    "dist:win64": "build -w --x64"
+    "build": "webpack --progress -p",
+    "watch": "webpack --progress --watch"
   }
 }
