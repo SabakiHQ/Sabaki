@@ -239,12 +239,12 @@ class App extends Component {
         // Handle full screen & menu bar
 
         if (prevState.fullScreen !== this.state.fullScreen) {
-            if (this.state.fullScreen) this.showInfoOverlay('Press Esc to exit full screen mode')
+            if (this.state.fullScreen) this.flashInfoOverlay('Press Esc to exit full screen mode')
             this.window.setFullScreen(this.state.fullScreen)
         }
 
         if (prevState.showMenuBar !== this.state.showMenuBar) {
-            if (!this.state.showMenuBar) this.showInfoOverlay('Press Alt to show menu bar')
+            if (!this.state.showMenuBar) this.flashInfoOverlay('Press Alt to show menu bar')
             this.window.setMenuBarVisibility(this.state.showMenuBar)
             this.window.setAutoHideMenuBar(!this.state.showMenuBar)
         }
@@ -344,10 +344,15 @@ class App extends Component {
             infoOverlayText: text,
             showInfoOverlay: true
         })
+    }
 
-        setTimeout(() => {
-            this.setState({showInfoOverlay: false})
-        }, setting.get('infooverlay.duration'))
+    hideInfoOverlay() {
+        this.setState({showInfoOverlay: false})
+    }
+
+    flashInfoOverlay(text) {
+        this.showInfoOverlay(text)
+        setTimeout(() => this.hideInfoOverlay(), setting.get('infooverlay.duration'))
     }
 
     // File Management
@@ -1957,7 +1962,11 @@ class App extends Component {
         this.closeDrawer()
 
         if (followUp) {
-            if (!this.state.generatingMoves) return this.setBusy(false)
+            if (!this.state.generatingMoves) {
+                this.hideInfoOverlay()
+                this.setBusy(false)
+                return
+            }
         } else {
             this.setState({generatingMoves: true})
         }
@@ -1978,6 +1987,10 @@ class App extends Component {
             } else {
                 return
             }
+        }
+
+        if (!followUp && playerController != null && otherController != null) {
+            this.flashInfoOverlay('Press Esc to stop generating moves')
         }
 
         this.syncEngines()
@@ -2004,12 +2017,14 @@ class App extends Component {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
+                this.hideInfoOverlay()
                 this.setBusy(false)
             }
         })
     }
 
     stopGeneratingMoves() {
+        this.showInfoOverlay('Please wait…')
         this.setState({generatingMoves: false})
     }
 

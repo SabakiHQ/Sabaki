@@ -107,6 +107,15 @@ The score drawer should only be opened in scoring mode or estimator mode.
 
 Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. The user cannot interact with the UI in busy state.
 
+#### sabaki.showInfoOverlay(text)
+
+* `text` `<String>`
+
+#### sabaki.hideInfoOverlay()
+#### sabaki.flashInfoOverlay(text)
+
+* `text` `<String>`
+
 ### File Management
 
 #### sabaki.getEmptyGameTree()

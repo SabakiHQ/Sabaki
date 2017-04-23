@@ -10,6 +10,7 @@ const gametree = sabaki && require('../modules/gametree')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
+let treePosition = () => sabaki.state.treePosition
 
 let data = [
     {
@@ -56,7 +57,7 @@ let data = [
                     },
                     {
                         label: 'Copy &ASCII Diagram',
-                        click: () => clipboard.writeText(gametree.getBoard(...sabaki.state.treePosition).generateAscii())
+                        click: () => clipboard.writeText(gametree.getBoard(...treePosition()).generateAscii())
                     }
                 ]
             },
@@ -84,7 +85,7 @@ let data = [
         submenu: [
             {
                 label: '&Toggle Player',
-                click: () => sabaki.setPlayer(...sabaki.state.treePosition, -sabaki.getPlayer(...sabaki.state.treePosition))
+                click: () => sabaki.setPlayer(...treePosition(), -sabaki.getPlayer(...treePosition()))
             },
             {type: 'separator'},
             {
@@ -179,42 +180,42 @@ let data = [
             {type: 'separator'},
             {
                 label: '&Copy Variation',
-                click: () => sabaki.copyVariation(...sabaki.state.treePosition)
+                click: () => sabaki.copyVariation(...treePosition())
             },
             {
                 label: 'Cu&t Variation',
-                click: () => sabaki.cutVariation(...sabaki.state.treePosition)
+                click: () => sabaki.cutVariation(...treePosition())
             },
             {
                 label: '&Paste Variation',
-                click: () => sabaki.pasteVariation(...sabaki.state.treePosition)
+                click: () => sabaki.pasteVariation(...treePosition())
             },
             {type: 'separator'},
             {
                 label: 'Make Main &Variation',
-                click: () => sabaki.makeMainVariation(...sabaki.state.treePosition)
+                click: () => sabaki.makeMainVariation(...treePosition())
             },
             {
                 label: 'Shift &Left',
-                click: () => sabaki.shiftVariation(...sabaki.state.treePosition, -1)
+                click: () => sabaki.shiftVariation(...treePosition(), -1)
             },
             {
                 label: 'Shift Ri&ght',
-                click: () => sabaki.shiftVariation(...sabaki.state.treePosition, 1)
+                click: () => sabaki.shiftVariation(...treePosition(), 1)
             },
             {type: 'separator'},
             {
                 label: '&Flatten',
-                click: () => sabaki.flattenVariation(...sabaki.state.treePosition)
+                click: () => sabaki.flattenVariation(...treePosition())
             },
             {
                 label: '&Remove Node',
                 accelerator: 'CmdOrCtrl+Delete',
-                click: () => sabaki.removeNode(...sabaki.state.treePosition)
+                click: () => sabaki.removeNode(...treePosition())
             },
             {
                 label: 'Remove &Other Variations',
-                click: () => sabaki.removeOtherVariations(...sabaki.state.treePosition)
+                click: () => sabaki.removeOtherVariations(...treePosition())
             }
         ]
     },
@@ -229,25 +230,31 @@ let data = [
             {
                 label: 'Find &Next',
                 accelerator: 'F3',
-                click: () => (sabaki.setMode('find'), sabaki.findMove(1, {
-                    vertex: sabaki.state.findVertex,
-                    text: sabaki.state.findText
-                }))
+                click: () => {
+                    sabaki.setMode('find')
+                    sabaki.findMove(1, {
+                        vertex: sabaki.state.findVertex,
+                        text: sabaki.state.findText
+                    })
+                }
             },
             {
                 label: 'Find &Previous',
                 accelerator: 'Shift+F3',
-                click: () => (sabaki.setMode('find'), sabaki.findMove(-1, {
-                    vertex: sabaki.state.findVertex,
-                    text: sabaki.state.findText
-                }))
+                click: () => {
+                    sabaki.setMode('find')
+                    sabaki.findMove(-1, {
+                        vertex: sabaki.state.findVertex,
+                        text: sabaki.state.findText
+                    })
+                }
             },
             {type: 'separator'},
             {
                 label: 'Toggle &Hotspot',
                 accelerator: 'CmdOrCtrl+B',
-                click: () => sabaki.setComment(...sabaki.state.treePosition, {
-                    hotspot: !('HO' in sabaki.state.treePosition[0].nodes[sabaki.state.treePosition[1]])
+                click: () => sabaki.setComment(...treePosition(), {
+                    hotspot: !('HO' in treePosition()[0].nodes[treePosition()[1]])
                 })
             },
             {
