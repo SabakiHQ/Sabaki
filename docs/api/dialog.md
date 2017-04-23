@@ -19,15 +19,19 @@ const {dialog} = sabaki.modules
 
 On the web version `type`, `buttons`, and `cancelId` are ignored.
 
-### dialog.showOpenDialog(options)
+### dialog.showOpenDialog(options[, callback])
 
 * `options` `<Object>` - See [Electron docs](https://electron.atom.io/docs/api/dialog/#dialogshowopendialogbrowserwindow-options-callback)
+* `callback` `<Function>` *(optional)*
+    * `result` `<String[]>` - A list of file paths the user selected
 
 On the web version `options` is ignored.
 
-### dialog.showSaveDialog(options)
+### dialog.showSaveDialog(options[, callback])
 
 * `options` `<Object>` - See [Electron docs](https://electron.atom.io/docs/api/dialog/#dialogshowsavedialogbrowserwindow-options-callback)
+* `callback` `<Function>` *(optional)*
+    * `result` `<String>` - The path the user selected
 
 This method does not work on the web version.
 

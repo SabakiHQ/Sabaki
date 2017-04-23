@@ -156,15 +156,15 @@ class EngineItem extends Component {
         }
 
         this.handleBrowseButtonClick = () => {
-            let result = dialog.showOpenDialog({
+            dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [{name: 'All Files', extensions: ['*']}]
-            })
+            }, ({result}) => {
+                if (!result || result.length === 0) return
 
-            if (result) {
                 let {id, name, args, onChange = helper.noop} = this.props
                 onChange({id, name, args, path: result[0]})
-            }
+            })
         }
 
         this.handleRemoveButtonClick = () => {
