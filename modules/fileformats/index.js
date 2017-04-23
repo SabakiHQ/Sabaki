@@ -1,3 +1,4 @@
+const fs = require('fs')
 const {extname} = require('path')
 
 let sgf = require('./sgf')
@@ -23,5 +24,11 @@ exports.getModuleByExtension = function(extension) {
     )] || sgf
 }
 
-exports.parseFile = function(filename, onProgress) {
+exports.parseFile = function(file, onProgress, callback) {
+    let extension = extname(file.name).slice(1)
+    let m = exports.getModuleByExtension(extension)
+
+    fs.readFile(file, (err, content) => {
+        callback({trees: m.parse(content, onProgress)})
+    })
 }

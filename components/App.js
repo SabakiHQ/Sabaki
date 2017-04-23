@@ -185,7 +185,7 @@ class App extends Component {
             evt.preventDefault()
 
             if (evt.dataTransfer.files.length === 0) return
-            this.loadFile(evt.dataTransfer.files[0].path)
+            this.loadFile(evt.dataTransfer.files[0])
         })
 
         // Handle escape key
@@ -404,33 +404,34 @@ class App extends Component {
         })
     }
 
-    loadFile(filename = null, {suppressAskForSave = false} = {}) {
+    loadFile(file = null, {suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
-        if (!filename) {
+        if (!file) {
             dialog.showOpenDialog({
                 properties: ['openFile'],
                 filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
-                if (result) filename = result[0]
-                if (filename) this.loadFile(filename, {suppressAskForSave: true})
+                if (result) file = result[0]
+                if (file) this.loadFile(file, {suppressAskForSave: true})
             })
 
             return
         }
 
         let {extname} = require('path')
-        let extension = extname(filename).slice(1)
-        let content = fs.readFileSync(filename, {encoding: 'binary'})
+        let extension = extname(file.name).slice(1)
 
-        this.loadContent(content, extension, {
-            suppressAskForSave: true,
-            callback: err => {
-                if (err) return
+        fs.readFile(file, (err, content) => {
+            this.loadContent(content, extension, {
+                suppressAskForSave: true,
+                callback: err => {
+                    if (err) return
 
-                this.setState({representedFilename: filename})
-                this.fileHash = this.generateFileHash()
-            }
+                    this.setState({representedFilename: file.name})
+                    this.fileHash = this.generateFileHash()
+                }
+            })
         })
     }
 
@@ -473,7 +474,7 @@ class App extends Component {
                 this.treeHash = this.generateTreeHash()
                 this.fileHash = this.generateFileHash()
             }
-            
+
             this.setBusy(false)
 
             if (gameTrees.length > 1) {

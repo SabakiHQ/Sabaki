@@ -22,8 +22,7 @@ exports.showOpenDialog = function({properties}, callback) {
     fileInput.value = ''
 
     fileInput.addEventListener('change', evt => {
-        let result = evt.currentTarget.files
-        callback({result})
+        callback({result: evt.currentTarget.files})
     })
 
     fileInput.click()

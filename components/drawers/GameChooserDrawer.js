@@ -219,28 +219,26 @@ class GameChooserDrawer extends Component {
                 {
                     label: 'Add &Existing File…',
                     click: () => {
-
                         dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
                             filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
                         }, ({result}) => {
-                            let {gameTrees, onChange = helper.noop} = this.props
-                            let newTrees = []
+                            let {onChange = helper.noop} = this.props
 
                             sabaki.setBusy(true)
 
                             if (result) {
                                 try {
-                                    for (let filename of result) {
-                                        let trees = fileformats.parseFile(filename)
-                                        newTrees.push(...trees)
+                                    for (let file of result) {
+                                        fileformats.parseFile(file, helper.noop, ({trees}) => {
+                                            onChange({gameTrees: [...this.props.gameTrees, ...trees]})
+                                        })
                                     }
                                 } catch (err) {
                                     dialog.showMessageBox('Some files are unreadable.', 'warning')
                                 }
                             }
 
-                            onChange({gameTrees: [...gameTrees, ...newTrees]})
                             sabaki.setBusy(false)
                         })
                     }
