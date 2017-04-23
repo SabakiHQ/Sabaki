@@ -122,6 +122,10 @@ class App extends Component {
     }
 
     componentDidMount() {
+        window.addEventListener('contextmenu', evt => {
+            evt.preventDefault()
+        })
+
         window.addEventListener('load', () => {
             this.window.show()
             this.events.emit('ready')
