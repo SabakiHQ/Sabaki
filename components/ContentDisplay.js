@@ -1,5 +1,6 @@
 const {shell} = require('electron')
 const {h, Component} = require('preact')
+
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 
@@ -16,11 +17,6 @@ class ContentDisplay extends Component {
                 let linkElement = evt.currentTarget
 
                 if (linkElement.classList.contains('external')) {
-                    if (!shell) {
-                        linkElement.target = '_blank'
-                        return
-                    }
-
                     evt.preventDefault()
                     shell.openExternal(linkElement.href)
                 } else if (linkElement.classList.contains('movenumber')) {

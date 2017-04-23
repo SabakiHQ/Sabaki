@@ -1,23 +1,21 @@
 const {app} = require('electron')
-const fs = require('fs')
 const EventEmitter = require('events')
+const fs = require('fs')
+const path = require('path')
 
-if (app) {
-    let {join} = require('path')
-    let directory = app.getPath('userData')
-    try { fs.mkdirSync(directory) } catch (err) {}
+exports.userDataDirectory = app.getPath('userData')
+try { fs.mkdirSync(exports.userDataDirectory) } catch (err) {}
 
-    exports.settingsPath = join(directory, 'settings.json')
-    exports.stylesPath = join(directory, 'styles.css')
+exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
+exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
 
-    try {
-        fs.accessSync(exports.stylesPath, fs.R_OK)
-    } catch (err) {
-        fs.writeFileSync(
-            exports.stylesPath,
-            `/* This stylesheet is loaded when ${app.getName()} starts up. */`
-        )
-    }
+try {
+    fs.accessSync(exports.stylesPath, fs.R_OK)
+} catch (err) {
+    fs.writeFileSync(
+        exports.stylesPath,
+        `/* This stylesheet is loaded when ${app.getName()} starts up. */`
+    )
 }
 
 let settings = {}
@@ -118,8 +116,6 @@ let defaults = {
 exports.events = new EventEmitter()
 
 exports.load = function() {
-    if (!app) return settings = defaults
-
     try {
         settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
     } catch (err) {
@@ -152,8 +148,6 @@ exports.load = function() {
 }
 
 exports.save = function() {
-    if (!app) return exports
-
     fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
     return exports
 }

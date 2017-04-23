@@ -2,7 +2,7 @@ const marked = require('./marked')
 
 let id = 0
 
-exports.linebreak = process.platform == 'win32' ? '\r\n' : '\n'
+exports.linebreak = process.platform === 'win32' ? '\r\n' : '\n'
 exports.noop = () => {}
 
 exports.getId = function() {
