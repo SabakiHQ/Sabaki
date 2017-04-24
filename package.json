@@ -82,7 +82,7 @@
     "webpack": "^2.4.1"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "",
     "build": "webpack --progress -p",
     "watch": "webpack --progress --watch"
   }
