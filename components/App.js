@@ -1,5 +1,3 @@
-require('babel-polyfill')
-
 const fs = require('fs')
 const EventEmitter = require('events')
 const {ipcRenderer, clipboard, remote} = require('electron')
