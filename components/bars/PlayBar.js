@@ -1,8 +1,12 @@
+const {shell, clipboard, remote} = require('electron')
 const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
 const helper = require('../../modules/helper')
+const setting = remote.require('./modules/setting')
+
+let toggleSetting = key => setting.set(key, !setting.get(key))
 
 class PlayBar extends Component {
     constructor() {
@@ -13,6 +17,58 @@ class PlayBar extends Component {
 
         this.handleMenuClick = () => {
             let template = [
+                {
+                    label: `About ${sabaki.appName}…`,
+                    click: () => shell.openExternal('http://sabaki.yichuanshen.de')
+                },
+                {type: 'separator'},
+                {
+                    label: 'New File',
+                    click: () => sabaki.newFile({playSound: true, showInfo: true})
+                },
+                {
+                    label: 'Open File…',
+                    click: () => sabaki.loadFile()
+                },
+                {
+                    label: 'Download SGF',
+                    click: () => sabaki.saveFile(sabaki.state.representedFilename)
+                },
+                {
+                    label: 'Load SGF from Clipboard',
+                    click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
+                },
+                {
+                    label: 'Copy SGF to Clipboard',
+                    type: 'copy-to-clipboard',
+                    click: () => clipboard.writeText(sabaki.getSGF())
+                },
+                {type: 'separator'},
+                {
+                    label: 'Show &Coordinates',
+                    checked: setting.get('view.show_coordinates'),
+                    click: () => toggleSetting('view.show_coordinates')
+                },
+                {
+                    label: 'Show Move Colori&zation',
+                    checked: setting.get('view.show_move_colorization'),
+                    click: () => toggleSetting('view.show_move_colorization')
+                },
+                {
+                    label: 'Show &Next Moves',
+                    checked: setting.get('view.show_next_moves'),
+                    click: () => toggleSetting('view.show_next_moves')
+                },
+                {
+                    label: 'Show &Sibling Variations',
+                    checked: setting.get('view.show_siblings'),
+                    click: () => toggleSetting('view.show_siblings')
+                },
+                {
+                    label: '&Manage Games…',
+                    click: () => sabaki.openDrawer('gamechooser')
+                },
+                {type: 'separator'},
                 {
                     label: '&Pass',
                     click: () => sabaki.makeMove([-1, -1])
