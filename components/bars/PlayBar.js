@@ -36,7 +36,11 @@ class PlayBar extends Component {
                 },
                 {
                     label: 'Load SGF from Clipboard',
-                    click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
+                    click: () => {
+                        let content = clipboard.readText()
+                        if (content == null) return
+                        sabaki.loadContent(content, 'sgf', {ignoreEncoding: true})
+                    }
                 },
                 {
                     label: 'Copy SGF to Clipboard',
