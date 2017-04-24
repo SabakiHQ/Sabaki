@@ -491,20 +491,13 @@ class App extends Component {
     }
 
     saveFile(filename = null) {
-        if (!filename) {
-            dialog.showSaveDialog({
-                filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
-            }, ({result}) => {
-                if (result) this.saveFile(result)
-            })
-
-            return
-        }
-
-        fs.writeFileSync(filename, this.getSGF())
+        dialog.showSaveDialog({
+            type: 'application/x-go-sgf',
+            name: this.state.representedFilename || 'game.sgf',
+            content: this.getSGF()
+        })
 
         this.setBusy(false)
-        this.setState({representedFilename: filename})
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
