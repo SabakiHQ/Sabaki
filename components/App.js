@@ -190,7 +190,7 @@ class App extends Component {
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
-            evt.returnValue = ' '
+            evt.returnValue = 'Blah'
         })
 
         this.newFile()
@@ -497,12 +497,12 @@ class App extends Component {
 
         if (hash !== this.treeHash) {
             let answer = dialog.showMessageBox(
-                'Your changes will be lost if you close this file without saving.',
+                'Your changes will be lost if you close this file without saving. Do you want to continue?',
                 'warning',
                 ['Save', 'Don’t Save', 'Cancel'], 2
             )
 
-            if (answer === 0) return this.saveFile(this.state.representedFilename)
+            if (answer === 0) return true
             else if (answer === 2) return false
         }
 
@@ -688,7 +688,7 @@ class App extends Component {
 
                 if (ko && dialog.showMessageBox(
                     ['You are about to play a move which repeats a previous board position.',
-                    'This is invalid in some rulesets.'].join('\n'),
+                    'This is invalid in some rulesets. Do you want to play anyway?'].join('\n'),
                     'info',
                     ['Play Anyway', 'Don’t Play'], 1
                 ) != 0) return
@@ -709,7 +709,7 @@ class App extends Component {
             if (suicide && setting.get('game.show_suicide_warning')) {
                 if (dialog.showMessageBox(
                     ['You are about to play a suicide move.',
-                    'This is invalid in some rulesets.'].join('\n'),
+                    'This is invalid in some rulesets. Do you want to play anyway?'].join('\n'),
                     'info',
                     ['Play Anyway', 'Don’t Play'], 1
                 ) != 0) return
