@@ -1419,6 +1419,26 @@ class App extends Component {
         this.clearUndoPoint()
     }
 
+    getComment(tree, index) {
+        let node = tree.nodes[index]
+
+        return {
+            title: 'N' in node ? node.N[0].trim() : null,
+            comment: 'C' in node ? node.C[0] : null,
+            hotspot: 'HO' in node,
+            moveAnnotation: 'BM' in node ? 'BM'
+                : 'TE' in node ? 'TE'
+                : 'DO' in node ? 'DO'
+                : 'IT' in node ? 'IT'
+                : null,
+            positionAnnotation: 'UC' in node ? 'UC'
+                : 'GW' in node ? 'GW'
+                : 'DM' in node ? 'DM'
+                : 'GB' in node ? 'GB'
+                : null
+        }
+    }
+
     setComment(tree, index, data) {
         let node = tree.nodes[index]
 

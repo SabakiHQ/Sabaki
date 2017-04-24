@@ -174,9 +174,9 @@ class Sidebar extends Component {
                 treePosition,
                 showCommentBox,
                 moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
-                    : 'TE' in node ? [2, node.TE[0]]
                     : 'DO' in node ? [0, 1]
                     : 'IT' in node ? [1, 1]
+                    : 'TE' in node ? [2, node.TE[0]]
                     : [null, 1],
                 positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
                     : 'GW' in node ? [-1, node.GW[0]]
