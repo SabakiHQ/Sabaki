@@ -190,7 +190,7 @@ class App extends Component {
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
-            evt.returnValue = 'Blah'
+            evt.returnValue = ' '
         })
 
         this.newFile()
