@@ -829,7 +829,7 @@ class App extends Component {
 
         // Emit event
 
-        this.events.emit('makeMove', {pass, capture, suicide, ko, enterScoring})
+        this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
     }
 
     makeResign({player = null, setUndoPoint = true} = {}) {
@@ -1027,7 +1027,7 @@ class App extends Component {
         this.clearUndoPoint()
         this.setCurrentTreePosition(tree, index)
 
-        this.events.emit('toolUsed', {tool, vertex, argument})
+        this.events.emit('toolUse', {tool, vertex, argument})
     }
 
     // Undo Methods
@@ -1366,6 +1366,26 @@ class App extends Component {
         }
 
         this.clearUndoPoint()
+    }
+
+    getComment(tree, index) {
+        let node = tree.nodes[index]
+
+        return {
+            title: 'N' in node ? node.N[0].trim() : null,
+            comment: 'C' in node ? node.C[0] : null,
+            hotspot: 'HO' in node,
+            moveAnnotation: 'BM' in node ? 'BM'
+                : 'TE' in node ? 'TE'
+                : 'DO' in node ? 'DO'
+                : 'IT' in node ? 'IT'
+                : null,
+            positionAnnotation: 'UC' in node ? 'UC'
+                : 'GW' in node ? 'GW'
+                : 'DM' in node ? 'DM'
+                : 'GB' in node ? 'GB'
+                : null
+        }
     }
 
     setComment(tree, index, data) {

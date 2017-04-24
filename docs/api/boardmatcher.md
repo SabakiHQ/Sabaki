@@ -29,7 +29,7 @@ Returns an array like in `boardmatcher.getSymmetries(vertex)`, except that value
 
 * `filename` `<String>`
 
-Returns an array of [shapes](boardshape.md) included in the given SGF file.
+Returns an array of [shapes](goshape.md) included in the given SGF file. On the web version, `filename` is ignored.
 
 ### boardmatcher.cornerMatch(points, board)
 
@@ -40,7 +40,7 @@ Tries to match the given signed `vertices` to `board` with regard to their dista
 
 ### boardmatcher.shapeMatch(shape, board, vertex)
 
-* `shape` [`<BoardShape>`](boardshape.md)
+* `shape` [`<GoShape>`](goshape.md)
 * `board` [`<Board>`](board.md)
 * `vertex` [`<Vertex>`](vertex.md)
 
@@ -51,6 +51,6 @@ Tries to match the given `shape` to `board`, where given `vertex` is part of the
 * `board` [`<Board>`](board.md)
 * `vertex` [`<Vertex>`](vertex.md)
 * `options` `<Object>` *(optional)*
-    * `shapes` [`<BoardShape[]>`](boardshape.md) *(optional)*
+    * `shapes` [`<GoShape[]>`](goshape.md) *(optional)*
 
 Returns a string that describes the move at `vertex` on `board` using the given list of `shapes`.

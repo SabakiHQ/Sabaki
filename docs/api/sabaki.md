@@ -36,7 +36,7 @@ The `navigate` event is emitted when Sabaki has finished loading a game tree pos
 
 The `vertexClick` event is emitted when the user clicks on the board.
 
-### Event: 'makeMove'
+### Event: 'moveMake'
 
 * `evt` `<Object>`
     * `pass` `<Boolean>` - Specifies whether the move was a pass
@@ -44,7 +44,7 @@ The `vertexClick` event is emitted when the user clicks on the board.
     * `suicide` `<Boolean>` - Specifies whether the move was a suicide
     * `ko` `<Boolean>` - Specifies whether the move violates the simple ko rule
 
-The `makeMove` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
+The `moveMake` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
 
 ### Event: 'resign'
 
@@ -52,22 +52,29 @@ The `makeMove` event is emitted after a move has been played, either a stone has
 
 The `resign` event is triggered after someone resigns.
 
-### Event: 'toolUsed'
+### Event: 'toolUse'
 
 * `evt` `<Object>`
     * `tool` `<String>`
     * `vertex` [`<Vertex>`](vertex.md)
     * `argument` [`<Vertex>`](vertex.md)
 
-The `toolUsed` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`. If `tool` is `'line'` or `'arrow'`, `argument` is the end vertex. If `tool` is `'label'` or `'number'`, `argument` is the label text.
+The `toolUse` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`. If `tool` is `'line'` or `'arrow'`, `argument` is the end vertex. If `tool` is `'label'` or `'number'`, `argument` is the label text.
 
 ### Event: 'fileLoad'
 
 The `fileLoad` event is triggered when Sabaki finishes loading some file.
 
+## Properties
+
+* `events` [`<EventEmitter>`](https://nodejs.org/api/events.html)
+* `appName` `<String>`
+* `version` `<String>`
+* `window` [`<BrowserWindow>`](http://electron.atom.io/docs/api/browser-window/)
+
 ## State
 
-State properties can be accessed through the object `sabaki.state`. Please do not change state directly through `sabaki.setState()`, or worse, mutating `sabaki.state`.
+State properties can be accessed through the object `sabaki.state`. Generally, *do not* change state directly through `sabaki.setState()`, or worse, by mutating `sabaki.state`.
 
 * `mode` `<String>` - One of `'play'`, `'edit'`, `'find'`, `'scoring'`, `'estimator'`, `'guess'`, `'autoplay'`
 * `openDrawer` `<String>` | `<Null>` - One of `'info'`, `'gamechooser'`, `'cleanmarkup'`, `'score'`, `'preferences'` if a drawer is open, otherwise `null`
@@ -275,15 +282,15 @@ Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
 
 Returns an object with the following values:
 
-* `blackName` `<String>`
-* `blackRank` `<String>`
-* `whiteName` `<String>`
-* `whiteRank` `<String>`
-* `gameName` `<String>`
-* `eventName` `<String>`
-* `date` `<String>`
-* `result` `<String>`
-* `komi` `<Float>`
+* `blackName` `<String>` | `<Null>`
+* `blackRank` `<String>` | `<Null>`
+* `whiteName` `<String>` | `<Null>`
+* `whiteRank` `<String>` | `<Null>`
+* `gameName` `<String>` | `<Null>`
+* `eventName` `<String>` | `<Null>`
+* `date` `<String>` | `<Null>`
+* `result` `<String>` | `<Null>`
+* `komi` `<Float>` | `<Null>`
 * `handicap` `<Integer>`
 * `size` `<Integer[]>` - An array of two numbers, representing the width and height of the game board
 
@@ -291,17 +298,17 @@ Returns an object with the following values:
 
 * `tree` [`<GameTree>`](gametree.md)
 * `data` `<Object>`
-    * `blackName` `<String>` *(optional)*
-    * `blackRank` `<String>` *(optional)*
-    * `whiteName` `<String>` *(optional)*
-    * `whiteRank` `<String>` *(optional)*
-    * `gameName` `<String>` *(optional)*
-    * `eventName` `<String>` *(optional)*
-    * `date` `<String>` *(optional)*
-    * `result` `<String>` *(optional)*
-    * `komi` `<Float>` *(optional)*
-    * `handicap` `<Integer>` *(optional)*
-    * `size` `<Integer[]>` *(optional)* - An array of two numbers, representing the width and height of the game board
+    * `blackName` `<String>` | `<Null>` *(optional)*
+    * `blackRank` `<String>` | `<Null>` *(optional)*
+    * `whiteName` `<String>` | `<Null>` *(optional)*
+    * `whiteRank` `<String>` | `<Null>` *(optional)*
+    * `gameName` `<String>` | `<Null>` *(optional)*
+    * `eventName` `<String>` | `<Null>` *(optional)*
+    * `date` `<String>` | `<Null>` *(optional)*
+    * `result` `<String>` | `<Null>` *(optional)*
+    * `komi` `<Float>` | `<Null>` *(optional)*
+    * `handicap` `<Integer>` | `<Null>` *(optional)*
+    * `size` `<Integer[]>` | `<Null>` *(optional)* - An array of two numbers, representing the width and height of the game board
 
 Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
 
@@ -318,16 +325,31 @@ Returns a [sign](sign.md) corresponding to the player that should be playing at 
 * `index` `<Integer>`
 * `sign` [`<Sign>`](sign.md) - Cannot be `0`
 
+#### sabaki.getComment(tree, index)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+
+Returns an object with the following keys:
+
+* `title` `<String>` | `<Null>`
+* `comment` `<String>` | `<Null>`
+* `hotspot` `<Boolean>`
+* `moveAnnotation` `<String>` | `<Null>` - One of `'BM'`, `'DO'`, `'IT'`, and `'TE'`
+* `positionAnnotation` `<String>` | `<Null>` - One of `'UC'`, `'GW'`, `'GB'`, and `'DM'`
+
+This only returns what is encoded in the [game tree](gametree.md), so it won't return automatic titles by Sabaki.
+
 #### sabaki.setComment(tree, index, data)
 
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
 * `data` `<Object>`
-    * `title` `<String>` *(optional)*
-    * `comment` `<String>` *(optional)*
-    * `hotspot` `<Boolean>` *(optional)*
-    * `moveAnnotation` `<String>` *(optional)* - One of `'BM'`, `'DO'`, `'IT'`, and `'TE'`
-    * `positionAnnotation` `<String>` *(optional)* - One of `'UC'`, `'GW'`, `'GB'`, and `'DM'`
+    * `title` `<String>` | `<Null>` *(optional)*
+    * `comment` `<String>` | `<Null>` *(optional)*
+    * `hotspot` `<Boolean>` | `<Null>` *(optional)*
+    * `moveAnnotation` `<String>` | `<Null>` *(optional)* - One of `'BM'`, `'DO'`, `'IT'`, and `'TE'`
+    * `positionAnnotation` `<String>` | `<Null>` *(optional)* - One of `'UC'`, `'GW'`, `'GB'`, and `'DM'`
 
 Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
 

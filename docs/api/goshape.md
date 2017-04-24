@@ -1,6 +1,6 @@
-# Board Shape Object
+# Go Shape Object
 
-A board shape object is a plain object with the following properties:
+A Go shape object is a plain object with the following properties:
 
 * `name` `<String>`
 * `anchors` [`<SignedVertex[]>`](vertex.md)

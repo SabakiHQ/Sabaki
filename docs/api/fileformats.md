@@ -29,7 +29,7 @@ Parses the contents and returns an array of [game trees](gametree.md).
     * `evt` `<Object>`
         * `progress` `<Float>` - Between `0` and `1`
 
-Parses `filename` and returns an array of [game trees](gametree.md) contained in `filename`.
+Parses `filename` and returns an array of [game trees](gametree.md) contained in `filename`. This method can't be used in the web version.
 
 ## Submodule: fileformats.sgf
 
@@ -104,4 +104,4 @@ Infers file format from `extension` and returns the submodule responsible for pa
     * `evt` `<Object>`
         * `progress` `<Float>` - Between `0` and `1`
 
-Infers file format from `filename`, parses the file, and returns an array of [game trees](gametree.md) contained in `filename`.
+Infers file format from `filename`, parses the file, and returns an array of [game trees](gametree.md) contained in `filename`. This function shouldn't be used in the web version.
