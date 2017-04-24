@@ -64,11 +64,8 @@
     ]
   },
   "dependencies": {
-    "argv-split": "^2.0.1",
     "classnames": "^2.2.5",
     "clipboard": "^1.6.1",
-    "iconv-lite": "^0.4.13",
-    "jschardet": "^1.4.2",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
