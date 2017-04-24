@@ -497,12 +497,8 @@ class App extends Component {
             content: this.getSGF()
         })
 
-        this.setBusy(false)
-
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
-
-        return true
     }
 
     getSGF() {
