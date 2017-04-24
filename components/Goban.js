@@ -348,6 +348,8 @@ class Goban extends Component {
         this.mouseDown = false
         evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
         evt.line = this.state.temporaryLine
+        evt.x = evt.clientX
+        evt.y = evt.clientY
 
         if (evt.line) {
             onLineDraw(evt)

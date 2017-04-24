@@ -61,7 +61,7 @@ class LeftSidebar extends Component {
                 evt.preventDefault()
 
                 let {leftSidebarWidth} = this.props
-                let diff = [evt.x, evt.y].map((x, i) => x - this.oldMousePosition[i])
+                let diff = [evt.clientX, evt.clientY].map((x, i) => x - this.oldMousePosition[i])
 
                 leftSidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth + diff[0])
                 sabaki.setLeftSidebarWidth(leftSidebarWidth)
