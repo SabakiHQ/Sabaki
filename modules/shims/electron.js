@@ -1,3 +1,4 @@
+const {h, render} = require('preact')
 const {noop} = require('../helper')
 
 let app = {
@@ -10,7 +11,18 @@ module.exports = {
     app,
     ipcRenderer: {on: noop, send: noop},
     clipboard: {readText: noop, writeText: noop},
-    shell: {openExternal: noop},
+
+    shell: {
+        openExternal: href => {
+            let element = render(h('a', {
+                href,
+                target: '_blank'
+            }), document.body)
+
+            element.click()
+            element.remove()
+        }
+    },
 
     remote: {
         app,
