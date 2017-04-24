@@ -1836,8 +1836,6 @@ class App extends Component {
                 })
             },
 
-            h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath}),
-
             h(MainView, state),
             h(LeftSidebar, state),
             h(Sidebar, state),

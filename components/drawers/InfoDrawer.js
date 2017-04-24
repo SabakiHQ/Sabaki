@@ -319,7 +319,7 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        h('img', {
+                        false && h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
@@ -369,7 +369,7 @@ class InfoDrawer extends Component {
                             onInput: this.handleInputChange.whiteRank
                         }), ' ',
 
-                        h('img', {
+                        false && h('img', {
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
