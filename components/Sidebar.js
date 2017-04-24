@@ -101,7 +101,7 @@ class Sidebar extends Component {
                 evt.preventDefault()
 
                 let {sidebarWidth} = this.props
-                let diff = [evt.x, evt.y].map((x, i) => x - this.oldMousePosition[i])
+                let diff = [evt.clientX, evt.clientY].map((x, i) => x - this.oldMousePosition[i])
 
                 sidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth - diff[0])
                 sabaki.setSidebarWidth(sidebarWidth)

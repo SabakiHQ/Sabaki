@@ -143,8 +143,8 @@ class GameChooserDrawer extends Component {
             let menu = Menu.buildFromTemplate(template)
 
             menu.popup(sabaki.window, {
-                x: evt.x,
-                y: evt.y,
+                x: evt.clientX,
+                y: evt.clientY,
                 async: true
             })
         }
@@ -161,7 +161,7 @@ class GameChooserDrawer extends Component {
             let element = evt.currentTarget
             let index = this.props.gameTrees.indexOf(evt.tree)
 
-            let x = evt.x
+            let x = evt.clientX
             let {left, width} = element.getBoundingClientRect()
             let middle = left + width / 2
 

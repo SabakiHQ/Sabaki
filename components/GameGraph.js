@@ -21,7 +21,7 @@ class GameGraphNode extends Component {
         this.handleMouseMove = evt => {
             if (!this.element) return
 
-            let {x, y} = evt
+            let {clientX: x, clientY: y} = evt
             let {position, mouseShift: [sx, sy], gridSize} = this.props
             let mousePosition = [x + sx, y + sy]
             let hover = false
@@ -157,7 +157,7 @@ class GameGraph extends Component {
         document.addEventListener('mousemove', evt => {
             if (!this.svgElement) return
 
-            let {x, y, movementX, movementY} = evt
+            let {clientX: x, clientY: y, movementX, movementY} = evt
             let {cameraPosition: [cx, cy], viewportPosition: [vx, vy]} = this.state
 
             if (this.mouseDown == null) {
