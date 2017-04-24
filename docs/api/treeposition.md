@@ -1,6 +1,6 @@
 # Tree Position Object
 
-Sabaki encodes tree positions in a tree position object. The naive way is to directly store the [game tree node](gametree.md). The disadvantage is that we don't have direct access to surrounding nodes, so navigating will be difficult. We would have to traverse the whole game tree to find the node first. That's why Sabaki stores two information for a tree position. Given a game tree node `node`, a tree position object is the tuple
+Sabaki encodes tree positions in a tree position object. The naive way is to directly store the [game tree node](gametree.md). The disadvantage is that we don't have direct access to surrounding nodes, so navigating will be difficult. We would have to traverse the whole game tree to find the node first. That's why Sabaki stores two pieces of information for a tree position. Given a game tree node `node`, a tree position object is the tuple
 
 ~~~js
 [tree, index]
