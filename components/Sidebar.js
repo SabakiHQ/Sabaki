@@ -109,7 +109,7 @@ class Sidebar extends Component {
                 evt.preventDefault()
 
                 let sidebarSplit = Math.min(100 - sidebarMinSplit,
-                    Math.max(sidebarMinSplit, 100 - evt.y * 100 / this.element.offsetHeight))
+                    Math.max(sidebarMinSplit, 100 - evt.clientY * 100 / this.element.offsetHeight))
 
                 this.setState({sidebarSplit, sidebarSplitTransition: false})
             }
