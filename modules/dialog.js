@@ -12,7 +12,12 @@ let fileInput = render(h('input', {
 }), document.body)
 
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
-    return (buttons.length <= 1 ? alert : confirm)(message)
+    if (buttons.length <= 1) {
+        alert(message)
+        return 0
+    } else {
+        return confirm(message) ? 0 : cancelId
+    }
 }
 
 exports.showOpenDialog = function(options, callback) {
