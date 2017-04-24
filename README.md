@@ -38,7 +38,7 @@ The documentation is located in the [docs](https://github.com/yishn/Sabaki/blob/
 
 ## Building & Tests
 
-See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/e7e4e585a18c0cb7e0a69814a67626bde5d23046) in the wiki.
+See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/ea894af79e68b32c31875ea616ac914717e337fe) in the wiki.
 
 ## License
 
