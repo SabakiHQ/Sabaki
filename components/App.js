@@ -880,7 +880,7 @@ class App extends Component {
 
         // Emit event
 
-        this.events.emit('makeMove', {pass, capture, suicide, ko, enterScoring})
+        this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
     }
 
     makeResign({player = null, setUndoPoint = true} = {}) {
@@ -1078,7 +1078,7 @@ class App extends Component {
         this.clearUndoPoint()
         this.setCurrentTreePosition(tree, index)
 
-        this.events.emit('toolUsed', {tool, vertex, argument})
+        this.events.emit('toolUse', {tool, vertex, argument})
     }
 
     // Undo Methods

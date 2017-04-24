@@ -36,7 +36,7 @@ The `navigate` event is emitted when Sabaki has finished loading a game tree pos
 
 The `vertexClick` event is emitted when the user clicks on the board.
 
-### Event: 'makeMove'
+### Event: 'moveMake'
 
 * `evt` `<Object>`
     * `pass` `<Boolean>` - Specifies whether the move was a pass
@@ -44,7 +44,7 @@ The `vertexClick` event is emitted when the user clicks on the board.
     * `suicide` `<Boolean>` - Specifies whether the move was a suicide
     * `ko` `<Boolean>` - Specifies whether the move violates the simple ko rule
 
-The `makeMove` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
+The `moveMake` event is emitted after a move has been played, either a stone has been placed or a pass has been made.
 
 ### Event: 'resign'
 
@@ -52,18 +52,25 @@ The `makeMove` event is emitted after a move has been played, either a stone has
 
 The `resign` event is triggered after someone resigns.
 
-### Event: 'toolUsed'
+### Event: 'toolUse'
 
 * `evt` `<Object>`
     * `tool` `<String>`
     * `vertex` [`<Vertex>`](vertex.md)
     * `argument` [`<Vertex>`](vertex.md)
 
-The `toolUsed` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`. If `tool` is `'line'` or `'arrow'`, `argument` is the end vertex. If `tool` is `'label'` or `'number'`, `argument` is the label text.
+The `toolUse` event is triggered after the user used `tool` by clicking on `vertex`. `tool` can be one of the following: `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`. If `tool` is `'line'` or `'arrow'`, `argument` is the end vertex. If `tool` is `'label'` or `'number'`, `argument` is the label text.
 
 ### Event: 'fileLoad'
 
 The `fileLoad` event is triggered when Sabaki finishes loading some file.
+
+## Properties
+
+* `events` [`<EventEmitter>`](https://nodejs.org/api/events.html)
+* `appName` `<String>`
+* `version` `<String>`
+* `window` [`<BrowserWindow>`](http://electron.atom.io/docs/api/browser-window/)
 
 ## State
 
