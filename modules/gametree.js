@@ -1,8 +1,7 @@
 const Board = require('./board')
 
 const helper = require('./helper')
-const setting = require('./setting')
-const sgf = require('./sgf')
+const {sgf} = require('./fileformats')
 
 exports.new = function() {
     return {
@@ -10,28 +9,23 @@ exports.new = function() {
         nodes: [],
         subtrees: [],
         current: null,
-        parent: null,
-        collapsed: false
+        parent: null
     }
 }
 
-exports.clone = function(tree, newIds = false, parent = null) {
-    let c = {
-        id: newIds ? helper.getId() : tree.id,
-        nodes: [],
-        subtrees: [],
+exports.clone = function(tree, parent = null) {
+    let c = Object.assign(exports.new(), {
         current: tree.current,
-        parent,
-        collapsed: tree.collapsed
-    }
+        parent
+    })
 
     for (let node of tree.nodes) {
         let cn = {}
 
         for (let key in node) {
-            if (key == 'board') continue
+            if (key === 'board') continue
 
-            if (Object.prototype.toString.call(node[key]) == '[object Array]') {
+            if (Array.isArray(node[key])) {
                 cn[key] = [...node[key]]
             } else {
                 cn[key] = node[key]
@@ -42,28 +36,25 @@ exports.clone = function(tree, newIds = false, parent = null) {
     }
 
     for (let subtree of tree.subtrees) {
-        c.subtrees.push(exports.clone(subtree, newIds, c))
+        c.subtrees.push(exports.clone(subtree, c))
     }
 
     return c
 }
 
 exports.getRoot = function(tree) {
-    while (tree.parent != null) tree = tree.parent
+    while (tree.parent !== null) tree = tree.parent
     return tree
 }
 
-exports.getPlayerName = function(tree, sign, fallback = '') {
-    tree = exports.getRoot(tree)
-    let color = sign > 0 ? 'B' : 'W'
-
-    if (tree.nodes.length == 0) return fallback
+exports.getRootProperty = function(tree, property, fallback = null) {
+    let node = exports.getRoot(tree).nodes[0]
+    if (!node) return fallback
 
     let result = ''
-    if (('P' + color) in tree.nodes[0]) result = tree.nodes[0]['P' + color][0]
-    else if ((color + 'T') in tree.nodes[0]) result = tree.nodes[0][color + 'T'][0]
+    if (property in node) result = node[property][0]
 
-    return result.trim() == '' ? fallback : result
+    return result === '' ? fallback : result
 }
 
 exports.getHeight = function(tree) {
@@ -79,10 +70,20 @@ exports.getHeight = function(tree) {
 exports.getCurrentHeight = function(tree) {
     let height = tree.nodes.length
 
-    if (tree.current != null)
+    if (tree.subtrees.length !== 0)
         height += exports.getCurrentHeight(tree.subtrees[tree.current])
 
     return height
+}
+
+exports.getTreesRecursive = function(tree) {
+    let result = [tree]
+
+    for (let subtree of tree.subtrees) {
+        result.push(...exports.getTreesRecursive(subtree))
+    }
+
+    return result
 }
 
 exports.getLevel = function(tree, index) {
@@ -102,51 +103,6 @@ exports.getSection = function(tree, level) {
     return sections
 }
 
-exports.getMatrixDict = function(tree, matrix, dict = {}, xshift = 0, yshift = 0) {
-    if (!matrix) matrix = Array.apply(null, new Array(exports.getHeight(tree))).map(() => [])
-
-    let hasCollisions = true
-    while (hasCollisions) {
-        hasCollisions = false
-
-        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length - Math.max(0, y + 1 - tree.nodes.length)) continue
-
-            hasCollisions = true
-            xshift++
-            break
-        }
-    }
-
-    for (let y = 0; y < tree.nodes.length; y++) {
-        while (xshift >= matrix[yshift + y].length) {
-            matrix[yshift + y].push(null)
-        }
-
-        matrix[yshift + y][xshift] = [tree, y]
-        dict[tree.id + '-' + y] = [xshift, yshift + y]
-    }
-
-    if (!tree.collapsed) {
-        for (let k = 0; k < tree.subtrees.length; k++) {
-            let subtree = tree.subtrees[k]
-            exports.getMatrixDict(subtree, matrix, dict, xshift, yshift + tree.nodes.length)
-        }
-    }
-
-    return [matrix, dict]
-}
-
-exports.getTreesRecursive = function(tree) {
-    let result = [tree]
-
-    for (let subtree of tree.subtrees) {
-        result.push(...exports.getTreesRecursive(subtree))
-    }
-
-    return result
-}
-
 exports.navigate = function(tree, index, step) {
     if (index + step >= 0 && index + step < tree.nodes.length) {
         return [tree, index + step]
@@ -155,7 +111,7 @@ exports.navigate = function(tree, index, step) {
         let newstep = index + step + 1
 
         return exports.navigate(prev, prev.nodes.length - 1, newstep)
-    } else if (index + step >= tree.nodes.length && tree.current != null) {
+    } else if (index + step >= tree.nodes.length && tree.subtrees.length !== 0) {
         let next = tree.subtrees[tree.current]
         let newstep = index + step - tree.nodes.length
 
@@ -214,8 +170,9 @@ exports.split = function(tree, index) {
     newtree.current = 0
     tree.parent = newtree
 
-    if (newtree.parent)
+    if (newtree.parent) {
         newtree.parent.subtrees[newtree.parent.subtrees.indexOf(tree)] = newtree
+    }
 
     return newtree
 }
@@ -234,9 +191,51 @@ exports.reduce = function(tree) {
     return tree
 }
 
+exports.onCurrentTrack = function(tree) {
+    return !tree.parent
+    || tree.parent.subtrees[tree.parent.current] == tree
+    && exports.onCurrentTrack(tree.parent)
+}
+
+exports.onMainTrack = function(tree) {
+    return !tree.parent
+    || tree.parent.subtrees[0] == tree
+    && exports.onMainTrack(tree.parent)
+}
+
+exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
+    if (!matrix) matrix = [...Array(exports.getHeight(tree))].map(_ => [])
+
+    let hasCollisions = true
+    while (hasCollisions) {
+        hasCollisions = false
+
+        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
+            if (xshift >= matrix[yshift + y].length - (y === tree.nodes.length)) continue
+
+            hasCollisions = true
+            xshift++
+            break
+        }
+    }
+
+    for (let y = 0; y < tree.nodes.length; y++) {
+        matrix[yshift + y].length = xshift + 1
+        matrix[yshift + y][xshift] = [tree, y]
+        dict[tree.id + '-' + y] = [xshift, yshift + y]
+    }
+
+    for (let k = 0; k < tree.subtrees.length; k++) {
+        let subtree = tree.subtrees[k]
+        exports.getMatrixDict(subtree, matrix, dict, xshift + k, yshift + tree.nodes.length)
+    }
+
+    return [matrix, dict]
+}
+
 exports.getMatrixWidth = function(y, matrix) {
-    let keys = Object.keys(new Int8Array(10))
-        .map(i => parseFloat(i) + y - 4)
+    let keys = [...Array(10)]
+        .map((_, i) => i + y - 4)
         .filter(i => i >= 0 && i < matrix.length)
 
     let padding = Math.min(...keys.map(i => {
@@ -250,137 +249,7 @@ exports.getMatrixWidth = function(y, matrix) {
     return [width, padding]
 }
 
-exports.onCurrentTrack = function(tree) {
-    return !tree.parent
-    || tree.parent.subtrees[tree.parent.current] == tree
-    && exports.onCurrentTrack(tree.parent)
-}
-
-exports.onMainTrack = function(tree) {
-    return !tree.parent
-    || tree.parent.subtrees[0] == tree
-    && exports.onMainTrack(tree.parent)
-}
-
-exports.matrixdict2graph = function([matrix, dict]) {
-    let graph = {nodes: [], edges: []}
-    let currentTrack = []
-    let notCurrentTrack = []
-    let width = Math.max(...matrix.map(x => x.length))
-    let gridSize = setting.get('graph.grid_size')
-
-    for (let y = 0; y < matrix.length; y++) {
-        for (let x = 0; x < width; x++) {
-            if (!matrix[y][x]) continue
-
-            let [tree, index] = matrix[y][x]
-            let id = tree.id + '-' + index
-            let commentproperties = setting.get('sgf.comment_properties')
-
-            let node = {
-                id: id,
-                x: x * gridSize,
-                y: y * gridSize,
-                size: setting.get('graph.node_size'),
-                data: matrix[y][x],
-                originalColor: setting.get('graph.node_color')
-            }
-
-            // Show passes as squares
-
-            if ('B' in tree.nodes[index] && tree.nodes[index].B[0] == ''
-            || 'W' in tree.nodes[index] && tree.nodes[index].W[0] == '') {
-                node.type = 'square'
-                node.size++
-            }
-
-            // Show non-moves as diamonds
-
-            if (!('B' in tree.nodes[index] || 'W' in tree.nodes[index])) {
-                node.type = 'diamond'
-                node.size++
-            }
-
-            // Set color
-
-            if (commentproperties.some(x => x in tree.nodes[index]))
-                node.originalColor = setting.get('graph.node_comment_color')
-            if ('HO' in tree.nodes[index])
-                node.originalColor = setting.get('graph.node_bookmark_color')
-
-            if (currentTrack.includes(tree.id)) {
-                node.color = node.originalColor
-            } else if (!notCurrentTrack.includes(tree.id)) {
-                if (exports.onCurrentTrack(tree)) {
-                    currentTrack.push(tree.id)
-                    node.color = node.originalColor
-                } else {
-                    notCurrentTrack.push(tree.id)
-                }
-            }
-
-            if (tree.collapsed && tree.subtrees.length > 0 && index == tree.nodes.length - 1)
-                node.color = node.originalColor = setting.get('graph.node_collapsed_color')
-
-            graph.nodes.push(node)
-
-            // Add helper nodes & edges
-
-            let prev = exports.navigate(tree, index, -1)
-            if (!prev) continue
-
-            let prevId = prev[0].id + '-' + prev[1]
-            let prevPos = dict[prevId]
-
-            let thickness = setting.get('graph.edge_inactive_size')
-            let edgeColor = setting.get('graph.edge_inactive_color')
-            let method = 'unshift'
-
-            if (currentTrack.includes(tree.id)) {
-                thickness = setting.get('graph.edge_size')
-                edgeColor = setting.get('graph.edge_color')
-                method = 'push'
-            }
-
-            if (prevPos[0] != x) {
-                graph.nodes.push({
-                    id: id + '-h',
-                    x: (x - 1) * gridSize,
-                    y: (y - 1) * gridSize,
-                    size: 0
-                })
-
-                graph.edges[method]({
-                    id: id + '-e1',
-                    source: id,
-                    target: id + '-h',
-                    size: thickness,
-                    color: edgeColor
-                })
-
-                graph.edges[method]({
-                    id: id + '-e2',
-                    source: id + '-h',
-                    target: prevId,
-                    size: thickness,
-                    color: edgeColor
-                })
-            } else {
-                graph.edges[method]({
-                    id: id + '-e1',
-                    source: id,
-                    target: prevId,
-                    size: thickness,
-                    color: edgeColor
-                })
-            }
-        }
-    }
-
-    return graph
-}
-
-exports.getBoard = function(tree, index = 0, baseboard = null) {
+exports.getBoard = function(tree, index, baseboard = null) {
     if (index >= tree.nodes.length) return null
 
     let node = tree.nodes[index]
@@ -473,7 +342,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             let p1 = composed.slice(0, sep)
             let p2 = composed.slice(sep + 1)
 
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type == 'AR'])
+            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type === 'AR'])
         }
     }
 
@@ -492,12 +361,14 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             return
         }
 
-        if (v in board.ghosts || !board.hasVertex(v))
+        if (!board.hasVertex(v) || v in board.ghosts)
             return
 
-        let types = [type]
+        let types = []
 
-        if (type == 'child') {
+        if (type === 'child') {
+            types.push(`ghost_${sign}`)
+
             if ('BM' in node) {
                 types.push('badmove')
             } else if ('DO' in node) {
@@ -507,21 +378,23 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
             } else if ('TE' in node) {
                 types.push('goodmove')
             }
+        } else if (type === 'sibling') {
+            types.push(`siblingghost_${sign}`)
         }
 
-        board.ghosts[v] = [sign, types]
+        board.ghosts[v] = types
     }
 
-    if (index == tree.nodes.length - 1) {
+    if (index === tree.nodes.length - 1) {
         for (let subtree of tree.subtrees) {
-            if (subtree.nodes.length == 0) continue
+            if (subtree.nodes.length === 0) continue
             addOverlay(subtree.nodes[0], 'child')
         }
     } else if (index < tree.nodes.length - 1) {
         addOverlay(tree.nodes[index + 1], 'child')
     }
 
-    if (index == 0 && tree.parent) {
+    if (index === 0 && tree.parent) {
         for (let subtree of tree.parent.subtrees) {
             if (subtree.nodes.length == 0) continue
             addOverlay(subtree.nodes[0], 'sibling')
@@ -534,7 +407,7 @@ exports.getBoard = function(tree, index = 0, baseboard = null) {
 
 exports.getJson = function(tree) {
     return JSON.stringify(tree, (name, val) => {
-        let list = ['id', 'board', 'parent', 'collapsed', 'current']
+        let list = ['id', 'board', 'parent', 'current']
         return list.includes(name) ? undefined : val
     })
 }
@@ -542,7 +415,6 @@ exports.getJson = function(tree) {
 exports.fromJson = function(json) {
     let addInformation = tree => {
         tree.id = helper.getId()
-        tree.collapsed = false
 
         if (tree.subtrees.length > 0) tree.current = 0
 
@@ -560,5 +432,9 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(sgf.stringify(tree))
+    return helper.hash(`${tree.nodes.map(exports.getJson).join('-')}-${tree.subtrees.map(exports.getHash).join('-')}`)
+}
+
+exports.getMatrixHash = function(tree) {
+    return helper.hash(`${tree.id}-${tree.nodes.length}-${tree.subtrees.map(exports.getMatrixHash).join('-')}`)
 }

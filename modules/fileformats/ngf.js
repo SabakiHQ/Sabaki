@@ -1,17 +1,16 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
 const jschardet = require('jschardet')
-const gametree = require('./gametree')
 const sgf = require('./sgf')
-const Board = require('./board')
+const gametree = require('../gametree')
+const Board = require('../board')
 
 exports.meta = {
     name: 'wBaduk NGF',
     extensions: ['ngf']
 }
 
-exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
-
+exports.parse = function(content) {
     // NGF files have a huge amount of ASCII-looking text. To help
     // the detector, we just send it the first few lines.
 
@@ -116,7 +115,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     root.SZ = [boardsize]
 
     if (handicap >= 2) {
-
         root.HA = [handicap]
         root.AB = []
 
@@ -159,7 +157,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     // But some older files have less headers and start moves earlier.
 
     for (let n = 0; n < lines.length; n++) {
-
         let line = lines[n].trim()
 
         if (line.length >= 7) {
@@ -188,6 +185,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     return [tree]
 }
 
-exports.parseFile = function (filename, callback = () => {}) {
-    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}), callback)
+exports.parseFile = function(filename) {
+    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }

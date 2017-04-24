@@ -4,7 +4,7 @@ const util = require('util')
 const tmp = require('tmp')
 
 const helper = require('../modules/helper')
-const sgf = require('../modules/sgf')
+const {sgf} = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 
 describe('sgf', () => {
@@ -156,17 +156,6 @@ describe('sgf', () => {
                     sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))[0].nodes[2].C[0],
                     util.format('%s is fun', languageMap[language])
                 )
-            })
-            it('should save SGFs back to UTF-8 regardless of input encoding', () => {
-                let parsedSgf = sgf.parseFile(util.format('%s/sgf/%s.sgf', __dirname, language))
-                let savedSgfName = tmp.tmpNameSync()
-
-                fs.writeFileSync(savedSgfName, sgf.stringify(parsedSgf))
-
-                let savedSgf = sgf.parseFile(savedSgfName)
-
-                assert.equal(savedSgf[0].nodes[0].CA[0], 'UTF-8')
-                assert.equal(savedSgf[0].nodes[2].C[0], util.format('%s is fun', languageMap[language]))
             })
         }
 

@@ -15,7 +15,7 @@ describe('Board', () => {
         })
         it('should have no capture information', () => {
             let board = new Board()
-            assert.deepEqual(board.captures, {'-1': 0, '1': 0})
+            assert.deepEqual(board.captures, [0, 0])
         })
         it('should have no markups and lines', () => {
             let board = new Board()
@@ -91,29 +91,6 @@ describe('Board', () => {
             assert.deepEqual(board.getCanonicalVertex([4, 3]), [3, 4])
             assert.deepEqual(board.getCanonicalVertex([18, 3]), [0, 3])
             assert.deepEqual(board.getCanonicalVertex([15, 5]), [3, 5])
-        })
-    })
-
-    describe('getSymmetries', () => {
-        it('should work', () => {
-            let board = new Board()
-
-            assert.deepEqual(
-                board.getSymmetries([3, 4]).sort(helper.lexicalCompare),
-                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([4, 3]).sort(helper.lexicalCompare),
-                [[3, 4], [3, 14], [4, 3], [4, 15], [14, 3], [14, 15], [15, 4], [15, 14]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([18, 3]).sort(helper.lexicalCompare),
-                [[0, 3], [0, 3], [0, 15], [0, 15], [3, 0], [3, 0], [15, 0], [15, 0]]
-            )
-            assert.deepEqual(
-                board.getSymmetries([15, 5]).sort(helper.lexicalCompare),
-                [[3, 5], [3, 13], [5, 3], [5, 15], [13, 3], [13, 15], [15, 5], [15, 13]]
-            )
         })
     })
 
@@ -244,8 +221,8 @@ describe('Board', () => {
             white.forEach(x => board.set(x, -1))
 
             let move = board.makeMove(1, [3, 1])
-            assert.equal(move.captures[-1], 0)
-            assert.equal(move.captures[1], white.length)
+            assert.equal(move.captures[1], 0)
+            assert.equal(move.captures[0], white.length)
 
             board = new Board()
 
@@ -253,8 +230,8 @@ describe('Board', () => {
 
             move = board.makeMove(1, [1, 0])
 
-            assert.equal(move.captures[-1], 0)
-            assert.equal(move.captures[1], 1)
+            assert.equal(move.captures[1], 0)
+            assert.equal(move.captures[0], 1)
         })
         it('should handle suicide correctly', () => {
             let board = new Board()

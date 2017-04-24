@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.21.0",
+  "version": "0.30.1",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
@@ -23,7 +23,9 @@
     },
     "mac": {
       "category": "public.app-category.board-games",
-      "target": ["7z"]
+      "target": [
+        "7z"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -49,27 +51,31 @@
     ],
     "files": [
       "**/*",
-      "!test${/*}",
-      "!browser/build.js",
-      "!**/{.c9,scss,docs}${/*}",
+      "!build.js",
+      "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
       "!node_modules/moment${/*}",
-      "!node_modules/{octicons,sigma}/{plugins,lib,src,build/font}${/*}",
-      "!node_modules/sigma/build/plugins/*.js",
-      "node_modules/sigma/build/plugins/sigma.renderers.customShapes.min.js"
+      "!node_modules/octicons/build/*",
+      "node_modules/octicons/build/svg",
+      "!node_modules/jschardet/dist${/*}",
+      "node_modules/jschardet/src",
+      "!node_modules/preact/*.{map,js}",
+      "!node_modules/preact/dist/*",
+      "node_modules/preact/dist/preact.js"
     ]
   },
   "dependencies": {
     "argv-split": "^2.0.1",
+    "classnames": "^2.2.5",
     "iconv-lite": "^0.4.13",
     "jschardet": "^1.4.2",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
-    "sigma": "^1.0.3"
+    "preact": "^8.1.0"
   },
   "devDependencies": {
-    "electron": "1.6.2",
-    "electron-builder": "^16.5.1",
+    "electron": "1.6.7",
+    "electron-builder": "^16.8.4",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
   },

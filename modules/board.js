@@ -2,10 +2,10 @@ const helper = require('./helper')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class Board {
-    constructor(width = 19, height = 19, arrangement = [], captures = {'-1': 0, '1': 0}) {
+    constructor(width = 19, height = 19, arrangement = [], captures = null) {
         this.width = width
         this.height = height
-        this.captures = {'-1': captures['-1'], '1': captures['1']}
+        this.captures = captures ? captures.slice() : [0, 0]
         this.arrangement = []
         this.markups = {}
         this.ghosts = {}
@@ -28,7 +28,22 @@ class Board {
     }
 
     clone() {
-        return this.makeMove(0)
+        return new Board(this.width, this.height, this.arrangement, this.captures)
+    }
+
+    diff(board) {
+        let result = []
+
+        for (let x = 0; x < this.width; x++) {
+            for (let y = 0; y < this.height; y++) {
+                let sign = board.get([x, y])
+                if (this.get([x, y]) === sign) continue
+
+                result.push([[x, y], sign])
+            }
+        }
+
+        return result
     }
 
     hasVertex([x, y]) {
@@ -54,30 +69,19 @@ class Board {
     getCanonicalVertex(vertex) {
         if (!this.hasVertex(vertex)) return [-1, -1]
 
-        let v = [
-            Math.min(vertex[0], this.width - vertex[0] - 1),
-            Math.min(vertex[1], this.height - vertex[1] - 1)
-        ]
+        let boardSize = [this.width, this.height]
 
-        return v.sort((x, y) => x - y)
-    }
-
-    getSymmetries(vertex) {
-        if (!this.hasVertex(vertex)) return []
-
-        let [mx, my] = [this.width - 1, this.height - 1]
-        let mod = (x, m) => (x % m + m) % m
-
-        return helper.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
+        return vertex.map((x, i) => Math.min(x, boardSize[i] - x - 1))
+            .sort((x, y) => x - y)
     }
 
     getNeighbors(vertex, ignoreBoard = false) {
         if (!ignoreBoard && !this.hasVertex(vertex)) return []
-        let [x, y] = vertex
 
-        return [
-            [x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]
-        ].filter(v => ignoreBoard || this.hasVertex(v))
+        let [x, y] = vertex
+        let allNeighbors = [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]
+
+        return ignoreBoard ? allNeighbors : allNeighbors.filter(v => this.hasVertex(v))
     }
 
     getConnectedComponent(vertex, func, result = null) {
@@ -96,7 +100,7 @@ class Board {
 
         for (let v of this.getNeighbors(vertex)) {
             if (!func(v)) continue
-            if (result.some(w => w[0] === v[0] && w[1] === v[1])) continue
+            if (result.some(w => helper.vertexEquals(v, w))) continue
 
             result.push(v)
             this.getConnectedComponent(v, func, result)
@@ -279,45 +283,45 @@ class Board {
 
     getInfluenceMap(sign) {
         let map = [...Array(this.height)].map(_ => Array(this.width).fill(0))
+        let size = [this.width, this.height]
         let done = []
 
         // Cast influence
 
         let getVertex = v => {
             if (this.hasVertex(v)) return v
-
-            let size = [this.width, this.height]
             return v.map((z, i) => z < 0 ? -z - 1 : z >= size[i] ? 2 * size[i] - z - 1 : z)
         }
 
         let castInfluence = (chain, distance) => {
-            let stack = chain.map(x => [x, 0])
+            let queue = chain.map(x => [x, 0])
             let visited = []
 
-            while (stack.length > 0) {
-                let [v, d] = stack.shift()
-
-                if (visited.some(w => w[0] === v[0] && w[1] === v[1])) continue
-                visited.push(v)
-
+            while (queue.length > 0) {
+                let [v, d] = queue.shift()
                 let [x, y] = getVertex(v)
+
                 map[y][x] += !this.hasVertex(v) ? 2 : 1.5 / (d / distance * 6 + 1)
 
-                stack.push(...this.getNeighbors(v, true).filter(n => {
-                    return d + 1 <= distance
-                    && this.get(n) !== -sign
-                    && !visited.some(w => w[0] === n[0] && w[1] === n[1])
-                }).map(n => [n, d + 1]))
+                for (let n of this.getNeighbors(v, true)) {
+                    if (d + 1 > distance
+                    || this.get(n) === -sign
+                    || visited.some(w => helper.vertexEquals(n, w))) continue
+
+                    visited.push(n)
+                    queue.push([n, d + 1])
+                }
             }
         }
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let v = [x, y]
-                if (done.some(w => w[0] === v[0] && w[1] === v[1]) || this.get(v) !== sign) continue
-                let chain = this.getChain(v)
+                if (this.get(v) !== sign || done.some(w => helper.vertexEquals(v, w))) continue
 
+                let chain = this.getChain(v)
                 chain.forEach(w => done.push(w))
+
                 castInfluence(chain, 6)
             }
         }
@@ -326,22 +330,21 @@ class Board {
     }
 
     getScore(areaMap) {
-        let score = {}
-
-        score['area_1'] = 0
-        score['area_-1'] = 0
-        score['territory_1'] = 0
-        score['territory_-1'] = 0
-        score['captures_1'] = this.captures['1']
-        score['captures_-1'] = this.captures['-1']
+        let score = {
+            area: [0, 0],
+            territory: [0, 0],
+            captures: this.captures
+        }
 
         for (let x = 0; x < this.width; x++) {
             for (let y = 0; y < this.height; y++) {
                 let sign = areaMap[y][x]
                 if (sign === 0) continue
 
-                score['area_' + sign]++
-                if (this.get([x, y]) === 0) score['territory_' + sign]++
+                let index = sign > 0 ? 0 : 1
+
+                score.area[index]++
+                if (this.get([x, y]) === 0) score.territory[index]++
             }
         }
 
@@ -376,7 +379,7 @@ class Board {
     }
 
     makeMove(sign, vertex) {
-        let move = new Board(this.width, this.height, this.arrangement, this.captures)
+        let move = this.clone()
 
         if (sign === 0 || !this.hasVertex(vertex)) return move
 
@@ -393,7 +396,7 @@ class Board {
 
             for (let c of move.getChain(n)) {
                 move.set(c, 0)
-                move.captures[sign.toString()]++
+                move.captures[(-sign + 1) / 2]++
             }
         }
 
@@ -404,7 +407,7 @@ class Board {
         if (deadNeighbors.length === 0 && !move.hasLiberties(vertex)) {
             for (let c of move.getChain(vertex)) {
                 move.set(c, 0)
-                move.captures[-sign]++
+                move.captures[(sign + 1) / 2]++
             }
         }
 
@@ -436,65 +439,6 @@ class Board {
         }
 
         return result.slice(0, count)
-    }
-
-    getSvg(pixelsize) {
-        if (!document) return null
-
-        let ns = 'http://www.w3.org/2000/svg'
-        let svg = document.createElementNS(ns, 'svg')
-        let tileSize = (pixelsize - 1) / Math.max(this.width, this.height)
-        let radius = tileSize / 2
-        svg.setAttribute('width', tileSize * this.width + 1)
-        svg.setAttribute('height', tileSize * this.height + 1)
-
-        // Draw hoshi
-
-        for (let [x, y] of this.getHandicapPlacement(9)) {
-            let circle = document.createElementNS(ns, 'circle')
-            circle.setAttribute('cx', x * tileSize + radius + 1)
-            circle.setAttribute('cy', y * tileSize + radius + 1)
-            circle.setAttribute('r', 2)
-            circle.setAttribute('fill', '#5E2E0C')
-
-            svg.appendChild(circle)
-        }
-
-        // Draw shadows
-
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (this.get([x, y]) === 0) continue
-
-                let circle = document.createElementNS(ns, 'circle')
-                circle.setAttribute('cx', x * tileSize + radius + 1)
-                circle.setAttribute('cy', y * tileSize + radius + 2)
-                circle.setAttribute('r', radius)
-                circle.setAttribute('fill', 'rgba(0, 0, 0, .5)')
-
-                svg.appendChild(circle)
-            }
-        }
-
-        // Draw stones
-
-        for (let x = 0; x < this.width; x++) {
-            for (let y = 0; y < this.height; y++) {
-                if (this.get([x, y]) === 0) continue
-
-                let circle = document.createElementNS(ns, 'circle')
-                circle.setAttribute('cx', x * tileSize + radius + 1)
-                circle.setAttribute('cy', y * tileSize + radius + 1)
-                circle.setAttribute('r', radius)
-
-                if (this.get([x, y]) === -1)
-                    circle.setAttribute('fill', 'white')
-
-                svg.appendChild(circle)
-            }
-        }
-
-        return svg
     }
 
     generateAscii() {
@@ -566,8 +510,18 @@ class Board {
         return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
     }
 
-    getHash() {
+    getPositionHash() {
         return helper.hash(JSON.stringify(this.arrangement))
+    }
+
+    getHash() {
+        return helper.hash(JSON.stringify([
+            this.getPositionHash(),
+            this.captures,
+            this.markups,
+            this.ghosts,
+            this.lines
+        ]))
     }
 }
 

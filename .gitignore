@@ -1,5 +1,7 @@
-build.js
+bundle.js
+bundle.js.map
 
+browser_old/
 dist/
 gnugo/
 node_modules/

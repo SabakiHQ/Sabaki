@@ -1,9 +1,9 @@
 const fs = require('fs')
 const iconv = require('iconv-lite')
 const jschardet = require('jschardet')
-const gametree = require('./gametree')
 const sgf = require('./sgf')
-const Board = require('./board')
+const gametree = require('../gametree')
+const Board = require('../board')
 
 exports.meta = {
     name: 'Tygem GIB',
@@ -11,7 +11,6 @@ exports.meta = {
 }
 
 function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
-
     // Given a game result type and a score, return a text result.
 
     // The GRLT tag contains the type of result:
@@ -37,12 +36,12 @@ function makeResult(grlt, zipsu) {      // Arguments are expected to be numbers
 }
 
 function getResult(line, grltRegex, zipsuRegex) {
-
     // Takes a line and two regexes, the first finding the GRLT (game
     // result type, e.g. 3 == B+R) and the second finding the score.
 
     let result = ''
     let match = grltRegex.exec(line)
+
     if (match) {
         let grlt = parseFloat(match[1])
         match = zipsuRegex.exec(line)
@@ -51,11 +50,11 @@ function getResult(line, grltRegex, zipsuRegex) {
             result = makeResult(grlt, zipsu)
         }
     }
+
     return result
 }
 
 function parsePlayerName(raw) {
-
     let name = ''
     let rank = ''
 
@@ -63,7 +62,6 @@ function parsePlayerName(raw) {
 
     let foo = raw.split('(')
     if (foo.length === 2) {
-
         // And if the closing bracket is right at the end...
 
         if (foo[1].indexOf(')') === foo[1].length - 1) {
@@ -82,8 +80,7 @@ function parsePlayerName(raw) {
     }
 }
 
-exports.parse = function (content, callback = () => {}) {      // We ignore the callback. Other loaders use it for progress bar.
-
+exports.parse = function(content) {
     let encoding = 'utf8'
     let detected = jschardet.detect(content)
     if (detected.confidence > 0.2) {
@@ -109,7 +106,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     let match
 
     for (let n = 0; n < lines.length; n++) {
-
         let line = lines[n].trim()
 
         if (line.startsWith('\\[GAMEBLACKNAME=') && line.endsWith('\\]')) {
@@ -122,9 +118,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
             if (rank) {
                 root.BR = [rank]
             }
-
         } else if (line.startsWith('\\[GAMEWHITENAME=') && line.endsWith('\\]')) {
-
             let s = line.slice(16, -2)
             let [name, rank] = parsePlayerName(s)
             if (name) {
@@ -133,7 +127,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
             if (rank) {
                 root.WR = [rank]
             }
-
         } else if (line.startsWith('\\[GAMEINFOMAIN=')) {
 
             if (root.RE === undefined) {
@@ -151,9 +144,7 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                     root.KM = [komi]
                 }
             }
-
         } else if (line.startsWith('\\[GAMETAG=')) {
-
             if (root.DT === undefined) {
                 regex = /C(\d\d\d\d):(\d\d):(\d\d)/
                 match = regex.exec(line)
@@ -177,13 +168,11 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                     root.KM = [komi]
                 }
             }
-
         } else if (line.slice(0, 3) === 'INI') {
-
             let setup = line.split(' ')
-
             let handicap = 0
             let p = Math.floor(parseFloat(setup[3]))
+
             if (Number.isNaN(p) === false) {
                 handicap = p
             }
@@ -202,10 +191,9 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
                     root.AB.push(s)
                 }
             }
-
         } else if (line.slice(0, 3) === 'STO') {
-
             let elements = line.split(' ')
+
             if (elements.length < 6) {
                 continue
             }
@@ -236,6 +224,6 @@ exports.parse = function (content, callback = () => {}) {      // We ignore the 
     return [tree]
 }
 
-exports.parseFile = function (filename, callback = () => {}) {
-    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}), callback)
+exports.parseFile = function(filename) {
+    return exports.parse(fs.readFileSync(filename, {encoding: 'binary'}))
 }

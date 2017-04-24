@@ -120,12 +120,26 @@
 }
 
 /**
+ * Highlight
+ */
+
+.goban .row li .highlight {
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: -2px;
+    bottom: -2px;
+    border: 2px solid #0082F0;
+    border-radius: 5px;
+    background: rgba(0, 130, 240, .2);
+    z-index: 4;
+}
+
+/**
  * Dimming & Paint
  */
 
-.scoring .goban .row li.dead img,
-.estimator .goban .row li.dead img,
-body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
+.goban .row li.dimmed img {
     opacity: .5;
 }
 
@@ -137,15 +151,11 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
         opacity: .3;
         z-index: 3;
     }
-    .scoring .goban .row li.area_1 div.paint,
-    .estimator .goban .row li.area_1 div.paint,
-    body:not(.scoring):not(.estimator) .goban .row li.paint_1 div.paint {
+    .goban .row li.paint_1 div.paint {
         display: block;
         background-color: black;
     }
-    .scoring .goban .row li.area_-1 div.paint,
-    .estimator .goban .row li.area_-1 div.paint,
-    body:not(.scoring):not(.estimator) .goban .row li.paint_-1 div.paint {
+    .goban .row li.paint_-1 div.paint {
         display: block;
         background-color: white;
 }
@@ -339,6 +349,8 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
 .goban .line, .goban .arrow,
 .goban .arrow::before, .goban .arrow::after {
     position: absolute;
+    top: 7px;
+    left: 7px;
     border: none;
     height: .11em;
     background: #5E2E0C;
@@ -349,6 +361,7 @@ body:not(.scoring):not(.estimator) .goban .row li.dimmed img {
 .goban .arrow::before, .goban .arrow::after {
         content: '';
         width: .36em;
+        left: auto;
         right: 0;
         top: -.07em;
         transform: rotate(30deg);
