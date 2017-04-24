@@ -471,7 +471,7 @@ class App extends Component {
                 this.treeHash = this.generateTreeHash()
                 this.fileHash = this.generateFileHash()
             }
-            
+
             this.setBusy(false)
 
             if (gameTrees.length > 1) {
@@ -498,6 +498,7 @@ class App extends Component {
             return
         }
 
+        this.setBusy(true)
         fs.writeFileSync(filename, this.getSGF())
 
         this.setBusy(false)
@@ -505,8 +506,6 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
-
-        return true
     }
 
     getSGF() {
