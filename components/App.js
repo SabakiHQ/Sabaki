@@ -1127,6 +1127,10 @@ class App extends Component {
             t = t.parent
         }
 
+        if (t !== gametree.getRoot(this.state.treePosition[0])) {
+            this.clearUndoPoint()
+        }
+
         this.setState({
             blockedGuesses: [],
             highlightVertices: [],
