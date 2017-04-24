@@ -40,7 +40,6 @@ class PlayBar extends Component {
                 },
                 {
                     label: 'Copy SGF to Clipboard',
-                    type: 'copy-to-clipboard',
                     click: () => clipboard.writeText(sabaki.getSGF())
                 },
                 {type: 'separator'},
