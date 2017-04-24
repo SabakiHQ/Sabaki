@@ -18,7 +18,7 @@ module.exports = {
 
     clipboard: {
         readText: () => prompt('Please paste contents here:'),
-        
+
         writeText: content => {
             let element = render(h('a', {
                 class: 'copy-to-clipboard',
@@ -54,15 +54,15 @@ module.exports = {
             show: noop,
             close: noop,
             on: noop,
-            isMaximized: false,
-            isMinimized: false,
-            isFullScreen: false,
+            isMaximized: noop,
+            isMinimized: noop,
+            isFullScreen: noop,
             setFullScreen: noop,
             setMenuBarVisibility: noop,
             setAutoHideMenuBar: noop,
             setProgressBar: noop,
             setContentSize: noop,
-            getContentSize: [0, 0],
+            getContentSize: () => [0, 0],
             webContents: {setAudioMuted: noop}
         }),
 

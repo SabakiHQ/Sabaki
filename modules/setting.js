@@ -3,21 +3,6 @@ const EventEmitter = require('events')
 const fs = require('fs')
 const path = require('path')
 
-exports.userDataDirectory = app.getPath('userData')
-try { fs.mkdirSync(exports.userDataDirectory) } catch (err) {}
-
-exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
-exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
-
-try {
-    fs.accessSync(exports.stylesPath, fs.R_OK)
-} catch (err) {
-    fs.writeFileSync(
-        exports.stylesPath,
-        `/* This stylesheet is loaded when ${app.getName()} starts up. */`
-    )
-}
-
 let settings = {}
 
 let defaults = {
@@ -116,9 +101,9 @@ let defaults = {
 exports.events = new EventEmitter()
 
 exports.load = function() {
-    try {
-        settings = JSON.parse(fs.readFileSync(exports.settingsPath, 'utf8'))
-    } catch (err) {
+    if (localStorage.settings != null) {
+        settings = JSON.parse(localStorage.settings)
+    } else {
         settings = {}
     }
 
@@ -148,7 +133,7 @@ exports.load = function() {
 }
 
 exports.save = function() {
-    fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
+    localStorage.settings = JSON.stringify(settings)
     return exports
 }
 
