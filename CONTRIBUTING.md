@@ -25,7 +25,7 @@ The documentation is incomplete and I'll be thankful for anyone contributing to 
 * Fix typos.
 * Add descriptions for things that need one.
 * Add missing documentation.
-* Write tutorials.
+* Add tutorials.
 
 ## Donate
 
