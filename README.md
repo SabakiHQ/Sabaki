@@ -22,9 +22,6 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Score estimator & scoring tool
 - Find move by move position and comment text
 - Position & move annotations
-- [GTP engines](https://github.com/yishn/Sabaki/wiki/Engines) support
-- Guess mode
-- Autoplay games
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You're welcome to [contribute](https://github.com/yishn/Sabaki/blob/master/CONTRIBUTING.md) to this project.
 
