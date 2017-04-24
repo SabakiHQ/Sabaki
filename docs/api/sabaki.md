@@ -409,3 +409,21 @@ Don't provide keys in `data` to leave corresponding information unchanged in the
 * `options` `<Object>` *(optional)*
     * `suppressConfirmation` `<Boolean>` - Default: `false`
     * `setUndoPoint` `<Boolean>` - Default: `true`
+
+### Menus
+
+#### sabaki.openNodeMenu(tree, index, options)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>`
+    * `x` `<Integer>`
+    * `y` `<Integer>`
+
+#### sabaki.openCommentMenu(tree, index, options)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `index` `<Integer>`
+* `options` `<Object>`
+    * `x` `<Integer>`
+    * `y` `<Integer>`
