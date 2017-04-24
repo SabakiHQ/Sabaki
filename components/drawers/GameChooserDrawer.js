@@ -217,7 +217,7 @@ class GameChooserDrawer extends Component {
                     }
                 },
                 {
-                    label: 'Add &Existing File…',
+                    label: 'Add &Existing Files…',
                     click: () => {
                         dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
