@@ -131,51 +131,6 @@ class App extends Component {
             this.events.emit('ready')
         })
 
-        ipcRenderer.on('load-file', (evt, ...args) => {
-            setTimeout(() => this.loadFile(...args), setting.get('app.loadgame_delay'))
-        })
-
-        this.window.on('focus', () => {
-            if (setting.get('file.show_reload_warning')) {
-                this.askForReload()
-            }
-
-            ipcRenderer.send('build-menu', this.state.busy)
-        })
-
-        this.window.on('resize', () => {
-            clearTimeout(this.resizeId)
-
-            this.resizeId = setTimeout(() => {
-                if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
-                    let [width, height] = this.window.getContentSize()
-                    setting.set('window.width', width).set('window.height', height)
-                }
-            }, 1000)
-        })
-
-        // Handle main menu items
-
-        let menuData = require('../data/menu')
-
-        let handleMenuClicks = menu => {
-            for (let item of menu) {
-                if ('click' in item) {
-                    ipcRenderer.on(`menu-click-${item.id}`, () => {
-                        if (!this.state.showMenuBar) this.window.setMenuBarVisibility(false)
-                        dialog.closeInputBox()
-                        item.click()
-                    })
-                }
-
-                if ('submenu' in item) {
-                    handleMenuClicks(item.submenu)
-                }
-            }
-        }
-
-        handleMenuClicks(menuData)
-
         // Handle file drag & drop
 
         document.body.addEventListener('dragover', evt => evt.preventDefault())
@@ -201,6 +156,34 @@ class App extends Component {
                 } else if (this.state.fullScreen) {
                     this.setState({fullScreen: false})
                 }
+            }
+        })
+
+        // Handle other keyboard shortcuts
+
+        document.addEventListener('keydown', evt => {
+            if (['input', 'textarea'].indexOf(document.activeElement.tagName.toLowerCase()) >= 0) {
+                return
+            }
+
+            if (evt.keyCode == 36) {
+                // Home
+                this.goToBeginning()
+            } else if (evt.keyCode == 35) {
+                // End
+                this.goToEnd()
+            } else if (evt.keyCode == 38) {
+                // Up
+                this.goStep(-1)
+            } else if (evt.keyCode == 40) {
+                // Down
+                this.goStep(1)
+            } else if (evt.keyCode == 37) {
+                // Left
+                this.goToSiblingVariation(-1)
+            } else if (evt.keyCode == 39) {
+                // Right
+                this.goToSiblingVariation(1)
             }
         })
 
