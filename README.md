@@ -4,6 +4,8 @@
 
 An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
+**This is the web version of Sabaki.** It's a trimmed-down version that runs in any modern browser. Build instructions can be found in [the wiki](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/ea894af79e68b32c31875ea616ac914717e337fe). You can try a [working demo here](http://sabaki.yichuanshen.de/web).
+
 ![Screenshot](screenshot.png)
 
 ## Features
@@ -26,9 +28,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 
 For more information visit the [wiki](https://github.com/yishn/Sabaki/wiki). You're welcome to [contribute](https://github.com/yishn/Sabaki/blob/master/CONTRIBUTING.md) to this project.
 
-## Web Version
-
-Sabaki has a [`web`](https://github.com/yishn/Sabaki/tree/web) branch. It's a trimmed-down version of Sabaki that runs in any modern browser. You can try a [working demo here](http://sabaki.yichuanshen.de/web/).
+## Website
 
 If you're looking for the code of the [website](http://sabaki.yichuanshen.de/), you can find it in [this repository](https://github.com/yishn/sabaki-website).
 
@@ -38,7 +38,7 @@ The documentation is located in the [docs](https://github.com/yishn/Sabaki/blob/
 
 ## Building & Tests
 
-See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/e7e4e585a18c0cb7e0a69814a67626bde5d23046) in the wiki.
+See [Building & Tests](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/ea894af79e68b32c31875ea616ac914717e337fe) in the wiki.
 
 ## License
 
