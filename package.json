@@ -51,7 +51,8 @@
     ],
     "files": [
       "**/*",
-      "!build.js",
+      "!bundle.js",
+      "!bundle.js.map",
       "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
       "!node_modules/moment${/*}",
       "!node_modules/octicons/build/*",
