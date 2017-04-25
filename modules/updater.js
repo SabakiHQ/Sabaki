@@ -1,4 +1,4 @@
-const {app} = require('electron')
+const {app} = require('electron').remote
 const dns = require('dns')
 const https = require('https')
 const url = require('url')
