@@ -29,7 +29,7 @@ Returns an array like in `boardmatcher.getSymmetries(vertex)`, except that value
 
 * `filename` `<String>`
 
-Returns an array of [shapes](goshape.md) included in the given SGF file. On the web version, `filename` is ignored.
+Returns an array of [shapes](goshape.md) included in the given SGF file. The SGF file should have a specific structure. On the web version, `filename` is ignored.
 
 ### boardmatcher.cornerMatch(points, board)
 
