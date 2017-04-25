@@ -1,8 +1,6 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
-
 const setting = require('./modules/setting')
-const updater = require('./modules/updater')
 
 let windows = []
 let openfile = null
@@ -107,9 +105,15 @@ function buildMenu(disableAll = false) {
 }
 
 function checkForUpdates(showNoUpdatesDialog) {
-    let repo = `yishn/${app.getName()}`
+    let window = new BrowserWindow({
+        show: false,
+        webPreferences: {preload: `${__dirname}/check-for-updates.js`}
+    })
 
-    updater.check(repo, (err, {hasUpdates, url}) => {
+    ipcMain.once('update-check', (evt, err, {hasUpdates, url}) => {
+        window.close()
+        window = null
+
         if (err) return dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],
@@ -135,6 +139,8 @@ function checkForUpdates(showNoUpdatesDialog) {
             }, () => {})
         }
     })
+
+    window.loadURL('about:blank')
 }
 
 ipcMain.on('new-window', (evt, ...args) => newWindow(...args))

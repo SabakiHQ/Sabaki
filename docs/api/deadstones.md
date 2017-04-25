@@ -14,13 +14,13 @@ const {deadstones} = sabaki.modules
 * `scoring` `<Boolean>` *(optional)* - Default: `false`
 * `iterations` `<Integer>` *(optional)* - Default: `50`
 
-Returns an array of [vertices](vertex.md) that Sabaki thinks are dead.
+Returns an array of [vertices](vertex.md) of stones that Sabaki thinks are dead.
 
 ### deadstones.getFloatingStones(board)
 
 * `board` [`<Board>`](board.md)
 
-A fast method that returns an array of [vertices](vertex.md) that do not surround more than one point of territory.
+A fast method that returns an array of [vertices](vertex.md) of stones that do not surround more than one point of territory.
 
 ### deadstones.playTillEnd(board, sign[, iterations])
 

@@ -12,6 +12,7 @@ First of all, thank you for taking the time to contribute to Sabaki!
 ## Code Contribution
 
 * Before you begin, make sure there's an issue for your task and that you've let us known that you'd like to take it on.
+* You can look at [the documentation](https://github.com/yishn/Sabaki/tree/master/docs) to get an overview how Sabaki's code is structured.
 * Make sure your code adheres to the code and style standards.
 * Avoid platform-dependent code.
 * Create mocha tests if possible and applicable.
