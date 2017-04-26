@@ -141,6 +141,17 @@ class GeneralTab extends Component {
     }
 }
 
+
+class VisualTab extends Component {
+    constructor() {
+        super()
+
+
+
+        
+    }
+}
+
 class EngineItem extends Component {
     constructor() {
         super()
@@ -292,7 +303,7 @@ class PreferencesDrawer extends Component {
         }
 
         this.handleTabClick = evt => {
-            let tabs = ['general', 'engines']
+            let tabs = ['general', 'visual', 'engines']
             let tab = tabs.find(x => evt.currentTarget.classList.contains(x))
 
             sabaki.setState({preferencesTab: tab})
@@ -340,6 +351,14 @@ class PreferencesDrawer extends Component {
 
                     h('a', {href: '#'}, 'General')
                 ),
+                h('li',
+                    {
+                        class: classNames({visual: true, current: tab === 'visual'}),
+                        onClick: this.handleTabClick
+                    },
+
+                    h('a', {href: '#'}, 'Visual')
+                ),   
                 h('li',
                     {
                         class: classNames({engines: true, current: tab === 'engines'}),
