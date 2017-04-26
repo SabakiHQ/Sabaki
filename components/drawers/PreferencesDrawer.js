@@ -146,6 +146,16 @@ class VisualTab extends Component {
     constructor() {
         super()
 
+
+
+        
+    }
+}
+
+class EngineItem extends Component {
+    constructor() {
+        super()
+
         this.handlePathChange = evt => {
 	    let element = evt.currentTarget
              setting.set(element.id, element.value)
