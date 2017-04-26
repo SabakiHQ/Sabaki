@@ -1,3 +1,5 @@
+require('../modules/shims/es6')
+
 const fs = require('fs')
 const EventEmitter = require('events')
 const {ipcRenderer, clipboard, remote} = require('electron')
