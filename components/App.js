@@ -1894,16 +1894,17 @@ class App extends Component {
     sendGTPCommand(controller, command, callback = helper.noop) {
         if (controller == null) return
 
-        let {consoleLog} = this.state
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
         let entry = [sign, controller.name, command]
         let maxLength = setting.get('console.max_history_count')
 
-        let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
-        newLog.push(entry)
+        this.setState(({consoleLog}) => {
+            let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
+            newLog.push(entry)
 
-        this.setState({consoleLog: newLog})
+            return {consoleLog: newLog}
+        })
 
         controller.sendCommand(command, ({response}) => {
             this.setState(({consoleLog}) => {
