@@ -145,10 +145,25 @@ class GeneralTab extends Component {
 class VisualTab extends Component {
     constructor() {
         super()
+    }
 
+    render({}) {
+        return h('div', {class: 'visual'},
 
+            h('ul', {},
+                h(PreferencesItem, {
+                    id: 'PineappleID',
+                    text: 'Pineapple'
+                })
+             ),
 
-        
+            h('ul', {},
+                h(PreferencesItem, {
+                    id: 'Pineapple2ID',
+                    text: 'Pineapple 2'
+                })
+            )
+        )
     }
 }
 
@@ -357,7 +372,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Visual')
+                    h('a', {href: '#'}, 'Pineapples')
                 ),   
                 h('li',
                     {
@@ -371,8 +386,8 @@ class PreferencesDrawer extends Component {
 
             h('form', {class: tab},
                 h(GeneralTab, {graphGridSize}),
+	        h(VisualTab, {}),
                 h(EnginesTab, {engines}),
-
                 h('p', {},
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
