@@ -87,7 +87,7 @@ class App extends Component {
             // Drawers
 
             preferencesTab: 'general',
-
+            preferencesTab: 'visual',
             // Input Box
 
             showInputBox: false,
