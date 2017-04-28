@@ -145,10 +145,25 @@ class GeneralTab extends Component {
 class VisualTab extends Component {
     constructor() {
         super()
+    }
 
+    render({}) {
+        return h('div', {class: 'visual'},
 
+            h('ul', {},
+                h(PreferencesItem, {
+                    id: 'PineappleID',
+                    text: 'Pineapple'
+                })
+             ),
 
-        
+            h('ul', {},
+                h(PreferencesItem, {
+                    id: 'Pineapple2ID',
+                    text: 'Pineapple 2'
+                })
+            )
+        )
     }
 }
 
