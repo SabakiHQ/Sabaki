@@ -145,24 +145,115 @@ class GeneralTab extends Component {
 class VisualTab extends Component {
     constructor() {
         super()
+
+        this.handleChange = evt => {
+            let {onChange = helper.noop} = this.props
+            let element = evt.currentTarget
+            let data = Object.assign({}, this.props, {
+                [element.name]: element.value
+            })
+
+            //onChange(data)
+        }
+
+
+        this.handleBrowseButtonClick = () => {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [{name: 'All Files', extensions: ['*']}]
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+
+                let {id, name, args, onChange = helper.noop} = this.props
+                onChange({id, name, args, path: result[0]})
+            })
+        }
     }
 
     render({}) {
         return h('div', {class: 'visual'},
+            h('p', {},
+                h('input', {
+		    type: 'text',
+		    placeholder: 'path/to/WhiteStones.png',
+                    id: 'pngWhiteStones',
+		    onChange: this.handleChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        onClick: this.handleBrowseButtonClick
+                    },
 
-            h('ul', {},
-                h(PreferencesItem, {
-                    id: 'PineappleID',
-                    text: 'Pineapple'
-                })
-             ),
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+	     ),
+            h('p', {},
+                h('input', {
+		    type: 'text',
+		    placeholder: 'path/to/BlackStones.png',
+                    id: 'pngBlackStones',
+		    onChange: this.handleChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        onClick: this.handleBrowseButtonClick
+                    },
 
-            h('ul', {},
-                h(PreferencesItem, {
-                    id: 'Pineapple2ID',
-                    text: 'Pineapple 2'
-                })
-            )
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+	     ),
+            h('p', {},
+                h('input', {
+		    type: 'text',
+		    placeholder: 'path/to/Board.png',
+                    id: 'pngWhiteStones',
+		    onChange: this.handleChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        onClick: this.handleBrowseButtonClick
+                    },
+
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+
+	     ),
+            h('p', {},
+                h('input', {
+		    type: 'text',
+		    placeholder: 'path/to/Background.png',
+                    id: 'pngWhiteStones',
+		    onChange: this.handleChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        onClick: this.handleBrowseButtonClick
+                    },
+
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+
+	     )
         )
     }
 }
