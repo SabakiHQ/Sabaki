@@ -60,6 +60,7 @@ let defaults = {
     'game.default_komi': 6.5,
     'game.default_handicap': 0,
     'game.goto_end_after_loading': false,
+    'game.navigation_sensitivity': 40,
     'game.show_ko_warning': true,
     'game.show_suicide_warning': true,
     'gamechooser.show_delay': 100,

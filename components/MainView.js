@@ -31,13 +31,6 @@ class MainView extends Component {
     }
 
     componentDidMount() {
-        // Handle mouse scrolling
-
-        this.mainElement.addEventListener('wheel', evt => {
-            evt.preventDefault()
-            sabaki.goStep(Math.sign(evt.deltaY))
-        })
-
         // Pressing shift should show crosshair cursor on Goban in edit mode
 
         document.addEventListener('keydown', evt => {

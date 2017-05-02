@@ -176,6 +176,22 @@ class App extends Component {
 
         handleMenuClicks(menuData)
 
+        // Handle mouse wheel
+
+        for (let el of document.querySelectorAll('#main main, #graph')) {
+            el.addEventListener('wheel', evt => {
+                evt.preventDefault()
+
+                if (this.residueDeltaY == null) this.residueDeltaY = 0
+                this.residueDeltaY += evt.deltaY
+
+                if (Math.abs(this.residueDeltaY) >= setting.get('game.navigation_sensitivity')) {
+                    this.goStep(Math.sign(this.residueDeltaY))
+                    this.residueDeltaY = 0
+                }
+            })
+        }
+
         // Handle file drag & drop
 
         document.body.addEventListener('dragover', evt => evt.preventDefault())

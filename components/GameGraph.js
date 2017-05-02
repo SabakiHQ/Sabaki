@@ -144,7 +144,6 @@ class GameGraph extends Component {
         this.matrixDictCache = {}
 
         this.handleNodeClick = this.handleNodeClick.bind(this)
-        this.handleMouseWheel = this.handleMouseWheel.bind(this)
         this.handleGraphMouseDown = this.handleGraphMouseDown.bind(this)
     }
 
@@ -249,11 +248,6 @@ class GameGraph extends Component {
 
         let {left, top, width, height} = this.element.getBoundingClientRect()
         this.setState({viewportSize: [width, height], viewportPosition: [left, top]})
-    }
-
-    handleMouseWheel(evt) {
-        evt.preventDefault()
-        sabaki.goStep(Math.sign(evt.deltaY))
     }
 
     handleGraphMouseDown(evt) {
@@ -437,8 +431,7 @@ class GameGraph extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'graph',
-                onMouseWheel: this.handleMouseWheel
+                id: 'graph'
             },
 
             h('style', {}, `
