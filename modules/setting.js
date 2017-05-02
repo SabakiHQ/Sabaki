@@ -47,6 +47,10 @@ let defaults = {
         'loadsgf', 'komi'
     ],
     'console.max_history_count': 100,
+    'custom_whitestones': null,
+    'custom_blackstones': null,
+    'custom_board': null,
+    'custom_background': null,
     'debug.dev_tools': false,
     'debug.zoom_factor': 1.0,
     'edit.click_currentvertex_to_remove': true,
