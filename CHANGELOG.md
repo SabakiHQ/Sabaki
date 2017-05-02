@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Update to Electron v1.6.8 beta
+* Reduce mouse wheel navigation sensitivity
 
 **Fixed**
 
