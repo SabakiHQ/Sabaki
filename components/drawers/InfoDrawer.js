@@ -118,7 +118,7 @@ class InfoDrawer extends Component {
         this.handleInputChange = [
             'blackRank',
             'blackName',
-            'whiteRanke',
+            'whiteRank',
             'whiteName',
             'gameName',
             'eventName',

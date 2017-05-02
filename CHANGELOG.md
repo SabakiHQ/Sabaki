@@ -2,11 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.30.2][v0.30.2] (2017-05-03)
+
+**Changed**
+
+* Update to Electron v1.6.8 beta
 
 **Fixed**
 
 * Fix Sabaki being unresponsive for a short time during update checking
+* Fix setting white player rank not working in info drawer
 
 ## [Sabaki v0.30.1][v0.30.1] (2017-04-25)
 
@@ -542,8 +547,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.1-beta...master
-[v0.30.1]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.1-beta
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.2...master
+[v0.30.2]: https://github.com/yishn/Sabaki/compare/v0.30.1...v0.30.2
+[v0.30.1]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.1
 [v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0
 [v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
 [v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1

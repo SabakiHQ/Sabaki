@@ -6,9 +6,13 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./modules/setting')
 
-let delay = setting.get('graph.delay')
-let animationDuration = setting.get('graph.animation_duration')
-let commentProperties = setting.get('sgf.comment_properties')
+let [delay, animationDuration, commentProperties,
+edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
+nodeColor, nodeInactiveColor, nodeActiveColor,
+nodeBookmarkColor, nodeCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
+    'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
+    'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
+    'graph.node_bookmark_color', 'graph.node_comment_color'].map(x => setting.get(x))
 
 class GameGraphNode extends Component {
     constructor() {
@@ -99,21 +103,12 @@ class GameGraphEdge extends Component {
             || !helper.vertexEquals(positionBelow, this.props.positionBelow)
     }
 
-    stroke() {
-        return this.props.current ? setting.get('graph.edge_color')
-            : setting.get('graph.edge_inactive_color')
-    }
-
-    strokeWidth() {
-        return this.props.current ? setting.get('graph.edge_size')
-            : setting.get('graph.edge_inactive_size')
-    }
-
     render({
         positionAbove: [left1, top1],
         positionBelow: [left2, top2],
         length,
-        gridSize
+        gridSize,
+        current
     }) {
         let points
 
@@ -127,8 +122,8 @@ class GameGraphEdge extends Component {
         return h('polyline', {
             points,
             fill: 'none',
-            stroke: this.stroke(),
-            'stroke-width': this.strokeWidth()
+            stroke: current ? edgeColor : edgeInactiveColor,
+            'stroke-width': current ? edgeSize : edgeInactiveSize
         })
     }
 }
@@ -344,15 +339,11 @@ class GameGraph extends Component {
 
                 // Render node
 
-                let fill = !onCurrentTrack
-                        ? setting.get('graph.node_inactive_color')
-                    : helper.vertexEquals(this.props.treePosition, [tree, index])
-                        ? setting.get('graph.node_active_color')
-                    : 'HO' in node
-                        ? setting.get('graph.node_bookmark_color')
-                    : commentProperties.some(x => x in node)
-                        ? setting.get('graph.node_comment_color')
-                    : setting.get('graph.node_color')
+                let fill = !onCurrentTrack ? nodeInactiveColor
+                    : helper.vertexEquals(this.props.treePosition, [tree, index]) ? nodeActiveColor
+                    : 'HO' in node ? nodeBookmarkColor
+                    : commentProperties.some(x => x in node) ? nodeCommentColor
+                    : nodeColor
 
                 let left = x * gridSize
                 let top = y * gridSize
