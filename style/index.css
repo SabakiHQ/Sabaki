@@ -881,15 +881,7 @@ header, #bar .bar {
         height: 315px;
         padding-top: 1.5em;
     }
-    #preferences form > div.visual{
-        height: 315px;
-        padding-top: 1.5em;
-    }
     #preferences form > div.general ul {
-        width: 50%;
-        float: left;
-    }
-    #preferences form > div.visual ul {
         width: 50%;
         float: left;
     }
@@ -905,25 +897,13 @@ header, #bar .bar {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    #preferences form > div.visual ul li label {
-        display: block;
-        height: 1.5em;
-        width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
     #preferences form > div.general div {
-        clear: both;
-    }
-    #preferences form > div.visual div {
         clear: both;
     }
     #preferences form > div.general label select {
         margin-left: 10px;
     }
     #preferences form.general > div.general,
-    #preferences form.visual > div.visual,
     #preferences form.engines > div.engines {
         display: block;
     }

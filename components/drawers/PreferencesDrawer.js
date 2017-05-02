@@ -146,16 +146,10 @@ class VisualTab extends Component {
     constructor() {
         super()
 
-        this.handleChange = evt => {
-            let {onChange = helper.noop} = this.props
-            let element = evt.currentTarget
-            let data = Object.assign({}, this.props, {
-                [element.name]: element.value
-            })
-
-            //onChange(data)
+        this.handlePathChange = evt => {
+	    let element = evt.currentTarget
+             setting.set(element.id, element.value)
         }
-
 
         this.handleBrowseButtonClick = () => {
             dialog.showOpenDialog({
@@ -163,28 +157,28 @@ class VisualTab extends Component {
                 filters: [{name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
-
-                let {id, name, args, onChange = helper.noop} = this.props
-                onChange({id, name, args, path: result[0]})
+		setting.set('custom_whitestones' , result[0])
             })
         }
+
     }
 
-    render({}) {
+    render() {
         return h('div', {class: 'visual'},
             h('p', {},
                 h('input', {
 		    type: 'text',
 		    placeholder: 'path/to/WhiteStones.png',
-                    id: 'pngWhiteStones',
-		    onChange: this.handleChange
+		    value: setting.get('custom_whitestones'),
+		    name: 'whitestones',
+                    id: 'custom_whitestones',
+		    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
                         onClick: this.handleBrowseButtonClick
                     },
-
                     h('img', {
                         src: './node_modules/octicons/build/svg/file-directory.svg',
                         title: 'Browse…',
@@ -196,15 +190,15 @@ class VisualTab extends Component {
                 h('input', {
 		    type: 'text',
 		    placeholder: 'path/to/BlackStones.png',
-                    id: 'pngBlackStones',
-		    onChange: this.handleChange
+                    id: 'custom_blackstones',
+		    value: setting.get('custom_blackstones'),
+		    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
                         onClick: this.handleBrowseButtonClick
                     },
-
                     h('img', {
                         src: './node_modules/octicons/build/svg/file-directory.svg',
                         title: 'Browse…',
@@ -216,15 +210,15 @@ class VisualTab extends Component {
                 h('input', {
 		    type: 'text',
 		    placeholder: 'path/to/Board.png',
-                    id: 'pngWhiteStones',
-		    onChange: this.handleChange
+                    id: 'custom_board',
+		    value: setting.get('custom_board'),
+		    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
                         onClick: this.handleBrowseButtonClick
                     },
-
                     h('img', {
                         src: './node_modules/octicons/build/svg/file-directory.svg',
                         title: 'Browse…',
@@ -237,15 +231,15 @@ class VisualTab extends Component {
                 h('input', {
 		    type: 'text',
 		    placeholder: 'path/to/Background.png',
-                    id: 'pngWhiteStones',
-		    onChange: this.handleChange
+                    id: 'custom_background',
+		    value: setting.get('custom_background'),
+		    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
                         onClick: this.handleBrowseButtonClick
                     },
-
                     h('img', {
                         src: './node_modules/octicons/build/svg/file-directory.svg',
                         title: 'Browse…',
