@@ -2124,9 +2124,30 @@ class App extends Component {
                     [state.mode]: true
                 })
             },
-
-            h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath}),
-
+		h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath},
+	          h('style', {}, `
+	            .goban li.sign_1 .stone img 
+	            { background-image: url(${setting.get('custom_blackstones')});}
+		    `),
+	          h('style', {}, `
+	            .goban li.sign_-1 .stone img 
+	            { background-image: url(${setting.get('custom_whitestones')});}
+		    `),
+	          h('style', {}, `
+		    .goban,
+                    .goban .row li .stone span::before,
+                    .goban .row li .stone span::after,
+                    .goban .row li.cross .stone span 
+		     { background-color: #CB9838;
+                       background-image: url(${setting.get('custom_board')});}
+                    .goban .row li.triangle .stone span::after
+		    { border-bottom-color: #CB9838;}
+		    `),
+	          h('style', {}, `
+	            main 
+	            { background-image: url(${setting.get('custom_background')});}
+		    `)
+  	    ),
             h(MainView, state),
             h(LeftSidebar, state),
             h(Sidebar, state),
