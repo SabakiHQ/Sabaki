@@ -1,15 +1,23 @@
+.visual div p button {
+        position: relative;
+        margin-left: 20px;
+	margin-top: 140px;
+}
 .visual div p input {
         width: 40%;
 	margin-left: 20px;
+}
+.visual div p label {
+        margin-left: 20px;
+	padding-left: .25em;
+}
+.visual div p label select {
+        margin-top: 50px;
 }
 #preferences form > div.visual{
         height: 315px;
         padding-top: 1.5em;
 }
-/* #preferences form > div.visual ul { */
-/*         width: 50%; */
-/*         float: left; */
-/* } */
 #preferences form > div.visual div {
         clear: both;
 }

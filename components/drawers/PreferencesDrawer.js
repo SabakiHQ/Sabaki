@@ -162,6 +162,11 @@ class VisualTab extends Component {
             })
         }
 
+        this.handleThemeChange= evt => {
+	    let element = evt.currentTarget
+             setting.set('custom_theme', element.value)
+        }
+
     }
 
     render() {
@@ -212,28 +217,6 @@ class VisualTab extends Component {
             h('p', {},
                 h('input', {
 		    type: 'text',
-		    placeholder: 'path/to/Board.png',
-                    id: 'custom_board',
-		    value: setting.get('custom_board'),
-		    onChange: this.handlePathChange
-                }),
-                h('a',
-                    {
-                        class: 'browse',
-			name: 'custom_board',
-                        onClick: this.handleBrowseButtonClick
-                    },
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/file-directory.svg',
-                        title: 'Browse…',
-                        height: 14
-                    })
-                )
-
-	     ),
-            h('p', {},
-                h('input', {
-		    type: 'text',
 		    placeholder: 'path/to/Background.png',
                     id: 'custom_background',
 		    value: setting.get('custom_background'),
@@ -251,7 +234,31 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	     )
+	     ),
+
+                 h('p', {}, h('label', {}, 'Main Theme: ',
+                  h('select',
+		    {
+                        id: 'custom_theme',
+		        onChange: this.handleThemeChange
+                    },
+                        h('option', {
+                            value: '/Users/seth/Desktop/bambooDojoTheme.asar',
+                        }, 'Bamboo Dojo'),
+                        h('option', {
+                            value: '/Users/seth/Desktop/walnutTheme.asar',
+                        }, 'Walnut'),
+                        h('option', {
+                            value: '/Users/seth/Desktop/subduedTheme.asar',
+                        }, 'Subdued'),
+                        h('option', {
+                            value: '/Users/seth/Desktop/slateAndShellTheme.asar',
+                        }, 'Slate and Shell')
+		   ))
+    	          ),
+            h('p', {},
+              h('button', {onClick: this.handleAddButtonClick}, 'Add')
+            )
         )
     }
 }
