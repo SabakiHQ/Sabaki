@@ -151,13 +151,14 @@ class VisualTab extends Component {
              setting.set(element.id, element.value)
         }
 
-        this.handleBrowseButtonClick = () => {
+        this.handleBrowseButtonClick = evt => {
+            let element = evt.currentTarget
             dialog.showOpenDialog({
-                properties: ['openFile'],
-                filters: [{name: 'All Files', extensions: ['*']}]
+                properties: ['openFile', 'multiSelections'],
+                // filters: [{name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
-		setting.set('custom_whitestones' , result[0])
+		setting.set(element.name, result)
             })
         }
 
@@ -177,6 +178,7 @@ class VisualTab extends Component {
                 h('a',
                     {
                         class: 'browse',
+			name: 'custom_whitestones',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -197,6 +199,7 @@ class VisualTab extends Component {
                 h('a',
                     {
                         class: 'browse',
+			name: 'custom_blackstones',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -217,6 +220,7 @@ class VisualTab extends Component {
                 h('a',
                     {
                         class: 'browse',
+			name: 'custom_board',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -238,6 +242,7 @@ class VisualTab extends Component {
                 h('a',
                     {
                         class: 'browse',
+			name: 'custom_background',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -246,7 +251,6 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-
 	     )
         )
     }
@@ -256,15 +260,15 @@ class EngineItem extends Component {
     constructor() {
         super()
 
-        // this.handleChange = evt => {
-        //     let {onChange = helper.noop} = this.props
-        //     let element = evt.currentTarget
-        //     let data = Object.assign({}, this.props, {
-        //         [element.name]: element.value
-        //     })
+this.handleChange = evt => {
+            let {onChange = helper.noop} = this.props
+            let element = evt.currentTarget
+            let data = Object.assign({}, this.props, {
+                [element.name]: element.value
+            })
 
-        //     onChange(data)
-        // }
+            onChange(data)
+        }
 
         this.handleBrowseButtonClick = () => {
             dialog.showOpenDialog({
