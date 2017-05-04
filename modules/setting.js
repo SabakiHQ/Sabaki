@@ -95,6 +95,7 @@ let defaults = {
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,
+    'themes.list': [],
     'view.properties_height': 50,
     'view.properties_minheight': 20,
     'view.animated_stone_placement': true,

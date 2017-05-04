@@ -1,3 +1,4 @@
+const fs = require('fs')
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -155,11 +156,27 @@ class VisualTab extends Component {
             let element = evt.currentTarget
             dialog.showOpenDialog({
                 properties: ['openFile', 'multiSelections'],
-                // filters: [{name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
 		setting.set(element.name, result)
             })
+        }
+
+        this.handleAddButtonClick = evt => {
+            evt.preventDefault()
+
+             dialog.showOpenDialog({
+	    	properties: ['openFile'],
+             }, ({result}) => {
+                 if (!result || result.length === 0) return
+                 let filename = result[0].split('\\').pop().split('/').pop()
+                 let folder = setting.userDataDirectory
+                 let themes = setting.get('themes.list')
+		 let path = folder + '/' + filename
+         
+                 themes.unshift({filename, path})
+                 setting.set('themes.list', themes)
+             })
         }
 
         this.handleThemeChange= evt => {
@@ -242,18 +259,9 @@ class VisualTab extends Component {
                         id: 'custom_theme',
 		        onChange: this.handleThemeChange
                     },
-                        h('option', {
-                            value: '/Users/seth/Desktop/bambooDojoTheme.asar',
-                        }, 'Bamboo Dojo'),
-                        h('option', {
-                            value: '/Users/seth/Desktop/walnutTheme.asar',
-                        }, 'Walnut'),
-                        h('option', {
-                            value: '/Users/seth/Desktop/subduedTheme.asar',
-                        }, 'Subdued'),
-                        h('option', {
-                            value: '/Users/seth/Desktop/slateAndShellTheme.asar',
-                        }, 'Slate and Shell')
+
+                    setting.get('themes.list').map(({filename, path}) =>
+		        h('option', {value: path}, filename) )
 		   ))
     	          ),
             h('p', {},
