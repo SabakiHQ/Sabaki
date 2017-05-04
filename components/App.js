@@ -505,13 +505,16 @@ class App extends Component {
 
     saveFile(filename = null) {
         if (!filename) {
+            let cancel = false
+
             dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (result) this.saveFile(result)
+                cancel = !result
             })
 
-            return
+            return !cancel
         }
 
         this.setBusy(true)
@@ -522,6 +525,8 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
+
+        return true
     }
 
     getSGF() {
