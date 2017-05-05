@@ -506,16 +506,13 @@ class App extends Component {
 
     saveFile(filename = null) {
         if (!filename) {
-            let cancel = false
-
             dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (result) this.saveFile(result)
-                cancel = !result
             })
 
-            return !cancel
+            return
         }
 
         this.setBusy(true)
@@ -526,8 +523,6 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
-
-        return true
     }
 
     getSGF() {
@@ -1411,15 +1406,9 @@ class App extends Component {
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
-                        setting.set('game.default_handicap', value)
-
-                        if (value <= 1) {
-                            delete node[props[key]]
-                            delete node.AB
-                            continue
-                        }
-
                         node.AB = stones.map(sgf.vertex2point)
+
+                        setting.set('game.default_handicap', value)
                     }
 
                     node[props[key]] = [value]
@@ -1878,7 +1867,7 @@ class App extends Component {
 
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] != engines[i]) {
-                if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
+                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
 
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
@@ -1917,14 +1906,6 @@ class App extends Component {
 
     detachEngines() {
         this.attachEngines(null, null)
-    }
-
-    pauseEngines() {
-        for (let controller of this.attachedEngineControllers) {
-            if (controller != null) controller.stop()
-        }
-
-        this.engineBoards = [null, null]
     }
 
     sendGTPCommand(controller, command, callback = helper.noop) {
