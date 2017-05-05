@@ -104,17 +104,17 @@ function buildMenu(disableAll = false) {
     }
 }
 
-function checkForUpdates(showNoUpdatesDialog) {
+function checkForUpdates(showFailDialogs) {
     let window = new BrowserWindow({
         show: false,
         webPreferences: {preload: `${__dirname}/check-for-updates.js`}
     })
 
-    ipcMain.once('update-check', (evt, err, {hasUpdates, url}) => {
+    ipcMain.once('update-check', (evt, err, {hasUpdates, url} = {}) => {
         window.close()
         window = null
 
-        if (err) return dialog.showMessageBox({
+        if (err) return showFailDialogs && dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],
             title: app.getName(),
@@ -130,7 +130,7 @@ function checkForUpdates(showNoUpdatesDialog) {
                 noLink: true,
                 cancelId: 1
             }, response => response === 0 ? shell.openExternal(url) : null)
-        } else if (showNoUpdatesDialog) {
+        } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['OK'],
@@ -191,5 +191,5 @@ process.on('uncaughtException', err => {
         err.stack
     ].join(''))
 
-    app.quit()
+    process.exit(1)
 })
