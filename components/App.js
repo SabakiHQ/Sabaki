@@ -486,6 +486,8 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
+
+        return true
     }
 
     getSGF() {
@@ -1344,9 +1346,15 @@ class App extends Component {
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
-                        node.AB = stones.map(sgf.vertex2point)
-
                         setting.set('game.default_handicap', value)
+
+                        if (value <= 1) {
+                            delete node[props[key]]
+                            delete node.AB
+                            continue
+                        }
+
+                        node.AB = stones.map(sgf.vertex2point)
                     }
 
                     node[props[key]] = [value]
