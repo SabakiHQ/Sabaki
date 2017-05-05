@@ -24,6 +24,7 @@ const helper = require('../modules/helper')
 const setting = remote.require('./modules/setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
+const path = require('path')
 
 class App extends Component {
     constructor() {
@@ -2129,7 +2130,7 @@ class App extends Component {
                 h('link',
 		   {rel: 'stylesheet',
 		    type: 'text/css',
-		    href: setting.get('custom_theme') + '/styles.css'
+		    href: path.join(setting.get('custom_theme'), '/styles.css')
 		   }
 		 ):null,
 

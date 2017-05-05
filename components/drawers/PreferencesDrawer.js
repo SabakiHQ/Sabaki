@@ -8,6 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
+const fsOriginal = require('original-fs')
 
 class PreferencesItem extends Component {
     constructor() {
@@ -169,13 +170,12 @@ class VisualTab extends Component {
              }, ({result}) => {
                  if (!result || result.length === 0) return
 		 let {join , basename} = require('path')
-		 let {createReadStream, createWriteStream} = require('fs')
 
 		 let filename = basename(result[0])
                  let folder = setting.userDataDirectory
 		 let themepath = join(folder,filename)
                  let themes = setting.get('themes.list')
-		 //createReadStream(result[0]).pipe(createWriteStream(themepath))
+		 fsOriginal.createReadStream(result[0]).pipe(fsOriginal.createWriteStream(themepath))
                  themes.unshift({filename, themepath})
                  setting.set('themes.list', themes)
              })
@@ -262,8 +262,8 @@ class VisualTab extends Component {
 		        onChange: this.handleThemeChange
                     },
 		           h('option', {value: 'defaulttheme'}, 'Default'),
-                    setting.get('themes.list').map(({filename, path}) =>
-	        	   h('option', {value: path}, filename) )
+                    setting.get('themes.list').map(({filename, themepath}) =>
+	        	   h('option', {value: themepath}, filename) )
 
 		   ))
     	          ),
