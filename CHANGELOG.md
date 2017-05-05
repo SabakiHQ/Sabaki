@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to pause engines
+
 **Fixed**
 
 * Fix Sabaki incorrectly setting `HA` and `AB` properties when there are no handicap stones

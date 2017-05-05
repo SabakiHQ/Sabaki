@@ -1877,7 +1877,7 @@ class App extends Component {
 
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] != engines[i]) {
-                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
+                if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
 
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
@@ -1916,6 +1916,14 @@ class App extends Component {
 
     detachEngines() {
         this.attachEngines(null, null)
+    }
+
+    pauseEngines() {
+        for (let controller of this.attachedEngineControllers) {
+            if (controller != null) controller.stop()
+        }
+
+        this.engineBoards = [null, null]
     }
 
     sendGTPCommand(controller, command, callback = helper.noop) {

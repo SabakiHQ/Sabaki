@@ -354,10 +354,14 @@ let data = [
                 click: () => sabaki.detachEngines()
             },
             {
+                label: '&Pause',
+                click: () => sabaki.pauseEngines()
+            },
+            {type: 'separator'},
+            {
                 label: 'Manage &Engines…',
                 click: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences'))
             },
-            {type: 'separator'},
             {
                 label: 'Generate &Move',
                 accelerator: 'F5',
