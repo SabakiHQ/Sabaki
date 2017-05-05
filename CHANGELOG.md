@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Fix Sabaki incorrectly setting `HA` and `AB` properties when there are no handicap stones
 * Fix Sabaki sometimes not saving comments when comment box is focused
+* Fix Sabaki crashing when checking for updates without internet connection
 
 ## [Sabaki v0.30.2][v0.30.2] (2017-05-03)
 
