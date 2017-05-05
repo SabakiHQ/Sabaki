@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix Sabaki incorrectly setting `HA` and `AB` properties when there are no handicap stones
+* Fix Sabaki sometimes not saving comments when comment box is focused
+
 ## [Sabaki v0.30.2][v0.30.2] (2017-05-03)
 
 **Changed**
