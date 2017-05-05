@@ -223,7 +223,7 @@ class CommentBox extends Component {
 
         if (mode === 'edit') {
             this.element.scrollTop = 0
-            this.textareaElement.scrollTop = 0
+            if (treePositionChanged) this.textareaElement.scrollTop = 0
         }
 
         clearTimeout(this.updateId)
@@ -308,7 +308,7 @@ class CommentBox extends Component {
                             name: 'title',
                             value: title,
                             placeholder: 'Title',
-                            onChange: this.handleCommentInput
+                            onInput: this.handleCommentInput
                         })
                     )
                 ),
@@ -317,7 +317,7 @@ class CommentBox extends Component {
                     ref: el => this.textareaElement = el,
                     placeholder: 'Comment',
                     value: comment,
-                    onChange: this.handleCommentInput
+                    onInput: this.handleCommentInput
                 })
             )
         )

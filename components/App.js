@@ -506,13 +506,16 @@ class App extends Component {
 
     saveFile(filename = null) {
         if (!filename) {
+            let cancel = false
+
             dialog.showSaveDialog({
                 filters: [sgf.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (result) this.saveFile(result)
+                cancel = !result
             })
 
-            return
+            return !cancel
         }
 
         this.setBusy(true)
@@ -523,6 +526,8 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
+
+        return true
     }
 
     getSGF() {
@@ -1406,9 +1411,15 @@ class App extends Component {
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
-                        node.AB = stones.map(sgf.vertex2point)
-
                         setting.set('game.default_handicap', value)
+
+                        if (value <= 1) {
+                            delete node[props[key]]
+                            delete node.AB
+                            continue
+                        }
+
+                        node.AB = stones.map(sgf.vertex2point)
                     }
 
                     node[props[key]] = [value]
@@ -1867,7 +1878,7 @@ class App extends Component {
 
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] != engines[i]) {
-                this.sendGTPCommand(this.attachedEngineControllers[i], command('quit'))
+                if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
 
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
@@ -1906,6 +1917,14 @@ class App extends Component {
 
     detachEngines() {
         this.attachEngines(null, null)
+    }
+
+    pauseEngines() {
+        for (let controller of this.attachedEngineControllers) {
+            if (controller != null) controller.stop()
+        }
+
+        this.engineBoards = [null, null]
     }
 
     sendGTPCommand(controller, command, callback = helper.noop) {
@@ -2118,54 +2137,59 @@ class App extends Component {
         state = Object.assign(state, this.inferredState)
 
         return h('section',
-            {
-                class: classNames({
-                    leftsidebar: state.showLeftSidebar,
-                    sidebar: state.showSidebar,
-                    [state.mode]: true
-                })
-            },
-
+                {
+                    class: classNames({
+                        leftsidebar: state.showLeftSidebar,
+                        sidebar: state.showSidebar,
+                        [state.mode]: true
+                    })
+                },
 		setting.get('custom_theme') !== 'defaulttheme' ?
-                h('link',
-		   {rel: 'stylesheet',
-		    type: 'text/css',
-		    href: path.join(setting.get('custom_theme'), '/styles.css')
-		   }
-		 ):null,
+                    h('link',
+		         {
+                            rel: 'stylesheet',
+		            type: 'text/css',
+		            href: path.join(setting.get('custom_theme'), 'styles.css')
+		         }
+                     ):null,
 
-		 h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath},
-	           setting.get('custom_blackstones') !== "" ?
-		   h('style', {}, `
-	            .goban li.sign_1 .stone img 
-	            { background-image: url(${setting.get('custom_blackstones')[0]});}
-	            // .goban li.sign_1.random_1 .stone img 
-	            // { background-image: url(${setting.get('custom_blackstones')[1]});}
-	            // .goban li.sign_1.random_2 .stone img 
-	            // { background-image: url(${setting.get('custom_blackstones')[2]});}
-	            // .goban li.sign_1.random_3 .stone img 
-	            // { background-image: url(${setting.get('custom_blackstones')[3]});}
-	            // .goban li.sign_1.random_4 .stone img 
-	            // { background-image: url(${setting.get('custom_blackstones')[4]});}
-								  `):null,
-	          setting.get('custom_whitestones') !== "" ?
-	          h('style', {}, `
-	            .goban li.sign_-1 .stone img 
-	            { background-image: url(${setting.get('custom_whitestones')[0]});}
-	            // .goban li.sign_-1.random_1 .stone img 
-	            // { background-image: url(${setting.get('custom_whitestones')[1]});}
-	            // .goban li.sign_-1.random_2 .stone img 
-	            // { background-image: url(${setting.get('custom_whitestones')[2]});}
-	            // .goban li.sign_-1.random_3 .stone img 
-	            // { background-image: url(${setting.get('custom_whitestones')[3]});}
-	            // .goban li.sign_-1.random_4 .stone img 
-	            // { background-image: url(${setting.get('custom_whitestones')[4]});}
-		    `):null,
-                  setting.get('custom_background') !== "" ?
-	          h('style', {}, `
-	            main 
-	            { background-image: url(${setting.get('custom_background')});}
-		    `):null
+		    h('link', 
+                         {
+                             rel: 'stylesheet', 
+                             type: 'text/css', 
+                             href: setting.stylesPath
+                         },
+	        setting.get('custom_blackstones') !== "" ?
+		    h('style', {}, `
+	                .goban li.sign_1 .stone img 
+	                { background-image: url(${setting.get('custom_blackstones')[0]});}
+	                // .goban li.sign_1.random_1 .stone img 
+	                // { background-image: url(${setting.get('custom_blackstones')[1]});}
+	                // .goban li.sign_1.random_2 .stone img 
+	                // { background-image: url(${setting.get('custom_blackstones')[2]});}
+	                // .goban li.sign_1.random_3 .stone img 
+	                // { background-image: url(${setting.get('custom_blackstones')[3]});}
+	                // .goban li.sign_1.random_4 .stone img 
+	                // { background-image: url(${setting.get('custom_blackstones')[4]});}
+		         `):null,
+	        setting.get('custom_whitestones') !== "" ?
+	            h('style', {}, `
+	                .goban li.sign_-1 .stone img 
+	                { background-image: url(${setting.get('custom_whitestones')[0]});}
+	                // .goban li.sign_-1.random_1 .stone img 
+	                // { background-image: url(${setting.get('custom_whitestones')[1]});}
+	                // .goban li.sign_-1.random_2 .stone img 
+	                // { background-image: url(${setting.get('custom_whitestones')[2]});}
+	                // .goban li.sign_-1.random_3 .stone img 
+	                // { background-image: url(${setting.get('custom_whitestones')[3]});}
+	                // .goban li.sign_-1.random_4 .stone img 
+	                // { background-image: url(${setting.get('custom_whitestones')[4]});}
+		     `):null,
+                setting.get('custom_background') !== "" ?
+	            h('style', {}, `
+	                main 
+	                { background-image: url(${setting.get('custom_background')});}
+		     `):null
 
   	    ),
 

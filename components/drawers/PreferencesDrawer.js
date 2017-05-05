@@ -149,13 +149,13 @@ class VisualTab extends Component {
 
         this.handlePathChange = evt => {
 	    let element = evt.currentTarget
-             setting.set(element.id, element.value)
+            setting.set(element.id, element.value)
         }
 
         this.handleBrowseButtonClick = evt => {
             let element = evt.currentTarget
             dialog.showOpenDialog({
-                properties: ['openFile', 'multiSelections'],
+            properties: ['openFile', 'multiSelections'],
             }, ({result}) => {
                 if (!result || result.length === 0) return
 		setting.set(element.name, result)
@@ -165,28 +165,27 @@ class VisualTab extends Component {
         this.handleAddButtonClick = evt => {
             evt.preventDefault()
 
-             dialog.showOpenDialog({
-	    	properties: ['openFile'],
-             }, ({result}) => {
-                 if (!result || result.length === 0) return
-		 let {join , basename} = require('path')
+            dialog.showOpenDialog({
+	    properties: ['openFile'],
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+		let {join , basename} = require('path')
 
-		 let filename = basename(result[0])
-                 let folder = setting.userDataDirectory
-		 let themepath = join(folder,filename)
-                 let themes = setting.get('themes.list')
-		 fsOriginal.createReadStream(result[0]).pipe(fsOriginal.createWriteStream(themepath))
-                 themes.unshift({filename, themepath})
-                 setting.set('themes.list', themes)
-             })
+		let filename = basename(result[0])
+                let folder = setting.userDataDirectory
+		let themepath = join(folder,filename)
+                let themes = setting.get('themes.list')
+		fsOriginal.createReadStream(result[0]).pipe(originalFs.createWriteStream(themepath))
+                themes.unshift({filename, themepath})
+                setting.set('themes.list', themes)
+            })
         }
 
         this.handleThemeChange= evt => {
 	    let element = evt.currentTarget
-             setting.set('custom_theme', element.value)
+            setting.set('custom_theme', element.value)
+            }
         }
-
-    }
 
     render() {
         return h('div', {class: 'visual'},
@@ -232,7 +231,7 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	     ),
+	    ),
             h('p', {},
                 h('input', {
 		    type: 'text',
@@ -254,21 +253,21 @@ class VisualTab extends Component {
                     })
                 )
 	     ),
-
-                 h('p', {}, h('label', {}, 'Main Theme: ',
-                  h('select',
-		    {
-                        id: 'custom_theme',
-		        onChange: this.handleThemeChange
-                    },
-		           h('option', {value: 'defaulttheme'}, 'Default'),
-                    setting.get('themes.list').map(({filename, themepath}) =>
-	        	   h('option', {value: themepath}, filename) )
-
-		   ))
-    	          ),
+            h('p', {}, 
+                h('label', {}, 'Main Theme: ',
+                    h('select',
+		        {
+                            id: 'custom_theme',
+		            onChange: this.handleThemeChange
+                        },
+		            h('option', {value: 'defaulttheme'}, 'Default'),
+                                setting.get('themes.list').map(({filename, themepath}) =>
+	        	    h('option', {value: themepath}, filename) )
+		     )
+                 )
+    	     ),
             h('p', {},
-              h('button', {onClick: this.handleAddButtonClick}, 'Add')
+                h('button', {onClick: this.handleAddButtonClick}, 'Add')
             )
         )
     }
