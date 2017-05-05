@@ -1,4 +1,3 @@
-const fs = require('fs')
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -169,12 +168,15 @@ class VisualTab extends Component {
 	    	properties: ['openFile'],
              }, ({result}) => {
                  if (!result || result.length === 0) return
-                 let filename = result[0].split('\\').pop().split('/').pop()
+		 let {join , basename} = require('path')
+		 let {createReadStream, createWriteStream} = require('fs')
+
+		 let filename = basename(result[0])
                  let folder = setting.userDataDirectory
+		 let themepath = join(folder,filename)
                  let themes = setting.get('themes.list')
-		 let path = folder + '/' + filename
-         
-                 themes.unshift({filename, path})
+		 //createReadStream(result[0]).pipe(createWriteStream(themepath))
+                 themes.unshift({filename, themepath})
                  setting.set('themes.list', themes)
              })
         }
@@ -259,9 +261,10 @@ class VisualTab extends Component {
                         id: 'custom_theme',
 		        onChange: this.handleThemeChange
                     },
-
+		           h('option', {value: 'defaulttheme'}, 'Default'),
                     setting.get('themes.list').map(({filename, path}) =>
-		        h('option', {value: path}, filename) )
+	        	   h('option', {value: path}, filename) )
+
 		   ))
     	          ),
             h('p', {},

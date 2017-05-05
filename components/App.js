@@ -2136,17 +2136,18 @@ class App extends Component {
                 })
             },
 
+		setting.get('custom_theme') !== 'defaulttheme' ?
                 h('link',
 		   {rel: 'stylesheet',
 		    type: 'text/css',
 		    href: setting.get('custom_theme') + '/styles.css'
 		   }
-		 ),
+		 ):null,
 
 		 h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath},
 	           setting.get('custom_blackstones') !== "" ?
 		   h('style', {}, `
-	            .goban li.sign_1.random_0 .stone img 
+	            .goban li.sign_1 .stone img 
 	            { background-image: url(${setting.get('custom_blackstones')[0]});}
 	            .goban li.sign_1.random_1 .stone img 
 	            { background-image: url(${setting.get('custom_blackstones')[1]});}
@@ -2159,7 +2160,7 @@ class App extends Component {
 								  `):null,
 	          setting.get('custom_whitestones') !== "" ?
 	          h('style', {}, `
-	            .goban li.sign_-1.random_0 .stone img 
+	            .goban li.sign_-1 .stone img 
 	            { background-image: url(${setting.get('custom_whitestones')[0]});}
 	            .goban li.sign_-1.random_1 .stone img 
 	            { background-image: url(${setting.get('custom_whitestones')[1]});}
