@@ -1410,9 +1410,15 @@ class App extends Component {
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
-                        node.AB = stones.map(sgf.vertex2point)
-
                         setting.set('game.default_handicap', value)
+
+                        if (value <= 1) {
+                            delete node[props[key]]
+                            delete node.AB
+                            continue
+                        }
+
+                        node.AB = stones.map(sgf.vertex2point)
                     }
 
                     node[props[key]] = [value]
