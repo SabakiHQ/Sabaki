@@ -155,37 +155,43 @@ class VisualTab extends Component {
         this.handleBrowseButtonClick = evt => {
             let element = evt.currentTarget
             dialog.showOpenDialog({
-            properties: ['openFile', 'multiSelections'],
-            }, ({result}) => {
-                if (!result || result.length === 0) return
-		setting.set(element.name, result)
-            })
+                    properties: ['openFile', 'multiSelections'],
+                }, 
+                ({result}) => {
+                    if (!result || result.length === 0) return
+		    setting.set(element.name, result)
+                }
+            )
         }
 
         this.handleAddButtonClick = evt => {
             evt.preventDefault()
 
             dialog.showOpenDialog({
-	    properties: ['openFile'],
-            }, ({result}) => {
-                if (!result || result.length === 0) return
-		let {join , basename} = require('path')
-
-		let filename = basename(result[0])
-                let folder = setting.userDataDirectory
-		let themepath = join(folder,filename)
-                let themes = setting.get('themes.list')
-		fsOriginal.createReadStream(result[0]).pipe(originalFs.createWriteStream(themepath))
-                themes.unshift({filename, themepath})
-                setting.set('themes.list', themes)
-            })
+	            properties: ['openFile'],
+                },
+                ({result}) => {
+                    if (!result || result.length === 0) return
+		    let {join , basename} = require('path')
+    
+    		    let filename = basename(result[0])
+                    let folder = setting.userDataDirectory
+    		    let themepath = join(folder,filename)
+                    let themes = setting.get('themes.list')
+		    // This needs to copy a file from result to the userData directory
+                    // What is the right way to do this? 
+		    fsOriginal.createReadStream(result[0]).pipe(originalFs.createWriteStream(themepath))
+                    themes.unshift({filename, themepath})
+                    setting.set('themes.list', themes)
+                }
+            )
         }
 
         this.handleThemeChange= evt => {
 	    let element = evt.currentTarget
             setting.set('custom_theme', element.value)
-            }
         }
+    }
 
     render() {
         return h('div', {class: 'visual'},
@@ -198,10 +204,10 @@ class VisualTab extends Component {
                     id: 'custom_whitestones',
 		    onChange: this.handlePathChange
                 }),
-                h('a',
+                h('a', 
                     {
                         class: 'browse',
-			name: 'custom_whitestones',
+		        name: 'custom_whitestones',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -252,7 +258,7 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	     ),
+	    ),
             h('p', {}, 
                 h('label', {}, 'Main Theme: ',
                     h('select',
@@ -260,14 +266,25 @@ class VisualTab extends Component {
                             id: 'custom_theme',
 		            onChange: this.handleThemeChange
                         },
-		            h('option', {value: 'defaulttheme'}, 'Default'),
-                                setting.get('themes.list').map(({filename, themepath}) =>
-	        	    h('option', {value: themepath}, filename) )
-		     )
-                 )
-    	     ),
+		        h('option',
+                            {value: 'defaulttheme'},
+                            'Default'
+                        ),
+                        setting.get('themes.list').map(
+                            ({filename, themepath}) =>
+	        	    h('option', 
+                                {value: themepath},
+                                filename
+                            ) 
+                        )
+		    )
+                )
+    	    ),
             h('p', {},
-                h('button', {onClick: this.handleAddButtonClick}, 'Add')
+                h('button',
+                    {onClick: this.handleAddButtonClick},
+                    'Add'
+                )
             )
         )
     }
@@ -457,15 +474,13 @@ class PreferencesDrawer extends Component {
     }
 
     render({show, tab, engines, graphGridSize}) {
-        return h(Drawer,
-            {
+        return h(Drawer, {
                 type: 'preferences',
                 show
             },
 
             h('ul', {class: 'tabs'},
-                h('li',
-                    {
+                h('li', {
                         class: classNames({general: true, current: tab === 'general'}),
                         onClick: this.handleTabClick
                     },
@@ -478,7 +493,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Pallete')
+                    h('a', {href: '#'}, 'Themes')
                 ),   
                 h('li',
                     {
