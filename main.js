@@ -106,7 +106,7 @@ function buildMenu(disableAll = false) {
 }
 
 function checkForUpdates(showFailDialogs) {
-    updater.check(`yishn/${app.getName()}`, (err, {hasUpdates, url} = {}) => {
+    updater.check(`yishn/${app.getName()}`, (err, info) => {
         if (err) return showFailDialogs && dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],
@@ -114,15 +114,15 @@ function checkForUpdates(showFailDialogs) {
             message: 'An error occurred when checking for updates.'
         })
 
-        if (hasUpdates) {
+        if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['Download Update', 'Not Now'],
                 title: app.getName(),
-                message: `There is a new version of ${app.getName()} available.`,
+                message: `${app.getName()} v${info.latestVersion} is available now.`,
                 noLink: true,
                 cancelId: 1
-            }, response => response === 0 ? shell.openExternal(url) : null)
+            }, response => response === 0 ? shell.openExternal(info.url) : null)
         } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',

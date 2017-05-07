@@ -19,6 +19,7 @@ exports.check = function(repo, callback) {
 
             callback(null, {
                 url: address,
+                latestVersion: latestVersion.join('.'),
                 hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
             })
         })
