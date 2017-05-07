@@ -8,7 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
-const fsOriginal = require('original-fs')
+const originalFs = require('original-fs')
 
 class PreferencesItem extends Component {
     constructor() {
@@ -148,7 +148,7 @@ class VisualTab extends Component {
         super()
 
         this.handlePathChange = evt => {
-	    let element = evt.currentTarget
+            let element = evt.currentTarget
             setting.set(element.id, element.value)
         }
 
@@ -159,7 +159,7 @@ class VisualTab extends Component {
                 }, 
                 ({result}) => {
                     if (!result || result.length === 0) return
-		    setting.set(element.name, result)
+                    setting.set(element.name, result)
                 }
             )
         }
@@ -168,19 +168,19 @@ class VisualTab extends Component {
             evt.preventDefault()
 
             dialog.showOpenDialog({
-	            properties: ['openFile'],
+                    properties: ['openFile'],
                 },
                 ({result}) => {
                     if (!result || result.length === 0) return
-		    let {join , basename} = require('path')
+                    let {join , basename} = require('path')
     
-    		    let filename = basename(result[0])
+                    let filename = basename(result[0])
                     let folder = setting.userDataDirectory
-    		    let themepath = join(folder,filename)
+                    let themepath = join(folder,filename)
                     let themes = setting.get('themes.list')
-		    // This needs to copy a file from result to the userData directory
+                    // This needs to copy a file from result to the userData directory
                     // What is the right way to do this? 
-		    fsOriginal.createReadStream(result[0]).pipe(originalFs.createWriteStream(themepath))
+                    originalFs.createReadStream(result[0]).pipe(originalFs.createWriteStream(themepath))
                     themes.unshift({filename, themepath})
                     setting.set('themes.list', themes)
                 }
@@ -188,7 +188,7 @@ class VisualTab extends Component {
         }
 
         this.handleThemeChange= evt => {
-	    let element = evt.currentTarget
+            let element = evt.currentTarget
             setting.set('custom_theme', element.value)
         }
     }
@@ -197,17 +197,17 @@ class VisualTab extends Component {
         return h('div', {class: 'visual'},
             h('p', {},
                 h('input', {
-		    type: 'text',
-		    placeholder: 'path/to/WhiteStones.png',
-		    value: setting.get('custom_whitestones'),
-		    name: 'whitestones',
+                    type: 'text',
+                    placeholder: 'path/to/WhiteStones.png',
+                    value: setting.get('custom_whitestones'),
+                    name: 'whitestones',
                     id: 'custom_whitestones',
-		    onChange: this.handlePathChange
+                    onChange: this.handlePathChange
                 }),
                 h('a', 
                     {
                         class: 'browse',
-		        name: 'custom_whitestones',
+                        name: 'custom_whitestones',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -216,19 +216,19 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	     ),
+             ),
             h('p', {},
                 h('input', {
-		    type: 'text',
-		    placeholder: 'path/to/BlackStones.png',
+                    type: 'text',
+                    placeholder: 'path/to/BlackStones.png',
                     id: 'custom_blackstones',
-		    value: setting.get('custom_blackstones'),
-		    onChange: this.handlePathChange
+                    value: setting.get('custom_blackstones'),
+                    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
-			name: 'custom_blackstones',
+                        name: 'custom_blackstones',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -237,19 +237,19 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	    ),
+            ),
             h('p', {},
                 h('input', {
-		    type: 'text',
-		    placeholder: 'path/to/Background.png',
+                    type: 'text',
+                    placeholder: 'path/to/Background.png',
                     id: 'custom_background',
-		    value: setting.get('custom_background'),
-		    onChange: this.handlePathChange
+                    value: setting.get('custom_background'),
+                    onChange: this.handlePathChange
                 }),
                 h('a',
                     {
                         class: 'browse',
-			name: 'custom_background',
+                        name: 'custom_background',
                         onClick: this.handleBrowseButtonClick
                     },
                     h('img', {
@@ -258,28 +258,28 @@ class VisualTab extends Component {
                         height: 14
                     })
                 )
-	    ),
+            ),
             h('p', {}, 
                 h('label', {}, 'Main Theme: ',
                     h('select',
-		        {
+                        {
                             id: 'custom_theme',
-		            onChange: this.handleThemeChange
+                            onChange: this.handleThemeChange
                         },
-		        h('option',
+                        h('option',
                             {value: 'defaulttheme'},
                             'Default'
                         ),
                         setting.get('themes.list').map(
                             ({filename, themepath}) =>
-	        	    h('option', 
+                            h('option', 
                                 {value: themepath},
                                 filename
                             ) 
                         )
-		    )
+                    )
                 )
-    	    ),
+            ),
             h('p', {},
                 h('button',
                     {onClick: this.handleAddButtonClick},
@@ -294,7 +294,7 @@ class EngineItem extends Component {
     constructor() {
         super()
 
-this.handleChange = evt => {
+        this.handleChange = evt => {
             let {onChange = helper.noop} = this.props
             let element = evt.currentTarget
             let data = Object.assign({}, this.props, {
@@ -507,7 +507,7 @@ class PreferencesDrawer extends Component {
 
             h('form', {class: tab},
                 h(GeneralTab, {graphGridSize}),
-	        h(VisualTab, {}),
+                h(VisualTab, {}),
                 h(EnginesTab, {engines}),
                 h('p', {},
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')

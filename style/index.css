@@ -1,20 +1,21 @@
 .visual div p button {
         position: relative;
         margin-left: 20px;
-	margin-top: 140px;
+        margin-top: 140px;
 }
+/* The button CSS is bad, I couldn't find the style for the other add button */
 .visual div p input {
         width: 40%;
-	margin-left: 20px;
+        margin-left: 20px;
 }
 .visual div p label {
         margin-left: 20px;
-	padding-left: .25em;
+        padding-left: .25em;
 }
 .visual div p label select {
         margin-top: 50px;
 }
-#preferences form > div.visual{
+#preferences form > div.visual {
         height: 315px;
         padding-top: 1.5em;
 }
@@ -24,11 +25,11 @@
 #preferences form.visual > div.visual,
 .visual div p a img {
         display: inline;
-	position: relative;
-	left: -20px;
+        position: relative;
+        left: -20px;
         transform: translate(-50%, -50%);
         Filter: invert(100%);
-	opacity: .5;
+        opacity: .5;
         -webkit-filter: invert(100%);
 }
 .visual div p a.browse:active {
