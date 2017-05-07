@@ -1,6 +1,7 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
 const setting = require('./modules/setting')
+const updater = require('./modules/updater')
 
 let windows = []
 let openfile = null
@@ -40,7 +41,7 @@ function newWindow(path) {
     window.loadURL(`file://${__dirname}/index.html`)
 
     if (setting.get('debug.dev_tools')) {
-        window.toggleDevTools()
+        window.openDevTools()
     }
 
     return window
@@ -105,15 +106,7 @@ function buildMenu(disableAll = false) {
 }
 
 function checkForUpdates(showFailDialogs) {
-    let window = new BrowserWindow({
-        show: false,
-        webPreferences: {preload: `${__dirname}/check-for-updates.js`}
-    })
-
-    ipcMain.once('update-check', (evt, err, {hasUpdates, url} = {}) => {
-        window.close()
-        window = null
-
+    updater.check(`yishn/${app.getName()}`, (err, {hasUpdates, url} = {}) => {
         if (err) return showFailDialogs && dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],
@@ -139,8 +132,6 @@ function checkForUpdates(showFailDialogs) {
             }, () => {})
         }
     })
-
-    window.loadURL('about:blank')
 }
 
 ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
@@ -164,7 +155,7 @@ app.on('ready', () => {
     newWindow(openfile)
 
     if (setting.get('app.startup_check_updates')) {
-        setTimeout(checkForUpdates, setting.get('app.startup_check_updates_delay'))
+        setTimeout(() => checkForUpdates(), setting.get('app.startup_check_updates_delay'))
     }
 })
 
