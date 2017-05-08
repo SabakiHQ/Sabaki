@@ -12,7 +12,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Read and save SGF games and collections
 - Open wBaduk NGF and Tygem GIB files
 - Display formatted SGF comments using a [subset of Markdown](https://github.com/yishn/Sabaki/blob/master/docs/guides/markdown.md)
-- Personalize board appearance with [userstyles](https://github.com/yishn/Sabaki/blob/master/docs/guides/userstyles)
+- Personalize board appearance with [userstyles](https://github.com/yishn/Sabaki/blob/master/docs/guides/userstyles.md)
 - SGF editing tools
 - Lines & arrows board markup
 - Copy & paste variations
@@ -20,7 +20,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Score estimator & scoring tool
 - Find move by move position and comment text
 - Position & move annotations
-- [GTP engines](https://github.com/yishn/Sabaki/blob/master/docs/guides/engines) support
+- [GTP engines](https://github.com/yishn/Sabaki/blob/master/docs/guides/engines.md) support
 - Guess mode
 - Autoplay games
 
