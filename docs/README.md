@@ -6,6 +6,15 @@ Note that the Sabaki API is in an early stage of development and is subject to c
 
 This documentation is incomplete and a work in progress.
 
+## Guides
+
+* [Building & Tests](guides/building-tests.md)
+* [Debugging](guides/debugging.md)
+* [Engines](guides/engines.md)
+* [Markdown in Sabaki](guides/markdown.md)
+* [Userstyles](guides/userstyles.md)
+* [Userstyle Tutorial](guides/userstyle-tutorial.md)
+
 ## Concepts
 
 * [Sign Object](api/sign.md)
