@@ -24,7 +24,6 @@ const helper = require('../modules/helper')
 const setting = remote.require('./modules/setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
-const path = require('path')
 
 class App extends Component {
     constructor() {
@@ -2103,6 +2102,7 @@ class App extends Component {
     render(_, state) {
         // Calculate some inferred values
 
+        let {join} = require('path')
         let rootTree = gametree.getRoot(...state.treePosition)
         let scoreBoard, areaMap
 
@@ -2149,7 +2149,7 @@ class App extends Component {
             ? h('link', {
                 rel: 'stylesheet',
                 type: 'text/css',
-                href: path.join(setting.get('themes.custom_theme'), 'styles.css')
+                href: join(setting.get('themes.custom_theme'), 'styles.css')
             }) : null,
 
             h('link',
