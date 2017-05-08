@@ -1,41 +1,3 @@
-.visual div p button {
-        position: relative;
-        margin-left: 20px;
-        margin-top: 140px;
-}
-/* The button CSS is bad, I couldn't find the style for the other add button */
-.visual div p input {
-        width: 40%;
-        margin-left: 20px;
-}
-.visual div p label {
-        margin-left: 20px;
-        padding-left: .25em;
-}
-.visual div p label select {
-        margin-top: 50px;
-}
-#preferences form > div.visual {
-        height: 315px;
-        padding-top: 1.5em;
-}
-#preferences form > div.visual div {
-        clear: both;
-}
-#preferences form.visual > div.visual,
-.visual div p a img {
-        display: inline;
-        position: relative;
-        left: -20px;
-        transform: translate(-50%, -50%);
-        Filter: invert(100%);
-        opacity: .5;
-        -webkit-filter: invert(100%);
-}
-.visual div p a.browse:active {
-        opacity: 1;
-}
-/* End New CSS */
 #main {
         z-index: 10;
     }
@@ -912,7 +874,35 @@ header, #bar .bar {
     #preferences form > div.general label select {
         margin-left: 10px;
     }
+    #preferences form > div.themes input {
+        width: 40%;
+        margin-left: 20px;
+    }
+    #preferences form > div.themes label {
+        margin-left: 20px;
+        padding-left: .25em;
+    }
+    #preferences form > div.themes label select {
+        margin-top: 50px;
+    }
+    #preferences form > div.themes {
+        height: 315px;
+        padding-top: 1.5em;
+    }
+    #preferences form > div.themes p a img {
+        display: inline;
+        position: relative;
+        left: -20px;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+        transform: translate(-50%, -50%);
+        opacity: .5;
+    }
+    #preferences form > div.themes p a.browse:active img {
+        opacity: 1;
+    }
     #preferences form.general > div.general,
+    #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
     }

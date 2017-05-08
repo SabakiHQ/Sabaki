@@ -88,7 +88,7 @@ class App extends Component {
             // Drawers
 
             preferencesTab: 'general',
-            preferencesTab: 'visual',
+
             // Input Box
 
             showInputBox: false,
@@ -2136,59 +2136,62 @@ class App extends Component {
 
         state = Object.assign(state, this.inferredState)
 
-         return h('section',
-                    {
-                        class: classNames({
-                            leftsidebar: state.showLeftSidebar,
-                            sidebar: state.showSidebar,
-                            [state.mode]: true
-                    })
-                },
-                setting.get('custom_theme') !== 'defaulttheme' ?
-                h('link', {
+        return h('section',
+            {
+                class: classNames({
+                    leftsidebar: state.showLeftSidebar,
+                    sidebar: state.showSidebar,
+                    [state.mode]: true
+                })
+            },
+
+            setting.get('themes.custom_theme') !== ''
+            ? h('link', {
+                rel: 'stylesheet',
+                type: 'text/css',
+                href: path.join(setting.get('themes.custom_theme'), 'styles.css')
+            }) : null,
+
+            h('link',
+                {
                     rel: 'stylesheet',
                     type: 'text/css',
-                    href: path.join(setting.get('custom_theme'), 'styles.css')
-                }):null,
+                    href: setting.stylesPath
+                },
 
-                h('link', 
-                    {
-                        rel: 'stylesheet', 
-                        type: 'text/css', 
-                        href: setting.stylesPath
-                    },
-                    setting.get('custom_blackstones') !== "" ?
-                    h('style', {}, `
-                        .goban li.sign_1 .stone img 
-                        { background-image: url(${setting.get('custom_blackstones')[0]});}
-                        // .goban li.sign_1.random_1 .stone img 
-                        // { background-image: url(${setting.get('custom_blackstones')[1]});}
-                        // .goban li.sign_1.random_2 .stone img 
-                        // { background-image: url(${setting.get('custom_blackstones')[2]});}
-                        // .goban li.sign_1.random_3 .stone img 
-                        // { background-image: url(${setting.get('custom_blackstones')[3]});}
-                        // .goban li.sign_1.random_4 .stone img 
-                        // { background-image: url(${setting.get('custom_blackstones')[4]});}
-                    `):null,
-                    setting.get('custom_whitestones') !== "" ?
-                    h('style', {}, `
-                        .goban li.sign_-1 .stone img 
-                        { background-image: url(${setting.get('custom_whitestones')[0]});}
-                        // .goban li.sign_-1.random_1 .stone img 
-                        // { background-image: url(${setting.get('custom_whitestones')[1]});}
-                        // .goban li.sign_-1.random_2 .stone img 
-                        // { background-image: url(${setting.get('custom_whitestones')[2]});}
-                        // .goban li.sign_-1.random_3 .stone img 
-                        // { background-image: url(${setting.get('custom_whitestones')[3]});}
-                        // .goban li.sign_-1.random_4 .stone img 
-                        // { background-image: url(${setting.get('custom_whitestones')[4]});}
-                    `):null,
-                    setting.get('custom_background') !== "" ?
-                    h('style', {}, `
-                        main 
-                        { background-image: url(${setting.get('custom_background')});}
-                    `):null
-                ),
+                setting.get('themes.custom_blackstones') !== ''
+                ? h('style', {}, `
+                    .goban li.sign_1 .stone img
+                    { background-image: url(${setting.get('themes.custom_blackstones')[0]});}
+                    // .goban li.sign_1.random_1 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[1]});}
+                    // .goban li.sign_1.random_2 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[2]});}
+                    // .goban li.sign_1.random_3 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[3]});}
+                    // .goban li.sign_1.random_4 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[4]});}
+                `) : null,
+
+                setting.get('themes.custom_whitestones') !== ''
+                ? h('style', {}, `
+                    .goban li.sign_-1 .stone img
+                    { background-image: url(${setting.get('themes.custom_whitestones')[0]});}
+                    // .goban li.sign_-1.random_1 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[1]});}
+                    // .goban li.sign_-1.random_2 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[2]});}
+                    // .goban li.sign_-1.random_3 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[3]});}
+                    // .goban li.sign_-1.random_4 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[4]});}
+                `) : null,
+
+                setting.get('themes.custom_background') !== ''
+                ? h('style', {},
+                    `main { background-image: url(${setting.get('themes.custom_background')});}`
+                ) : null
+            ),
 
             h(MainView, state),
             h(LeftSidebar, state),
