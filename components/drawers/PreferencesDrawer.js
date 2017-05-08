@@ -1,3 +1,4 @@
+const fs = require('original-fs')
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -8,7 +9,6 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
-const fs = require('original-fs')
 
 class PreferencesItem extends Component {
     constructor() {
