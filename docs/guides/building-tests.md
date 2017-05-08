@@ -1,3 +1,5 @@
+# Building & Tests
+
 ## Building
 
 Building Sabaki requires [Node.js 6.2.x or later](https://nodejs.org/en/download/) and npm. First, clone Sabaki:

@@ -1,4 +1,4 @@
-> This article applies to Sabaki v0.14.0 or later.
+# Debugging
 
 Sabaki is a desktop application built with web technologies, HTML, CSS and JavaScript, using [Electron](http://electron.atom.io). Since Electron is built on Chrome, it ships with the exact same developer tools Chrome has. To activate the developer tools in Sabaki, follow these steps:
 

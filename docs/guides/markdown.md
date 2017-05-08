@@ -1,4 +1,4 @@
-> This article applies to Sabaki v0.12.0 or later.
+# Markdown in Sabaki
 
 Sabaki supports a subset of *Markdown* in the comments. If you're not familiar with Markdown, I suggest you read the [original syntax documentation](http://daringfireball.net/projects/markdown/syntax) by John Gruber. Markdown is very straight-forward and simple to learn.
 

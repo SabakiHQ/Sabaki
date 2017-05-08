@@ -1,4 +1,4 @@
-> This article applies to Sabaki v0.14.0 or later.
+# Userstyle Tutorial
 
 Some Go players are quite picky when it comes to stones and board textures. I'm not saying Sabaki's textures look the best or are realistic, but I daresay they're quite good. However, if you really have to, you can actually change them using userstyles.
 

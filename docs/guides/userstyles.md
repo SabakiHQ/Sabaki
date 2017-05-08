@@ -1,4 +1,4 @@
-> This article applies to Sabaki v0.14.0 or later.
+# Userstyles
 
 ## Existing userstyles
 
