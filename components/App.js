@@ -2102,6 +2102,7 @@ class App extends Component {
     render(_, state) {
         // Calculate some inferred values
 
+        let {join} = require('path')
         let rootTree = gametree.getRoot(...state.treePosition)
         let scoreBoard, areaMap
 
@@ -2144,7 +2145,53 @@ class App extends Component {
                 })
             },
 
-            h('link', {rel: 'stylesheet', type: 'text/css', href: setting.stylesPath}),
+            setting.get('themes.custom_theme') !== ''
+            ? h('link', {
+                rel: 'stylesheet',
+                type: 'text/css',
+                href: join(setting.get('themes.custom_theme'), 'styles.css')
+            }) : null,
+
+            h('link',
+                {
+                    rel: 'stylesheet',
+                    type: 'text/css',
+                    href: setting.stylesPath
+                },
+
+                setting.get('themes.custom_blackstones') !== ''
+                ? h('style', {}, `
+                    .goban li.sign_1 .stone img
+                    { background-image: url(${setting.get('themes.custom_blackstones')[0]});}
+                    // .goban li.sign_1.random_1 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[1]});}
+                    // .goban li.sign_1.random_2 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[2]});}
+                    // .goban li.sign_1.random_3 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[3]});}
+                    // .goban li.sign_1.random_4 .stone img
+                    // { background-image: url(${setting.get('themes.custom_blackstones')[4]});}
+                `) : null,
+
+                setting.get('themes.custom_whitestones') !== ''
+                ? h('style', {}, `
+                    .goban li.sign_-1 .stone img
+                    { background-image: url(${setting.get('themes.custom_whitestones')[0]});}
+                    // .goban li.sign_-1.random_1 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[1]});}
+                    // .goban li.sign_-1.random_2 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[2]});}
+                    // .goban li.sign_-1.random_3 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[3]});}
+                    // .goban li.sign_-1.random_4 .stone img
+                    // { background-image: url(${setting.get('themes.custom_whitestones')[4]});}
+                `) : null,
+
+                setting.get('themes.custom_background') !== ''
+                ? h('style', {},
+                    `main { background-image: url(${setting.get('themes.custom_background')});}`
+                ) : null
+            ),
 
             h(MainView, state),
             h(LeftSidebar, state),

@@ -1,3 +1,4 @@
+const fs = require('original-fs')
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -136,6 +137,147 @@ class GeneralTab extends Component {
                         }, 'Big')
                     )
                 ))
+            )
+        )
+    }
+}
+
+class ThemesTab extends Component {
+    constructor() {
+        super()
+
+        this.handlePathChange = evt => {
+            let element = evt.currentTarget
+            setting.set(element.id, element.value)
+        }
+
+        this.handleBrowseButtonClick = evt => {
+            let element = evt.currentTarget
+            dialog.showOpenDialog({
+                properties: ['openFile', 'multiSelections'],
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+                setting.set(element.name, result)
+            })
+        }
+
+        this.handleAddButtonClick = evt => {
+            evt.preventDefault()
+
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+                let {join , basename} = require('path')
+
+                let filename = basename(result[0])
+                let folder = setting.userDataDirectory
+                let themepath = join(folder,filename)
+                let themes = setting.get('themes.list')
+                // This needs to copy a file from result to the userData directory
+                // What is the right way to do this?
+                fs.createReadStream(result[0]).pipe(fs.createWriteStream(themepath))
+                themes.unshift({filename, themepath})
+                setting.set('themes.list', themes)
+            })
+        }
+
+        this.handleThemeChange = evt => {
+            let element = evt.currentTarget
+            setting.set('themes.custom_theme', element.value)
+        }
+    }
+
+    render() {
+        return h('div', {class: 'themes'},
+            h('p', {},
+                h('input', {
+                    type: 'text',
+                    placeholder: 'path/to/WhiteStones.png',
+                    value: setting.get('themes.custom_whitestones'),
+                    name: 'whitestones',
+                    id: 'themes.custom_whitestones',
+                    onChange: this.handlePathChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        name: 'themes.custom_whitestones',
+                        onClick: this.handleBrowseButtonClick
+                    },
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+            ),
+
+            h('p', {},
+                h('input', {
+                    type: 'text',
+                    placeholder: 'path/to/BlackStones.png',
+                    id: 'themes.custom_blackstones',
+                    value: setting.get('themes.custom_blackstones'),
+                    onChange: this.handlePathChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        name: 'themes.custom_blackstones',
+                        onClick: this.handleBrowseButtonClick
+                    },
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+            ),
+
+            h('p', {},
+                h('input', {
+                    type: 'text',
+                    placeholder: 'path/to/Background.png',
+                    id: 'themes.custom_background',
+                    value: setting.get('themes.custom_background'),
+                    onChange: this.handlePathChange
+                }),
+                h('a',
+                    {
+                        class: 'browse',
+                        name: 'themes.custom_background',
+                        onClick: this.handleBrowseButtonClick
+                    },
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/file-directory.svg',
+                        title: 'Browse…',
+                        height: 14
+                    })
+                )
+            ),
+
+            h('p', {},
+                h('label', {}, 'Main Theme: ',
+                    h('select',
+                        {
+                            id: 'themes.custom_theme',
+                            onChange: this.handleThemeChange
+                        },
+                        h('option',
+                            {value: 'defaulttheme'},
+                            'Default'
+                        ),
+                        setting.get('themes.list').map(({filename, themepath}) => h('option',
+                            {value: themepath},
+                            filename
+                        ))
+                    )
+                )
+            ),
+
+            h('p', {},
+                h('button', {onClick: this.handleAddButtonClick}, 'Add')
             )
         )
     }
@@ -292,7 +434,7 @@ class PreferencesDrawer extends Component {
         }
 
         this.handleTabClick = evt => {
-            let tabs = ['general', 'engines']
+            let tabs = ['general', 'themes', 'engines']
             let tab = tabs.find(x => evt.currentTarget.classList.contains(x))
 
             sabaki.setState({preferencesTab: tab})
@@ -332,13 +474,20 @@ class PreferencesDrawer extends Component {
             },
 
             h('ul', {class: 'tabs'},
-                h('li',
-                    {
+                h('li', {
                         class: classNames({general: true, current: tab === 'general'}),
                         onClick: this.handleTabClick
                     },
 
                     h('a', {href: '#'}, 'General')
+                ),
+                h('li',
+                    {
+                        class: classNames({themes: true, current: tab === 'themes'}),
+                        onClick: this.handleTabClick
+                    },
+
+                    h('a', {href: '#'}, 'Themes')
                 ),
                 h('li',
                     {
@@ -352,8 +501,8 @@ class PreferencesDrawer extends Component {
 
             h('form', {class: tab},
                 h(GeneralTab, {graphGridSize}),
+                h(ThemesTab),
                 h(EnginesTab, {engines}),
-
                 h('p', {},
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )

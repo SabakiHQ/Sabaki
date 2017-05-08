@@ -874,7 +874,35 @@ header, #bar .bar {
     #preferences form > div.general label select {
         margin-left: 10px;
     }
+    #preferences form > div.themes input {
+        width: 40%;
+        margin-left: 20px;
+    }
+    #preferences form > div.themes label {
+        margin-left: 20px;
+        padding-left: .25em;
+    }
+    #preferences form > div.themes label select {
+        margin-top: 50px;
+    }
+    #preferences form > div.themes {
+        height: 315px;
+        padding-top: 1.5em;
+    }
+    #preferences form > div.themes p a img {
+        display: inline;
+        position: relative;
+        left: -20px;
+        filter: invert(100%);
+        -webkit-filter: invert(100%);
+        transform: translate(-50%, -50%);
+        opacity: .5;
+    }
+    #preferences form > div.themes p a.browse:active img {
+        opacity: 1;
+    }
     #preferences form.general > div.general,
+    #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
     }
