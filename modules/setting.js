@@ -4,7 +4,10 @@ const fs = require('fs')
 const path = require('path')
 
 exports.userDataDirectory = app.getPath('userData')
+exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')
+
 try { fs.mkdirSync(exports.userDataDirectory) } catch (err) {}
+try { fs.mkdirSync(exports.themesDirectory) } catch (err) {}
 
 exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
 exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
@@ -92,10 +95,10 @@ let defaults = {
     'sound.capture_delay_min': 300,
     'sound.enable': true,
     'themes.list': [],
-    'themes.custom_whitestones': '',
-    'themes.custom_blackstones': '',
-    'themes.custom_background': '',
-    'themes.custom_theme': '',
+    'themes.custom_whitestones': null,
+    'themes.custom_blackstones': null,
+    'themes.custom_background': null,
+    'themes.current': null,
     'view.properties_height': 50,
     'view.properties_minheight': 20,
     'view.animated_stone_placement': true,
