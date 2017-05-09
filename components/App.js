@@ -1139,7 +1139,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index) {
+    setCurrentTreePosition(tree, index, {clearUndoPoint = true} = {}) {
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
 
@@ -1149,7 +1149,7 @@ class App extends Component {
             t = t.parent
         }
 
-        if (t !== gametree.getRoot(this.state.treePosition[0])) {
+        if (clearUndoPoint && t !== gametree.getRoot(this.state.treePosition[0])) {
             this.clearUndoPoint()
         }
 
@@ -1593,7 +1593,7 @@ class App extends Component {
 
         gameTrees[gameIndex] = clone
         this.setState({gameTrees})
-        this.setCurrentTreePosition(clone, 0)
+        this.setCurrentTreePosition(clone, 0, {clearUndoPoint: false})
     }
 
     makeMainVariation(tree, index, {setUndoPoint = true} = {}) {
