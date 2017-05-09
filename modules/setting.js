@@ -178,8 +178,10 @@ exports.loadThemes = function() {
 
     return fs.readdirSync(exports.themesDirectory)
         .filter(x => x.slice(-5) === '.asar' && fs.existsSync(packagePath(x)))
-        .map(x => require(packagePath(x)))
-        .reduce((acc, x) => (acc[x.name] = x, acc), {})
+        .map(x => Object.assign({}, require(packagePath(x)), {
+            path: path.join(packagePath(x), '..')
+        }))
+        .reduce((acc, x) => ('name' in x ? acc[x.name] = x : null, acc), {})
 }
 
 exports.load()
