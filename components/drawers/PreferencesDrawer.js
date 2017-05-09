@@ -161,27 +161,6 @@ class ThemesTab extends Component {
             })
         }
 
-        this.handleAddButtonClick = evt => {
-            evt.preventDefault()
-
-            dialog.showOpenDialog({
-                properties: ['openFile'],
-            }, ({result}) => {
-                if (!result || result.length === 0) return
-                let {join , basename} = require('path')
-
-                let filename = basename(result[0])
-                let folder = setting.userDataDirectory
-                let themepath = join(folder,filename)
-                let themes = setting.get('themes.list')
-                // This needs to copy a file from result to the userData directory
-                // What is the right way to do this?
-                fs.createReadStream(result[0]).pipe(fs.createWriteStream(themepath))
-                themes.unshift({filename, themepath})
-                setting.set('themes.list', themes)
-            })
-        }
-
         this.handleThemeChange = evt => {
             let element = evt.currentTarget
             setting.set('themes.custom_theme', element.value)
@@ -267,17 +246,9 @@ class ThemesTab extends Component {
                         h('option',
                             {value: 'defaulttheme'},
                             'Default'
-                        ),
-                        setting.get('themes.list').map(({filename, themepath}) => h('option',
-                            {value: themepath},
-                            filename
-                        ))
+                        )
                     )
                 )
-            ),
-
-            h('p', {},
-                h('button', {onClick: this.handleAddButtonClick}, 'Add')
             )
         )
     }

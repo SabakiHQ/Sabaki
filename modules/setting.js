@@ -94,7 +94,6 @@ let defaults = {
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,
-    'themes.list': [],
     'themes.custom_whitestones': null,
     'themes.custom_blackstones': null,
     'themes.custom_background': null,
