@@ -1,7 +1,7 @@
-const {app} = require('electron')
 const EventEmitter = require('events')
 const fs = require('fs')
 const path = require('path')
+const {app} = require('electron')
 
 exports.userDataDirectory = app.getPath('userData')
 exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')
@@ -171,6 +171,15 @@ exports.set = function(key, value) {
     exports.save()
     exports.events.emit('change', {key})
     return exports
+}
+
+exports.loadThemes = function() {
+    let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
+
+    return fs.readdirSync(exports.themesDirectory)
+        .filter(x => x.slice(-5) === '.asar' && fs.existsSync(packagePath(x)))
+        .map(x => require(packagePath(x)))
+        .reduce((acc, x) => (acc[x.name] = x, acc), {})
 }
 
 exports.load()
