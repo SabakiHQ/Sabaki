@@ -14,9 +14,17 @@ class Controller extends EventEmitter {
         this._errBuffer = ''
         this.commands = []
         this.error = false
-        this.process = spawn(engine.path, split(engine.args), {cwd: dirname(engine.path)})
+        this.process = null
 
         Object.assign(this, engine)
+
+        this.start()
+    }
+
+    start() {
+        if (this.process) return
+
+        this.process = spawn(this.path, split(this.args), {cwd: dirname(this.path)})
 
         this.process.on('error', () => {
             this.error = true
@@ -58,7 +66,16 @@ class Controller extends EventEmitter {
         })
     }
 
+    stop() {
+        if (!this.process) return
+
+        this.process.kill()
+        this.process = null
+    }
+
     sendCommand(command, callback = helper.noop) {
+        if (this.process == null) this.start()
+
         this.once(`response-${command.internalId}`, callback)
 
         try {

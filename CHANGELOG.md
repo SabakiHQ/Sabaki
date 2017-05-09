@@ -2,12 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
+
+**Added**
+
+* Ability to pause engines
 
 **Fixed**
 
+* Fix Sabaki not being able to undo a flatten node operation
 * Fix Sabaki incorrectly setting `HA` and `AB` properties when there are no handicap stones
 * Fix Sabaki sometimes not saving comments when comment box is focused
+* Fix Sabaki crashing when checking for updates without internet connection
 
 ## [Sabaki v0.30.2][v0.30.2] (2017-05-03)
 
@@ -555,7 +561,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.3...master
+[v0.30.3]: https://github.com/yishn/Sabaki/compare/v0.30.2...v0.30.3
 [v0.30.2]: https://github.com/yishn/Sabaki/compare/v0.30.1...v0.30.2
 [v0.30.1]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.1
 [v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0

@@ -1,6 +1,7 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
 const setting = require('./modules/setting')
+const updater = require('./modules/updater')
 
 let windows = []
 let openfile = null
@@ -40,7 +41,7 @@ function newWindow(path) {
     window.loadURL(`file://${__dirname}/index.html`)
 
     if (setting.get('debug.dev_tools')) {
-        window.toggleDevTools()
+        window.openDevTools()
     }
 
     return window
@@ -104,33 +105,25 @@ function buildMenu(disableAll = false) {
     }
 }
 
-function checkForUpdates(showNoUpdatesDialog) {
-    let window = new BrowserWindow({
-        show: false,
-        webPreferences: {preload: `${__dirname}/check-for-updates.js`}
-    })
-
-    ipcMain.once('update-check', (evt, err, {hasUpdates, url}) => {
-        window.close()
-        window = null
-
-        if (err) return dialog.showMessageBox({
+function checkForUpdates(showFailDialogs) {
+    updater.check(`yishn/${app.getName()}`, (err, info) => {
+        if (err) return showFailDialogs && dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],
             title: app.getName(),
             message: 'An error occurred when checking for updates.'
         })
 
-        if (hasUpdates) {
+        if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['Download Update', 'Not Now'],
                 title: app.getName(),
-                message: `There is a new version of ${app.getName()} available.`,
+                message: `${app.getName()} v${info.latestVersion} is available now.`,
                 noLink: true,
                 cancelId: 1
-            }, response => response === 0 ? shell.openExternal(url) : null)
-        } else if (showNoUpdatesDialog) {
+            }, response => response === 0 ? shell.openExternal(info.url) : null)
+        } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['OK'],
@@ -139,8 +132,6 @@ function checkForUpdates(showNoUpdatesDialog) {
             }, () => {})
         }
     })
-
-    window.loadURL('about:blank')
 }
 
 ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
@@ -164,7 +155,7 @@ app.on('ready', () => {
     newWindow(openfile)
 
     if (setting.get('app.startup_check_updates')) {
-        setTimeout(checkForUpdates, setting.get('app.startup_check_updates_delay'))
+        setTimeout(() => checkForUpdates(), setting.get('app.startup_check_updates_delay'))
     }
 })
 
@@ -191,5 +182,5 @@ process.on('uncaughtException', err => {
         err.stack
     ].join(''))
 
-    app.quit()
+    process.exit(1)
 })

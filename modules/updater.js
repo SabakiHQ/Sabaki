@@ -1,38 +1,31 @@
-const {app} = require('electron').remote
-const dns = require('dns')
-const https = require('https')
-const url = require('url')
-const helper = require('./helper')
+const {app, net} = require('electron')
+const {lexicalCompare} = require('./helper')
 
 exports.check = function(repo, callback) {
     let address = `https://github.com/${repo}/releases/latest`
-    let options = url.parse(address)
-    options.ciphers = 'AES128-SHA256'
+    let request = net.request(address)
 
-    // Check internet connection first
+    request.on('response', response => {
+        let content = ''
 
-    dns.lookup('github.com', err => {
-        if (err) return callback(err)
+        response.on('data', chunk => {
+            content += chunk
+        }).on('end', () => {
+            let match = content.match(/\/tag\/v(\d+.\d+.\d+)/)
+            if (match == null) return callback(new Error('No version information found.'))
 
-        https.get(options, response => {
-            let content = ''
+            let latestVersion = match[1].split('.').map(x => +x)
+            let currentVersion = app.getVersion().split('.').map(x => +x)
 
-            response.on('data', chunk => {
-                content += chunk
-            }).on('end', () => {
-                let match = content.match(/\/tag\/v(\d+.\d+.\d+)/)
-                if (match == null) return callback(new Error('No version information found.'))
-
-                let latestVersion = match[1].split('.').map(x => +x)
-                let currentVersion = app.getVersion().split('.').map(x => +x)
-
-                callback(null, {
-                    url: address,
-                    hasUpdates: helper.lexicalCompare(latestVersion, currentVersion) > 0
-                })
+            callback(null, {
+                url: address,
+                latestVersion: latestVersion.join('.'),
+                hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
             })
-        }).on('error', err => {
-            callback(err)
         })
+    }).on('error', err => {
+        callback(err)
     })
+
+    request.end()
 }
