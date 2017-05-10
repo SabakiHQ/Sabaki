@@ -5,29 +5,57 @@ const {h, Component} = require('preact')
 const setting = remote.require('./modules/setting')
 
 class ThemeManager extends Component {
-    render() {
+    constructor() {
+        super()
+
+        this.updateSettingState()
+
+        setting.events.on('change', ({key}) => this.updateSettingState(key))
+    }
+
+    updateSettingState(key) {
+        let data = {
+            'themes.current': 'currentThemeId',
+            'themes.custom_blackstones': 'blackStonePath',
+            'themes.custom_whitestones': 'blackStonePath',
+            'themes.custom_background': 'blackStonePath'
+        }
+
+        if (key == null) {
+            for (let k in data) this.updateSettingState(k)
+            return
+        }
+
+        if (key in data) {
+            this.setState({[data[key]]: setting.get(key)})
+        }
+    }
+
+    render(_, {currentThemeId, blackStonePath, whiteStonePath, backgroundPath}) {
+        let currentTheme = setting.getThemes()[currentThemeId]
+
         return h('section', {},
             // Theme stylesheet
 
-            setting.get('themes.current') != null && h('link', {
+            currentTheme != null && h('link', {
                 rel: 'stylesheet',
                 type: 'text/css',
-                href: path.join(setting.themesDirectory, `${setting.get('themes.current')}.asar`, 'styles.css')
+                href: path.join(currentTheme.path, currentTheme.main)
             }),
 
             // Custom images
 
             h('style', {},
-                setting.get('themes.custom_blackstones') != null && `.goban li.sign_1 .stone.stone img {
-                    background-image: url(${setting.get('themes.custom_blackstones')});
+                blackStonePath != null && `.goban li.sign_1 .stone.stone img {
+                    background-image: url('${blackStonePath}');
                 }`,
 
-                setting.get('themes.custom_whitestones') != null && `.goban li.sign_-1 .stone.stone img {
-                    background-image: url(${setting.get('themes.custom_whitestones')});
+                whiteStonePath != null && `.goban li.sign_-1 .stone.stone img {
+                    background-image: url('${whiteStonePath}');
                 }`,
 
-                setting.get('themes.custom_background') != null && `main {
-                    background-image: url(${setting.get('themes.custom_background')});
+                backgroundPath != null && `main {
+                    background-image: url('${backgroundPath}');
                 }`
             ),
 
