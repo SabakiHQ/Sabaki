@@ -13,6 +13,13 @@ class ThemeManager extends Component {
         setting.events.on('change', ({key}) => this.updateSettingState(key))
     }
 
+    shouldComponentUpdate(_, state) {
+        return state.currentThemeId !== this.state.currentThemeId
+            || state.blackStonePath !== this.state.blackStonePath
+            || state.whiteStonePath !== this.state.whiteStonePath
+            || state.backgroundPath !== this.state.backgroundPath
+    }
+
     updateSettingState(key) {
         let data = {
             'themes.current': 'currentThemeId',
