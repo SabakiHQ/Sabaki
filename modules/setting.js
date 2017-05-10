@@ -23,6 +23,8 @@ try {
 
 let settings = {}
 
+let themesDict = []
+
 let defaults = {
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 3000,
@@ -152,6 +154,18 @@ exports.load = function() {
         settings[overwriteKey] = []
     }
 
+    // Load themes
+
+    let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
+
+    themesDict = fs.readdirSync(exports.themesDirectory)
+        .filter(x => x.slice(-11) === '.theme.asar' && fs.existsSync(packagePath(x)))
+        .map(x => Object.assign({}, require(packagePath(x)), {
+            id: x.slice(0, -11),
+            path: path.join(packagePath(x), '..')
+        }))
+        .reduce((acc, x) => (acc[x.id] = x, acc), {})
+
     return exports.save()
 }
 
@@ -173,15 +187,8 @@ exports.set = function(key, value) {
     return exports
 }
 
-exports.loadThemes = function() {
-    let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
-
-    return fs.readdirSync(exports.themesDirectory)
-        .filter(x => x.slice(-5) === '.asar' && fs.existsSync(packagePath(x)))
-        .map(x => Object.assign({}, require(packagePath(x)), {
-            path: path.join(packagePath(x), '..')
-        }))
-        .reduce((acc, x) => ('name' in x ? acc[x.name] = x : null, acc), {})
+exports.getThemes = function() {
+    return themesDict
 }
 
 exports.load()
