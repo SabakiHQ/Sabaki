@@ -75,7 +75,7 @@
     "preact": "^8.1.0"
   },
   "devDependencies": {
-    "electron": "1.6.8",
+    "electron": "1.6.9",
     "electron-builder": "^17.1.1",
     "mocha": "^3.0.2",
     "tmp": "~0.0.29"
