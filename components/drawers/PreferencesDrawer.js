@@ -207,6 +207,14 @@ class PathInputItem extends Component {
                     title: 'Browse…',
                     height: 14
                 })
+            ),
+
+            value && !fs.existsSync(value) && h('a', {class: 'invalid'},
+                h('img', {
+                    src: './node_modules/octicons/build/svg/alert.svg',
+                    title: 'File not found',
+                    height: 14
+                })
             )
         ))
     }
