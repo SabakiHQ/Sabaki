@@ -22,10 +22,10 @@ class ThemeManager extends Component {
 
     updateSettingState(key) {
         let data = {
-            'themes.current': 'currentThemeId',
-            'themes.custom_blackstones': 'blackStonePath',
-            'themes.custom_whitestones': 'whiteStonePath',
-            'themes.custom_background': 'backgroundPath'
+            'theme.current': 'currentThemeId',
+            'theme.custom_blackstones': 'blackStonePath',
+            'theme.custom_whitestones': 'whiteStonePath',
+            'theme.custom_background': 'backgroundPath'
         }
 
         if (key == null) {

@@ -225,17 +225,17 @@ class ThemesTab extends Component {
         super()
 
         this.state = {
-            currentTheme: setting.get('themes.current')
+            currentTheme: setting.get('theme.current')
         }
 
         this.handleThemeChange = evt => {
             let value = evt.currentTarget.value === '' ? null : evt.currentTarget.value
 
-            setting.set('themes.current', value)
+            setting.set('theme.current', value)
         }
 
         setting.events.on('change', ({key}) => {
-            if (key === 'themes.current') {
+            if (key === 'theme.current') {
                 this.setState({currentTheme: setting.get(key)})
             }
         })
@@ -245,15 +245,15 @@ class ThemesTab extends Component {
         return h('div', {class: 'themes'},
             h('ul', {},
                 h(PathInputItem, {
-                    id: 'themes.custom_blackstones',
+                    id: 'theme.custom_blackstones',
                     text: 'Black stone image:'
                 }),
                 h(PathInputItem, {
-                    id: 'themes.custom_whitestones',
+                    id: 'theme.custom_whitestones',
                     text: 'White stone image:'
                 }),
                 h(PathInputItem, {
-                    id: 'themes.custom_background',
+                    id: 'theme.custom_background',
                     text: 'Background image:'
                 })
             ),
@@ -262,7 +262,7 @@ class ThemesTab extends Component {
                 h('label', {}, 'Main Theme: ',
                     h('select',
                         {
-                            id: 'themes.current',
+                            id: 'theme.current',
                             onChange: this.handleThemeChange
                         },
 
