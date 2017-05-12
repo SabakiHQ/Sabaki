@@ -10,8 +10,12 @@ const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
 
 class PreferencesItem extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            checked: setting.get(props.id)
+        }
 
         this.handleChange = evt => {
             let {onChange = helper.noop} = this.props
@@ -20,18 +24,24 @@ class PreferencesItem extends Component {
             setting.set(this.props.id, checked)
             onChange(Object.assign({checked}, this.props))
         }
+
+        setting.events.on('change', ({key}) => {
+            if (key === this.props.id) {
+                this.setState({checked: setting.get(key)})
+            }
+        })
     }
 
-    shouldComponentUpdate() {
-        return false
+    shouldComponentUpdate(_, {checked}) {
+        return checked !== this.state.checked
     }
 
-    render({id, text}) {
+    render({id, text}, {checked}) {
         return h('li', {},
             h('label', {},
                 h('input', {
                     type: 'checkbox',
-                    checked: setting.get(id),
+                    checked,
                     onChange: this.handleChange
                 }), ' ',
 
