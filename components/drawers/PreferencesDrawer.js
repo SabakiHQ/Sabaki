@@ -37,7 +37,7 @@ class PreferencesItem extends Component {
         return checked !== this.state.checked
     }
 
-    render({id, text}, {checked}) {
+    render({text}, {checked}) {
         return h('li', {},
             h('label', {},
                 h('input', {
@@ -151,14 +151,17 @@ class GeneralTab extends Component {
 }
 
 class PathInputItem extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            value: setting.get(props.id)
+        }
 
         this.handlePathChange = evt => {
-            let {onChange = helper.noop} = this.props
-            let value = evt.currentTarget.value
+            let value = evt.currentTarget.value.trim() === '' ? null : evt.currentTarget.value
 
-            onChange({value})
+            setting.set(this.props.id, value)
         }
 
         this.handleBrowseButtonClick = evt => {
@@ -166,19 +169,24 @@ class PathInputItem extends Component {
                 properties: ['openFile'],
             }, ({result}) => {
                 if (!result || result.length === 0) return
-                let {onChange = helper.noop} = this.props
 
-                onChange({value: result[0]})
+                this.handlePathChange({currentTarget: {value: result[0]}})
             })
         }
+
+        setting.events.on('change', ({key}) => {
+            if (key === this.props.id) {
+                this.setState({value: setting.get(key)})
+            }
+        })
     }
 
-    shouldComponentUpdate(nextProps) {
-        return this.props.text !== nextProps.text
-            || this.props.value !== nextProps.value
+    shouldComponentUpdate({text}, {value}) {
+        return this.props.text !== text
+            || this.props.value !== value
     }
 
-    render({text, value}) {
+    render({text}, {value}) {
         return h('li', {}, h('label', {},
             h('span', {}, text),
 
@@ -220,16 +228,16 @@ class ThemesTab extends Component {
         return h('div', {class: 'themes'},
             h('ul', {},
                 h(PathInputItem, {
-                    text: 'Black stone image:',
-                    value: setting.get('themes.custom_blackstones')
+                    id: 'themes.custom_blackstones',
+                    text: 'Black stone image:'
                 }),
                 h(PathInputItem, {
-                    text: 'White stone image:',
-                    value: setting.get('themes.custom_whitestones')
+                    id: 'themes.custom_whitestones',
+                    text: 'White stone image:'
                 }),
                 h(PathInputItem, {
-                    text: 'Background image:',
-                    value: setting.get('themes.custom_background')
+                    id: 'themes.custom_background',
+                    text: 'Background image:'
                 })
             ),
 
