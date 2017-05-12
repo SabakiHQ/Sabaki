@@ -157,6 +157,7 @@ exports.load = function() {
     // Load themes
 
     let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
+    let friendlyName = name => name.split('-').map(x => x[0].toUpperCase() + x.slice(1)).join(' ')
 
     themesDict = fs.readdirSync(exports.themesDirectory)
         .filter(x => x.slice(-11) === '.theme.asar' && fs.existsSync(packagePath(x)))
@@ -164,7 +165,11 @@ exports.load = function() {
             id: x.slice(0, -11),
             path: path.join(packagePath(x), '..')
         }))
-        .reduce((acc, x) => (acc[x.id] = x, acc), {})
+        .reduce((acc, x) => {
+            x.name = friendlyName(x.name)
+            acc[x.id] = x
+            return acc
+        }, {})
 
     return exports.save()
 }
