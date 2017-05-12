@@ -24,8 +24,8 @@ class ThemeManager extends Component {
         let data = {
             'themes.current': 'currentThemeId',
             'themes.custom_blackstones': 'blackStonePath',
-            'themes.custom_whitestones': 'blackStonePath',
-            'themes.custom_background': 'blackStonePath'
+            'themes.custom_whitestones': 'whiteStonePath',
+            'themes.custom_background': 'backgroundPath'
         }
 
         if (key == null) {
@@ -54,15 +54,15 @@ class ThemeManager extends Component {
 
             h('style', {},
                 blackStonePath != null && `.goban li.sign_1 .stone.stone img {
-                    background-image: url('${blackStonePath}');
+                    background-image: url('${blackStonePath.replace(/\\/g, '/')}');
                 }`,
 
                 whiteStonePath != null && `.goban li.sign_-1 .stone.stone img {
-                    background-image: url('${whiteStonePath}');
+                    background-image: url('${whiteStonePath.replace(/\\/g, '/')}');
                 }`,
 
                 backgroundPath != null && `main {
-                    background-image: url('${backgroundPath}');
+                    background-image: url('${backgroundPath.replace(/\\/g, '/')}');
                 }`
             ),
 
