@@ -121,7 +121,6 @@ header, #bar .bar {
         left: 50%;
         transform: translate(-50%, -50%);
         filter: invert(100%);
-        -webkit-filter: invert(100%);
     }
     header.undoable .undo { top: 50%; }
     header.hotspot .undo { left: 32px; }
@@ -159,7 +158,6 @@ header, #bar .bar {
     #scoring .close, #estimator .close, #find .close,
     #guess .close, #autoplay .close {
         filter: invert(100%);
-        -webkit-filter: invert(100%);
     }
     .edit #bar { background: #C4BD64; }
     .scoring #bar, .estimator #bar { background: #C42311; }
@@ -209,7 +207,6 @@ header, #bar .bar {
     #find button:hover { background: #001080; }
     #find button img {
         filter: invert(100%);
-        -webkit-filter: invert(100%);
     }
     #find button:nth-child(2) { left: 212px; }
     #find input {
@@ -285,7 +282,6 @@ header, #bar .bar {
         width: 35px;
         background: url('../node_modules/octicons/build/svg/triangle-right.svg') center / 20px 20px no-repeat;
         transform: translateX(-50%);
-        -webkit-filter: invert(100%);
         filter: invert(100%);
         transition: background-image .2s, box-shadow .5s;
     }
@@ -655,7 +651,6 @@ header, #bar .bar {
         padding: 3px;
         float: right;
         filter: invert(100%);
-        -webkit-filter: invert(100%);
         opacity: .5;
         transition: background .2s;
     }
@@ -698,7 +693,6 @@ header, #bar .bar {
     .drawer input[type="checkbox"]:focus { background: #111; }
     .drawer input[type="checkbox"]::before {
         filter: invert(100%);
-        -webkit-filter: invert(100%);
 }
 
 #info section {
@@ -713,7 +707,6 @@ header, #bar .bar {
         margin: 0 2px 5px;
         padding: 3px;
         filter: invert(100%);
-        -webkit-filter: invert(100%);
         transition: background .2s;
     }
     #info section .menu.active {
@@ -848,7 +841,11 @@ header, #bar .bar {
     #preferences form > div {
         display: none;
     }
-    #preferences form > div.general {
+    #preferences form > div label select {
+        margin-left: 10px;
+    }
+    #preferences form > div.general,
+    #preferences form > div.themes {
         height: 315px;
         padding-top: 1.5em;
     }
@@ -868,37 +865,25 @@ header, #bar .bar {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    #preferences form > div.general div {
-        clear: both;
-    }
-    #preferences form > div.general label select {
-        margin-left: 10px;
+    #preferences form > div.themes label span {
+        display: inline-block;
+        width: 9em;
+        text-align: right;
     }
     #preferences form > div.themes input {
         width: 40%;
-        margin-left: 20px;
+        margin-left: 10px;
     }
-    #preferences form > div.themes label {
-        margin-left: 20px;
-        padding-left: .25em;
-    }
-    #preferences form > div.themes label select {
-        margin-top: 50px;
-    }
-    #preferences form > div.themes {
-        height: 315px;
-        padding-top: 1.5em;
-    }
-    #preferences form > div.themes p a img {
-        display: inline;
+    #preferences form > div.themes .browse {
+        display: inline-block;
         position: relative;
+        top: 2px;
         left: -20px;
-        filter: invert(100%);
-        -webkit-filter: invert(100%);
-        transform: translate(-50%, -50%);
         opacity: .5;
+        filter: invert(100%);
+        transition: opacity .2s;
     }
-    #preferences form > div.themes p a.browse:active img {
+    #preferences form > div.themes .browse:active {
         opacity: 1;
     }
     #preferences form.general > div.general,
@@ -1119,7 +1104,6 @@ header, #bar .bar {
         left: 50%;
         transform: translate(-50%, -50%);
         filter: invert(100%);
-        -webkit-filter: invert(100%);
     }
     .engines-list li a.remove:hover {
         background: #E81123;

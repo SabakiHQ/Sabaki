@@ -116,29 +116,81 @@ class GeneralTab extends Component {
                 })
             ),
 
-            h('div', {},
-                h('p', {}, h('label', {},
-                    'Game Tree Style: ',
+            h('p', {}, h('label', {},
+                'Game Tree Style: ',
 
-                    h('select', {onChange: this.handleTreeStyleChange},
-                        h('option', {
-                            value: 'compact',
-                            selected: graphGridSize < 22
-                        }, 'Compact'),
+                h('select', {onChange: this.handleTreeStyleChange},
+                    h('option', {
+                        value: 'compact',
+                        selected: graphGridSize < 22
+                    }, 'Compact'),
 
-                        h('option', {
-                            value: 'spacious',
-                            selected: graphGridSize === 22
-                        }, 'Spacious'),
+                    h('option', {
+                        value: 'spacious',
+                        selected: graphGridSize === 22
+                    }, 'Spacious'),
 
-                        h('option', {
-                            value: 'big',
-                            selected: graphGridSize > 22
-                        }, 'Big')
-                    )
-                ))
-            )
+                    h('option', {
+                        value: 'big',
+                        selected: graphGridSize > 22
+                    }, 'Big')
+                )
+            ))
         )
+    }
+}
+
+class PathInputItem extends Component {
+    constructor() {
+        super()
+
+        this.handlePathChange = evt => {
+            let {onChange = helper.noop} = this.props
+            let value = evt.currentTarget.value
+
+            onChange({value})
+        }
+
+        this.handleBrowseButtonClick = evt => {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+                let {onChange = helper.noop} = this.props
+
+                onChange({value: result[0]})
+            })
+        }
+    }
+
+    shouldComponentUpdate(nextProps) {
+        return this.props.text !== nextProps.text
+            || this.props.value !== nextProps.value
+    }
+
+    render({text, value}) {
+        return h('li', {}, h('label', {},
+            h('span', {}, text),
+
+            h('input', {
+                type: 'text',
+                placeholder: 'Path',
+                value,
+                onChange: this.handlePathChange
+            }),
+
+            h('a',
+                {
+                    class: 'browse',
+                    onClick: this.handleBrowseButtonClick
+                },
+                h('img', {
+                    src: './node_modules/octicons/build/svg/file-directory.svg',
+                    title: 'Browse…',
+                    height: 14
+                })
+            )
+        ))
     }
 }
 
@@ -147,93 +199,28 @@ class ThemesTab extends Component {
         super()
 
         this.handlePathChange = evt => {
-            let element = evt.currentTarget
-            setting.set(element.id, element.value)
-        }
-
-        this.handleBrowseButtonClick = evt => {
-            let element = evt.currentTarget
-            dialog.showOpenDialog({
-                properties: ['openFile', 'multiSelections'],
-            }, ({result}) => {
-                if (!result || result.length === 0) return
-                setting.set(element.name, result)
-            })
         }
 
         this.handleThemeChange = evt => {
-            let element = evt.currentTarget
-            setting.set('themes.custom_theme', element.value)
+            setting.set('themes.custom_theme', evt.currentTarget.value)
         }
     }
 
     render() {
         return h('div', {class: 'themes'},
-            h('p', {},
-                h('input', {
-                    type: 'text',
-                    placeholder: 'path/to/WhiteStones.png',
-                    value: setting.get('themes.custom_whitestones'),
-                    name: 'whitestones',
-                    id: 'themes.custom_whitestones',
-                    onChange: this.handlePathChange
+            h('ul', {},
+                h(PathInputItem, {
+                    text: 'Black stone image:',
+                    value: setting.get('themes.custom_blackstones')
                 }),
-                h('a',
-                    {
-                        class: 'browse',
-                        name: 'themes.custom_whitestones',
-                        onClick: this.handleBrowseButtonClick
-                    },
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/file-directory.svg',
-                        title: 'Browse…',
-                        height: 14
-                    })
-                )
-            ),
-
-            h('p', {},
-                h('input', {
-                    type: 'text',
-                    placeholder: 'path/to/BlackStones.png',
-                    id: 'themes.custom_blackstones',
-                    value: setting.get('themes.custom_blackstones'),
-                    onChange: this.handlePathChange
+                h(PathInputItem, {
+                    text: 'White stone image:',
+                    value: setting.get('themes.custom_whitestones')
                 }),
-                h('a',
-                    {
-                        class: 'browse',
-                        name: 'themes.custom_blackstones',
-                        onClick: this.handleBrowseButtonClick
-                    },
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/file-directory.svg',
-                        title: 'Browse…',
-                        height: 14
-                    })
-                )
-            ),
-
-            h('p', {},
-                h('input', {
-                    type: 'text',
-                    placeholder: 'path/to/Background.png',
-                    id: 'themes.custom_background',
-                    value: setting.get('themes.custom_background'),
-                    onChange: this.handlePathChange
-                }),
-                h('a',
-                    {
-                        class: 'browse',
-                        name: 'themes.custom_background',
-                        onClick: this.handleBrowseButtonClick
-                    },
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/file-directory.svg',
-                        title: 'Browse…',
-                        height: 14
-                    })
-                )
+                h(PathInputItem, {
+                    text: 'Background image:',
+                    value: setting.get('themes.custom_background')
+                })
             ),
 
             h('p', {},
