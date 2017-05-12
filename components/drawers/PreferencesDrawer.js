@@ -191,7 +191,7 @@ class PathInputItem extends Component {
             h('span', {}, text),
 
             h('input', {
-                type: 'text',
+                type: 'search',
                 placeholder: 'Path',
                 value,
                 onChange: this.handlePathChange
@@ -224,15 +224,24 @@ class ThemesTab extends Component {
     constructor() {
         super()
 
-        this.handlePathChange = evt => {
+        this.state = {
+            currentTheme: setting.get('themes.current')
         }
 
         this.handleThemeChange = evt => {
-            setting.set('themes.custom_theme', evt.currentTarget.value)
+            let value = evt.currentTarget.value === '' ? null : evt.currentTarget.value
+
+            setting.set('themes.current', value)
         }
+
+        setting.events.on('change', ({key}) => {
+            if (key === 'themes.current') {
+                this.setState({currentTheme: setting.get(key)})
+            }
+        })
     }
 
-    render() {
+    render(_, {currentTheme}) {
         return h('div', {class: 'themes'},
             h('ul', {},
                 h(PathInputItem, {
@@ -253,13 +262,20 @@ class ThemesTab extends Component {
                 h('label', {}, 'Main Theme: ',
                     h('select',
                         {
-                            id: 'themes.custom_theme',
+                            id: 'themes.current',
                             onChange: this.handleThemeChange
                         },
-                        h('option',
-                            {value: 'defaulttheme'},
-                            'Default'
-                        )
+
+                        h('option', {value: '', selected: currentTheme == null}, 'Default'),
+
+                        Object.keys(setting.getThemes()).map(id => h('option',
+                            {
+                                value: id,
+                                selected: currentTheme === id
+                            },
+
+                            setting.getThemes()[id].name
+                        ))
                     )
                 )
             )
