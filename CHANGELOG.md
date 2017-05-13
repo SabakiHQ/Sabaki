@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Update to Electron v1.6.9 beta
+* Rename 'Pause' engines command to 'Suspend'
+
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
 **Added**

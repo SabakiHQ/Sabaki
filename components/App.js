@@ -1919,7 +1919,7 @@ class App extends Component {
         this.attachEngines(null, null)
     }
 
-    pauseEngines() {
+    suspendEngines() {
         for (let controller of this.attachedEngineControllers) {
             if (controller != null) controller.stop()
         }

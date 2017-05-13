@@ -354,8 +354,8 @@ let data = [
                 click: () => sabaki.detachEngines()
             },
             {
-                label: '&Pause',
-                click: () => sabaki.pauseEngines()
+                label: '&Suspend',
+                click: () => sabaki.suspendEngines()
             },
             {type: 'separator'},
             {
