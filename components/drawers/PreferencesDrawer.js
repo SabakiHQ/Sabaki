@@ -1,5 +1,5 @@
 const fs = require('original-fs')
-const {remote} = require('electron')
+const {shell, remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const natsort = require('natsort')
@@ -234,6 +234,12 @@ class ThemesTab extends Component {
             setting.set('theme.current', value)
         }
 
+        this.handleLinkClick = evt => {
+            evt.preventDefault()
+
+            shell.openExternal(evt.currentTarget.href)
+        }
+
         setting.events.on('change', ({key}) => {
             if (key === 'theme.current') {
                 this.setState({currentTheme: setting.get(key)})
@@ -241,8 +247,12 @@ class ThemesTab extends Component {
         })
     }
 
-    render(_, {currentTheme}) {
+    render() {
+        let currentTheme = setting.getThemes()[this.state.currentTheme]
+
         return h('div', {class: 'themes'},
+            h('h3', {}, 'Custom Images'),
+
             h('ul', {},
                 h(PathInputItem, {
                     id: 'theme.custom_blackstones',
@@ -258,27 +268,51 @@ class ThemesTab extends Component {
                 })
             ),
 
+            h('h3', {}, 'Current Theme'),
+
             h('p', {},
-                h('label', {}, 'Main Theme: ',
-                    h('select',
+                h('select',
+                    {
+                        id: 'theme.current',
+                        onChange: this.handleThemeChange
+                    },
+
+                    h('option', {value: '', selected: currentTheme == null}, 'Default'),
+
+                    Object.keys(setting.getThemes()).map(id => h('option',
                         {
-                            id: 'theme.current',
-                            onChange: this.handleThemeChange
+                            value: id,
+                            selected: currentTheme && currentTheme.id === id
                         },
 
-                        h('option', {value: '', selected: currentTheme == null}, 'Default'),
-
-                        Object.keys(setting.getThemes()).map(id => h('option',
-                            {
-                                value: id,
-                                selected: currentTheme === id
-                            },
-
-                            setting.getThemes()[id].name
-                        ))
-                    )
+                        setting.getThemes()[id].name
+                    ))
                 )
-            )
+            ),
+
+            currentTheme && [
+                h('p', {class: 'meta'},
+                    currentTheme.author && 'by ' + currentTheme.author,
+                    currentTheme.author && currentTheme.homepage && ' — ',
+                    currentTheme.homepage && h('a',
+                        {
+                            class: 'homepage',
+                            href: currentTheme.homepage,
+                            onClick: this.handleLinkClick
+                        },
+
+                        'Homepage'
+                    )
+                ),
+
+                h('p', {class: 'description'},
+                    currentTheme.version && h('span', {class: 'version'},
+                        'v' + currentTheme.version
+                    ), ' ',
+
+                    currentTheme.description
+                )
+            ]
         )
     }
 }

@@ -841,12 +841,33 @@ header, #bar .bar {
     #preferences form > div {
         display: none;
     }
+    #preferences form > div > h3 {
+        position: relative;
+        margin-bottom: 1.5em;
+        font-size: .8em;
+        font-weight: normal;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: .8;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #preferences form > div > h3::after {
+        content: '';
+        display: inline-block;
+        position: relative;
+        top: -.35em;
+        margin-left: 5px;
+        width: 100%;
+        height: 1px;
+        background: white;
+        opacity: .5;
+    }
     #preferences form > div label select {
         margin-left: 10px;
     }
     #preferences form > div.general,
     #preferences form > div.themes {
-        height: 315px;
         padding-top: 1.5em;
     }
     #preferences form > div.general ul {
@@ -887,6 +908,23 @@ header, #bar .bar {
     #preferences form > div.themes .browse:active,
     #preferences form > div.themes .invalid {
         opacity: 1;
+    }
+    #preferences form > div.themes .meta {
+        margin-top: 1em;
+        color: #d0d0d0;
+    }
+    #preferences form > div.themes .meta a {
+        color: white;
+        cursor: pointer;
+    }
+    #preferences form > div.themes .description {
+        color: #888;
+    }
+    #preferences form > div.themes .version {
+        border-radius: 3px;
+        padding: 1px 7px;
+        background: #101010;
+        color: white;
     }
     #preferences form.general > div.general,
     #preferences form.themes > div.themes,
