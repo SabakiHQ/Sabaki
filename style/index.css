@@ -931,6 +931,11 @@ header, #bar .bar {
         left: 20px;
         bottom: 21px;
     }
+    #preferences form > div.engines > p {
+        position: absolute;
+        left: 20px;
+        bottom: 14px;
+    }
     #preferences form.general > div.general,
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
