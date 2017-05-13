@@ -157,7 +157,8 @@ exports.load = function() {
     // Load themes
 
     let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
-    let friendlyName = name => name.split('-').map(x => x[0].toUpperCase() + x.slice(1)).join(' ')
+    let friendlyName = name => name.split('-')
+        .map(x => x === '' ? x : x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ')
 
     themesDict = fs.readdirSync(exports.themesDirectory)
         .filter(x => x.slice(-11) === '.theme.asar' && fs.existsSync(packagePath(x)))
