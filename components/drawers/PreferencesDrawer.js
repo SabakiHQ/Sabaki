@@ -240,6 +240,28 @@ class ThemesTab extends Component {
             shell.openExternal(evt.currentTarget.href)
         }
 
+        this.handleUninstallButton = evt => {
+            evt.preventDefault()
+
+            let result = dialog.showMessageBox(
+                'Do you really want to uninstall this theme?',
+                'warning', ['Uninstall', 'Cancel'], 1
+            )
+
+            if (result === 1) return
+
+            setting.set('theme.current', null)
+
+            let {path} = setting.getThemes()[this.state.currentTheme]
+            let success = shell.moveItemToTrash(path)
+
+            setting.loadThemes()
+
+            if (!success) {
+                dialog.showMessageBox('Uninstallation failed.', 'error')
+            }
+        }
+
         setting.events.on('change', ({key}) => {
             if (key === 'theme.current') {
                 this.setState({currentTheme: setting.get(key)})
@@ -287,7 +309,10 @@ class ThemesTab extends Component {
 
                         setting.getThemes()[id].name
                     ))
-                )
+                ), ' ',
+
+                currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'), ' ',
+                h('button', {}, 'Install Theme…')
             ),
 
             currentTheme && [
@@ -537,6 +562,7 @@ class PreferencesDrawer extends Component {
                 h(GeneralTab, {graphGridSize}),
                 h(ThemesTab),
                 h(EnginesTab, {engines}),
+
                 h('p', {},
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
