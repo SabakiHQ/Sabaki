@@ -2,7 +2,9 @@ const fs = require('original-fs')
 const {shell, remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const copy = require('recursive-copy')
 const natsort = require('natsort')
+const uuid = require('uuid/v1')
 
 const Drawer = require('./Drawer')
 
@@ -262,6 +264,28 @@ class ThemesTab extends Component {
             }
         }
 
+        this.handleInstallButton = evt => {
+            evt.preventDefault()
+
+            let {join} = require('path')
+
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [{name: 'Sabaki Themes', extensions: ['sabakitheme.asar']}]
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+
+                let id = uuid()
+
+                copy(result[0], join(setting.themesDirectory, id), err => {
+                    if (err) return dialog.showMessageBox('Installation failed.', 'error')
+
+                    setting.loadThemes()
+                    setting.set('theme.current', id)
+                })
+            })
+        }
+
         setting.events.on('change', ({key}) => {
             if (key === 'theme.current') {
                 this.setState({currentTheme: setting.get(key)})
@@ -312,7 +336,7 @@ class ThemesTab extends Component {
                 ), ' ',
 
                 currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'), ' ',
-                h('button', {}, 'Install Theme…')
+                h('button', {onClick: this.handleInstallButton}, 'Install Theme…')
             ),
 
             currentTheme && [
@@ -323,6 +347,7 @@ class ThemesTab extends Component {
                         {
                             class: 'homepage',
                             href: currentTheme.homepage,
+                            title: currentTheme.homepage,
                             onClick: this.handleLinkClick
                         },
 

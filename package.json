@@ -72,7 +72,9 @@
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
-    "preact": "^8.1.0"
+    "preact": "^8.1.0",
+    "recursive-copy": "^2.0.6",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "electron": "1.6.9",
