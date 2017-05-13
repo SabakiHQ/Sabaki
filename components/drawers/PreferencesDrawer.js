@@ -1,4 +1,4 @@
-const fs = require('original-fs')
+const fs = require('fs')
 const {shell, remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
