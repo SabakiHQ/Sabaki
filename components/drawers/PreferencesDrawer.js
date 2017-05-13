@@ -335,8 +335,11 @@ class ThemesTab extends Component {
                     ))
                 ), ' ',
 
-                currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'), ' ',
-                h('button', {onClick: this.handleInstallButton}, 'Install Theme…')
+                currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'),
+
+                h('div', {class: 'install'},
+                    h('button', {onClick: this.handleInstallButton}, 'Install Theme…')
+                )
             ),
 
             currentTheme && [

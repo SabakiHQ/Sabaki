@@ -926,6 +926,11 @@ header, #bar .bar {
         background: #101010;
         color: white;
     }
+    #preferences form > div.themes .install {
+        position: absolute;
+        left: 20px;
+        bottom: 21px;
+    }
     #preferences form.general > div.general,
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
