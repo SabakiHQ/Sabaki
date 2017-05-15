@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Themes
+* Themes (Thanks to [@Seth-Rothschild](https://github.com/Seth-Rothschild))
 
 **Changed**
 
