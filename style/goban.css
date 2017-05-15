@@ -223,7 +223,6 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        font-weight: bold;
         z-index: 2;
     }
     .goban .row li .stone span::before,
@@ -330,7 +329,6 @@
         height: 1.1em;
         overflow: hidden;
         box-shadow: none;
-        font-weight: normal;
         font-size: .6em;
         line-height: .9;
         text-overflow: ellipsis;

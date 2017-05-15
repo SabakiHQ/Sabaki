@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Themes
+
 **Changed**
 
 * Update to Electron v1.6.9 beta
