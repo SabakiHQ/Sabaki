@@ -271,7 +271,7 @@ class ThemesTab extends Component {
 
             dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [{name: 'Sabaki Themes', extensions: ['sabakitheme.asar']}]
+                filters: [{name: 'Sabaki Themes', extensions: ['asar']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
