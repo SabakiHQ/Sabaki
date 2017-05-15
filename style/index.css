@@ -888,7 +888,7 @@ header, #bar .bar {
     }
     #preferences form > div.themes label span {
         display: inline-block;
-        width: 9em;
+        width: 10em;
         text-align: right;
     }
     #preferences form > div.themes input {
