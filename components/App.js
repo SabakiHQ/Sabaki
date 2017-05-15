@@ -1,6 +1,6 @@
 const fs = require('fs')
 const EventEmitter = require('events')
-const {ipcRenderer, clipboard, remote} = require('electron')
+const {ipcRenderer, remote} = require('electron')
 const {app, Menu} = remote
 const {h, render, Component} = require('preact')
 const classNames = require('classnames')
