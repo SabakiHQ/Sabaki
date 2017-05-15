@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix player names not displaying in the game chooser drawer
+* Fix Sabaki displaying 'Please wait...' forever after a two engine match ended in resignation
 
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
