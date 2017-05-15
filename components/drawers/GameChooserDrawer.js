@@ -48,7 +48,7 @@ class GameListItem extends Component {
 
     render({tree, left, top, draggable, showThumbnail, insertBefore, insertAfter}) {
         let gameInfo = sabaki.getGameInfo(tree)
-        let {gameName, eventName, blackPlayer, blackRank, whitePlayer, whiteRank} = gameInfo
+        let {gameName, eventName, blackName, blackRank, whiteName, whiteRank} = gameInfo
         let name = gameName || eventName || ''
 
         return h('li',
@@ -78,8 +78,8 @@ class GameListItem extends Component {
                     visible: showThumbnail
                 }),
 
-                h('span', {class: 'black', title: blackRank}, blackPlayer || 'Black'),
-                h('span', {class: 'white', title: whiteRank}, whitePlayer || 'White')
+                h('span', {class: 'black', title: blackRank}, blackName || 'Black'),
+                h('span', {class: 'white', title: whiteRank}, whiteName || 'White')
             )
         )
     }

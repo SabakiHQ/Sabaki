@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Update to Electron v1.6.9 beta
 * Rename 'Pause' engines command to 'Suspend'
 
+**Fixed**
+
+* Fix player names not displaying in the game chooser drawer
+
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
 **Added**
