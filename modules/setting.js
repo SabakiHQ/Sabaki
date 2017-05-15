@@ -1,9 +1,11 @@
-const {app} = require('electron')
 const EventEmitter = require('events')
 const fs = require('fs')
 const path = require('path')
+const {app} = require('electron')
 
 let settings = {}
+
+let themesDict = null
 
 let defaults = {
     'app.startup_check_updates': true,
@@ -76,6 +78,10 @@ let defaults = {
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,
+    'theme.custom_whitestones': null,
+    'theme.custom_blackstones': null,
+    'theme.custom_background': null,
+    'theme.current': null,
     'view.properties_height': 50,
     'view.properties_minheight': 20,
     'view.animated_stone_placement': true,
@@ -133,6 +139,29 @@ exports.load = function() {
     return exports.save()
 }
 
+exports.loadThemes = function() {
+    let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
+    let friendlyName = name => name.split('-')
+        .map(x => x === '' ? x : x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ')
+
+    themesDict = fs.readdirSync(exports.themesDirectory).map(x => {
+        try {
+            return Object.assign({}, require(packagePath(x)), {
+                id: x,
+                path: path.join(packagePath(x), '..')
+            })
+        } catch (err) {
+            return null
+        }
+    }).reduce((acc, x) => {
+        if (x == null) return acc
+
+        x.name = friendlyName(x.name)
+        acc[x.id] = x
+        return acc
+    }, {})
+}
+
 exports.save = function() {
     localStorage.settings = JSON.stringify(settings)
     return exports
@@ -149,6 +178,11 @@ exports.set = function(key, value) {
     exports.save()
     exports.events.emit('change', {key})
     return exports
+}
+
+exports.getThemes = function() {
+    if (themesDict == null) exports.loadThemes()
+    return themesDict
 }
 
 exports.load()

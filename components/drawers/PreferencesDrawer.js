@@ -1,7 +1,10 @@
-const {remote} = require('electron')
+const fs = require('fs')
+const {shell, remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const copy = require('recursive-copy')
 const natsort = require('natsort')
+const uuid = require('uuid/v1')
 
 const Drawer = require('./Drawer')
 
@@ -36,7 +39,7 @@ class PreferencesItem extends Component {
         return checked !== this.state.checked
     }
 
-    render({id, text}, {checked}) {
+    render({text}, {checked}) {
         return h('li', {},
             h('label', {},
                 h('input', {
@@ -125,28 +128,244 @@ class GeneralTab extends Component {
                 })
             ),
 
-            h('div', {},
-                h('p', {}, h('label', {},
-                    'Game Tree Style: ',
+            h('p', {}, h('label', {},
+                'Game Tree Style: ',
 
-                    h('select', {onChange: this.handleTreeStyleChange},
-                        h('option', {
-                            value: 'compact',
-                            selected: graphGridSize < 22
-                        }, 'Compact'),
+                h('select', {onChange: this.handleTreeStyleChange},
+                    h('option', {
+                        value: 'compact',
+                        selected: graphGridSize < 22
+                    }, 'Compact'),
 
-                        h('option', {
-                            value: 'spacious',
-                            selected: graphGridSize === 22
-                        }, 'Spacious'),
+                    h('option', {
+                        value: 'spacious',
+                        selected: graphGridSize === 22
+                    }, 'Spacious'),
 
-                        h('option', {
-                            value: 'big',
-                            selected: graphGridSize > 22
-                        }, 'Big')
-                    )
-                ))
+                    h('option', {
+                        value: 'big',
+                        selected: graphGridSize > 22
+                    }, 'Big')
+                )
+            ))
+        )
+    }
+}
+
+class PathInputItem extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            value: setting.get(props.id)
+        }
+
+        this.handlePathChange = evt => {
+            let value = evt.currentTarget.value.trim() === '' ? null : evt.currentTarget.value
+
+            setting.set(this.props.id, value)
+        }
+
+        this.handleBrowseButtonClick = evt => {
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+
+                this.handlePathChange({currentTarget: {value: result[0]}})
+            })
+        }
+
+        setting.events.on('change', ({key}) => {
+            if (key === this.props.id) {
+                this.setState({value: setting.get(key)})
+            }
+        })
+    }
+
+    shouldComponentUpdate({text}, {value}) {
+        return this.props.text !== text
+            || this.props.value !== value
+    }
+
+    render({text}, {value}) {
+        return h('li', {}, h('label', {},
+            h('span', {}, text),
+
+            h('input', {
+                type: 'search',
+                placeholder: 'Path',
+                value,
+                onChange: this.handlePathChange
+            }),
+
+            h('a',
+                {
+                    class: 'browse',
+                    onClick: this.handleBrowseButtonClick
+                },
+                h('img', {
+                    src: './node_modules/octicons/build/svg/file-directory.svg',
+                    title: 'Browse…',
+                    height: 14
+                })
+            ),
+
+            value && !fs.existsSync(value) && h('a', {class: 'invalid'},
+                h('img', {
+                    src: './node_modules/octicons/build/svg/alert.svg',
+                    title: 'File not found',
+                    height: 14
+                })
             )
+        ))
+    }
+}
+
+class ThemesTab extends Component {
+    constructor() {
+        super()
+
+        this.state = {
+            currentTheme: setting.get('theme.current')
+        }
+
+        this.handleThemeChange = evt => {
+            let value = evt.currentTarget.value === '' ? null : evt.currentTarget.value
+
+            setting.set('theme.current', value)
+        }
+
+        this.handleLinkClick = evt => {
+            evt.preventDefault()
+
+            shell.openExternal(evt.currentTarget.href)
+        }
+
+        this.handleUninstallButton = evt => {
+            evt.preventDefault()
+
+            let result = dialog.showMessageBox(
+                'Do you really want to uninstall this theme?',
+                'warning', ['Uninstall', 'Cancel'], 1
+            )
+
+            if (result === 1) return
+
+            setting.set('theme.current', null)
+
+            let {path} = setting.getThemes()[this.state.currentTheme]
+            let success = shell.moveItemToTrash(path)
+
+            setting.loadThemes()
+
+            if (!success) {
+                dialog.showMessageBox('Uninstallation failed.', 'error')
+            }
+        }
+
+        this.handleInstallButton = evt => {
+            evt.preventDefault()
+
+            let {join} = require('path')
+
+            dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [{name: 'Sabaki Themes', extensions: ['sabakitheme.asar']}]
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+
+                let id = uuid()
+
+                copy(result[0], join(setting.themesDirectory, id), err => {
+                    if (err) return dialog.showMessageBox('Installation failed.', 'error')
+
+                    setting.loadThemes()
+                    setting.set('theme.current', id)
+                })
+            })
+        }
+
+        setting.events.on('change', ({key}) => {
+            if (key === 'theme.current') {
+                this.setState({currentTheme: setting.get(key)})
+            }
+        })
+    }
+
+    render() {
+        let currentTheme = setting.getThemes()[this.state.currentTheme]
+
+        return h('div', {class: 'themes'},
+            h('h3', {}, 'Custom Images'),
+
+            h('ul', {},
+                h(PathInputItem, {
+                    id: 'theme.custom_blackstones',
+                    text: 'Black stone image:'
+                }),
+                h(PathInputItem, {
+                    id: 'theme.custom_whitestones',
+                    text: 'White stone image:'
+                }),
+                h(PathInputItem, {
+                    id: 'theme.custom_background',
+                    text: 'Background image:'
+                })
+            ),
+
+            h('h3', {}, 'Current Theme'),
+
+            h('p', {},
+                h('select',
+                    {
+                        id: 'theme.current',
+                        onChange: this.handleThemeChange
+                    },
+
+                    h('option', {value: '', selected: currentTheme == null}, 'Default'),
+
+                    Object.keys(setting.getThemes()).map(id => h('option',
+                        {
+                            value: id,
+                            selected: currentTheme && currentTheme.id === id
+                        },
+
+                        setting.getThemes()[id].name
+                    ))
+                ), ' ',
+
+                currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'),
+
+                h('div', {class: 'install'},
+                    h('button', {onClick: this.handleInstallButton}, 'Install Theme…')
+                )
+            ),
+
+            currentTheme && [
+                h('p', {class: 'meta'},
+                    currentTheme.author && 'by ' + currentTheme.author,
+                    currentTheme.author && currentTheme.homepage && ' — ',
+                    currentTheme.homepage && h('a',
+                        {
+                            class: 'homepage',
+                            href: currentTheme.homepage,
+                            title: currentTheme.homepage,
+                            onClick: this.handleLinkClick
+                        },
+
+                        'Homepage'
+                    )
+                ),
+
+                h('p', {class: 'description'},
+                    currentTheme.version && h('span', {class: 'version'},
+                        'v' + currentTheme.version
+                    ), ' ',
+
+                    currentTheme.description
+                )
+            ]
         )
     }
 }
@@ -302,7 +521,7 @@ class PreferencesDrawer extends Component {
         }
 
         this.handleTabClick = evt => {
-            let tabs = ['general', 'engines']
+            let tabs = ['general', 'themes', 'engines']
             let tab = tabs.find(x => evt.currentTarget.classList.contains(x))
 
             sabaki.setState({preferencesTab: tab})
@@ -342,13 +561,20 @@ class PreferencesDrawer extends Component {
             },
 
             h('ul', {class: 'tabs'},
-                h('li',
-                    {
+                h('li', {
                         class: classNames({general: true, current: tab === 'general'}),
                         onClick: this.handleTabClick
                     },
 
                     h('a', {href: '#'}, 'General')
+                ),
+                h('li',
+                    {
+                        class: classNames({themes: true, current: tab === 'themes'}),
+                        onClick: this.handleTabClick
+                    },
+
+                    h('a', {href: '#'}, 'Themes')
                 ),
                 h('li',
                     {
@@ -362,6 +588,7 @@ class PreferencesDrawer extends Component {
 
             h('form', {class: tab},
                 h(GeneralTab, {graphGridSize}),
+                h(ThemesTab),
                 h(EnginesTab, {engines}),
 
                 h('p', {},

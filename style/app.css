@@ -165,7 +165,7 @@ form p, form ul li {
         top: 50%;
         margin-top: -8px;
         background: url('../node_modules/octicons/build/svg/chevron-down.svg') center / auto 16px no-repeat;
-        -webkit-filter: invert(100%);
+        filter: invert(100%);
     }
     input:focus, button:focus, select:focus, textarea:focus {
         outline: none;
@@ -226,7 +226,6 @@ form p, form ul li {
         background-size: auto 16px;
         cursor: default;
         filter: invert(100%);
-        -webkit-filter: invert(100%);
     }
     .pika-prev {
         background-image: url('../node_modules/octicons/build/svg/chevron-left.svg');

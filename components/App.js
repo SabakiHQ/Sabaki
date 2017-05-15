@@ -5,6 +5,7 @@ const {app, Menu} = remote
 const {h, render, Component} = require('preact')
 const classNames = require('classnames')
 
+const ThemeManager = require('./ThemeManager')
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
 const Sidebar = require('./Sidebar')
@@ -1798,7 +1799,7 @@ class App extends Component {
     detachEngines() {
     }
 
-    pauseEngines() {
+    suspendEngines() {
         for (let controller of this.attachedEngineControllers) {
             if (controller != null) controller.stop()
         }
@@ -1865,6 +1866,7 @@ class App extends Component {
                 })
             },
 
+            h(ThemeManager),
             h(MainView, state),
             h(LeftSidebar, state),
             h(Sidebar, state),
