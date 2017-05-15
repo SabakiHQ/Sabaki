@@ -140,26 +140,7 @@ exports.load = function() {
 }
 
 exports.loadThemes = function() {
-    let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
-    let friendlyName = name => name.split('-')
-        .map(x => x === '' ? x : x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ')
-
-    themesDict = fs.readdirSync(exports.themesDirectory).map(x => {
-        try {
-            return Object.assign({}, require(packagePath(x)), {
-                id: x,
-                path: path.join(packagePath(x), '..')
-            })
-        } catch (err) {
-            return null
-        }
-    }).reduce((acc, x) => {
-        if (x == null) return acc
-
-        x.name = friendlyName(x.name)
-        acc[x.id] = x
-        return acc
-    }, {})
+    return {}
 }
 
 exports.save = function() {
