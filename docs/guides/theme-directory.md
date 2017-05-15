@@ -1,4 +1,4 @@
-# Themes Directory
+# Theme Directory
 
 * [Photorealistic Theme](https://github.com/yishn/sabaki-photorealistic-theme)
 
