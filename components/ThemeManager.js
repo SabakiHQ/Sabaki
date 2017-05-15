@@ -47,7 +47,7 @@ class ThemeManager extends Component {
             currentTheme != null && h('link', {
                 rel: 'stylesheet',
                 type: 'text/css',
-                href: path.join(currentTheme.path, currentTheme.main)
+                href: path.join(currentTheme.path, currentTheme.main || 'styles.css')
             }),
 
             // Custom images

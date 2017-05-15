@@ -70,7 +70,3 @@ Changing board texture is a little bit more complicated since the image is appli
 ~~~
 
 Also, choose a color (e.g. `#CB9838`) that closely resembles the board image to provide a fallback.
-
-## Existing userstyles
-
-See [Userstyles](userstyles.md).
