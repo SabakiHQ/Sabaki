@@ -155,8 +155,18 @@ class CleanMarkupDrawer extends Component {
                 ),
 
                 h('p', {},
-                    h('button', {class: 'whole-game', onClick: this.handleSubmitButtonClick}, 'Remove from whole game'), ' ',
-                    h('button', {class: 'current-node', onClick: this.handleSubmitButtonClick}, 'Remove from current position'), ' ',
+                    h('button', {
+                        type: 'button',
+                        class: 'whole-game',
+                        onClick: this.handleSubmitButtonClick
+                    }, 'Remove from whole game'), ' ',
+                    
+                    h('button', {
+                        type: 'button',
+                        class: 'current-node',
+                        onClick: this.handleSubmitButtonClick
+                    }, 'Remove from current position'), ' ',
+                    
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
             )

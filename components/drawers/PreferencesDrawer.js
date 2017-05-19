@@ -335,10 +335,10 @@ class ThemesTab extends Component {
                     ))
                 ), ' ',
 
-                currentTheme && h('button', {onClick: this.handleUninstallButton}, 'Uninstall'),
+                currentTheme && h('button', {type: 'button', onClick: this.handleUninstallButton}, 'Uninstall'),
 
                 h('div', {class: 'install'},
-                    h('button', {onClick: this.handleInstallButton}, 'Install Theme…')
+                    h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…')
                 )
             ),
 
@@ -505,7 +505,7 @@ class EnginesTab extends Component {
             ),
 
             h('p', {},
-                h('button', {onClick: this.handleAddButtonClick}, 'Add')
+                h('button', {type: 'button', onClick: this.handleAddButtonClick}, 'Add')
             )
         )
     }
@@ -592,7 +592,7 @@ class PreferencesDrawer extends Component {
                 h(EnginesTab, {engines}),
 
                 h('p', {},
-                    h('button', {onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {type: 'button', onClick: this.handleCloseButtonClick}, 'Close')
                 )
             )
         )
