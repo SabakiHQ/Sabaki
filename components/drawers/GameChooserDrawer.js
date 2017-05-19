@@ -517,16 +517,21 @@ class GameChooserDrawer extends Component {
 
                 h('p', {},
                     h('button', {
+                        type: 'button',
                         class: 'dropdown',
                         onClick: this.handleAddButtonClick
                     }, 'Add'),
 
                     h('button', {
+                        type: 'button',
                         class: 'dropdown',
                         onClick: this.handleSortButtonClick
                     }, 'Sort By'),
 
-                    h('button', {onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {
+                        type: 'button',
+                        onClick: this.handleCloseButtonClick
+                    }, 'Close')
                 )
             ),
 
