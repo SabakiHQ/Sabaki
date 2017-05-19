@@ -117,9 +117,6 @@ form p, form ul li {
     input[type="text"] {
         width: 125px;
     }
-    select {
-        -webkit-appearance: none;
-    }
     textarea {
         resize: none;
     }
