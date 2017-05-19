@@ -8,6 +8,7 @@
 * [Pine Theme](https://github.com/ParmuzinAlexander/sabaki-pine-theme)
 * [Goyabao Theme](https://github.com/ParmuzinAlexander/sabaki-goyabao-theme)
 * [Flat Theme](https://github.com/ParmuzinAlexander/sabaki-flat-theme)
+* [Paper Theme](https://github.com/ParmuzinAlexander/sabaki-paper-theme)
 * [One Color Mode](https://github.com/ParmuzinAlexander/sabaki-one-color)
 * [Blind Mode](https://github.com/ParmuzinAlexander/sabaki-blind)
 
