@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.31.0][v0.31.0] (2017-05-20)
 
 **Added**
 
@@ -10,13 +10,13 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Update to Electron v1.6.9 beta
+* Update to Electron v1.7.1 beta
 * Rename 'Pause' engines command to 'Suspend'
 
 **Fixed**
 
 * Fix player names not displaying in the game chooser drawer
-* Fix Sabaki displaying 'Please wait...' forever after a two engine match ended in resignation
+* Fix Sabaki displaying 'Please wait...' forever after a two engines match ended in resignation
 
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
@@ -70,51 +70,10 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Support for Tygem `gib` files and WBaduk `ngf` files (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
-
-**Fixed**
-
-* Windows installers create app folder if necessary
-* Fix Sabaki being unresponsive when adding invalid files to a game collection
-* Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
-
-## [Sabaki v0.20.2][v0.20.2] (2017-03-11)
-
-**Added**
-
 * Move spots on the board are getting colored according to its move annotation (Thanks to [@dfannius](https://github.com/dfannius))
 * Move annotation context menu on the last played stone (Thanks to [@dfannius](https://github.com/dfannius))
 * Sabaki Web can load and copy SGF files from/to the clipboard (Thanks to [@C0DEHERO](https://github.com/C0DEHERO))
-
-**Changed**
-
-* Update to Electron v1.6.2
-* Board grid lines are now vector images
-
-**Fixed**
-
-* Fix issue where Sabaki is inserting a ton of unnecessary empty lines in SGF files on Windows
-
-## [Sabaki v0.20.1][v0.20.1] (2017-03-03)
-
-**Added**
-
 * Use Monte Carlo algorithm for better dead stones estimation
-
-**Changed**
-
-* Update to Electron v1.6.1
-* Sabaki Web saves settings in local storage
-
-**Fixed**
-
-* Fix GitHub and 'Report Issue' menu items not working
-* Fix move interpretation stuck at '3-3 point' sometimes
-* Fix reload file warning showing if the file has been removed
-
-## [Sabaki v0.20.0][v0.20.0] (2017-02-01)
-
-**Added**
-
 * Ability to change the order of variations
 * Ability to remove certain node information from the whole game or current position
 * Ability to sort games in a game container
@@ -122,11 +81,20 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Update to Electron v1.4.15
+* Update to Electron v1.6.2
+* Board grid lines are now vector images
+* Sabaki Web saves settings in local storage
 * Current variation is more distinguishable from other variations in the game tree
 
 **Fixed**
 
+* Windows installers create app folder if necessary
+* Fix Sabaki being unresponsive when adding invalid files to a game collection
+* Fix wrong initial `SZ` property value, thus resulting in an invalid SGF file
+* Fix issue where Sabaki is inserting a ton of unnecessary empty lines in SGF files on Windows
+* Fix GitHub and 'Report Issue' menu items not working
+* Fix move interpretation stuck at '3-3 point' sometimes
+* Fix reload file warning showing if the file has been removed
 * Sabaki uses `\r\n` as linebreaks on Windows
 * Fix 'Download' button when an update is available
 
@@ -577,14 +545,12 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.30.3...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.31.0...master
+[v0.31.0]: https://github.com/yishn/Sabaki/compare/v0.30.3...v0.31.0
 [v0.30.3]: https://github.com/yishn/Sabaki/compare/v0.30.2...v0.30.3
 [v0.30.2]: https://github.com/yishn/Sabaki/compare/v0.30.1...v0.30.2
 [v0.30.1]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.1
-[v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.20.2...v0.21.0
-[v0.20.2]: https://github.com/yishn/Sabaki/compare/v0.20.1...v0.20.2
-[v0.20.1]: https://github.com/yishn/Sabaki/compare/v0.20.0...v0.20.1
-[v0.20.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.20.0
+[v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.21.0
 [v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.3
 [v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.3
 [v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.17.2
