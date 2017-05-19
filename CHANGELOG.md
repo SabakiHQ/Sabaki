@@ -10,13 +10,13 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Update to Electron v1.6.9 beta
+* Update to Electron v1.7.1 beta
 * Rename 'Pause' engines command to 'Suspend'
 
 **Fixed**
 
 * Fix player names not displaying in the game chooser drawer
-* Fix Sabaki displaying 'Please wait...' forever after a two engine match ended in resignation
+* Fix Sabaki displaying 'Please wait...' forever after a two engines match ended in resignation
 
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
