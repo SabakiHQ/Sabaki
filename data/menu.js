@@ -336,7 +336,7 @@ let data = [
                 label: 'Go to Move N&umber',
                 accelerator: 'CmdOrCtrl+G',
                 click: () => dialog.showInputBox('Enter a move number to go to', ({value}) => {
-                    sabaki.closeDrawers()
+                    sabaki.closeDrawer()
                     sabaki.goToMoveNumber(value)
                 })
             }
