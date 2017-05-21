@@ -28,7 +28,7 @@ exports.parseCommand = function(input) {
     let name = inputs[0]
     inputs.shift()
 
-    return new Command(id, name, inputs)
+    return new Command(id, name, ...inputs)
 }
 
 exports.parseResponse = function(input) {
