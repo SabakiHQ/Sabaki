@@ -109,3 +109,15 @@ exports.htmlify = function(input) {
 
     return input
 }
+
+exports.popupMenu = function(template, x, y) {
+    let {remote} = require('electron')
+    let setting = remote.require('./modules/setting')
+    let zoomFactor = +setting.get('app.zoom_factor')
+
+    remote.Menu.buildFromTemplate(template).popup(sabaki.window, {
+        x: Math.round(x * zoomFactor),
+        y: Math.round(y * zoomFactor),
+        async: true
+    })
+}
