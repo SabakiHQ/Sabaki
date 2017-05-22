@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Themes (Thanks to [@Seth-Rothschild](https://github.com/Seth-Rothschild))
+* Ability to adjust UI zoom
 
 **Changed**
 
