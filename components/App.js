@@ -40,6 +40,7 @@ class App extends Component {
             busy: false,
             fullScreen: false,
             showMenuBar: null,
+            zoomFactor: null,
 
             representedFilename: null,
             gameTrees: [emptyTree],
@@ -287,10 +288,17 @@ class App extends Component {
 
             this.window.setContentSize(width + widthDiff, height)
         }
+
+        // Handle zoom factor
+
+        if (prevState.zoomFactor !== this.state.zoomFactor) {
+            this.window.webContents.setZoomFactor(this.state.zoomFactor)
+        }
     }
 
     updateSettingState(key = null) {
         let data = {
+            'app.zoom_factor': 'zoomFactor',
             'view.show_menubar': 'showMenuBar',
             'view.show_coordinates': 'showCoordinates',
             'view.show_move_colorization': 'showMoveColorization',
@@ -2080,7 +2088,7 @@ class App extends Component {
                 this.stopGeneratingMoves()
                 this.hideInfoOverlay()
                 this.makeResign()
-                
+
                 return
             }
 

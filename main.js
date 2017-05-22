@@ -20,7 +20,7 @@ function newWindow(path) {
         backgroundColor: '#111111',
         show: false,
         webPreferences: {
-            zoomFactor: setting.get('debug.zoom_factor')
+            zoomFactor: setting.get('app.zoom_factor')
         }
     })
 
