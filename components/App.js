@@ -662,8 +662,7 @@ class App extends Component {
                     })
 
                     let template = [{label: '&Edit Label', click}]
-                    let menu = Menu.buildFromTemplate(template)
-                    menu.popup(this.window, {x, y, async: true})
+                    helper.popupMenu(template, x, y)
 
                     return
                 }
@@ -1775,8 +1774,7 @@ class App extends Component {
             }
         ]
 
-        let menu = Menu.buildFromTemplate(template)
-        menu.popup(this.window, Object.assign({async: true}, options))
+        helper.popupMenu(template, options.x, options.y)
     }
 
     openCommentMenu(tree, index, options = {}) {
@@ -1859,8 +1857,7 @@ class App extends Component {
             item.click = () => this.setComment(tree, index, item.data)
         }
 
-        let menu = Menu.buildFromTemplate(template)
-        menu.popup(this.window, Object.assign({async: true}, options))
+        helper.popupMenu(template, options.x, options.y)
     }
 
     // GTP Engines
