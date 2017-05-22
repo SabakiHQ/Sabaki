@@ -115,7 +115,7 @@ exports.popupMenu = function(template, x, y) {
     let setting = remote.require('./modules/setting')
     let zoomFactor = +setting.get('app.zoom_factor')
 
-    remote.Menu.buildFromTemplate(template).popup(sabaki.window, {
+    remote.Menu.buildFromTemplate(template).popup(remote.getCurrentWindow(), {
         x: Math.round(x * zoomFactor),
         y: Math.round(y * zoomFactor),
         async: true

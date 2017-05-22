@@ -5,10 +5,10 @@ const helper = require('./helper')
 exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
     sabaki.setBusy(true)
 
-    let result = dialog.showMessageBox(sabaki.window, {
+    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
         type,
         buttons,
-        title: sabaki.appName,
+        title: app.getName(),
         message,
         cancelId,
         noLink: true
@@ -24,7 +24,7 @@ exports.showFileDialog = function(type, options, callback = helper.noop) {
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
-    let result = dialog[`show${type}Dialog`](sabaki.window, options)
+    let result = dialog[`show${type}Dialog`](remote.getCurrentWindow(), options)
 
     sabaki.setBusy(false)
     callback({result})
