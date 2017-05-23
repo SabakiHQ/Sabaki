@@ -336,7 +336,7 @@ let data = [
                 label: 'Go to Move N&umber',
                 accelerator: 'CmdOrCtrl+G',
                 click: () => dialog.showInputBox('Enter a move number to go to', ({value}) => {
-                    sabaki.closeDrawers()
+                    sabaki.closeDrawer()
                     sabaki.goToMoveNumber(value)
                 })
             }
@@ -433,6 +433,31 @@ let data = [
                 checked: 'view.show_comments',
                 accelerator: 'CmdOrCtrl+Shift+T',
                 click: () => toggleSetting('view.show_comments')
+            },
+            {type: 'separator'},
+            {
+                label: 'Z&oom Factor',
+                submenu: [
+                    {
+                        label: 'Increase',
+                        accelerator: 'CmdOrCtrl+Plus',
+                        click: () => setting.set('app.zoom_factor',
+                            setting.get('app.zoom_factor') + .1
+                        )
+                    },
+                    {
+                        label: 'Decrease',
+                        accelerator: 'CmdOrCtrl+-',
+                        click: () => setting.set('app.zoom_factor',
+                            Math.max(0, setting.get('app.zoom_factor') - .1)
+                        )
+                    },
+                    {
+                        label: 'Reset',
+                        accelerator: 'CmdOrCtrl+0',
+                        click: () => setting.set('app.zoom_factor', 1)
+                    }
+                ]
             }
         ]
     },

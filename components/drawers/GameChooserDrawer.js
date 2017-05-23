@@ -140,13 +140,7 @@ class GameChooserDrawer extends Component {
                 }
             ]
 
-            let menu = Menu.buildFromTemplate(template)
-
-            menu.popup(sabaki.window, {
-                x: evt.clientX,
-                y: evt.clientY,
-                async: true
-            })
+            helper.popupMenu(template, evt.clientX, evt.clientY)
         }
 
         this.handleItemDragStart = evt => {
@@ -246,14 +240,9 @@ class GameChooserDrawer extends Component {
             ]
 
             let element = evt.currentTarget
-            let {left, top, height} = element.getBoundingClientRect()
-            let menu = Menu.buildFromTemplate(template)
+            let {left, bottom} = element.getBoundingClientRect()
 
-            menu.popup(sabaki.window, {
-                x: Math.round(left),
-                y: Math.round(top + height),
-                async: true
-            })
+            helper.popupMenu(template, left, bottom)
         }
 
         this.handleSortButtonClick = evt => {
@@ -316,14 +305,9 @@ class GameChooserDrawer extends Component {
             }
 
             let element = evt.currentTarget
-            let {left, top, height} = element.getBoundingClientRect()
-            let menu = Menu.buildFromTemplate(template)
+            let {left, bottom} = element.getBoundingClientRect()
 
-            menu.popup(sabaki.window, {
-                x: Math.round(left),
-                y: Math.round(top + height),
-                async: true
-            })
+            helper.popupMenu(template, left, bottom)
         }
     }
 

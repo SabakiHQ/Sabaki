@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.31.0][v0.31.0] (2017-05-20)
+## [Sabaki v0.31.0][v0.31.0] (2017-05-27)
 
 **Added**
 
 * Themes (Thanks to [@Seth-Rothschild](https://github.com/Seth-Rothschild))
+* Ability to adjust UI zoom
 
 **Changed**
 
@@ -17,6 +18,8 @@ All notable changes to this project will be documented in this file.
 
 * Fix player names not displaying in the game chooser drawer
 * Fix Sabaki displaying 'Please wait...' forever after a two engines match ended in resignation
+* Fix GTP console sending invalid commands
+* Fix 'Go To Move Number' not working
 
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 

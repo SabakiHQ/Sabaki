@@ -104,9 +104,8 @@ class PlayBar extends Component {
                 }
             ]
 
-            let menu = Menu.buildFromTemplate(template)
             let {left, top} = this.menuButtonElement.getBoundingClientRect()
-            menu.popup(sabaki.window, {x: Math.round(left), y: Math.round(top), async: true})
+            helper.popupMenu(template, left, top)
         }
     }
 

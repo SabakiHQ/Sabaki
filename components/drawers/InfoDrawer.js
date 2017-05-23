@@ -171,13 +171,8 @@ class InfoDrawer extends Component {
             ].filter(x => !!x)
 
             let {left, bottom} = evt.currentTarget.getBoundingClientRect()
-            let menu = Menu.buildFromTemplate(template)
 
-            menu.popup(sabaki.window, {
-                async: true,
-                x: Math.round(left),
-                y: Math.round(bottom)
-            })
+            helper.popupMenu(template, left, bottom)
         })
     }
 

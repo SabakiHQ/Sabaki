@@ -40,6 +40,7 @@ class App extends Component {
             busy: false,
             fullScreen: false,
             showMenuBar: null,
+            zoomFactor: null,
 
             representedFilename: null,
             gameTrees: [emptyTree],
@@ -260,10 +261,17 @@ class App extends Component {
 
             this.window.setContentSize(width + widthDiff, height)
         }
+
+        // Handle zoom factor
+
+        if (prevState.zoomFactor !== this.state.zoomFactor) {
+            this.window.webContents.setZoomFactor(this.state.zoomFactor)
+        }
     }
 
     updateSettingState(key = null) {
         let data = {
+            'app.zoom_factor': 'zoomFactor',
             'view.show_menubar': 'showMenuBar',
             'view.show_coordinates': 'showCoordinates',
             'view.show_move_colorization': 'showMoveColorization',
@@ -590,8 +598,7 @@ class App extends Component {
                     })
 
                     let template = [{label: '&Edit Label', click}]
-                    let menu = Menu.buildFromTemplate(template)
-                    menu.popup(this.window, {x, y, async: true})
+                    helper.popupMenu(template, x, y)
 
                     return
                 }
@@ -1703,8 +1710,7 @@ class App extends Component {
             }
         ]
 
-        let menu = Menu.buildFromTemplate(template)
-        menu.popup(this.window, Object.assign({async: true}, options))
+        helper.popupMenu(template, options.x, options.y)
     }
 
     openCommentMenu(tree, index, options = {}) {
@@ -1787,8 +1793,7 @@ class App extends Component {
             item.click = () => this.setComment(tree, index, item.data)
         }
 
-        let menu = Menu.buildFromTemplate(template)
-        menu.popup(this.window, Object.assign({async: true}, options))
+        helper.popupMenu(template, options.x, options.y)
     }
 
     // GTP Engines
