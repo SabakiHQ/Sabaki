@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix player names not displaying in the game chooser drawer
-* Fix Sabaki displaying 'Please wait...' forever after a two engines match ended in resignation
+* Fix Sabaki displaying 'Please wait...' forever after a two engines match ends in resignation
 * Fix GTP console sending invalid commands
 * Fix 'Go To Move Number' not working
 
