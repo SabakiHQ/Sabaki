@@ -436,7 +436,7 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'Z&oom Factor',
+                label: 'Z&oom',
                 submenu: [
                     {
                         label: 'Increase',
