@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
-* Update to Electron v1.7.1 beta
+* Update to Electron v1.7.2 beta
 * Rename 'Pause' engines command to 'Suspend'
 
 **Fixed**
@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 * Fix Sabaki displaying 'Please wait...' forever after a two engines match ends in resignation
 * Fix GTP console sending invalid commands
 * Fix 'Go To Move Number' not working
+* Fix move/position annotations being incorrectly applied
 
 ## [Sabaki v0.30.3][v0.30.3] (2017-05-10)
 
