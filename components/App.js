@@ -1501,7 +1501,7 @@ class App extends Component {
             clearProperties(Object.keys(moveProps))
 
             if (data.moveAnnotation != null)
-                node[data.moveAnnotation] = moveProps[data.moveAnnotation]
+                node[data.moveAnnotation] = [moveProps[data.moveAnnotation]]
         }
 
         if ('positionAnnotation' in data) {
@@ -1510,7 +1510,7 @@ class App extends Component {
             clearProperties(Object.keys(positionProps))
 
             if (data.positionAnnotation != null)
-                node[data.positionAnnotation] = positionProps[data.positionAnnotation]
+                node[data.positionAnnotation] = [positionProps[data.positionAnnotation]]
         }
 
         this.clearUndoPoint()
