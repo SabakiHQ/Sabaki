@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix 'Jump to end after loading file' not working
+
 ## [Sabaki v0.31.0][v0.31.0] (2017-05-27)
 
 **Added**

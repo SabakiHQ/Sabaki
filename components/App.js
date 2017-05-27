@@ -453,6 +453,10 @@ class App extends Component {
 
                 this.setState({representedFilename: filename})
                 this.fileHash = this.generateFileHash()
+
+                if (setting.get('game.goto_end_after_loading')) {
+                    this.goToEnd()
+                }
             }
         })
     }
