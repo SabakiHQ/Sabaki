@@ -4,6 +4,7 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const copy = require('recursive-copy')
 const natsort = require('natsort')
+const rimraf = require('rimraf')
 const uuid = require('uuid/v1')
 
 const Drawer = require('./Drawer')
@@ -252,16 +253,16 @@ class ThemesTab extends Component {
 
             if (result === 1) return
 
-            setting.set('theme.current', null)
-
             let {path} = setting.getThemes()[this.state.currentTheme]
-            let success = shell.moveItemToTrash(path)
 
-            setting.loadThemes()
+            rimraf(path, err => {
+                if (err) {
+                    return dialog.showMessageBox('Uninstallation failed.', 'error')
+                }
 
-            if (!success) {
-                dialog.showMessageBox('Uninstallation failed.', 'error')
-            }
+                setting.loadThemes()
+                setting.set('theme.current', null)
+            })
         }
 
         this.handleInstallButton = evt => {

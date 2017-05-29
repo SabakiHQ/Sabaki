@@ -74,6 +74,7 @@
     "pikaday": "~1.4.0",
     "preact": "^8.1.0",
     "recursive-copy": "^2.0.6",
+    "rimraf": "^2.6.1",
     "uuid": "^3.0.1"
   },
   "devDependencies": {

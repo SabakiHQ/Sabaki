@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix 'Jump to end after loading file' not working
+* Fix theme uninstallation failing on Windows with disabled recycle bin
 
 ## [Sabaki v0.31.0][v0.31.0] (2017-05-27)
 
