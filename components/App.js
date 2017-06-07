@@ -1062,16 +1062,19 @@ class App extends Component {
                 || label == null && vertex in board.markups && board.markups[vertex][0] === 'label') {
                     delete board.markups[vertex]
                 } else {
-                    if (label == null || label.trim() === '') {
+                    if (label == null) {
                         let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                        let letterIndex = !node.LB ? 0 : node.LB
-                            .filter(x => x.length === 4)
-                            .map(x => alpha.indexOf(x[3]))
-                            .filter(x => x >= 0)
-                            .sort((a, b) => a - b)
-                            .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
-                            .concat([null])
-                            .findIndex((x, i) => i !== x)
+                        let letterIndex = Math.max(
+                            !node.LB ? 0 : node.LB
+                                .filter(x => x.length === 4)
+                                .map(x => alpha.indexOf(x[3]))
+                                .filter(x => x >= 0)
+                                .sort((a, b) => a - b)
+                                .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+                                .concat([null])
+                                .findIndex((x, i) => i !== x),
+                            !node.L ? 0 : node.L.length
+                        )
 
                         label = alpha[Math.min(letterIndex, alpha.length - 1)]
                         argument = label
@@ -1087,6 +1090,7 @@ class App extends Component {
                 }
             }
 
+            delete node.L
             for (let id in data) delete node[data[id]]
 
             // Now apply changes to game tree

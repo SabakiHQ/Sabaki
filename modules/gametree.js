@@ -3,6 +3,8 @@ const Board = require('./board')
 const helper = require('./helper')
 const {sgf} = require('./fileformats')
 
+const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
 exports.new = function() {
     return {
         id: helper.getId(),
@@ -329,7 +331,17 @@ exports.getBoard = function(tree, index, baseboard = null) {
         for (let composed of node.LB) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
-            let label = composed.slice(sep + 1).replace(/\s+/, ' ')
+            let label = composed.slice(sep + 1)
+
+            board.markups[sgf.point2vertex(point)] = ['label', label]
+        }
+    }
+
+    if ('L' in node) {
+        for (let i = 0; i < node.L.length; i++) {
+            let point = node.L[i]
+            let label = alpha[i]
+            if (label == null) return
 
             board.markups[sgf.point2vertex(point)] = ['label', label]
         }
