@@ -282,27 +282,29 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
     // Make move
 
-    if ('B' in node) {
-        vertex = sgf.point2vertex(node.B[0])
-        board = baseboard.makeMove(1, vertex)
-    } else if ('W' in node) {
-        vertex = sgf.point2vertex(node.W[0])
-        board = baseboard.makeMove(-1, vertex)
+    let data = {B: 1, W: -1}
+
+    for (let prop in data) {
+        if (!(prop in node)) continue
+
+        vertex = sgf.point2vertex(node[prop][0])
+        board = baseboard.makeMove(data[prop], vertex)
+        break
     }
 
     if (!board) board = baseboard.clone()
 
     // Add markup
 
-    let ids = ['AW', 'AE', 'AB']
+    data = {AW: -1, AE: 0, AB: 1}
 
-    for (let i = 0; i < ids.length; i++) {
-        if (!(ids[i] in node)) continue
+    for (let prop in data) {
+        if (!(prop in node)) continue
 
-        for (let value of node[ids[i]]) {
+        for (let value of node[prop]) {
             for (let vertex of sgf.compressed2list(value)) {
                 if (!board.hasVertex(vertex)) continue
-                board.set(vertex, i - 1)
+                board.set(vertex, data[prop])
             }
         }
     }
@@ -311,15 +313,14 @@ exports.getBoard = function(tree, index, baseboard = null) {
         board.markups[vertex] = ['point', '']
     }
 
-    ids = ['CR', 'MA', 'SQ', 'TR']
-    let classes = ['circle', 'cross', 'square', 'triangle']
+    data = {CR: 'circle', MA: 'cross', SQ: 'square', TR: 'triangle'}
 
-    for (let i = 0; i < ids.length; i++) {
-        if (!(ids[i] in node)) continue
+    for (let prop in data) {
+        if (!(prop in node)) continue
 
-        for (let value of node[ids[i]]) {
+        for (let value of node[prop]) {
             for (let vertex of sgf.compressed2list(value)) {
-                board.markups[vertex] = [classes[i], '']
+                board.markups[vertex] = [data[prop], '']
             }
         }
     }
@@ -339,10 +340,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         for (let composed of node[type]) {
             let sep = composed.indexOf(':')
-            let p1 = composed.slice(0, sep)
-            let p2 = composed.slice(sep + 1)
+            let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.point2vertex)
 
-            board.lines.push([sgf.point2vertex(p1), sgf.point2vertex(p2), type === 'AR'])
+            board.lines.push([v1, v2, type === 'AR'])
         }
     }
 
