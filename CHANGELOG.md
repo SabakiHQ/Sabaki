@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add support for outdated `L` property
+
 **Fixed**
 
 * Fix 'Jump to end after loading file' not working
