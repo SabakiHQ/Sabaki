@@ -1,4 +1,3 @@
-const {Menu} = require('electron').remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
