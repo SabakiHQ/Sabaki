@@ -1278,6 +1278,15 @@ class App extends Component {
         }
     }
 
+    goToSiblingGame(step) {
+        let {gameTrees, treePosition} = this.state
+        let [tree, ] = treePosition
+        let index = gameTrees.indexOf(gametree.getRoot(tree))
+        let newIndex = Math.max(0, Math.min(gameTrees.length - 1, index + step))
+
+        this.setCurrentTreePosition(gameTrees[newIndex], 0)
+    }
+
     // Find Methods
 
     findPosition(step, condition, callback = helper.noop) {
