@@ -1,6 +1,4 @@
 const fs = require('fs')
-const iconv = require('iconv-lite')
-const jschardet = require('jschardet')
 const gametree = require('../gametree')
 const helper = require('../helper')
 
@@ -55,6 +53,7 @@ exports.tokenize = function(contents) {
 }
 
 function _parseTokens(tokens, onProgress = helper.noop, encoding = defaultEncoding, start = [0], depth = 0) {
+    let iconv = require('iconv-lite')
     let i = start[0]
     let tree = gametree.new(), node, property, id
 
@@ -150,6 +149,7 @@ exports.parse = function(contents, onProgress, ignoreEncoding = false) {
         }
 
         if (!foundEncoding) {
+            let jschardet = require('jschardet')
             let detected = jschardet.detect(contents)
 
             if (detected.confidence > 0.2) {
