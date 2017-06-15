@@ -129,7 +129,6 @@ class App extends Component {
         })
 
         window.addEventListener('load', () => {
-            this.window.show()
             this.events.emit('ready')
         })
 
@@ -239,6 +238,7 @@ class App extends Component {
         })
 
         this.newFile()
+        this.window.show()
     }
 
     componentDidUpdate(_, prevState = {}) {
