@@ -1,5 +1,8 @@
 const path = require('path')
 
+let noopPath = path.join(__dirname, 'modules/shims/noop')
+let emptyPath = path.join(__dirname, 'modules/shims/empty')
+
 module.exports = () => ({
     entry: './components/App.js',
 
@@ -14,7 +17,6 @@ module.exports = () => ({
         loaders: [
             {
                 loader: 'babel-loader',
-                exclude: /node_modules/,
                 test: /\.js$/,
                 query: {
                     presets: ['es2015']
@@ -29,19 +31,19 @@ module.exports = () => ({
             'electron$': path.join(__dirname, 'modules/shims/electron'),
             'iconv-lite$': path.join(__dirname, 'modules/shims/iconv-lite'),
             'jschardet$': path.join(__dirname, 'modules/shims/jschardet'),
-            'moment$': path.join(__dirname, 'modules/shims/empty'),
-            'uuid$': path.join(__dirname, 'modules/shims/empty'),
-            'recursive-copy$': path.join(__dirname, 'modules/shims/empty'),
-            'argv-split$': path.join(__dirname, 'modules/shims/empty'),
-            '../modules/gtp$': path.join(__dirname, 'modules/shims/empty'),
-            '../data/menu$': path.join(__dirname, 'modules/shims/empty'),
+            'moment$': emptyPath,
+            'uuid$': emptyPath,
+            'recursive-copy$': emptyPath,
+            'argv-split$': emptyPath,
+            '../modules/gtp$': emptyPath,
+            '../data/menu$': emptyPath,
 
-            './ThemeManager$': path.join(__dirname, 'modules/shims/noop'),
-            './LeftSidebar$': path.join(__dirname, 'modules/shims/noop'),
-            './drawers/PreferencesDrawer$': path.join(__dirname, 'modules/shims/noop'),
-            './drawers/CleanMarkupDrawer$': path.join(__dirname, 'modules/shims/noop'),
-            './bars/AutoplayBar$': path.join(__dirname, 'modules/shims/noop'),
-            './bars/GuessBar$': path.join(__dirname, 'modules/shims/noop')
+            './ThemeManager$': noopPath,
+            './LeftSidebar$': noopPath,
+            './drawers/PreferencesDrawer$': noopPath,
+            './drawers/CleanMarkupDrawer$': noopPath,
+            './bars/AutoplayBar$': noopPath,
+            './bars/GuessBar$': noopPath
         }
     }
 })
