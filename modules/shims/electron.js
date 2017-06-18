@@ -1,4 +1,4 @@
-const Clipboard = require('clipboard')
+const copy = require('copy-text-to-clipboard')
 const {h, render} = require('preact')
 const {noop} = require('../helper')
 
@@ -10,8 +10,6 @@ let app = {
     getPath: () => ''
 }
 
-new Clipboard('.copy-to-clipboard')
-
 module.exports = {
     app,
     ipcRenderer: {on: noop, send: noop},
@@ -21,11 +19,13 @@ module.exports = {
 
         writeText: content => {
             let element = render(h('a', {
-                class: 'copy-to-clipboard',
                 href: '#',
-                'data-clipboard-text': content,
                 style: hiddenStyle,
-                onClick: evt => evt.preventDefault()
+
+                onClick: evt => {
+                    evt.preventDefault()
+                    copy(content)
+                }
             }), document.body)
 
             element.click()

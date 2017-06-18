@@ -66,7 +66,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "clipboard": "^1.6.1",
+    "copy-text-to-clipboard": "^1.0.2",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
