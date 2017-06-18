@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Add support for outdated `L` property
+* Add menu items for going to next/previous game
+
+**Fixed**
+
+* Fix 'Jump to end after loading file' not working
+* Fix theme uninstallation failing on Windows with disabled recycle bin
+
 ## [Sabaki v0.31.0][v0.31.0] (2017-05-27)
 
 **Added**

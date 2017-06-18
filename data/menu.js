@@ -339,6 +339,17 @@ let data = [
                     sabaki.closeDrawer()
                     sabaki.goToMoveNumber(value)
                 })
+            },
+            {type: 'separator'},
+            {
+                label: 'Go to Ne&xt Game',
+                accelerator: 'CmdOrCtrl+PageDown',
+                click: () => sabaki.goToSiblingGame(1)
+            },
+            {
+                label: 'Go to Previou&s Game',
+                accelerator: 'CmdOrCtrl+PageUp',
+                click: () => sabaki.goToSiblingGame(-1)
             }
         ]
     },

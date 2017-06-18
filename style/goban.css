@@ -177,6 +177,7 @@
         margin-top: calc(-.25em - 1px);
         border-radius: 100%;
         z-index: 2;
+        pointer-events: none;
     }
 
     .goban.siblings .row li.sign_0.siblingghost_1 .stone::after { background: black; }

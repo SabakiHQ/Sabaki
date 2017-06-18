@@ -252,6 +252,9 @@ Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
 * `step` `<Integer>`
 
 #### sabaki.goToMainVariation()
+#### sabaki.goToSiblingGame(step)
+
+* `step` `<Integer>`
 
 ### Find Methods
 

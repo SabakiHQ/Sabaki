@@ -1,6 +1,4 @@
 const fs = require('fs')
-const iconv = require('iconv-lite')
-const jschardet = require('jschardet')
 const sgf = require('./sgf')
 const gametree = require('../gametree')
 const Board = require('../board')
@@ -81,6 +79,9 @@ function parsePlayerName(raw) {
 }
 
 exports.parse = function(content) {
+    let iconv = require('iconv-lite')
+    let jschardet = require('jschardet')
+
     let encoding = 'utf8'
     let detected = jschardet.detect(content)
     if (detected.confidence > 0.2) {

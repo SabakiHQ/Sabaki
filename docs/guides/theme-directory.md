@@ -12,4 +12,4 @@
 * [One Color Mode](https://github.com/ParmuzinAlexander/sabaki-one-color)
 * [Blind Mode](https://github.com/ParmuzinAlexander/sabaki-blind)
 
-Feel free to send in a pull request to add yours to the list!
+You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn [how to package a userstyle into a theme](create-themes.md) and feel free to send in a pull request to add yours to the list!

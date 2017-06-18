@@ -1,6 +1,5 @@
 const {spawn} = require('child_process')
 const {dirname} = require('path')
-const split = require('argv-split')
 const EventEmitter = require('events')
 
 const gtp = require('./index')
@@ -24,6 +23,8 @@ class Controller extends EventEmitter {
     start() {
         if (this.process) return
 
+        let split = require('argv-split')
+        
         this.process = spawn(this.path, split(this.args), {cwd: dirname(this.path)})
 
         this.process.on('error', () => {

@@ -1,5 +1,4 @@
 const {remote} = require('electron')
-const {Menu} = remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const Pikaday = require('pikaday')

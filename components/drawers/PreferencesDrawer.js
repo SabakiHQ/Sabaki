@@ -2,9 +2,6 @@ const fs = require('fs')
 const {shell, remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const copy = require('recursive-copy')
-const natsort = require('natsort')
-const uuid = require('uuid/v1')
 
 const Drawer = require('./Drawer')
 
@@ -252,22 +249,19 @@ class ThemesTab extends Component {
 
             if (result === 1) return
 
-            setting.set('theme.current', null)
-
+            let rimraf = require('rimraf')
             let {path} = setting.getThemes()[this.state.currentTheme]
-            let success = shell.moveItemToTrash(path)
 
-            setting.loadThemes()
+            rimraf(path, err => {
+                if (err) return dialog.showMessageBox('Uninstallation failed.', 'error')
 
-            if (!success) {
-                dialog.showMessageBox('Uninstallation failed.', 'error')
-            }
+                setting.loadThemes()
+                setting.set('theme.current', null)
+            })
         }
 
         this.handleInstallButton = evt => {
             evt.preventDefault()
-
-            let {join} = require('path')
 
             dialog.showOpenDialog({
                 properties: ['openFile'],
@@ -275,6 +269,9 @@ class ThemesTab extends Component {
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
+                let {join} = require('path')
+                let copy = require('recursive-copy')
+                let uuid = require('uuid/v1')
                 let id = uuid()
 
                 copy(result[0], join(setting.themesDirectory, id), err => {
@@ -536,14 +533,12 @@ class PreferencesDrawer extends Component {
         if (prevProps.show && !this.props.show) {
             // On closing
 
-            let engines = this.props.engines.slice()
+            let natsort = require('natsort')
             let cmp = natsort({insensitive: true})
 
             // Sort engines.
 
-            engines.sort((x, y) => {
-                return cmp(x.name, y.name)
-            })
+            let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
             setting.set('engines.list', engines)
 

@@ -129,7 +129,6 @@ class App extends Component {
         })
 
         window.addEventListener('load', () => {
-            this.window.show()
             this.events.emit('ready')
         })
 
@@ -212,6 +211,7 @@ class App extends Component {
         })
 
         this.newFile()
+        this.window.show()
     }
 
     componentDidUpdate(_, prevState = {}) {
@@ -424,8 +424,12 @@ class App extends Component {
                 callback: err => {
                     if (err) return
 
-                    this.setState({representedFilename: file.name})
+                    this.setState({representedFilename: filename})
                     this.fileHash = this.generateFileHash()
+
+                    if (setting.get('game.goto_end_after_loading')) {
+                        this.goToEnd()
+                    }
                 }
             })
         })
@@ -994,16 +998,19 @@ class App extends Component {
                 || label == null && vertex in board.markups && board.markups[vertex][0] === 'label') {
                     delete board.markups[vertex]
                 } else {
-                    if (label == null || label.trim() === '') {
+                    if (label == null) {
                         let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                        let letterIndex = !node.LB ? 0 : node.LB
-                            .filter(x => x.length === 4)
-                            .map(x => alpha.indexOf(x[3]))
-                            .filter(x => x >= 0)
-                            .sort((a, b) => a - b)
-                            .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
-                            .concat([null])
-                            .findIndex((x, i) => i !== x)
+                        let letterIndex = Math.max(
+                            !node.LB ? 0 : node.LB
+                                .filter(x => x.length === 4)
+                                .map(x => alpha.indexOf(x[3]))
+                                .filter(x => x >= 0)
+                                .sort((a, b) => a - b)
+                                .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+                                .concat([null])
+                                .findIndex((x, i) => i !== x),
+                            !node.L ? 0 : node.L.length
+                        )
 
                         label = alpha[Math.min(letterIndex, alpha.length - 1)]
                         argument = label
@@ -1019,6 +1026,7 @@ class App extends Component {
                 }
             }
 
+            delete node.L
             for (let id in data) delete node[data[id]]
 
             // Now apply changes to game tree
@@ -1204,6 +1212,15 @@ class App extends Component {
 
             this.setCurrentTreePosition(tree, tree.nodes.length - 1)
         }
+    }
+
+    goToSiblingGame(step) {
+        let {gameTrees, treePosition} = this.state
+        let [tree, ] = treePosition
+        let index = gameTrees.indexOf(gametree.getRoot(tree))
+        let newIndex = Math.max(0, Math.min(gameTrees.length - 1, index + step))
+
+        this.setCurrentTreePosition(gameTrees[newIndex], 0)
     }
 
     // Find Methods

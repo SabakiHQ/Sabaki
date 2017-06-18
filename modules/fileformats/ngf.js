@@ -1,6 +1,4 @@
 const fs = require('fs')
-const iconv = require('iconv-lite')
-const jschardet = require('jschardet')
 const sgf = require('./sgf')
 const gametree = require('../gametree')
 const Board = require('../board')
@@ -11,6 +9,9 @@ exports.meta = {
 }
 
 exports.parse = function(content) {
+    let iconv = require('iconv-lite')
+    let jschardet = require('jschardet')
+
     // NGF files have a huge amount of ASCII-looking text. To help
     // the detector, we just send it the first few lines.
 

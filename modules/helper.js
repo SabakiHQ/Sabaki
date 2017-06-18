@@ -1,5 +1,3 @@
-const marked = require('./marked')
-
 let id = 0
 
 exports.linebreak = process.platform === 'win32' ? '\r\n' : '\n'
@@ -86,6 +84,7 @@ exports.normalizeEndings = function(input) {
 }
 
 exports.markdown = function(input) {
+    let marked = require('./marked')
     return marked(exports.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
 }
 

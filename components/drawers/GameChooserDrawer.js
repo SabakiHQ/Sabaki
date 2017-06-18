@@ -1,8 +1,6 @@
 const {remote} = require('electron')
-const {Menu} = remote
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const natsort = require('natsort')
 
 const MiniGoban = require('../MiniGoban')
 const Drawer = require('./Drawer')
@@ -246,6 +244,8 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleSortButtonClick = evt => {
+            let natsort = require('natsort')
+
             let template = [
                 {label: '&Black Player', property: 'PB'},
                 {label: '&White Player', property: 'PW'},
