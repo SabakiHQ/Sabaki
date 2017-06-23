@@ -130,6 +130,7 @@ class App extends Component {
 
         window.addEventListener('load', () => {
             this.events.emit('ready')
+            this.window.show()
         })
 
         ipcRenderer.on('load-file', (evt, ...args) => {
@@ -238,7 +239,6 @@ class App extends Component {
         })
 
         this.newFile()
-        this.window.show()
     }
 
     componentDidUpdate(_, prevState = {}) {
