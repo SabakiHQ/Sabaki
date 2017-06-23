@@ -34,6 +34,7 @@ module.exports = () => ({
             'moment$': emptyPath,
             'uuid$': emptyPath,
             'recursive-copy$': emptyPath,
+            'rimraf$': emptyPath,
             'argv-split$': emptyPath,
             '../modules/gtp$': emptyPath,
             '../data/menu$': emptyPath,
