@@ -18,6 +18,10 @@ class AutoplayBar extends Component {
             secondsPerMove: setting.get('autoplay.sec_per_move')
         }
 
+        this.handleFormSubmit = evt => {
+            evt.preventDefault()
+        }
+
         this.handleValueChange = evt => {
             let value = Math.floor(Math.min(10, Math.max(1, +evt.currentTarget.value)) * 10) / 10
 
@@ -80,7 +84,7 @@ class AutoplayBar extends Component {
         playing
     }) {
         return h(Bar, Object.assign({type: 'autoplay', class: classNames({playing})}, this.props),
-            h('form', {},
+            h('form', {onSubmit: this.handleFormSubmit},
                 h('label', {},
                     h('input', {
                         type: 'number',
@@ -95,6 +99,7 @@ class AutoplayBar extends Component {
                     ' sec per move'
                 )
             ),
+
             h('a', {class: 'play', href: '#', onClick: this.handlePlayButtonClick})
         )
     }

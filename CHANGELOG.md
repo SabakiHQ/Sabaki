@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix Sabaki crashing when pressing enter in autoplay mode
+
 ## [Sabaki v0.31.1][v0.31.1] (2017-06-24)
 
 **Added**
