@@ -1801,7 +1801,7 @@ class App extends Component {
             {
                 label: '&Clear Annotations',
                 click: () => {
-                    this.setComment({positionAnnotation: null, moveAnnotation: null})
+                    this.setComment(tree, index, {positionAnnotation: null, moveAnnotation: null})
                 }
             },
             {type: 'separator'},
