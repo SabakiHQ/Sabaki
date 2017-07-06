@@ -61,7 +61,7 @@ class AutoplayBar extends Component {
                 sabaki.setCurrentTreePosition(...tp)
             } else {
                 let vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
-                sabaki.makeMove(vertex, {player: node.B ? 1 : -1})
+                sabaki.makeMove(vertex, {player: node.B ? 1 : -1, sendToEngine: false})
             }
 
             sabaki.events.addListener('navigate', this.stopAutoplay)

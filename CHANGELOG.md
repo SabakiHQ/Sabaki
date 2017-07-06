@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Fix Sabaki crashing when pressing enter in autoplay mode
 * Fix 'Clear Annotations' not working
+* Fix Sabaki not sending pass command to attached engines
 
 ## [Sabaki v0.31.1][v0.31.1] (2017-06-24)
 
