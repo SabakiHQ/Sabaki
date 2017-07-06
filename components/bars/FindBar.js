@@ -15,8 +15,8 @@ class FindBar extends Component {
 
             let step = evt.currentTarget.classList.contains('next') ? 1 : -1
             let {onButtonClick = helper.noop} = this.props
-            evt.step = step
 
+            evt.step = step
             onButtonClick(evt)
         }
     }
