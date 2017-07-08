@@ -27,6 +27,7 @@ module.exports = () => ({
 
     resolve: {
         alias: {
+            'preact$': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
             'fs$': path.join(__dirname, 'modules/shims/fs'),
             'electron$': path.join(__dirname, 'modules/shims/electron'),
             'buffer$': path.join(__dirname, 'modules/shims/buffer'),
