@@ -424,7 +424,7 @@ class App extends Component {
                 callback: err => {
                     if (err) return
 
-                    this.setState({representedFilename: filename})
+                    this.setState({representedFilename: file.name})
                     this.fileHash = this.generateFileHash()
 
                     if (setting.get('game.goto_end_after_loading')) {
