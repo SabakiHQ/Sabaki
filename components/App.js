@@ -623,7 +623,7 @@ class App extends Component {
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
-                    this.makeMove(vertex)
+                    this.makeMove(vertex, {sendToEngine: true})
                 } else if (vertex in board.markups
                 && board.markups[vertex][0] === 'point'
                 && setting.get('edit.click_currentvertex_to_remove')) {
@@ -719,7 +719,7 @@ class App extends Component {
             if (!board.hasVertex(nextVertex)) return this.setMode('play')
 
             if (helper.vertexEquals(vertex, nextVertex)) {
-                this.makeMove(vertex, {player: 'B' in nextNode ? 1 : -1, sendToEngine: false})
+                this.makeMove(vertex, {player: 'B' in nextNode ? 1 : -1})
             } else {
                 if (board.get(vertex) !== 0
                 || this.state.blockedGuesses.some(v => helper.vertexEquals(v, vertex)))
@@ -746,7 +746,7 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = true} = {}) {
+    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -927,7 +927,7 @@ class App extends Component {
         if (setUndoPoint) this.setUndoPoint('Undo Resignation')
         rootNode.RE = [`${color}+Resign`]
 
-        this.makeMove([-1, -1], {player, clearUndoPoint: false, sendToEngine: false})
+        this.makeMove([-1, -1], {player, clearUndoPoint: false})
         this.makeMainVariation(...this.state.treePosition, {setUndoPoint: false})
 
         this.events.emit('resign', {player})
@@ -2108,7 +2108,7 @@ class App extends Component {
                 return
             }
 
-            this.makeMove(vertex, {player: sign, sendToEngine: false})
+            this.makeMove(vertex, {player: sign})
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
 
             if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {

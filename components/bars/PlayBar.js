@@ -14,7 +14,7 @@ class PlayBar extends Component {
             let template = [
                 {
                     label: '&Pass',
-                    click: () => sabaki.makeMove([-1, -1])
+                    click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
                 },
                 {
                     label: '&Resign',

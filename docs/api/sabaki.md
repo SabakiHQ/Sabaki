@@ -196,7 +196,7 @@ Performs a click on the given vertex position on the board with given button ind
 * `options` `<Object>` *(optional)*
     * `player` [`<Sign>`](sign.md) *(optional)* - Default: Current player
     * `clearUndoPoint` `<Boolean>` *(optional)* - Default: `true`
-    * `sendToEngine` `<Boolean>` *(optional)* - Default: `true`
+    * `sendToEngine` `<Boolean>` *(optional)* - Default: `false`
 
 Makes a proper move on the given vertex on the current board as given `player`. If `vertex` is not on the board or `player` equals `0`, Sabaki will make a pass instead.
 
