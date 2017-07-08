@@ -29,6 +29,7 @@ module.exports = () => ({
         alias: {
             'fs$': path.join(__dirname, 'modules/shims/fs'),
             'electron$': path.join(__dirname, 'modules/shims/electron'),
+            'buffer$': path.join(__dirname, 'modules/shims/buffer'),
             'iconv-lite$': path.join(__dirname, 'modules/shims/iconv-lite'),
             'jschardet$': path.join(__dirname, 'modules/shims/jschardet'),
             'moment$': emptyPath,

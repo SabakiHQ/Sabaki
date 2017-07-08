@@ -1,3 +1,4 @@
+const Buffer = require('buffer')
 const fs = require('fs')
 const sgf = require('./sgf')
 const gametree = require('../gametree')
