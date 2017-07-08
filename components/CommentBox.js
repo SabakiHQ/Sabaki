@@ -215,16 +215,13 @@ class CommentBox extends Component {
     }
 
     componentWillReceiveProps({treePosition, mode}) {
+        if (mode === 'edit') return
+
         // Debounce rendering
 
         this.dirty = true
 
         let treePositionChanged = treePosition !== this.props.treePosition
-
-        if (mode === 'edit') {
-            this.element.scrollTop = 0
-            if (treePositionChanged) this.textareaElement.scrollTop = 0
-        }
 
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
@@ -234,6 +231,11 @@ class CommentBox extends Component {
                 this.setState({
                     board: gametree.getBoard(...this.props.treePosition)
                 })
+
+                if (this.props.mode === 'edit') {
+                    this.element.scrollTop = 0
+                    if (treePositionChanged) this.textareaElement.scrollTop = 0
+                }
 
                 this.element.scrollTop = 0
             } else {

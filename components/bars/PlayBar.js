@@ -74,7 +74,7 @@ class PlayBar extends Component {
                 {type: 'separator'},
                 {
                     label: '&Pass',
-                    click: () => sabaki.makeMove([-1, -1])
+                    click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
                 },
                 {
                     label: '&Resign',

@@ -98,7 +98,7 @@ let data = [
             {
                 label: '&Pass',
                 accelerator: 'CmdOrCtrl+P',
-                click: () => sabaki.makeMove([-1, -1])
+                click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
             },
             {
                 label: '&Resign',
