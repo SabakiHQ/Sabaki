@@ -4,7 +4,7 @@
 
 An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Download the latest release](https://github.com/yishn/Sabaki/releases) of Sabaki.
 
-**This is the web version of Sabaki.** It's a trimmed-down version that runs in any modern browser. Build instructions can be found in [the wiki](https://github.com/yishn/Sabaki/wiki/Building-&-Tests/ea894af79e68b32c31875ea616ac914717e337fe). You can try a [working demo here](http://sabaki.yichuanshen.de/web).
+**This is the web version of Sabaki.** It's a trimmed-down version that runs in any modern browser. Build instructions can be found in [the documentation](https://github.com/yishn/Sabaki/blob/master/docs/guides/building-tests.md). You can try a [working demo here](http://sabaki.yichuanshen.de/web).
 
 ![Screenshot](screenshot.png)
 
