@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
 * Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
 
+**Fixed**
+
+* Fix pass moves not being sent to GTP engines
+
 ## [Sabaki v0.31.2][v0.31.2] (2017-07-15)
 
 **Changed**
