@@ -68,20 +68,20 @@
     "argv-split": "^2.0.1",
     "classnames": "^2.2.5",
     "iconv-lite": "^0.4.13",
-    "jschardet": "^1.4.2",
+    "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
-    "preact": "^8.2.1",
+    "preact": "^8.2.5",
     "recursive-copy": "^2.0.6",
     "rimraf": "^2.6.1",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
     "electron": "1.7.4",
-    "electron-builder": "^19.16.0",
-    "mocha": "^3.0.2",
-    "tmp": "~0.0.29"
+    "electron-builder": "^19.27.7",
+    "mocha": "^3.5.0",
+    "tmp": "0.0.33"
   },
   "scripts": {
     "test": "mocha",
