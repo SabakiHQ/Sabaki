@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
 * Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
+* Update to Electron v1.8.0 beta
 
 **Fixed**
 
