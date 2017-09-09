@@ -9,7 +9,7 @@ const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
 const {sgf} = require('../../modules/fileformats')
 
-let maxSecPerMove = setting.get('autoplay.max_sec_per_move');
+let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 
 class AutoplayBar extends Component {
     constructor() {
