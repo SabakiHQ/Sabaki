@@ -9,7 +9,7 @@ const helper = require('../../modules/helper')
 const setting = remote.require('./modules/setting')
 const {sgf} = require('../../modules/fileformats')
 
-const max_sec_per_move = 99;
+let maxSecPerMove = setting.get('autoplay.max_sec_per_move');
 
 class AutoplayBar extends Component {
     constructor() {
@@ -25,7 +25,7 @@ class AutoplayBar extends Component {
         }
 
         this.handleValueChange = evt => {
-            let value = Math.floor(Math.min(max_sec_per_move, Math.max(1, +evt.currentTarget.value)))
+            let value = Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value))
 
             this.setState({secondsPerMove: value})
             setting.set('autoplay.sec_per_move', value)
@@ -93,7 +93,7 @@ class AutoplayBar extends Component {
                         name: 'duration',
                         value: secondsPerMove,
                         min: 1,
-                        max: max_sec_per_move,
+                        max: maxSecPerMove,
                         step: 1,
 
                         onChange: this.handleValueChange
