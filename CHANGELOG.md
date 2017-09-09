@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Fix updated komi values not being sent to GTP engines during the game
 * Fix pass moves not being sent to GTP engines
 
 ## [Sabaki v0.31.2][v0.31.2] (2017-07-15)

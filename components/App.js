@@ -1983,6 +1983,7 @@ class App extends Component {
         if (this.attachedEngineControllers.every(x => x == null)) return
 
         let board = gametree.getBoard(...this.state.treePosition)
+        let komi = gametree.getRootProperty(this.state.treePosition[0], 'KM', 0)
 
         if (!board.isSquare()) {
             dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
@@ -1999,6 +2000,13 @@ class App extends Component {
 
             let synced = false
             let controller = this.attachedEngineControllers[i]
+
+            if (this.engineBoards[i] != null && komi !== this.engineBoards[i].komi) {
+                // Update komi
+
+                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi))
+                this.engineBoards[i].komi = komi
+            }
 
             if (this.engineBoards[i] != null
             && board.getPositionHash() !== this.engineBoards[i].getPositionHash()) {
@@ -2030,9 +2038,6 @@ class App extends Component {
 
                 this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
                 this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
-
-                let komi = gametree.getRootProperty(this.state.treePosition[0], 'KM', 0)
-                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi))
 
                 for (let x = 0; x < board.width; x++) {
                     for (let y = 0; y < board.height; y++) {
