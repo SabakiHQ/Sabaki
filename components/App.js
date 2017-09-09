@@ -70,12 +70,12 @@ class App extends Component {
 
             // Sidebar
 
-            showConsole: null,
             consoleLog: [],
-            leftSidebarWidth: null,
-            showGameGraph: null,
-            showCommentBox: null,
-            sidebarWidth: null,
+            showConsole: setting.get('view.show_leftsidebar'),
+            leftSidebarWidth: setting.get('view.leftsidebar_width'),
+            showGameGraph: setting.get('view.show_graph'),
+            showCommentBox: setting.get('view.show_comments'),
+            sidebarWidth: setting.get('view.sidebar_width'),
             graphGridSize: null,
             graphNodeSize: null,
 
@@ -286,7 +286,9 @@ class App extends Component {
                 widthDiff += this.state.leftSidebarWidth * (this.state.showLeftSidebar ? 1 : -1)
             }
 
-            this.window.setContentSize(width + widthDiff, height)
+            if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
+                this.window.setContentSize(width + widthDiff, height)
+            }
         }
 
         // Handle zoom factor
@@ -306,11 +308,6 @@ class App extends Component {
             'view.show_siblings': 'showSiblings',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
             'view.animated_stone_placement': 'animatedStonePlacement',
-            'view.show_leftsidebar': 'showConsole',
-            'view.leftsidebar_width': 'leftSidebarWidth',
-            'view.show_graph': 'showGameGraph',
-            'view.show_comments': 'showCommentBox',
-            'view.sidebar_width': 'sidebarWidth',
             'graph.grid_size': 'graphGridSize',
             'graph.node_size': 'graphNodeSize',
             'engines.list': 'engines',
