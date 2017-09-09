@@ -25,7 +25,7 @@ class AutoplayBar extends Component {
         }
 
         this.handleValueChange = evt => {
-            let value = Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value))
+            let value = Math.round(Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value)))
 
             this.setState({secondsPerMove: value})
             setting.set('autoplay.sec_per_move', value)
