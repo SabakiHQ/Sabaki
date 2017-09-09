@@ -2033,7 +2033,9 @@ class App extends Component {
 
                 this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
                 this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
-                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', this.inferredState.gameInfo.komi || 0))
+                
+                let komi = gametree.getRootProperty(root, 'KM')
+                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi || 0))
 
                 for (let x = 0; x < board.width; x++) {
                     for (let y = 0; y < board.height; y++) {
