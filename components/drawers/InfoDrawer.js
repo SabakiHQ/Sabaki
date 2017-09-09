@@ -115,15 +115,10 @@ class InfoDrawer extends Component {
         }
 
         this.handleInputChange = [
-            'blackRank',
-            'blackName',
-            'whiteRank',
-            'whiteName',
-            'gameName',
-            'eventName',
-            'komi',
-            'result',
-            'handicap'
+            'blackRank', 'blackName',
+            'whiteRank', 'whiteName',
+            'gameName', 'eventName',
+            'komi', 'result', 'handicap'
         ].reduce((acc, key) => {
             acc[key] = ({currentTarget}) => {
                 this.setState({[key]: currentTarget.value === '' ? null : currentTarget.value})

@@ -1885,7 +1885,7 @@ class App extends Component {
     attachEngines(...engines) {
         let {engineCommands, attachedEngines} = this.state
 
-        if (helper.vertexEquals([engines[1], engines[0]], attachedEngines)) {
+        if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
             // Just swap engines
 
             this.attachedEngineControllers.reverse()
@@ -2033,9 +2033,9 @@ class App extends Component {
 
                 this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
                 this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
-                
-                let komi = gametree.getRootProperty(this.state.treePosition[0], 'KM')
-                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi || 0))
+
+                let komi = gametree.getRootProperty(this.state.treePosition[0], 'KM', 0)
+                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi))
 
                 for (let x = 0; x < board.width; x++) {
                     for (let y = 0; y < board.height; y++) {
