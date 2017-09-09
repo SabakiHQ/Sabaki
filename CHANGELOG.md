@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
+* Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
+* Lift the arbitrary maximum limit of autoplay's 'sec per move' (Thanks to [@emauton](https://github.com/emauton))
+* Per-window sidebars (see [#265](https://github.com/yishn/Sabaki/issues/265))
+* Update to Electron v1.8.0 beta
+
+**Fixed**
+
+* Fix pass moves not being sent to GTP engines
+
 ## [Sabaki v0.31.2][v0.31.2] (2017-07-15)
 
 **Changed**

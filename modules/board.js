@@ -39,7 +39,7 @@ class Board {
                 let sign = board.get([x, y])
                 if (this.get([x, y]) === sign) continue
 
-                result.push([[x, y], sign])
+                result.push([x, y])
             }
         }
 

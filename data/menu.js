@@ -210,7 +210,7 @@ let data = [
             },
             {
                 label: '&Remove Node',
-                accelerator: 'CmdOrCtrl+Delete',
+                accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Backspace' : 'CmdOrCtrl+Delete',
                 click: () => sabaki.removeNode(...treePosition())
             },
             {
@@ -381,7 +381,10 @@ let data = [
             {type: 'separator'},
             {
                 label: 'Toggle &GTP Console',
-                click: () => toggleSetting('view.show_leftsidebar')
+                click: () => {
+                    toggleSetting('view.show_leftsidebar')
+                    sabaki.setState(({showConsole}) => ({showConsole: !showConsole}))
+                }
             },
             {
                 label: '&Clear Console',
@@ -398,7 +401,7 @@ let data = [
             },
             {
                 label: 'Toggle &Full Screen',
-                accelerator: 'CmdOrCtrl+Shift+F',
+                accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
                 click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
             },
             {type: 'separator'},
@@ -437,13 +440,19 @@ let data = [
                 label: 'Show Game &Tree',
                 checked: 'view.show_graph',
                 accelerator: 'CmdOrCtrl+T',
-                click: () => toggleSetting('view.show_graph')
+                click: () => {
+                    toggleSetting('view.show_graph')
+                    sabaki.setState(({showGameGraph}) => ({showGameGraph: !showGameGraph}))
+                }
             },
             {
                 label: 'Show Co&mments',
                 checked: 'view.show_comments',
                 accelerator: 'CmdOrCtrl+Shift+T',
-                click: () => toggleSetting('view.show_comments')
+                click: () => {
+                    toggleSetting('view.show_comments')
+                    sabaki.setState(({showCommentBox}) => ({showCommentBox: !showCommentBox}))
+                }
             },
             {type: 'separator'},
             {

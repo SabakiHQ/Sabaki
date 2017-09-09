@@ -150,7 +150,7 @@ Resets file name, returns to play mode, and replaces current file with the file 
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
-#### sabaki.loadContent(content, format[, options])
+#### sabaki.loadContent(content, extension[, options])
 
 * `content` `<String>`
 * `extension` `<String>` - File extension, e.g. `'sgf'`

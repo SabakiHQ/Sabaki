@@ -14,6 +14,7 @@ let defaults = {
     'app.hide_busy_delay': 200,
     'app.zoom_factor': 1,
     'autoplay.sec_per_move': 1,
+    'autoplay.max_sec_per_move': 99,
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'autoscroll.diff': 10,

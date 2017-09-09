@@ -70,12 +70,12 @@ class App extends Component {
 
             // Sidebar
 
-            showConsole: null,
             consoleLog: [],
-            leftSidebarWidth: null,
-            showGameGraph: null,
-            showCommentBox: null,
-            sidebarWidth: null,
+            showConsole: setting.get('view.show_leftsidebar'),
+            leftSidebarWidth: setting.get('view.leftsidebar_width'),
+            showGameGraph: setting.get('view.show_graph'),
+            showCommentBox: setting.get('view.show_comments'),
+            sidebarWidth: setting.get('view.sidebar_width'),
             graphGridSize: null,
             graphNodeSize: null,
 
@@ -259,7 +259,9 @@ class App extends Component {
                 widthDiff += this.state.leftSidebarWidth * (this.state.showLeftSidebar ? 1 : -1)
             }
 
-            this.window.setContentSize(width + widthDiff, height)
+            if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
+                this.window.setContentSize(width + widthDiff, height)
+            }
         }
 
         // Handle zoom factor
@@ -279,11 +281,6 @@ class App extends Component {
             'view.show_siblings': 'showSiblings',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
             'view.animated_stone_placement': 'animatedStonePlacement',
-            'view.show_leftsidebar': 'showConsole',
-            'view.leftsidebar_width': 'leftSidebarWidth',
-            'view.show_graph': 'showGameGraph',
-            'view.show_comments': 'showCommentBox',
-            'view.sidebar_width': 'sidebarWidth',
             'graph.grid_size': 'graphGridSize',
             'graph.node_size': 'graphNodeSize',
             'engines.list': 'engines',
@@ -696,7 +693,7 @@ class App extends Component {
         }
 
         let pass = !board.hasVertex(vertex)
-        if (!pass && board.get(vertex) != 0) return
+        if (!pass && board.get(vertex) !== 0) return
 
         let prev = gametree.navigate(tree, index, -1)
         if (!player) player = this.inferredState.currentPlayer
@@ -850,7 +847,8 @@ class App extends Component {
         // Send command to engine
 
         if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
-            setTimeout(() => this.startGeneratingMoves(), setting.get('gtp.move_delay'))
+            let passPlayer = pass ? player : null
+            setTimeout(() => this.startGeneratingMoves({passPlayer}), setting.get('gtp.move_delay'))
         }
     }
 
@@ -1834,10 +1832,10 @@ class App extends Component {
     sendGTPCommand(controller, command, callback = helper.noop) {
     }
 
-    syncEngines() {
+    syncEngines({passPlayer = null} = {}) {
     }
 
-    startGeneratingMoves({followUp = false} = {}) {
+    startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
     }
 
     stopGeneratingMoves() {
