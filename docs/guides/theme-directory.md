@@ -9,6 +9,7 @@
 * [Goyabao Theme](https://github.com/ParmuzinAlexander/sabaki-goyabao-theme)
 * [Flat Theme](https://github.com/ParmuzinAlexander/sabaki-flat-theme)
 * [Wood Stone Theme](https://github.com/geovens/Sabaki-Theme)
+* [Cartoon Theme](https://github.com/geovens/Sabaki-Theme)
 * [Paper Theme](https://github.com/ParmuzinAlexander/sabaki-paper-theme)
 * [One Color Mode](https://github.com/ParmuzinAlexander/sabaki-one-color)
 * [Blind Mode](https://github.com/ParmuzinAlexander/sabaki-blind)
