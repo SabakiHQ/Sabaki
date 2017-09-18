@@ -4,7 +4,7 @@ const GtpConsole = require('./GtpConsole')
 
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
 let maxConsoleLength = setting.get('console.max_history_count')

@@ -1,7 +1,7 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
-const setting = require('./modules/setting')
-const updater = require('./modules/updater')
+const setting = require('./setting')
+const updater = require('./updater')
 
 let windows = []
 let openfile = null
@@ -9,7 +9,7 @@ let isReady = false
 
 function newWindow(path) {
     let window = new BrowserWindow({
-        icon: process.platform === 'linux' ? `${__dirname}/logo.png` : null,
+        icon: process.platform === 'linux' ? `${__dirname}/../logo.png` : null,
         title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
@@ -38,7 +38,7 @@ function newWindow(path) {
         window = null
     })
 
-    window.loadURL(`file://${__dirname}/index.html`)
+    window.loadURL(`file://${__dirname}/../index.html`)
 
     if (setting.get('debug.dev_tools')) {
         window.openDevTools()
@@ -48,7 +48,7 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    let template = require('./data/menu').clone()
+    let template = require('./menu').clone()
 
     // Process menu items
 
@@ -149,8 +149,13 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
     isReady = true
 
-    if (!openfile && process.argv.length >= 2)
-        openfile = process.argv[1]
+    if (!openfile && process.argv.length >= 2) {
+        if (process.argv[0].slice(-'electron.exe'.length) !== 'electron.exe') {
+            openfile = process.argv[1]
+        } else if (process.argv.length >= 3) {
+            openfile = process.argv[2]
+        }
+    }
 
     newWindow(openfile)
 

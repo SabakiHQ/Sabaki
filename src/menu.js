@@ -1,12 +1,11 @@
 const {shell, clipboard, remote} = require('electron')
 const {app} = remote || require('electron')
 
-const helper = require('../modules/helper')
-const setting = remote && remote.require('./modules/setting')
+const setting = remote && remote.require('./setting')
 
 const sabaki = typeof window !== 'undefined' && window.sabaki
-const dialog = sabaki && require('../modules/dialog')
-const gametree = sabaki && require('../modules/gametree')
+const dialog = sabaki && require('./modules/dialog')
+const gametree = sabaki && require('./modules/gametree')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
@@ -591,6 +590,14 @@ generateIds(data)
 
 module.exports = exports = data
 
-exports.clone = function() {
-    return helper.clone(data)
+exports.clone = function(x = data) {
+    if (Array.isArray(x)) {
+        return [...Array(x.length)].map((_, i) => exports.clone(x[i]))
+    } else if (typeof x === 'object') {
+        let result = {}
+        for (let key in x) result[key] = exports.clone(x[key])
+        return result
+    }
+
+    return x
 }

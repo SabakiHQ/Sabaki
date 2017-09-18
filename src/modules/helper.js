@@ -7,18 +7,6 @@ exports.getId = function() {
     return ++id
 }
 
-exports.clone = function(data) {
-    if (Array.isArray(data)) {
-        return [...Array(data.length)].map((_, i) => exports.clone(data[i]))
-    } else if (typeof data === 'object') {
-        let result = {}
-        for (let key in data) result[key] = exports.clone(data[key])
-        return result
-    }
-
-    return data
-}
-
 exports.hash = function(str) {
     let hash = 0, chr
     if (str.length == 0) return hash
@@ -111,7 +99,7 @@ exports.htmlify = function(input) {
 
 exports.popupMenu = function(template, x, y) {
     let {remote} = require('electron')
-    let setting = remote.require('./modules/setting')
+    let setting = remote.require('./setting')
     let zoomFactor = +setting.get('app.zoom_factor')
 
     remote.Menu.buildFromTemplate(template).popup(remote.getCurrentWindow(), {

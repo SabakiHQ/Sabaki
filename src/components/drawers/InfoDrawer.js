@@ -7,7 +7,7 @@ const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {

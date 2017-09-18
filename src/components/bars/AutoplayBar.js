@@ -6,7 +6,7 @@ const Bar = require('./Bar')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = require('../../modules/fileformats')
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')

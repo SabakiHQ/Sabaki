@@ -5,7 +5,7 @@ const classNames = require('classnames')
 const Drawer = require('./Drawer')
 
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 class ScoreRow extends Component {
     render({method, score, komi, sign}) {

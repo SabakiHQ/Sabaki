@@ -1,5 +1,9 @@
 const {app, net} = require('electron')
-const {lexicalCompare} = require('./helper')
+
+function lexicalCompare(a, b) {
+    if (!a.length || !b.length) return a.length - b.length
+    return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : lexicalCompare(a.slice(1), b.slice(1))
+}
 
 exports.check = function(repo, callback) {
     let address = `https://api.github.com/repos/${repo}/releases/latest`

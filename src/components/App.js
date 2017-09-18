@@ -22,7 +22,7 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
 
@@ -158,7 +158,7 @@ class App extends Component {
 
         // Handle main menu items
 
-        let menuData = require('../data/menu')
+        let menuData = require('../menu')
 
         let handleMenuClicks = menu => {
             for (let item of menu) {
