@@ -17,20 +17,30 @@ Install the dependencies of Sabaki using npm:
 $ npm install
 ~~~
 
-You can build Sabaki by using:
+Sabaki uses webpack to bundle all files into one single file. For development use the following command to create bundles automatically while you edit files:
 
 ~~~
-$ npm run pack
+$ npm run watch
 ~~~
 
-To create installers/archives you can use one of the following instructions depending on the target OS:
+To start Sabaki while in development, use the start command:
+
+~~~
+$ npm start
+~~~
+
+You can build Sabaki binaries with Electron by using:
+
+~~~
+$ npm run build
+~~~
+
+This will bundle everything and create a folder with the executables in `Sabaki/dist`. To create installers/archives you can use one of the following instructions depending on the target OS:
 
 * `$ npm run dist:win32` for Windows 32-bit
 * `$ npm run dist:win64` for Windows 64-bit
 * `$ npm run dist:linux` for Linux 32-bit and 64-bit
 * `$ npm run dist:macos` for macOS 64-bit
-
-The binaries will be created in `Sabaki/dist/`.
 
 ### Web version
 
