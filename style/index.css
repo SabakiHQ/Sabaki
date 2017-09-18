@@ -913,9 +913,13 @@ header, #bar .bar {
         margin-top: 1em;
         color: #d0d0d0;
     }
-    #preferences form > div.themes .meta a {
+    #preferences form > div.themes .meta a,
+    #preferences form > div.themes .install a {
         color: white;
         cursor: pointer;
+    }
+    #preferences form > div.themes .install a {
+        margin-left: .5em;
     }
     #preferences form > div.themes .description {
         color: #888;
