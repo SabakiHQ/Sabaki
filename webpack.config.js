@@ -16,6 +16,15 @@ module.exports = () => ({
         __dirname: false
     },
 
+    module: {
+        rules: [
+            {
+                test: /\.sgf$/,
+                use: 'raw-loader'
+            }
+        ]
+    },
+
     resolve: {
         alias: {
             'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),

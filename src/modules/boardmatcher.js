@@ -15,8 +15,8 @@ exports.getBoardSymmetries = function(board, vertex) {
     return exports.getSymmetries(vertex).map(([x, y]) => [mod(x, mx), mod(y, my)])
 }
 
-exports.readShapes = function(filename) {
-    let tree = sgf.parseFile(filename)[0]
+exports.readShapes = function(content) {
+    let tree = sgf.parse(content)[0]
     let result = []
 
     for (let i = 0; i < tree.subtrees.length; i++) {
@@ -128,7 +128,7 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
 
     if (shapes == null) {
         if (_shapes == null) {
-            _shapes = exports.readShapes(`${__dirname}/data/shapes.sgf`)
+            _shapes = exports.readShapes(require('../../data/shapes.sgf'))
         }
 
         shapes = _shapes
