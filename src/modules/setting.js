@@ -125,6 +125,7 @@ let defaults = {
 }
 
 exports.events = new EventEmitter()
+exports.events.setMaxListeners(100)
 
 exports.load = function() {
     try {
