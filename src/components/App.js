@@ -2093,6 +2093,17 @@ class App extends Component {
                 let engines = [...this.state.attachedEngines].reverse()
                 this.attachEngines(...engines)
                 ;[playerController, otherController] = [otherController, playerController]
+
+                // Also switch player names
+
+                let info = this.getGameInfo(this.state.treePosition[0])
+
+                this.setGameInfo(this.state.treePosition[0], {
+                    blackName: info.whiteName,
+                    blackRank: info.whiteRank,
+                    whiteName: info.blackName,
+                    whiteRank: info.blackRank
+                })
             } else {
                 return
             }
