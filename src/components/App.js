@@ -22,7 +22,7 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
 
@@ -132,6 +132,51 @@ class App extends Component {
             this.events.emit('ready')
             this.window.show()
         })
+
+        ipcRenderer.on('load-file', (evt, ...args) => {
+            setTimeout(() => this.loadFile(...args), setting.get('app.loadgame_delay'))
+        })
+
+        this.window.on('focus', () => {
+            if (setting.get('file.show_reload_warning')) {
+                this.askForReload()
+            }
+
+            ipcRenderer.send('build-menu', this.state.busy)
+        })
+
+        this.window.on('resize', () => {
+            clearTimeout(this.resizeId)
+
+            this.resizeId = setTimeout(() => {
+                if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
+                    let [width, height] = this.window.getContentSize()
+                    setting.set('window.width', width).set('window.height', height)
+                }
+            }, 1000)
+        })
+
+        // Handle main menu items
+
+        let menuData = require('../menu')
+
+        let handleMenuClicks = menu => {
+            for (let item of menu) {
+                if ('click' in item) {
+                    ipcRenderer.on(`menu-click-${item.id}`, () => {
+                        if (!this.state.showMenuBar) this.window.setMenuBarVisibility(false)
+                        dialog.closeInputBox()
+                        item.click()
+                    })
+                }
+
+                if ('submenu' in item) {
+                    handleMenuClicks(item.submenu)
+                }
+            }
+        }
+
+        handleMenuClicks(menuData)
 
         // Handle mouse wheel
 
@@ -1816,6 +1861,61 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
+        let {engineCommands, attachedEngines} = this.state
+
+        if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
+            // Just swap engines
+
+            this.attachedEngineControllers.reverse()
+            this.engineBoards.reverse()
+
+            this.setState({
+                engineCommands: engineCommands.reverse(),
+                attachedEngines: engines
+            })
+
+            return
+        }
+
+        let command = name => new gtp.Command(null, name)
+
+        for (let i = 0; i < attachedEngines.length; i++) {
+            if (attachedEngines[i] != engines[i]) {
+                if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
+
+                try {
+                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
+                    this.attachedEngineControllers[i] = controller
+                    this.engineBoards[i] = null
+
+                    this.sendGTPCommand(controller, command('name'))
+                    this.sendGTPCommand(controller, command('version'))
+                    this.sendGTPCommand(controller, command('protocol_version'))
+                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
+                        engineCommands[i] = response.content.split('\n')
+                    })
+
+                    controller.on('stderr', ({content}) => {
+                        this.setState(({consoleLog}) => ({
+                            consoleLog: [...consoleLog, [
+                                i === 0 ? 1 : -1,
+                                controller.name,
+                                null,
+                                new gtp.Response(null, content, false, true)
+                            ]]
+                        }))
+                    })
+
+                    this.setState({engineCommands})
+                } catch (err) {
+                    this.attachedEngineControllers[i] = null
+                    engines[i] = null
+                }
+            }
+        }
+
+        this.setState({attachedEngines: engines})
+        this.syncEngines()
     }
 
     detachEngines() {

@@ -6,7 +6,7 @@
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
   "license": "MIT",
-  "main": "main.js",
+  "main": "./src/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/yishn/Sabaki"
@@ -51,17 +51,14 @@
     ],
     "files": [
       "**/*",
-      "!bundle.js",
+      "bundle.js",
       "!bundle.js.map",
-      "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
-      "!node_modules/moment${/*}",
-      "!node_modules/octicons/build/*",
+      "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
+      "!src/components${/*}",
+      "!src/modules${/*}",
+      "!node_modules${/*}",
       "node_modules/octicons/build/svg",
-      "!node_modules/jschardet/dist${/*}",
-      "node_modules/jschardet/src",
-      "!node_modules/preact/*.{map,js}",
-      "!node_modules/preact/dist/*",
-      "node_modules/preact/dist/preact.js"
+      "node_modules/pikaday/css/pikaday.css"
     ]
   },
   "dependencies": {
@@ -81,7 +78,7 @@
     "babel-preset-es2015": "^6.24.1",
     "mocha": "^3.5.0",
     "tmp": "0.0.33",
-    "webpack": "^3.0.0"
+    "webpack": "^3.6.0"
   },
   "scripts": {
     "test": "",

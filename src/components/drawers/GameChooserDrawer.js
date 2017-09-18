@@ -9,7 +9,7 @@ const dialog = require('../../modules/dialog')
 const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = fileformats
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')

@@ -6,7 +6,7 @@ const ContentDisplay = require('./ContentDisplay')
 
 const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 class ConsoleCommandEntry extends Component {
     shouldComponentUpdate() {

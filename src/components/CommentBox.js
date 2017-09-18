@@ -6,7 +6,7 @@ const ContentDisplay = require('./ContentDisplay')
 const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = require('../modules/fileformats')
 const Board = require('../modules/board')
 

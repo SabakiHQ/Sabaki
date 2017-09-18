@@ -178,7 +178,7 @@ exports.getMoveInterpretation = function(board, vertex, {shapes = null} = {}) {
 
     if (shapes == null) {
         if (_shapes == null) {
-            _shapes = exports.readShapes(`${__dirname}/../data/shapes.sgf`)
+            _shapes = exports.readShapes(`${__dirname}/data/shapes.sgf`)
         }
 
         shapes = _shapes

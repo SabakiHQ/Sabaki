@@ -7,7 +7,7 @@ const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {
@@ -115,15 +115,10 @@ class InfoDrawer extends Component {
         }
 
         this.handleInputChange = [
-            'blackRank',
-            'blackName',
-            'whiteRank',
-            'whiteName',
-            'gameName',
-            'eventName',
-            'komi',
-            'result',
-            'handicap'
+            'blackRank', 'blackName',
+            'whiteRank', 'whiteName',
+            'gameName', 'eventName',
+            'komi', 'result', 'handicap'
         ].reduce((acc, key) => {
             acc[key] = ({currentTarget}) => {
                 this.setState({[key]: currentTarget.value === '' ? null : currentTarget.value})

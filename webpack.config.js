@@ -1,10 +1,10 @@
 const path = require('path')
 
-let noopPath = path.join(__dirname, 'modules/shims/noop')
-let emptyPath = path.join(__dirname, 'modules/shims/empty')
+let noopPath = path.join(__dirname, 'src/modules/shims/noop')
+let emptyPath = path.join(__dirname, 'src/modules/shims/empty')
 
 module.exports = () => ({
-    entry: './components/App.js',
+    entry: './src/components/App.js',
 
     output: {
         filename: 'bundle.js',
@@ -27,19 +27,20 @@ module.exports = () => ({
 
     resolve: {
         alias: {
+            'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
             'preact': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
-            'fs': path.join(__dirname, 'modules/shims/fs'),
-            'electron': path.join(__dirname, 'modules/shims/electron'),
-            'buffer': path.join(__dirname, 'modules/shims/buffer'),
-            'iconv-lite': path.join(__dirname, 'modules/shims/iconv-lite'),
-            'jschardet': path.join(__dirname, 'modules/shims/jschardet'),
+            'fs': path.join(__dirname, 'src/modules/shims/fs'),
+            'electron': path.join(__dirname, 'src/modules/shims/electron'),
+            'buffer': path.join(__dirname, 'src/modules/shims/buffer'),
+            'iconv-lite': path.join(__dirname, 'src/modules/shims/iconv-lite'),
+            'jschardet': path.join(__dirname, 'src/modules/shims/jschardet'),
             'moment': emptyPath,
             'uuid': emptyPath,
             'recursive-copy': emptyPath,
             'rimraf': emptyPath,
             'argv-split': emptyPath,
             '../modules/gtp': emptyPath,
-            '../data/menu': emptyPath,
+            '../menu': emptyPath,
 
             './ThemeManager': noopPath,
             './LeftSidebar': noopPath,

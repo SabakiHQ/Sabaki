@@ -2,7 +2,7 @@ const path = require('path')
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 class ThemeManager extends Component {
     constructor() {

@@ -48,7 +48,7 @@ module.exports = {
 
     remote: {
         app,
-        require: x => x === './modules/setting' ? require('../setting') : {},
+        require: x => x === './setting' ? require('../../setting') : {},
 
         getCurrentWindow: () => ({
             show: noop,

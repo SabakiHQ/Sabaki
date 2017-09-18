@@ -4,7 +4,7 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 
 const helper = require('../../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 

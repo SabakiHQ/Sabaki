@@ -2,7 +2,7 @@ const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 class Slider extends Component {
     constructor() {
