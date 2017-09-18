@@ -1,6 +1,6 @@
 const assert = require('assert')
-const helper = require('../modules/helper')
-const Board = require('../modules/board')
+const helper = require('../src/modules/helper')
+const Board = require('../src/modules/board')
 
 describe('Board', () => {
     describe('constructor', () => {
