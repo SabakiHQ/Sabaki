@@ -51,17 +51,14 @@
     ],
     "files": [
       "**/*",
-      "!bundle.js",
+      "bundle.js",
       "!bundle.js.map",
       "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
-      "!node_modules/moment${/*}",
-      "!node_modules/octicons/build/*",
-      "node_modules/octicons/build/svg",
-      "!node_modules/jschardet/dist${/*}",
-      "node_modules/jschardet/src",
-      "!node_modules/preact/*.{map,js}",
-      "!node_modules/preact/dist/*",
-      "node_modules/preact/dist/preact.js"
+      "!components${/*}",
+      "!modules/*",
+      "modules/{setting,updater,helper}.js",
+      "!node_modules${/*}",
+      "node_modules/octicons/build/svg"
     ]
   },
   "dependencies": {
@@ -81,7 +78,8 @@
     "electron": "^1.8.0",
     "electron-builder": "^19.27.3",
     "mocha": "^3.5.0",
-    "tmp": "0.0.33"
+    "tmp": "0.0.33",
+    "webpack": "^3.6.0"
   },
   "scripts": {
     "test": "mocha",
