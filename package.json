@@ -53,10 +53,10 @@
       "**/*",
       "bundle.js",
       "!bundle.js.map",
-      "!**/{.c9,scss,docs,test,tests,src,devtools,plugins,examples}${/*}",
-      "!components${/*}",
-      "!modules/*",
-      "modules/{setting,updater,helper}.js",
+      "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
+      "!src/components${/*}",
+      "!src/modules/*",
+      "src/modules/{setting,updater,helper}.js",
       "!node_modules${/*}",
       "node_modules/octicons/build/svg",
       "node_modules/pikaday/css/pikaday.css"
@@ -84,10 +84,12 @@
   },
   "scripts": {
     "test": "mocha",
-    "pack": "build --dir",
-    "dist:macos": "build -m --x64",
-    "dist:linux": "build -l --ia32 --x64",
-    "dist:win32": "build -w --ia32",
-    "dist:win64": "build -w --x64"
+    "bundle": "webpack --progress",
+    "watch": "webpack --progress --watch",
+    "pack": "npm run bundle && build --dir",
+    "dist:macos": "npm run bundle && build -m --x64",
+    "dist:linux": "npm run bundle && build -l --ia32 --x64",
+    "dist:win32": "npm run bundle && build -w --ia32",
+    "dist:win64": "npm run bundle && build -w --x64"
   }
 }

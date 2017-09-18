@@ -24,11 +24,6 @@ module.exports = () => ({
     },
 
     externals: {
-        'moment': 'null',
-        '../menu': "require('./src/menu')",
-        './helper': "require('./src/modules/helper')",
-        '../helper': "require('./src/modules/helper')",
-        '../modules/helper': "require('./src/modules/helper')",
-        '../../modules/helper': "require('./src/modules/helper')"
+        'moment': 'null'
     }
 })
