@@ -1,12 +1,12 @@
 const {shell, clipboard, remote} = require('electron')
 const {app} = remote || require('electron')
 
-const helper = require('../modules/helper')
+const helper = require('./modules/helper')
 const setting = remote && remote.require('./modules/setting')
 
 const sabaki = typeof window !== 'undefined' && window.sabaki
-const dialog = sabaki && require('../modules/dialog')
-const gametree = sabaki && require('../modules/gametree')
+const dialog = sabaki && require('./modules/dialog')
+const gametree = sabaki && require('./modules/gametree')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))

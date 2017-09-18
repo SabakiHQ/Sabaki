@@ -6,7 +6,7 @@
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
   "license": "MIT",
-  "main": "main.js",
+  "main": "./src/main.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/yishn/Sabaki"

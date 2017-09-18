@@ -158,7 +158,7 @@ class App extends Component {
 
         // Handle main menu items
 
-        let menuData = require('../data/menu')
+        let menuData = require('../menu')
 
         let handleMenuClicks = menu => {
             for (let item of menu) {

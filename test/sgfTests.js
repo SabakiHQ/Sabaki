@@ -3,9 +3,9 @@ const fs = require('fs')
 const util = require('util')
 const tmp = require('tmp')
 
-const helper = require('../modules/helper')
-const {sgf} = require('../modules/fileformats')
-const gametree = require('../modules/gametree')
+const helper = require('../src/modules/helper')
+const {sgf} = require('../src/modules/fileformats')
+const gametree = require('../src/modules/gametree')
 
 describe('sgf', () => {
     describe('tokenize', () => {

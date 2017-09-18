@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = () => ({
-    entry: './components/App.js',
+    entry: './src/components/App.js',
 
     output: {
         filename: 'bundle.js',
@@ -25,10 +25,10 @@ module.exports = () => ({
 
     externals: {
         'moment': 'null',
-        '../data/menu': "require('./data/menu')",
-        './helper': "require('./modules/helper')",
-        '../helper': "require('./modules/helper')",
-        '../modules/helper': "require('./modules/helper')",
-        '../../modules/helper': "require('./modules/helper')"
+        '../menu': "require('./src/menu')",
+        './helper': "require('./src/modules/helper')",
+        '../helper': "require('./src/modules/helper')",
+        '../modules/helper': "require('./src/modules/helper')",
+        '../../modules/helper': "require('./src/modules/helper')"
     }
 })

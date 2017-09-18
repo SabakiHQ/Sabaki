@@ -9,7 +9,7 @@ let isReady = false
 
 function newWindow(path) {
     let window = new BrowserWindow({
-        icon: process.platform === 'linux' ? `${__dirname}/logo.png` : null,
+        icon: process.platform === 'linux' ? `${__dirname}/../logo.png` : null,
         title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
@@ -38,7 +38,7 @@ function newWindow(path) {
         window = null
     })
 
-    window.loadURL(`file://${__dirname}/index.html`)
+    window.loadURL(`file://${__dirname}/../index.html`)
 
     if (setting.get('debug.dev_tools')) {
         window.openDevTools()
@@ -48,7 +48,7 @@ function newWindow(path) {
 }
 
 function buildMenu(disableAll = false) {
-    let template = require('./data/menu').clone()
+    let template = require('./menu').clone()
 
     // Process menu items
 

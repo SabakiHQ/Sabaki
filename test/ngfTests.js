@@ -1,7 +1,7 @@
 const assert = require('assert')
 
-const {ngf} = require('../modules/fileformats')
-const gametree = require('../modules/gametree')
+const {ngf} = require('../src/modules/fileformats')
+const gametree = require('../src/modules/gametree')
 
 describe('ngf', () => {
     describe('parse', () => {
