@@ -84,6 +84,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "start": "electron ./",
     "bundle": "webpack --progress",
     "watch": "webpack --progress --watch",
     "pack": "npm run bundle && build --dir",

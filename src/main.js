@@ -40,9 +40,9 @@ function newWindow(path) {
 
     window.loadURL(`file://${__dirname}/../index.html`)
 
-    // if (setting.get('debug.dev_tools')) {
+    if (setting.get('debug.dev_tools')) {
         window.openDevTools()
-    // }
+    }
 
     return window
 }
@@ -149,8 +149,13 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
     isReady = true
 
-    if (!openfile && process.argv.length >= 2)
-        openfile = process.argv[1]
+    if (!openfile && process.argv.length >= 2) {
+        if (!process.argv[0].includes('electron.exe')) {
+            openfile = process.argv[1]
+        } else if (process.argv.length >= 3) {
+            openfile = process.argv[2]
+        }
+    }
 
     newWindow(openfile)
 
