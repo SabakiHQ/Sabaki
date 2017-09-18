@@ -2051,8 +2051,6 @@ class App extends Component {
                         this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
                     }
                 }
-
-                this.engineBoards[i] = board
             }
 
             // Send pass if required
@@ -2061,6 +2059,11 @@ class App extends Component {
                 let color = passPlayer > 0 ? 'B' : 'W'
                 this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, 'pass'))
             }
+
+            // Update engine board state
+
+            this.engineBoards[i] = board
+            this.engineBoards[i].komi = komi
         }
 
         this.setBusy(false)
@@ -2121,7 +2124,10 @@ class App extends Component {
             }
 
             this.makeMove(vertex, {player: sign})
+
+            let komi = this.engineBoards[playerIndex] && this.engineBoards[playerIndex].komi
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
+            this.engineBoards[playerIndex].komi = komi
 
             if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
                 setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
