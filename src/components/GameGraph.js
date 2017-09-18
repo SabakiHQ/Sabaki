@@ -4,7 +4,7 @@ const classNames = require('classnames')
 
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 let [delay, animationDuration, commentProperties,
 edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,

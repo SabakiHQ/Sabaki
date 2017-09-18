@@ -55,8 +55,7 @@
       "!bundle.js.map",
       "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
       "!src/components${/*}",
-      "!src/modules/*",
-      "src/modules/{setting,updater,helper}.js",
+      "!src/modules${/*}",
       "!node_modules${/*}",
       "node_modules/octicons/build/svg",
       "node_modules/pikaday/css/pikaday.css"

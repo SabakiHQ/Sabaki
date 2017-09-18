@@ -1,7 +1,7 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
-const setting = require('./modules/setting')
-const updater = require('./modules/updater')
+const setting = require('./setting')
+const updater = require('./updater')
 
 let windows = []
 let openfile = null

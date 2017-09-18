@@ -1,7 +1,7 @@
 const {remote, ipcRenderer} = require('electron')
 const {h, Component} = require('preact')
 
-const setting = remote.require('./modules/setting')
+const setting = remote.require('./setting')
 
 class BusyScreen extends Component {
     componentWillReceiveProps({show}) {

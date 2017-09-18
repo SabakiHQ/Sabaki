@@ -111,7 +111,7 @@ exports.htmlify = function(input) {
 
 exports.popupMenu = function(template, x, y) {
     let {remote} = require('electron')
-    let setting = remote.require('./modules/setting')
+    let setting = remote.require('./setting')
     let zoomFactor = +setting.get('app.zoom_factor')
 
     remote.Menu.buildFromTemplate(template).popup(remote.getCurrentWindow(), {
