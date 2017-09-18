@@ -12,12 +12,23 @@ module.exports = () => ({
 
     target: 'electron-renderer',
 
+    node: {
+        __dirname: false
+    },
+
     resolve: {
         alias: {
+            'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
+            'preact': path.join(__dirname, 'node_modules/preact/dist/preact.min')
         }
     },
 
     externals: {
-        moment: 'null'
+        'moment': 'null',
+        '../data/menu': "require('./data/menu')",
+        './helper': "require('./modules/helper')",
+        '../helper': "require('./modules/helper')",
+        '../modules/helper': "require('./modules/helper')",
+        '../../modules/helper': "require('./modules/helper')"
     }
 })

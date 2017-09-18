@@ -58,7 +58,8 @@
       "!modules/*",
       "modules/{setting,updater,helper}.js",
       "!node_modules${/*}",
-      "node_modules/octicons/build/svg"
+      "node_modules/octicons/build/svg",
+      "node_modules/pikaday/css/pikaday.css"
     ]
   },
   "dependencies": {
