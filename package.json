@@ -87,7 +87,7 @@
     "start": "electron ./",
     "bundle": "webpack --progress",
     "watch": "webpack --progress --watch",
-    "pack": "npm run bundle && build --dir",
+    "build": "npm run bundle && build --dir",
     "dist:macos": "npm run bundle && build -m --x64",
     "dist:linux": "npm run bundle && build -l --ia32 --x64",
     "dist:win32": "npm run bundle && build -w --ia32",

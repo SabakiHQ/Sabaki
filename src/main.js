@@ -150,7 +150,7 @@ app.on('ready', () => {
     isReady = true
 
     if (!openfile && process.argv.length >= 2) {
-        if (!process.argv[0].includes('electron.exe')) {
+        if (process.argv[0].slice(-'electron.exe'.length) !== 'electron.exe') {
             openfile = process.argv[1]
         } else if (process.argv.length >= 3) {
             openfile = process.argv[2]
