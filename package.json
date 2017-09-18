@@ -54,6 +54,7 @@
       "bundle.js",
       "!bundle.js.map",
       "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
+      "!data/shapes.sgf",
       "!src/components${/*}",
       "!src/modules${/*}",
       "!node_modules${/*}",
@@ -77,6 +78,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "mocha": "^3.5.0",
+    "raw-loader": "^0.5.1",
     "tmp": "0.0.33",
     "webpack": "^3.6.0"
   },

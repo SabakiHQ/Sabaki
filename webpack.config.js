@@ -14,12 +14,18 @@ module.exports = () => ({
     devtool: 'source-map',
 
     module: {
-        loaders: [
+        rules: [
             {
-                loader: 'babel-loader',
+                test: /\.sgf$/,
+                use: 'raw-loader'
+            },
+            {
                 test: /\.js$/,
-                query: {
-                    presets: [['es2015', {modules: false}]]
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [['es2015', {modules: false}]]
+                    }
                 }
             }
         ]

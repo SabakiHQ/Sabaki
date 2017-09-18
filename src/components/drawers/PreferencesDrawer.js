@@ -335,7 +335,12 @@ class ThemesTab extends Component {
                 currentTheme && h('button', {type: 'button', onClick: this.handleUninstallButton}, 'Uninstall'),
 
                 h('div', {class: 'install'},
-                    h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…')
+                    h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…'),
+                    ' ',
+                    h('a', {
+                        href: 'https://github.com/yishn/Sabaki/blob/master/docs/guides/theme-directory.md',
+                        onClick: this.handleLinkClick
+                    }, 'Get more themes…')
                 )
             ),
 
@@ -343,16 +348,12 @@ class ThemesTab extends Component {
                 h('p', {class: 'meta'},
                     currentTheme.author && 'by ' + currentTheme.author,
                     currentTheme.author && currentTheme.homepage && ' — ',
-                    currentTheme.homepage && h('a',
-                        {
-                            class: 'homepage',
-                            href: currentTheme.homepage,
-                            title: currentTheme.homepage,
-                            onClick: this.handleLinkClick
-                        },
-
-                        'Homepage'
-                    )
+                    currentTheme.homepage && h('a', {
+                        class: 'homepage',
+                        href: currentTheme.homepage,
+                        title: currentTheme.homepage,
+                        onClick: this.handleLinkClick
+                    }, 'Homepage')
                 ),
 
                 h('p', {class: 'description'},
