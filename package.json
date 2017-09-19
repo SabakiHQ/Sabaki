@@ -68,7 +68,7 @@
     "iconv-lite": "^0.4.19",
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
-    "octicons": "^5.0.1",
+    "octicons": "^6.0.1",
     "pikaday": "^1.6.1",
     "preact": "^8.2.5",
     "recursive-copy": "^2.0.6",
