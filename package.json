@@ -65,20 +65,20 @@
   "dependencies": {
     "argv-split": "^2.0.1",
     "classnames": "^2.2.5",
-    "iconv-lite": "^0.4.13",
+    "iconv-lite": "^0.4.19",
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
     "pikaday": "~1.4.0",
     "preact": "^8.2.5",
     "recursive-copy": "^2.0.6",
-    "rimraf": "^2.6.1",
+    "rimraf": "^2.6.2",
     "uuid": "^3.0.1"
   },
   "devDependencies": {
     "electron": "^1.8.0",
-    "electron-builder": "^19.27.3",
-    "mocha": "^3.5.0",
+    "electron-builder": "^19.28.4",
+    "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
     "tmp": "0.0.33",
     "webpack": "^3.6.0"
