@@ -6,6 +6,8 @@ dist/
 gnugo/
 node_modules/
 
+package-lock.json
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
