@@ -1,5 +1,6 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const fs = require('fs')
+const {join} = require('path')
 const setting = require('./setting')
 const updater = require('./updater')
 
@@ -9,7 +10,7 @@ let isReady = false
 
 function newWindow(path) {
     let window = new BrowserWindow({
-        icon: process.platform === 'linux' ? `${__dirname}/../logo.png` : null,
+        icon: process.platform === 'linux' ? join(__dirname, '..', 'logo.png') : null,
         title: app.getName(),
         useContentSize: true,
         width: setting.get('window.width'),
