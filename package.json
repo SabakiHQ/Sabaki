@@ -69,7 +69,7 @@
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
     "octicons": "^5.0.1",
-    "pikaday": "~1.4.0",
+    "pikaday": "^1.6.1",
     "preact": "^8.2.5",
     "recursive-copy": "^2.0.6",
     "rimraf": "^2.6.2",

@@ -185,12 +185,10 @@ class InfoDrawer extends Component {
         return show !== this.props.show || show
     }
 
-    markDates(pikaday = null) {
-        if (pikaday == null) pikaday = this.pikaday
-
+    markDates() {
         let dates = (sgf.string2dates(this.state.date || '') || []).filter(x => x.length === 3)
 
-        for (let el of pikaday.el.querySelectorAll('.pika-button')) {
+        for (let el of this.pikaday.el.querySelectorAll('.pika-button')) {
             let year = +el.dataset.pikaYear
             let month = +el.dataset.pikaMonth
             let day = +el.dataset.pikaDay
@@ -201,22 +199,19 @@ class InfoDrawer extends Component {
         }
     }
 
-    adjustPikadayPosition(pikaday = null) {
-        if (pikaday == null) pikaday = this.pikaday
-
+    adjustPikadayPosition() {
         let {left, top} = this.dateInputElement.getBoundingClientRect()
-        let {height} = pikaday.el.getBoundingClientRect()
+        let {el} = this.pikaday
+        let {height} = el.getBoundingClientRect()
 
-        pikaday.el.style.position = 'absolute'
-        pikaday.el.style.left = Math.round(left) + 'px'
-        pikaday.el.style.top = Math.round(top - height) + 'px'
+        el.style.position = 'absolute'
+        el.style.left = Math.round(left) + 'px'
+        el.style.top = Math.round(top - height) + 'px'
     }
 
-    elementInPikaday(element, pikaday = null) {
-        if (pikaday == null) pikaday = this.pikaday
-
+    elementInPikaday(element) {
         while (element.parentElement) {
-            if (element === pikaday.el) return true
+            if (element === this.pikaday.el) return true
             element = element.parentElement
         }
 
@@ -224,34 +219,37 @@ class InfoDrawer extends Component {
     }
 
     preparePikaday() {
-        let self = this
-
         this.pikaday = new Pikaday({
             position: 'top left',
             firstDay: 1,
             yearRange: 6,
-            onOpen() {
-                let dates = (sgf.string2dates(self.state.date || '') || []).filter(x => x.length === 3)
+            keyboardInput: false,
+
+            onOpen: () => {
+                if (!this.pikaday) return
+
+                let dates = (sgf.string2dates(this.state.date || '') || []).filter(x => x.length === 3)
 
                 if (dates.length > 0) {
-                    this.setDate(dates[0].join('-'), true)
+                    this.pikaday.setDate(dates[0].join('-'), true)
                 } else {
-                    this.gotoToday()
+                    this.pikaday.gotoToday()
                 }
 
-                self.adjustPikadayPosition(this)
+                this.adjustPikadayPosition()
             },
-            onDraw() {
-                if (!this.isVisible()) return
+            onDraw: () => {
+                if (!this.pikaday || !this.pikaday.isVisible()) return
 
-                self.adjustPikadayPosition(this)
-                self.markDates(this)
+                this.adjustPikadayPosition()
+                this.markDates()
 
-                self.dateInputElement.focus()
+                this.dateInputElement.focus()
             },
-            onSelect() {
-                let dates = sgf.string2dates(self.state.date || '') || []
-                let date = this.getDate()
+            onSelect: date => {
+                if (!this.pikaday) return
+
+                let dates = sgf.string2dates(this.state.date || '') || []
                 date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
                 if (!dates.some(x => helper.shallowEquals(x, date))) {
@@ -260,9 +258,13 @@ class InfoDrawer extends Component {
                     dates = dates.filter(x => !helper.shallowEquals(x, date))
                 }
 
-                self.setState({date: sgf.dates2string(dates.sort(helper.lexicalCompare))})
+                this.setState({date: sgf.dates2string(dates.sort(helper.lexicalCompare))})
+                this.markDates()
             }
         })
+
+        // Hack for removing keyboard input support of Pikaday
+        document.removeEventListener('keydown', this.pikaday._onKeyChange)
 
         this.pikaday.hide()
 
