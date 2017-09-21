@@ -129,7 +129,11 @@ class InfoDrawer extends Component {
 
         this.handleEngineMenuClick = [0, 1].map(index => evt => {
             let engines = setting.get('engines.list')
-            let nameKeys = ['blackName', 'whiteName']
+            let nameKey = ['blackName', 'whiteName'][index]
+            let autoName = this.state.engines[index] == null
+                ? this.state[nameKey] == null
+                : this.state[nameKey] === this.state.engines[index].name.trim()
+
             let template = [
                 {
                     label: 'Manual',
@@ -140,7 +144,11 @@ class InfoDrawer extends Component {
                         if (engines[index] == null) return
 
                         engines[index] = null
-                        this.setState({engines})
+
+                        this.setState({
+                            engines,
+                            [nameKey]: autoName ? null : this.state[nameKey]
+                        })
                     }
                 },
                 {type: 'separator'},
@@ -151,7 +159,11 @@ class InfoDrawer extends Component {
                     click: () => {
                         let {engines} = this.state
                         engines[index] = engine
-                        this.setState({engines})
+
+                        this.setState({
+                            engines,
+                            [nameKey]: autoName ? engine.name.trim() : this.state[nameKey]
+                        })
                     }
                 })),
                 engines.length > 0 && {type: 'separator'},
