@@ -76,7 +76,7 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
-    "electron": "^1.8.0",
+    "electron": "^1.7.7",
     "electron-builder": "^19.28.4",
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
