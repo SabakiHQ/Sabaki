@@ -6,6 +6,7 @@ const ScoreDrawer = require('./drawers/ScoreDrawer')
 const PreferencesDrawer = require('./drawers/PreferencesDrawer')
 const GameChooserDrawer = require('./drawers/GameChooserDrawer')
 const CleanMarkupDrawer = require('./drawers/CleanMarkupDrawer')
+const PrintExportDrawer = require('./drawers/PrintExportDrawer')
 
 class DrawerManager extends Component {
     constructor() {
@@ -101,6 +102,11 @@ class DrawerManager extends Component {
                 komi: +gametree.getRootProperty(treePosition[0], 'KM', 0),
 
                 onSubmitButtonClick: this.handleScoreSubmit
+            }),
+
+            h(PrintExportDrawer, {
+                show: openDrawer === 'printexport',
+                treePosition
             })
         )
     }

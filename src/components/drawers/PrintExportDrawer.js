@@ -2,15 +2,17 @@ const {h, Component} = require('preact')
 
 const Drawer = require('./Drawer')
 
-class SvgExportDrawer extends Component {
+class PrintExportDrawer extends Component {
     render({show}) {
         return h(Drawer,
             {
-                type: 'svgexport',
+                type: 'printexport',
                 show
             },
 
-            h('h2', {}, 'SVG Export')
+            h('h2', {}, 'Export for Print')
         )
     }
 }
+
+module.exports = PrintExportDrawer
