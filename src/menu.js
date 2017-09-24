@@ -42,7 +42,6 @@ let data = [
                 accelerator: 'CmdOrCtrl+Shift+S',
                 click: () => sabaki.saveFile()
             },
-            {type: 'separator'},
             {
                 label: '&Clipboard',
                 submenu: [
@@ -62,6 +61,11 @@ let data = [
             },
             {type: 'separator'},
             {
+                label: 'Export for &Print…',
+                click: () => sabaki.openDrawer('printexport')
+            },
+            {type: 'separator'},
+            {
                 label: 'Game &Info',
                 accelerator: 'CmdOrCtrl+I',
                 click: () => sabaki.openDrawer('info')
@@ -73,7 +77,7 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: '&Preferences…',
+                label: 'Pre&ferences…',
                 accelerator: 'CmdOrCtrl+,',
                 click: () => sabaki.openDrawer('preferences')
             }
