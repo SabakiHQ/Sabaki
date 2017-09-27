@@ -16,7 +16,7 @@ exports.getBoardSymmetries = function(board, vertex) {
 }
 
 exports.readShapes = function(content) {
-    let tree = sgf.parse(content)[0]
+    let tree = sgf.parse(content, () => {}, true)[0]
     let result = []
 
     for (let i = 0; i < tree.subtrees.length; i++) {
