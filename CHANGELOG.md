@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Clicking 'Download Update' button opens the correct URL
+
 ## [Sabaki v0.31.4][v0.31.4] (2017-09-27)
 
 **Changed**
