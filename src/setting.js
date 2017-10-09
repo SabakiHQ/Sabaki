@@ -82,6 +82,8 @@ let defaults = {
     'graph.node_color': '#eee',
     'graph.node_inactive_color': '#777',
     'graph.node_comment_color': '#6bb1ff',
+    'graph.node_inactive_bookmark_color': '#643d6f',
+    'graph.node_inactive_comment_color': '#365980',
     'graph.node_size': 4,
     'gtp.attach_delay': 300,
     'gtp.move_delay': 300,
