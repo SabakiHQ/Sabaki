@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Changed**
+
+* Inactive nodes in the game tree get comment and hotspot coloring (Thanks to [@geovens](https://github.com/geovens))
+
 **Fixed**
 
 * Clicking 'Download Update' button opens the correct URL
