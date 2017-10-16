@@ -2039,17 +2039,54 @@ class App extends Component {
                 this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
                 this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
 
-                for (let x = 0; x < board.width; x++) {
-                    for (let y = 0; y < board.height; y++) {
-                        let vertex = [x, y]
-                        let sign = board.get(vertex)
-                        if (sign === 0) continue
+                let vertexSequence = []
+                let colorSequence = []
+                let tree = this.state.treePosition[0]
+                let index = this.state.treePosition[1]
+                let stoneData = { B: 1, W: -1 }
+                let handicapData = { AB: "B", AW: "W" }
 
-                        let color = sign > 0 ? 'B' : 'W'
-                        let point = board.vertex2coord(vertex)
+                let prevExist = true
+                while (prevExist) {
+                    prevExist = false
 
-                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                    if (index >= 0) {
+                        let node = tree.nodes[index]
+                        for (let prop in stoneData) {
+                            if (!(prop in node)) continue
+
+                            colorSequence.unshift(prop)
+                            vertexSequence.unshift(node[prop][0])
+                            break
+                        }
+
+                        for (let prop in handicapData) {
+                            if (!(prop in node)) continue
+
+                            for (let value of node[prop]) {
+                                colorSequence.unshift(handicapData[prop])
+                                vertexSequence.unshift(value)
+                            }
+                        }
                     }
+
+                    if (index - 1 >= 0) {
+                        index = index - 1
+                        prevExist = true
+                    }
+                    else if (tree.parent != null) {
+                        tree = tree.parent
+                        index = tree.nodes.length - 1
+                        prevExist = true
+                    }               
+                }                
+
+                for (let i = 0, n = colorSequence.length; i < n; ++i) {
+                    let color = colorSequence[i]
+                    let vertex = sgf.point2vertex(vertexSequence[i])                        
+                    let point = board.vertex2coord(vertex)
+                    
+                    this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
                 }
             }
 
