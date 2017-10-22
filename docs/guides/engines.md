@@ -12,8 +12,12 @@ You can add Go engines to Sabaki to play offline against an AI opponent. Sabaki 
 
 * [**Leela**](https://www.sjeng.org/leela.html): Download the *engine only (commandline/GTP engine)* version.
 
-  Arguments: `--gtp`
+  Arguments: `--gtp` (for optional parameters - check engine documentation)
   
-* [**AQ**](https://github.com/ymgaq/AQ): AQ is a program of Go game with level of expert players.
+* [**AQ**](https://github.com/ymgaq/AQ): AQ is an open-source Go engine with level of expert players.
 
-  Arguments: None
+  Arguments: None (for optional parameters - check engine documentation)
+
+* [**Ray**](https://github.com/zakki/Ray): Ray is an open-source Go engine with level of expert players.
+
+  Arguments: None (for optional parameters - check engine documentation)
