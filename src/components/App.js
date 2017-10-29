@@ -390,13 +390,17 @@ class App extends Component {
         let [width, height] = [size[0], size.slice(-1)[0]]
         let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
 
-        let sizeInfo = width === height ? `SZ[${width}]` : `SZ[${width}:${height}]`
+        let sizeInfo = width === height ? width.toString() : `${width}:${height}`
         let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
+        let date = new Date()
+        let dateInfo = sgf.dates2string([[date.getFullYear(), date.getMonth() + 1, date.getDate()]])
 
-        let buffer = `(;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
-            KM[${setting.get('game.default_komi')}]${sizeInfo}${handicapInfo})`
-
-        return sgf.parse(buffer)[0]
+        return sgf.parse(`
+            (;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
+            KM[${setting.get('game.default_komi')}]
+            SZ[${sizeInfo}]DT[${dateInfo}]
+            ${handicapInfo})
+        `)[0]
     }
 
     newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
@@ -1422,34 +1426,34 @@ class App extends Component {
         }
 
         for (let key in props) {
-            if (key in data) {
-                let value = data[key]
+            if (!(key in data)) continue
 
-                if (value && value.toString().trim() !== '') {
-                    if (key === 'komi') {
-                        if (isNaN(value)) value = 0
+            let value = data[key]
 
-                        setting.set('game.default_komi', value)
-                    } else if (key === 'handicap') {
-                        let board = gametree.getBoard(root, 0)
-                        let stones = board.getHandicapPlacement(+value)
+            if (value && value.toString().trim() !== '') {
+                if (key === 'komi') {
+                    if (isNaN(value)) value = 0
 
-                        value = stones.length
-                        setting.set('game.default_handicap', value)
+                    setting.set('game.default_komi', value)
+                } else if (key === 'handicap') {
+                    let board = gametree.getBoard(root, 0)
+                    let stones = board.getHandicapPlacement(+value)
 
-                        if (value <= 1) {
-                            delete node[props[key]]
-                            delete node.AB
-                            continue
-                        }
+                    value = stones.length
+                    setting.set('game.default_handicap', value)
 
-                        node.AB = stones.map(sgf.vertex2point)
+                    if (value <= 1) {
+                        delete node[props[key]]
+                        delete node.AB
+                        continue
                     }
 
-                    node[props[key]] = [value]
-                } else {
-                    delete node[props[key]]
+                    node.AB = stones.map(sgf.vertex2point)
                 }
+
+                node[props[key]] = [value]
+            } else {
+                delete node[props[key]]
             }
         }
     }

@@ -212,9 +212,9 @@ exports.dates2string = function(dates) {
         datesCopy.push(date.slice(k))
     }
 
-    return datesCopy.map(x => {
-        return x.map(y => y > 9 ? '' + y : '0' + y).join('-')
-    }).join(',')
+    return datesCopy.map(x =>
+        x.map(y => y > 9 ? '' + y : '0' + y).join('-')
+    ).join(',')
 }
 
 exports.point2vertex = function(point) {

@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* Pre-fill date field in new games with today's date
 * Inactive nodes in the game tree get comment and hotspot coloring (Thanks to [@geovens](https://github.com/geovens))
 * Update to Electron v1.7.9
 
