@@ -109,7 +109,7 @@ img {
 }
 
 form p, form ul li {
-        margin: 7px 0;
+        margin-bottom: 7px;
     }
     form ul {
         list-style: none;

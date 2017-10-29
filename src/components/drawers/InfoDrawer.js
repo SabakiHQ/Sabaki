@@ -114,6 +114,10 @@ class InfoDrawer extends Component {
             }, 50)
         }
 
+        this.handleShowResultClick = () => {
+            this.setState({showResult: true})
+        }
+
         this.handleInputChange = [
             'blackRank', 'blackName',
             'whiteRank', 'whiteName',
@@ -184,8 +188,10 @@ class InfoDrawer extends Component {
 
     componentWillReceiveProps({gameInfo, engines, show}) {
         if (!this.props.show && show) {
-            this.setState(gameInfo)
-            this.setState({engines: [...engines]})
+            this.setState(Object.assign({}, gameInfo, {
+                engines: [...engines],
+                showResult: !gameInfo.result || gameInfo.result.trim() === ''
+            }))
         }
     }
 
@@ -297,6 +303,7 @@ class InfoDrawer extends Component {
         currentPlayer,
         show
     }, {
+        showResult = false,
         engines = [null, null],
         blackName = null,
         blackRank = null,
@@ -422,12 +429,17 @@ class InfoDrawer extends Component {
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Result'},
-                        h('input', {
+                        showResult 
+                        ? h('input', {
                             type: 'text',
                             placeholder: 'None',
                             value: result,
                             onInput: this.handleInputChange.result
                         })
+                        : h('button', {
+                            type: 'button',
+                            onClick: this.handleShowResultClick
+                        }, 'Show')
                     ),
                     h(InfoDrawerItem, {title: 'Handicap'},
                         h('select',
