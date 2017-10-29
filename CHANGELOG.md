@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Inactive nodes in the game tree get comment and hotspot coloring (Thanks to [@geovens](https://github.com/geovens))
+* Update to Electron v1.7.9
 
 **Fixed**
 
