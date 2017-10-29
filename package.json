@@ -64,18 +64,18 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "copy-text-to-clipboard": "^1.0.2",
+    "copy-text-to-clipboard": "^1.0.3",
     "natsort": "^1.0.6",
     "octicons": "^6.0.1",
     "pikaday": "^1.6.1",
-    "preact": "^8.2.5"
+    "preact": "^8.2.6"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.6.0",
     "raw-loader": "^0.5.1",
-    "webpack": "^3.6.0"
+    "webpack": "^3.8.1"
   },
   "scripts": {
     "test": "",
