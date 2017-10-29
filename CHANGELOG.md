@@ -2,11 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.31.5][v0.31.5] (2017-10-31)
 
 **Changed**
 
-* Pre-fill date field in new games with today's date
+* Pre-fill date field in new games with current date
 * In the info drawer, show game result after user's affirmation
 * Inactive nodes in the game tree get comment and hotspot coloring (Thanks to [@geovens](https://github.com/geovens))
 * Update to Electron v1.7.9
@@ -613,7 +613,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.31.4...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.31.5...master
+[v0.31.5]: https://github.com/yishn/Sabaki/compare/v0.31.4...v0.31.5
 [v0.31.4]: https://github.com/yishn/Sabaki/compare/v0.31.3...v0.31.4
 [v0.31.3]: https://github.com/yishn/Sabaki/compare/v0.31.2...v0.31.3
 [v0.31.2]: https://github.com/yishn/Sabaki/compare/v0.31.1...v0.31.2
