@@ -9,10 +9,12 @@ const setting = remote.require('./setting')
 let [delay, animationDuration, commentProperties,
 edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
 nodeColor, nodeInactiveColor, nodeActiveColor,
-nodeBookmarkColor, nodeCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
+nodeBookmarkColor, nodeCommentColor, 
+nodeInactiveBookmarkColor, nodeInactiveCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
     'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
     'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
-    'graph.node_bookmark_color', 'graph.node_comment_color'].map(x => setting.get(x))
+    'graph.node_bookmark_color', 'graph.node_comment_color', 
+    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'].map(x => setting.get(x))
 
 class GameGraphNode extends Component {
     constructor() {
@@ -333,11 +335,17 @@ class GameGraph extends Component {
 
                 // Render node
 
-                let fill = !onCurrentTrack ? nodeInactiveColor
-                    : helper.vertexEquals(this.props.treePosition, [tree, index]) ? nodeActiveColor
-                    : 'HO' in node ? nodeBookmarkColor
-                    : commentProperties.some(x => x in node) ? nodeCommentColor
-                    : nodeColor
+                let fill = nodeColor
+                if (onCurrentTrack) {
+                    fill = helper.vertexEquals(this.props.treePosition, [tree, index]) ? nodeActiveColor
+                        : 'HO' in node ? nodeBookmarkColor
+                        : commentProperties.some(x => x in node) ? nodeCommentColor
+                        : nodeColor
+                } else {
+                    fill = 'HO' in node ? nodeInactiveBookmarkColor
+                        : commentProperties.some(x => x in node) ? nodeInactiveCommentColor
+                        : nodeInactiveColor
+                }
 
                 let left = x * gridSize
                 let top = y * gridSize

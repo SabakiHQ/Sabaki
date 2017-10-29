@@ -22,7 +22,7 @@ exports.check = function(repo, callback) {
             let currentVersion = app.getVersion().split('.').map(x => +x)
 
             callback(null, {
-                url: address,
+                url: `https://github.com/${repo}/releases/latest`,
                 latestVersion: latestVersion.join('.'),
                 hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
             })
