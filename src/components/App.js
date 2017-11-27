@@ -2112,9 +2112,10 @@ class App extends Component {
         this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
             let sign = color === 'B' ? 1 : -1
             let vertex = [-1, -1]
+            let board = gametree.getBoard(rootTree, 0)
 
             if (response.content.toLowerCase() !== 'pass') {
-                vertex = gametree.getBoard(rootTree, 0).coord2vertex(response.content)
+                vertex = board.coord2vertex(response.content)
             }
 
             if (response.content.toLowerCase() === 'resign') {
@@ -2127,14 +2128,22 @@ class App extends Component {
                 return
             }
 
+            let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
+            let previousPass = ['W', 'B'].some(color => color in previousNode 
+                && !board.hasVertex(sgf.point2vertex(previousNode[color][0])))
+            let pass = helper.vertexEquals(vertex, [-1, -1])
+            let doublePass = previousPass && pass
+
             this.makeMove(vertex, {player: sign})
 
             let komi = this.engineBoards[playerIndex] && this.engineBoards[playerIndex].komi
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
             this.engineBoards[playerIndex].komi = komi
 
-            if (otherController != null && !helper.vertexEquals(vertex, [-1, -1])) {
-                setTimeout(() => this.startGeneratingMoves({followUp: true}), setting.get('gtp.move_delay'))
+            if (otherController != null && !doublePass) {
+                setTimeout(() => {
+                    this.startGeneratingMoves({followUp: true})
+                }, setting.get('gtp.move_delay'))
             } else {
                 this.stopGeneratingMoves()
                 this.hideInfoOverlay()
