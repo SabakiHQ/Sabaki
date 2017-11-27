@@ -11,6 +11,7 @@ class Controller extends EventEmitter {
 
         this._outBuffer = ''
         this._errBuffer = ''
+
         this.commands = []
         this.error = false
         this.process = null
@@ -36,13 +37,13 @@ class Controller extends EventEmitter {
         })
 
         this.process.stdout.on('data', data => {
-            this._outBuffer += (data + '').replace(/\r/g, '').replace(/#.*?\n/g, '').replace(/\t/g, ' ')
+            this._outBuffer += (data + '').replace(/\r/g, '').replace(/\t/g, ' ')
 
             let start = this._outBuffer.indexOf('\n\n')
 
             while (start !== -1) {
-                let response = gtp.parseResponse(this._outBuffer.substr(0, start))
-                this._outBuffer = this._outBuffer.substr(start + 2)
+                let response = gtp.parseResponse(this._outBuffer.slice(0, start))
+                this._outBuffer = this._outBuffer.slice(start + 2)
 
                 if (this.commands.length > 0) {
                     let command = this.commands.shift()
@@ -59,8 +60,8 @@ class Controller extends EventEmitter {
             let start = this._errBuffer.indexOf('\n')
 
             while (start !== -1) {
-                this.emit('stderr', {content: this._errBuffer.substr(0, start)})
-                this._errBuffer = this._errBuffer.substr(start + 1)
+                this.emit('stderr', {content: this._errBuffer.slice(0, start)})
+                this._errBuffer = this._errBuffer.slice(start + 1)
 
                 start = this._errBuffer.indexOf('\n')
             }
