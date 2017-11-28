@@ -18,12 +18,12 @@ if (process.platform === 'darwin') {
 }
 
 exports.parseCommand = function(input) {
-    input = input.replace(/\t/g, ' ').trim()
+    input = input.replace(/\t/g, ' ').replace(/#.*?$/, '').trim()
 
-    let inputs = input.split(' ').filter(x => x !== '')
+    let inputs = input.split(/\s+/).filter(x => x !== '')
     let id = parseFloat(inputs[0])
 
-    if (!isNaN(id)) inputs.shift()
+    if (!isNaN(id) && id + '' === inputs[0]) inputs.shift()
     else id = null
 
     let name = inputs[0]
@@ -43,12 +43,5 @@ exports.parseResponse = function(input) {
 
     if (hasId) input = input.slice((id + '').length)
 
-    let response = new Response(id, input.slice(1).replace(/#.*?$/gm, ''), error)
-    let commentMatches = input.match(/#.*?$/gm)
-
-    if (commentMatches != null) {
-        response.comments = commentMatches.map(m => m.slice(1).trim())
-    }
-
-    return response
+    return new Response(id, input.slice(1), error)
 }
