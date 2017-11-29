@@ -1979,6 +1979,29 @@ class App extends Component {
                 return {consoleLog: newLog}
             })
 
+            // Handle Sabaki JSON
+
+            let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m)
+
+            try {
+                let sabakiJson = JSON.parse(sabakiJsonMatch[1])
+
+                if (sabakiJson.variations) {
+                    let subtrees = sgf.parse(sabakiJson.variations)
+                    let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
+                    let splitted = gametree.split(tree, index)
+
+                    for (let subtree of subtrees) {
+                        subtree.parent = splitted
+                    }
+                    
+                    splitted.subtrees.push(...subtrees)
+                    gametree.reduce(splitted)
+
+                    this.setCurrentTreePosition(...gametree.navigate(splitted, splitted.nodes.length - 1, 1))
+                }
+            } catch (err) {}
+
             callback({response, command})
         })
     }
