@@ -2159,6 +2159,12 @@ class App extends Component {
 
             this.makeMove(vertex, {player: sign})
 
+            if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
+                // Get Sabaki JSON
+
+                this.sendGTPCommand(playerController, new gtp.Command(null, 'sabaki-genmovelog'))
+            }
+
             let komi = this.engineBoards[playerIndex] && this.engineBoards[playerIndex].komi
             this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
             this.engineBoards[playerIndex].komi = komi
