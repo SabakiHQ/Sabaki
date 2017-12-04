@@ -53,11 +53,11 @@ class ConsoleResponseEntry extends Component {
 
                 h(ContentDisplay, {
                     tag: 'span',
-                    class: response.internal ? 'internal' : '',
+                    class: (response.internal || response.content.indexOf('#sabaki') === 0) && 'internal',
                     board,
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(response.content
-                            .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
                     }
                 })
             )
