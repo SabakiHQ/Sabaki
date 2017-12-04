@@ -53,7 +53,7 @@ class ConsoleResponseEntry extends Component {
 
                 h(ContentDisplay, {
                     tag: 'span',
-                    class: (response.internal || response.content.indexOf('#sabaki') === 0) && 'internal',
+                    class: response.internal ? 'internal' : '',
                     board,
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(response.content
