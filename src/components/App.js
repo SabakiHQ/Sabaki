@@ -2000,6 +2000,19 @@ class App extends Component {
 
                     this.setCurrentTreePosition(...gametree.navigate(splitted, splitted.nodes.length - 1, 1))
                 }
+
+                if (sabakiJson.node) {
+                    let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
+                    let [tree, index] = this.state.treePosition
+                    let node = tree.nodes[index]
+
+                    for (let key in nodeInfo) {
+                        if (key in node) node[key].push(...nodeInfo[key])
+                        else node[key] = nodeInfo[key]
+                    }
+
+                    this.setCurrentTreePosition(tree, index)
+                }
             } catch (err) {}
 
             callback({response, command})
