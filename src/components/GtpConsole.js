@@ -47,9 +47,9 @@ class ConsoleResponseEntry extends Component {
             ? h('pre', {},
                 !response.internal && [h('span', {
                     class: response.error ? 'error' : 'success'
-                }, response.error ? '?' : '='), ' '],
+                }, response.error ? '?' : '=')],
 
-                response.id != null && [h('span', {class: 'id'}, response.id), ' '],
+                response.id != null && [h('span', {class: 'id'}, response.id)], ' ',
 
                 h(ContentDisplay, {
                     tag: 'span',
