@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Add engine integration protocol
+
 **Fixed**
 
 * Fix Sabaki not continue generating moves in bot vs. bot games where only one of them passes
