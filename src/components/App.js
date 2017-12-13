@@ -1998,6 +1998,11 @@ class App extends Component {
                     splitted.subtrees.push(...subtrees)
                     gametree.reduce(splitted)
 
+                    this.setState(({gameTrees}) => {
+                        gameTrees[this.inferredState.gameIndex] = gametree.getRoot(splitted)
+                        return {gameTrees}
+                    })
+
                     this.setCurrentTreePosition(...gametree.navigate(splitted, splitted.nodes.length - 1, 1))
                 }
 
