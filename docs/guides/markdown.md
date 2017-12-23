@@ -6,7 +6,7 @@ Sabaki supports a subset of *Markdown* in the comments. If you're not familiar w
 
 To make a simple line break in Markdown, normally you'd have to end the line with two spaces, but this is not required in Sabaki.
 
-Code blocks and inline code doesn't work in Sabaki. Images will be simply converted into links. HTML input is not allowed.
+Code blocks don't work in Sabaki. Images will be simply converted into links. HTML input is not allowed.
 
 ## Auto linking
 

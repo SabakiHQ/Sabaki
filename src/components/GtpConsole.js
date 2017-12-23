@@ -47,9 +47,11 @@ class ConsoleResponseEntry extends Component {
             ? h('pre', {},
                 !response.internal && [h('span', {
                     class: response.error ? 'error' : 'success'
-                }, response.error ? '?' : '='), ' '],
+                }, response.error ? '?' : '=')],
 
-                response.id != null && [h('span', {class: 'id'}, response.id), ' '],
+                response.id != null && [h('span', {class: 'id'}, response.id)],
+
+                !response.internal && ' ',
 
                 h(ContentDisplay, {
                     tag: 'span',
@@ -57,7 +59,7 @@ class ConsoleResponseEntry extends Component {
                     board,
                     dangerouslySetInnerHTML: {
                         __html: helper.htmlify(response.content
-                            .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
+                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
                     }
                 })
             )

@@ -156,10 +156,7 @@ class GameGraph extends Component {
             let {clientX: x, clientY: y, movementX, movementY} = evt
             let {cameraPosition: [cx, cy], viewportPosition: [vx, vy]} = this.state
 
-            if (this.mouseDown == null) {
-                ;[movementX, movementY] = [0, 0]
-                this.drag = false
-            } else if (this.mouseDown === 0) {
+            if (this.mouseDown === 0) {
                 this.drag = true
             } else {
                 ;[movementX, movementY] = [0, 0]
@@ -169,6 +166,7 @@ class GameGraph extends Component {
             this.mousePosition = [x - vx, y - vy]
 
             if (this.drag) {
+                evt.preventDefault()
                 this.setState({cameraPosition: [cx - movementX, cy - movementY]})
             }
         })

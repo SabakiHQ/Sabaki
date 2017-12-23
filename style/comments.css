@@ -30,6 +30,13 @@
 #properties .inner ol {
     margin-left: 1.5em;
 }
+#properties .inner ul ul,
+#properties .inner ul ol,
+#properties .inner ol ol,
+#properties .inner ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
 
 #properties .inner blockquote {
     background-image: linear-gradient(to right, #393939 4px, transparent 4px);
