@@ -38,7 +38,8 @@ class LeftSidebar extends Component {
                     return {consoleLog: newLog}
                 })
             } else {
-                sabaki.sendGTPCommand(sabaki.attachedEngineControllers[engineIndex], command)
+                let controller = sabaki.attachedEngineControllers[engineIndex]
+                if (controller != null) controller.sendCommand(command)
             }
         }
     }
