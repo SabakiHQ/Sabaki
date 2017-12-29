@@ -1917,7 +1917,7 @@ class App extends Component {
                 controller.sendCommand(command('name'))
                 controller.sendCommand(command('version'))
                 controller.sendCommand(command('protocol_version'))
-                controller.sendCommand(command('list_commands'), ({response}) => {
+                controller.sendCommand(command('list_commands')).then(response => {
                     engineCommands[i] = response.content.split('\n')
                 })
 
@@ -1969,7 +1969,7 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        let {response} = await getResponse()
+        let response = await getResponse()
 
         this.setState(({consoleLog}) => {
             let index = consoleLog.indexOf(entry)
@@ -2111,7 +2111,7 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
+    async startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
         this.closeDrawer()
 
         if (followUp && !this.state.generatingMoves) {
@@ -2147,56 +2147,55 @@ class App extends Component {
         this.syncEngines({passPlayer})
         this.setBusy(true)
 
-        playerController.sendCommand(new gtp.Command(null, 'genmove', color), ({response}) => {
-            let sign = color === 'B' ? 1 : -1
-            let vertex = [-1, -1]
-            let board = gametree.getBoard(rootTree, 0)
+        let response = await playerController.sendCommand(new gtp.Command(null, 'genmove', color))
+        let sign = color === 'B' ? 1 : -1
+        let vertex = [-1, -1]
+        let board = gametree.getBoard(rootTree, 0)
 
-            if (response.content.toLowerCase() !== 'pass') {
-                vertex = board.coord2vertex(response.content)
-            }
+        if (response.content.toLowerCase() !== 'pass') {
+            vertex = board.coord2vertex(response.content)
+        }
 
-            if (response.content.toLowerCase() === 'resign') {
-                dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
+        if (response.content.toLowerCase() === 'resign') {
+            dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
 
-                this.stopGeneratingMoves()
-                this.hideInfoOverlay()
-                this.makeResign()
+            this.stopGeneratingMoves()
+            this.hideInfoOverlay()
+            this.makeResign()
 
-                return
-            }
+            return
+        }
 
-            let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
-            let previousPass = ['W', 'B'].some(color => color in previousNode 
-                && !board.hasVertex(sgf.point2vertex(previousNode[color][0])))
-            let pass = helper.vertexEquals(vertex, [-1, -1])
-            let doublePass = previousPass && pass
+        let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
+        let previousPass = ['W', 'B'].some(color => color in previousNode 
+            && !board.hasVertex(sgf.point2vertex(previousNode[color][0])))
+        let pass = helper.vertexEquals(vertex, [-1, -1])
+        let doublePass = previousPass && pass
 
-            this.makeMove(vertex, {player: sign})
+        this.makeMove(vertex, {player: sign})
 
-            if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
-                // Get Sabaki JSON
+        if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
+            // Get Sabaki JSON
 
-                playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
-            }
+            playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
+        }
 
-            let komi = this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi
-            
-            this.engineStates[playerIndex] = {
-                komi,
-                board: gametree.getBoard(...this.state.treePosition)
-            }
+        let komi = this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi
+        
+        this.engineStates[playerIndex] = {
+            komi,
+            board: gametree.getBoard(...this.state.treePosition)
+        }
 
-            if (otherController != null && !doublePass) {
-                setTimeout(() => {
-                    this.startGeneratingMoves({followUp: true})
-                }, setting.get('gtp.move_delay'))
-            } else {
-                this.stopGeneratingMoves()
-                this.hideInfoOverlay()
-                this.setBusy(false)
-            }
-        })
+        if (otherController != null && !doublePass) {
+            setTimeout(() => {
+                this.startGeneratingMoves({followUp: true})
+            }, setting.get('gtp.move_delay'))
+        } else {
+            this.stopGeneratingMoves()
+            this.hideInfoOverlay()
+            this.setBusy(false)
+        }
     }
 
     stopGeneratingMoves() {

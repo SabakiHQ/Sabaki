@@ -16,7 +16,6 @@ class Controller extends EventEmitter {
         this.commands = []
         this.error = false
         this.process = null
-
         this.engine = engine
 
         this.start()
@@ -76,21 +75,18 @@ class Controller extends EventEmitter {
         this.process = null
     }
 
-    sendCommand(command, callback = helper.noop) {
+    sendCommand(command) {
         let promise = new Promise(resolve => {
             if (this.process == null) this.start()
 
-            this.once(`response-${command.internalId}`, data => {
-                callback(data)
-                resolve(data.response)
-            })
+            this.once(`response-${command.internalId}`, resolve)
 
             try {
                 this.process.stdin.write(command.toString() + '\n')
                 this.commands.push(command)
             } catch (err) {
                 let response = new gtp.Response(command.id, 'connection error', true, true)
-                this.emit(`response-${command.internalId}`, {response, command})
+                this.emit(`response-${command.internalId}`, response)
             }
         })
 
