@@ -111,7 +111,7 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.attachedEngineControllers = [null, null]
-        this.engineBoards = [null, null]
+        this.engineStates = [null, null]
 
         // Expose submodules
 
@@ -1891,7 +1891,7 @@ class App extends Component {
             // Just swap engines
 
             this.attachedEngineControllers.reverse()
-            this.engineBoards.reverse()
+            this.engineStates.reverse()
 
             this.setState({
                 engineCommands: engineCommands.reverse(),
@@ -1912,7 +1912,7 @@ class App extends Component {
                 controller.on('command-sent', this.handleCommandSent.bind(this))
 
                 this.attachedEngineControllers[i] = controller
-                this.engineBoards[i] = null
+                this.engineStates[i] = null
 
                 controller.sendCommand(command('name'))
                 controller.sendCommand(command('version'))
@@ -1952,7 +1952,7 @@ class App extends Component {
             if (controller != null) controller.stop()
         }
 
-        this.engineBoards = [null, null]
+        this.engineStates = [null, null]
     }
 
     async handleCommandSent({controller, command, getResponse}) {
@@ -2045,23 +2045,22 @@ class App extends Component {
             let synced = false
             let controller = this.attachedEngineControllers[i]
 
-            if (this.engineBoards[i] != null && komi !== this.engineBoards[i].komi) {
+            if (this.engineStates[i] == null || komi !== this.engineStates[i].komi) {
                 // Update komi
 
                 controller.sendCommand(new gtp.Command(null, 'komi', komi))
-                this.engineBoards[i].komi = komi
             }
 
-            if (this.engineBoards[i] != null
-            && board.getPositionHash() !== this.engineBoards[i].getPositionHash()) {
+            if (this.engineStates[i] != null
+            && board.getPositionHash() !== this.engineStates[i].board.getPositionHash()) {
                 // Diff boards
 
-                let diff = this.engineBoards[i].diff(board).filter(v => board.get(v) !== 0)
+                let diff = this.engineStates[i].board.diff(board).filter(v => board.get(v) !== 0)
 
                 if (diff.length === 1) {
                     let vertex = diff[0]
                     let sign = board.get(vertex)
-                    let move = this.engineBoards[i].makeMove(sign, vertex)
+                    let move = this.engineStates[i].board.makeMove(sign, vertex)
 
                     if (move.getPositionHash() === board.getPositionHash()) {
                         // Incremental board update possible
@@ -2073,7 +2072,7 @@ class App extends Component {
                         synced = true
                     }
                 }
-            } else if (this.engineBoards[i] != null) {
+            } else if (this.engineStates[i] != null) {
                 synced = true
             }
 
@@ -2106,8 +2105,7 @@ class App extends Component {
 
             // Update engine board state
 
-            this.engineBoards[i] = board
-            this.engineBoards[i].komi = komi
+            this.engineStates[i] = {board, komi}
         }
 
         this.setBusy(false)
@@ -2182,9 +2180,12 @@ class App extends Component {
                 playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
             }
 
-            let komi = this.engineBoards[playerIndex] && this.engineBoards[playerIndex].komi
-            this.engineBoards[playerIndex] = gametree.getBoard(...this.state.treePosition)
-            this.engineBoards[playerIndex].komi = komi
+            let komi = this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi
+            
+            this.engineStates[playerIndex] = {
+                komi,
+                board: gametree.getBoard(...this.state.treePosition)
+            }
 
             if (otherController != null && !doublePass) {
                 setTimeout(() => {
