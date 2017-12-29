@@ -1,6 +1,7 @@
 const {spawn} = require('child_process')
 const {dirname} = require('path')
 const EventEmitter = require('events')
+const split = require('argv-split')
 
 const gtp = require('./index')
 const helper = require('../helper')
@@ -16,7 +17,7 @@ class Controller extends EventEmitter {
         this.error = false
         this.process = null
 
-        Object.assign(this, engine)
+        this.engine = engine
 
         this.start()
     }
@@ -24,9 +25,9 @@ class Controller extends EventEmitter {
     start() {
         if (this.process) return
 
-        let split = require('argv-split')
-        
-        this.process = spawn(this.path, split(this.args), {cwd: dirname(this.path)})
+        let {path, args} = this.engine
+
+        this.process = spawn(path, split(args), {cwd: dirname(path)})
 
         this.process.on('error', () => {
             this.error = true

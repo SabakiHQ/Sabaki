@@ -1923,7 +1923,7 @@ class App extends Component {
                         this.setState(({consoleLog}) => ({
                             consoleLog: [...consoleLog, [
                                 i === 0 ? 1 : -1,
-                                controller.name,
+                                controller.engine.name,
                                 null,
                                 new gtp.Response(null, content, false, true)
                             ]]
@@ -1959,7 +1959,7 @@ class App extends Component {
 
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
-        let entry = [sign, controller.name, command]
+        let entry = [sign, controller.engine.name, command]
         let maxLength = setting.get('console.max_history_count')
 
         this.setState(({consoleLog}) => {
@@ -2161,7 +2161,7 @@ class App extends Component {
             }
 
             if (response.content.toLowerCase() === 'resign') {
-                dialog.showMessageBox(`${playerController.name} has resigned.`)
+                dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
 
                 this.stopGeneratingMoves()
                 this.hideInfoOverlay()
