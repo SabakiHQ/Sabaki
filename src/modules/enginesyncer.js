@@ -1,8 +1,8 @@
-const gametree = require('../gametree')
-const helper = require('../helper')
-const {sgf} = require('../fileformats')
-const Board = require('../board')
-const Command = require('./command')
+const gametree = require('./gametree')
+const helper = require('./helper')
+const {sgf} = require('./fileformats')
+const Board = require('./board')
+const {Command} = require('./gtp')
 
 async function enginePlay(controller, sign, vertex, engineBoard) {
     let color = sign > 0 ? 'B' : 'W'
@@ -14,7 +14,7 @@ async function enginePlay(controller, sign, vertex, engineBoard) {
     return engineBoard.makeMove(sign, vertex)
 }
 
-module.exports = async function syncEngine(controller, engineState, treePosition) {
+exports.sync = async function(controller, engineState, treePosition) {
     let {komi: engineKomi, board: engineBoard} = engineState
     let board = gametree.getBoard(...treePosition)
 

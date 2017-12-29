@@ -18,6 +18,7 @@ const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
 const deadstones = require('../modules/deadstones')
 const dialog = require('../modules/dialog')
+const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
@@ -114,7 +115,7 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, deadstones, dialog,
+        this.modules = {Board, boardmatcher, deadstones, dialog, enginesyncer,
             fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
