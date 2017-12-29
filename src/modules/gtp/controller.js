@@ -77,7 +77,7 @@ class Controller extends EventEmitter {
     }
 
     sendCommand(command, callback = helper.noop) {
-        return new Promise(resolve => {
+        let promise = new Promise(resolve => {
             if (this.process == null) this.start()
 
             this.once(`response-${command.internalId}`, data => {
@@ -93,6 +93,14 @@ class Controller extends EventEmitter {
                 this.emit(`response-${command.internalId}`, {response, command})
             }
         })
+
+        this.emit('command-sent', {
+            controller: this,
+            command,
+            getResponse: () => promise
+        })
+
+        return promise
     }
 }
 

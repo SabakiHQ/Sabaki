@@ -1909,6 +1909,8 @@ class App extends Component {
 
                 try {
                     let controller = engines[i] ? new gtp.Controller(engines[i]) : null
+                    controller.on('command-sent', this.handleCommandSent.bind(this))
+
                     this.attachedEngineControllers[i] = controller
                     this.engineBoards[i] = null
 
