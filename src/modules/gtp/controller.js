@@ -76,17 +76,22 @@ class Controller extends EventEmitter {
     }
 
     sendCommand(command, callback = helper.noop) {
-        if (this.process == null) this.start()
+        return new Promise(resolve => {
+            if (this.process == null) this.start()
 
-        this.once(`response-${command.internalId}`, callback)
+            this.once(`response-${command.internalId}`, data => {
+                callback(data)
+                resolve(data)
+            })
 
-        try {
-            this.process.stdin.write(command.toString() + '\n')
-            this.commands.push(command)
-        } catch (err) {
-            let response = new gtp.Response(command.id, 'connection error', true, true)
-            this.emit(`response-${command.internalId}`, {response, command})
-        }
+            try {
+                this.process.stdin.write(command.toString() + '\n')
+                this.commands.push(command)
+            } catch (err) {
+                let response = new gtp.Response(command.id, 'connection error', true, true)
+                this.emit(`response-${command.internalId}`, {response, command})
+            }
+        })
     }
 }
 
