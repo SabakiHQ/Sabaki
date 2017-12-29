@@ -32,6 +32,10 @@ class Board {
     }
 
     diff(board) {
+        if (board.width !== this.width || board.height !== this.height) {
+            return null
+        }
+
         let result = []
 
         for (let x = 0; x < this.width; x++) {
