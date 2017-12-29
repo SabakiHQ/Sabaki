@@ -44,9 +44,9 @@ module.exports = async function(controller, engineBoard, treePosition) {
 
     await controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
     await controller.sendCommand(new gtp.Command(null, 'clear_board'))
+    engineBoard = new Board(board.width, board.height)
 
     let tp = [gametree.getRoot(treePosition[0]), 0]
-    engineBoard = new Board(board.width, board.height)
 
     while (tp != null) {
         let node = tp[0].nodes[tp[1]]
@@ -91,5 +91,27 @@ module.exports = async function(controller, engineBoard, treePosition) {
     if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
         return
 
-    // TODO
+    // Rearrangement
+
+    await controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
+    await controller.sendCommand(new gtp.Command(null, 'clear_board'))
+    engineBoard = new Board(board.width, board.height)
+
+    for (let x = 0; x < board.width; x++) {
+        if (engineBoard == null) break
+
+        for (let y = 0; y < board.height; y++) {
+            let vertex = [x, y]
+            let sign = board.get(vertex)
+            if (sign === 0) continue
+
+            engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
+            if (engineBoard == null) break
+        }
+    }
+
+    if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
+        return
+
+    throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
 }
