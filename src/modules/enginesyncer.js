@@ -70,20 +70,10 @@ exports.sync = async function(controller, engineState, treePosition) {
         let node = tp[0].nodes[tp[1]]
         let nodeBoard = gametree.getBoard(...tp)
 
-        for (let color of ['B', 'W']) {
-            if (!(color in node)) continue
-
-            let sign = color === 'B' ? 1 : -1
-            let vertex = sgf.point2vertex(node[color][0])
-
-            promises.push(enginePlay(controller, sign, vertex, engineBoard))
-            engineBoard = engineBoard.makeMove(sign, vertex)
-        }
-
-        for (let prop of ['AB', 'AW']) {
+        for (let prop of ['B', 'W', 'AB', 'AW']) {
             if (!(prop in node)) continue
 
-            let sign = prop === 'AB' ? 1 : -1
+            let sign = prop.slice(-1) === 'B' ? 1 : -1
             let vertices = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
 
             for (let vertex of vertices) {
