@@ -2023,89 +2023,32 @@ class App extends Component {
         } catch (err) {}
     }
 
-    syncEngines({passPlayer = null} = {}) {
+    async syncEngines({passPlayer = null} = {}) {
         if (this.attachedEngineControllers.every(x => x == null)) return
-
-        let board = gametree.getBoard(...this.state.treePosition)
-        let komi = gametree.getRootProperty(this.state.treePosition[0], 'KM', 0)
-
-        if (!board.isSquare()) {
-            dialog.showMessageBox('GTP engines don’t support non-square boards.', 'warning')
-            return this.detachEngines()
-        } else if (!board.isValid()) {
-            dialog.showMessageBox('GTP engines don’t support invalid board positions.', 'warning')
-            return this.detachEngines()
-        }
 
         this.setBusy(true)
 
-        for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-            if (this.attachedEngineControllers[i] == null) continue
+        let {treePosition} = this.state
 
-            let synced = false
-            let controller = this.attachedEngineControllers[i]
+        try {
+            for (let i = 0; i < this.attachedEngineControllers.length; i++) {
+                if (this.attachedEngineControllers[i] == null) continue
 
-            if (this.engineStates[i] == null || komi !== this.engineStates[i].komi) {
-                // Update komi
+                let controller = this.attachedEngineControllers[i]
+                let engineState = this.engineStates[i]
+                
+                this.engineStates[i] = await enginesyncer.sync(controller, engineState, treePosition)
 
-                controller.sendCommand(new gtp.Command(null, 'komi', komi))
-            }
+                // Send pass if required
 
-            if (this.engineStates[i] != null
-            && board.getPositionHash() !== this.engineStates[i].board.getPositionHash()) {
-                // Diff boards
-
-                let diff = this.engineStates[i].board.diff(board).filter(v => board.get(v) !== 0)
-
-                if (diff.length === 1) {
-                    let vertex = diff[0]
-                    let sign = board.get(vertex)
-                    let move = this.engineStates[i].board.makeMove(sign, vertex)
-
-                    if (move.getPositionHash() === board.getPositionHash()) {
-                        // Incremental board update possible
-
-                        let color = sign > 0 ? 'B' : 'W'
-                        let point = board.vertex2coord(vertex)
-
-                        controller.sendCommand(new gtp.Command(null, 'play', color, point))
-                        synced = true
-                    }
-                }
-            } else if (this.engineStates[i] != null) {
-                synced = true
-            }
-
-            if (!synced) {
-                // Replay
-
-                controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
-                controller.sendCommand(new gtp.Command(null, 'clear_board'))
-
-                for (let x = 0; x < board.width; x++) {
-                    for (let y = 0; y < board.height; y++) {
-                        let vertex = [x, y]
-                        let sign = board.get(vertex)
-                        if (sign === 0) continue
-
-                        let color = sign > 0 ? 'B' : 'W'
-                        let point = board.vertex2coord(vertex)
-
-                        controller.sendCommand(new gtp.Command(null, 'play', color, point))
-                    }
+                if (passPlayer != null) {
+                    let color = passPlayer > 0 ? 'B' : 'W'
+                    controller.sendCommand(new gtp.Command(null, 'play', color, 'pass'))
                 }
             }
-
-            // Send pass if required
-
-            if (passPlayer != null) {
-                let color = passPlayer > 0 ? 'B' : 'W'
-                controller.sendCommand(new gtp.Command(null, 'play', color, 'pass'))
-            }
-
-            // Update engine board state
-
-            this.engineStates[i] = {board, komi}
+        } catch (err) {
+            dialog.showMessageBox(err.message, 'warning')
+            this.detachEngines()
         }
 
         this.setBusy(false)
@@ -2121,6 +2064,8 @@ class App extends Component {
         } else if (!followUp) {
             this.setState({generatingMoves: true})
         }
+
+        await this.syncEngines({passPlayer})
 
         let {currentPlayer, rootTree} = this.inferredState
         let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
@@ -2144,7 +2089,6 @@ class App extends Component {
             this.flashInfoOverlay('Press Esc to stop generating moves')
         }
 
-        this.syncEngines({passPlayer})
         this.setBusy(true)
 
         let response = await playerController.sendCommand(new gtp.Command(null, 'genmove', color))

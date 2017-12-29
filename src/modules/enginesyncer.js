@@ -7,6 +7,7 @@ const {Command} = require('./gtp')
 async function enginePlay(controller, sign, vertex, engineBoard) {
     let color = sign > 0 ? 'B' : 'W'
     let coord = engineBoard.vertex2coord(vertex)
+    if (coord == null) return engineBoard
 
     let response = await controller.sendCommand(new Command(null, 'play', color, coord))
     if (response.error) return null
@@ -15,6 +16,7 @@ async function enginePlay(controller, sign, vertex, engineBoard) {
 }
 
 exports.sync = async function(controller, engineState, treePosition) {
+    let rootTree = gametree.getRoot(treePosition[0])
     let board = gametree.getBoard(...treePosition)
 
     if (!board.isSquare()) {
@@ -25,30 +27,32 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     // Update komi
 
-    let komi = +gametree.getRootProperty(treePosition[0], 'KM', 0)
+    let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
     if (engineState == null || komi !== engineState.komi) {
         await controller.sendCommand(new Command(null, 'komi', komi))
     }
 
-    // Incremental board update
+    // See if we need to update board
 
     let newEngineState = {komi, board}
+
+    if (engineState != null && engineState.board.getPositionHash() === board.getPositionHash()) {
+        return newEngineState
+    }
+
+    // Incremental board update
 
     if (engineState != null) {
         let diff = engineState.board.diff(board).filter(v => board.get(v) !== 0)
 
-        if (diff != null) {
-            if (diff.length === 0) {
-                return newEngineState
-            } else if (diff.length === 1) {
-                let vertex = diff[0]
-                let sign = board.get(vertex)
-                let move = await enginePlay(controller, sign, vertex, engineState.board)
+        if (diff != null && diff.length === 1) {
+            let [vertex] = diff
+            let sign = board.get(vertex)
+            let move = await enginePlay(controller, sign, vertex, engineState.board)
 
-                if (move != null && move.getPositionHash() === board.getPositionHash())
-                    return newEngineState
-            }
+            if (move != null && move.getPositionHash() === board.getPositionHash())
+                return newEngineState
         }
     }
 
@@ -58,11 +62,11 @@ exports.sync = async function(controller, engineState, treePosition) {
     await controller.sendCommand(new Command(null, 'clear_board'))
     let engineBoard = new Board(board.width, board.height)
 
-    let tp = [gametree.getRoot(treePosition[0]), 0]
+    let synced = true
 
-    while (tp != null) {
+    for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
         let node = tp[0].nodes[tp[1]]
-        let error = false
+        let nodeBoard = gametree.getBoard(...tp)
 
         for (let color of ['B', 'W']) {
             if (!(color in node)) continue
@@ -71,37 +75,38 @@ exports.sync = async function(controller, engineState, treePosition) {
             let vertex = sgf.point2vertex(node[color][0])
 
             engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
-            if (engineBoard == null) error = true
+            if (engineBoard == null) synced = false
         }
 
-        if (error || 'AE' in node && node.AE.length > 0) break
+        if (!synced) break
 
         for (let prop of ['AB', 'AW']) {
             if (!(prop in node)) continue
 
             let sign = prop === 'AB' ? 1 : -1
-            let points = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
-            let vertices = points.map(sgf.point2vertex(x))
+            let vertices = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
 
             for (let vertex of vertices) {
                 engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
 
                 if (engineBoard == null) {
-                    error = true
+                    synced = false
                     break
                 }
             }
 
-            if (error) break
+            if (!synced) break
         }
 
-        if (error || helper.vertexEquals(tp, treePosition)) break
+        if (engineBoard == null || engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
+            synced = false
+            break
+        }
 
-        tp = gametree.navigate(...tp, 1)
+        if (helper.vertexEquals(tp, treePosition)) break
     }
 
-    if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
-        return newEngineState
+    if (synced) return newEngineState
 
     // Rearrangement
 
