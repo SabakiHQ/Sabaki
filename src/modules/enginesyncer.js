@@ -15,7 +15,6 @@ async function enginePlay(controller, sign, vertex, engineBoard) {
 }
 
 exports.sync = async function(controller, engineState, treePosition) {
-    let {komi: engineKomi, board: engineBoard} = engineState
     let board = gametree.getBoard(...treePosition)
 
     if (!board.isSquare()) {
@@ -28,24 +27,28 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     let komi = +gametree.getRootProperty(treePosition[0], 'KM', 0)
 
-    if (komi !== engineKomi && !isNaN(komi)) {
+    if (engineState == null || komi !== engineState.komi) {
         await controller.sendCommand(new Command(null, 'komi', komi))
     }
 
     // Incremental board update
 
-    let diff = engineBoard.diff(board).filter(v => board.get(v) !== 0)
+    let newEngineState = {komi, board}
 
-    if (diff != null) {
-        if (diff.length === 0) {
-            return
-        } else if (diff.length === 1) {
-            let vertex = diff[0]
-            let sign = board.get(vertex)
-            let move = await enginePlay(controller, sign, vertex, engineBoard)
+    if (engineState != null) {
+        let diff = engineState.board.diff(board).filter(v => board.get(v) !== 0)
 
-            if (move != null && move.getPositionHash() === board.getPositionHash())
-                return
+        if (diff != null) {
+            if (diff.length === 0) {
+                return newEngineState
+            } else if (diff.length === 1) {
+                let vertex = diff[0]
+                let sign = board.get(vertex)
+                let move = await enginePlay(controller, sign, vertex, engineState.board)
+
+                if (move != null && move.getPositionHash() === board.getPositionHash())
+                    return newEngineState
+            }
         }
     }
 
@@ -53,7 +56,7 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     await controller.sendCommand(new Command(null, 'boardsize', board.width))
     await controller.sendCommand(new Command(null, 'clear_board'))
-    engineBoard = new Board(board.width, board.height)
+    let engineBoard = new Board(board.width, board.height)
 
     let tp = [gametree.getRoot(treePosition[0]), 0]
 
@@ -98,7 +101,7 @@ exports.sync = async function(controller, engineState, treePosition) {
     }
 
     if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
-        return
+        return newEngineState
 
     // Rearrangement
 
@@ -120,7 +123,7 @@ exports.sync = async function(controller, engineState, treePosition) {
     }
 
     if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
-        return
+        return newEngineState
 
     throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
 }
