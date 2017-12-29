@@ -82,7 +82,7 @@ class Controller extends EventEmitter {
 
             this.once(`response-${command.internalId}`, data => {
                 callback(data)
-                resolve(data)
+                resolve(data.response)
             })
 
             try {

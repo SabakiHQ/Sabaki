@@ -8,7 +8,7 @@ async function enginePlay(controller, sign, vertex, engineBoard) {
     let color = sign > 0 ? 'B' : 'W'
     let coord = engineBoard.vertex2coord(vertex)
 
-    let {response} = await controller.sendCommand(new Command(null, 'play', color, coord))
+    let response = await controller.sendCommand(new Command(null, 'play', color, coord))
     if (response.error) return null
 
     return engineBoard.makeMove(sign, vertex)
