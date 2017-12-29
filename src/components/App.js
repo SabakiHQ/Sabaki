@@ -1912,10 +1912,10 @@ class App extends Component {
                     this.attachedEngineControllers[i] = controller
                     this.engineBoards[i] = null
 
-                    this.sendGTPCommand(controller, command('name'))
-                    this.sendGTPCommand(controller, command('version'))
-                    this.sendGTPCommand(controller, command('protocol_version'))
-                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
+                    controller.sendCommand(command('name'))
+                    controller.sendCommand(command('version'))
+                    controller.sendCommand(command('protocol_version'))
+                    controller.sendCommand(command('list_commands'), ({response}) => {
                         engineCommands[i] = response.content.split('\n')
                     })
 
@@ -2050,7 +2050,7 @@ class App extends Component {
             if (this.engineBoards[i] != null && komi !== this.engineBoards[i].komi) {
                 // Update komi
 
-                this.sendGTPCommand(controller, new gtp.Command(null, 'komi', komi))
+                controller.sendCommand(new gtp.Command(null, 'komi', komi))
                 this.engineBoards[i].komi = komi
             }
 
@@ -2071,7 +2071,7 @@ class App extends Component {
                         let color = sign > 0 ? 'B' : 'W'
                         let point = board.vertex2coord(vertex)
 
-                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                        controller.sendCommand(new gtp.Command(null, 'play', color, point))
                         synced = true
                     }
                 }
@@ -2082,8 +2082,8 @@ class App extends Component {
             if (!synced) {
                 // Replay
 
-                this.sendGTPCommand(controller, new gtp.Command(null, 'boardsize', board.width))
-                this.sendGTPCommand(controller, new gtp.Command(null, 'clear_board'))
+                controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
+                controller.sendCommand(new gtp.Command(null, 'clear_board'))
 
                 for (let x = 0; x < board.width; x++) {
                     for (let y = 0; y < board.height; y++) {
@@ -2094,7 +2094,7 @@ class App extends Component {
                         let color = sign > 0 ? 'B' : 'W'
                         let point = board.vertex2coord(vertex)
 
-                        this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, point))
+                        controller.sendCommand(new gtp.Command(null, 'play', color, point))
                     }
                 }
             }
@@ -2103,7 +2103,7 @@ class App extends Component {
 
             if (passPlayer != null) {
                 let color = passPlayer > 0 ? 'B' : 'W'
-                this.sendGTPCommand(controller, new gtp.Command(null, 'play', color, 'pass'))
+                controller.sendCommand(new gtp.Command(null, 'play', color, 'pass'))
             }
 
             // Update engine board state
@@ -2151,7 +2151,7 @@ class App extends Component {
         this.syncEngines({passPlayer})
         this.setBusy(true)
 
-        this.sendGTPCommand(playerController, new gtp.Command(null, 'genmove', color), ({response}) => {
+        playerController.sendCommand(new gtp.Command(null, 'genmove', color), ({response}) => {
             let sign = color === 'B' ? 1 : -1
             let vertex = [-1, -1]
             let board = gametree.getBoard(rootTree, 0)
@@ -2181,7 +2181,7 @@ class App extends Component {
             if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
                 // Get Sabaki JSON
 
-                this.sendGTPCommand(playerController, new gtp.Command(null, 'sabaki-genmovelog'))
+                playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
             }
 
             let komi = this.engineBoards[playerIndex] && this.engineBoards[playerIndex].komi
