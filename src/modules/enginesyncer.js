@@ -7,7 +7,7 @@ const {Command} = require('./gtp')
 async function enginePlay(controller, sign, vertex, board) {
     let color = sign > 0 ? 'B' : 'W'
     let coord = board.vertex2coord(vertex)
-    if (coord == null) return false
+    if (coord == null) return true
 
     let response = await controller.sendCommand(new Command(null, 'play', color, coord))
     if (response.error) return false
