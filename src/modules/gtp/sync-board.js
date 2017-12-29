@@ -1,6 +1,6 @@
 const gametree = require('../gametree')
 const helper = require('../helper')
-const sgf = require('../sgf')
+const {sgf} = require('../fileformats')
 const Board = require('../board')
 const Command = require('./command')
 
@@ -14,13 +14,22 @@ async function enginePlay(controller, sign, vertex, engineBoard) {
     return engineBoard.makeMove(sign, vertex)
 }
 
-module.exports = async function(controller, engineBoard, treePosition) {
+module.exports = async function syncEngine(controller, engineState, treePosition) {
+    let {komi: engineKomi, board: engineBoard} = engineState
     let board = gametree.getBoard(...treePosition)
 
     if (!board.isSquare()) {
         throw new Error('GTP engines don’t support non-square boards.')
     } else if (!board.isValid()) {
         throw new Error('GTP engines don’t support invalid board positions.')
+    }
+
+    // Update komi
+
+    let komi = +gametree.getRootProperty(treePosition[0], 'KM', 0)
+
+    if (komi !== engineKomi && !isNaN(komi)) {
+        await controller.sendCommand(new Command(null, 'komi', komi))
     }
 
     // Incremental board update
@@ -42,8 +51,8 @@ module.exports = async function(controller, engineBoard, treePosition) {
 
     // Replay
 
-    await controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
-    await controller.sendCommand(new gtp.Command(null, 'clear_board'))
+    await controller.sendCommand(new Command(null, 'boardsize', board.width))
+    await controller.sendCommand(new Command(null, 'clear_board'))
     engineBoard = new Board(board.width, board.height)
 
     let tp = [gametree.getRoot(treePosition[0]), 0]
@@ -93,8 +102,8 @@ module.exports = async function(controller, engineBoard, treePosition) {
 
     // Rearrangement
 
-    await controller.sendCommand(new gtp.Command(null, 'boardsize', board.width))
-    await controller.sendCommand(new gtp.Command(null, 'clear_board'))
+    await controller.sendCommand(new Command(null, 'boardsize', board.width))
+    await controller.sendCommand(new Command(null, 'clear_board'))
     engineBoard = new Board(board.width, board.height)
 
     for (let x = 0; x < board.width; x++) {
