@@ -4,15 +4,15 @@ const {sgf} = require('./fileformats')
 const Board = require('./board')
 const {Command} = require('./gtp')
 
-async function enginePlay(controller, sign, vertex, engineBoard) {
+async function enginePlay(controller, sign, vertex, board) {
     let color = sign > 0 ? 'B' : 'W'
-    let coord = engineBoard.vertex2coord(vertex)
-    if (coord == null) return engineBoard
+    let coord = board.vertex2coord(vertex)
+    if (coord == null) return false
 
     let response = await controller.sendCommand(new Command(null, 'play', color, coord))
-    if (response.error) return null
+    if (response.error) return false
 
-    return engineBoard.makeMove(sign, vertex)
+    return true
 }
 
 exports.sync = async function(controller, engineState, treePosition) {
@@ -30,7 +30,7 @@ exports.sync = async function(controller, engineState, treePosition) {
     let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
     if (engineState == null || komi !== engineState.komi) {
-        await controller.sendCommand(new Command(null, 'komi', komi))
+        controller.sendCommand(new Command(null, 'komi', komi))
     }
 
     // See if we need to update board
@@ -49,19 +49,21 @@ exports.sync = async function(controller, engineState, treePosition) {
         if (diff != null && diff.length === 1) {
             let [vertex] = diff
             let sign = board.get(vertex)
-            let move = await enginePlay(controller, sign, vertex, engineState.board)
+            let move = engineState.board.makeMove(sign, vertex)
+            let success = await enginePlay(controller, sign, vertex, engineState.board)
 
-            if (move != null && move.getPositionHash() === board.getPositionHash())
+            if (success && move.getPositionHash() === board.getPositionHash())
                 return newEngineState
         }
     }
 
     // Replay
 
-    await controller.sendCommand(new Command(null, 'boardsize', board.width))
-    await controller.sendCommand(new Command(null, 'clear_board'))
+    controller.sendCommand(new Command(null, 'boardsize', board.width))
+    controller.sendCommand(new Command(null, 'clear_board'))
+    
     let engineBoard = new Board(board.width, board.height)
-
+    let promises = []
     let synced = true
 
     for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
@@ -74,11 +76,9 @@ exports.sync = async function(controller, engineState, treePosition) {
             let sign = color === 'B' ? 1 : -1
             let vertex = sgf.point2vertex(node[color][0])
 
-            engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
-            if (engineBoard == null) synced = false
+            promises.push(enginePlay(controller, sign, vertex, engineBoard))
+            engineBoard = engineBoard.makeMove(sign, vertex)
         }
-
-        if (!synced) break
 
         for (let prop of ['AB', 'AW']) {
             if (!(prop in node)) continue
@@ -87,32 +87,33 @@ exports.sync = async function(controller, engineState, treePosition) {
             let vertices = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
 
             for (let vertex of vertices) {
-                engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
-
-                if (engineBoard == null) {
-                    synced = false
-                    break
-                }
+                promises.push(enginePlay(controller, sign, vertex, engineBoard))
+                engineBoard = engineBoard.makeMove(sign, vertex)
             }
-
-            if (!synced) break
         }
 
-        if (engineBoard == null || engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
+        if (engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
             synced = false
             break
         }
 
         if (helper.vertexEquals(tp, treePosition)) break
     }
+    
+    if (synced) {
+        let result = await Promise.all(promises)
+        let success = result.every(x => x)
 
-    if (synced) return newEngineState
+        if (success) return newEngineState
+    }
 
     // Rearrangement
 
-    await controller.sendCommand(new Command(null, 'boardsize', board.width))
-    await controller.sendCommand(new Command(null, 'clear_board'))
+    controller.sendCommand(new Command(null, 'boardsize', board.width))
+    controller.sendCommand(new Command(null, 'clear_board'))
+    
     engineBoard = new Board(board.width, board.height)
+    promises = []
 
     for (let x = 0; x < board.width; x++) {
         if (engineBoard == null) break
@@ -122,13 +123,17 @@ exports.sync = async function(controller, engineState, treePosition) {
             let sign = board.get(vertex)
             if (sign === 0) continue
 
-            engineBoard = await enginePlay(controller, sign, vertex, engineBoard)
-            if (engineBoard == null) break
+            promises.push(enginePlay(controller, sign, vertex, engineBoard))
+            engineBoard = engineBoard.makeMove(sign, vertex)
         }
     }
 
-    if (engineBoard != null && engineBoard.getPositionHash() === board.getPositionHash())
-        return newEngineState
+    if (engineBoard.getPositionHash() === board.getPositionHash()) {
+        let result = await Promise.all(promises)
+        let success = result.every(x => x)
+
+        if (success) return newEngineState
+    }
 
     throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
 }
