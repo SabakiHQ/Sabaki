@@ -1940,7 +1940,6 @@ class App extends Component {
         }
 
         this.setState({attachedEngines: engines})
-        this.syncEngines()
     }
 
     detachEngines() {
