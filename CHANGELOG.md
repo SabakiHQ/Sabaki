@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Add engine integration protocol
 
+**Changed**
+
+* When updating engine boards, Sabaki will try to replay moves in game order first
+
 **Fixed**
 
 * Fix Sabaki not continue generating moves in bot vs. bot games where only one of them passes
