@@ -47,7 +47,7 @@ class Controller extends EventEmitter {
 
                 if (this.commands.length > 0) {
                     let command = this.commands.shift()
-                    this.emit(`response-${command.internalId}`, {response, command})
+                    this.emit(`response-${command.internalId}`, response)
                 }
 
                 start = this._outBuffer.indexOf('\n\n')
