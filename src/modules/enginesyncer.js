@@ -27,7 +27,7 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     // Update komi
 
-    let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+    let komi = gametree.getRootProperty(rootTree, 'KM', 0)
 
     if (engineState == null || komi !== engineState.komi) {
         controller.sendCommand(new Command(null, 'komi', komi))
