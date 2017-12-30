@@ -1,6 +1,7 @@
 const {spawn} = require('child_process')
 const {dirname} = require('path')
 const EventEmitter = require('events')
+const split = require('argv-split')
 
 const gtp = require('./index')
 const helper = require('../helper')
@@ -15,8 +16,7 @@ class Controller extends EventEmitter {
         this.commands = []
         this.error = false
         this.process = null
-
-        Object.assign(this, engine)
+        this.engine = engine
 
         this.start()
     }
@@ -24,9 +24,9 @@ class Controller extends EventEmitter {
     start() {
         if (this.process) return
 
-        let split = require('argv-split')
-        
-        this.process = spawn(this.path, split(this.args), {cwd: dirname(this.path)})
+        let {path, args} = this.engine
+
+        this.process = spawn(path, split(args), {cwd: dirname(path)})
 
         this.process.on('error', () => {
             this.error = true
@@ -47,7 +47,7 @@ class Controller extends EventEmitter {
 
                 if (this.commands.length > 0) {
                     let command = this.commands.shift()
-                    this.emit(`response-${command.internalId}`, {response, command})
+                    this.emit(`response-${command.internalId}`, response)
                 }
 
                 start = this._outBuffer.indexOf('\n\n')
@@ -75,18 +75,28 @@ class Controller extends EventEmitter {
         this.process = null
     }
 
-    sendCommand(command, callback = helper.noop) {
-        if (this.process == null) this.start()
+    sendCommand(command) {
+        let promise = new Promise(resolve => {
+            if (this.process == null) this.start()
 
-        this.once(`response-${command.internalId}`, callback)
+            this.once(`response-${command.internalId}`, resolve)
 
-        try {
-            this.process.stdin.write(command.toString() + '\n')
-            this.commands.push(command)
-        } catch (err) {
-            let response = new gtp.Response(command.id, 'connection error', true, true)
-            this.emit(`response-${command.internalId}`, {response, command})
-        }
+            try {
+                this.process.stdin.write(command.toString() + '\n')
+                this.commands.push(command)
+            } catch (err) {
+                let response = new gtp.Response(command.id, 'connection error', true, true)
+                this.emit(`response-${command.internalId}`, response)
+            }
+        })
+
+        this.emit('command-sent', {
+            controller: this,
+            command,
+            getResponse: () => promise
+        })
+
+        return promise
     }
 }
 
