@@ -3,7 +3,7 @@ const path = require('path')
 let noopPath = path.join(__dirname, 'src/modules/shims/noop')
 let emptyPath = path.join(__dirname, 'src/modules/shims/empty')
 
-module.exports = () => ({
+module.exports = {
     entry: './src/components/App.js',
 
     output: {
@@ -71,4 +71,4 @@ module.exports = () => ({
             './bars/GuessBar': noopPath
         }
     }
-})
+}

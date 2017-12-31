@@ -76,11 +76,12 @@
     "babel-preset-env": "^1.6.0",
     "fast-async": "^6.3.0",
     "raw-loader": "^0.5.1",
+    "uglifyjs-webpack-plugin": "^1.1.5",
     "webpack": "^3.10.0"
   },
   "scripts": {
     "test": "",
-    "build": "webpack --progress",
-    "watch": "webpack --progress --watch"
+    "build": "webpack --config webpack.prod.js --progress",
+    "watch": "webpack --config webpack.dev.js --progress --watch"
   }
 }
