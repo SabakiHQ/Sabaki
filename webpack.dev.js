@@ -1,6 +1,6 @@
 const path = require('path')
 
-module.exports = () => ({
+module.exports = {
     entry: './src/components/App.js',
 
     output: {
@@ -35,4 +35,4 @@ module.exports = () => ({
     externals: {
         'moment': 'null'
     }
-})
+}

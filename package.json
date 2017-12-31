@@ -81,13 +81,14 @@
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
     "tmp": "0.0.33",
+    "uglifyjs-webpack-plugin": "^1.1.5",
     "webpack": "^3.10.0"
   },
   "scripts": {
     "test": "mocha",
     "start": "electron ./",
-    "bundle": "webpack --progress",
-    "watch": "webpack --progress --watch",
+    "bundle": "webpack --config webpack.prod.js --progress",
+    "watch": "webpack --config webpack.dev.js --progress --watch",
     "build": "npm run bundle && build --dir",
     "dist:macos": "npm run bundle && build -m --x64",
     "dist:linux": "npm run bundle && build -l --ia32 --x64",
