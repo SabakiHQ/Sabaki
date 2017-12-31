@@ -1407,7 +1407,7 @@ class App extends Component {
 
             if (data.size) {
                 let value = data.size
-                value = value.map((x, i) => isNaN(x) || !x ? 19 : Math.min(25, Math.max(3, x)))
+                value = value.map((x, i) => isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x)))
 
                 if (value[0] === value[1]) value = value[0]
                 else value = value.join(':')
