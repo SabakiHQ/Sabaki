@@ -396,7 +396,7 @@ let data = [
             },
             {
                 label: '&Clear Console',
-                click: () => sabaki.setState({consoleLog: []})
+                click: () => sabaki.clearConsole()
             }
         ]
     },

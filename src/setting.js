@@ -53,7 +53,6 @@ let defaults = {
         'place_free_handicap', 'set_free_handicap',
         'loadsgf', 'komi'
     ],
-    'console.max_history_count': 100,
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
@@ -93,7 +92,7 @@ let defaults = {
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
     'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
-    'setting.overwrite.v0.30.0-beta': ['graph.delay', 'console.max_history_count', 'window.minheight', 'window.minwidth'],
+    'setting.overwrite.v0.30.0-beta': ['graph.delay', 'window.minheight', 'window.minwidth'],
     'scoring.method': 'territory',
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
     'sound.capture_delay_max': 500,

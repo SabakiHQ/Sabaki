@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * When updating engine boards, Sabaki will try to replay moves in game order first
+* The command history limit of the GTP console has been lifted
 
 **Fixed**
 

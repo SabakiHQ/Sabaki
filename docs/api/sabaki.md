@@ -129,7 +129,7 @@ Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. Th
 
 Returns an empty [game tree](gametree.md) with the default board size, komi, and handicap settings.
 
-#### sabaki.newFile([options])
+#### async sabaki.newFile([options])
 
 * `options` `<Object>` *(optional)*
     * `playSound` `<Boolean>` *(optional)* - Default: `false`

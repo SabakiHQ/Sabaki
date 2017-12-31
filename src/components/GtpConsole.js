@@ -181,7 +181,7 @@ class GtpConsole extends Component {
                     class: 'log'
                 },
 
-                consoleLog.map(([sign, name, command, response], i) => [
+                consoleLog.map(({sign, name, command, response}, i) => [
                     command
                     ? h(ConsoleCommandEntry, {key: command.internalId, board, sign, name, command})
                     : !command && (i == 0 || !helper.shallowEquals([sign, name], consoleLog[i - 1].slice(0, 2)))

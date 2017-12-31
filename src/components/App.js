@@ -326,6 +326,10 @@ class App extends Component {
         }
     }
 
+    waitForRender() {
+        return new Promise(resolve => this.setState({}, resolve))
+    }
+
     // User Interface
 
     setSidebarWidth(sidebarWidth) {
@@ -383,6 +387,10 @@ class App extends Component {
         setTimeout(() => this.hideInfoOverlay(), setting.get('infooverlay.duration'))
     }
 
+    clearConsole() {
+        this.setState({consoleLog: []})
+    }
+
     // File Management
 
     getEmptyGameTree() {
@@ -404,7 +412,7 @@ class App extends Component {
         `)[0]
     }
 
-    newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
+    async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
         if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
@@ -412,21 +420,23 @@ class App extends Component {
 
         this.clearUndoPoint()
         this.detachEngines()
-        this.setState(this.state, () => {
-            let emptyTree = this.getEmptyGameTree()
+        this.clearConsole()
 
-            this.setState({
-                openDrawer: showInfo ? 'info' : null,
-                gameTrees: [emptyTree],
-                treePosition: [emptyTree, 0],
-                representedFilename: null
-            })
+        await this.waitForRender()
 
-            this.treeHash = this.generateTreeHash()
-            this.fileHash = this.generateFileHash()
+        let emptyTree = this.getEmptyGameTree()
 
-            if (playSound) sound.playNewGame()
+        this.setState({
+            openDrawer: showInfo ? 'info' : null,
+            gameTrees: [emptyTree],
+            treePosition: [emptyTree, 0],
+            representedFilename: null
         })
+
+        this.treeHash = this.generateTreeHash()
+        this.fileHash = this.generateFileHash()
+
+        if (playSound) sound.playNewGame()
     }
 
     async loadFile(filename = null, {suppressAskForSave = false} = {}) {
@@ -1954,24 +1964,20 @@ class App extends Component {
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
 
-        let entry = [sign, controller.engine.name, command]
-        let maxLength = setting.get('console.max_history_count')
-
-        this.setState(({consoleLog}) => {
-            let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
-            newLog.push(entry)
-
-            return {consoleLog: newLog}
-        })
+        let entry = {sign, name: controller.engine.name, command}
+        
+        this.setState(({consoleLog}) => ({
+            consoleLog: [...consoleLog, entry]
+        }))
 
         let response = await getResponse()
 
         this.setState(({consoleLog}) => {
             let index = consoleLog.indexOf(entry)
-            if (index === -1) return {}
+            if (index < 0) return {}
 
             let newLog = [...consoleLog]
-            newLog[index] = [...entry, response]
+            newLog[index] = Object.assign({response}, entry)
 
             return {consoleLog: newLog}
         })
