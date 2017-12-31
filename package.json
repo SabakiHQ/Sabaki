@@ -16,7 +16,7 @@
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",
-    "copyright": "Copyright © 2015-2017 Yichuan Shen",
+    "copyright": "Copyright © 2015-2018 Yichuan Shen",
     "compression": "maximum",
     "linux": {
       "category": "Game"
