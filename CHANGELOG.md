@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Add engine integration protocol
+* Add 'Synchronize' menu item in 'Engines' menu
 
 **Changed**
 

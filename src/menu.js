@@ -356,6 +356,11 @@ let data = [
         label: 'Eng&ines',
         submenu: [
             {
+                label: 'Manage &Engines…',
+                click: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences'))
+            },
+            {type: 'separator'},
+            {
                 label: '&Attach…',
                 click: () => sabaki.openDrawer('info')
             },
@@ -369,8 +374,9 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'Manage &Engines…',
-                click: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences'))
+                label: 'S&ynchronize',
+                accelerator: 'F6',
+                click: () => sabaki.syncEngines()
             },
             {
                 label: 'Generate &Move',
