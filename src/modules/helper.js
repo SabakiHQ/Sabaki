@@ -108,3 +108,7 @@ exports.popupMenu = function(template, x, y) {
         async: true
     })
 }
+
+exports.wait = function(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}

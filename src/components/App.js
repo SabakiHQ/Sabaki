@@ -467,7 +467,7 @@ class App extends Component {
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
         this.setMode('play')
 
-        await new Promise(resolve => setTimeout(resolve, setting.get('app.loadgame_delay')))
+        await helper.wait(setting.get('app.loadgame_delay'))
 
         let lastProgress = -1
         let success = true
@@ -1297,7 +1297,7 @@ class App extends Component {
 
         this.setBusy(true)
 
-        await new Promise(resolve => setTimeout(resolve, setting.get('find.delay')))
+        await helper.wait(setting.get('find.delay'))
 
         let tp = this.state.treePosition
         let iterator = gametree.makeHorizontalNavigator(...tp)
@@ -1979,11 +1979,12 @@ class App extends Component {
         // Handle Sabaki JSON
 
         let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m)
+        if (sabakiJsonMatch == null) sabakiJsonMatch = ['', '{}']
 
         try {
             let sabakiJson = JSON.parse(sabakiJsonMatch[1])
 
-            if (sabakiJson.variations) {
+            if (sabakiJson.variations != null) {
                 let subtrees = sgf.parse(sabakiJson.variations)
                 let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
                 let splitted = gametree.split(tree, index)
@@ -2003,7 +2004,7 @@ class App extends Component {
                 this.setCurrentTreePosition(...gametree.navigate(splitted, splitted.nodes.length - 1, 1))
             }
 
-            if (sabakiJson.node) {
+            if (sabakiJson.node != null) {
                 let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
                 let [tree, index] = this.state.treePosition
                 let node = tree.nodes[index]
@@ -2114,22 +2115,19 @@ class App extends Component {
         this.makeMove(vertex, {player: sign})
 
         if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
-            // Get Sabaki JSON
+            // Send Sabaki specific GTP commands
 
             playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
         }
-
-        let komi = this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi
         
         this.engineStates[playerIndex] = {
-            komi,
+            komi: this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi,
             board: gametree.getBoard(...this.state.treePosition)
         }
 
         if (otherController != null && !doublePass) {
-            setTimeout(() => {
-                this.startGeneratingMoves({followUp: true})
-            }, setting.get('gtp.move_delay'))
+            await helper.wait(setting.get('gtp.move_delay'))
+            this.startGeneratingMoves({followUp: true})
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
