@@ -24,7 +24,21 @@ module.exports = () => ({
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: [['env', {modules: false}]]
+                        plugins: ['fast-async'],
+                        presets: [
+                            ['env', {
+                                modules: false,
+                                exclude: [
+                                    'babel-plugin-transform-regenerator',
+                                    'babel-plugin-transform-async-to-generator'
+                                ],
+                                targets: {browsers: [
+                                    'last 2 Chrome versions',
+                                    'last 2 Firefox versions',
+                                    'last 2 Edge versions'
+                                ]}
+                            }]
+                        ]
                     }
                 }
             }
