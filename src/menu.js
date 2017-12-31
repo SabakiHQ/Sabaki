@@ -132,7 +132,10 @@ let data = [
                     {
                         label: '&Stone Tool',
                         accelerator: 'CmdOrCtrl+1',
-                        click: () => selectTool('stone_1')
+                        click: () => selectTool(
+                            sabaki.state.mode !== 'edit' || sabaki.state.selectedTool !== 'stone_1'
+                            ? 'stone_1' : 'stone_-1'
+                        )
                     },
                     {
                         label: '&Cross Tool',

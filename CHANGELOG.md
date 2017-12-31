@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix Sabaki not continue generating moves in bot vs. bot games where only one of them passes
+* Selecting 'Stone Tool' from the menu is now able to toggle stone color
 
 ## [Sabaki v0.31.5][v0.31.5] (2017-10-31)
 
