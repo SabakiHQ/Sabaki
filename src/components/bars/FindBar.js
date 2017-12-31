@@ -21,10 +21,21 @@ class FindBar extends Component {
         }
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.mode !== this.props.mode) {
+            if (this.props.mode === 'find') {
+                this.inputElement.focus()
+            } else {
+                this.inputElement.blur()
+            }
+        }
+    }
+
     render({findText}) {
         return h(Bar, Object.assign({type: 'find'}, this.props),
             h('form', {},
                 h('input', {
+                    ref: el => this.inputElement = el,
                     type: 'text',
                     placeholder: 'Find',
                     value: findText,

@@ -129,7 +129,7 @@ Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. Th
 
 Returns an empty [game tree](gametree.md) with the default board size, komi, and handicap settings.
 
-#### sabaki.newFile([options])
+#### async sabaki.newFile([options])
 
 * `options` `<Object>` *(optional)*
     * `playSound` `<Boolean>` *(optional)* - Default: `false`
@@ -140,7 +140,7 @@ Resets file name, returns to play mode, and replaces current file with an empty 
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
-#### sabaki.loadFile([filename[, options]])
+#### async sabaki.loadFile([filename[, options]])
 
 * `filename` `<String>` *(optional)*
 * `options` `<Object>` *(optional)*
@@ -150,18 +150,19 @@ Resets file name, returns to play mode, and replaces current file with the file 
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 
-#### sabaki.loadContent(content, extension[, options])
+#### async sabaki.loadContent(content, extension[, options])
 
 * `content` `<String>`
 * `extension` `<String>` - File extension, e.g. `'sgf'`
 * `options` `<Object>` *(optional)*
     * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
     * `ignoreEncoding` `<Boolean>` *(optional)* - Default: `false`
-    * `callback` `<Function>` *(optional)*
 
 Returns to play mode and parses `content` which replaces current file. Sabaki will automatically detect file format by `extension`. If `extension` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
+
+Returns `true` if the operation succeeded, otherwise `false`.
 
 #### sabaki.saveFile([filename])
 
@@ -259,24 +260,22 @@ Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
 
 ### Find Methods
 
-#### sabaki.findPosition(step, condition[, callback])
+#### async sabaki.findPosition(step, condition)
 
 * `step` `<Integer>`
 * `condition` `<Function>`
-* `callback` `<Function>` *(optional)*
 
-#### sabaki.findHotspot(step[, callback])
+#### async sabaki.findHotspot(step)
 
 * `step` `<Integer>`
 * `callback` `<Function>` *(optional)*
 
-#### sabaki.findMove(step, data[, callback])
+#### async sabaki.findMove(step, data)
 
 * `step` `<Integer>`
 * `data` `<Object>`
     * `vertex` [`<Vertex>`](vertex.md) *(optional)*
     * `text` `<String>` *(optional)*
-* `callback` `<Function>` *(optional)*
 
 ### Node Actions
 

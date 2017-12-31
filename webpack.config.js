@@ -45,6 +45,7 @@ module.exports = () => ({
             'recursive-copy': emptyPath,
             'rimraf': emptyPath,
             'argv-split': emptyPath,
+            '../modules/enginesyncer': emptyPath,
             '../modules/gtp': emptyPath,
             '../menu': emptyPath,
 

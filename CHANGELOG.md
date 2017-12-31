@@ -2,15 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.32.2][v0.32.2] (2018-01-01)
 
 **Added**
 
 * Add engine integration protocol
+* Add 'Synchronize' menu item in 'Engines' menu
+
+**Changed**
+
+* When updating engine boards, Sabaki will try to replay moves in game order first
+* The command history limit of the GTP console has been lifted
+* Focus find input when entering find mode
+* Sabaki allows 2×2 boards
 
 **Fixed**
 
 * Fix Sabaki not continue generating moves in bot vs. bot games where only one of them passes
+* Selecting 'Stone Tool' from the menu is now able to toggle stone color
 
 ## [Sabaki v0.31.5][v0.31.5] (2017-10-31)
 
@@ -623,7 +632,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.31.5...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.32.2...master
+[v0.32.2]: https://github.com/yishn/Sabaki/compare/v0.31.5...v0.32.2
 [v0.31.5]: https://github.com/yishn/Sabaki/compare/v0.31.4...v0.31.5
 [v0.31.4]: https://github.com/yishn/Sabaki/compare/v0.31.3...v0.31.4
 [v0.31.3]: https://github.com/yishn/Sabaki/compare/v0.31.2...v0.31.3

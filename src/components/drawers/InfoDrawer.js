@@ -26,7 +26,7 @@ class InfoDrawer extends Component {
     constructor() {
         super()
 
-        this.handleSubmitButtonClick = evt => {
+        this.handleSubmitButtonClick = async evt => {
             evt.preventDefault()
 
             let [tree, index] = this.props.treePosition
@@ -50,13 +50,13 @@ class InfoDrawer extends Component {
             sabaki.closeDrawer()
             sabaki.attachEngines(...this.state.engines)
 
-            sabaki.setState(sabaki.state, () => {
-                let i = this.props.currentPlayer > 0 ? 0 : 1
+            await sabaki.waitForRender()
 
-                if (sabaki.attachedEngineControllers[i] != null) {
-                    sabaki.startGeneratingMoves()
-                }
-            })
+            let i = this.props.currentPlayer > 0 ? 0 : 1
+
+            if (sabaki.attachedEngineControllers[i] != null) {
+                sabaki.startGeneratingMoves()
+            }
         }
 
         this.handleCancelButtonClick = evt => {
@@ -70,7 +70,8 @@ class InfoDrawer extends Component {
 
         this.handleBoardWidthChange = evt => {
             let {value} = evt.currentTarget
-            if (value === '') value = null
+            if (value === '' || isNaN(value)) value = null
+            else value = +value
 
             this.setState(({size: [, height]}) => ({
                 size: [value, this.combinedSizeFields ? value : height]
@@ -79,7 +80,8 @@ class InfoDrawer extends Component {
 
         this.handleBoardHeightChange = evt => {
             let {value} = evt.currentTarget
-            if (value === '') value = null
+            if (value === '' || isNaN(value)) value = null
+            else value = +value
 
             this.setState(({size: [width, ]}) => ({size: [width, value]}))
         }
@@ -461,7 +463,7 @@ class InfoDrawer extends Component {
                             name: 'size-width',
                             placeholder: 19,
                             max: 25,
-                            min: 3,
+                            min: 2,
                             value: size[0],
                             disabled: !emptyTree,
                             onFocus: this.handleBoardWidthFocus,

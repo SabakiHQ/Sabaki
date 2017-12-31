@@ -18,6 +18,7 @@ const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
 const deadstones = require('../modules/deadstones')
 const dialog = require('../modules/dialog')
+const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtp = require('../modules/gtp')
@@ -110,11 +111,11 @@ class App extends Component {
 
         this.treeHash = this.generateTreeHash()
         this.attachedEngineControllers = [null, null]
-        this.engineBoards = [null, null]
+        this.engineStates = [null, null]
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, deadstones, dialog,
+        this.modules = {Board, boardmatcher, deadstones, dialog, enginesyncer,
             fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
@@ -343,6 +344,10 @@ class App extends Component {
         }
     }
 
+    waitForRender() {
+        return new Promise(resolve => this.setState({}, resolve))
+    }
+
     // User Interface
 
     setSidebarWidth(sidebarWidth) {
@@ -359,10 +364,9 @@ class App extends Component {
         if (['scoring', 'estimator'].includes(mode)) {
             // Guess dead stones
 
-            let {guess} = require('../modules/deadstones')
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
+            let deadStones = deadstones.guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
 
             Object.assign(stateChange, {deadStones})
         }
@@ -400,6 +404,10 @@ class App extends Component {
         setTimeout(() => this.hideInfoOverlay(), setting.get('infooverlay.duration'))
     }
 
+    clearConsole() {
+        this.setState({consoleLog: []})
+    }
+
     // File Management
 
     getEmptyGameTree() {
@@ -421,7 +429,7 @@ class App extends Component {
         `)[0]
     }
 
-    newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
+    async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
         if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
@@ -429,24 +437,26 @@ class App extends Component {
 
         this.clearUndoPoint()
         this.detachEngines()
-        this.setState(this.state, () => {
-            let emptyTree = this.getEmptyGameTree()
+        this.clearConsole()
 
-            this.setState({
-                openDrawer: showInfo ? 'info' : null,
-                gameTrees: [emptyTree],
-                treePosition: [emptyTree, 0],
-                representedFilename: null
-            })
+        await this.waitForRender()
 
-            this.treeHash = this.generateTreeHash()
-            this.fileHash = this.generateFileHash()
+        let emptyTree = this.getEmptyGameTree()
 
-            if (playSound) sound.playNewGame()
+        this.setState({
+            openDrawer: showInfo ? 'info' : null,
+            gameTrees: [emptyTree],
+            treePosition: [emptyTree, 0],
+            representedFilename: null
         })
+
+        this.treeHash = this.generateTreeHash()
+        this.fileHash = this.generateFileHash()
+
+        if (playSound) sound.playNewGame()
     }
 
-    loadFile(file = null, {suppressAskForSave = false} = {}) {
+    async loadFile(file = null, {suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
         if (!file) {
@@ -463,77 +473,75 @@ class App extends Component {
 
         let {extname} = require('path')
         let extension = extname(file.name).slice(1)
+        let content = await new Promise((resolve, reject) => 
+            fs.readFile(file, (err, content) => err ? reject(err) : resolve(content))
+        )
 
-        fs.readFile(file, (err, content) => {
-            this.loadContent(content, extension, {
-                suppressAskForSave: true,
-                callback: err => {
-                    if (err) return
+        let success = await this.loadContent(content, extension, {suppressAskForSave: true})
 
-                    this.setState({representedFilename: file.name})
-                    this.fileHash = this.generateFileHash()
+        if (success) {
+            this.setState({representedFilename: file.name})
+            this.fileHash = this.generateFileHash()
 
-                    if (setting.get('game.goto_end_after_loading')) {
-                        this.goToEnd()
-                    }
-                }
-            })
-        })
+            if (setting.get('game.goto_end_after_loading')) {
+                this.goToEnd()
+            }
+        }
     }
 
-    loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false, callback = helper.noop} = {}) {
+    async loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
         this.setMode('play')
 
-        setTimeout(() => {
-            let lastProgress = -1
-            let error = false
-            let gameTrees = []
+        await helper.wait(setting.get('app.loadgame_delay'))
 
-            try {
-                let fileFormatModule = fileformats.getModuleByExtension(extension)
+        let lastProgress = -1
+        let success = true
+        let gameTrees = []
 
-                gameTrees = fileFormatModule.parse(content, evt => {
-                    if (evt.progress - lastProgress < 0.1) return
-                    this.window.setProgressBar(evt.progress)
-                    lastProgress = evt.progress
-                }, ignoreEncoding)
+        try {
+            let fileFormatModule = fileformats.getModuleByExtension(extension)
 
-                if (gameTrees.length == 0) throw true
-            } catch (err) {
-                dialog.showMessageBox('This file is unreadable.', 'warning')
-                error = true
-            }
+            gameTrees = fileFormatModule.parse(content, evt => {
+                if (evt.progress - lastProgress < 0.1) return
+                this.window.setProgressBar(evt.progress)
+                lastProgress = evt.progress
+            }, ignoreEncoding)
 
-            if (gameTrees.length != 0) {
-                this.clearUndoPoint()
-                this.detachEngines()
-                this.setState({
-                    representedFilename: null,
-                    gameTrees,
-                    treePosition: [gameTrees[0], 0]
-                })
+            if (gameTrees.length == 0) throw true
+        } catch (err) {
+            dialog.showMessageBox('This file is unreadable.', 'warning')
+            success = false
+        }
 
-                this.treeHash = this.generateTreeHash()
-                this.fileHash = this.generateFileHash()
-            }
+        if (gameTrees.length != 0) {
+            this.clearUndoPoint()
+            this.detachEngines()
+            this.setState({
+                representedFilename: null,
+                gameTrees,
+                treePosition: [gameTrees[0], 0]
+            })
 
-            this.setBusy(false)
+            this.treeHash = this.generateTreeHash()
+            this.fileHash = this.generateFileHash()
+        }
 
-            if (gameTrees.length > 1) {
-                setTimeout(() => {
-                    this.openDrawer('gamechooser')
-                }, setting.get('gamechooser.show_delay'))
-            }
+        this.setBusy(false)
 
-            this.window.setProgressBar(-1)
-            callback(error)
+        if (gameTrees.length > 1) {
+            setTimeout(() => {
+                this.openDrawer('gamechooser')
+            }, setting.get('gamechooser.show_delay'))
+        }
 
-            if (!error) this.events.emit('fileLoad')
-        }, setting.get('app.loadgame_delay'))
+        this.window.setProgressBar(-1)
+
+        if (success) this.events.emit('fileLoad')
+        return success
     }
 
     saveFile(filename = null) {
@@ -1274,58 +1282,57 @@ class App extends Component {
 
     // Find Methods
 
-    findPosition(step, condition, callback = helper.noop) {
+    async findPosition(step, condition) {
         if (isNaN(step)) step = 1
         else step = step >= 0 ? 1 : -1
 
         this.setBusy(true)
 
-        setTimeout(() => {
-            let tp = this.state.treePosition
-            let iterator = gametree.makeHorizontalNavigator(...tp)
+        await helper.wait(setting.get('find.delay'))
 
-            while (true) {
-                tp = step >= 0 ? iterator.next() : iterator.prev()
+        let tp = this.state.treePosition
+        let iterator = gametree.makeHorizontalNavigator(...tp)
 
-                if (!tp) {
-                    let root = this.inferredState.rootTree
+        while (true) {
+            tp = step >= 0 ? iterator.next() : iterator.prev()
 
-                    if (step === 1) {
-                        tp = [root, 0]
-                    } else {
-                        let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
-                        tp = sections[sections.length - 1]
-                    }
+            if (!tp) {
+                let root = this.inferredState.rootTree
 
-                    iterator = gametree.makeHorizontalNavigator(...tp)
+                if (step === 1) {
+                    tp = [root, 0]
+                } else {
+                    let sections = gametree.getSection(root, gametree.getHeight(root) - 1)
+                    tp = sections[sections.length - 1]
                 }
 
-                if (helper.vertexEquals(tp, this.state.treePosition) || condition(...tp))
-                    break
+                iterator = gametree.makeHorizontalNavigator(...tp)
             }
 
-            this.setCurrentTreePosition(...tp)
-            this.setBusy(false)
-            callback()
-        }, setting.get('find.delay'))
+            if (helper.vertexEquals(tp, this.state.treePosition) || condition(...tp))
+                break
+        }
+
+        this.setCurrentTreePosition(...tp)
+        this.setBusy(false)
     }
 
-    findHotspot(step, callback = helper.noop) {
-        this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index], callback)
+    async findHotspot(step) {
+        await this.findPosition(step, (tree, index) => 'HO' in tree.nodes[index])
     }
 
-    findMove(step, {vertex = null, text = ''}, callback = helper.noop) {
+    async findMove(step, {vertex = null, text = ''}) {
         if (vertex == null && text.trim() === '') return
         let point = vertex ? sgf.vertex2point(vertex) : null
 
-        this.findPosition(step, (tree, index) => {
+        await this.findPosition(step, (tree, index) => {
             let node = tree.nodes[index]
             let cond = (prop, value) => prop in node
                 && node[prop][0].toLowerCase().includes(value.toLowerCase())
 
             return (!point || ['B', 'W'].some(x => cond(x, point)))
                 && (!text || cond('C', text) || cond('N', text))
-        }, callback)
+        })
     }
 
     // Node Actions
@@ -1381,7 +1388,7 @@ class App extends Component {
 
             if (data.size) {
                 let value = data.size
-                value = value.map((x, i) => isNaN(x) || !x ? 19 : Math.min(25, Math.max(3, x)))
+                value = value.map((x, i) => isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x)))
 
                 if (value[0] === value[1]) value = value[0]
                 else value = value.join(':')
@@ -1865,81 +1872,21 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
-        let {engineCommands, attachedEngines} = this.state
-
-        if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
-            // Just swap engines
-
-            this.attachedEngineControllers.reverse()
-            this.engineBoards.reverse()
-
-            this.setState({
-                engineCommands: engineCommands.reverse(),
-                attachedEngines: engines
-            })
-
-            return
-        }
-
-        let command = name => new gtp.Command(null, name)
-
-        for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] != engines[i]) {
-                if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
-
-                try {
-                    let controller = engines[i] ? new gtp.Controller(engines[i]) : null
-                    this.attachedEngineControllers[i] = controller
-                    this.engineBoards[i] = null
-
-                    this.sendGTPCommand(controller, command('name'))
-                    this.sendGTPCommand(controller, command('version'))
-                    this.sendGTPCommand(controller, command('protocol_version'))
-                    this.sendGTPCommand(controller, command('list_commands'), ({response}) => {
-                        engineCommands[i] = response.content.split('\n')
-                    })
-
-                    controller.on('stderr', ({content}) => {
-                        this.setState(({consoleLog}) => ({
-                            consoleLog: [...consoleLog, [
-                                i === 0 ? 1 : -1,
-                                controller.name,
-                                null,
-                                new gtp.Response(null, content, false, true)
-                            ]]
-                        }))
-                    })
-
-                    this.setState({engineCommands})
-                } catch (err) {
-                    this.attachedEngineControllers[i] = null
-                    engines[i] = null
-                }
-            }
-        }
-
-        this.setState({attachedEngines: engines})
-        this.syncEngines()
     }
 
     detachEngines() {
     }
 
     suspendEngines() {
-        for (let controller of this.attachedEngineControllers) {
-            if (controller != null) controller.stop()
-        }
-
-        this.engineBoards = [null, null]
     }
 
-    sendGTPCommand(controller, command, callback = helper.noop) {
+    async handleCommandSent({controller, command, getResponse}) {
     }
 
-    syncEngines({passPlayer = null} = {}) {
+    async syncEngines({passPlayer = null} = {}) {
     }
 
-    startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
+    async startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
     }
 
     stopGeneratingMoves() {
