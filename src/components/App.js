@@ -346,10 +346,9 @@ class App extends Component {
         if (['scoring', 'estimator'].includes(mode)) {
             // Guess dead stones
 
-            let {guess} = require('../modules/deadstones')
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
+            let deadStones = deadstones.guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
 
             Object.assign(stateChange, {deadStones})
         }
