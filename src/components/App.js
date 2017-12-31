@@ -1929,12 +1929,12 @@ class App extends Component {
 
                 controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
-                        consoleLog: [...consoleLog, [
-                            i === 0 ? 1 : -1,
-                            controller.engine.name,
-                            null,
-                            new gtp.Response(null, content, false, true)
-                        ]]
+                        consoleLog: [...consoleLog, {
+                            sign: i === 0 ? 1 : -1,
+                            name: controller.engine.name,
+                            command: null,
+                            response: new gtp.Response(null, content, false, true)
+                        }]
                     }))
                 })
 

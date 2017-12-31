@@ -14,6 +14,8 @@ class ConsoleCommandEntry extends Component {
     }
 
     render({board, sign, name, command}) {
+        if (command == null) command = new gtp.Command(null, '')
+
         return h('li', {class: 'command'},
             h('pre', {},
                 h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
@@ -182,11 +184,14 @@ class GtpConsole extends Component {
                 },
 
                 consoleLog.map(({sign, name, command, response}, i) => [
-                    command
-                    ? h(ConsoleCommandEntry, {key: command.internalId, board, sign, name, command})
-                    : !command && (i == 0 || !helper.shallowEquals([sign, name], consoleLog[i - 1].slice(0, 2)))
-                    ? h(ConsoleCommandEntry, {board, sign, name, command: new gtp.Command(null, '')})
+                    command ? h(ConsoleCommandEntry, {board, sign, name, command})
+                    : !command && (
+                        i == 0 
+                        || consoleLog[i - 1].sign !== sign 
+                        || consoleLog[i - 1].name !== name
+                    ) ? h(ConsoleCommandEntry, {board, sign, name, command})
                     : null,
+                    
                     h(ConsoleResponseEntry, {board, response, waiting: response == null})
                 ])
             ),
