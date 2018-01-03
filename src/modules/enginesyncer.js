@@ -50,10 +50,11 @@ exports.sync = async function(controller, engineState, treePosition) {
             let [vertex] = diff
             let sign = board.get(vertex)
             let move = engineState.board.makeMove(sign, vertex)
-            let success = await enginePlay(controller, sign, vertex, engineState.board)
 
-            if (success && move.getPositionHash() === board.getPositionHash())
-                return newEngineState
+            if (move.getPositionHash() === board.getPositionHash()) {
+                let success = await enginePlay(controller, sign, vertex, engineState.board)
+                if (success) return newEngineState
+            }
         }
     }
 
@@ -61,7 +62,7 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     controller.sendCommand(new Command(null, 'boardsize', board.width))
     controller.sendCommand(new Command(null, 'clear_board'))
-    
+
     let engineBoard = new Board(board.width, board.height)
     let promises = []
     let synced = true
@@ -89,7 +90,7 @@ exports.sync = async function(controller, engineState, treePosition) {
 
         if (helper.vertexEquals(tp, treePosition)) break
     }
-    
+
     if (synced) {
         let result = await Promise.all(promises)
         let success = result.every(x => x)
@@ -101,7 +102,7 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     controller.sendCommand(new Command(null, 'boardsize', board.width))
     controller.sendCommand(new Command(null, 'clear_board'))
-    
+
     engineBoard = new Board(board.width, board.height)
     promises = []
 
