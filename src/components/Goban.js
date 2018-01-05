@@ -85,8 +85,8 @@ class GobanVertex extends Component {
                 h('span', {title: label})
             ),
 
-            heat != null && h('div', {class: 'heat'}),
-            paint != null && h('div', {class: 'paint'}),
+            !!heat && h('div', {class: 'heat'}),
+            !!paint && h('div', {class: 'paint'}),
             highlight && h('div', {class: 'highlight'})
         )
     }
@@ -110,18 +110,16 @@ class GobanLine extends Component {
         let angle = Math.atan2(dy, dx) * 180 / Math.PI
         let length = Math.sqrt(dx * dx + dy * dy)
 
-        return h('hr',
-            {
-                class: classNames({[type]: true, temporary}),
-                style: {
-                    width: length,
-                    transform: `
-                        translate(${left - length / 2}px, ${top}px)
-                        rotate(${angle}deg)
-                    `
-                }
+        return h('hr', {
+            class: classNames({[type]: true, temporary}),
+            style: {
+                width: length,
+                transform: `
+                    translate(${left - length / 2}px, ${top}px)
+                    rotate(${angle}deg)
+                `
             }
-        )
+        })
     }
 }
 
@@ -191,26 +189,6 @@ class Goban extends Component {
         })
 
         this.resize()
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        for (let key in nextProps) {
-            if (['board', 'highlightVertices', 'dimmedStones', 'paintMap'].includes(key)) continue
-
-            if (nextProps[key] !== this.props[key])
-                return true
-        }
-
-        for (let key in nextState) {
-            if (nextState[key] !== this.state[key])
-                return true
-        }
-
-        return nextProps.board.getHash() !== this.props.board.getHash()
-            || !helper.equals(nextProps.highlightVertices, this.props.highlightVertices)
-            || !helper.equals(nextProps.dimmedStones, this.props.dimmedStones)
-            || !helper.equals(nextProps.paintMap, this.props.paintMap)
-            || !helper.equals(nextProps.heatMap, this.props.heatMap)
     }
 
     componentWillReceiveProps({board, animatedVertex}) {
