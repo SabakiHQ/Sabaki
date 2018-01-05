@@ -2023,6 +2023,10 @@ class App extends Component {
 
                 this.setCurrentTreePosition(tree, index)
             }
+
+            if (sabakiJson.heatmap != null) {
+                this.setState({heatMap: sabakiJson.heatmap})
+            }
         } catch (err) {}
     }
 
