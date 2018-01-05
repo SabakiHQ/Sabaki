@@ -31,7 +31,12 @@
         top: 0;
         height: 100%;
         width: 100%;
+    }
+    .goban li .stone::before {
         z-index: 1;
+    }
+    .goban li .stone img {
+        z-index: 2;
     }
     .goban li .stone img, .goban li .stone::before {
         height: calc(100% - 2px);
@@ -81,7 +86,7 @@
         position: relative;
         background: url('../img/goban/inner.svg') center;
     }
-    .goban .row li.hoshi::after {
+    .goban .row li.hoshi::before {
         content: '';
         display: block;
         position: absolute;
@@ -93,6 +98,7 @@
         height: .21em;
         border-radius: .21em;
         background: #5E2E0C;
+        z-index: 0;
     }
     .goban .row:nth-child(3) li {
         background-image: url('../img/goban/side-n.svg');
@@ -132,7 +138,7 @@
     border: 2px solid #0082F0;
     border-radius: 5px;
     background: rgba(0, 130, 240, .2);
-    z-index: 4;
+    z-index: 7;
 }
 
 /**
@@ -149,7 +155,7 @@
         width: 100%;
         height: 100%;
         opacity: .3;
-        z-index: 3;
+        z-index: 6;
     }
     .goban .row li.paint_1 div.paint {
         display: block;
@@ -161,10 +167,62 @@
 }
 
 /**
+ * Heat
+ */
+
+.goban .row li div.heat {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-left: -1px;
+        margin-top: -1px;
+        border-radius: 50%;
+        width: 1px;
+        height: 1px;
+        background: red;
+        opacity: .8;
+        pointer-events: none;
+        z-index: 5;
+    }
+    .goban .row li.heat_9 div.heat {
+        box-shadow: 0 0 1em 1em red;
+    }
+    .goban .row li.heat_8 div.heat {
+        box-shadow: 0 0 1em .9em red;
+    }
+    .goban .row li.heat_7 div.heat {
+        box-shadow: 0 0 1em .75em red;
+    }
+    .goban .row li.heat_6 div.heat {
+        box-shadow: 0 0 1em .6em red;
+        opacity: .75;
+    }
+    .goban .row li.heat_5 div.heat {
+        box-shadow: 0 0 .9em .55em red;
+        opacity: .7;
+    }
+    .goban .row li.heat_4 div.heat {
+        box-shadow: 0 0 .85em .5em red;
+        opacity: .65;
+    }
+    .goban .row li.heat_3 div.heat {
+        box-shadow: 0 0 .8em .45em red;
+        opacity: .6;
+    }
+    .goban .row li.heat_2 div.heat {
+        box-shadow: 0 0 .75em .4em red;
+        opacity: .55;
+    }
+    .goban .row li.heat_1 div.heat {
+        box-shadow: 0 0 .7em .35em red;
+        opacity: .5;
+}
+
+/**
  * Markups
  */
 
-.goban .row li .stone::after, .goban .row li .stone::after {
+.goban .row li .stone::after {
         content: '';
         box-sizing: border-box;
         display: none;
@@ -176,8 +234,8 @@
         margin-left: calc(-.25em - 1px);
         margin-top: calc(-.25em - 1px);
         border-radius: 100%;
-        z-index: 2;
         pointer-events: none;
+        z-index: 4;
     }
 
     .goban.siblings .row li.sign_0.siblingghost_1 .stone::after { background: black; }
@@ -224,7 +282,6 @@
         width: 100%;
         height: 100%;
         text-align: center;
-        z-index: 2;
     }
     .goban .row li .stone span::before,
     .goban .row li .stone span::after {
@@ -321,6 +378,9 @@
     }
     .goban .row li.triangle.sign_-1 .stone span::after {
         border-bottom-color: #EDEDED;
+    }
+    .goban .row li.label .stone span {
+        z-index: 3;
     }
     .goban .row li.label .stone span::before {
         content: attr(title);
