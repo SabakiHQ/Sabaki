@@ -13,6 +13,7 @@ class GobanVertex extends Component {
         hoshi,
         shift,
         highlight,
+        heat,
         paint,
         dimmed,
         animate,
@@ -27,6 +28,7 @@ class GobanVertex extends Component {
             || label !== this.props.label
             || shift !== this.props.shift
             || animate !== this.props.animate
+            || heat !== this.props.heat
             || paint !== this.props.paint
             || dimmed !== this.props.dimmed
             || hoshi !== this.props.hoshi
@@ -38,6 +40,7 @@ class GobanVertex extends Component {
         random,
         sign,
         highlight,
+        heat,
         paint,
         dimmed,
         hoshi,
@@ -46,15 +49,16 @@ class GobanVertex extends Component {
         label,
         ghostTypes,
 
-        onMouseDown = helper.noop,
-        onMouseUp = helper.noop,
-        onMouseMove = helper.noop
+        onMouseDown,
+        onMouseUp,
+        onMouseMove
     }) {
         let classes = {
             [`pos_${x}-${y}`]: true,
             [`shift_${shift}`]: true,
             [`random_${random}`]: true,
             [`sign_${sign}`]: true,
+            [`heat_${heat}`]: !!heat,
             [`paint_${paint}`]: !!paint,
             [markupType]: !!markupType,
             dimmed,
@@ -81,8 +85,8 @@ class GobanVertex extends Component {
                 h('span', {title: label})
             ),
 
-            h('div', {class: 'paint'}),
-
+            heat != null && h('div', {class: 'heat'}),
+            paint != null && h('div', {class: 'paint'}),
             highlight && h('div', {class: 'highlight'})
         )
     }
@@ -206,6 +210,7 @@ class Goban extends Component {
             || !helper.equals(nextProps.highlightVertices, this.props.highlightVertices)
             || !helper.equals(nextProps.dimmedStones, this.props.dimmedStones)
             || !helper.equals(nextProps.paintMap, this.props.paintMap)
+            || !helper.equals(nextProps.heatMap, this.props.heatMap)
     }
 
     componentWillReceiveProps({board, animatedVertex}) {
@@ -381,6 +386,7 @@ class Goban extends Component {
     render({
         board,
         paintMap,
+        heatMap,
         highlightVertices = [],
         dimmedStones = [],
 
@@ -462,6 +468,7 @@ class Goban extends Component {
                         shift: this.state.shifts[y][x],
                         random: this.state.randomizer[y][x],
                         sign,
+                        heat: heatMap && heatMap[y] && heatMap[y][x],
                         paint: paintMap && paintMap[y] && paintMap[y][x],
                         dimmed: dimmedStones.some(equalsVertex),
                         highlight: highlightVertices.some(equalsVertex),
