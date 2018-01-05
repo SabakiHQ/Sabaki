@@ -61,6 +61,7 @@ class App extends Component {
             // Goban
 
             highlightVertices: [],
+            heatMap: null,
             showCoordinates: null,
             showMoveColorization: null,
             showNextMoves: null,
@@ -1180,6 +1181,7 @@ class App extends Component {
         }
 
         this.setState({
+            heatMap: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
