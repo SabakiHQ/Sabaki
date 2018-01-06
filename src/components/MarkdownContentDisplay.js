@@ -43,23 +43,24 @@ function Html({isBlock, value}) {
 
 class MarkdownContentDisplay extends Component {
     render({board, source}) {
-        return h(ReactMarkdown, {
-            source,
-            plugins: [breaks],
-            escapeHtml: true,
-            renderers: {
-                root: ({children}) => h(ContentDisplay, {tag: 'div', board}, children),
-                paragraph: Paragraph,
-                link: Link,
-                image: Image,
-                linkReference: Link,
-                imageReference: Image,
-                table: null,
-                listItem: ListItem,
-                code: Paragraph,
-                html: Html
-            }
-        })
+        return h(ContentDisplay, {tag: 'div', board}, 
+            h(ReactMarkdown, {
+                source,
+                plugins: [breaks],
+                escapeHtml: true,
+                renderers: {
+                    paragraph: Paragraph,
+                    link: Link,
+                    image: Image,
+                    linkReference: Link,
+                    imageReference: Image,
+                    table: null,
+                    listItem: ListItem,
+                    code: Paragraph,
+                    html: Html
+                }
+            })
+        )
     }
 }
 
