@@ -84,7 +84,7 @@ exports.htmlify = function(input) {
         if (new RegExp(emailRegex).test(match))
             return '<a href="mailto:' + match + '" class="external">' + match + '</a>'
         if (new RegExp(movenumberRegex).test(match))
-            return '<a href="#" class="movenumber">' + match + '</a>'
+            return '<a href="#" class="movenumber" title="Jump to Move">' + match + '</a>'
         if (new RegExp(coordRegex).test(match))
             return '<span class="coord">' + match + '</span>'
     })
