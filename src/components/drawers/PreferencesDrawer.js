@@ -483,11 +483,15 @@ class EnginesTab extends Component {
 
             engines.unshift({name: '', path: '', args: ''})
             setting.set('engines.list', engines)
+
+            this.setState({}, () => {
+                this.element.querySelector('.engines-list li:first-child input').focus()
+            })
         }
     }
 
     render({engines}) {
-        return h('div', {class: 'engines'},
+        return h('div', {ref: el => this.element = el, class: 'engines'},
             h('div', {class: 'engines-list'},
                 h('ul', {}, engines.map(({name, path, args}, id) =>
                     h(EngineItem, {
