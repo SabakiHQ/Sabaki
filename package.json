@@ -73,6 +73,7 @@
     "preact": "^8.2.5",
     "react-markdown": "^3.1.4",
     "recursive-copy": "^2.0.6",
+    "remark-breaks": "^1.0.0",
     "rimraf": "^2.6.2",
     "uuid": "^3.0.1"
   },

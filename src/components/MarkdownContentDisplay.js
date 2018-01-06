@@ -1,4 +1,5 @@
 const {h, Component} = require('preact')
+const breaks = require('remark-breaks')
 const helper = require('../modules/helper')
 
 const ReactMarkdown = require('react-markdown')
@@ -12,7 +13,7 @@ function htmlify(children) {
             dangerouslySetInnerHTML: {
                 __html: helper.htmlify(
                     child.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                ).replace(/\n/g, '<br/>')
+                )
             }
         })
     })
@@ -23,6 +24,8 @@ function Paragraph({children}) {
 }
 
 function Link({href, title, children}) {
+    if (href.match(/^((ht|f)tps?:\/\/|mailto:)/) == null) return null
+
     return h('a', {class: 'external', href, title}, children)
 }
 
@@ -42,6 +45,7 @@ class MarkdownContentDisplay extends Component {
     render({board, source}) {
         return h(ReactMarkdown, {
             source,
+            plugins: [breaks],
             escapeHtml: true,
             renderers: {
                 root: ({children}) => h(ContentDisplay, {tag: 'div', board}, children),
