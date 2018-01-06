@@ -2,8 +2,7 @@ const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
-const ReactMarkdown = require('react-markdown')
-const ContentDisplay = require('./ContentDisplay')
+const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
 const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
@@ -167,21 +166,6 @@ class CommentTitle extends Component {
 }
 
 class CommentText extends Component {
-    constructor(props) {
-        super(props)
-
-        let Image = ({src, alt}) => h('a', {href: src}, alt)
-
-        this.renderers = {
-            blockquote: 'p',
-            image: Image,
-            imageReference: Image,
-            table: null,
-            heading: ({children}) => h('p', {}, h('strong', {}, children))
-            code: 'p'
-        }
-    }
-
     shouldComponentUpdate({board, comment}) {
         return comment !== this.props.comment
             || board.width !== this.props.board.width
@@ -189,20 +173,14 @@ class CommentText extends Component {
     }
 
     render({board, comment}) {
-        return h(ReactMarkdown, {
-            source: comment,
-            escapeHtml: true,
-            renderers: Object.assign({
-                root: ({children}) => h('div', 
-                    {
-                        ref: el => this.element = el,
-                        class: 'comment'
-                    }, 
+        return h('div',
+            {
+                ref: el => this.element = el,
+                class: 'comment'
+            },
 
-                    h(ContentDisplay, {tag: 'div', board}, children)
-                )
-            }, this.renderers)
-        })
+            h(MarkdownContentDisplay, {source: comment, board})
+        )
     }
 }
 
