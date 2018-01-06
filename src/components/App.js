@@ -429,9 +429,10 @@ class App extends Component {
         this.setState({
             openDrawer: showInfo ? 'info' : null,
             gameTrees: [emptyTree],
-            treePosition: [emptyTree, 0],
             representedFilename: null
         })
+
+        this.setCurrentTreePosition(emptyTree, 0)
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
@@ -503,9 +504,10 @@ class App extends Component {
             this.detachEngines()
             this.setState({
                 representedFilename: null,
-                gameTrees,
-                treePosition: [gameTrees[0], 0]
+                gameTrees
             })
+
+            this.setCurrentTreePosition(gameTrees[0], 0)
 
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
