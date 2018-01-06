@@ -12,7 +12,7 @@ function htmlify(children) {
             dangerouslySetInnerHTML: {
                 __html: helper.htmlify(
                     child.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                )
+                ).replace(/\n/g, '<br/>')
             }
         })
     })
