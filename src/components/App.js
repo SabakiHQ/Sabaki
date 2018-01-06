@@ -1933,7 +1933,7 @@ class App extends Component {
                 controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
-                            sign: i === 0 ? 1 : -1,
+                            sign: this.state.attachedEngines.indexOf(engines[i]) === 0 ? 1 : -1,
                             name: controller.engine.name,
                             command: null,
                             response: new gtp.Response(null, content, false, true)
