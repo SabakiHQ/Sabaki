@@ -71,11 +71,6 @@ exports.normalizeEndings = function(input) {
     return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
 
-exports.markdown = function(input) {
-    let marked = require('./marked')
-    return marked(exports.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
-}
-
 exports.htmlify = function(input) {
     let urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
     let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
