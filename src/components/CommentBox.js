@@ -172,14 +172,14 @@ class CommentText extends Component {
             || board.height !== this.props.board.height
     }
 
-    render({board, comment}) {
+    render({comment}) {
         return h('div',
             {
                 ref: el => this.element = el,
                 class: 'comment'
             },
 
-            h(MarkdownContentDisplay, {source: comment, board})
+            h(MarkdownContentDisplay, {source: comment})
         )
     }
 }
@@ -286,7 +286,6 @@ class CommentBox extends Component {
                 }),
 
                 h(CommentText, {
-                    board,
                     comment,
                     onLinkClick,
                     onCoordinateMouseEnter,

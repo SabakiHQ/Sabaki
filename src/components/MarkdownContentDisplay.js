@@ -9,12 +9,9 @@ function htmlify(children) {
     return children.map(child => {
         if (typeof child !== 'string') return child
 
-        return h('span', {
-            dangerouslySetInnerHTML: {
-                __html: helper.htmlify(
-                    child.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-                )
-            }
+        return h(ContentDisplay, {
+            tag: 'span',
+            content: child
         })
     })
 }
@@ -24,7 +21,8 @@ function Paragraph({children}) {
 }
 
 function Link({href, title, children}) {
-    if (href.match(/^((ht|f)tps?:\/\/|mailto:)/) == null) return null
+    if (href.match(/^((ht|f)tps?:\/\/|mailto:)/) == null) 
+        return h('span', {}, children)
 
     return h('a', {class: 'external', href, title}, children)
 }
@@ -42,25 +40,22 @@ function Html({isBlock, value}) {
 }
 
 class MarkdownContentDisplay extends Component {
-    render({board, source}) {
-        return h(ContentDisplay, {tag: 'div', board}, 
-            h(ReactMarkdown, {
-                source,
-                plugins: [breaks],
-                escapeHtml: true,
-                renderers: {
-                    paragraph: Paragraph,
-                    link: Link,
-                    image: Image,
-                    linkReference: Link,
-                    imageReference: Image,
-                    table: null,
-                    listItem: ListItem,
-                    code: Paragraph,
-                    html: Html
-                }
-            })
-        )
+    render({source}) {
+        return h(ReactMarkdown, {
+            source,
+            plugins: [breaks],
+            renderers: {
+                paragraph: Paragraph,
+                link: Link,
+                image: Image,
+                linkReference: Link,
+                imageReference: Image,
+                table: null,
+                listItem: ListItem,
+                code: Paragraph,
+                html: Html
+            }
+        })
     }
 }
 
