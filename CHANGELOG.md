@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Up and down keys for traversing command history in the GTP console are working again
+
 ## [Sabaki v0.32.2][v0.32.2] (2018-01-01)
 
 **Added**
