@@ -1987,13 +1987,15 @@ class App extends Component {
 
         let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m)
         if (sabakiJsonMatch == null) sabakiJsonMatch = ['', '{}']
+        let sabakiJson = JSON.parse(sabakiJsonMatch[1])
 
-        try {
-            let sabakiJson = JSON.parse(sabakiJsonMatch[1])
+        if (sabakiJson.variations != null) {
+            let subtrees = sgf.parse(sabakiJson.variations)
 
-            if (sabakiJson.variations != null) {
-                let subtrees = sgf.parse(sabakiJson.variations)
+            if (subtrees > 0) {
+                let {gameTrees} = this.state
                 let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
+                let gameIndex = gameTrees.indexOf(gametree.getRoot(tree))
                 let splitted = gametree.split(tree, index)
 
                 for (let subtree of subtrees) {
@@ -2003,31 +2005,29 @@ class App extends Component {
                 splitted.subtrees.push(...subtrees)
                 gametree.reduce(splitted)
 
-                this.setState(({gameTrees}) => {
-                    gameTrees[this.inferredState.gameIndex] = gametree.getRoot(splitted)
-                    return {gameTrees}
-                })
+                gameTrees[gameIndex] = gametree.getRoot(splitted)
 
+                this.setState({gameTrees})
                 this.setCurrentTreePosition(...gametree.navigate(splitted, splitted.nodes.length - 1, 1))
             }
+        }
 
-            if (sabakiJson.node != null) {
-                let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
-                let [tree, index] = this.state.treePosition
-                let node = tree.nodes[index]
+        if (sabakiJson.node != null) {
+            let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
+            let [tree, index] = this.state.treePosition
+            let node = tree.nodes[index]
 
-                for (let key in nodeInfo) {
-                    if (key in node) node[key].push(...nodeInfo[key])
-                    else node[key] = nodeInfo[key]
-                }
-
-                this.setCurrentTreePosition(tree, index)
+            for (let key in nodeInfo) {
+                if (key in node) node[key].push(...nodeInfo[key])
+                else node[key] = nodeInfo[key]
             }
 
-            if (sabakiJson.heatmap != null) {
-                this.setState({heatMap: sabakiJson.heatmap})
-            }
-        } catch (err) {}
+            this.setCurrentTreePosition(tree, index)
+        }
+
+        if (sabakiJson.heatmap != null) {
+            this.setState({heatMap: sabakiJson.heatmap})
+        }
     }
 
     async syncEngines({passPlayer = null} = {}) {
