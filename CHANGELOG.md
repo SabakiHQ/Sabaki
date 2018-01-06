@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Allow engines to send heatmaps and visualizes them
+
 **Fixed**
 
 * Up and down keys for traversing command history in the GTP console are working again
