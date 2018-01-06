@@ -109,13 +109,27 @@ class GtpConsole extends Component {
                 // Up and down
 
                 evt.preventDefault()
+                let {consoleLog} = this.props
                 let sign = evt.keyCode === 38 ? -1 : 1
 
-                if (this.inputPointer == null) this.inputPointer = this.props.consoleLog.length
-                this.inputPointer = Math.min(this.props.consoleLog.length, Math.max(0, this.inputPointer + sign))
+                if (this.inputPointer == null) this.inputPointer = consoleLog.length
 
-                let command = (this.props.consoleLog[this.inputPointer] || [])[2]
-                this.setState({commandInputText: command ? command.toString() : ''})
+                while (true) {
+                    this.inputPointer += sign
+
+                    if (this.inputPointer < 0 || this.inputPointer >= consoleLog.length) {
+                        this.inputPointer = Math.max(-1, Math.min(consoleLog.length, this.inputPointer))
+                        this.setState({commandInputText: ''})
+                        break
+                    }
+
+                    let {command} = consoleLog[this.inputPointer]
+                    
+                    if (command != null) {
+                        this.setState({commandInputText: command.toString()})
+                        break
+                    }
+                }
             } else if (evt.keyCode === 9) {
                 // Tab
 
@@ -163,7 +177,7 @@ class GtpConsole extends Component {
         let {engineIndex, commandInputText} = this.state
 
         if (engineCommands[engineIndex] && commandInputText.length > 0) {
-            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0)
+            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0) || ''
         }
 
         return ''
