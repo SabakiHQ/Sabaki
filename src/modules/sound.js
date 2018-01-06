@@ -1,8 +1,10 @@
+const helper = require('./helper')
+
 let lastPachiIndex = -1
 let lastCaptureIndex = -1
 
-let captureSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`./data/capture${x}.mp3`))
-let pachiSounds = Object.keys(new Int8Array(5)).map(x => new Audio(`./data/${x}.mp3`))
+let captureSounds = [...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`))
+let pachiSounds = [...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`))
 
 let newGameSound = new Audio('./data/newgame.mp3')
 let passSound = new Audio('./data/pass.mp3')
@@ -16,7 +18,7 @@ exports.playPachi = function(delay = 0) {
 
     lastPachiIndex = index
 
-    setTimeout(() => pachiSounds[index].play(), delay)
+    setTimeout(() => pachiSounds[index].play().catch(helper.noop), delay)
 }
 
 exports.playCapture = function(delay = 0) {
@@ -28,13 +30,13 @@ exports.playCapture = function(delay = 0) {
 
     lastCaptureIndex = index
 
-    setTimeout(() => captureSounds[index].play(), delay)
+    setTimeout(() => captureSounds[index].play().catch(helper.noop), delay)
 }
 
 exports.playPass = function(delay = 0) {
-    setTimeout(() => passSound.play(), delay)
+    setTimeout(() => passSound.play().catch(helper.noop), delay)
 }
 
 exports.playNewGame = function(delay = 0) {
-    setTimeout(() => newGameSound.play(), delay)
+    setTimeout(() => newGameSound.play().catch(helper.noop), delay)
 }
