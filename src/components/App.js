@@ -1994,7 +1994,7 @@ class App extends Component {
         if (sabakiJson.variations != null) {
             let subtrees = sgf.parse(sabakiJson.variations)
 
-            if (subtrees > 0) {
+            if (subtrees.length > 0) {
                 let {gameTrees} = this.state
                 let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
                 let gameIndex = gameTrees.indexOf(gametree.getRoot(tree))
