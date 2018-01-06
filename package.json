@@ -71,6 +71,7 @@
     "octicons": "^6.0.1",
     "pikaday": "^1.6.1",
     "preact": "^8.2.5",
+    "react-markdown": "^3.1.4",
     "recursive-copy": "^2.0.6",
     "rimraf": "^2.6.2",
     "uuid": "^3.0.1"
