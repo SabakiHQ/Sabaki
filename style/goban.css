@@ -180,18 +180,22 @@
         width: 1px;
         height: 1px;
         background: red;
-        opacity: .8;
+        opacity: 0;
         pointer-events: none;
+        transition: opacity .5s, box-shadow .5s;
         z-index: 5;
     }
     .goban .row li.heat_9 div.heat {
         box-shadow: 0 0 1em 1em red;
+        opacity: .8;
     }
     .goban .row li.heat_8 div.heat {
         box-shadow: 0 0 1em .9em red;
+        opacity: .8;
     }
     .goban .row li.heat_7 div.heat {
         box-shadow: 0 0 1em .75em red;
+        opacity: .8;
     }
     .goban .row li.heat_6 div.heat {
         box-shadow: 0 0 1em .6em red;

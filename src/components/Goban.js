@@ -84,7 +84,7 @@ class GobanVertex extends Component {
                 h('img', {src: './img/goban/blank.svg'}),
                 h('span', {title: label}),
                 
-                !!heat && h('div', {class: 'heat'})
+                h('div', {class: 'heat'})
             ),
 
             !!paint && h('div', {class: 'paint'}),
