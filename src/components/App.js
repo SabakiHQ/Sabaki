@@ -2127,12 +2127,12 @@ class App extends Component {
 
         this.makeMove(vertex, {player: sign})
 
-        if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
-            // Send Sabaki specific GTP commands
+        if (!doublePass && this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
+            // Send Sabaki specific GTP command
 
-            playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
+            await playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
         }
-        
+
         this.engineStates[playerIndex] = {
             komi: this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi,
             board: gametree.getBoard(...this.state.treePosition)
