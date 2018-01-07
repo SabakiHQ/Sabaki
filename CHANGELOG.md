@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * The command history limit has been reinstated, but raised
+* Update to Electron 1.7.10
 
 **Fixed**
 
