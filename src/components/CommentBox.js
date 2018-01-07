@@ -158,9 +158,11 @@ class CommentTitle extends Component {
                 onClick: this.handleEditButtonClick
             }),
 
-            h('span', {}, title !== '' ? title
+            h('span', {}, helper.typographer(
+                title !== '' ? title
                 : showMoveInterpretation ? this.getCurrentMoveInterpretation()
-                : '')
+                : ''
+            ))
         )
     }
 }
