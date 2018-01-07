@@ -67,6 +67,15 @@ exports.lexicalCompare = function(a, b) {
     return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : exports.lexicalCompare(a.slice(1), b.slice(1))
 }
 
+exports.typographer = function(input) {
+    return input.replace(/\.{3}/g, '…')
+        .replace(/(\S)'/g, '$1’')
+        .replace(/(\S)"/g, '$1”')
+        .replace(/'(\S)/g, '‘$1')
+        .replace(/"(\S)/g, '“$1')
+        .replace(/(\s)-(\s)/g, '$1–$2')
+}
+
 exports.normalizeEndings = function(input) {
     return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
