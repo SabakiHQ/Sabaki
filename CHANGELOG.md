@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Allow engines to send heatmaps and visualizes them
 
+**Changed**
+
+* The command history limit has been reinstated, but raised
+
 **Fixed**
 
 * Fix comment input area not being visible in edit mode sometimes
