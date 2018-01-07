@@ -1923,6 +1923,7 @@ class App extends Component {
                 this.attachedEngineControllers[i] = controller
                 this.engineStates[i] = null
 
+                controller.start()
                 controller.sendCommand(command('name'))
                 controller.sendCommand(command('version'))
                 controller.sendCommand(command('protocol_version'))
@@ -1968,10 +1969,14 @@ class App extends Component {
         if (sign > 1) sign = 0
 
         let entry = {sign, name: controller.engine.name, command}
-        
-        this.setState(({consoleLog}) => ({
-            consoleLog: [...consoleLog, entry]
-        }))
+        let maxLength = setting.get('console.max_history_count') 
+         
+        this.setState(({consoleLog}) => {
+            let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
+            newLog.push(entry)
+ 
+            return {consoleLog: newLog}
+        })
 
         let response = await getResponse()
 
