@@ -6,13 +6,13 @@ const ReactMarkdown = require('react-markdown')
 const ContentDisplay = require('./ContentDisplay')
 
 function typographer(children) {
-    if (typeof children === 'string') {
-        return helper.typographer(children)
+    if (!Array.isArray(children)) {
+        return typographer([children])[0]
     }
 
     return children.map(child => {
         if (typeof child !== 'string') return child
-        return typographer(child)
+        return helper.typographer(child)
     })
 }
 
@@ -27,20 +27,15 @@ function htmlify(children) {
     })
 }
 
+const generateBasicComponent = tag => ({children}) => h(tag, {}, htmlify(children))
+
+const Emphasis = generateBasicComponent('em')
+const Strong = generateBasicComponent('strong')
+const Delete = generateBasicComponent('del')
+const ListItem = generateBasicComponent('li')
+
 function Paragraph({children}) {
     return h('p', {}, htmlify(children))
-}
-
-function Emphasis({children}) {
-    return h('em', {}, htmlify(children))
-}
-
-function Strong({children}) {
-    return h('strong', {}, htmlify(children))
-}
-
-function Delete({children}) {
-    return h('del', {}, htmlify(children))
 }
 
 function Link({href, title, children}) {
@@ -52,10 +47,6 @@ function Link({href, title, children}) {
 
 function Image({src, alt}) {
     return h(Link, {href: src}, typographer(alt))
-}
-
-function ListItem({children}) {
-    return h('li', {}, htmlify(children))
 }
 
 function Heading({level, children}) {
