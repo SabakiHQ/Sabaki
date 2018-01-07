@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Allow engines to send heatmaps and visualizes them
 * Ability to specify commands that are sent to engines right after they start
+* Add option whether Sabaki should start a game right after attaching engines
 
 **Changed**
 

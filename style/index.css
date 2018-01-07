@@ -886,6 +886,9 @@ header, #bar .bar {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+    #preferences form > div.general > p {
+        clear: both;
+    }
     #preferences form > div.themes label span {
         display: inline-block;
         width: 10em;

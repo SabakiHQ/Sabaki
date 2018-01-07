@@ -95,6 +95,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'file.show_reload_warning',
                     text: 'Offer to reload file if changed externally'
+                }),
+                h(PreferencesItem, {
+                    id: 'gtp.start_game_after_attach',
+                    text: 'Start game right after attaching engines'
                 })
             ),
 

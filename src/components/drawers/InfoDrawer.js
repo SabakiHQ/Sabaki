@@ -53,8 +53,9 @@ class InfoDrawer extends Component {
             await sabaki.waitForRender()
 
             let i = this.props.currentPlayer > 0 ? 0 : 1
+            let startGame = setting.get('gtp.start_game_after_attach')
 
-            if (sabaki.attachedEngineControllers[i] != null) {
+            if (startGame && sabaki.attachedEngineControllers[i] != null) {
                 sabaki.startGeneratingMoves()
             }
         }
