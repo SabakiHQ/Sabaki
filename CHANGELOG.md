@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 * Fix engine color indicator of GTP console being wrong when swapping engine color mid-game
 * Up and down keys for traversing command history in the GTP console are working again
 * Fix Sabaki trying to add engine variations while in scoring mode after a double pass
+* Fix engine passes not getting passed on to opponent engine
 
 ## [Sabaki v0.32.2][v0.32.2] (2018-01-01)
 

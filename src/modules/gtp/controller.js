@@ -22,7 +22,7 @@ class Controller extends EventEmitter {
     start() {
         if (this.process) return
 
-        let {path, args, commands} = this.engine
+        let {path, args, commands = ''} = this.engine
 
         this.process = spawn(path, split(args), {cwd: dirname(path)})
 

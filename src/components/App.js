@@ -2049,6 +2049,7 @@ class App extends Component {
             for (let i = 0; i < this.attachedEngineControllers.length; i++) {
                 if (this.attachedEngineControllers[i] == null) continue
 
+                let player = i === 0 ? 1 : -1
                 let controller = this.attachedEngineControllers[i]
                 let engineState = this.engineStates[i]
                 
@@ -2056,7 +2057,7 @@ class App extends Component {
 
                 // Send pass if required
 
-                if (passPlayer != null) {
+                if (passPlayer != null && passPlayer !== player) {
                     let color = passPlayer > 0 ? 'B' : 'W'
                     controller.sendCommand(new gtp.Command(null, 'play', color, 'pass'))
                 }
@@ -2108,10 +2109,12 @@ class App extends Component {
 
         let response = await playerController.sendCommand(new gtp.Command(null, 'genmove', color))
         let sign = color === 'B' ? 1 : -1
+        let pass = true
         let vertex = [-1, -1]
         let board = gametree.getBoard(rootTree, 0)
 
         if (response.content.toLowerCase() !== 'pass') {
+            pass = false
             vertex = board.coord2vertex(response.content)
         }
 
@@ -2128,7 +2131,6 @@ class App extends Component {
         let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
         let previousPass = ['W', 'B'].some(color => color in previousNode 
             && !board.hasVertex(sgf.point2vertex(previousNode[color][0])))
-        let pass = helper.vertexEquals(vertex, [-1, -1])
         let doublePass = previousPass && pass
 
         this.makeMove(vertex, {player: sign})
@@ -2146,7 +2148,7 @@ class App extends Component {
 
         if (otherController != null && !doublePass) {
             await helper.wait(setting.get('gtp.move_delay'))
-            this.startGeneratingMoves({followUp: true})
+            this.startGeneratingMoves({passPlayer: pass ? sign : null, followUp: true})
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
