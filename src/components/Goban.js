@@ -13,6 +13,7 @@ class GobanVertex extends Component {
         hoshi,
         shift,
         highlight,
+        heat,
         paint,
         dimmed,
         animate,
@@ -27,6 +28,7 @@ class GobanVertex extends Component {
             || label !== this.props.label
             || shift !== this.props.shift
             || animate !== this.props.animate
+            || heat !== this.props.heat
             || paint !== this.props.paint
             || dimmed !== this.props.dimmed
             || hoshi !== this.props.hoshi
@@ -38,6 +40,7 @@ class GobanVertex extends Component {
         random,
         sign,
         highlight,
+        heat,
         paint,
         dimmed,
         hoshi,
@@ -46,15 +49,16 @@ class GobanVertex extends Component {
         label,
         ghostTypes,
 
-        onMouseDown = helper.noop,
-        onMouseUp = helper.noop,
-        onMouseMove = helper.noop
+        onMouseDown,
+        onMouseUp,
+        onMouseMove
     }) {
         let classes = {
             [`pos_${x}-${y}`]: true,
             [`shift_${shift}`]: true,
             [`random_${random}`]: true,
             [`sign_${sign}`]: true,
+            [`heat_${heat}`]: !!heat,
             [`paint_${paint}`]: !!paint,
             [markupType]: !!markupType,
             dimmed,
@@ -75,14 +79,15 @@ class GobanVertex extends Component {
                 onMouseUp,
                 onMouseMove
             },
-
+            
             h('div', {class: 'stone'},
                 h('img', {src: './img/goban/blank.svg'}),
-                h('span', {title: label})
+                h('span', {title: label}),
+                
+                h('div', {class: 'heat'})
             ),
 
-            h('div', {class: 'paint'}),
-
+            !!paint && h('div', {class: 'paint'}),
             highlight && h('div', {class: 'highlight'})
         )
     }
@@ -106,18 +111,16 @@ class GobanLine extends Component {
         let angle = Math.atan2(dy, dx) * 180 / Math.PI
         let length = Math.sqrt(dx * dx + dy * dy)
 
-        return h('hr',
-            {
-                class: classNames({[type]: true, temporary}),
-                style: {
-                    width: length,
-                    transform: `
-                        translate(${left - length / 2}px, ${top}px)
-                        rotate(${angle}deg)
-                    `
-                }
+        return h('hr', {
+            class: classNames({[type]: true, temporary}),
+            style: {
+                width: length,
+                transform: `
+                    translate(${left - length / 2}px, ${top}px)
+                    rotate(${angle}deg)
+                `
             }
-        )
+        })
     }
 }
 
@@ -187,25 +190,6 @@ class Goban extends Component {
         })
 
         this.resize()
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        for (let key in nextProps) {
-            if (['board', 'highlightVertices', 'dimmedStones', 'paintMap'].includes(key)) continue
-
-            if (nextProps[key] !== this.props[key])
-                return true
-        }
-
-        for (let key in nextState) {
-            if (nextState[key] !== this.state[key])
-                return true
-        }
-
-        return nextProps.board.getHash() !== this.props.board.getHash()
-            || !helper.equals(nextProps.highlightVertices, this.props.highlightVertices)
-            || !helper.equals(nextProps.dimmedStones, this.props.dimmedStones)
-            || !helper.equals(nextProps.paintMap, this.props.paintMap)
     }
 
     componentWillReceiveProps({board, animatedVertex}) {
@@ -381,6 +365,7 @@ class Goban extends Component {
     render({
         board,
         paintMap,
+        heatMap,
         highlightVertices = [],
         dimmedStones = [],
 
@@ -462,6 +447,7 @@ class Goban extends Component {
                         shift: this.state.shifts[y][x],
                         random: this.state.randomizer[y][x],
                         sign,
+                        heat: heatMap && heatMap[y] && heatMap[y][x],
                         paint: paintMap && paintMap[y] && paintMap[y][x],
                         dimmed: dimmedStones.some(equalsVertex),
                         highlight: highlightVertices.some(equalsVertex),

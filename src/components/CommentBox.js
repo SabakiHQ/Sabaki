@@ -1,7 +1,8 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const ContentDisplay = require('./ContentDisplay')
+
+const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
 const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
@@ -165,21 +166,19 @@ class CommentTitle extends Component {
 }
 
 class CommentText extends Component {
-    shouldComponentUpdate({board, comment}) {
+    shouldComponentUpdate({comment}) {
         return comment !== this.props.comment
-            || board.width !== this.props.board.width
-            || board.height !== this.props.board.height
     }
 
-    render({board, comment}) {
-        return h('div', {
-            ref: el => this.element = el,
-            class: 'comment'
-        }, h(ContentDisplay, {
-            tag: 'div',
-            board,
-            dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
-        }))
+    render({comment}) {
+        return h('div',
+            {
+                ref: el => this.element = el,
+                class: 'comment'
+            },
+
+            h(MarkdownContentDisplay, {source: comment})
+        )
     }
 }
 
@@ -215,13 +214,18 @@ class CommentBox extends Component {
     }
 
     componentWillReceiveProps({treePosition, mode}) {
-        if (mode === 'edit') return
+        let treePositionChanged = treePosition !== this.props.treePosition
+
+        if (mode === 'edit') {
+            this.element.scrollTop = 0
+            if (treePositionChanged) this.textareaElement.scrollTop = 0
+
+            return
+        }
 
         // Debounce rendering
 
         this.dirty = true
-
-        let treePositionChanged = treePosition !== this.props.treePosition
 
         clearTimeout(this.updateId)
         this.updateId = setTimeout(() => {
@@ -231,11 +235,6 @@ class CommentBox extends Component {
                 this.setState({
                     board: gametree.getBoard(...this.props.treePosition)
                 })
-
-                if (this.props.mode === 'edit') {
-                    this.element.scrollTop = 0
-                    if (treePositionChanged) this.textareaElement.scrollTop = 0
-                }
 
                 this.element.scrollTop = 0
             } else {
@@ -285,7 +284,6 @@ class CommentBox extends Component {
                 }),
 
                 h(CommentText, {
-                    board,
                     comment,
                     onLinkClick,
                     onCoordinateMouseEnter,

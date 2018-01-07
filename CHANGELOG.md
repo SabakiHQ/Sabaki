@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.33.0][v0.33.0] (2018-01-09)
+
+**Added**
+
+* Allow engines to send heatmaps and visualizes them
+* Ability to specify commands that are sent to engines right after they start
+
+**Changed**
+
+* The command history limit has been reinstated, but raised
+
+**Fixed**
+
+* Fix comment input area not being visible in edit mode sometimes
+* Fix engine color indicator of GTP console being wrong when swapping engine color mid-game
+* Up and down keys for traversing command history in the GTP console are working again
+* Fix Sabaki trying to add engine variations while in scoring mode after a double pass
+
 ## [Sabaki v0.32.2][v0.32.2] (2018-01-01)
 
 **Added**
@@ -632,7 +650,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.32.2...master
+[unreleased]: https://github.com/yishn/Sabaki/compare/v0.33.0...master
+[v0.33.0]: https://github.com/yishn/Sabaki/compare/v0.32.2...v0.33.0
 [v0.32.2]: https://github.com/yishn/Sabaki/compare/v0.31.5...v0.32.2
 [v0.31.5]: https://github.com/yishn/Sabaki/compare/v0.31.4...v0.31.5
 [v0.31.4]: https://github.com/yishn/Sabaki/compare/v0.31.3...v0.31.4

@@ -13,7 +13,7 @@ class ConsoleCommandEntry extends Component {
         return false
     }
 
-    render({board, sign, name, command}) {
+    render({sign, name, command}) {
         if (command == null) command = new gtp.Command(null, '')
 
         return h('li', {class: 'command'},
@@ -25,11 +25,7 @@ class ConsoleCommandEntry extends Component {
 
                 h(ContentDisplay, {
                     tag: 'span',
-                    board,
-                    dangerouslySetInnerHTML: {
-                        __html: helper.htmlify(command.arguments.join(' ')
-                            .replace(/</g, '&lt;').replace(/>/g, '&gt;'))
-                    }
+                    content: command.arguments.join(' ')
                 })
             )
         )
@@ -42,7 +38,7 @@ class ConsoleResponseEntry extends Component {
             || response !== this.props.response
     }
 
-    render({board, response, waiting}) {
+    render({response, waiting}) {
         return h('li', {class: classNames({response: true, waiting})},
             !waiting && response != null
 
@@ -58,11 +54,7 @@ class ConsoleResponseEntry extends Component {
                 h(ContentDisplay, {
                     tag: 'span',
                     class: response.internal ? 'internal' : '',
-                    board,
-                    dangerouslySetInnerHTML: {
-                        __html: helper.htmlify(response.content
-                            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
-                    }
+                    content: response.content
                 })
             )
 
@@ -109,13 +101,27 @@ class GtpConsole extends Component {
                 // Up and down
 
                 evt.preventDefault()
+                let {consoleLog} = this.props
                 let sign = evt.keyCode === 38 ? -1 : 1
 
-                if (this.inputPointer == null) this.inputPointer = this.props.consoleLog.length
-                this.inputPointer = Math.min(this.props.consoleLog.length, Math.max(0, this.inputPointer + sign))
+                if (this.inputPointer == null) this.inputPointer = consoleLog.length
 
-                let command = (this.props.consoleLog[this.inputPointer] || [])[2]
-                this.setState({commandInputText: command ? command.toString() : ''})
+                while (true) {
+                    this.inputPointer += sign
+
+                    if (this.inputPointer < 0 || this.inputPointer >= consoleLog.length) {
+                        this.inputPointer = Math.max(-1, Math.min(consoleLog.length, this.inputPointer))
+                        this.setState({commandInputText: ''})
+                        break
+                    }
+
+                    let {command} = consoleLog[this.inputPointer]
+                    
+                    if (command != null) {
+                        this.setState({commandInputText: command.toString()})
+                        break
+                    }
+                }
             } else if (evt.keyCode === 9) {
                 // Tab
 
@@ -163,13 +169,13 @@ class GtpConsole extends Component {
         let {engineIndex, commandInputText} = this.state
 
         if (engineCommands[engineIndex] && commandInputText.length > 0) {
-            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0)
+            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0) || ''
         }
 
         return ''
     }
 
-    render({board, consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
+    render({consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
         let selectedEngine = attachedEngines[engineIndex]
         let selectWidth = Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) * 10 + 15
         let hasEngines = attachedEngines.some(x => x != null)
@@ -184,15 +190,15 @@ class GtpConsole extends Component {
                 },
 
                 consoleLog.map(({sign, name, command, response}, i) => [
-                    command ? h(ConsoleCommandEntry, {board, sign, name, command})
+                    command ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
                     : !command && (
                         i == 0 
                         || consoleLog[i - 1].sign !== sign 
                         || consoleLog[i - 1].name !== name
-                    ) ? h(ConsoleCommandEntry, {board, sign, name, command})
+                    ) ? h(ConsoleCommandEntry, {sign, name, command})
                     : null,
                     
-                    h(ConsoleResponseEntry, {board, response, waiting: response == null})
+                    h(ConsoleResponseEntry, {response, waiting: response == null})
                 ])
             ),
 

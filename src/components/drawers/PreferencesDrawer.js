@@ -400,15 +400,25 @@ class EngineItem extends Component {
         }
     }
 
-    shouldComponentUpdate({name, path, args}) {
+    shouldComponentUpdate({name, path, args, commands}) {
         return name !== this.props.name
             || path !== this.props.path
             || args !== this.props.args
+            || commands !== this.props.commands
     }
 
-    render({name, path, args}) {
+    render({name, path, args, commands}) {
         return h('li', {},
             h('h3', {},
+                h('a', 
+                    {
+                        class: 'remove',
+                        title: 'Remove',
+                        onClick: this.handleRemoveButtonClick
+                    },
+
+                    h('img', {src: './node_modules/octicons/build/svg/x.svg'})
+                ),
                 h('input', {
                     type: 'text',
                     placeholder: '(Unnamed Engine)',
@@ -418,25 +428,22 @@ class EngineItem extends Component {
                 })
             ),
             h('p', {},
+                h('a',
+                    {
+                        class: 'browse',
+                        title: 'Browse…',
+                        onClick: this.handleBrowseButtonClick
+                    },
+
+                    h('img', {src: './node_modules/octicons/build/svg/file-directory.svg'})
+                ),
                 h('input', {
                     type: 'text',
                     placeholder: 'Path',
                     value: path,
                     name: 'path',
                     onChange: this.handleChange
-                }),
-                h('a',
-                    {
-                        class: 'browse',
-                        onClick: this.handleBrowseButtonClick
-                    },
-
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/file-directory.svg',
-                        title: 'Browse…',
-                        height: 14
-                    })
-                )
+                })
             ),
             h('p', {},
                 h('input', {
@@ -447,11 +454,13 @@ class EngineItem extends Component {
                     onChange: this.handleChange
                 })
             ),
-            h('a', {class: 'remove'},
-                h('img', {
-                    src: './node_modules/octicons/build/svg/x.svg',
-                    height: 14,
-                    onClick: this.handleRemoveButtonClick
+            h('p', {},
+                h('input', {
+                    type: 'text',
+                    placeholder: 'Initial commands (;-separated)',
+                    value: commands,
+                    name: 'commands',
+                    onChange: this.handleChange
                 })
             )
         )
@@ -462,10 +471,10 @@ class EnginesTab extends Component {
     constructor() {
         super()
 
-        this.handleItemChange = ({id, name, path, args}) => {
+        this.handleItemChange = ({id, name, path, args, commands}) => {
             let engines = this.props.engines.slice()
 
-            engines[id] = {name, path, args}
+            engines[id] = {name, path, args, commands}
             setting.set('engines.list', engines)
         }
 
@@ -483,18 +492,23 @@ class EnginesTab extends Component {
 
             engines.unshift({name: '', path: '', args: ''})
             setting.set('engines.list', engines)
+
+            this.setState({}, () => {
+                this.element.querySelector('.engines-list li:first-child input').focus()
+            })
         }
     }
 
     render({engines}) {
-        return h('div', {class: 'engines'},
+        return h('div', {ref: el => this.element = el, class: 'engines'},
             h('div', {class: 'engines-list'},
-                h('ul', {}, engines.map(({name, path, args}, id) =>
+                h('ul', {}, engines.map(({name, path, args, commands}, id) =>
                     h(EngineItem, {
                         id,
                         name,
                         path,
                         args,
+                        commands,
 
                         onChange: this.handleItemChange,
                         onRemove: this.handleItemRemove

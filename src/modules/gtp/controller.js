@@ -17,14 +17,12 @@ class Controller extends EventEmitter {
         this.error = false
         this.process = null
         this.engine = engine
-
-        this.start()
     }
 
     start() {
         if (this.process) return
 
-        let {path, args} = this.engine
+        let {path, args, commands} = this.engine
 
         this.process = spawn(path, split(args), {cwd: dirname(path)})
 
@@ -66,6 +64,13 @@ class Controller extends EventEmitter {
                 start = this._errBuffer.indexOf('\n')
             }
         })
+
+        let initialCommands = commands.split(';')
+            .map(x => x.trim()).filter(x => x !== '').map(x => new gtp.Command(null, x))
+
+        for (let command of initialCommands) {
+            this.sendCommand(command)
+        }
     }
 
     stop() {
