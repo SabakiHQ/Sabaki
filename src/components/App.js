@@ -1979,6 +1979,9 @@ class App extends Component {
         })
 
         let response = await getResponse()
+        let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m) || ['', '{}']
+
+        response.content = response.content.replace(/^#sabaki(.*)$/gm, '#sabaki{…}')
 
         this.setState(({consoleLog}) => {
             let index = consoleLog.indexOf(entry)
@@ -1992,8 +1995,6 @@ class App extends Component {
 
         // Handle Sabaki JSON
 
-        let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m)
-        if (sabakiJsonMatch == null) sabakiJsonMatch = ['', '{}']
         let sabakiJson = JSON.parse(sabakiJsonMatch[1])
 
         if (sabakiJson.variations != null) {
