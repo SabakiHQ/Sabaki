@@ -78,6 +78,8 @@ exports.sync = async function(controller, engineState, treePosition) {
             let vertices = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
 
             for (let vertex of vertices) {
+                if (engineBoard.get(vertex) !== 0) continue
+
                 promises.push(enginePlay(controller, sign, vertex, engineBoard))
                 engineBoard = engineBoard.makeMove(sign, vertex)
             }
