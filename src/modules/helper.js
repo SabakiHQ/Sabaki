@@ -71,32 +71,6 @@ exports.normalizeEndings = function(input) {
     return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
 
-exports.markdown = function(input) {
-    let marked = require('./marked')
-    return marked(exports.normalizeEndings(input.trim()).replace(/\n/g, '  \n'))
-}
-
-exports.htmlify = function(input) {
-    let urlRegex = '\\b(https?|ftps?):\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
-    let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-    let coordRegex = '\\b[a-hj-zA-HJ-Z][1-9][0-9]?\\b'
-    let movenumberRegex = '\\B#\\d+\\b'
-    let totalRegex = '(' + [urlRegex, emailRegex, coordRegex, movenumberRegex].join('|') + ')'
-
-    input = input.replace(new RegExp(totalRegex, 'g'), match => {
-        if (new RegExp(urlRegex).test(match))
-            return '<a href="' + match + '" class="external">' + match + '</a>'
-        if (new RegExp(emailRegex).test(match))
-            return '<a href="mailto:' + match + '" class="external">' + match + '</a>'
-        if (new RegExp(movenumberRegex).test(match))
-            return '<a href="#" class="movenumber">' + match + '</a>'
-        if (new RegExp(coordRegex).test(match))
-            return '<span class="coord">' + match + '</span>'
-    })
-
-    return input
-}
-
 exports.popupMenu = function(template, x, y) {
     let {remote} = require('electron')
     let setting = remote.require('./setting')

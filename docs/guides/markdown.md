@@ -10,7 +10,7 @@ Code blocks don't work in Sabaki. Images will be simply converted into links. HT
 
 ## Auto linking
 
-Sabaki will automatically create clickable links for URLs and email addresses. There's no need to write angle brackets; more precisely, angle brackets don't work. 
+Sabaki will automatically create clickable links for URLs and email addresses.
 
 Board coordinates can also be detected automatically. Hovering over them will show the position on the board.
 

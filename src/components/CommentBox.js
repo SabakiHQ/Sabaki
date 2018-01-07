@@ -1,7 +1,8 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const ContentDisplay = require('./ContentDisplay')
+
+const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
 const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
@@ -169,15 +170,15 @@ class CommentText extends Component {
         return comment !== this.props.comment
     }
 
-    render({board, comment}) {
-        return h('div', {
-            ref: el => this.element = el,
-            class: 'comment'
-        }, h(ContentDisplay, {
-            tag: 'div',
-            board,
-            dangerouslySetInnerHTML: {__html: helper.markdown(comment)}
-        }))
+    render({comment}) {
+        return h('div',
+            {
+                ref: el => this.element = el,
+                class: 'comment'
+            },
+
+            h(MarkdownContentDisplay, {source: comment})
+        )
     }
 }
 
@@ -283,7 +284,6 @@ class CommentBox extends Component {
                 }),
 
                 h(CommentText, {
-                    board,
                     comment,
                     onLinkClick,
                     onCoordinateMouseEnter,
