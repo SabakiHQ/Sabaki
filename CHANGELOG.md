@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Allow engines to send heatmaps and visualizes them
+* Ability to specify commands that are sent to engines right after they start
 
 **Changed**
 
