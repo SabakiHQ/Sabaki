@@ -17,8 +17,6 @@ class Controller extends EventEmitter {
         this.error = false
         this.process = null
         this.engine = engine
-
-        this.start()
     }
 
     start() {

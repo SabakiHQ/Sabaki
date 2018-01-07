@@ -1923,6 +1923,7 @@ class App extends Component {
                 this.attachedEngineControllers[i] = controller
                 this.engineStates[i] = null
 
+                controller.start()
                 controller.sendCommand(command('name'))
                 controller.sendCommand(command('version'))
                 controller.sendCommand(command('protocol_version'))
