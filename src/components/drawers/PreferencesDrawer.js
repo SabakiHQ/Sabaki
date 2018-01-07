@@ -457,7 +457,7 @@ class EngineItem extends Component {
             h('p', {},
                 h('input', {
                     type: 'text',
-                    placeholder: 'Initial commands (comma-separated)',
+                    placeholder: 'Initial commands (;-separated)',
                     value: commands,
                     name: 'commands',
                     onChange: this.handleChange
