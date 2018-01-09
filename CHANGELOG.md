@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.33.1][v0.33.1] (2018-01-09)
+
+**Fixed**
+
+* Fix board markups not being displayed on stones
+
 ## [Sabaki v0.33.0][v0.33.0] (2018-01-09)
 
 **Added**
