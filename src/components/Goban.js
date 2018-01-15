@@ -80,11 +80,11 @@ class GobanVertex extends Component {
                 onMouseMove
             },
             
+            h('div', {class: 'heat'}),
+
             h('div', {class: 'stone'},
                 h('img', {src: './img/goban/blank.svg'}),
                 h('span', {title: label}),
-                
-                h('div', {class: 'heat'})
             ),
 
             !!paint && h('div', {class: 'paint'}),

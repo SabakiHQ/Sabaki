@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix color of hoshi points not being themed
+
 ## [Sabaki v0.33.1][v0.33.1] (2018-01-09)
 
 **Fixed**
