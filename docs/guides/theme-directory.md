@@ -5,17 +5,18 @@
 | ------------- | ------------- |
 | [Photorealistic Theme](https://github.com/yishn/sabaki-photorealistic-theme)  | ![](https://github.com/yishn/sabaki-photorealistic-theme/raw/master/screenshot.png)  |
 | [Subdued Theme](https://github.com/fohristiwhirl/sabaki_subdued_theme)  | ![](https://raw.githubusercontent.com/fohristiwhirl/sabaki_subdued_theme/master/screenshot.gif)  |
-| [Walnut Theme](https://github.com/ParmuzinAlexander/sabaki-walnut-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-walnut-theme/raw/master/screenshot.png)  |
-| [Light Wood Theme](https://github.com/ParmuzinAlexander/sabaki-light-wood-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-light-wood-theme/raw/master/screenshot.png)  |
-| [Shell Stone Theme](https://github.com/ParmuzinAlexander/sabaki-shell-stone-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-shell-stone-theme/raw/master/screenshot.png)  |
-| [Pine Theme](https://github.com/ParmuzinAlexander/sabaki-pine-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-pine-theme/raw/master/screenshot.png)  |
-| [Goyabao Theme](https://github.com/ParmuzinAlexander/sabaki-goyabao-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-goyabao-theme/raw/master/screenshot.png)  |
-| [Flat Theme](https://github.com/ParmuzinAlexander/sabaki-flat-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-flat-theme/raw/master/screenshot.png)  |
-| [Grayscale Theme](https://github.com/ParmuzinAlexander/sabaki-grayscale-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-grayscale-theme/raw/master/screenshot.png)  |
 | [Wood Stone Theme](https://github.com/geovens/Sabaki-Theme#wood-stone-download)  | ![](https://github.com/geovens/sabaki-theme/raw/master/woodstone/screenshot.jpg)  |
 | [Cartoon Theme](https://github.com/geovens/Sabaki-Theme#cartoon-download)  | ![](https://github.com/geovens/sabaki-theme/raw/master/cartoon/screenshot.jpg)  |
-| [Paper Theme](https://github.com/ParmuzinAlexander/sabaki-paper-theme)  | ![](https://github.com/ParmuzinAlexander/sabaki-paper-theme/raw/master/screenshot.png)  |
-| [One Color Mode](https://github.com/ParmuzinAlexander/sabaki-one-color)  | ![](https://github.com/ParmuzinAlexander/sabaki-one-color/raw/master/screenshot.png) |
-| [Blind Mode](https://github.com/ParmuzinAlexander/sabaki-blind) | ![](https://github.com/ParmuzinAlexander/sabaki-blind/raw/master/screenshot.png) |
+| [board1-stone1-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board1-stone1-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board1-stone1-theme.png) |
+| [board1-stone2-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board1-stone2-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board1-stone2-theme.png) |
+| [board2-stone1-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board2-stone1-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board2-stone1-theme.png) |
+| [board2-stone2-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board2-stone2-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board2-stone2-theme.png) |
+| [board2-stone3-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board2-stone3-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board2-stone3-theme.png) |
+| [board3-stone1-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board3-stone1-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board3-stone1-theme.png) |
+| [board4-stone1-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board3-stone1-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board4-stone1-theme.png) |
+| [board5-stone1-theme](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/board3-stone1-theme.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/board5-stone1-theme.png) |
+| [black-white-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/black-white-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/black-white-mode.png) |
+| [one-color-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/one-color-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/one-color-mode.png) |
+| [blind-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/blind-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/blind-mode.png) |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn [how to package a userstyle into a theme](create-themes.md) and feel free to send in a pull request to add yours to the list!
