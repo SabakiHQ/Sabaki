@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Fix color of hoshi points not being themed
 
+**Changed**
+
+* Update to Electron v1.7.11
+
 ## [Sabaki v0.33.1][v0.33.1] (2018-01-09)
 
 **Fixed**
@@ -25,7 +29,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * The command history limit has been reinstated, but raised
-* Update to Electron 1.7.10
+* Update to Electron v1.7.10
 
 **Fixed**
 

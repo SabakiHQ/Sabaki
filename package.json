@@ -69,22 +69,22 @@
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
     "octicons": "^6.0.1",
-    "pikaday": "^1.6.1",
-    "preact": "^8.2.5",
+    "pikaday": "^1.7.0",
+    "preact": "^8.2.7",
     "react-markdown": "^3.1.4",
-    "recursive-copy": "^2.0.6",
+    "recursive-copy": "^2.0.8",
     "remark-breaks": "^1.0.0",
     "rimraf": "^2.6.2",
-    "uuid": "^3.0.1"
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "electron": "1.7.10",
-    "electron-builder": "^19.48.2",
+    "electron": "1.7.11",
+    "electron-builder": "^19.55.2",
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
     "react": "^16.2.0",
     "tmp": "0.0.33",
-    "uglifyjs-webpack-plugin": "^1.1.5",
+    "uglifyjs-webpack-plugin": "^1.1.6",
     "webpack": "^3.10.0"
   },
   "scripts": {
