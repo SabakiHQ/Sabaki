@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.33.1",
+  "version": "0.33.2",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
@@ -67,10 +67,9 @@
     "copy-text-to-clipboard": "^1.0.3",
     "natsort": "^1.0.6",
     "octicons": "^6.0.1",
-    "pikaday": "^1.6.1",
-    "preact": "^8.2.5",
+    "pikaday": "^1.7.0",
+    "preact": "^8.2.7",
     "react-markdown": "^3.1.4",
-    "recursive-copy": "^2.0.6",
     "remark-breaks": "^1.0.0"
   },
   "devDependencies": {

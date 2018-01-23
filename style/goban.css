@@ -32,7 +32,7 @@
         height: 100%;
         width: 100%;
     }
-    .goban li .stone::before {
+    .goban li .stone, .goban li .stone::before {
         z-index: 1;
     }
     .goban li .stone img {
@@ -86,7 +86,7 @@
         position: relative;
         background: url('../img/goban/inner.svg') center;
     }
-    .goban .row li.hoshi::before {
+    .goban .row li.hoshi::after {
         content: '';
         display: block;
         position: absolute;
