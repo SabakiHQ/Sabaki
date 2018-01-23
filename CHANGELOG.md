@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix color of hoshi points not being themed
+* Fix Markdown links not working properly
 
 **Changed**
 

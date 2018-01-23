@@ -39,10 +39,10 @@ function Paragraph({children}) {
 }
 
 function Link({href, title, children}) {
-    if (href.match(/^((ht|f)tps?:\/\/|mailto:)/) == null) 
+    if (href.match(/^((ht|f)tps?:\/\/|mailto:)/) == null)
         return h('span', {}, typographer(children))
 
-    return h('a', {class: 'external', href, title}, typographer(children))
+    return h(ContentDisplay, {}, h('a', {class: 'external', href, title}, typographer(children)))
 }
 
 function Image({src, alt}) {
