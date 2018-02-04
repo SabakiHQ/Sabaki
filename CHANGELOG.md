@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix stones with labels not showing up in ASCII diagrams
+
 ## [Sabaki v0.33.2][v0.33.2] (2018-01-23)
 
 **Fixed**
