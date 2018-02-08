@@ -9,10 +9,10 @@
   "main": "./src/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yishn/Sabaki"
+    "url": "https://github.com/SabakiHQ/Sabaki"
   },
   "bugs": {
-    "url": "https://github.com/yishn/Sabaki/issues"
+    "url": "https://github.com/SabakiHQ/Sabaki/issues"
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",

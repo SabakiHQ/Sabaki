@@ -3,7 +3,7 @@
 
 | Theme  | Screenshot |
 | ------------- | ------------- |
-| [Photorealistic Theme](https://github.com/yishn/sabaki-photorealistic-theme)  | ![](https://github.com/yishn/sabaki-photorealistic-theme/raw/master/screenshot.png)  |
+| [Photorealistic Theme](https://github.com/SabakiHQ/theme-photorealistic)  | ![](https://github.com/SabakiHQ/theme-photorealistic/raw/master/screenshot.png)  |
 | [Subdued Theme](https://github.com/fohristiwhirl/sabaki_subdued_theme)  | ![](https://raw.githubusercontent.com/fohristiwhirl/sabaki_subdued_theme/master/screenshot.gif)  |
 | [Wood Stone Theme](https://github.com/geovens/Sabaki-Theme#wood-stone-download)  | ![](https://github.com/geovens/sabaki-theme/raw/master/woodstone/screenshot.jpg)  |
 | [Cartoon Theme](https://github.com/geovens/Sabaki-Theme#cartoon-download)  | ![](https://github.com/geovens/sabaki-theme/raw/master/cartoon/screenshot.jpg)  |

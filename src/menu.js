@@ -504,11 +504,11 @@ let data = [
             {type: 'separator'},
             {
                 label: 'GitHub &Respository',
-                click: () => shell.openExternal(`https://github.com/yishn/${sabaki.appName}`)
+                click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
             },
             {
                 label: 'Report &Issue',
-                click: () => shell.openExternal(`https://github.com/yishn/${sabaki.appName}/issues`)
+                click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}/issues`)
             }
         ]
     }

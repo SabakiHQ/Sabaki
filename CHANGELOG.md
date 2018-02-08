@@ -96,7 +96,7 @@ All notable changes to this project will be documented in this file.
 * Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
 * Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
 * Lift the arbitrary maximum limit of autoplay's 'sec per move' (Thanks to [@emauton](https://github.com/emauton))
-* Per-window sidebars (see [#265](https://github.com/yishn/Sabaki/issues/265))
+* Per-window sidebars (see [#265](https://github.com/SabakiHQ/Sabaki/issues/265))
 * Update to Electron v1.8.0 beta
 
 **Fixed**
@@ -347,7 +347,7 @@ All notable changes to this project will be documented in this file.
 
 * Ability to add dates to games
 * Ability to create games on small boards
-* Ability to style Sabaki with userstyles (see [wiki](https://github.com/yishn/Sabaki/wiki/Userstyle-Tutorial))
+* Ability to style Sabaki with userstyles (see [wiki](https://github.com/SabakiHQ/Sabaki/wiki/Userstyle-Tutorial))
 * Support for non-square boards
 * Ability to show sibling variations on the board
 * Display result in scoring table
@@ -373,8 +373,8 @@ All notable changes to this project will be documented in this file.
 * Add edit button to comments section
 * Allow a subset of Markdown in the comments section
 * Ability to choose GTP engine directly inside the 'New Game' drawer
-* Ability to link to move numbers in the comments (see [wiki](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki))
-* Support for old SGF 'long property ids' (see [#68](https://github.com/yishn/Sabaki/issues/68))
+* Ability to link to move numbers in the comments (see [wiki](https://github.com/SabakiHQ/Sabaki/wiki/Markdown-in-Sabaki))
+* Support for old SGF 'long property ids' (see [#68](https://github.com/SabakiHQ/Sabaki/issues/68))
 
 **Changed**
 
@@ -676,37 +676,37 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/yishn/Sabaki/compare/v0.33.2...master
-[v0.33.2]: https://github.com/yishn/Sabaki/compare/v0.33.1...v0.33.2
-[v0.33.1]: https://github.com/yishn/Sabaki/compare/v0.33.0...v0.33.1
-[v0.33.0]: https://github.com/yishn/Sabaki/compare/v0.32.2...v0.33.0
-[v0.32.2]: https://github.com/yishn/Sabaki/compare/v0.31.5...v0.32.2
-[v0.31.5]: https://github.com/yishn/Sabaki/compare/v0.31.4...v0.31.5
-[v0.31.4]: https://github.com/yishn/Sabaki/compare/v0.31.3...v0.31.4
-[v0.31.3]: https://github.com/yishn/Sabaki/compare/v0.31.2...v0.31.3
-[v0.31.2]: https://github.com/yishn/Sabaki/compare/v0.31.1...v0.31.2
-[v0.31.1]: https://github.com/yishn/Sabaki/compare/v0.31.0...v0.31.1
-[v0.31.0]: https://github.com/yishn/Sabaki/compare/v0.30.3...v0.31.0
-[v0.30.3]: https://github.com/yishn/Sabaki/compare/v0.30.2...v0.30.3
-[v0.30.2]: https://github.com/yishn/Sabaki/compare/v0.30.1...v0.30.2
-[v0.30.1]: https://github.com/yishn/Sabaki/compare/v0.21.0...v0.30.1
-[v0.21.0]: https://github.com/yishn/Sabaki/compare/v0.19.3...v0.21.0
-[v0.19.3]: https://github.com/yishn/Sabaki/compare/v0.18.3...v0.19.3
-[v0.18.3]: https://github.com/yishn/Sabaki/compare/v0.17.2...v0.18.3
-[v0.17.2]: https://github.com/yishn/Sabaki/compare/v0.15.3...v0.17.2
-[v0.15.3]: https://github.com/yishn/Sabaki/compare/v0.14.0...v0.15.3
-[v0.14.0]: https://github.com/yishn/Sabaki/compare/v0.12.4...v0.14.0
-[v0.12.4]: https://github.com/yishn/Sabaki/compare/v0.11.5...v0.12.4
-[v0.11.5]: https://github.com/yishn/Sabaki/compare/v0.11.2...v0.11.5
-[v0.11.2]: https://github.com/yishn/Sabaki/compare/v0.10.1...v0.11.2
-[v0.10.1]: https://github.com/yishn/Sabaki/compare/v0.9.1...v0.10.1
-[v0.9.1]: https://github.com/yishn/Sabaki/compare/v0.8.1...v0.9.1
-[v0.8.1]: https://github.com/yishn/Sabaki/compare/v0.7.6...v0.8.1
-[v0.7.6]: https://github.com/yishn/Sabaki/compare/v0.7.1...v0.7.6
-[v0.7.1]: https://github.com/yishn/Sabaki/compare/v0.5.0...v0.7.1
-[v0.5.0]: https://github.com/yishn/Sabaki/compare/v0.4.2...v0.5.0
-[v0.4.2]: https://github.com/yishn/Sabaki/compare/v0.3.7...v0.4.2
-[v0.3.7]: https://github.com/yishn/Sabaki/compare/v0.3.6...v0.3.7
-[v0.3.6]: https://github.com/yishn/Sabaki/compare/v0.3.5...v0.3.6
-[v0.3.5]: https://github.com/yishn/Sabaki/compare/v0.3.0...v0.3.5
-[v0.3.0]: https://github.com/yishn/Sabaki/compare/v0.1.0...v0.3.0
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.2...master
+[v0.33.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.1...v0.33.2
+[v0.33.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.0...v0.33.1
+[v0.33.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.32.2...v0.33.0
+[v0.32.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.5...v0.32.2
+[v0.31.5]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.4...v0.31.5
+[v0.31.4]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.3...v0.31.4
+[v0.31.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.2...v0.31.3
+[v0.31.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.1...v0.31.2
+[v0.31.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.0...v0.31.1
+[v0.31.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.3...v0.31.0
+[v0.30.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.2...v0.30.3
+[v0.30.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.1...v0.30.2
+[v0.30.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.21.0...v0.30.1
+[v0.21.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.19.3...v0.21.0
+[v0.19.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.18.3...v0.19.3
+[v0.18.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.17.2...v0.18.3
+[v0.17.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.15.3...v0.17.2
+[v0.15.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.14.0...v0.15.3
+[v0.14.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.12.4...v0.14.0
+[v0.12.4]: https://github.com/SabakiHQ/Sabaki/compare/v0.11.5...v0.12.4
+[v0.11.5]: https://github.com/SabakiHQ/Sabaki/compare/v0.11.2...v0.11.5
+[v0.11.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.10.1...v0.11.2
+[v0.10.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.9.1...v0.10.1
+[v0.9.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.8.1...v0.9.1
+[v0.8.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.7.6...v0.8.1
+[v0.7.6]: https://github.com/SabakiHQ/Sabaki/compare/v0.7.1...v0.7.6
+[v0.7.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.5.0...v0.7.1
+[v0.5.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.4.2...v0.5.0
+[v0.4.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.3.7...v0.4.2
+[v0.3.7]: https://github.com/SabakiHQ/Sabaki/compare/v0.3.6...v0.3.7
+[v0.3.6]: https://github.com/SabakiHQ/Sabaki/compare/v0.3.5...v0.3.6
+[v0.3.5]: https://github.com/SabakiHQ/Sabaki/compare/v0.3.0...v0.3.5
+[v0.3.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.1.0...v0.3.0
