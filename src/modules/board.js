@@ -480,7 +480,7 @@ class Board {
             square: ['@', 'S', '#'],
             triangle: ['Q', 'T', 'Y'],
             cross: ['P', 'M', 'Z'],
-            label: null
+            label: ['O', null, 'X']
         }
 
         for (let x = 0; x < this.width; x++) {
@@ -494,7 +494,7 @@ class Board {
                 } else {
                     let [type, label] = this.markups[v]
 
-                    if (type !== 'label') {
+                    if (type !== 'label' || s !== 0) {
                         result[i] = data[type][s + 1]
                     } else if (s === 0 && label.length === 1 && isNaN(parseFloat(label))) {
                         result[i] = label.toLowerCase()

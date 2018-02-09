@@ -4,7 +4,7 @@ First of all, thank you for taking the time to contribute to Sabaki!
 
 ## Reporting Bugs
 
-* Before submitting bug reports, please check the [issues](https://github.com/yishn/Sabaki/issues) for already existing reports. You might not need to create one.
+* Before submitting bug reports, please check the [issues](https://github.com/SabakiHQ/Sabaki/issues) for already existing reports. You might not need to create one.
 * Use a clear and descriptive title.
 * Please include as many details as possible in your issue, especially the version of Sabaki you're using and the name and version of the OS you're using.
 * It's also helpful to provide specific steps to reproduce the problem.
@@ -12,7 +12,7 @@ First of all, thank you for taking the time to contribute to Sabaki!
 ## Code Contribution
 
 * Before you begin, make sure there's an issue for your task and that you've let us known that you'd like to take it on.
-* You can look at [the documentation](https://github.com/yishn/Sabaki/tree/master/docs) to get an overview how Sabaki's code is structured.
+* You can look at [the documentation](https://github.com/SabakiHQ/Sabaki/tree/master/docs) to get an overview how Sabaki's code is structured.
 * Make sure your code adheres to the code and style standards.
 * Avoid platform-dependent code.
 * Create mocha tests if possible and applicable.

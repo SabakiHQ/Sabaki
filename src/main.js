@@ -107,7 +107,7 @@ function buildMenu(disableAll = false) {
 }
 
 function checkForUpdates(showFailDialogs) {
-    updater.check(`yishn/${app.getName()}`, (err, info) => {
+    updater.check(`SabakiHQ/${app.getName()}`, (err, info) => {
         if (err) return showFailDialogs && dialog.showMessageBox({
             type: 'warning',
             buttons: ['OK'],

@@ -342,7 +342,7 @@ class ThemesTab extends Component {
                     h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…'),
                     ' ',
                     h('a', {
-                        href: 'https://github.com/yishn/Sabaki/blob/master/docs/guides/theme-directory.md',
+                        href: 'https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/theme-directory.md',
                         onClick: this.handleLinkClick
                     }, 'Get more themes…')
                 )

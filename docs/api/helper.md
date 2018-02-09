@@ -51,4 +51,4 @@ Converts `'\r\n'`, `'\n\r'`, and `'\r'` into simple linebreaks `'\n'`.
 
 * `input` `<String>`
 
-Returns the HTML according to [Sabaki's Markdown rules](https://github.com/yishn/Sabaki/wiki/Markdown-in-Sabaki).
+Returns the HTML according to [Sabaki's Markdown rules](https://github.com/SabakiHQ/Sabaki/wiki/Markdown-in-Sabaki).
