@@ -188,12 +188,18 @@ class GameGraph extends Component {
         return height !== this.props.height || showGameGraph && !this.dirty
     }
 
-    componentWillReceiveProps({treePosition} = {}) {
+    componentWillReceiveProps({treePosition, showGameGraph} = {}) {
         // Debounce rendering
 
         if (treePosition === this.props.treePosition) return
 
         this.dirty = true
+
+        if (!this.props.showGameGraph && showGameGraph) {
+            if (treePosition == null) return
+            let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
+            this.setState({matrixDict: [matrix, dict]})
+        }
 
         clearTimeout(this.renderId)
         this.renderId = setTimeout(() => this.updateCameraPosition(), delay)
