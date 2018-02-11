@@ -18,5 +18,6 @@
 | [black-white-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/black-white-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/black-white-mode.png) |
 | [one-color-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/one-color-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/one-color-mode.png) |
 | [blind-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/blind-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/blind-mode.png) |
+| [Dark theme](https://github.com/bdrose/Uploads/blob/master/theme.dark.asar) | ![Screenshot](https://github.com/bdrose/Uploads/blob/master/dark.png) |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn [how to package a userstyle into a theme](create-themes.md) and feel free to send in a pull request to add yours to the list!
