@@ -28,7 +28,6 @@ This documentation is incomplete and a work in progress.
 * [Game Tree](api/gametree.md)
 * [Board](api/board.md)
 * [Board Matcher](api/boardmatcher.md)
-* [Dead Stones](api/deadstones.md)
 * [Dialog](api/dialog.md)
 * [File Formats](api/fileformats.md)
 * [Helper](api/helper.md)
