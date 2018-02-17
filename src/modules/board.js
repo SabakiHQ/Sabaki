@@ -426,16 +426,16 @@ class Board {
         let nearY = this.height >= 13 ? 3 : 2
         let farX = this.width - nearX - 1
         let farY = this.height - nearY - 1
-
-        let result = []
-
+        let middleX = (this.width - 1) / 2
+        let middleY = (this.height - 1) / 2
+        
+        let result
+        
         if (!tygemflag) {
             result = [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
         } else {
             result = [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
         }
-        let middleX = (this.width - 1) / 2
-        let middleY = (this.height - 1) / 2
 
         if (this.width % 2 !== 0 && this.height % 2 !== 0) {
             if (count === 5) result.push([middleX, middleY])
