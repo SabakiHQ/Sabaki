@@ -418,7 +418,8 @@ class Board {
         return move
     }
 
-    getHandicapPlacement(count) {
+    getHandicapPlacement(count, tygemflag) {
+
         if (Math.min(this.width, this.height) < 6 || count < 2) return []
 
         let nearX = this.width >= 13 ? 3 : 2
@@ -426,7 +427,13 @@ class Board {
         let farX = this.width - nearX - 1
         let farY = this.height - nearY - 1
 
-        let result = [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
+        let result = []
+
+        if (!tygemflag) {
+            result = [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
+        } else {
+            result = [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
+        }
         let middleX = (this.width - 1) / 2
         let middleY = (this.height - 1) / 2
 
