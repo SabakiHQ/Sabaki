@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Updated**
+
+* Change default placement of handicap stones in a three-handicap game
+
 ## [Sabaki v0.33.3][v0.33.3] (2018-02-10)
 
 **Fixed**
