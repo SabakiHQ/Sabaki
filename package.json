@@ -72,21 +72,21 @@
     "octicons": "^6.0.1",
     "pikaday": "^1.7.0",
     "preact": "^8.2.7",
-    "react-markdown": "^3.1.4",
-    "recursive-copy": "^2.0.8",
+    "react-markdown": "^3.2.1",
+    "recursive-copy": "^2.0.9",
     "remark-breaks": "^1.0.0",
     "rimraf": "^2.6.2",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
     "electron": "1.7.11",
-    "electron-builder": "^19.55.2",
+    "electron-builder": "^19.56.2",
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
     "react": "^16.2.0",
     "tmp": "0.0.33",
-    "uglifyjs-webpack-plugin": "^1.1.6",
-    "webpack": "^3.10.0"
+    "uglifyjs-webpack-plugin": "^1.2.2",
+    "webpack": "^3.11.0"
   },
   "scripts": {
     "test": "mocha",
