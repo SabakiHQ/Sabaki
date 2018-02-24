@@ -41,3 +41,7 @@ See [Building & Tests](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guide
 ## License
 
 This project is licensed under the [MIT license](https://github.com/SabakiHQ/Sabaki/blob/master/LICENSE.md).
+
+## Related
+
+* [deadstones](https://github.com/SabakiHQ/deadstones) - Simple Monte Carlo functions to determine dead stones.
