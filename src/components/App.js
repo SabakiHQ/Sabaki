@@ -16,7 +16,7 @@ const InfoOverlay = require('./InfoOverlay')
 
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
-const deadstones = require('../modules/deadstones')
+const deadstones = require('@sabaki/deadstones')
 const dialog = require('../modules/dialog')
 const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
@@ -116,7 +116,7 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, deadstones, dialog, enginesyncer,
+        this.modules = {Board, boardmatcher, dialog, enginesyncer,
             fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
@@ -349,7 +349,10 @@ class App extends Component {
 
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = deadstones.guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
+            let deadStones = deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
+                finished: mode === 'scoring',
+                iterations
+            })
 
             Object.assign(stateChange, {deadStones})
         }
@@ -1969,12 +1972,12 @@ class App extends Component {
         if (sign > 1) sign = 0
 
         let entry = {sign, name: controller.engine.name, command}
-        let maxLength = setting.get('console.max_history_count') 
-         
+        let maxLength = setting.get('console.max_history_count')
+
         this.setState(({consoleLog}) => {
             let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
             newLog.push(entry)
- 
+
             return {consoleLog: newLog}
         })
 
@@ -2009,7 +2012,7 @@ class App extends Component {
                 for (let subtree of subtrees) {
                     subtree.parent = splitted
                 }
-                
+
                 splitted.subtrees.push(...subtrees)
                 gametree.reduce(splitted)
 
@@ -2052,7 +2055,7 @@ class App extends Component {
                 let player = i === 0 ? 1 : -1
                 let controller = this.attachedEngineControllers[i]
                 let engineState = this.engineStates[i]
-                
+
                 this.engineStates[i] = await enginesyncer.sync(controller, engineState, treePosition)
 
                 // Send pass if required
@@ -2129,7 +2132,7 @@ class App extends Component {
         }
 
         let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
-        let previousPass = ['W', 'B'].some(color => color in previousNode 
+        let previousPass = ['W', 'B'].some(color => color in previousNode
             && !board.hasVertex(sgf.point2vertex(previousNode[color][0])))
         let doublePass = previousPass && pass
 
