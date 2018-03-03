@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * When exiting edit mode using <kbd>Ctrl+E</kbd>, the cursor won't be stuck as a crosshair anymore
+* Navigating the game using arrow keys isn't blocked anymore after closing game manager drawer
 
 **Updated**
 

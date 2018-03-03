@@ -366,7 +366,6 @@ class App extends Component {
     }
 
     closeDrawer() {
-        document.activeElement.blur()
         this.openDrawer(null)
     }
 

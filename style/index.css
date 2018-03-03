@@ -24,7 +24,7 @@ header, #bar .bar {
         top: 0;
         height: 40px;
         overflow: hidden;
-        transition: top .2s;
+        transition: transform .2s;
     }
     header > span {
         position: absolute;
@@ -141,9 +141,10 @@ header, #bar .bar {
         line-height: 40px;
         transition: background .2s;
     }
-    #bar .bar { top: -40px; }
-    #bar .bar.current { top: 0; }
-    #bar header:not(.current) { top: 40px; }
+    #bar .bar { transform: translateY(-40px); }
+    #bar .bar.current { transform: none; }
+    #bar header:not(.current) { transform: translateY(40px); }
+    #bar .bar.hidecontent > * { visibility: hidden; }
     #bar .bar .close {
         display: block;
         position: absolute;
@@ -670,6 +671,9 @@ header, #bar .bar {
         color: #eee;
         transition: transform .5s;
         z-index: 15;
+    }
+    .drawer.hidecontent > * {
+        visibility: hidden;
     }
     .drawer.show {
         transform: translateY(-285px);
