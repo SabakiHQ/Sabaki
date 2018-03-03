@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Fixed**
+
+* When exiting edit mode using <kbd>Ctrl+E</kbd>, the cursor won't be stuck as a crosshair anymore
+
 **Updated**
 
 * Change default placement of handicap stones in a three-handicap game
