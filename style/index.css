@@ -26,7 +26,7 @@ header, #bar .bar {
         overflow: hidden;
         transition: transform .2s;
     }
-    header > span {
+    #player_1, #player_-1 {
         position: absolute;
         left: 0;
         right: 50%;
@@ -45,6 +45,15 @@ header, #bar .bar {
         padding-right: 42px;
         padding-left: 30px;
         text-align: left;
+    }
+    header > span > .rank {
+        opacity: .4;
+    }
+    #player_1 .rank {
+        margin-right: 5px;
+    }
+    #player_-1 .rank {
+        margin-left: 5px;
     }
     header > span > .engine {
         font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;

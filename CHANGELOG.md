@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Show player ranks on the play bar, next to the player names
+
 **Fixed**
 
 * When exiting edit mode using <kbd>Ctrl+E</kbd>, the cursor won't be stuck as a crosshair anymore

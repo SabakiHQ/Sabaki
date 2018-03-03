@@ -88,16 +88,12 @@ class PlayBar extends Component {
 
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
-                h('span', {
-                    class: classNames('name', {engine: isEngine[0]}),
-                    title: playerRanks[0]
-                }, playerNames[0] || 'Black')
+                playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
+                h('span', {class: classNames('name', {engine: isEngine[0]})}, playerNames[0] || 'Black')
             ),
             h('span', {id: 'player_-1'},
-                h('span', {
-                    class: classNames('name', {engine: isEngine[1]}),
-                    title: playerRanks[1]
-                }, playerNames[1] || 'White'), ' ',
+                h('span', {class: classNames('name', {engine: isEngine[1]})}, playerNames[1] || 'White'), ' ',
+                playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
 
