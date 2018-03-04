@@ -73,7 +73,7 @@ class PlayBar extends Component {
             if (engine == null) return
 
             playerNames[i] = engine.name
-            playerRanks[i] = 'Engine'
+            playerRanks[i] = null
             isEngine[i] = true
         })
 
@@ -89,10 +89,19 @@ class PlayBar extends Component {
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
                 playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
-                h('span', {class: classNames('name', {engine: isEngine[0]})}, playerNames[0] || 'Black')
+                
+                h('span', {
+                    class: classNames('name', {engine: isEngine[0]}),
+                    title: isEngine[0] && 'Engine'
+                }, playerNames[0] || 'Black')
             ),
+
             h('span', {id: 'player_-1'},
-                h('span', {class: classNames('name', {engine: isEngine[1]})}, playerNames[1] || 'White'), ' ',
+                h('span', {
+                    class: classNames('name', {engine: isEngine[1]}),
+                    title: isEngine[1] && 'Engine'
+                }, playerNames[1] || 'White'), ' ',
+
                 playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
