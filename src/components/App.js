@@ -40,7 +40,7 @@ class App extends Component {
         this.state = {
             mode: 'play',
             openDrawer: null,
-            busy: false,
+            busy: 0,
             fullScreen: false,
             showMenuBar: null,
             zoomFactor: null,
@@ -146,7 +146,7 @@ class App extends Component {
                 this.askForReload()
             }
 
-            ipcRenderer.send('build-menu', this.state.busy)
+            ipcRenderer.send('build-menu', this.state.busy > 0)
         })
 
         this.window.on('resize', () => {
@@ -342,7 +342,7 @@ class App extends Component {
         }
 
         if (key in data) {
-            ipcRenderer.send('build-menu', this.state.busy)
+            ipcRenderer.send('build-menu', this.state.busy > 0)
             this.setState({[data[key]]: setting.get(key)})
         }
     }
@@ -390,7 +390,8 @@ class App extends Component {
     }
 
     setBusy(busy) {
-        this.setState({busy})
+        let diff = busy ? 1 : -1;
+        this.setState(s => ({busy: Math.max(s.busy + diff, 0)}))
     }
 
     showInfoOverlay(text) {
@@ -1961,7 +1962,7 @@ class App extends Component {
                 onCancel: state.onInputBoxCancel
             }),
 
-            h(BusyScreen, {show: state.busy}),
+            h(BusyScreen, {show: state.busy > 0}),
             h(InfoOverlay, {text: state.infoOverlayText, show: state.showInfoOverlay})
         )
     }
