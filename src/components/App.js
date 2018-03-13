@@ -14,9 +14,11 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
+const deadstones = require('@sabaki/deadstones')
+const influence = require('@sabaki/influence')
+
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
-const deadstones = require('../modules/deadstones')
 const dialog = require('../modules/dialog')
 const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
@@ -116,7 +118,7 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, deadstones, dialog, enginesyncer,
+        this.modules = {Board, boardmatcher, dialog, enginesyncer,
             fileformats, gametree, gtp, helper, setting, sound}
 
         // Bind state to settings
@@ -367,7 +369,10 @@ class App extends Component {
 
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = deadstones.guess(gametree.getBoard(...treePosition), mode === 'scoring', iterations)
+            let deadStones = deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
+                finished: mode === 'scoring',
+                iterations
+            })
 
             Object.assign(stateChange, {deadStones})
         }
@@ -381,7 +386,6 @@ class App extends Component {
     }
 
     closeDrawer() {
-        document.activeElement.blur()
         this.openDrawer(null)
     }
 
@@ -1917,8 +1921,9 @@ class App extends Component {
                 scoreBoard.set(vertex, 0)
             }
 
-            areaMap = state.mode === 'estimator' ? scoreBoard.getAreaEstimateMap()
-                : scoreBoard.getAreaMap()
+            areaMap = state.mode === 'estimator' 
+                ? influence.map(scoreBoard.arrangement, {discrete: true})
+                : influence.areaMap(scoreBoard.arrangement)
         }
 
         this.inferredState = {

@@ -31,7 +31,7 @@ class MainView extends Component {
     }
 
     componentDidMount() {
-        // Pressing shift should show crosshair cursor on Goban in edit mode
+        // Pressing Ctrl should show crosshair cursor on Goban in edit mode
 
         document.addEventListener('keydown', evt => {
             if (evt.keyCode !== 17) return
@@ -48,6 +48,12 @@ class MainView extends Component {
                 this.setState({gobanCrosshair: false})
             }
         })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.mode !== 'edit') {
+            this.setState({gobanCrosshair: false})
+        }
     }
 
     handleGobanResize() {

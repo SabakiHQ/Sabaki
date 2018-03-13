@@ -150,8 +150,10 @@ app.on('window-all-closed', () => {
 app.on('ready', () => {
     isReady = true
 
+    let endsIn = (str, end) => str.slice(-end.length) === end
+
     if (!openfile && process.argv.length >= 2) {
-        if (process.argv[0].slice(-'electron.exe'.length) !== 'electron.exe') {
+        if (!endsIn(process.argv[0], 'electron.exe') && !endsIn(process.argv[0], 'electron')) {
             openfile = process.argv[1]
         } else if (process.argv.length >= 3) {
             openfile = process.argv[2]

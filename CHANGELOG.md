@@ -2,11 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Show player ranks on the play bar, next to the player names
+
+**Fixed**
+
+* When exiting edit mode using <kbd>Ctrl+E</kbd>, the cursor won't be stuck as a crosshair anymore
+* Navigating the game using arrow keys isn't blocked anymore after closing game manager drawer
+
+**Updated**
+
+* Change default placement of handicap stones in a three-handicap game
+
 ## [Sabaki v0.33.3][v0.33.3] (2018-02-10)
 
 **Fixed**
 
-* Fix game tree crashing when opening after branching the game tree
+* Fix game tree crashing when showing after branching the game tree
 * Fix stones with labels not showing up in ASCII diagrams
 
 ## [Sabaki v0.33.2][v0.33.2] (2018-01-23)

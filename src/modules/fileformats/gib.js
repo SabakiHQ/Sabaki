@@ -185,7 +185,7 @@ exports.parse = function(content) {
 
                 let tmp = new Board()       // Created solely for .getHandicapPlacement()
 
-                let points = tmp.getHandicapPlacement(handicap)
+                let points = tmp.getHandicapPlacement(handicap, true)
 
                 for (let p of points) {
                     let [x, y] = p
