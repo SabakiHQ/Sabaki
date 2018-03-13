@@ -14,9 +14,11 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
+const deadstones = require('@sabaki/deadstones')
+const influence = require('@sabaki/influence')
+
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
-const deadstones = require('@sabaki/deadstones')
 const dialog = require('../modules/dialog')
 const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
@@ -2184,8 +2186,9 @@ class App extends Component {
                 scoreBoard.set(vertex, 0)
             }
 
-            areaMap = state.mode === 'estimator' ? scoreBoard.getAreaEstimateMap()
-                : scoreBoard.getAreaMap()
+            areaMap = state.mode === 'estimator' 
+                ? influence.map(scoreBoard.arrangement, {discrete: true})
+                : influence.areaMap(scoreBoard.arrangement)
         }
 
         this.inferredState = {
