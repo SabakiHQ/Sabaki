@@ -101,10 +101,6 @@ but is faster.
 
 * `vertex` [`<Vertex>`](vertex.md)
 
-### board.getAreaMap()
-
-### board.getAreaEstimateMap()
-
 ### board.getScore(areaMap)
 
 * `areaMap` - A precomputed area map or area estimate map using `board.getAreaMap()` or `board.getAreaEstimateMap()`
