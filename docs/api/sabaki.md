@@ -78,7 +78,7 @@ State properties can be accessed through the object `sabaki.state`. Generally, *
 
 * `mode` `<String>` - One of `'play'`, `'edit'`, `'find'`, `'scoring'`, `'estimator'`, `'guess'`, `'autoplay'`
 * `openDrawer` `<String>` | `<Null>` - One of `'info'`, `'gamechooser'`, `'cleanmarkup'`, `'score'`, `'preferences'` if a drawer is open, otherwise `null`
-* `busy` `<Boolean>`
+* `busy` `<Number>` - Sabaki is busy if and only if the integer is positive
 * `fullScreen` `<Boolean>`
 * `representedFilename` `<String>` | `<Null>`
 * `gameTrees` [`<GameTree[]>`](gametree.md)
