@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 **Updated**
 
 * Change default placement of handicap stones in a three-handicap game
+* Update to Electron v1.8.4
 
 ## [Sabaki v0.33.3][v0.33.3] (2018-02-10)
 
