@@ -13,15 +13,13 @@ class ScoringBar extends Component {
         let score = scoreBoard ? scoreBoard.getScore(areaMap) : {area: [], territory: [], captures: []}
         let result = method === 'area' ? score.area[0] - score.area[1] - komi
             : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
-        let resultString = result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
+        let resultString = !scoreBoard ? '' : result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
 
         return h(Bar, Object.assign({type}, this.props),
-            h('button',
-                {onClick: this.handleButtonClick},
-                'Details',
-
-                h('strong', {}, resultString)
-            ),
+            h('div', {class: 'result'},
+                h('button', {onClick: this.handleButtonClick}, 'Details'),
+                h('strong', {}, resultString),
+            ), ' ',
 
             children
         )
