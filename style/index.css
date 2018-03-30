@@ -177,44 +177,43 @@ header, #bar .bar {
         box-sizing: border-box;
         height: 32px;
     }
-    #scoring button, #estimator button, #find button {
-        box-sizing: border-box;
-        position: absolute;
-        height: 32px;
-        left: 10px;
-        top: 50%;
-        background: #600000;
-        transform: translateY(-50%);
-    }
-    #scoring button strong, #estimator button strong {
-        display: block;
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background: #400000;
-        line-height: 32px;
-        text-align: center;
-        opacity: 1;
-        transition: opacity .2s;
-    }
-    #scoring button:hover strong, #scoring button:focus strong,
-    #estimator button:hover strong, #estimator button:focus strong {
-        opacity: 0;
-    }
     #bar .bar button:active {
         transform: translateY(-46%);
+    }
+    #scoring .result, #estimator .result {
+        position: absolute;
+        left: 10px;
+        top: 0;
+        height: 100%;
+    }
+    #scoring .result button, #estimator .result button {
+        box-sizing: border-box;
+        height: 32px;
+        margin-right: .7rem;
+        background: #600000;
+        transform: none;
+    }
+    #scoring .result button:hover, #estimator .result button:hover,
+    #scoring .result button:focus, #estimator .result button:focus {
+        background: #711111;
+    }
+    #scoring .result button:active, #estimator .result button:active {
+        transform: translateY(4%);        
 }
 
 #find button {
+        box-sizing: border-box;
+        position: absolute;
+        top: 50%;
         left: 178px;
+        width: 34px;
+        height: 32px;
         padding-left: 7px;
         padding-right: 7px;
-        width: 34px;
+        transform: translateY(-50%);
+        background: #002090;
     }
-    #find button { background: #002090; }
-    #find button:hover { background: #001080; }
+    #find button:hover, #find button:focus { background: #001080; }
     #find button img {
         filter: invert(100%);
     }
@@ -383,6 +382,7 @@ header, #bar .bar {
         right: 0;
         height: 40px;
         background: #222;
+        overflow: hidden;
     }
     #console .input select {
         box-sizing: border-box;

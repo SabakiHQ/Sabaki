@@ -63,15 +63,15 @@
     ]
   },
   "dependencies": {
-    "@sabaki/deadstones": "^1.0.0",
-    "@sabaki/influence": "^1.0.0",
+    "@sabaki/deadstones": "^1.0.2",
+    "@sabaki/influence": "^1.0.2",
     "classnames": "^2.2.5",
     "copy-text-to-clipboard": "^1.0.3",
     "natsort": "^1.0.6",
     "octicons": "^6.0.1",
     "pikaday": "^1.7.0",
     "preact": "^8.2.7",
-    "react-markdown": "^3.2.1",
+    "react-markdown": "^3.3.0",
     "remark-breaks": "^1.0.0"
   },
   "devDependencies": {
@@ -80,7 +80,7 @@
     "babel-preset-env": "^1.6.0",
     "fast-async": "^6.3.0",
     "raw-loader": "^0.5.1",
-    "uglifyjs-webpack-plugin": "^1.2.2",
+    "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^3.11.0"
   },
   "scripts": {
