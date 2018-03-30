@@ -2080,7 +2080,6 @@ class App extends Component {
 
         if (followUp && !this.state.generatingMoves) {
             this.hideInfoOverlay()
-            this.setBusy(false)
             return
         } else if (!followUp) {
             this.setState({generatingMoves: true})
@@ -2157,8 +2156,9 @@ class App extends Component {
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
-            this.setBusy(false)
         }
+
+        this.setBusy(false)
     }
 
     stopGeneratingMoves() {
