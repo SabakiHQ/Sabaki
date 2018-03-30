@@ -383,6 +383,7 @@ header, #bar .bar {
         right: 0;
         height: 40px;
         background: #222;
+        overflow: hidden;
     }
     #console .input select {
         box-sizing: border-box;
