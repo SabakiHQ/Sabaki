@@ -2128,6 +2128,7 @@ class App extends Component {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
             this.makeResign()
+            this.setBusy(false)
 
             return
         }
