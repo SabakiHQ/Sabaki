@@ -8,6 +8,10 @@ let windows = []
 let openfile = null
 let isReady = false
 
+if (!setting.get('app.enable_hardware_acceleration')) {
+    app.disableHardwareAcceleration()
+}
+
 function newWindow(path) {
     let window = new BrowserWindow({
         icon: process.platform === 'linux' ? join(__dirname, '..', 'logo.png') : null,
