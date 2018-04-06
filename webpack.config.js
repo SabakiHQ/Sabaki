@@ -9,12 +9,7 @@ module.exports = {
     },
 
     devtool: 'source-map',
-
     target: 'electron-renderer',
-
-    node: {
-        __dirname: false
-    },
 
     module: {
         rules: [

@@ -86,14 +86,14 @@
     "raw-loader": "^0.5.1",
     "react": "^16.3.1",
     "tmp": "0.0.33",
-    "uglifyjs-webpack-plugin": "^1.2.4",
-    "webpack": "^3.11.0"
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   },
   "scripts": {
     "test": "mocha",
     "start": "electron ./",
-    "bundle": "webpack --config webpack.prod.js --progress",
-    "watch": "webpack --config webpack.dev.js --progress --watch",
+    "bundle": "webpack --mode production --progress",
+    "watch": "webpack --mode development --progress --watch",
     "build": "npm run bundle && electron-builder --dir",
     "dist:macos": "npm run bundle && electron-builder -m --x64",
     "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64",
