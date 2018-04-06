@@ -89,7 +89,7 @@ class PlayBar extends Component {
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
                 playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
-                
+
                 h('span', {
                     class: classNames('name', {engine: isEngine[0]}),
                     title: isEngine[0] && 'Engine'
@@ -122,7 +122,7 @@ class PlayBar extends Component {
                     title: undoText,
                     onClick: this.handleUndoButtonClick
                 },
-                h('img', {src: './node_modules/octicons/build/svg/mail-reply.svg', height: 21})
+                h('img', {src: './node_modules/octicons/build/svg/reply.svg', height: 21})
             ),
 
             h('a',

@@ -70,7 +70,7 @@
     "iconv-lite": "^0.4.19",
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
-    "octicons": "^6.0.1",
+    "octicons": "^7.2.0",
     "pikaday": "^1.7.0",
     "preact": "^8.2.7",
     "react-markdown": "^3.3.0",
@@ -84,7 +84,7 @@
     "electron-builder": "^19.56.2",
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
-    "react": "^16.3.0",
+    "react": "^16.3.1",
     "tmp": "0.0.33",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "^3.11.0"
