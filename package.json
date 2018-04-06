@@ -82,7 +82,7 @@
   "devDependencies": {
     "electron": "^1.8.4",
     "electron-builder": "^20.8.1",
-    "mocha": "^3.5.3",
+    "mocha": "^5.0.5",
     "raw-loader": "^0.5.1",
     "react": "^16.3.1",
     "tmp": "0.0.33",
