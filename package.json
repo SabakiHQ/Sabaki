@@ -81,7 +81,7 @@
   },
   "devDependencies": {
     "electron": "^1.8.4",
-    "electron-builder": "^19.56.2",
+    "electron-builder": "^20.8.1",
     "mocha": "^3.5.3",
     "raw-loader": "^0.5.1",
     "react": "^16.3.1",
@@ -94,10 +94,10 @@
     "start": "electron ./",
     "bundle": "webpack --config webpack.prod.js --progress",
     "watch": "webpack --config webpack.dev.js --progress --watch",
-    "build": "npm run bundle && build --dir",
-    "dist:macos": "npm run bundle && build -m --x64",
-    "dist:linux": "npm run bundle && build -l --ia32 --x64",
-    "dist:win32": "npm run bundle && build -w --ia32",
-    "dist:win64": "npm run bundle && build -w --x64"
+    "build": "npm run bundle && electron-builder --dir",
+    "dist:macos": "npm run bundle && electron-builder -m --x64",
+    "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64",
+    "dist:win32": "npm run bundle && electron-builder -w --ia32",
+    "dist:win64": "npm run bundle && electron-builder -w --x64"
   }
 }
