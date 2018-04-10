@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Add an option to disable hardware acceleration (Thanks to @ohyou)
 
+**Updated**
+
+* Gracefully ending engines with `quit` command when detaching
+
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 
 **Added**

@@ -54,7 +54,7 @@ let defaults = {
         'place_free_handicap', 'set_free_handicap',
         'loadsgf', 'komi'
     ],
-    'console.max_history_count': 1000, 
+    'console.max_history_count': 1000,
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
@@ -86,6 +86,7 @@ let defaults = {
     'graph.node_inactive_bookmark_color': '#643d6f',
     'graph.node_inactive_comment_color': '#365980',
     'graph.node_size': 4,
+    'gtp.engine_quit_timeout': 3000,
     'gtp.move_delay': 300,
     'gtp.start_game_after_attach': true,
     'score.estimator_iterations': 30,

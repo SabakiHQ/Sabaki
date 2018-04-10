@@ -1916,10 +1916,11 @@ class App extends Component {
         }
 
         let command = name => new gtp.Command(null, name)
+        let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] === engines[i]) continue
-            if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop()
+            if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop(quitTimeout)
 
             try {
                 let controller = engines[i] ? new gtp.Controller(engines[i]) : null
@@ -1963,7 +1964,7 @@ class App extends Component {
 
     suspendEngines() {
         for (let controller of this.attachedEngineControllers) {
-            if (controller != null) controller.stop()
+            if (controller != null) controller.kill()
         }
 
         this.engineStates = [null, null]
@@ -2188,7 +2189,7 @@ class App extends Component {
                 scoreBoard.set(vertex, 0)
             }
 
-            areaMap = state.mode === 'estimator' 
+            areaMap = state.mode === 'estimator'
                 ? influence.map(scoreBoard.arrangement, {discrete: true})
                 : influence.areaMap(scoreBoard.arrangement)
         }

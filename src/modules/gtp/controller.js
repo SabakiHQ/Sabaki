@@ -3,6 +3,7 @@ const {dirname} = require('path')
 const EventEmitter = require('events')
 const split = require('argv-split')
 
+const Command = require('./command')
 const gtp = require('./index')
 const helper = require('../helper')
 
@@ -73,7 +74,22 @@ class Controller extends EventEmitter {
         }
     }
 
-    stop() {
+    stop(timeout) {
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this.kill()
+                resolve()
+            }, timeout)
+
+            this.sendCommand(new Command(null, 'quit'))
+            .then(response => response.error ? Promise.reject(new Error(response.content)) : response)
+            .then(() => this.process = null)
+            .catch(err => this.kill())
+            .then(resolve)
+        })
+    }
+
+    kill() {
         if (!this.process) return
 
         this.process.kill()
