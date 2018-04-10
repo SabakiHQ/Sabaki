@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Add an option to disable hardware acceleration (Thanks to @ohyou)
+
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 
 **Added**
