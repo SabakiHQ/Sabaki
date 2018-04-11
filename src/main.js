@@ -8,6 +8,10 @@ let windows = []
 let openfile = null
 let isReady = false
 
+if (!setting.get('app.enable_hardware_acceleration')) {
+    app.disableHardwareAcceleration()
+}
+
 function newWindow(path) {
     let window = new BrowserWindow({
         icon: process.platform === 'linux' ? join(__dirname, '..', 'logo.png') : null,
@@ -41,9 +45,9 @@ function newWindow(path) {
 
     window.loadURL(`file://${__dirname}/../index.html`)
 
-    if (setting.get('debug.dev_tools')) {
+    // if (setting.get('debug.dev_tools')) {
         window.openDevTools()
-    }
+    // }
 
     return window
 }

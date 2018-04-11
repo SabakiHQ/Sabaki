@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Add an option to disable hardware acceleration (Thanks to @ohyou)
+
+**Fixed**
+
+* Trying to execute blocked GTP commands will show properly in the console
+
+**Updated**
+
+* Gracefully ending engines with `quit` command when detaching
+
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 
 **Added**

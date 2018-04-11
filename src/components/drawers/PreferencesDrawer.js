@@ -99,6 +99,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
                     text: 'Start game right after attaching engines'
+                }),
+                h(PreferencesItem, {
+                    id: 'app.enable_hardware_acceleration',
+                    text: 'Enable hardware acceleration'
                 })
             ),
 

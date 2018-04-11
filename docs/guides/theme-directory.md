@@ -19,5 +19,7 @@
 | [one-color-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/one-color-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/one-color-mode.png) |
 | [blind-mode](https://github.com/ParmuzinAlexander/sabaki-themes/raw/master/blind-mode.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/sabaki-themes/blob/master/screenshot/blind-mode.png) |
 | [Dark theme](https://github.com/bdrose/Uploads/blob/master/theme.dark.asar) | ![Screenshot](https://github.com/bdrose/Uploads/blob/master/dark.png) |
+| [Walnut Theme](https://github.com/3kakakhel/sabaki-walnut-theme/releases/download/1.0.0/walnut.sabakitheme.asar) | ![](https://github.com/3kakakhel/sabaki-walnut-theme/blob/master/screenshot.jpg) |
+| [Wgo.js Theme](https://github.com/3kakakhel/sabaki-wgojs-theme/releases/download/1.1.0/wgojs.1.1.0.sabakitheme.asar) | ![](https://github.com/3kakakhel/sabaki-wgojs-theme/blob/master/screenshot.jpg) |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn [how to package a userstyle into a theme](create-themes.md) and feel free to send in a pull request to add yours to the list!

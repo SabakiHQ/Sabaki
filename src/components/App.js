@@ -15,6 +15,7 @@ const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
 const deadstones = require('@sabaki/deadstones')
+const gtp = require('@sabaki/gtp')
 const influence = require('@sabaki/influence')
 
 const Board = require('../modules/board')
@@ -23,7 +24,6 @@ const dialog = require('../modules/dialog')
 const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
-const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 const {sgf} = fileformats
@@ -119,7 +119,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, boardmatcher, dialog, enginesyncer,
-            fileformats, gametree, gtp, helper, setting, sound}
+            fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
 
@@ -1922,7 +1922,7 @@ class App extends Component {
                 scoreBoard.set(vertex, 0)
             }
 
-            areaMap = state.mode === 'estimator' 
+            areaMap = state.mode === 'estimator'
                 ? influence.map(scoreBoard.arrangement, {discrete: true})
                 : influence.areaMap(scoreBoard.arrangement)
         }

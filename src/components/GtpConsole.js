@@ -1,10 +1,9 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const gtp = require('@sabaki/gtp')
 
 const ContentDisplay = require('./ContentDisplay')
-
-const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
@@ -14,7 +13,7 @@ class ConsoleCommandEntry extends Component {
     }
 
     render({sign, name, command}) {
-        if (command == null) command = new gtp.Command(null, '')
+        if (command == null) command = {name: ''}
 
         return h('li', {class: 'command'},
             h('pre', {},
@@ -25,7 +24,7 @@ class ConsoleCommandEntry extends Component {
 
                 h(ContentDisplay, {
                     tag: 'span',
-                    content: command.arguments.join(' ')
+                    content: (command.args || []).join(' ')
                 })
             )
         )
@@ -93,7 +92,7 @@ class GtpConsole extends Component {
 
                 onSubmit({
                     engineIndex,
-                    command: gtp.parseCommand(this.state.commandInputText)
+                    command: gtp.Command.fromString(this.state.commandInputText)
                 })
 
                 this.setState({commandInputText: ''})
@@ -118,7 +117,7 @@ class GtpConsole extends Component {
                     let {command} = consoleLog[this.inputPointer]
                     
                     if (command != null) {
-                        this.setState({commandInputText: command.toString()})
+                        this.setState({commandInputText: gtp.Command.toString(command)})
                         break
                     }
                 }
