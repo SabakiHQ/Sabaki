@@ -64,7 +64,6 @@
   },
   "dependencies": {
     "@sabaki/deadstones": "^1.0.2",
-    "@sabaki/gtp": "^1.0.0",
     "@sabaki/influence": "^1.0.2",
     "classnames": "^2.2.5",
     "copy-text-to-clipboard": "^1.0.3",
@@ -81,11 +80,12 @@
     "babel-preset-env": "^1.6.0",
     "fast-async": "^6.3.0",
     "raw-loader": "^0.5.1",
-    "webpack": "^3.11.0"
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   },
   "scripts": {
     "test": "",
-    "bundle": "webpack --mode production --progress",
-    "watch": "webpack --mode development --progress --watch",
+    "build": "webpack --mode production --progress",
+    "watch": "webpack --mode development --progress --watch"
   }
 }
