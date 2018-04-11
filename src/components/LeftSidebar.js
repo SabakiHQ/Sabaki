@@ -1,9 +1,8 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
-const GtpConsole = require('./GtpConsole')
 
+const GtpConsole = require('./GtpConsole')
 const gametree = require('../modules/gametree')
-const gtp = require('../modules/gtp')
 const setting = remote.require('./setting')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
@@ -28,12 +27,12 @@ class LeftSidebar extends Component {
                 sabaki.setState(({consoleLog}) => {
                     let newLog = consoleLog.slice(consoleLog.length >= maxConsoleLength ? 1 : 0)
 
-                    newLog.push([
-                        engineIndex === 0 ? 1 : -1,
-                        this.props.attachedEngines[engineIndex].name,
+                    newLog.push({
+                        sign: engineIndex === 0 ? 1 : -1,
+                        name: this.props.attachedEngines[engineIndex].name,
                         command,
-                        new gtp.Response(command.id, 'blocked command', true, true)
-                    ])
+                        response: {id: command.id, content: 'blocked command', error: true, internal: true}
+                    })
 
                     return {consoleLog: newLog}
                 })

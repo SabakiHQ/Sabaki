@@ -15,6 +15,7 @@ const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
 const deadstones = require('@sabaki/deadstones')
+const gtp = require('@sabaki/gtp')
 const influence = require('@sabaki/influence')
 
 const Board = require('../modules/board')
@@ -23,7 +24,6 @@ const dialog = require('../modules/dialog')
 const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
-const gtp = require('../modules/gtp')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 const {sgf} = fileformats
@@ -119,7 +119,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, boardmatcher, dialog, enginesyncer,
-            fileformats, gametree, gtp, helper, setting, sound}
+            fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
 
@@ -1899,6 +1899,7 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
+        let split = require('argv-split')
         let {engineCommands, attachedEngines} = this.state
 
         if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
@@ -1915,7 +1916,6 @@ class App extends Component {
             return
         }
 
-        let command = name => new gtp.Command(null, name)
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
@@ -1923,17 +1923,31 @@ class App extends Component {
             if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop(quitTimeout)
 
             try {
-                let controller = engines[i] ? new gtp.Controller(engines[i]) : null
-                controller.on('command-sent', this.handleCommandSent.bind(this))
+                let {path, args, commands} = engines[i]
+                let controller = engines[i] ? new gtp.Controller(path, split(args)) : null
+
+                controller.engine = engines[i]
+
+                controller.on('command-sent', evt => {
+                    this.handleCommandSent(Object.assign({controller}, evt))
+                })
+
+                controller.on('started', () => {
+                    if (commands == null || commands.trim() === '') return
+
+                    for (let command of commands.split(';')) {
+                        controller.sendCommand(gtp.Command.fromString(command))
+                    }
+                })
 
                 this.attachedEngineControllers[i] = controller
                 this.engineStates[i] = null
 
                 controller.start()
-                controller.sendCommand(command('name'))
-                controller.sendCommand(command('version'))
-                controller.sendCommand(command('protocol_version'))
-                controller.sendCommand(command('list_commands')).then(response => {
+                controller.sendCommand({name: 'name'})
+                controller.sendCommand({name: 'version'})
+                controller.sendCommand({name: 'protocol_version'})
+                controller.sendCommand({name: 'list_commands'}).then(response => {
                     engineCommands[i] = response.content.split('\n')
                 })
 
@@ -1941,9 +1955,9 @@ class App extends Component {
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
                             sign: this.state.attachedEngines.indexOf(engines[i]) === 0 ? 1 : -1,
-                            name: controller.engine.name,
+                            name: engines[i].name,
                             command: null,
-                            response: new gtp.Response(null, content, false, true)
+                            response: {content, internal: true}
                         }]
                     }))
                 })
@@ -2065,7 +2079,7 @@ class App extends Component {
 
                 if (passPlayer != null && passPlayer !== player) {
                     let color = passPlayer > 0 ? 'B' : 'W'
-                    controller.sendCommand(new gtp.Command(null, 'play', color, 'pass'))
+                    controller.sendCommand({name: 'play', args: [color, 'pass']})
                 }
             }
         } catch (err) {
@@ -2112,7 +2126,7 @@ class App extends Component {
 
         this.setBusy(true)
 
-        let response = await playerController.sendCommand(new gtp.Command(null, 'genmove', color))
+        let response = await playerController.sendCommand({name: 'genmove', args: [color]})
         let sign = color === 'B' ? 1 : -1
         let pass = true
         let vertex = [-1, -1]
@@ -2144,7 +2158,7 @@ class App extends Component {
         if (!doublePass && this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
             // Send Sabaki specific GTP command
 
-            await playerController.sendCommand(new gtp.Command(null, 'sabaki-genmovelog'))
+            await playerController.sendCommand({name: 'sabaki-genmovelog'})
         }
 
         this.engineStates[playerIndex] = {
