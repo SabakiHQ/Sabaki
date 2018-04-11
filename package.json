@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "@sabaki/deadstones": "^1.0.2",
+    "@sabaki/gtp": "^1.0.0",
     "@sabaki/influence": "^1.0.2",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.5",
