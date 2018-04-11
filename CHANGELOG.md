@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Add an option to disable hardware acceleration (Thanks to @ohyou)
 
+**Fixed**
+
+* Trying to execute blocked GTP commands will show properly in the console
+
 **Updated**
 
 * Gracefully ending engines with `quit` command when detaching

@@ -2,14 +2,13 @@ const gametree = require('./gametree')
 const helper = require('./helper')
 const {sgf} = require('./fileformats')
 const Board = require('./board')
-const {Command} = require('./gtp')
 
 async function enginePlay(controller, sign, vertex, board) {
     let color = sign > 0 ? 'B' : 'W'
     let coord = board.vertex2coord(vertex)
     if (coord == null) return true
 
-    let response = await controller.sendCommand(new Command(null, 'play', color, coord))
+    let response = await controller.sendCommand({name: 'play', args: [color, coord]})
     if (response.error) return false
 
     return true
@@ -30,7 +29,7 @@ exports.sync = async function(controller, engineState, treePosition) {
     let komi = gametree.getRootProperty(rootTree, 'KM', 0)
 
     if (engineState == null || komi !== engineState.komi) {
-        controller.sendCommand(new Command(null, 'komi', komi))
+        controller.sendCommand({name: 'komi', args: [komi]})
     }
 
     // See if we need to update board
@@ -60,8 +59,8 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     // Replay
 
-    controller.sendCommand(new Command(null, 'boardsize', board.width))
-    controller.sendCommand(new Command(null, 'clear_board'))
+    controller.sendCommand({name: 'boardsize', args: [board.width]})
+    controller.sendCommand({name: 'clear_board'})
 
     let engineBoard = new Board(board.width, board.height)
     let promises = []
@@ -102,8 +101,8 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     // Rearrangement
 
-    controller.sendCommand(new Command(null, 'boardsize', board.width))
-    controller.sendCommand(new Command(null, 'clear_board'))
+    controller.sendCommand({name: 'boardsize', args: [board.width]})
+    controller.sendCommand({name: 'clear_board'})
 
     engineBoard = new Board(board.width, board.height)
     promises = []
