@@ -1899,6 +1899,7 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
+        let {dirname, resolve} = require('path')
         let split = require('argv-split')
         let {engineCommands, attachedEngines} = this.state
 
@@ -1919,12 +1920,18 @@ class App extends Component {
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] === engines[i]) continue
-            if (this.attachedEngineControllers[i]) this.attachedEngineControllers[i].stop(quitTimeout)
+            if (attachedEngines[i] === engines[i])
+                continue
+            if (this.attachedEngineControllers[i])
+                this.attachedEngineControllers[i].stop(quitTimeout)
+            if (engines[i] == null)
+                continue
 
             try {
                 let {path, args, commands} = engines[i]
-                let controller = engines[i] ? new gtp.Controller(path, split(args)) : null
+                let controller = new gtp.Controller(path, split(args), {
+                    cwd: dirname(resolve(path))
+                })
 
                 controller.engine = engines[i]
 
