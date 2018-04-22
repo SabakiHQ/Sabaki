@@ -2115,6 +2115,13 @@ class App extends Component {
         let playerController = this.attachedEngineControllers[playerIndex]
         let otherController = this.attachedEngineControllers[otherIndex]
 
+        //update move variations for just players move
+        //does not take into account double pass so possibly buggy - dirty hack
+        if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
+            // Send Sabaki specific GTP command
+            await playerController.sendCommand({name: 'sabaki-genmovelog'})
+        }
+        
         if (playerController == null) {
             if (otherController != null) {
                 // Switch engines, so the attached engine can play
