@@ -234,7 +234,11 @@ class App extends Component {
             evt.returnValue = ' '
 
             setTimeout(() => {
-                if (this.askForSave()) {
+                if (!setting.get('file.show_ask_for_save_at exit')) {
+                    this.detachEngines()
+                    this.closeWindow = true
+                    this.window.close()
+                } else if (this.askForSave()) {
                     this.detachEngines()
                     this.closeWindow = true
                     this.window.close()
