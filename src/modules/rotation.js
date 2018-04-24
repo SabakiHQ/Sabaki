@@ -1,3 +1,5 @@
+// Note that these functions are only valid for square boards.
+
 const simple = ['AB', 'AW', 'AE', 'B', 'CR', 'DD', 'MA', 'SL', 'SQ', 'TR', 'VW', 'W'];
 const pointWithText = ['LB'];
 const arrowish = ['AR', 'LN'];
