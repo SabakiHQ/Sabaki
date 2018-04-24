@@ -62,6 +62,7 @@ let defaults = {
     'edit.undo_delay': 100,
     'engines.list': [],
     'file.show_reload_warning': true,
+    'file.show_ask_for_save_at exit': true,
     'find.delay': 100,
     'game.default_board_size': 19,
     'game.default_komi': 6.5,
