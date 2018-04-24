@@ -88,14 +88,14 @@ exports.rotateNodeClockwise = function(node, size) {
 
 				if (value.length === 2) {
 
-					let result = exports.rotatePointClockwise(value, size);
+					let result = exports.rotatePointClockwise(value, size)
 					if (result) {
 						values[v] = result
 					}
 
 				} else if (value.length === 5 && value[2] === ":") {
 
-					let result = exports.rotateRectClockwise(value, size);
+					let result = exports.rotateRectClockwise(value, size)
 					if (result) {
 						values[v] = result
 					}
