@@ -25,18 +25,18 @@ exports.rotatePointClockwise = function(point, size) {
 	return rev[index1] + point[0];
 };
 
-exports.rotateRectClockwise = function(rect, size) {
+exports.rotateTwoPointsClockwise = function(twopoints, size, isRect) {
 
-	// returns null on failure ; rect is something like "aa:cc"
+	// returns null on failure ; twopoints is something like "aa:cc"
 
 	if (typeof size !== 'number') return null;
-	if (typeof rect !== 'string') return null;
+	if (typeof twopoints !== 'string') return null;
 	if (size < 1 || size > 52) return null;
-	if (rect.length !== 5) return null;
-	if (rect[2] !== ':') return null;
+	if (twopoints.length !== 5) return null;
+	if (twopoints[2] !== ':') return null;
 
-	let first = rect.slice(0, 2);
-	let second = rect.slice(3, 5);
+	let first = twopoints.slice(0, 2);
+	let second = twopoints.slice(3, 5);
 
 	first = exports.rotatePointClockwise(first, size);
 	second = exports.rotatePointClockwise(second, size);
@@ -45,30 +45,22 @@ exports.rotateRectClockwise = function(rect, size) {
 		return null;
 	}
 
-	return second[0] + first[1] + ":" + first[0] + second[1];
-};
+	// For a rectangle (e.g. anything except line / arrow) we
+	// need to make the format topleft : bottomright
 
-exports.rotateArrowClockwise = function(arrow, size) {
-
-	// returns null on failure ; arrow is something like "aa:cc"
-
-	if (typeof size !== 'number') return null;
-	if (typeof arrow !== 'string') return null;
-	if (size < 1 || size > 52) return null;
-	if (arrow.length !== 5) return null;
-	if (arrow[2] !== ':') return null;
-
-	let first = arrow.slice(0, 2);
-	let second = arrow.slice(3, 5);
-
-	first = exports.rotatePointClockwise(first, size);
-	second = exports.rotatePointClockwise(second, size);
-
-	if (first === null || second === null) {
-		return null;
+	if (isRect) {
+		return second[0] + first[1] + ":" + first[0] + second[1];
 	}
 
 	return first + ":" + second;
+}
+
+exports.rotateRectClockwise = function(twopoints, size) {
+	return exports.rotateTwoPointsClockwise(twopoints, size, true)
+};
+
+exports.rotateArrowClockwise = function(twopoints, size) {
+	return exports.rotateTwoPointsClockwise(twopoints, size, false)
 };
 
 exports.rotateNodeClockwise = function(node, size) {
