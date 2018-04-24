@@ -2047,6 +2047,20 @@ class App extends Component {
             }
         }
 
+        // Set labels A,B,C,... for variations
+        if (sabakiJson.labels != null) {
+            let labels = sabakiJson.labels.split(';')
+            if (labels.length > 0) {
+                let [tree, index] = this.state.treePosition
+                let node = tree.nodes[index]
+                let board = gametree.getBoard(tree, index)
+                labels.forEach(label => {
+                    if ('LB' in node) node['LB'].push(label)
+                        else node['LB'] = [label]
+                });
+            }
+        }
+        
         if (sabakiJson.node != null) {
             let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
             let [tree, index] = this.state.treePosition
@@ -2114,13 +2128,6 @@ class App extends Component {
         let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
         let playerController = this.attachedEngineControllers[playerIndex]
         let otherController = this.attachedEngineControllers[otherIndex]
-
-        //update move variations for just players move
-        //does not take into account double pass so possibly buggy - dirty hack
-        if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
-            // Send Sabaki specific GTP command
-            await playerController.sendCommand({name: 'sabaki-genmovelog'})
-        }
         
         if (playerController == null) {
             if (otherController != null) {
@@ -2139,7 +2146,14 @@ class App extends Component {
         }
 
         this.setBusy(true)
-
+        
+        // Update move variations for the 'play' move
+        // Do this right before genmove to avoid breaking Controller switching
+        if (this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
+            // Send Sabaki specific GTP command
+            await playerController.sendCommand({name: 'sabaki-genmovelog'})
+        }
+        
         let response = await playerController.sendCommand({name: 'genmove', args: [color]})
         let sign = color === 'B' ? 1 : -1
         let pass = true
