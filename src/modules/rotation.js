@@ -30,8 +30,8 @@ exports.rotateTwoPointsClockwise = function(twopoints, height, isRect) {
 	// returns null on failure ; twopoints is something like "aa:cc"
 
 	if (typeof height !== 'number') return null
-	if (typeof twopoints !== 'string') return null
 	if (height < 1 || height > 52) return null
+	if (typeof twopoints !== 'string') return null
 	if (twopoints.length !== 5) return null
 	if (twopoints[2] !== ':') return null
 
