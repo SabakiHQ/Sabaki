@@ -1568,10 +1568,7 @@ class App extends Component {
             }
         }
 
-        if (root.nodes[0] && root.nodes[0].SZ && root.nodes[0].SZ[0] && root.nodes[0].SZ[0][2] === ':') {
-            let sizes = root.nodes[0].SZ[0].split(":")
-            root.nodes[0].SZ[0] = sizes[1] + ':' + sizes[0]
-        }
+        this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
     }
 
     copyVariation(tree, index) {
