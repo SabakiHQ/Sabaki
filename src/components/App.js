@@ -1558,18 +1558,19 @@ class App extends Component {
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
 
-        if (info.size[0] !== info.size[1]) {
-            dialog.showMessageBox('Rotation is not supported for non-square boards.', 'warning')
-            return
-        }
-
         // FIXME: maybe disallow rotation while engines attached?
 
         for (let tree of trees) {
             for (let node of tree.nodes) {
-                rotation.rotateNodeClockwise(node, info.size[0])
+                // Rotator needs the height, NOT the width
+                rotation.rotateNodeClockwise(node, info.size[1])
                 node.board = null
             }
+        }
+
+        if (root.nodes[0] && root.nodes[0].SZ && root.nodes[0].SZ[0] && root.nodes[0].SZ[0][2] === ':') {
+            let sizes = root.nodes[0].SZ[0].split(":")
+            root.nodes[0].SZ[0] = sizes[1] + ':' + sizes[0]
         }
     }
 
