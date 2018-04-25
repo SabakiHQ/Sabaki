@@ -1980,6 +1980,13 @@ class App extends Component {
     }
 
     detachEngines() {
+        // Send quit to attached engines otherwise process remains open
+        this.attachedEngineControllers.forEach(controller => {
+            if (controller) controller.sendCommand({name: 'quit'})
+        })
+        
+        this.attachedEngineControllers = [null, null]
+        this.engineStates = [null, null]
         this.attachEngines(null, null)
     }
 
