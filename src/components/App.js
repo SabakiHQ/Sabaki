@@ -1558,8 +1558,6 @@ class App extends Component {
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
 
-        // FIXME: maybe disallow rotation while engines attached?
-
         for (let tree of trees) {
             for (let node of tree.nodes) {
                 // Rotator needs the height, NOT the width
