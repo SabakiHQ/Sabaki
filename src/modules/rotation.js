@@ -21,14 +21,14 @@ exports.rotatePoint = function(point, width, height, anticlockwise) {
 
 	// returns null on failure ; point is something like "aa"
 
+	if (typeof point !== 'string') return null
+	if (point.length !== 2) return null
+
 	if (typeof width !== 'number') return null
 	if (width < 1 || width > 52) return null
 
 	if (typeof height !== 'number') return null
 	if (height < 1 || height > 52) return null
-
-	if (typeof point !== 'string') return null
-	if (point.length !== 2) return null
 
 	let index0 = alpha.indexOf(point[0])
 	let index1 = alpha.indexOf(point[1])
@@ -48,6 +48,7 @@ exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRe
 
 	// returns null on failure ; twopoints is something like "aa:cc"
 
+	if (typeof twopoints !== 'string') return null
 	if (twopoints.length !== 5) return null
 	if (twopoints[2] !== ':') return null
 
@@ -67,7 +68,7 @@ exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRe
 	if (isRect) {
 		return min(first[0], second[0]) + min(first[1], second[1]) + ':' + max(first[0], second[0]) + max(first[1], second[1])
 	} else {
-		return first + ":" + second
+		return first + ':' + second
 	}
 }
 
@@ -105,7 +106,7 @@ exports.rotateNode = function(node, width, height, anticlockwise) {
 						values[v] = result
 					}
 
-				} else if (value.length === 5 && value[2] === ":") {
+				} else if (value.length === 5 && value[2] === ':') {
 
 					let result = exports.rotateRect(value, width, height, anticlockwise)
 					if (result) {
