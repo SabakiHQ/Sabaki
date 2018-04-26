@@ -1553,15 +1553,14 @@ class App extends Component {
         this.clearUndoPoint()
     }
 
-    rotateClockwise() {
+    rotate(anticlockwise) {
         let root = gametree.getRoot(this.state.treePosition[0])
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
 
         for (let tree of trees) {
             for (let node of tree.nodes) {
-                // Rotator needs the height, NOT the width
-                rotation.rotateNodeClockwise(node, info.size[1])
+                rotation.rotateNode(node, info.size[0], info.size[1], anticlockwise)
                 node.board = null
             }
         }

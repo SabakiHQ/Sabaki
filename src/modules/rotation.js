@@ -7,12 +7,26 @@ const arrowish = ['AR', 'LN']
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = 'ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba'
 
-exports.rotatePointClockwise = function(point, height) {
+function min(one, two) {
+	if (one < two) return one
+	return two
+}
+
+function max(one, two) {
+	if (one > two) return one
+	return two
+}
+
+exports.rotatePoint = function(point, width, height, anticlockwise) {
 
 	// returns null on failure ; point is something like "aa"
 
+	if (typeof width !== 'number') return null
+	if (width < 1 || width > 52) return null
+
 	if (typeof height !== 'number') return null
 	if (height < 1 || height > 52) return null
+
 	if (typeof point !== 'string') return null
 	if (point.length !== 2) return null
 
@@ -21,25 +35,27 @@ exports.rotatePointClockwise = function(point, height) {
 
 	if (index0 === -1 || index1 === -1) return null
 
-	let rev = alphaRev.slice(52 - height)
-	return rev[index1] + point[0]
+	if (anticlockwise) {
+		let rev = alphaRev.slice(52 - width)
+		return point[1] + rev[index0]
+	} else {
+		let rev = alphaRev.slice(52 - height)
+		return rev[index1] + point[0]
+	}
 }
 
-exports.rotateTwoPointsClockwise = function(twopoints, height, isRect) {
+exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRect) {
 
 	// returns null on failure ; twopoints is something like "aa:cc"
 
-	if (typeof height !== 'number') return null
-	if (height < 1 || height > 52) return null
-	if (typeof twopoints !== 'string') return null
 	if (twopoints.length !== 5) return null
 	if (twopoints[2] !== ':') return null
 
 	let first = twopoints.slice(0, 2)
 	let second = twopoints.slice(3, 5)
 
-	first = exports.rotatePointClockwise(first, height)
-	second = exports.rotatePointClockwise(second, height)
+	first = exports.rotatePoint(first, width, height, anticlockwise)
+	second = exports.rotatePoint(second, width, height, anticlockwise)
 
 	if (first === null || second === null) {
 		return null
@@ -49,28 +65,24 @@ exports.rotateTwoPointsClockwise = function(twopoints, height, isRect) {
 	// need to make the format topleft : bottomright
 
 	if (isRect) {
-		return second[0] + first[1] + ":" + first[0] + second[1]
+		return min(first[0], second[0]) + min(first[1], second[1]) + ':' + max(first[0], second[0]) + max(first[1], second[1])
+	} else {
+		return first + ":" + second
 	}
-
-	return first + ":" + second
 }
 
-exports.rotateRectClockwise = function(twopoints, height) {
-	return exports.rotateTwoPointsClockwise(twopoints, height, true)
+exports.rotateRect = function(twopoints, width, height, anticlockwise) {
+	return exports.rotateTwoPoints(twopoints, width, height, anticlockwise, true)
 }
 
-exports.rotateArrowClockwise = function(twopoints, height) {
-	return exports.rotateTwoPointsClockwise(twopoints, height, false)
+exports.rotateArrow = function(twopoints, width, height, anticlockwise) {
+	return exports.rotateTwoPoints(twopoints, width, height, anticlockwise, false)
 }
 
-exports.rotateNodeClockwise = function(node, height) {
+exports.rotateNode = function(node, width, height, anticlockwise) {
 
 	// Given a node and a board height, rotates all relevant properties in the node.
 	// Does NOT do anything about the board though.
-
-	if (typeof height !== 'number') {
-		return
-	}
 
 	// 'simple' cases are either a single point (e.g. "aa") or a rect (e.g. "aa:cc")
 
@@ -88,14 +100,14 @@ exports.rotateNodeClockwise = function(node, height) {
 
 				if (value.length === 2) {
 
-					let result = exports.rotatePointClockwise(value, height)
+					let result = exports.rotatePoint(value, width, height, anticlockwise)
 					if (result) {
 						values[v] = result
 					}
 
 				} else if (value.length === 5 && value[2] === ":") {
 
-					let result = exports.rotateRectClockwise(value, height)
+					let result = exports.rotateRect(value, width, height, anticlockwise)
 					if (result) {
 						values[v] = result
 					}
@@ -122,7 +134,7 @@ exports.rotateNodeClockwise = function(node, height) {
 
 					let point = value.slice(0, 2)
 
-					point = exports.rotatePointClockwise(point, height)
+					point = exports.rotatePoint(point, width, height, anticlockwise)
 					if (point) {
 						values[v] = point + value.slice(2)
 					}
@@ -148,7 +160,7 @@ exports.rotateNodeClockwise = function(node, height) {
 
 				if (value[2] === ':') {
 
-					let result = exports.rotateArrowClockwise(value, height)
+					let result = exports.rotateArrow(value, width, height, anticlockwise)
 					if (result) {
 						values[v] = result
 					}

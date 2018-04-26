@@ -222,8 +222,12 @@ let data = [
             {type: 'separator'},
             {
                 label: 'Rot&ate Clockwise',
-                click: () => sabaki.rotateClockwise()
+                click: () => sabaki.rotate(false)
             },
+            {
+                label: 'Rotate A&nticlockwise',
+                click: () => sabaki.rotate(true)
+            }
         ]
     },
     {
