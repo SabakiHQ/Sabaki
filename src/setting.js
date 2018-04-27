@@ -26,6 +26,7 @@ let settings = {}
 let themesDict = null
 
 let defaults = {
+    'app.always_show_result': false,
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 3000,
     'app.loadgame_delay': 100,
