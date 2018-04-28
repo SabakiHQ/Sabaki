@@ -193,7 +193,7 @@ class InfoDrawer extends Component {
         if (!this.props.show && show) {
             this.setState(Object.assign({}, gameInfo, {
                 engines: [...engines],
-                showResult: !gameInfo.result || gameInfo.result.trim() === ''
+                showResult: !gameInfo.result || gameInfo.result.trim() === '' || setting.get('app.always_show_result') === true
             }))
         }
     }
