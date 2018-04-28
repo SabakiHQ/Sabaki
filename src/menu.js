@@ -218,6 +218,15 @@ let data = [
             {
                 label: 'Remove &Other Variations',
                 click: () => sabaki.removeOtherVariations(...treePosition())
+            },
+            {type: 'separator'},
+            {
+                label: 'Rot&ate Clockwise',
+                click: () => sabaki.rotate(false)
+            },
+            {
+                label: 'Rotate A&nticlockwise',
+                click: () => sabaki.rotate(true)
             }
         ]
     },
