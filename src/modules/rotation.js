@@ -5,21 +5,10 @@ const pointWithText = ['LB']
 const arrowish = ['AR', 'LN']
 
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-const alphaRev = 'ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba'
-
-function min(one, two) {
-	if (one < two) return one
-	return two
-}
-
-function max(one, two) {
-	if (one > two) return one
-	return two
-}
+const alphaRev = [...alpha].reverse()
 
 exports.rotatePoint = function(point, width, height, anticlockwise) {
-
-	// returns null on failure ; point is something like "aa"
+	// returns null on failure; point is something like "aa"
 
 	if (typeof point !== 'string') return null
 	if (point.length !== 2) return null
@@ -45,8 +34,7 @@ exports.rotatePoint = function(point, width, height, anticlockwise) {
 }
 
 exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRect) {
-
-	// returns null on failure ; twopoints is something like "aa:cc"
+	// returns null on failure; twopoints is something like "aa:cc"
 
 	if (typeof twopoints !== 'string') return null
 	if (twopoints.length !== 5) return null
@@ -66,7 +54,10 @@ exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRe
 	// need to make the format topleft : bottomright
 
 	if (isRect) {
-		return min(first[0], second[0]) + min(first[1], second[1]) + ':' + max(first[0], second[0]) + max(first[1], second[1])
+		return Math.min(first[0], second[0])
+			+ Math.min(first[1], second[1])
+			+ ':' + Math.max(first[0], second[0])
+			+ Math.max(first[1], second[1])
 	} else {
 		return first + ':' + second
 	}
@@ -81,37 +72,29 @@ exports.rotateArrow = function(twopoints, width, height, anticlockwise) {
 }
 
 exports.rotateNode = function(node, width, height, anticlockwise) {
-
 	// Given a node and a board height, rotates all relevant properties in the node.
 	// Does NOT do anything about the board though.
 
 	// 'simple' cases are either a single point (e.g. "aa") or a rect (e.g. "aa:cc")
 
 	for (let k = 0; k < simple.length; k++) {
-
 		let key = simple[k]
+		if (node[key] == null) continue
 
-		if (node[key] !== undefined) {
+		let values = node[key]
 
-			let values = node[key]
+		for (let v = 0; v < values.length; v++) {
+			let value = values[v]
 
-			for (let v = 0; v < values.length; v++) {
-
-				let value = values[v]
-
-				if (value.length === 2) {
-
-					let result = exports.rotatePoint(value, width, height, anticlockwise)
-					if (result) {
-						values[v] = result
-					}
-
-				} else if (value.length === 5 && value[2] === ':') {
-
-					let result = exports.rotateRect(value, width, height, anticlockwise)
-					if (result) {
-						values[v] = result
-					}
+			if (value.length === 2) {
+				let result = exports.rotatePoint(value, width, height, anticlockwise)
+				if (result) {
+					values[v] = result
+				}
+			} else if (value.length === 5 && value[2] === ':') {
+				let result = exports.rotateRect(value, width, height, anticlockwise)
+				if (result) {
+					values[v] = result
 				}
 			}
 		}
@@ -120,26 +103,20 @@ exports.rotateNode = function(node, width, height, anticlockwise) {
 	// 'pointWithText' means something like "aa:hi there"
 
 	for (let k = 0; k < pointWithText.length; k++) {
-
 		let key = pointWithText[k]
+		if (node[key] == null) continue
 
-		if (node[key] !== undefined) {
+		let values = node[key]
 
-			let values = node[key]
+		for (let v = 0; v < values.length; v++) {
+			let value = values[v]
 
-			for (let v = 0; v < values.length; v++) {
+			if (value[2] === ':') {
+				let point = value.slice(0, 2)
 
-				let value = values[v]
-
-				if (value[2] === ':') {
-
-					let point = value.slice(0, 2)
-
-					point = exports.rotatePoint(point, width, height, anticlockwise)
-					if (point) {
-						values[v] = point + value.slice(2)
-					}
-
+				point = exports.rotatePoint(point, width, height, anticlockwise)
+				if (point) {
+					values[v] = point + value.slice(2)
 				}
 			}
 		}
@@ -148,24 +125,18 @@ exports.rotateNode = function(node, width, height, anticlockwise) {
 	// 'arrowish' things are formatted like rects, but with no requirement of topleft:bottomright
 
 	for (let k = 0; k < arrowish.length; k++) {
-
 		let key = arrowish[k]
+		if (node[key] == null) continue
 
-		if (node[key] !== undefined) {
+		let values = node[key]
 
-			let values = node[key]
+		for (let v = 0; v < values.length; v++) {
+			let value = values[v]
 
-			for (let v = 0; v < values.length; v++) {
-
-				let value = values[v]
-
-				if (value[2] === ':') {
-
-					let result = exports.rotateArrow(value, width, height, anticlockwise)
-					if (result) {
-						values[v] = result
-					}
-
+			if (value[2] === ':') {
+				let result = exports.rotateArrow(value, width, height, anticlockwise)
+				if (result) {
+					values[v] = result
 				}
 			}
 		}

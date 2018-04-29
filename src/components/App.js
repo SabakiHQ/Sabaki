@@ -1553,7 +1553,7 @@ class App extends Component {
         this.clearUndoPoint()
     }
 
-    rotate(anticlockwise) {
+    rotateBoard(anticlockwise) {
         let root = gametree.getRoot(this.state.treePosition[0])
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
