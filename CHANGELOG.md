@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Add board rotation tools (Thanks to @fohristiwhirl)
 * Add an option to disable hardware acceleration (Thanks to @ohyou)
+* Add an option show game result in the info drawer (Thanks to @fohristiwhirl)
 
 **Fixed**
 
