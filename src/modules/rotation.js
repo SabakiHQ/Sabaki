@@ -7,6 +7,16 @@ const arrowish = ['AR', 'LN']
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = [...alpha].reverse()
 
+function min(one, two) {
+	if (one < two) return one
+	return two
+}
+
+function max(one, two) {
+	if (one > two) return one
+	return two
+}
+
 exports.rotatePoint = function(point, width, height, anticlockwise) {
 	// returns null on failure; point is something like "aa"
 
@@ -54,10 +64,10 @@ exports.rotateTwoPoints = function(twopoints, width, height, anticlockwise, isRe
 	// need to make the format topleft : bottomright
 
 	if (isRect) {
-		return Math.min(first[0], second[0])
-			+ Math.min(first[1], second[1])
-			+ ':' + Math.max(first[0], second[0])
-			+ Math.max(first[1], second[1])
+		return min(first[0], second[0])
+			+ min(first[1], second[1])
+			+ ':' + max(first[0], second[0])
+			+ max(first[1], second[1])
 	} else {
 		return first + ':' + second
 	}
