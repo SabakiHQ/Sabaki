@@ -404,7 +404,7 @@ let data = [
                 click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
             },
             {
-                label: 'Toggle G&uess Mode',
+                label: 'Toggle &Guess Mode',
                 click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
             },
             {type: 'separator'},
