@@ -66,6 +66,7 @@ module.exports = (env, argv) => ({
             'rimraf': emptyPath,
             'argv-split': emptyPath,
             '@sabaki/gtp': emptyPath,
+            '../modules/rotation': emptyPath,
             '../modules/enginesyncer': emptyPath,
             '../menu': emptyPath,
 
