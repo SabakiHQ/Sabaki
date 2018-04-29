@@ -1940,8 +1940,6 @@ class App extends Component {
                 continue
             if (this.attachedEngineControllers[i])
                 this.attachedEngineControllers[i].stop(quitTimeout)
-            if (engines[i] == null)
-                continue
 
             try {
                 let {path, args, commands} = engines[i]
