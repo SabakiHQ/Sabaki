@@ -123,10 +123,6 @@ let data = [
                 click: () => sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
             },
             {
-                label: 'Clean &Markup…',
-                click: () => sabaki.openDrawer('cleanmarkup')
-            },
-            {
                 label: '&Select Tool',
                 submenu: [
                     {
@@ -397,6 +393,24 @@ let data = [
             {
                 label: '&Clear Console',
                 click: () => sabaki.clearConsole()
+            }
+        ]
+    },
+    {
+        label: '&Tools',
+        submenu: [
+            {
+                label: 'Clean &Markup…',
+                click: () => sabaki.openDrawer('cleanmarkup')
+            },
+            {type: 'separator'},
+            {
+                label: '&Rotate Clockwise',
+                click: () => sabaki.rotateBoard(false)
+            },
+            {
+                label: 'Rotate &Anticlockwise',
+                click: () => sabaki.rotateBoard(true)
             }
         ]
     },

@@ -130,6 +130,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',
                     text: 'Click last played stone to remove'
+                }),
+                h(PreferencesItem, {
+                    id: 'app.always_show_result',
+                    text: 'Always show game result'
                 })
             ),
 

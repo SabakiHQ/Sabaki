@@ -25,6 +25,7 @@ const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
+const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
 const {sgf} = fileformats
 const sound = require('../modules/sound')
@@ -1532,6 +1533,21 @@ class App extends Component {
         }
 
         this.clearUndoPoint()
+    }
+
+    rotateBoard(anticlockwise) {
+        let root = gametree.getRoot(this.state.treePosition[0])
+        let trees = gametree.getTreesRecursive(root)
+        let info = this.getGameInfo(root)
+
+        for (let tree of trees) {
+            for (let node of tree.nodes) {
+                rotation.rotateNode(node, info.size[0], info.size[1], anticlockwise)
+                node.board = null
+            }
+        }
+
+        this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
     }
 
     copyVariation(tree, index) {
