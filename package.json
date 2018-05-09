@@ -67,7 +67,7 @@
     "@sabaki/deadstones": "^1.0.2",
     "@sabaki/gtp": "^1.1.0",
     "@sabaki/influence": "^1.0.2",
-    "@sabaki/sgf": "^1.2.0",
+    "@sabaki/sgf": "^1.2.1",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.5",
     "iconv-lite": "^0.4.23",
