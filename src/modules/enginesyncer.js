@@ -1,6 +1,6 @@
+const sgf = require('@sabaki/sgf')
 const gametree = require('./gametree')
 const helper = require('./helper')
-const {sgf} = require('./fileformats')
 const Board = require('./board')
 
 async function enginePlay(controller, sign, vertex, board) {
@@ -74,7 +74,7 @@ exports.sync = async function(controller, engineState, treePosition) {
             if (!(prop in node)) continue
 
             let sign = prop.slice(-1) === 'B' ? 1 : -1
-            let vertices = node[prop].map(sgf.compressed2list).reduce((list, x) => [...list, ...x])
+            let vertices = node[prop].map(sgf.parseCompressedVertices).reduce((list, x) => [...list, ...x])
 
             for (let vertex of vertices) {
                 if (engineBoard.get(vertex) !== 0) continue

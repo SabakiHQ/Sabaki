@@ -1,6 +1,7 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const sgf = require('@sabaki/sgf')
 
 const MiniGoban = require('../MiniGoban')
 const Drawer = require('./Drawer')
@@ -10,7 +11,6 @@ const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const {sgf} = fileformats
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')
 let itemMinWidth = thumbnailSize + 12 + 20
@@ -285,8 +285,8 @@ class GameChooserDrawer extends Component {
                             // Transform dates
 
                             [x1, x2] = [x1, x2]
-                            .map(x => sgf.string2dates(x))
-                            .map(x => x ? sgf.dates2string(x.sort(helper.lexicalCompare)) : '')
+                            .map(x => sgf.parseDates(x))
+                            .map(x => x ? sgf.stringifyDates(x.sort(helper.lexicalCompare)) : '')
                         }
 
                         if (['GN', 'EV'].includes(property)) {

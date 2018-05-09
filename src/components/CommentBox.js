@@ -1,6 +1,7 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const sgf = require('@sabaki/sgf')
 
 const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
@@ -8,7 +9,6 @@ const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
-const {sgf} = require('../modules/fileformats')
 const Board = require('../modules/board')
 
 class CommentTitle extends Component {
@@ -80,9 +80,9 @@ class CommentTitle extends Component {
         let vertex
 
         if ('B' in node && node.B[0] !== '')
-            vertex = sgf.point2vertex(node.B[0])
+            vertex = sgf.parseVertex(node.B[0])
         else if ('W' in node && node.W[0] !== '')
-            vertex = sgf.point2vertex(node.W[0])
+            vertex = sgf.parseVertex(node.W[0])
         else if ('W' in node || 'B' in node)
             return 'Pass'
         else

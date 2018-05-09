@@ -1,4 +1,4 @@
-const {sgf} = require('./fileformats')
+const sgf = require('@sabaki/sgf')
 
 let _shapes = null
 let equals = v => w => w[0] === v[0] && w[1] === v[1]
@@ -16,14 +16,14 @@ exports.getBoardSymmetries = function(board, vertex) {
 }
 
 exports.readShapes = function(content) {
-    let tree = sgf.parse(content, () => {}, true)[0]
+    let tree = sgf.parse(content, {encoding: null})[0]
     let result = []
 
     for (let i = 0; i < tree.subtrees.length; i++) {
         let node = tree.subtrees[i].nodes[0]
-        let anchors = node.MA.map(x => [...sgf.point2vertex(x), node.AB.includes(x) ? 1 : -1])
+        let anchors = node.MA.map(x => [...sgf.parseVertex(x), node.AB.includes(x) ? 1 : -1])
         let vertices = ['AW', 'CR', 'AB']
-            .map((x, i) => (node[x] || []).map(y => [...sgf.point2vertex(y), i - 1]))
+            .map((x, i) => (node[x] || []).map(y => [...sgf.parseVertex(y), i - 1]))
             .reduce((acc, x) => [...acc, ...x], [])
 
         let data = {}

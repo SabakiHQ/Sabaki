@@ -1,13 +1,13 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const sgf = require('@sabaki/sgf')
 
 const Bar = require('./Bar')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const {sgf} = require('../../modules/fileformats')
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 
@@ -62,7 +62,7 @@ class AutoplayBar extends Component {
             if (!node.B && !node.W) {
                 sabaki.setCurrentTreePosition(...tp)
             } else {
-                let vertex = sgf.point2vertex(node.B ? node.B[0] : node.W[0])
+                let vertex = sgf.parseVertex(node.B ? node.B[0] : node.W[0])
                 sabaki.makeMove(vertex, {player: node.B ? 1 : -1})
             }
 
