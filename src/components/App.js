@@ -14,7 +14,6 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
-const deadstones = require('@sabaki/deadstones')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
 const influence = require('@sabaki/influence')
@@ -352,12 +351,13 @@ class App extends Component {
 
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
-                finished: mode === 'scoring',
-                iterations
-            })
 
-            Object.assign(stateChange, {deadStones})
+            require('@sabaki/deadstones').then(deadstones =>
+                deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
+                    finished: mode === 'scoring',
+                    iterations
+                })
+            ).then(deadStones => this.setState({deadStones}))
         }
 
         this.setState(stateChange)

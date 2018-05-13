@@ -60,11 +60,13 @@
       "!src/modules${/*}",
       "!node_modules${/*}",
       "node_modules/octicons/build/svg",
-      "node_modules/pikaday/css/pikaday.css"
+      "node_modules/pikaday/css/pikaday.css",
+      "node_modules/@sabaki/deadstones",
+      "!node_modules/@sabaki/deadstones/tests${/*}"
     ]
   },
   "dependencies": {
-    "@sabaki/deadstones": "^1.0.2",
+    "@sabaki/deadstones": "^2.0.0-beta3",
     "@sabaki/gtp": "^1.1.0",
     "@sabaki/influence": "^1.0.2",
     "@sabaki/sgf": "^1.2.1",

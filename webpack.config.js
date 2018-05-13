@@ -30,6 +30,7 @@ module.exports = (env, argv) => ({
     },
 
     externals: {
+        '@sabaki/deadstones': "require('@sabaki/deadstones')",
         'moment': 'null'
     },
 
