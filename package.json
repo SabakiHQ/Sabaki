@@ -66,7 +66,7 @@
     ]
   },
   "dependencies": {
-    "@sabaki/deadstones": "^2.0.0-beta3",
+    "@sabaki/deadstones": "^2.0.0-beta4",
     "@sabaki/gtp": "^1.1.0",
     "@sabaki/influence": "^1.0.2",
     "@sabaki/sgf": "^1.2.1",
