@@ -7,14 +7,33 @@ const arrowish = ['AR', 'LN']
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = [...alpha].reverse()
 
+// Special functions that return the "min" and "max"
+// for the SGF coordinate system...
+//
+// a-z : 1-26
+// A-Z : 27-52
+//
+// Note that lowercase has higher ASCII value,
+// but is considered lower in the SGF system.
+
 function min(one, two) {
+
+	// In case exactly one is lowercase, return it...
+
+	if (one >= 'a' && two <= 'Z') return one
+	if (one <= 'Z' && two >= 'a') return two
+
+	// Same case...
+
 	if (one < two) return one
 	return two
 }
 
 function max(one, two) {
-	if (one > two) return one
-	return two
+	if (one >= 'a' && two <= 'Z') return two
+	if (one <= 'Z' && two >= 'a') return one
+	if (one < two) return two
+	return one
 }
 
 exports.rotatePoint = function(point, width, height, anticlockwise) {

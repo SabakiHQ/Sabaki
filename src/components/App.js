@@ -466,7 +466,7 @@ class App extends Component {
 
         let {extname} = require('path')
         let extension = extname(filename).slice(1)
-        
+
         let gameTrees = []
         let success = true
         let lastProgress = -1
@@ -1596,7 +1596,9 @@ class App extends Component {
             }
         }
 
-        this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
+        if (info.size[1] !== info.size[0]) {
+            this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
+        }
     }
 
     copyVariation(tree, index) {
