@@ -6,9 +6,9 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Add board rotation tools (Thanks to @fohristiwhirl)
-* Add an option to disable hardware acceleration (Thanks to @ohyou)
-* Add an option show game result in the info drawer (Thanks to @fohristiwhirl)
+* Add board rotation tools (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* Add an option to disable hardware acceleration (Thanks to [@ohyou](https://github.com/ohyou))
+* Add an option to always show game result in the info drawer (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
 **Fixed**
 
@@ -16,7 +16,11 @@ All notable changes to this project will be documented in this file.
 
 **Updated**
 
+* Moved some features to 'Tools' menu
 * Gracefully ending engines with `quit` command when detaching
+* [Dead stones detector](https://github.com/SabakiHQ/deadstones) rewritten in Rust & WebAssembly to be faster and more accurate
+* Improved [influence map generator](https://github.com/SabakiHQ/influence) which fixes ragged areas
+* Update to Electron v2.0.0
 
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 
