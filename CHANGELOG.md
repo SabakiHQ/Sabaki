@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 * Gracefully ending engines with `quit` command when detaching
 * [Dead stones detector](https://github.com/SabakiHQ/deadstones) rewritten in Rust & WebAssembly to be faster and more accurate
 * Improved [influence map generator](https://github.com/SabakiHQ/influence) which fixes ragged areas
+* Formatted SGF output
 * Update to Electron v2.0.0
 
 **Fixed**
