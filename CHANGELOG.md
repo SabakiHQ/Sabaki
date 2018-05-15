@@ -10,11 +10,7 @@ All notable changes to this project will be documented in this file.
 * Add an option to disable hardware acceleration (Thanks to [@ohyou](https://github.com/ohyou))
 * Add an option to always show game result in the info drawer (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
-**Fixed**
-
-* Trying to execute blocked GTP commands will show properly in the console
-
-**Updated**
+**Changed**
 
 * Moved some features to 'Tools' menu
 * Gracefully ending engines with `quit` command when detaching
@@ -22,21 +18,25 @@ All notable changes to this project will be documented in this file.
 * Improved [influence map generator](https://github.com/SabakiHQ/influence) which fixes ragged areas
 * Update to Electron v2.0.0
 
+**Fixed**
+
+* Trying to execute blocked GTP commands will show properly in the console
+
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 
 **Added**
 
 * Show player ranks on the play bar, next to the player names
 
+**Changed**
+
+* Change default placement of handicap stones in a three-handicap game
+* Update to Electron v1.8.4
+
 **Fixed**
 
 * When exiting edit mode using <kbd>Ctrl+E</kbd>, the cursor won't be stuck as a crosshair anymore
 * Navigating the game using arrow keys isn't blocked anymore after closing game manager drawer
-
-**Updated**
-
-* Change default placement of handicap stones in a three-handicap game
-* Update to Electron v1.8.4
 
 ## [Sabaki v0.33.3][v0.33.3] (2018-02-10)
 
@@ -109,60 +109,25 @@ All notable changes to this project will be documented in this file.
 * Pre-fill date field in new games with current date
 * In the info drawer, show game result after user's affirmation
 * Inactive nodes in the game tree get comment and hotspot coloring (Thanks to [@geovens](https://github.com/geovens))
+* When selecting engines, player names are automatically filled unless changed by the user
+* Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
+* Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
+* Lift the arbitrary maximum limit of autoplay's 'sec per move' (Thanks to [@emauton](https://github.com/emauton))
+* Per-window sidebars (see [#265](https://github.com/SabakiHQ/Sabaki/issues/265))
+* Add support for outdated `L` property
+* Add menu items for going to next/previous game
 * Update to Electron v1.7.9
 
 **Fixed**
 
 * Clicking 'Download Update' button opens the correct URL
-
-## [Sabaki v0.31.4][v0.31.4] (2017-09-27)
-
-**Changed**
-
-* When selecting engines, player names are automatically filled unless changed by the user
-* Downgrade to stable Electron v1.7.8 due to security reasons
-
-**Fixed**
-
 * Fix encoding problems in shape names
-
-## [Sabaki v0.31.3][v0.31.3] (2017-09-19)
-
-**Changed**
-
-* Change 'Remove Node' shortcut to <kbd>Command+Backspace</kbd> on macOS
-* Change 'Fullscreen' shortcut to <kbd>F11</kbd> on Linux and Windows
-* Lift the arbitrary maximum limit of autoplay's 'sec per move' (Thanks to [@emauton](https://github.com/emauton))
-* Per-window sidebars (see [#265](https://github.com/SabakiHQ/Sabaki/issues/265))
-* Update to Electron v1.8.0 beta
-
-**Fixed**
-
 * Fix updated komi values not being sent to GTP engines during the game
 * Fix pass moves not being sent to GTP engines
-
-## [Sabaki v0.31.2][v0.31.2] (2017-07-15)
-
-**Changed**
-
-* Update to Electron v1.7.4 beta
-
-**Fixed**
-
 * Fix Sabaki crashing when pressing enter in autoplay mode
 * Fix 'Clear Annotations' not working
 * Fix Sabaki not sending pass command to attached engines
 * Fix cursor jumping to the end of comment text when editing
-
-## [Sabaki v0.31.1][v0.31.1] (2017-06-24)
-
-**Added**
-
-* Add support for outdated `L` property
-* Add menu items for going to next/previous game
-
-**Fixed**
-
 * Fix 'Jump to end after loading file' not working
 * Fix theme uninstallation failing on Windows with disabled recycle bin
 
@@ -416,7 +381,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * Doesn't clear GTP console when detaching engines
-* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in ~1 second
+* Significant SGF parsing speed increase; parses Kogo's Joseki Dictionary in around one second
 * Significant graph updating speed increase
 * Update to Electon v0.37.7
 
@@ -720,11 +685,7 @@ First release
 [v0.33.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.0...v0.33.1
 [v0.33.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.32.2...v0.33.0
 [v0.32.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.5...v0.32.2
-[v0.31.5]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.4...v0.31.5
-[v0.31.4]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.3...v0.31.4
-[v0.31.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.2...v0.31.3
-[v0.31.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.1...v0.31.2
-[v0.31.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.0...v0.31.1
+[v0.31.5]: https://github.com/SabakiHQ/Sabaki/compare/v0.31.0...v0.31.5
 [v0.31.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.3...v0.31.0
 [v0.30.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.2...v0.30.3
 [v0.30.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.30.1...v0.30.2
