@@ -418,7 +418,7 @@ class App extends Component {
             KM[${setting.get('game.default_komi')}]
             SZ[${sizeInfo}]DT[${dateInfo}]
             ${handicapInfo})
-        `)[0]
+        `, {getId: helper.getId})[0]
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
@@ -2074,7 +2074,7 @@ class App extends Component {
         let sabakiJson = JSON.parse(sabakiJsonMatch[1])
 
         if (sabakiJson.variations != null) {
-            let subtrees = sgf.parse(sabakiJson.variations)
+            let subtrees = sgf.parse(sabakiJson.variations, {getId: helper.getId})
 
             if (subtrees.length > 0) {
                 let {gameTrees} = this.state

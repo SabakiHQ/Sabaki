@@ -17,7 +17,6 @@ const alphaRev = [...alpha].reverse()
 // but is considered lower in the SGF system.
 
 function min(one, two) {
-
 	// In case exactly one is lowercase, return it...
 
 	if (one >= 'a' && two <= 'Z') return one
