@@ -19,6 +19,8 @@ const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
 const influence = require('@sabaki/influence')
 
+deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
+
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
 const dialog = require('../modules/dialog')
