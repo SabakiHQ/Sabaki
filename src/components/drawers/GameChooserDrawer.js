@@ -255,6 +255,7 @@ class GameChooserDrawer extends Component {
                 {label: 'Game &Name', property: 'GN'},
                 {label: 'Game &Event', property: 'EV'},
                 {label: '&Date', property: 'DT'},
+                {label: 'Number of &Moves', property: 'moves'},
                 {type: 'separator'},
                 {label: '&Reverse', property: '-1'}
             ]
@@ -295,6 +296,10 @@ class GameChooserDrawer extends Component {
                             s = natsort({insensitive: true})(x1, x2)
                         } else {
                             s = x1 < x2 ? -1 : +(x1 !== x2)
+                        }
+
+                        if (property === 'moves') {
+                            s = gametree.getHeight(t1) < gametree.getHeight(t2) ? -1 : 1
                         }
 
                         return s !== 0 ? s : i1 - i2
