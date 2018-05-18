@@ -9,6 +9,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
+const gamesorter = require('../../modules/gamesorter')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -271,40 +272,7 @@ class GameChooserDrawer extends Component {
 
                     // Stable sort
 
-                    gameTrees = gameTrees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
-                        let s
-                        let [x1, x2] = property === '-1' ? [i2, i1]
-                            : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
-
-                        if (['BR', 'WR'].includes(property)) {
-                            // Transform ranks
-
-                            [x1, x2] = [x1, x2]
-                            .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
-                            .map(x => isNaN(x) ? -Infinity : x)
-                        } else if (property === 'DT') {
-                            // Transform dates
-
-                            [x1, x2] = [x1, x2]
-                            .map(x => sgf.parseDates(x))
-                            .map(x => x ? sgf.stringifyDates(x.sort(helper.lexicalCompare)) : '')
-                        }
-
-                        if (['GN', 'EV'].includes(property)) {
-                            // Sort names
-
-                            s = natsort({insensitive: true})(x1, x2)
-                        } else {
-                            s = x1 < x2 ? -1 : +(x1 !== x2)
-                        }
-
-                        if (property === 'moves') {
-                            s = gametree.getHeight(t1) < gametree.getHeight(t2) ? -1 : 1
-                        }
-
-                        return s !== 0 ? s : i1 - i2
-                    }).map(x => x[0])
-
+                    gameTrees = gamesorter.sort(gameTrees, property)
                     onChange({gameTrees})
                     sabaki.setBusy(false)
                 }
