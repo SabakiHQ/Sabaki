@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 * Add board rotation tools (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 * Add an option to disable hardware acceleration (Thanks to [@ohyou](https://github.com/ohyou))
 * Add an option to always show game result in the info drawer (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* Ability to sort games by game length (Thanks to [@gcentauri](https://github.com/gcentauri))
 
 **Changed**
 
@@ -17,7 +18,7 @@ All notable changes to this project will be documented in this file.
 * [Dead stones detector](https://github.com/SabakiHQ/deadstones) rewritten in Rust & WebAssembly to be faster and more accurate
 * Improved [influence map generator](https://github.com/SabakiHQ/influence) which fixes ragged areas
 * Formatted SGF output
-* Update to Electron v2.0.0
+* Update to Electron v2.0.2
 
 **Fixed**
 
