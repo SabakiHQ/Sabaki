@@ -9,6 +9,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
+const gamesort = require('../../modules/gamesort')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -245,65 +246,31 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleSortButtonClick = evt => {
-            let natsort = require('natsort')
-
-            let template = [
-                {label: '&Black Player', property: 'PB'},
-                {label: '&White Player', property: 'PW'},
-                {label: 'Black R&ank', property: 'BR'},
-                {label: 'White Ran&k', property: 'WR'},
-                {label: 'Game &Name', property: 'GN'},
-                {label: 'Game &Event', property: 'EV'},
-                {label: '&Date', property: 'DT'},
-                {type: 'separator'},
-                {label: '&Reverse', property: '-1'}
-            ]
-
-            for (let item of template) {
-                let {property} = item
-                delete item.property
-
-                item.click = () => {
+            let sortWith = (sorter) => {
+                return () => {
                     sabaki.setBusy(true)
 
                     let {gameTrees, onChange = helper.noop} = this.props
 
-                    // Stable sort
-
-                    gameTrees = gameTrees.map((x, i) => [x, i]).sort(([t1, i1], [t2, i2]) => {
-                        let s
-                        let [x1, x2] = property === '-1' ? [i2, i1]
-                            : [t1, t2].map(t => property in t.nodes[0] ? t.nodes[0][property][0] : '')
-
-                        if (['BR', 'WR'].includes(property)) {
-                            // Transform ranks
-
-                            [x1, x2] = [x1, x2]
-                            .map(x => (x.includes('k') ? -1 : x.includes('p') ? 10 : 1) * parseFloat(x))
-                            .map(x => isNaN(x) ? -Infinity : x)
-                        } else if (property === 'DT') {
-                            // Transform dates
-
-                            [x1, x2] = [x1, x2]
-                            .map(x => sgf.parseDates(x))
-                            .map(x => x ? sgf.stringifyDates(x.sort(helper.lexicalCompare)) : '')
-                        }
-
-                        if (['GN', 'EV'].includes(property)) {
-                            // Sort names
-
-                            s = natsort({insensitive: true})(x1, x2)
-                        } else {
-                            s = x1 < x2 ? -1 : +(x1 !== x2)
-                        }
-
-                        return s !== 0 ? s : i1 - i2
-                    }).map(x => x[0])
+                    gameTrees = sorter(gameTrees)
 
                     onChange({gameTrees})
                     sabaki.setBusy(false)
                 }
             }
+
+            let template = [
+                {label: '&Black Player', click: sortWith(gamesort.byPlayerBlack)},
+                {label: '&White Player', click: sortWith(gamesort.byPlayerWhite)},
+                {label: 'Black R&ank', click: sortWith(gamesort.byBlackRank)},
+                {label: 'White Ran&k', click: sortWith(gamesort.byWhiteRank)},
+                {label: 'Game &Name', click: sortWith(gamesort.byGameName)},
+                {label: 'Game &Event', click: sortWith(gamesort.byEvent)},
+                {label: '&Date', click: sortWith(gamesort.byDate)},
+                {label: 'Number of &Moves', click: sortWith(gamesort.byNumberOfMoves)},
+                {type: 'separator'},
+                {label: '&Reverse', click: sortWith(gamesort.reverse)}
+            ]
 
             let element = evt.currentTarget
             let {left, bottom} = element.getBoundingClientRect()
