@@ -9,7 +9,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const fileformats = require('../../modules/fileformats')
 const gametree = require('../../modules/gametree')
-const gamesorter = require('../../modules/gamesorter')
+const gamesort = require('../../modules/gamesort')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -246,37 +246,31 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleSortButtonClick = evt => {
-            let natsort = require('natsort')
-
-            let template = [
-                {label: '&Black Player', property: 'PB'},
-                {label: '&White Player', property: 'PW'},
-                {label: 'Black R&ank', property: 'BR'},
-                {label: 'White Ran&k', property: 'WR'},
-                {label: 'Game &Name', property: 'GN'},
-                {label: 'Game &Event', property: 'EV'},
-                {label: '&Date', property: 'DT'},
-                {label: 'Number of &Moves', property: 'moves'},
-                {type: 'separator'},
-                {label: '&Reverse', property: '-1'}
-            ]
-
-            for (let item of template) {
-                let {property} = item
-                delete item.property
-
-                item.click = () => {
+            let sortWith = (sorter) => {
+                return () => {
                     sabaki.setBusy(true)
 
                     let {gameTrees, onChange = helper.noop} = this.props
 
-                    // Stable sort
+                    gameTrees = sorter(gameTrees)
 
-                    gameTrees = gamesorter.sort(gameTrees, property)
                     onChange({gameTrees})
                     sabaki.setBusy(false)
                 }
             }
+
+            let template = [
+                {label: '&Black Player', click: sortWith(gamesort.byPlayerBlack)},
+                {label: '&White Player', click: sortWith(gamesort.byPlayerWhite)},
+                {label: 'Black R&ank', click: sortWith(gamesort.byBlackRank)},
+                {label: 'White Ran&k', click: sortWith(gamesort.byWhiteRank)},
+                {label: 'Game &Name', click: sortWith(gamesort.byGameName)},
+                {label: 'Game &Event', click: sortWith(gamesort.byEvent)},
+                {label: '&Date', click: sortWith(gamesort.byDate)},
+                {label: 'Number of &Moves', click: sortWith(gamesort.byNumberOfMoves)},
+                {type: 'separator'},
+                {label: '&Reverse', click: sortWith(gamesort.reverse)}
+            ]
 
             let element = evt.currentTarget
             let {left, bottom} = element.getBoundingClientRect()
