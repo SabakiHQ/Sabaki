@@ -2010,7 +2010,7 @@ class App extends Component {
                 controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
-                            sign: this.state.attachedEngines.indexOf(engines[i]) === 0 ? 1 : -1,
+                            sign: this.attachedEngineControllers.indexOf(controller) === 0 ? 1 : -1,
                             name: engines[i].name,
                             command: null,
                             response: {content, internal: true}
