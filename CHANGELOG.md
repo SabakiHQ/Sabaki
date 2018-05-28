@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Trying to execute blocked GTP commands will show properly in the console
+* Fix mismatch of commands and responses in the GTP console
 
 ## [Sabaki v0.33.4][v0.33.4] (2018-04-03)
 

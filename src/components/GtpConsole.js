@@ -8,8 +8,10 @@ const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
 class ConsoleCommandEntry extends Component {
-    shouldComponentUpdate() {
-        return false
+    shouldComponentUpdate({sign, name, command}) {
+        return sign !== this.props.sign
+            || name !== this.props.name
+            || command !== this.props.command
     }
 
     render({sign, name, command}) {
@@ -115,7 +117,7 @@ class GtpConsole extends Component {
                     }
 
                     let {command} = consoleLog[this.inputPointer]
-                    
+
                     if (command != null) {
                         this.setState({commandInputText: gtp.Command.toString(command)})
                         break
@@ -138,7 +140,7 @@ class GtpConsole extends Component {
         let {engineIndex} = this.state
 
         if (attachedEngines[engineIndex] == null) {
-            let index = attachedEngines.findIndex(x => x != null)            
+            let index = attachedEngines.findIndex(x => x != null)
             if (engineIndex !== index) this.setState({engineIndex: index})
         }
 
@@ -191,12 +193,12 @@ class GtpConsole extends Component {
                 consoleLog.map(({sign, name, command, response}, i) => [
                     command ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
                     : !command && (
-                        i == 0 
-                        || consoleLog[i - 1].sign !== sign 
+                        i == 0
+                        || consoleLog[i - 1].sign !== sign
                         || consoleLog[i - 1].name !== name
                     ) ? h(ConsoleCommandEntry, {sign, name, command})
                     : null,
-                    
+
                     h(ConsoleResponseEntry, {response, waiting: response == null})
                 ])
             ),
