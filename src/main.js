@@ -111,14 +111,9 @@ function buildMenu(disableAll = false) {
 }
 
 function checkForUpdates(showFailDialogs) {
-    updater.check(`SabakiHQ/${app.getName()}`, (err, info) => {
-        if (err) return showFailDialogs && dialog.showMessageBox({
-            type: 'warning',
-            buttons: ['OK'],
-            title: app.getName(),
-            message: 'An error occurred when checking for updates.'
-        })
-
+    updater
+    .check(`SabakiHQ/${app.getName()}`)
+    .then(info => {
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
@@ -135,6 +130,16 @@ function checkForUpdates(showFailDialogs) {
                 title: 'No update available',
                 message: `Sabaki v${app.getVersion()} is the latest version.`
             }, () => {})
+        }
+    })
+    .catch(err => {
+        if (showFailDialogs) {
+            dialog.showMessageBox({
+                type: 'warning',
+                buttons: ['OK'],
+                title: app.getName(),
+                message: 'An error occurred when checking for updates.'
+            })
         }
     })
 }
