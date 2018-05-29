@@ -82,6 +82,7 @@
     "babel-loader": "^7.0.0",
     "babel-preset-env": "^1.6.0",
     "fast-async": "^6.3.0",
+    "http-server": "^0.11.1",
     "raw-loader": "^0.5.1",
     "webpack": "^4.9.1",
     "webpack-cli": "^2.1.4"
@@ -89,6 +90,7 @@
   "scripts": {
     "test": "",
     "build": "webpack --mode production --progress",
-    "watch": "webpack --mode development --progress --watch"
+    "watch": "webpack --mode development --progress --watch",
+    "start": "http-server"
   }
 }
