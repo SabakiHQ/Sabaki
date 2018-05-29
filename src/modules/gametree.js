@@ -1,7 +1,6 @@
+const sgf = require('@sabaki/sgf')
 const Board = require('./board')
-
 const helper = require('./helper')
-const {sgf} = require('./fileformats')
 
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -289,7 +288,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
     for (let prop in data) {
         if (!(prop in node)) continue
 
-        vertex = sgf.point2vertex(node[prop][0])
+        vertex = sgf.parseVertex(node[prop][0])
         board = baseboard.makeMove(data[prop], vertex)
         break
     }
@@ -304,7 +303,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
         if (!(prop in node)) continue
 
         for (let value of node[prop]) {
-            for (let vertex of sgf.compressed2list(value)) {
+            for (let vertex of sgf.parseCompressedVertices(value)) {
                 if (!board.hasVertex(vertex)) continue
                 board.set(vertex, data[prop])
             }
@@ -321,7 +320,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
         if (!(prop in node)) continue
 
         for (let value of node[prop]) {
-            for (let vertex of sgf.compressed2list(value)) {
+            for (let vertex of sgf.parseCompressedVertices(value)) {
                 board.markups[vertex] = [data[prop], '']
             }
         }
@@ -333,7 +332,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1)
 
-            board.markups[sgf.point2vertex(point)] = ['label', label]
+            board.markups[sgf.parseVertex(point)] = ['label', label]
         }
     }
 
@@ -343,7 +342,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let label = alpha[i]
             if (label == null) return
 
-            board.markups[sgf.point2vertex(point)] = ['label', label]
+            board.markups[sgf.parseVertex(point)] = ['label', label]
         }
     }
 
@@ -352,7 +351,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         for (let composed of node[type]) {
             let sep = composed.indexOf(':')
-            let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.point2vertex)
+            let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.parseVertex)
 
             board.lines.push([v1, v2, type === 'AR'])
         }
@@ -364,10 +363,10 @@ exports.getBoard = function(tree, index, baseboard = null) {
         let v, sign
 
         if ('B' in node) {
-            v = sgf.point2vertex(node.B[0])
+            v = sgf.parseVertex(node.B[0])
             sign = 1
         } else if ('W' in node) {
-            v = sgf.point2vertex(node.W[0])
+            v = sgf.parseVertex(node.W[0])
             sign = -1
         } else {
             return

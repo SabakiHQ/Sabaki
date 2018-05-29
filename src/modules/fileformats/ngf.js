@@ -1,6 +1,6 @@
 const Buffer = require('buffer')
 const fs = require('fs')
-const sgf = require('./sgf')
+const sgf = require('@sabaki/sgf')
 const gametree = require('../gametree')
 const Board = require('../board')
 
@@ -10,25 +10,7 @@ exports.meta = {
 }
 
 exports.parse = function(content) {
-    let iconv = require('iconv-lite')
-    let jschardet = require('jschardet')
-
-    // NGF files have a huge amount of ASCII-looking text. To help
-    // the detector, we just send it the first few lines.
-
-    let rawlines = content.split('\n')
-    let raw = rawlines.slice(0, 12).join()
-
-    let encoding = 'utf8'
-    let detected = jschardet.detect(raw)
-    if (detected.confidence > 0.2) {
-        encoding = detected.encoding
-    }
-
-    content = iconv.decode(Buffer.from(content, 'binary'), encoding)
-
     let lines = content.split('\n')
-
     let tree = gametree.new()
     let root = {}
     tree.nodes.push(root)
@@ -126,7 +108,7 @@ exports.parse = function(content) {
 
         for (let p of points) {
             let [x, y] = p
-            let s = sgf.vertex2point([x, y])
+            let s = sgf.stringifyVertex([x, y])
             root.AB.push(s)
         }
     }
@@ -174,7 +156,7 @@ exports.parse = function(content) {
                     let x = line.charCodeAt(5) - 66
                     let y = line.charCodeAt(6) - 66
 
-                    let val = sgf.vertex2point([x, y])
+                    let val = sgf.stringifyVertex([x, y])
 
                     let node = {}
                     tree.nodes.push(node)

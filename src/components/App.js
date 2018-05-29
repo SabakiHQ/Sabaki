@@ -16,7 +16,10 @@ const InfoOverlay = require('./InfoOverlay')
 
 const deadstones = require('@sabaki/deadstones')
 const gtp = require('@sabaki/gtp')
+const sgf = require('@sabaki/sgf')
 const influence = require('@sabaki/influence')
+
+deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const Board = require('../modules/board')
 const boardmatcher = require('../modules/boardmatcher')
@@ -27,7 +30,6 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
-const {sgf} = fileformats
 const sound = require('../modules/sound')
 
 class App extends Component {
@@ -370,12 +372,13 @@ class App extends Component {
 
             let {treePosition} = this.state
             let iterations = setting.get('score.estimator_iterations')
-            let deadStones = deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
+
+            deadstones.guess(gametree.getBoard(...treePosition).arrangement, {
                 finished: mode === 'scoring',
                 iterations
+            }).then(result => {
+                this.setState({deadStones: result})
             })
-
-            Object.assign(stateChange, {deadStones})
         }
 
         this.setState(stateChange)
@@ -421,19 +424,19 @@ class App extends Component {
         let handicap = setting.get('game.default_handicap')
         let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
         let [width, height] = [size[0], size.slice(-1)[0]]
-        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.vertex2point)
+        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.stringifyVertex)
 
         let sizeInfo = width === height ? width.toString() : `${width}:${height}`
         let handicapInfo = handicapStones.length > 0 ? `HA[${handicap}]AB[${handicapStones.join('][')}]` : ''
         let date = new Date()
-        let dateInfo = sgf.dates2string([[date.getFullYear(), date.getMonth() + 1, date.getDate()]])
+        let dateInfo = sgf.stringifyDates([[date.getFullYear(), date.getMonth() + 1, date.getDate()]])
 
         return sgf.parse(`
             (;GM[1]FF[4]CA[UTF-8]AP[${this.appName}:${this.version}]
             KM[${setting.get('game.default_komi')}]
             SZ[${sizeInfo}]DT[${dateInfo}]
             ${handicapInfo})
-        `)[0]
+        `, {getId: helper.getId})[0]
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
@@ -479,15 +482,36 @@ class App extends Component {
             return
         }
 
+        this.setBusy(true)
+
         let {extname} = require('path')
         let extension = extname(file.name).slice(1)
-        let content = await new Promise((resolve, reject) => 
+        let content = await new Promise((resolve, reject) =>
             fs.readFile(file, (err, content) => err ? reject(err) : resolve(content))
         )
 
-        let success = await this.loadContent(content, extension, {suppressAskForSave: true})
+        let gameTrees = []
+        let success = true
+        let lastProgress = -1
+
+        try {
+            let fileFormatModule = fileformats.getModuleByExtension(extension)
+
+            gameTrees = fileFormatModule.parse(content, evt => {
+                if (evt.progress - lastProgress < 0.1) return
+                this.window.setProgressBar(evt.progress)
+                lastProgress = evt.progress
+            }, true)
+
+            if (gameTrees.length == 0) throw true
+        } catch (err) {
+            dialog.showMessageBox('This file is unreadable.', 'warning')
+            success = false
+        }
 
         if (success) {
+            await this.loadGameTrees(gameTrees, {suppressAskForSave: true})
+
             this.setState({representedFilename: file.name})
             this.fileHash = this.generateFileHash()
 
@@ -495,20 +519,16 @@ class App extends Component {
                 this.goToEnd()
             }
         }
+
+        this.setBusy(false)
     }
 
     async loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
         this.setBusy(true)
-        if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
-        this.setMode('play')
 
-        await helper.wait(setting.get('app.loadgame_delay'))
-
-        let lastProgress = -1
-        let success = true
         let gameTrees = []
+        let success = true
+        let lastProgress = -1
 
         try {
             let fileFormatModule = fileformats.getModuleByExtension(extension)
@@ -524,6 +544,22 @@ class App extends Component {
             dialog.showMessageBox('This file is unreadable.', 'warning')
             success = false
         }
+
+        if (success) {
+            await this.loadGameTrees(gameTrees, {suppressAskForSave})
+        }
+
+        this.setBusy(false)
+    }
+
+    async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
+
+        this.setBusy(true)
+        if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
+        this.setMode('play')
+
+        await helper.wait(setting.get('app.loadgame_delay'))
 
         if (gameTrees.length != 0) {
             this.clearUndoPoint()
@@ -548,9 +584,7 @@ class App extends Component {
         }
 
         this.window.setProgressBar(-1)
-
-        if (success) this.events.emit('fileLoad')
-        return success
+        this.events.emit('fileLoad')
     }
 
     saveFile(filename = null) {
@@ -713,7 +747,7 @@ class App extends Component {
             let nextNode = tp[0].nodes[tp[1]]
             if (!('B' in nextNode || 'W' in nextNode)) return this.setMode('play')
 
-            let nextVertex = sgf.point2vertex(nextNode['B' in nextNode ? 'B' : 'W'][0])
+            let nextVertex = sgf.parseVertex(nextNode['B' in nextNode ? 'B' : 'W'][0])
             let board = gametree.getBoard(...this.state.treePosition)
             if (!board.hasVertex(nextVertex)) return this.setMode('play')
 
@@ -817,7 +851,7 @@ class App extends Component {
             // Append move
 
             let node = {}
-            node[color] = [sgf.vertex2point(vertex)]
+            node[color] = [sgf.stringifyVertex(vertex)]
             tree.nodes.push(node)
 
             nextTreePosition = [tree, tree.nodes.length - 1]
@@ -827,7 +861,7 @@ class App extends Component {
 
                 let nextNode = tree.nodes[index + 1]
                 let moveExists = color in nextNode
-                    && helper.vertexEquals(sgf.point2vertex(nextNode[color][0]), vertex)
+                    && helper.vertexEquals(sgf.parseVertex(nextNode[color][0]), vertex)
 
                 if (moveExists) {
                     nextTreePosition = [tree, index + 1]
@@ -839,7 +873,7 @@ class App extends Component {
                 let variations = tree.subtrees.filter(subtree => {
                     return subtree.nodes.length > 0
                         && color in subtree.nodes[0]
-                        && helper.vertexEquals(sgf.point2vertex(subtree.nodes[0][color][0]), vertex)
+                        && helper.vertexEquals(sgf.parseVertex(subtree.nodes[0][color][0]), vertex)
                 })
 
                 if (variations.length > 0) {
@@ -854,7 +888,7 @@ class App extends Component {
                 let updateRoot = tree.parent == null
                 let splitted = gametree.split(tree, index)
                 let newTree = gametree.new()
-                let node = {[color]: [sgf.vertex2point(vertex)]}
+                let node = {[color]: [sgf.stringifyVertex(vertex)]}
 
                 newTree.nodes = [node]
                 newTree.parent = splitted
@@ -978,7 +1012,7 @@ class App extends Component {
             let sign = tool === 'stone_1' ? 1 : -1
             let oldSign = board.get(vertex)
             let properties = ['AW', 'AE', 'AB']
-            let point = sgf.vertex2point(vertex)
+            let point = sgf.stringifyVertex(vertex)
 
             for (let prop of properties) {
                 if (!(prop in node)) continue
@@ -987,7 +1021,7 @@ class App extends Component {
 
                 if (node[prop].some(x => x.includes(':'))) {
                     node[prop] = node[prop]
-                        .map(value => sgf.compressed2list(value).map(sgf.vertex2point))
+                        .map(value => sgf.parseCompressedVertices(value).map(sgf.stringifyVertex))
                         .reduce((list, x) => [...list, x])
                 }
 
@@ -1031,7 +1065,7 @@ class App extends Component {
             node.AR = []
 
             for (let [v1, v2, arrow] of board.lines) {
-                let [p1, p2] = [v1, v2].map(sgf.vertex2point)
+                let [p1, p2] = [v1, v2].map(sgf.stringifyVertex)
                 if (p1 === p2) continue
 
                 node[arrow ? 'AR' : 'LN'].push([p1, p2].join(':'))
@@ -1103,7 +1137,7 @@ class App extends Component {
                     if (!(v in board.markups)) continue
 
                     let prop = data[board.markups[v][0]]
-                    let value = sgf.vertex2point(v)
+                    let value = sgf.stringifyVertex(v)
 
                     if (prop === 'LB')
                         value += ':' + board.markups[v][1]
@@ -1333,7 +1367,7 @@ class App extends Component {
 
     async findMove(step, {vertex = null, text = ''}) {
         if (vertex == null && text.trim() === '') return
-        let point = vertex ? sgf.vertex2point(vertex) : null
+        let point = vertex ? sgf.stringifyVertex(vertex) : null
 
         await this.findPosition(step, (tree, index) => {
             let node = tree.nodes[index]
@@ -1446,7 +1480,7 @@ class App extends Component {
                         continue
                     }
 
-                    node.AB = stones.map(sgf.vertex2point)
+                    node.AB = stones.map(sgf.stringifyVertex)
                 }
 
                 node[props[key]] = [value]
@@ -1547,7 +1581,9 @@ class App extends Component {
             }
         }
 
-        this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
+        if (info.size[1] !== info.size[0]) {
+            this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
+        }
     }
 
     copyVariation(tree, index) {
@@ -1625,7 +1661,7 @@ class App extends Component {
                 let sign = board.get([x, y])
                 if (sign == 0) continue
 
-                node[sign > 0 ? 'AB' : 'AW'].push(sgf.vertex2point([x, y]))
+                node[sign > 0 ? 'AB' : 'AW'].push(sgf.stringifyVertex([x, y]))
             }
         }
 

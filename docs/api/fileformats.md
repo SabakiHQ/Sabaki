@@ -31,64 +31,6 @@ Parses the contents and returns an array of [game trees](gametree.md).
 
 Parses `filename` and returns an array of [game trees](gametree.md) contained in `filename`. This method can't be used in the web version.
 
-## Submodule: fileformats.sgf
-
-### fileformats.sgf.tokenize(contents)
-
-* `contents` `<String>`
-
-### fileformats.sgf.parseTokens(tokens[, onProgress[, encoding]])
-
-* `tokens` `<Array[]>` - As returned by `fileformats.sgf.tokenize`
-* `onProgress` `<Function>` *(optional)*
-    * `evt` `<Object>`
-        * `progress` `<Float>` - Between `0` and `1`
-* `encoding` `<String>` - Default: `'ISO-8859-1'`
-
-### fileformats.sgf.string2dates(input)
-
-* `input` `<String>`
-
-### fileformats.sgf.dates2string(dates)
-
-* `dates` `<Integer[][]>`
-
-### fileformats.sgf.point2vertex(point)
-
-* `point` `<String>`
-
-Converts an [SGF coordinate string](http://www.red-bean.com/sgf/go.html) to a [vertex](vertex.md) and returns it.
-
-### fileformats.sgf.vertex2point(vertex)
-
-* `vertex` [`<Vertex>`](vertex.md)
-
-Converts the `vertex` to an [SGF coordinate string](http://www.red-bean.com/sgf/go.html) and returns it.
-
-### fileformats.sgf.compressed2list(compressed)
-
-* `compressed` `<String>`
-
-Converts an [SGF compressed point list](http://www.red-bean.com/sgf/sgf4.html#3.5.1) to an array of corresponding [vertices](vertex.md) and returns it.
-
-### fileformats.sgf.stringify(tree)
-
-* `tree` [`<GameTree>`](gametree.md) | [`<GameTree[]>`](gametree.md)
-
-Returns a valid SGF string, corresponding to the given game tree or array of game trees.
-
-### fileformats.sgf.escapeString(input)
-
-* `input` `<String>`
-
-Escapes `\` and `]` in the given `input`. Reduces multiple line breaks into two line breaks. Replaces line breaks with `\r\n` on Windows.
-
-### fileformats.sgf.unescapeString(input)
-
-* `input` `<String>`
-
-Normalizes line breaks and parses escaped characters.
-
 ## Methods
 
 ### fileformats.getModuleByExtension(extension)

@@ -85,10 +85,9 @@ exports.popupMenu = function(template, x, y) {
     let setting = remote.require('./setting')
     let zoomFactor = +setting.get('app.zoom_factor')
 
-    remote.Menu.buildFromTemplate(template).popup(remote.getCurrentWindow(), {
+    remote.Menu.buildFromTemplate(template).popup({
         x: Math.round(x * zoomFactor),
-        y: Math.round(y * zoomFactor),
-        async: true
+        y: Math.round(y * zoomFactor)
     })
 }
 

@@ -2,13 +2,13 @@ const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const Pikaday = require('pikaday')
+const sgf = require('@sabaki/sgf')
 
 const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const {sgf} = require('../../modules/fileformats')
 
 class InfoDrawerItem extends Component {
     render({title, children}) {
@@ -207,7 +207,7 @@ class InfoDrawer extends Component {
     }
 
     markDates() {
-        let dates = (sgf.string2dates(this.state.date || '') || []).filter(x => x.length === 3)
+        let dates = (sgf.parseDates(this.state.date || '') || []).filter(x => x.length === 3)
 
         for (let el of this.pikaday.el.querySelectorAll('.pika-button')) {
             let year = +el.dataset.pikaYear
@@ -249,7 +249,7 @@ class InfoDrawer extends Component {
             onOpen: () => {
                 if (!this.pikaday) return
 
-                let dates = (sgf.string2dates(this.state.date || '') || []).filter(x => x.length === 3)
+                let dates = (sgf.parseDates(this.state.date || '') || []).filter(x => x.length === 3)
 
                 if (dates.length > 0) {
                     this.pikaday.setDate(dates[0].join('-'), true)
@@ -270,7 +270,7 @@ class InfoDrawer extends Component {
             onSelect: date => {
                 if (!this.pikaday) return
 
-                let dates = sgf.string2dates(this.state.date || '') || []
+                let dates = sgf.parseDates(this.state.date || '') || []
                 date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
                 if (!dates.some(x => helper.shallowEquals(x, date))) {
@@ -279,7 +279,7 @@ class InfoDrawer extends Component {
                     dates = dates.filter(x => !helper.shallowEquals(x, date))
                 }
 
-                this.setState({date: sgf.dates2string(dates.sort(helper.lexicalCompare))})
+                this.setState({date: sgf.stringifyDates(dates.sort(helper.lexicalCompare))})
                 this.markDates()
             }
         })

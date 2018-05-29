@@ -400,6 +400,15 @@ let data = [
         label: '&Tools',
         submenu: [
             {
+                label: 'Toggle Auto&play Mode',
+                click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
+            },
+            {
+                label: 'Toggle &Guess Mode',
+                click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
+            },
+            {type: 'separator'},
+            {
                 label: 'Clean &Markup…',
                 click: () => sabaki.openDrawer('cleanmarkup')
             },
@@ -425,15 +434,6 @@ let data = [
                 label: 'Toggle &Full Screen',
                 accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
                 click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
-            },
-            {type: 'separator'},
-            {
-                label: 'Toggle Auto&play Mode',
-                click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
-            },
-            {
-                label: 'Toggle G&uess Mode',
-                click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
             },
             {type: 'separator'},
             {
