@@ -122,7 +122,11 @@ function checkForUpdates(showFailDialogs) {
                 message: `${app.getName()} v${info.latestVersion} is available now.`,
                 noLink: true,
                 cancelId: 1
-            }, response => response === 0 ? shell.openExternal(info.url) : null)
+            }, response => {
+                if (response === 0) {
+                    shell.openExternal(info.downloadUrl || info.url)
+                }
+            })
         } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',

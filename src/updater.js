@@ -26,13 +26,24 @@ exports.check = async function(repo) {
     })
 
     let data = JSON.parse(response)
-    if (!('tag_name' in data)) throw new Error('No version information found.')
+    if (!('tag_name' in data) || !('assets' in data))
+        throw new Error('No version information found.')
 
     let latestVersion = data.tag_name.slice(1).split('.').map(x => +x)
     let currentVersion = app.getVersion().split('.').map(x => +x)
+    let downloadUrls = data.assets.map(x => x.browser_download_url)
+
+    let arch = os.arch()
+    let platform = ({
+        linux: 'linux',
+        win32: 'win',
+        darwin: 'mac'
+    })[os.platform()]
 
     return {
         url: `https://github.com/${repo}/releases/latest`,
+        downloadUrl: arch && platform
+            && downloadUrls.find(x => x.includes(arch) && x.includes(platform)),
         latestVersion: latestVersion.join('.'),
         hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
     }
