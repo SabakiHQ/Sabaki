@@ -17,7 +17,7 @@ function show(velement, x, y) {
 
 exports.buildFromTemplate = function(template) {
     return {
-        popup: (_, {x, y}) => show(h('section',
+        popup: ({x, y}) => show(h('section',
             {
                 id: 'popupmenu-overlay',
                 onClick: () => hide()

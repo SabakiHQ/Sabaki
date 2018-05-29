@@ -1,0 +1,1 @@
+exports.TextDecoder = window.TextDecoder

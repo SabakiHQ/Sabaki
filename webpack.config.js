@@ -51,6 +51,7 @@ module.exports = (env, argv) => ({
             'preact': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
             'prop-types': path.join(__dirname, 'src/modules/shims/prop-types'),
             'fs': path.join(__dirname, 'src/modules/shims/fs'),
+            'util': path.join(__dirname, 'src/modules/shims/util'),
             'electron': path.join(__dirname, 'src/modules/shims/electron'),
             'buffer': path.join(__dirname, 'src/modules/shims/buffer'),
             'iconv-lite': path.join(__dirname, 'src/modules/shims/iconv-lite'),
