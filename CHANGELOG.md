@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
+
+**Changed**
+
+* Updater links directly to the appropriate download URL when an update is available
+
+**Changed**
+
+* Moved some features to 'Tools' menu
+* Gracefully ending engines with `quit` command when detaching
+* [Dead stones detector](https://github.com/SabakiHQ/deadstones) rewritten in Rust & WebAssembly to be faster and more accurate
+* Improved [influence map generator](https://github.com/SabakiHQ/influence) which fixes ragged areas
+* Formatted SGF output
+* Update to Electron v2.0.2
+
+**Fixed**
+
+* Fix engine not working when having empty initial commands
+
 ## [Sabaki v0.34.0][v0.34.0] (2018-05-29)
 
 **Added**
@@ -681,7 +700,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.0...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.1...master
+[v0.34.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.0...v0.34.1
 [v0.34.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.4...v0.34.0
 [v0.33.4]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.3...v0.33.4
 [v0.33.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.2...v0.33.3

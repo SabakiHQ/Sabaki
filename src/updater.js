@@ -1,3 +1,4 @@
+const os = require('os')
 const {app, net} = require('electron')
 
 function lexicalCompare(a, b) {
@@ -5,31 +6,45 @@ function lexicalCompare(a, b) {
     return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : lexicalCompare(a.slice(1), b.slice(1))
 }
 
-exports.check = function(repo, callback) {
+exports.check = async function(repo) {
     let address = `https://api.github.com/repos/${repo}/releases/latest`
-    let request = net.request(address)
 
-    request.on('response', response => {
-        let content = ''
+    let response = await new Promise((resolve, reject) => {
+        let request = net.request(address)
 
-        response.on('data', chunk => {
-            content += chunk
-        }).on('end', () => {
-            let data = JSON.parse(content)
-            if (!('tag_name' in data)) return callback(new Error('No version information found.'))
+        request.on('response', response => {
+            let content = ''
 
-            let latestVersion = data.tag_name.slice(1).split('.').map(x => +x)
-            let currentVersion = app.getVersion().split('.').map(x => +x)
-
-            callback(null, {
-                url: `https://github.com/${repo}/releases/latest`,
-                latestVersion: latestVersion.join('.'),
-                hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
+            response.on('data', chunk => {
+                content += chunk
+            }).on('end', () => {
+                resolve(content)
             })
-        })
-    }).on('error', err => {
-        callback(err)
+        }).on('error', reject)
+
+        request.end()
     })
 
-    request.end()
+    let data = JSON.parse(response)
+    if (!('tag_name' in data) || !('assets' in data))
+        throw new Error('No version information found.')
+
+    let latestVersion = data.tag_name.slice(1).split('.').map(x => +x)
+    let currentVersion = app.getVersion().split('.').map(x => +x)
+    let downloadUrls = data.assets.map(x => x.browser_download_url)
+
+    let arch = os.arch()
+    let platform = ({
+        linux: 'linux',
+        win32: 'win',
+        darwin: 'mac'
+    })[os.platform()]
+
+    return {
+        url: `https://github.com/${repo}/releases/latest`,
+        downloadUrl: arch && platform
+            && downloadUrls.find(x => x.includes(arch) && x.includes(platform)),
+        latestVersion: latestVersion.join('.'),
+        hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
+    }
 }
