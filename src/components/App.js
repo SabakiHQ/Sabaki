@@ -1991,7 +1991,7 @@ class App extends Component {
                 controller.on('started', () => {
                     if (commands == null || commands.trim() === '') return
 
-                    for (let command of commands.split(';')) {
+                    for (let command of commands.split(';').filter(x => x.trim() !== '')) {
                         controller.sendCommand(gtp.Command.fromString(command))
                     }
                 })

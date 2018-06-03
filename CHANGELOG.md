@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file.
 
 * Updater links directly to the appropriate download URL when an update is available
 
+**Fixed**
+
+* Fix engine not working when having empty initial commands
+
 ## [Sabaki v0.34.0][v0.34.0] (2018-05-29)
 
 **Added**
