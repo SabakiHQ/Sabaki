@@ -31,17 +31,23 @@ class PropertyItem extends Component {
 
     render({property, index, value, disabled}) {
         return h('tr', {},
-            h('th', {},
+            h('th',
+                {
+                    onClick: () => this.inputElement.focus()
+                },
+
                 index == null ? property : [property, h('em', {}, `[${index}]`)]
             ),
 
             h('td', {},
                 h('textarea', {
+                    ref: el => this.inputElement = el,
                     value,
                     disabled,
                     rows: value.includes('\n') ? 3 : 1,
 
-                    onInput: this.handleChange
+                    onInput: this.handleChange,
+                    onBlur: () => this.inputElement.scrollTop = 0
                 })
             ),
 
@@ -101,6 +107,12 @@ class AdvancedPropertiesDrawer extends Component {
         return show || show !== this.props.show
     }
 
+    componentWillReceiveProps({treePosition}) {
+        if (!helper.vertexEquals(treePosition, this.props.treePosition)) {
+            this.propertiesElement.scrollTop = 0
+        }
+    }
+
     render({treePosition, show}) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
@@ -113,7 +125,12 @@ class AdvancedPropertiesDrawer extends Component {
             },
 
             h('form', {},
-                h('div', {class: 'properties-list'},
+                h('div',
+                    {
+                        ref: el => this.propertiesElement = el,
+                        class: 'properties-list'
+                    },
+
                     h('table', {}, properties.map(property =>
                         node[property].map((value, i) => h(PropertyItem, {
                             property,
