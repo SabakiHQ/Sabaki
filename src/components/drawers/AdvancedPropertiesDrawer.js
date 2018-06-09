@@ -3,7 +3,7 @@ const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
 
-const blockedProperties = ['B', 'W', 'C', 'SZ']
+const blockedProperties = ['AP', 'B', 'W', 'SZ']
 
 class PropertyItem extends Component {
     constructor(props) {
@@ -31,20 +31,16 @@ class PropertyItem extends Component {
 
     render({property, index, value, disabled}) {
         return h('tr', {},
-            h('th',
-                {
-                    style: {
-                        width: +(index != null) * 3 + property.length
-                    }
-                },
-
+            h('th', {},
                 index == null ? property : [property, h('em', {}, `[${index}]`)]
             ),
 
             h('td', {},
-                h('input', {
+                h('textarea', {
                     value,
                     disabled,
+                    rows: value.includes('\n') ? 3 : 1,
+
                     onInput: this.handleChange
                 })
             ),
@@ -118,21 +114,17 @@ class AdvancedPropertiesDrawer extends Component {
 
             h('form', {},
                 h('div', {class: 'properties-list'},
-                    h('table', {},
-                        properties.map(property =>
-                            node[property].map((value, i) =>
-                                h(PropertyItem, {
-                                    property,
-                                    value,
-                                    index: node[property].length === 1 ? null : i,
-                                    disabled: blockedProperties.includes(property),
+                    h('table', {}, properties.map(property =>
+                        node[property].map((value, i) => h(PropertyItem, {
+                            property,
+                            value,
+                            index: node[property].length === 1 ? null : i,
+                            disabled: blockedProperties.includes(property),
 
-                                    onChange: this.handlePropertyChange,
-                                    onRemove: this.handlePropertyRemove
-                                })
-                            )
-                        )
-                    )
+                            onChange: this.handlePropertyChange,
+                            onRemove: this.handlePropertyRemove
+                        }))
+                    ))
                 ),
 
                 h('p', {},

@@ -691,11 +691,11 @@ header, #bar .bar {
     .drawer h2 {
         font-weight: lighter;
     }
-    .drawer input, .drawer select, button {
+    .drawer input, .drawer textarea, .drawer select, button {
         background: #111;
         color: #eee;
     }
-    .drawer input:focus, .drawer select:focus,
+    .drawer input:focus, .drawer textarea:focus, .drawer select:focus,
     button:hover:not([class^="pika-"]), button:focus:not([class^="pika-"]) {
         background: #1a1a1a;
     }
@@ -1184,7 +1184,8 @@ header, #bar .bar {
         transform: translate(-50%, -50%);
         filter: invert(100%);
     }
-    .engines-list li a.remove:hover {
+    .engines-list li a.remove:hover,
+    .engines-list li a.remove:focus {
         background: #E81123;
     }
     .engines-list li a.remove:active {
@@ -1198,27 +1199,38 @@ header, #bar .bar {
         border-collapse: collapse;
         width: 100%;
     }
+    .properties-list tr:nth-child(2n) {
+        background: #1f1f1f;
+    }
     .properties-list th {
-        padding: 0 1em;
+        padding: 5px 10px;
+        width: 1px;
         font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
         font-weight: normal;
         text-align: right;
+        vertical-align: top;
     }
     .properties-list th em {
         font-style: normal;
         opacity: .5;
     }
-    .properties-list td input {
+    .properties-list td textarea {
+        display: block;
         box-sizing: border-box;
+        padding-right: 18px;
         width: 100%;
-        background: #1a1a1a;
+        background: transparent;
+        overflow: hidden;
     }
-    .properties-list td input:focus {
+    .properties-list td textarea:focus {
+        padding-right: 10px;
         background: #111;
+        overflow: auto;
     }
     .properties-list td.action {
-        padding: 0 1em;
+        padding: 7px 10px;
         width: 16px;
+        vertical-align: top;
     }
     .properties-list td.action a {
         display: block;
@@ -1235,12 +1247,13 @@ header, #bar .bar {
         transform: translate(-50%, -50%);
         filter: invert(100%);
     }
-    .properties-list td.action a.remove:hover {
+    .properties-list td.action a.remove:hover,
+    .properties-list td.action a.remove:focus {
         background: #E81123;
     }
     .properties-list td.action a.remove:active {
         background: #C60001;
-    }
+}
 
 #info-overlay {
         position: absolute;
