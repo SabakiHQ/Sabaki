@@ -413,7 +413,7 @@ let data = [
                 click: () => sabaki.openDrawer('cleanmarkup')
             },
             {
-                label: '&Advanced SGF Properties…',
+                label: '&Edit SGF Properties…',
                 click: () => sabaki.openDrawer('advancedproperties')
             },
             {type: 'separator'},
