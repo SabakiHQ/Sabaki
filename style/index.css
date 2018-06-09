@@ -691,11 +691,11 @@ header, #bar .bar {
     .drawer h2 {
         font-weight: lighter;
     }
-    .drawer input, .drawer select, button {
+    .drawer input, .drawer textarea, .drawer select, button {
         background: #111;
         color: #eee;
     }
-    .drawer input:focus, .drawer select:focus,
+    .drawer input:focus, .drawer textarea:focus, .drawer select:focus,
     button:hover:not([class^="pika-"]), button:focus:not([class^="pika-"]) {
         background: #1a1a1a;
     }
@@ -960,9 +960,6 @@ header, #bar .bar {
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
-    }
-    #preferences .engines-list {
-        overflow: auto;
 }
 
 #cleanmarkup form {
@@ -972,6 +969,24 @@ header, #bar .bar {
         float: left;
         padding-top: 1.5em;
         width: 33%;
+}
+
+#advancedproperties form {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        grid-row-gap: 1rem;
+    }
+    #advancedproperties form > p:last-child {
+        margin-bottom: 0;
+    }
+    #advancedproperties form > p:last-child .add {
+        float: left;
+        margin-right: 5px;
 }
 
 #gamechooser {
@@ -1112,12 +1127,14 @@ header, #bar .bar {
         background: #1a1a1a;
 }
 
-.engines-list {
+.engines-list, .properties-list {
         border: 1px solid #111;
-        height: 21em;
-        margin: 1.5em 0;
         background: #1a1a1a;
         overflow: auto;
+    }
+    .engines-list {
+        height: 21em;
+        margin: 1.5em 0;
     }
     .engines-list ul {
         margin: 0 !important;
@@ -1174,7 +1191,8 @@ header, #bar .bar {
         transform: translate(-50%, -50%);
         filter: invert(100%);
     }
-    .engines-list li a.remove:hover {
+    .engines-list li a.remove:hover,
+    .engines-list li a.remove:focus {
         background: #E81123;
     }
     .engines-list li a.remove:active {
@@ -1182,6 +1200,66 @@ header, #bar .bar {
     }
     .engines-list li a.browse:active {
         opacity: 1;
+}
+
+.properties-list table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .properties-list tr:nth-child(2n) {
+        background: #1f1f1f;
+    }
+    .properties-list th {
+        padding: 5px 10px;
+        width: 1px;
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+        font-weight: normal;
+        text-align: right;
+        vertical-align: top;
+    }
+    .properties-list th em {
+        font-style: normal;
+        opacity: .5;
+    }
+    .properties-list td textarea {
+        display: block;
+        box-sizing: border-box;
+        padding-right: 18px;
+        width: 100%;
+        background: transparent;
+        overflow: hidden;
+    }
+    .properties-list td textarea:focus {
+        padding-right: 10px;
+        background: #111;
+        overflow: auto;
+    }
+    .properties-list td.action {
+        padding: 7px 10px;
+        width: 16px;
+        vertical-align: top;
+    }
+    .properties-list td.action a {
+        display: block;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+    }
+    .properties-list td.action a img {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        filter: invert(100%);
+    }
+    .properties-list td.action a.remove:hover,
+    .properties-list td.action a.remove:focus {
+        background: #E81123;
+    }
+    .properties-list td.action a.remove:active {
+        background: #C60001;
 }
 
 #info-overlay {
