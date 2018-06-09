@@ -412,6 +412,10 @@ let data = [
                 label: 'Clean &Markup…',
                 click: () => sabaki.openDrawer('cleanmarkup')
             },
+            {
+                label: '&Advanced SGF Properties…',
+                click: () => sabaki.openDrawer('advancedproperties')
+            },
             {type: 'separator'},
             {
                 label: '&Rotate Clockwise',
