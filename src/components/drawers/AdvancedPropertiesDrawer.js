@@ -1,10 +1,27 @@
 const {h, Component} = require('preact')
+const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
 
 const blockedProperties = ['B', 'W', 'C', 'SZ']
 
 class PropertyItem extends Component {
+    constructor(props) {
+        super(props)
+
+        this.handleRemoveButtonClick = evt => {
+            evt.preventDefault()
+
+            let {property, index, onRemove = helper.noop} = this.props
+            onRemove({property, index})
+        }
+
+        this.handleChange = evt => {
+            let {property, index, onChange = helper.noop} = this.props
+            onChange({property, index, value: evt.currentTarget.value})
+        }
+    }
+
     shouldComponentUpdate({property, index, value, disabled}) {
         return property !== this.props.property
             || index !== this.props.index
@@ -23,14 +40,24 @@ class PropertyItem extends Component {
 
                 index == null ? property : [property, h('em', {}, `[${index}]`)]
             ),
+
             h('td', {},
                 h('input', {
                     value,
-                    disabled
+                    disabled,
+                    onInput: this.handleChange
                 })
             ),
+
             h('td', {class: 'action'},
-                h('a', {class: 'remove', title: 'Remove', href: '#'},
+                !disabled && h('a',
+                    {
+                        class: 'remove',
+                        title: 'Remove',
+                        href: '#',
+                        onClick: this.handleRemoveButtonClick
+                    },
+
                     h('img', {src: './node_modules/octicons/build/svg/x.svg'})
                 )
             )
@@ -45,6 +72,32 @@ class AdvancedPropertiesDrawer extends Component {
         this.handleCloseButtonClick = evt => {
             evt.preventDefault()
             sabaki.closeDrawer()
+        }
+
+        this.handlePropertyChange = ({property, index, value}) => {
+            let [tree, i] = this.props.treePosition
+            let node = tree.nodes[i]
+
+            if (index == null || !(property in node)) {
+                node[property] = [value]
+            } else {
+                node[property][index] = value
+            }
+
+            sabaki.setCurrentTreePosition(tree, i)
+        }
+
+        this.handlePropertyRemove = ({property, index}) => {
+            let [tree, i] = this.props.treePosition
+            let node = tree.nodes[i]
+
+            if (index == null) {
+                delete node[property]
+            } else if (property in node) {
+                node[property].splice(index, 1)
+            }
+
+            sabaki.setCurrentTreePosition(tree, i)
         }
     }
 
@@ -72,7 +125,10 @@ class AdvancedPropertiesDrawer extends Component {
                                     property,
                                     value,
                                     index: node[property].length === 1 ? null : i,
-                                    disabled: blockedProperties.includes(property)
+                                    disabled: blockedProperties.includes(property),
+
+                                    onChange: this.handlePropertyChange,
+                                    onRemove: this.handlePropertyRemove
                                 })
                             )
                         )
