@@ -4,6 +4,7 @@ const {h, Component} = require('preact')
 const Drawer = require('./Drawer')
 
 const gametree = require('../../modules/gametree')
+const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
 class CleanMarkupItem extends Component {
@@ -43,53 +44,71 @@ class CleanMarkupDrawer extends Component {
             sabaki.closeDrawer()
         }
 
-        this.handleSubmitButtonClick = evt => {
+        this.handleRemoveButtonClick = evt => {
             evt.preventDefault()
-            sabaki.setUndoPoint('Undo Clean Markup')
-            sabaki.setBusy(true)
+            
+            let doRemove = async work => {
+                sabaki.setUndoPoint('Undo Clean Markup')
+                sabaki.setBusy(true)
 
-            let data = {
-                cross: ['MA'],
-                triangle: ['TR'],
-                square: ['SQ'],
-                circle: ['CR'],
-                line: ['LN'],
-                arrow: ['AR'],
-                label: ['LB'],
-                comments: ['C', 'N'],
-                annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
-                hotspots: ['HO']
-            }
-
-            let cleanWholeGame = evt.currentTarget.classList.contains('whole-game')
-            let properties = Object.keys(data)
-                .filter(id => setting.get(`cleanmarkup.${id}`))
-                .map(id => data[id])
-                .reduce((acc, x) => [...acc, ...x], [])
-
-            setTimeout(() => {
-                if (!cleanWholeGame) {
-                    let [tree, i] = this.props.treePosition
-
-                    for (let prop of properties) {
-                        delete tree.nodes[i][prop]
-                    }
-                } else {
-                    let root = gametree.getRoot(...this.props.treePosition)
-                    let trees = gametree.getTreesRecursive(root)
-
-                    for (let tree of trees) {
-                        for (let node of tree.nodes) {
-                            for (let prop of properties) {
-                                delete node[prop]
-                            }
-                        }
-                    }
+                let data = {
+                    cross: ['MA'],
+                    triangle: ['TR'],
+                    square: ['SQ'],
+                    circle: ['CR'],
+                    line: ['LN'],
+                    arrow: ['AR'],
+                    label: ['LB'],
+                    comments: ['C', 'N'],
+                    annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
+                    hotspots: ['HO']
                 }
+
+                let properties = Object.keys(data)
+                    .filter(id => setting.get(`cleanmarkup.${id}`))
+                    .map(id => data[id])
+                    .reduce((acc, x) => [...acc, ...x], [])
+
+                await helper.wait(100)
+
+                work(properties)
 
                 sabaki.setBusy(false)
                 sabaki.closeDrawer()
-            }, 100)
+            }
+
+            let template = [
+                {
+                    label: 'From Current &Position',
+                    click: () => doRemove(properties => {
+                        let [tree, i] = this.props.treePosition
+
+                        for (let prop of properties) {
+                            delete tree.nodes[i][prop]
+                        }
+                    })
+                },
+                {
+                    label: 'From Entire &Game',
+                    click: () => doRemove(properties => {
+                        let root = gametree.getRoot(...this.props.treePosition)
+                        let trees = gametree.getTreesRecursive(root)
+
+                        for (let tree of trees) {
+                            for (let node of tree.nodes) {
+                                for (let prop of properties) {
+                                    delete node[prop]
+                                }
+                            }
+                        }
+                    })
+                }
+            ]
+
+            let element = evt.currentTarget
+            let {left, bottom} = element.getBoundingClientRect()
+
+            helper.popupMenu(template, left, bottom)
         }
     }
 
@@ -157,15 +176,9 @@ class CleanMarkupDrawer extends Component {
                 h('p', {},
                     h('button', {
                         type: 'button',
-                        class: 'whole-game',
-                        onClick: this.handleSubmitButtonClick
-                    }, 'Remove from whole game'), ' ',
-                    
-                    h('button', {
-                        type: 'button',
-                        class: 'current-node',
-                        onClick: this.handleSubmitButtonClick
-                    }, 'Remove from current position'), ' ',
+                        class: 'dropdown',
+                        onClick: this.handleRemoveButtonClick
+                    }, 'Remove'), ' ',
                     
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
