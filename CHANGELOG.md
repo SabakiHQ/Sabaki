@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
 
+**Added**
+
+* Add advanced SGF properties editor
+
 **Changed**
 
 * Updater links directly to the appropriate download URL when an update is available
