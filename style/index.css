@@ -972,14 +972,21 @@ header, #bar .bar {
 }
 
 #advancedproperties form {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    right: 20px;
-    bottom: 20px;
-    display: grid;
-    grid-template-rows: 1fr auto;
-    grid-row-gap: 1rem;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        grid-row-gap: 1rem;
+    }
+    #advancedproperties form > p:last-child {
+        margin-bottom: 0;
+    }
+    #advancedproperties form > p:last-child .add {
+        float: left;
+        margin-right: 5px;
 }
 
 #gamechooser {

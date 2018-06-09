@@ -1,9 +1,10 @@
 const {h, Component} = require('preact')
+const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
 
-const blockedProperties = ['AP', 'B', 'W', 'SZ']
+const blockedProperties = ['AP', 'CA', 'B', 'W', 'SZ']
 
 class PropertyItem extends Component {
     constructor(props) {
@@ -42,9 +43,12 @@ class PropertyItem extends Component {
             h('td', {},
                 h('textarea', {
                     ref: el => this.inputElement = el,
+                    'data-property': property,
+                    'data-index': index,
+
                     value,
                     disabled,
-                    rows: value.includes('\n') ? 3 : 1,
+                    rows: 1,
 
                     onInput: this.handleChange,
                     onBlur: () => this.inputElement.scrollTop = 0
@@ -74,6 +78,33 @@ class AdvancedPropertiesDrawer extends Component {
         this.handleCloseButtonClick = evt => {
             evt.preventDefault()
             sabaki.closeDrawer()
+        }
+
+        this.handleAddButtonClick = async evt => {
+            evt.preventDefault()
+
+            let {value} = await new Promise(resolve => dialog.showInputBox('Enter property name', resolve))
+            let property = value.toUpperCase()
+
+            if (blockedProperties.includes(property)) {
+                dialog.showMessageBox('This property has been blocked.', 'warning')
+                return
+            }
+
+            let [tree, i] = this.props.treePosition
+            let node = tree.nodes[i]
+
+            if (property in node) {
+                node[property].push('')
+            } else {
+                node[property] = ['']
+            }
+
+            sabaki.setCurrentTreePosition(tree, i)
+            await sabaki.waitForRender()
+
+            let textareas = this.propertiesElement.querySelectorAll(`textarea[data-property="${property}"]`)
+            textareas.item(textareas.length - 1).focus()
         }
 
         this.handlePropertyChange = ({property, index, value}) => {
@@ -133,6 +164,8 @@ class AdvancedPropertiesDrawer extends Component {
 
                     h('table', {}, properties.map(property =>
                         node[property].map((value, i) => h(PropertyItem, {
+                            key: `${property}-${i}`,
+
                             property,
                             value,
                             index: node[property].length === 1 ? null : i,
@@ -145,6 +178,7 @@ class AdvancedPropertiesDrawer extends Component {
                 ),
 
                 h('p', {},
+                    h('button', {class: 'add', type: 'button', onClick: this.handleAddButtonClick}, 'Add'),
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
             )
