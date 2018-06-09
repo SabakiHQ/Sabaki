@@ -960,9 +960,6 @@ header, #bar .bar {
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
-    }
-    #preferences .engines-list {
-        overflow: auto;
 }
 
 #cleanmarkup form {
@@ -972,6 +969,17 @@ header, #bar .bar {
         float: left;
         padding-top: 1.5em;
         width: 33%;
+}
+
+#advancedproperties form {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-row-gap: 1rem;
 }
 
 #gamechooser {
@@ -1112,12 +1120,14 @@ header, #bar .bar {
         background: #1a1a1a;
 }
 
-.engines-list {
+.engines-list, .properties-list {
         border: 1px solid #111;
-        height: 21em;
-        margin: 1.5em 0;
         background: #1a1a1a;
         overflow: auto;
+    }
+    .engines-list {
+        height: 21em;
+        margin: 1.5em 0;
     }
     .engines-list ul {
         margin: 0 !important;
@@ -1183,6 +1193,54 @@ header, #bar .bar {
     .engines-list li a.browse:active {
         opacity: 1;
 }
+
+.properties-list table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    .properties-list th {
+        padding: 0 1em;
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+        font-weight: normal;
+        text-align: right;
+    }
+    .properties-list th em {
+        font-style: normal;
+        opacity: .5;
+    }
+    .properties-list td input {
+        box-sizing: border-box;
+        width: 100%;
+        background: #1a1a1a;
+    }
+    .properties-list td input:focus {
+        background: #111;
+    }
+    .properties-list td.action {
+        padding: 0 1em;
+        width: 16px;
+    }
+    .properties-list td.action a {
+        display: block;
+        position: relative;
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+    }
+    .properties-list td.action a img {
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        filter: invert(100%);
+    }
+    .properties-list td.action a.remove:hover {
+        background: #E81123;
+    }
+    .properties-list td.action a.remove:active {
+        background: #C60001;
+    }
 
 #info-overlay {
         position: absolute;
