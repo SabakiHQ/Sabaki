@@ -2000,6 +2000,13 @@ class App extends Component {
                 })
 
                 controller.on('started', () => {
+                    controller.sendCommand({name: 'name'})
+                    controller.sendCommand({name: 'version'})
+                    controller.sendCommand({name: 'protocol_version'})
+                    controller.sendCommand({name: 'list_commands'}).then(response => {
+                        engineCommands[i] = response.content.split('\n')
+                    })
+
                     if (commands == null || commands.trim() === '') return
 
                     for (let command of commands.split(';').filter(x => x.trim() !== '')) {
@@ -2011,12 +2018,6 @@ class App extends Component {
                 this.engineStates[i] = null
 
                 controller.start()
-                controller.sendCommand({name: 'name'})
-                controller.sendCommand({name: 'version'})
-                controller.sendCommand({name: 'protocol_version'})
-                controller.sendCommand({name: 'list_commands'}).then(response => {
-                    engineCommands[i] = response.content.split('\n')
-                })
 
                 controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
