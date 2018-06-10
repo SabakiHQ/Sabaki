@@ -361,6 +361,14 @@ class App extends Component {
             }).then(result => {
                 this.setState({deadStones: result})
             })
+        } else if (mode === 'edit') {
+            this.waitForRender()
+            .then(() => {
+                let textarea = document.querySelector('#properties .edit textarea')
+
+                textarea.selectionStart = textarea.selectionEnd = 0
+                textarea.focus()
+            })
         }
 
         this.setState(stateChange)

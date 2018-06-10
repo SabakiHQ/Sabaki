@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
+## [Unreleased][unreleased]
 
 **Added**
 
 * Add advanced SGF properties editor
+
+**Changed**
+
+* When entering edit mode, Sabaki will now focus the comment box automatically
+
+## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
 
 **Changed**
 
