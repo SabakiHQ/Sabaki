@@ -4,7 +4,8 @@ const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
 
-const blockedProperties = ['AP', 'CA', 'B', 'W', 'SZ']
+const blockedProperties = ['AP', 'CA']
+const clearCacheProperties = ['AW', 'AB', 'SZ', 'W', 'B']
 
 class PropertyItem extends Component {
     constructor(props) {
@@ -117,7 +118,8 @@ class AdvancedPropertiesDrawer extends Component {
                 node[property][index] = value
             }
 
-            sabaki.setCurrentTreePosition(tree, i)
+            let clearCache = clearCacheProperties.includes(property)
+            sabaki.setCurrentTreePosition(tree, i, {clearCache})
         }
 
         this.handlePropertyRemove = ({property, index}) => {
@@ -130,7 +132,8 @@ class AdvancedPropertiesDrawer extends Component {
                 node[property].splice(index, 1)
             }
 
-            sabaki.setCurrentTreePosition(tree, i)
+            let clearCache = clearCacheProperties.includes(property)
+            sabaki.setCurrentTreePosition(tree, i, {clearCache})
         }
     }
 

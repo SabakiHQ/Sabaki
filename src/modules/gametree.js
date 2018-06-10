@@ -273,7 +273,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
                 if (size.includes(':')) size = size.split(':')
                 else size = [size, size]
 
-                size = size.map(x => +x)
+                size = size.map(x => isNaN(x) ? 19 : +x)
             }
 
             baseboard = new Board(...size)
