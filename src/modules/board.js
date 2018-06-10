@@ -55,11 +55,15 @@ class Board {
     }
 
     clear() {
-        this.arrangement = this.arrangement.map(_ => Array(this.width).fill(0))
+        this.arrangement = this.arrangement.map(row => row.map(_ => 0))
     }
 
     isSquare() {
         return this.width === this.height
+    }
+
+    isEmpty() {
+        return this.arrangement.every(row => row.every(x => x === 0))
     }
 
     getDistance(v, w) {

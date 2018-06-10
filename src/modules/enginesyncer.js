@@ -3,6 +3,18 @@ const gametree = require('./gametree')
 const helper = require('./helper')
 const Board = require('./board')
 
+async function setHandicapStones(controller, vertices, board) {
+    let coords = vertices.map(v => board.vertex2coord(v))
+        .filter(x => x != null)
+        .sort()
+        .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+
+    let response = await controller.sendCommand({name: 'set_free_handicap', args: coords})
+    if (response.error) return false
+
+    return true
+}
+
 async function enginePlay(controller, sign, vertex, board) {
     let color = sign > 0 ? 'B' : 'W'
     let coord = board.vertex2coord(vertex)
@@ -69,9 +81,25 @@ exports.sync = async function(controller, engineState, treePosition) {
     for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
         let node = tp[0].nodes[tp[1]]
         let nodeBoard = gametree.getBoard(...tp)
+        let placedHandicapStones = false
+
+        if (engineBoard.isEmpty() && node.AB && node.AB.length >= 2) {
+            // Place handicap stones
+
+            let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
+            promises.push(setHandicapStones(controller, vertices, engineBoard))
+
+            for (let vertex of vertices) {
+                if (engineBoard.get(vertex) !== 0) continue
+
+                engineBoard = engineBoard.makeMove(1, vertex)
+            }
+
+            placedHandicapStones = true
+        }
 
         for (let prop of ['B', 'W', 'AB', 'AW']) {
-            if (!(prop in node)) continue
+            if (!(prop in node) || placedHandicapStones && prop === 'AB') continue
 
             let sign = prop.slice(-1) === 'B' ? 1 : -1
             let vertices = node[prop].map(sgf.parseCompressedVertices).reduce((list, x) => [...list, ...x])
