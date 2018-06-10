@@ -5,7 +5,7 @@ const helper = require('../../modules/helper')
 const Drawer = require('./Drawer')
 
 const blockedProperties = ['AP', 'CA']
-const clearCacheProperties = ['AW', 'AB', 'SZ', 'W', 'B']
+const clearCacheProperties = ['AE', 'AW', 'AB', 'SZ', 'W', 'B']
 
 class PropertyItem extends Component {
     constructor(props) {
