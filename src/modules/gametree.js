@@ -4,6 +4,8 @@ const helper = require('./helper')
 
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+let boardCache = {}
+
 exports.new = function() {
     return {
         id: helper.getId(),
@@ -276,8 +278,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
             baseboard = new Board(...size)
         } else {
-            let prevNode = prev[0].nodes[prev[1]]
-            baseboard = prevNode.board || exports.getBoard(...prev)
+            baseboard = boardCache[`${prev[0].id}-${prev[1]}`] || exports.getBoard(...prev)
         }
     }
 
@@ -412,8 +413,12 @@ exports.getBoard = function(tree, index, baseboard = null) {
         }
     }
 
-    node.board = board
+    boardCache[`${tree.id}-${index}`] = board
     return board
+}
+
+exports.clearBoardCache = function(tree, index) {
+    boardCache = {}
 }
 
 exports.getJson = function(tree) {
@@ -443,7 +448,7 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(`${tree.nodes.map(exports.getJson).join('-')}-${tree.subtrees.map(exports.getHash).join('-')}`)
+    return helper.hash(`${JSON.stringify(tree.nodes)}-${tree.subtrees.map(exports.getHash).join('-')}`)
 }
 
 exports.getMatrixHash = function(tree) {

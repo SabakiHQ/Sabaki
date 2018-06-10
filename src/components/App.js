@@ -831,8 +831,9 @@ class App extends Component {
 
             if (prev && setting.get('game.show_ko_warning')) {
                 let hash = board.makeMove(player, vertex).getPositionHash()
+                let prevBoard = gametree.getBoard(...prev)
 
-                ko = prev[0].nodes[prev[1]].board.getPositionHash() == hash
+                ko = prevBoard.getPositionHash() == hash
 
                 if (ko && dialog.showMessageBox(
                     ['You are about to play a move which repeats a previous board position.',
@@ -1215,7 +1216,8 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
+        if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
 
@@ -1602,13 +1604,14 @@ class App extends Component {
         for (let tree of trees) {
             for (let node of tree.nodes) {
                 rotation.rotateNode(node, info.size[0], info.size[1], anticlockwise)
-                node.board = null
             }
         }
 
         if (info.size[1] !== info.size[0]) {
             this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
         }
+
+        this.setCurrentTreePosition(...this.state.treePosition, {clearCache: true})
     }
 
     copyVariation(tree, index) {
