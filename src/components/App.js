@@ -449,7 +449,7 @@ class App extends Component {
             representedFilename: null
         })
 
-        this.setCurrentTreePosition(emptyTree, 0)
+        this.setCurrentTreePosition(emptyTree, 0, {clearCache: true})
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
@@ -556,7 +556,7 @@ class App extends Component {
                 gameTrees
             })
 
-            this.setCurrentTreePosition(gameTrees[0], 0)
+            this.setCurrentTreePosition(gameTrees[0], 0, {clearCache: true})
 
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
@@ -1208,7 +1208,7 @@ class App extends Component {
             gameTrees[this.inferredState.gameIndex] = undoRoot
             treePosition = gametree.navigate(undoRoot, 0, undoLevel)
 
-            this.setCurrentTreePosition(...treePosition)
+            this.setCurrentTreePosition(...treePosition, {clearCache: true})
             this.clearUndoPoint()
             this.setBusy(false)
         }, setting.get('edit.undo_delay'))
