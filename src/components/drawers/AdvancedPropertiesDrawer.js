@@ -22,6 +22,19 @@ class PropertyItem extends Component {
             let {property, index, onChange = helper.noop} = this.props
             onChange({property, index, value: evt.currentTarget.value})
         }
+
+        this.handleKeyDown = evt => {
+            if (evt.keyCode === 13) {
+                // Enter
+
+                if (!evt.shiftKey) {
+                    evt.preventDefault()
+                    
+                    let {onSubmit = helper.noop} = this.props
+                    onSubmit()
+                }
+            }
+        }
     }
 
     shouldComponentUpdate({property, index, value, disabled}) {
@@ -52,6 +65,7 @@ class PropertyItem extends Component {
                     rows: 1,
 
                     onInput: this.handleChange,
+                    onKeyDown: this.handleKeyDown,
                     onBlur: () => this.inputElement.scrollTop = 0
                 })
             ),
@@ -77,7 +91,7 @@ class AdvancedPropertiesDrawer extends Component {
         super(props)
 
         this.handleCloseButtonClick = evt => {
-            evt.preventDefault()
+            if (evt) evt.preventDefault()
             sabaki.closeDrawer()
         }
 
@@ -175,7 +189,8 @@ class AdvancedPropertiesDrawer extends Component {
                             disabled: blockedProperties.includes(property),
 
                             onChange: this.handlePropertyChange,
-                            onRemove: this.handlePropertyRemove
+                            onRemove: this.handlePropertyRemove,
+                            onSubmit: this.handleCloseButtonClick
                         }))
                     ))
                 ),
