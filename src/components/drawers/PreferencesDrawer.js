@@ -134,6 +134,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'app.always_show_result',
                     text: 'Always show game result'
+                }),
+                h(PreferencesItem, {
+                    id: 'app.dump_state',
+                    text: 'Dump state for external tools'
                 })
             ),
 
