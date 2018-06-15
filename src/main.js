@@ -148,9 +148,14 @@ function checkForUpdates(showFailDialogs) {
     })
 }
 
+function dumpState(state) {
+    console.log('sabaki_dump_state: ' + JSON.stringify(state))
+}
+
 ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
 ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
 ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
+ipcMain.on('dump-state', (evt, ...args) => dumpState(...args))
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
