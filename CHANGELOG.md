@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Correctly send handicap stones to GTP engines
+* Retain board size when flattening board arrangement (Thanks to [@dfannius](https://github.com/dfannius))
 
 ## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
 
