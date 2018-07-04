@@ -1669,7 +1669,7 @@ class App extends Component {
         let {rootTree, gameIndex} = this.inferredState
         let board = gametree.getBoard(tree, index)
         let rootNode = rootTree.nodes[0]
-        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
+        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'SZ', 'WT', 'WR']
 
         let clone = gametree.clone(tree)
         if (index !== 0) gametree.split(clone, index - 1)
