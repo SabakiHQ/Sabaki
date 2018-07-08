@@ -57,11 +57,7 @@
       "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
       "!data/shapes.sgf",
       "!src/components${/*}",
-      "!src/modules${/*}",
-      "!node_modules${/*}",
-      "node_modules/octicons/build/svg",
-      "node_modules/pikaday/css/pikaday.css",
-      "node_modules/@sabaki/deadstones/wasm/*.wasm"
+      "!src/modules${/*}"
     ]
   },
   "dependencies": {
