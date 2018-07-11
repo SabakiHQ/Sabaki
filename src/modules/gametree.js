@@ -161,37 +161,53 @@ exports.makeHorizontalNavigator = function(tree, index) {
 }
 
 exports.split = function(tree, index) {
-    if (index < 0 || index >= tree.nodes.length - 1) return tree
+    if (index < 0 || index >= tree.nodes.length - 1) return [tree, tree]
 
-    let newnodes = tree.nodes.slice(0, index + 1)
-    tree.nodes = tree.nodes.slice(index + 1)
+    let second = {}
+    let first = Object.assign(exports.new(), {
+        nodes: tree.nodes.slice(0, index + 1),
+        subtrees: [second],
+        parent: tree.parent,
+        current: 0
+    })
 
-    let newtree = exports.new()
-    newtree.nodes = newnodes
-    newtree.subtrees = [tree]
-    newtree.parent = tree.parent
-    newtree.current = 0
-    tree.parent = newtree
+    Object.assign(second, exports.new(), {
+        nodes: tree.nodes.slice(index + 1),
+        subtrees: tree.subtrees,
+        parent: first,
+        current: tree.current
+    })
 
-    if (newtree.parent) {
-        newtree.parent.subtrees[newtree.parent.subtrees.indexOf(tree)] = newtree
+    if (first.parent) {
+        first.parent.subtrees[first.parent.subtrees.indexOf(tree)] = first
     }
 
-    return newtree
+    for (let subtree of second.subtrees) {
+        subtree.parent = second
+    }
+
+    return [first, second]
 }
 
 exports.reduce = function(tree) {
-    if (tree.subtrees.length != 1) return tree
+    if (tree.subtrees.length !== 1) return tree
 
-    tree.nodes.push(...tree.subtrees[0].nodes)
-    tree.current = tree.subtrees[0].current
-    tree.subtrees = tree.subtrees[0].subtrees
+    let reduced = Object.assign(exports.new(), {
+        nodes: [...tree.nodes, ...tree.subtrees[0].nodes],
+        subtrees: tree.subtrees[0].subtrees,
+        current: tree.subtrees[0].current,
+        parent: tree.parent
+    })
 
-    for (let subtree of tree.subtrees) {
-        subtree.parent = tree
+    if (reduced.parent) {
+        reduced.parent.subtrees[reduced.parent.subtrees.indexOf(tree)] = reduced
     }
 
-    return tree
+    for (let subtree of reduced.subtrees) {
+        subtree.parent = reduced
+    }
+
+    return reduced
 }
 
 exports.onCurrentTrack = function(tree) {
