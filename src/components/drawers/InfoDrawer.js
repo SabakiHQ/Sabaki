@@ -56,7 +56,7 @@ class InfoDrawer extends Component {
             let startGame = setting.get('gtp.start_game_after_attach')
 
             if (startGame && sabaki.attachedEngineControllers[i] != null) {
-                sabaki.startGeneratingMoves()
+                sabaki.generateMove({followUp: true})
             }
         }
 
@@ -432,7 +432,7 @@ class InfoDrawer extends Component {
                         })
                     ),
                     h(InfoDrawerItem, {title: 'Result'},
-                        showResult 
+                        showResult
                         ? h('input', {
                             type: 'text',
                             placeholder: 'None',

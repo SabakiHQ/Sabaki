@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * Add advanced SGF properties editor
+* Ability to generate one move from one engine player only
 
 **Changed**
 

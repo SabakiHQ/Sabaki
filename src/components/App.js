@@ -974,7 +974,7 @@ class App extends Component {
 
         if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
             let passPlayer = pass ? player : null
-            setTimeout(() => this.startGeneratingMoves({passPlayer}), setting.get('gtp.move_delay'))
+            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
         }
     }
 
@@ -2158,13 +2158,13 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    async startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
+    async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
         this.closeDrawer()
 
-        if (followUp && !this.state.generatingMoves) {
+        if (!firstMove && !this.state.generatingMoves) {
             this.hideInfoOverlay()
             return
-        } else if (!followUp) {
+        } else if (firstMove) {
             this.setState({generatingMoves: true})
         }
 
@@ -2188,8 +2188,8 @@ class App extends Component {
             }
         }
 
-        if (!followUp && otherController != null) {
-            this.flashInfoOverlay('Press Esc to stop generating moves')
+        if (firstMove && followUp && otherController != null) {
+            this.flashInfoOverlay('Press Esc to stop playing')
         }
 
         this.setBusy(true)
@@ -2234,9 +2234,9 @@ class App extends Component {
             board: gametree.getBoard(...this.state.treePosition)
         }
 
-        if (otherController != null && !doublePass) {
+        if (followUp && otherController != null && !doublePass) {
             await helper.wait(setting.get('gtp.move_delay'))
-            this.startGeneratingMoves({passPlayer: pass ? sign : null, followUp: true})
+            this.generateMove({passPlayer: pass ? sign : null, firstMove: false, followUp})
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
