@@ -153,7 +153,7 @@ header, #bar .bar {
     #bar .bar { transform: translateY(-40px); }
     #bar .bar.current { transform: none; }
     #bar header:not(.current) { transform: translateY(40px); }
-    #bar .bar.hidecontent > * { visibility: hidden; }
+    #bar .bar.hidecontent > * { display: none; }
     #bar .bar .close {
         display: block;
         position: absolute;
@@ -198,7 +198,7 @@ header, #bar .bar {
         background: #711111;
     }
     #scoring .result button:active, #estimator .result button:active {
-        transform: translateY(4%);        
+        transform: translateY(4%);
 }
 
 #find button {
@@ -682,7 +682,7 @@ header, #bar .bar {
         z-index: 15;
     }
     .drawer.hidecontent > * {
-        visibility: hidden;
+        display: none;
     }
     .drawer.show {
         transform: translateY(-285px);
