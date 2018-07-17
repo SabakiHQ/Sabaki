@@ -6,6 +6,7 @@ const ScoreDrawer = require('./drawers/ScoreDrawer')
 const PreferencesDrawer = require('./drawers/PreferencesDrawer')
 const GameChooserDrawer = require('./drawers/GameChooserDrawer')
 const CleanMarkupDrawer = require('./drawers/CleanMarkupDrawer')
+const AdvancedPropertiesDrawer = require('./drawers/AdvancedPropertiesDrawer')
 
 class DrawerManager extends Component {
     constructor() {
@@ -89,6 +90,11 @@ class DrawerManager extends Component {
 
             h(CleanMarkupDrawer, {
                 show: openDrawer === 'cleanmarkup',
+                treePosition
+            }),
+
+            h(AdvancedPropertiesDrawer, {
+                show: openDrawer === 'advancedproperties',
                 treePosition
             }),
 

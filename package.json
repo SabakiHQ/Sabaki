@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.34.1",
+  "version": "0.35.0",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
@@ -57,24 +57,20 @@
       "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
       "!data/shapes.sgf",
       "!src/components${/*}",
-      "!src/modules${/*}",
-      "!node_modules${/*}",
-      "node_modules/octicons/build/svg",
-      "node_modules/pikaday/css/pikaday.css",
-      "node_modules/@sabaki/deadstones/wasm/*.wasm"
+      "!src/modules${/*}"
     ]
   },
   "dependencies": {
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/influence": "^1.1.4",
-    "@sabaki/sgf": "^1.3.0",
-    "classnames": "^2.2.5",
+    "@sabaki/sgf": "^1.3.1",
+    "classnames": "^2.2.6",
     "copy-text-to-clipboard": "^1.0.3",
     "natsort": "^1.0.6",
     "octicons": "^7.3.0",
     "pikaday": "^1.7.0",
     "preact": "^8.2.9",
-    "react-markdown": "^3.3.2",
+    "react-markdown": "^3.3.4",
     "remark-breaks": "^1.0.0"
   },
   "devDependencies": {

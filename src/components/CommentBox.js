@@ -66,10 +66,10 @@ class CommentTitle extends Component {
 
         // Determine capture
 
-        let ptp = gametree.navigate(tree, index, -1)
+        let prev = gametree.navigate(tree, index, -1)
 
-        if (ptp) {
-            let prevBoard = ptp[0].nodes[ptp[1]].board || gametree.getBoard(...ptp)
+        if (prev) {
+            let prevBoard = gametree.getBoard(...prev)
 
             if (!helper.vertexEquals(prevBoard.captures, board.captures))
                 return 'Take'

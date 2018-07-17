@@ -226,10 +226,13 @@ Uses `tool` to mark the board at `vertex`. If `tool` is `'arrow'` or `'line'`, `
 
 ### Navigation
 
-#### sabaki.setCurrentTreePosition(tree, index)
+#### sabaki.setCurrentTreePosition(tree, index[, options])
 
 * `tree` [`<GameTree>`](gametree.md)
 * `index` `<Integer>`
+* `options` `<Object>` *(optional)*
+    * `clearCache` `<Boolean>` - Default: `false`
+    * `clearUndoPoint` `<Boolean>` - Default: `true`
 
 Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
 

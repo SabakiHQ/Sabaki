@@ -379,6 +379,14 @@ class App extends Component {
             }).then(result => {
                 this.setState({deadStones: result})
             })
+        } else if (mode === 'edit') {
+            this.waitForRender()
+            .then(() => {
+                let textarea = document.querySelector('#properties .edit textarea')
+
+                textarea.selectionStart = textarea.selectionEnd = 0
+                textarea.focus()
+            })
         }
 
         this.setState(stateChange)
@@ -459,7 +467,7 @@ class App extends Component {
             representedFilename: null
         })
 
-        this.setCurrentTreePosition(emptyTree, 0)
+        this.setCurrentTreePosition(emptyTree, 0, {clearCache: true})
 
         this.treeHash = this.generateTreeHash()
         this.fileHash = this.generateFileHash()
@@ -569,7 +577,7 @@ class App extends Component {
                 gameTrees
             })
 
-            this.setCurrentTreePosition(gameTrees[0], 0)
+            this.setCurrentTreePosition(gameTrees[0], 0, {clearCache: true})
 
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
@@ -806,8 +814,9 @@ class App extends Component {
 
             if (prev && setting.get('game.show_ko_warning')) {
                 let hash = board.makeMove(player, vertex).getPositionHash()
+                let prevBoard = gametree.getBoard(...prev)
 
-                ko = prev[0].nodes[prev[1]].board.getPositionHash() == hash
+                ko = prevBoard.getPositionHash() == hash
 
                 if (ko && dialog.showMessageBox(
                     ['You are about to play a move which repeats a previous board position.',
@@ -891,14 +900,14 @@ class App extends Component {
                 let node = {[color]: [sgf.stringifyVertex(vertex)]}
 
                 newTree.nodes = [node]
-                newTree.parent = splitted
+                newTree.parent = splitted[0]
 
-                splitted.subtrees.push(newTree)
-                splitted.current = splitted.subtrees.length - 1
+                splitted[0].subtrees.push(newTree)
+                splitted[0].current = splitted[0].subtrees.length - 1
 
                 if (updateRoot) {
                     let {gameTrees} = this.state
-                    gameTrees[gameTrees.indexOf(tree)] = splitted
+                    gameTrees[gameTrees.indexOf(tree)] = splitted[0]
                 }
 
                 nextTreePosition = [newTree, 0]
@@ -948,7 +957,7 @@ class App extends Component {
 
         if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
             let passPlayer = pass ? player : null
-            setTimeout(() => this.startGeneratingMoves({passPlayer}), setting.get('gtp.move_delay'))
+            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
         }
     }
 
@@ -993,10 +1002,10 @@ class App extends Component {
                 let updateRoot = tree.parent == null
                 let splitted = gametree.split(tree, index)
 
-                if (splitted != tree || splitted.subtrees.length != 0) {
+                if (splitted[0] != tree || splitted[0].subtrees.length !== 0) {
                     tree = gametree.new()
-                    tree.parent = splitted
-                    splitted.subtrees.push(tree)
+                    tree.parent = splitted[0]
+                    splitted[0].subtrees.push(tree)
                 }
 
                 node = {PL: currentPlayer > 0 ? ['B'] : ['W']}
@@ -1005,7 +1014,7 @@ class App extends Component {
 
                 if (updateRoot) {
                     let {gameTrees} = this.state
-                    gameTrees[gameIndex] = splitted
+                    gameTrees[gameIndex] = splitted[0]
                 }
             }
 
@@ -1182,7 +1191,7 @@ class App extends Component {
             gameTrees[this.inferredState.gameIndex] = undoRoot
             treePosition = gametree.navigate(undoRoot, 0, undoLevel)
 
-            this.setCurrentTreePosition(...treePosition)
+            this.setCurrentTreePosition(...treePosition, {clearCache: true})
             this.clearUndoPoint()
             this.setBusy(false)
         }, setting.get('edit.undo_delay'))
@@ -1190,7 +1199,8 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
+        if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
 
@@ -1577,18 +1587,19 @@ class App extends Component {
         for (let tree of trees) {
             for (let node of tree.nodes) {
                 rotation.rotateNode(node, info.size[0], info.size[1], anticlockwise)
-                node.board = null
             }
         }
 
         if (info.size[1] !== info.size[0]) {
             this.setGameInfo(root, {size: [info.size[1], info.size[0]]})
         }
+
+        this.setCurrentTreePosition(...this.state.treePosition, {clearCache: true})
     }
 
     copyVariation(tree, index) {
         let clone = gametree.clone(tree)
-        if (index != 0) gametree.split(clone, index - 1)
+        if (index != 0) clone = gametree.split(clone, index - 1)[1]
 
         this.copyVariationData = clone
     }
@@ -1615,18 +1626,18 @@ class App extends Component {
         let splitted = gametree.split(tree, index)
         let copied = gametree.clone(this.copyVariationData)
 
-        copied.parent = splitted
-        splitted.subtrees.push(copied)
+        copied.parent = splitted[0]
+        splitted[0].subtrees.push(copied)
 
         if (updateRoot) {
             let {gameTrees} = this.state
-            gameTrees[this.inferredState.gameIndex] = splitted
+            gameTrees[this.inferredState.gameIndex] = splitted[0]
             this.setState({gameTrees})
         }
 
-        if (splitted.subtrees.length === 1) {
-            gametree.reduce(splitted)
-            this.setCurrentTreePosition(splitted, oldLength)
+        if (splitted[0].subtrees.length === 1) {
+            let reduced = gametree.reduce(splitted[0])
+            this.setCurrentTreePosition(reduced, oldLength)
         } else {
             this.setCurrentTreePosition(copied, 0)
         }
@@ -1641,10 +1652,10 @@ class App extends Component {
         let {rootTree, gameIndex} = this.inferredState
         let board = gametree.getBoard(tree, index)
         let rootNode = rootTree.nodes[0]
-        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'WT', 'WR']
+        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'SZ', 'WT', 'WR']
 
         let clone = gametree.clone(tree)
-        if (index !== 0) gametree.split(clone, index - 1)
+        if (index !== 0) clone = gametree.split(clone, index - 1)[1]
         let node = clone.nodes[0]
 
         node.AB = []

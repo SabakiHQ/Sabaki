@@ -378,9 +378,14 @@ let data = [
                 click: () => sabaki.syncEngines()
             },
             {
-                label: 'Generate &Move',
+                label: 'Start &Playing',
                 accelerator: 'F5',
-                click: () => sabaki.startGeneratingMoves()
+                click: () => sabaki.generateMove({followUp: true})
+            },
+            {
+                label: 'Generate &Move',
+                accelerator: 'F10',
+                click: () => sabaki.generateMove()
             },
             {type: 'separator'},
             {
@@ -411,6 +416,10 @@ let data = [
             {
                 label: 'Clean &Markup…',
                 click: () => sabaki.openDrawer('cleanmarkup')
+            },
+            {
+                label: '&Edit SGF Properties…',
+                click: () => sabaki.openDrawer('advancedproperties')
             },
             {type: 'separator'},
             {

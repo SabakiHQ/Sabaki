@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.35.0][v0.35.0] (2018-07-17)
+
+**Added**
+
+* Add advanced SGF properties editor
+* Ability to generate one move from one engine player only
+
+**Changed**
+
+* When entering edit mode, Sabaki will now focus the comment box automatically
+* Send custom initial GTP commands to engines after sending basic meta commands
+
+**Fixed**
+
+* Correctly send handicap stones to GTP engines
+* Retain board size when flattening board arrangement (Thanks to [@dfannius](https://github.com/dfannius))
+
 ## [Sabaki v0.34.1][v0.34.1] (2018-06-03)
 
 **Changed**
@@ -700,7 +717,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.1...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.35.0...master
+[v0.35.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.1...v0.35.0
 [v0.34.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.0...v0.34.1
 [v0.34.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.4...v0.34.0
 [v0.33.4]: https://github.com/SabakiHQ/Sabaki/compare/v0.33.3...v0.33.4

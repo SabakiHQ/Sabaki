@@ -64,6 +64,8 @@ Returns a positional clone of the current board, meaning the clone will retain t
 
 ### board.isSquare()
 
+### board.isEmpty()
+
 ### board.getDistance(v, w)
 
 * `v` [`<Vertex>`](vertex.md)
