@@ -526,7 +526,7 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'GitHub &Respository',
+                label: 'GitHub &Repository',
                 click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
             },
             {
