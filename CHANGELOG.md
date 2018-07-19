@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Finally fix that misspelling of 'Repository' in the menu (Thanks to [@dpflug](https://github.com/dpflug))
+
 ## [Sabaki v0.35.0][v0.35.0] (2018-07-17)
 
 **Added**
