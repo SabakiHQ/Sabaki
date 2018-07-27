@@ -175,17 +175,12 @@ exports.parseFile = function(filename) {
     // NGF files have a huge amount of ASCII-looking text. To help
     // the detector, we just send it the first few lines.
 
-    let content = fs.readFileSync(filename, {encoding: 'binary'})
-    let rawlines = content.split('\n')
-    let raw = rawlines.slice(0, 12).join()
-
+    let buffer = fs.readFileSync(filename)
     let encoding = 'utf8'
-    let detected = jschardet.detect(raw)
-    if (detected.confidence > 0.2) {
-        encoding = detected.encoding
-    }
+    let detected = jschardet.detect(buffer.slice(0, 200))
+    if (detected.confidence > 0.2) encoding = detected.encoding
 
-    content = iconv.decode(Buffer.from(content, 'binary'), encoding)
-    
+    content = iconv.decode(buffer, encoding)
+
     return exports.parse(content)
 }

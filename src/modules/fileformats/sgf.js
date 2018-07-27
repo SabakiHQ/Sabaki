@@ -6,9 +6,8 @@ exports.meta = {
     extensions: ['sgf']
 }
 
-exports.parse = function(content, onProgress = () => {}, ignoreEncoding = false) {
-    let encoding = ignoreEncoding ? null : 'ISO-8859-1'
-    return sgf.parse(content, {getId, onProgress, encoding})
+exports.parse = function(content, onProgress = () => {}) {
+    return sgf.parse(content, {getId, onProgress})
 }
 
 exports.parseFile = function(filename, onProgress = () => {}) {

@@ -510,7 +510,7 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    async loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false} = {}) {
+    async loadContent(content, extension, {suppressAskForSave = false} = {}) {
         this.setBusy(true)
 
         let gameTrees = []
@@ -524,7 +524,7 @@ class App extends Component {
                 if (evt.progress - lastProgress < 0.1) return
                 this.window.setProgressBar(evt.progress)
                 lastProgress = evt.progress
-            }, ignoreEncoding)
+            })
 
             if (gameTrees.length == 0) throw true
         } catch (err) {

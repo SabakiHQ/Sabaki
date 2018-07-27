@@ -48,7 +48,7 @@ let data = [
                 submenu: [
                     {
                         label: '&Load SGF',
-                        click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
+                        click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
                     },
                     {
                         label: '&Copy SGF',

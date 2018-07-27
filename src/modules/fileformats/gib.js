@@ -217,12 +217,12 @@ exports.parseFile = function(filename) {
     let iconv = require('iconv-lite')
     let jschardet = require('jschardet')
 
-    let content = fs.readFileSync(filename, {encoding: 'binary'})
+    let buffer = fs.readFileSync(filename)
     let encoding = 'utf8'
-    let detected = jschardet.detect(content)
+    let detected = jschardet.detect(buffer)
     if (detected.confidence > 0.2) encoding = detected.encoding
 
-    content = iconv.decode(Buffer.from(content, 'binary'), encoding)
+    content = iconv.decode(buffer, encoding)
 
     return exports.parse(content)
 }

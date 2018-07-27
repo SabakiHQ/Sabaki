@@ -25,7 +25,7 @@ describe('gib', () => {
         })
         it('should be able to detect encoding', () => {
             let tree = gib.parseFile(`${__dirname}/gib/gb2312.gib`)[0]
-            assert.equal(tree.nodes[0].PB, '石下之臣')
+            assert.equal(tree.nodes[0].PB[0], '石下之臣')
         })
     })
 })
