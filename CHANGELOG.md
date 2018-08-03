@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Finally fix that misspelling of 'Repository' in the menu (Thanks to [@dpflug](https://github.com/dpflug))
+* When copying the root node, Sabaki will automatically strip root node specific properties upon pasting+
+* Generated SGFs will not contain subtrees with no siblings anymore
 
 ## [Sabaki v0.35.0][v0.35.0] (2018-07-17)
 
