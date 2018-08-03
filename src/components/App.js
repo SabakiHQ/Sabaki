@@ -1618,6 +1618,19 @@ class App extends Component {
         let clone = gametree.clone(tree)
         if (index != 0) clone = gametree.split(clone, index - 1)[1]
 
+        let stripProperties = [
+            'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
+            'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
+            'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
+            'US', 'WR', 'WT'
+        ]
+
+        if (clone.nodes.length > 0) {
+            for (let prop of stripProperties) {
+                delete clone.nodes[0][prop]
+            }
+        }
+
         this.copyVariationData = clone
     }
 
