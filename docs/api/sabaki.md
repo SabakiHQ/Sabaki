@@ -156,9 +156,8 @@ If there's a modified file opened, Sabaki will ask the user to save the file fir
 * `extension` `<String>` - File extension, e.g. `'sgf'`
 * `options` `<Object>` *(optional)*
     * `suppressAskForSave` `<Boolean>` *(optional)* - Default: `false`
-    * `ignoreEncoding` `<Boolean>` *(optional)* - Default: `false`
 
-Returns to play mode and parses `content` which replaces current file. Sabaki will automatically detect file format by `extension`. If `extension` is `'sgf'` and `ignoreEncoding` is set to `true`, Sabaki will ignore the `CA` property.
+Returns to play mode and parses `content` which replaces current file. Sabaki will automatically detect file format by `extension`.
 
 If there's a modified file opened, Sabaki will ask the user to save the file first depending whether `suppressAskForSave` is `false`. Set `suppressAskForSave` to `true` to suppress this question.
 

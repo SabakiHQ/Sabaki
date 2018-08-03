@@ -48,7 +48,7 @@ let data = [
                 submenu: [
                     {
                         label: '&Load SGF',
-                        click: () => sabaki.loadContent(clipboard.readText(), 'sgf', {ignoreEncoding: true})
+                        click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
                     },
                     {
                         label: '&Copy SGF',
@@ -526,7 +526,7 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'GitHub &Respository',
+                label: 'GitHub &Repository',
                 click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
             },
             {

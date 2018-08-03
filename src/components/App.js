@@ -531,7 +531,7 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    async loadContent(content, extension, {suppressAskForSave = false, ignoreEncoding = false} = {}) {
+    async loadContent(content, extension, {suppressAskForSave = false} = {}) {
         this.setBusy(true)
 
         let gameTrees = []
@@ -545,7 +545,7 @@ class App extends Component {
                 if (evt.progress - lastProgress < 0.1) return
                 this.window.setProgressBar(evt.progress)
                 lastProgress = evt.progress
-            }, ignoreEncoding)
+            })
 
             if (gameTrees.length == 0) throw true
         } catch (err) {
@@ -1601,6 +1601,19 @@ class App extends Component {
         let clone = gametree.clone(tree)
         if (index != 0) clone = gametree.split(clone, index - 1)[1]
 
+        let stripProperties = [
+            'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
+            'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
+            'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
+            'US', 'WR', 'WT'
+        ]
+
+        if (clone.nodes.length > 0) {
+            for (let prop of stripProperties) {
+                delete clone.nodes[0][prop]
+            }
+        }
+
         this.copyVariationData = clone
     }
 
@@ -1784,6 +1797,8 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
+        let level = gametree.getLevel(tree, index)
+
         // Remove all subsequent variations
 
         let t = tree
@@ -1803,10 +1818,13 @@ class App extends Component {
             t.parent.subtrees = [t]
             t.parent.current = 0
 
-            t = t.parent
+            if (t.parent != null) t = t.parent
         }
 
-        this.setCurrentTreePosition(tree, index)
+        // Flatten game tree
+
+        let root = gametree.reduce(t)
+        this.setCurrentTreePosition(root, level)
     }
 
     // Menus
