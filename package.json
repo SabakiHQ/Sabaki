@@ -64,13 +64,13 @@
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/gtp": "^1.1.1",
     "@sabaki/influence": "^1.1.4",
-    "@sabaki/sgf": "^2.0.0",
+    "@sabaki/sgf": "^2.1.0",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
     "iconv-lite": "^0.4.23",
     "jschardet": "^1.5.1",
     "natsort": "^1.0.6",
-    "octicons": "^7.3.0",
+    "octicons": "^8.0.0",
     "pikaday": "^1.7.0",
     "preact": "^8.2.9",
     "react-markdown": "^3.3.4",
@@ -80,15 +80,15 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "electron": "^2.0.4",
-    "electron-builder": "^20.19.2",
+    "electron": "^2.0.6",
+    "electron-builder": "^20.26.1",
     "mocha": "^5.2.0",
     "raw-loader": "^0.5.1",
-    "react": "^16.4.1",
+    "react": "^16.4.2",
     "tmp": "0.0.33",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "webpack": "^4.15.1",
-    "webpack-cli": "^3.0.8"
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
   },
   "scripts": {
     "test": "mocha",
