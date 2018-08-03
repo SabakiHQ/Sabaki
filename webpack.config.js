@@ -75,6 +75,7 @@ module.exports = (env, argv) => ({
 
             './ThemeManager': noopPath,
             './LeftSidebar': noopPath,
+            './drawers/AdvancedPropertiesDrawer': noopPath,
             './drawers/PreferencesDrawer': noopPath,
             './drawers/CleanMarkupDrawer': noopPath,
             './bars/AutoplayBar': noopPath,
