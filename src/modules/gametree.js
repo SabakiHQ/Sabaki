@@ -192,22 +192,21 @@ exports.split = function(tree, index) {
 exports.reduce = function(tree) {
     if (tree.subtrees.length !== 1) return tree
 
-    let reduced = Object.assign(exports.new(), {
-        nodes: [...tree.nodes, ...tree.subtrees[0].nodes],
-        subtrees: tree.subtrees[0].subtrees,
-        current: tree.subtrees[0].current,
-        parent: tree.parent
-    })
+    let onlySubtree = exports.reduce(tree.subtrees[0])
 
-    if (reduced.parent) {
-        reduced.parent.subtrees[reduced.parent.subtrees.indexOf(tree)] = reduced
+    tree.nodes.push(...onlySubtree.nodes)
+    tree.subtrees = onlySubtree.subtrees
+    tree.current = onlySubtree.current
+
+    if (tree.parent) {
+        tree.parent.subtrees[tree.parent.subtrees.indexOf(tree)] = tree
     }
 
-    for (let subtree of reduced.subtrees) {
-        subtree.parent = reduced
+    for (let subtree of tree.subtrees) {
+        subtree.parent = tree
     }
 
-    return reduced
+    return tree
 }
 
 exports.onCurrentTrack = function(tree) {

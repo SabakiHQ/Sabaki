@@ -1814,6 +1814,8 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
+        let level = gametree.getLevel(tree, index)
+
         // Remove all subsequent variations
 
         let t = tree
@@ -1833,10 +1835,13 @@ class App extends Component {
             t.parent.subtrees = [t]
             t.parent.current = 0
 
-            t = t.parent
+            if (t.parent != null) t = t.parent
         }
 
-        this.setCurrentTreePosition(tree, index)
+        // Flatten game tree
+
+        let root = gametree.reduce(t)
+        this.setCurrentTreePosition(root, level)
     }
 
     // Menus
