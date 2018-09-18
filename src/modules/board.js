@@ -7,15 +7,17 @@ class Board {
         this.height = height
         this.captures = captures ? captures.slice() : [0, 0]
         this.arrangement = []
-        this.markups = {}
+        this.markers = null
         this.ghosts = {}
         this.lines = []
 
-        // Initialize arrangement
+        // Initialize maps
 
         for (let y = 0; y < this.height; y++) {
             this.arrangement[y] = y in arrangement ? [...arrangement[y]] : Array(this.width).fill(0)
         }
+
+        this.markers = this.arrangement.map(row => row.map(_ => null))
     }
 
     get([x, y]) {
@@ -323,10 +325,10 @@ class Board {
                 let i = getIndexFromVertex(v)
                 let s = this.get(v)
 
-                if (!this.markups[v] || !(this.markups[v][0] in data)) {
+                if (!this.markers[y][x] || !(this.markers[y][x].type in data)) {
                     if (s !== 0) result[i] = data.plain[s + 1]
                 } else {
-                    let [type, label] = this.markups[v]
+                    let {type, label} = this.markers[y][x]
 
                     if (type !== 'label' || s !== 0) {
                         result[i] = data[type][s + 1]
@@ -354,9 +356,9 @@ class Board {
 
     getHash() {
         return helper.hash(JSON.stringify([
-            this.getPositionHash(),
+            this.arrangement,
             this.captures,
-            this.markups,
+            this.markers,
             this.ghosts,
             this.lines
         ]))

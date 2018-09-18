@@ -677,17 +677,24 @@ class App extends Component {
             vertex = board.coord2vertex(vertex)
         }
 
+        let [vx, vy] = vertex
+
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     this.makeMove(vertex, {sendToEngine: true})
-                } else if (vertex in board.markups
-                && board.markups[vertex][0] === 'point'
-                && setting.get('edit.click_currentvertex_to_remove')) {
+                } else if (
+                    board.markers[vy][vx] != null
+                    && board.markers[vy][vx].type === 'point'
+                    && setting.get('edit.click_currentvertex_to_remove')
+                ) {
                     this.removeNode(tree, index)
                 }
             } else if (button === 2) {
-                if (vertex in board.markups && board.markups[vertex][0] === 'point') {
+                if (
+                    board.markers[vy][vx] != null
+                    && board.markers[vy][vx].type === 'point'
+                ) {
                     this.openCommentMenu(tree, index, {x, y})
                 }
             }
@@ -1101,9 +1108,14 @@ class App extends Component {
         } else {
             // Mutate board first, then apply changes to actual game tree
 
+            let [x, y] = vertex
+
             if (tool === 'number') {
-                if (vertex in board.markups && board.markups[vertex][0] === 'label') {
-                    delete board.markups[vertex]
+                if (
+                    board.markers[y][x] != null
+                    && board.markers[y][x].type === 'label'
+                ) {
+                    board.markers[y][x] = null
                 } else {
                     let number = !node.LB ? 1 : node.LB
                         .map(x => parseFloat(x.slice(3)))
@@ -1114,14 +1126,19 @@ class App extends Component {
                         .findIndex((x, i) => i + 1 !== x) + 1
 
                     argument = number.toString()
-                    board.markups[vertex] = [tool, number.toString()]
+                    board.markers[y][x] = {type: tool, label: number.toString()}
                 }
             } else if (tool === 'label') {
                 let label = argument
 
-                if (label != null && label.trim() === ''
-                || label == null && vertex in board.markups && board.markups[vertex][0] === 'label') {
-                    delete board.markups[vertex]
+                if (
+                    label != null
+                    && label.trim() === ''
+                    || label == null
+                    && board.markers[y][x] != null
+                    && board.markers[y][x].type === 'label'
+                ) {
+                    board.markers[y][x] = null
                 } else {
                     if (label == null) {
                         let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -1141,13 +1158,16 @@ class App extends Component {
                         argument = label
                     }
 
-                    board.markups[vertex] = [tool, label]
+                    board.markers[y][x] = {type: tool, label}
                 }
             } else {
-                if (vertex in board.markups && board.markups[vertex][0] === tool) {
-                    delete board.markups[vertex]
+                if (
+                    board.markers[y][x] != null
+                    && board.markers[y][x].type === tool
+                ) {
+                    board.markers[y][x] = null
                 } else {
-                    board.markups[vertex] = [tool, '']
+                    board.markers[y][x] = {type: tool}
                 }
             }
 
@@ -1159,13 +1179,13 @@ class App extends Component {
             for (let x = 0; x < board.width; x++) {
                 for (let y = 0; y < board.height; y++) {
                     let v = [x, y]
-                    if (!(v in board.markups)) continue
+                    if (board.markers[y][x] == null) continue
 
-                    let prop = data[board.markups[v][0]]
+                    let prop = data[board.markers[y][x].type]
                     let value = sgf.stringifyVertex(v)
 
                     if (prop === 'LB')
-                        value += ':' + board.markups[v][1]
+                        value += ':' + board.markers[y][x].label
 
                     if (prop in node) node[prop].push(value)
                     else node[prop] = [value]

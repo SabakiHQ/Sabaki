@@ -19,25 +19,15 @@ const {Board} = sabaki.modules
 
 An array consisting of the capture counts of the players. The value at index `0` represent the black player, while the value at index `1` represent the white player.
 
-### board.markups
-
-An object consisting of markup information at each vertex. The keys are vertices on the board, the values are arrays of length two
-
-~~~js
-[type, text]
-~~~
-
-where `type` may be `'point'`, `'cross'`, `'triangle'`, `'circle'`, or `'label'`, and `text` is a string. `text` is only needed if `type` is `'label'`.
-
 ### board.lines
 
 An array consisting of line and arrow information. Each line or arrow is represented by an array of length three
 
 ~~~js
-[v, w, arrow]
+{v1, v2, type}
 ~~~
 
-where `v` is the start [vertex](vertex.md), `w` the end [vertex](vertex.md), and `arrow` is a boolean which determines whether this array represents an arrow or a line.
+where `v1` is the start [vertex](vertex.md), `v2` the end [vertex](vertex.md), and `type` either `'arrow'`, or `'line'`.
 
 ## Methods
 

@@ -137,6 +137,7 @@ class Goban extends Component {
             animateStonePlacement,
 
             signMap: board.arrangement,
+            markerMap: board.markers,
             paintMap,
             heatMap,
             lines,

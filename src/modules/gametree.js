@@ -326,8 +326,11 @@ exports.getBoard = function(tree, index, baseboard = null) {
         }
     }
 
+    board.markers = board.arrangement.map(row => row.map(_ => null))
+
     if (vertex != null) {
-        board.markups[vertex] = ['point', '']
+        let [x, y] = vertex
+        board.markers[y][x] = {type: 'point'}
     }
 
     data = {CR: 'circle', MA: 'cross', SQ: 'square', TR: 'triangle'}
@@ -336,8 +339,8 @@ exports.getBoard = function(tree, index, baseboard = null) {
         if (!(prop in node)) continue
 
         for (let value of node[prop]) {
-            for (let vertex of sgf.parseCompressedVertices(value)) {
-                board.markups[vertex] = [data[prop], '']
+            for (let [x, y] of sgf.parseCompressedVertices(value)) {
+                board.markers[y][x] = {type: data[prop]}
             }
         }
     }
@@ -347,8 +350,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1)
+            let [x, y] = sgf.parseVertex(point)
 
-            board.markups[sgf.parseVertex(point)] = ['label', label]
+            board.markers[y][x] = {type: 'label', label}
         }
     }
 
@@ -357,8 +361,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let point = node.L[i]
             let label = alpha[i]
             if (label == null) return
+            let [x, y] = sgf.parseVertex(point)
 
-            board.markups[sgf.parseVertex(point)] = ['label', label]
+            board.markers[y][x] = {type: 'label', label}
         }
     }
 

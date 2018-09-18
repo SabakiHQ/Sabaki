@@ -20,7 +20,7 @@ describe('Board', () => {
         it('should have no markups and lines', () => {
             let board = new Board()
             assert.deepEqual(board.lines, [])
-            assert.deepEqual(board.markups, {})
+            assert(board.markers.every(row => row.every(x => x == null)))
         })
     })
 
@@ -61,18 +61,18 @@ describe('Board', () => {
             board.clear()
             assert.deepEqual(board.arrangement, new Board(9, 9).arrangement)
         })
-        it('should not clear markups or lines', () => {
+        it('should not clear markers or lines', () => {
             let board = new Board(9, 9)
             let lines = [
-                [[0, 0], [8, 8], false],
-                [[8, 8], [0, 0], true]
+                {v1: [0, 0], v2: [8, 8], type: 'line'},
+                {v1: [8, 8], v2: [0, 0], type: 'arrow'}
             ]
             board.lines = lines
-            board.markups[[5, 5]] = ['label', 'A']
+            board.markers[[5, 5]] = {type: 'label', label: 'A'}
 
             board.clear()
             assert.deepEqual(board.lines, lines)
-            assert.notDeepEqual(board.markups, new Board(9, 9).markups)
+            assert.notDeepEqual(board.markers, new Board(9, 9).markers)
         })
     })
 
