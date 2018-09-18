@@ -25,7 +25,6 @@ class MainView extends Component {
             text: this.props.findText
         })
 
-        this.handleGobanResize = this.handleGobanResize.bind(this)
         this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
         this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
     }
@@ -54,26 +53,6 @@ class MainView extends Component {
         if (nextProps.mode !== 'edit') {
             this.setState({gobanCrosshair: false})
         }
-    }
-
-    handleGobanResize() {
-        /*  Because of board rendering issues, we want the width
-            and the height of `<main>` to be even */
-
-        if (this.mainElement == null) return
-
-        this.mainElement.style.width = ''
-        this.mainElement.style.height = ''
-
-        let {width, height} = window.getComputedStyle(this.mainElement)
-
-        width = parseFloat(width)
-        height = parseFloat(height)
-
-        if (width % 2 !== 0) width++
-        if (height % 2 !== 0) height++
-
-        this.setState({width, height})
     }
 
     handleGobanVertexClick(evt) {
@@ -176,7 +155,6 @@ class MainView extends Component {
                     drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
                         ? selectedTool : null,
 
-                    onBeforeResize: this.handleGobanResize,
                     onVertexClick: this.handleGobanVertexClick,
                     onLineDraw: this.handleGobanLineDraw
                 })
