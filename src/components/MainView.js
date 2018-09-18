@@ -86,8 +86,7 @@ class MainView extends Component {
         showNextMoves,
         showSiblings,
         fuzzyStonePlacement,
-        animatedStonePlacement,
-        animatedVertex,
+        animateStonePlacement,
 
         undoable,
         undoText,
@@ -149,8 +148,7 @@ class MainView extends Component {
                     showNextMoves: mode !== 'guess' && showNextMoves,
                     showSiblings: mode !== 'guess' && showSiblings,
                     fuzzyStonePlacement,
-                    animatedStonePlacement,
-                    animatedVertex,
+                    animateStonePlacement,
 
                     drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
                         ? selectedTool : null,

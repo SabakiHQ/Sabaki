@@ -72,8 +72,7 @@ class App extends Component {
             showNextMoves: null,
             showSiblings: null,
             fuzzyStonePlacement: null,
-            animatedStonePlacement: null,
-            animatedVertex: null,
+            animateStonePlacement: null,
 
             // Sidebar
 
@@ -314,7 +313,7 @@ class App extends Component {
             'view.show_next_moves': 'showNextMoves',
             'view.show_siblings': 'showSiblings',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
-            'view.animated_stone_placement': 'animatedStonePlacement',
+            'view.animated_stone_placement': 'animateStonePlacement',
             'graph.grid_size': 'graphGridSize',
             'graph.node_size': 'graphNodeSize',
             'engines.list': 'engines',

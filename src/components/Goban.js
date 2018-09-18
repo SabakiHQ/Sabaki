@@ -40,21 +40,18 @@ class Goban extends Component {
         }
     }
 
-    handleVertexMouseDown(evt) {
-        let {currentTarget} = evt
-
+    handleVertexMouseDown(evt, vertex) {
         this.mouseDown = true
-        this.startVertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        this.startVertex = vertex
     }
 
-    handleVertexMouseUp(evt) {
+    handleVertexMouseUp(evt, vertex) {
         if (!this.mouseDown) return
 
         let {onVertexClick = helper.noop, onLineDraw = helper.noop} = this.props
-        let {currentTarget} = evt
 
         this.mouseDown = false
-        evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        evt.vertex = vertex
         evt.line = this.state.temporaryLine
 
         if (evt.x == null) evt.x = evt.clientX
@@ -67,14 +64,13 @@ class Goban extends Component {
         }
     }
 
-    handleVertexMouseMove(evt) {
+    handleVertexMouseMove(evt, vertex) {
         let {drawLineMode, onVertexMouseMove = helper.noop} = this.props
-        let {currentTarget} = evt
 
         onVertexMouseMove(Object.assign(evt, {
             mouseDown: this.mouseDown,
             startVertex: this.startVertex,
-            vertex: currentTarget.dataset.vertex.split('-').map(x => +x)
+            vertex
         }))
 
         if (!!drawLineMode && evt.mouseDown && evt.button === 0) {
@@ -99,7 +95,7 @@ class Goban extends Component {
         showNextMoves = true,
         showSiblings = true,
         fuzzyStonePlacement = true,
-        animatedStonePlacement = true,
+        animateStonePlacement = true,
 
         drawLineMode = null
     }, {
@@ -116,7 +112,18 @@ class Goban extends Component {
 
             maxWidth,
             maxHeight,
-            signMap: [[1, 0, -1]]
+            fuzzyStonePlacement,
+            animateStonePlacement,
+
+            signMap: board.arrangement,
+            paintMap,
+            heatMap,
+            selectedVertices: highlightVertices,
+            dimmedVertices: dimmedStones,
+
+            onVertexMouseUp: this.handleVertexMouseUp,
+            onVertexMouseDown: this.handleVertexMouseDown,
+            onVertexMouseMove: this.handleVertexMouseMove
         })
 
         return h('section', {},
