@@ -8,8 +8,9 @@ class Board {
         this.captures = captures ? captures.slice() : [0, 0]
         this.arrangement = []
         this.markers = null
-        this.ghosts = {}
         this.lines = []
+        this.childrenInfo = {}
+        this.siblingsInfo = {}
 
         // Initialize maps
 
@@ -359,7 +360,6 @@ class Board {
             this.arrangement,
             this.captures,
             this.markers,
-            this.ghosts,
             this.lines
         ]))
     }

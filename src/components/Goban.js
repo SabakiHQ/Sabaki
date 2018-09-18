@@ -105,6 +105,8 @@ class Goban extends Component {
     }) {
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
 
+        // Calculate lines
+
         let lines = board.lines.filter(({v1, v2, type}) => {
             if (drawTemporaryLine) {
                 if (
@@ -126,6 +128,32 @@ class Goban extends Component {
             type: drawLineMode
         })
 
+        // Calculate ghost stones
+
+        let ghostStoneMap = null
+
+        if (showNextMoves || showSiblings) {
+            ghostStoneMap = board.arrangement.map(row => row.map(_ => null))
+
+            if (showSiblings) {
+                for (let v in board.siblingsInfo) {
+                    let [x, y] = v.split(',').map(x => +x)
+                    let {sign} = board.siblingsInfo[v]
+
+                    ghostStoneMap[y][x] = {sign, faint: showNextMoves}
+                }
+            }
+
+            if (showNextMoves) {
+                for (let v in board.childrenInfo) {
+                    let [x, y] = v.split(',').map(x => +x)
+                    let {sign, type} = board.childrenInfo[v]
+
+                    ghostStoneMap[y][x] = {sign, type: showMoveColorization ? type : null}
+                }
+            }
+        }
+
         return h(BoundedGoban, {
             id: 'goban',
             class: classNames({crosshair}),
@@ -133,11 +161,13 @@ class Goban extends Component {
 
             maxWidth,
             maxHeight,
+            showCoordinates,
             fuzzyStonePlacement,
             animateStonePlacement,
 
             signMap: board.arrangement,
             markerMap: board.markers,
+            ghostStoneMap,
             paintMap,
             heatMap,
             lines,

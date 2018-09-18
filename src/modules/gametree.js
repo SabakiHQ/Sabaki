@@ -380,7 +380,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
     // Add variation overlays
 
-    let addOverlay = (node, type) => {
+    let addInfo = (node, list) => {
         let v, sign
 
         if ('B' in node) {
@@ -393,43 +393,37 @@ exports.getBoard = function(tree, index, baseboard = null) {
             return
         }
 
-        if (!board.hasVertex(v) || v in board.ghosts)
+        if (!board.hasVertex(v))
             return
 
-        let types = []
+        let type = null
 
-        if (type === 'child') {
-            types.push(`ghost_${sign}`)
-
-            if ('BM' in node) {
-                types.push('badmove')
-            } else if ('DO' in node) {
-                types.push('doubtfulmove')
-            } else if ('IT' in node) {
-                types.push('interestingmove')
-            } else if ('TE' in node) {
-                types.push('goodmove')
-            }
-        } else if (type === 'sibling') {
-            types.push(`siblingghost_${sign}`)
+        if ('BM' in node) {
+            type = 'bad'
+        } else if ('DO' in node) {
+            type = 'doubtful'
+        } else if ('IT' in node) {
+            type = 'interesting'
+        } else if ('TE' in node) {
+            type = 'good'
         }
 
-        board.ghosts[v] = types
+        list[v] = {sign, type}
     }
 
     if (index === tree.nodes.length - 1) {
         for (let subtree of tree.subtrees) {
             if (subtree.nodes.length === 0) continue
-            addOverlay(subtree.nodes[0], 'child')
+            addInfo(subtree.nodes[0], board.childrenInfo)
         }
     } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1], 'child')
+        addInfo(tree.nodes[index + 1], board.childrenInfo)
     }
 
     if (index === 0 && tree.parent) {
         for (let subtree of tree.parent.subtrees) {
             if (subtree.nodes.length == 0) continue
-            addOverlay(subtree.nodes[0], 'sibling')
+            addInfo(subtree.nodes[0], board.siblingsInfo)
         }
     }
 
@@ -437,7 +431,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
     return board
 }
 
-exports.clearBoardCache = function(tree, index) {
+exports.clearBoardCache = function() {
     boardCache = {}
 }
 
