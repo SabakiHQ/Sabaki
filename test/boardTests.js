@@ -68,7 +68,7 @@ describe('Board', () => {
                 {v1: [8, 8], v2: [0, 0], type: 'arrow'}
             ]
             board.lines = lines
-            board.markers[[5, 5]] = {type: 'label', label: 'A'}
+            board.markers[5][5] = {type: 'label', label: 'A'}
 
             board.clear()
             assert.deepEqual(board.lines, lines)
