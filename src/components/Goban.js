@@ -74,7 +74,7 @@ class Goban extends Component {
         }))
 
         if (!!drawLineMode && evt.mouseDown && evt.button === 0) {
-            let temporaryLine = [evt.startVertex, evt.vertex]
+            let temporaryLine = {v1: evt.startVertex, v2: evt.vertex}
 
             if (!helper.equals(temporaryLine, this.state.temporaryLine)) {
                 this.setState({temporaryLine})
@@ -123,8 +123,8 @@ class Goban extends Component {
         })
 
         if (drawTemporaryLine) lines.push({
-            v1: temporaryLine[0],
-            v2: temporaryLine[1],
+            v1: temporaryLine.v1,
+            v2: temporaryLine.v2,
             type: drawLineMode
         })
 

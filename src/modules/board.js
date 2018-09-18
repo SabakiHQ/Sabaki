@@ -344,8 +344,8 @@ class Board {
 
         // Add lines & arrows
 
-        for (let [start, end, arrow] of this.lines) {
-            result += `{${arrow ? 'AR' : 'LN'} ${this.vertex2coord(start)} ${this.vertex2coord(end)}}${lb}`
+        for (let {v1, v2, type} of this.lines) {
+            result += `{${type === 'arrow' ? 'AR' : 'LN'} ${this.vertex2coord(v1)} ${this.vertex2coord(v2)}}${lb}`
         }
 
         return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)

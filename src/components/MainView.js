@@ -60,7 +60,7 @@ class MainView extends Component {
     }
 
     handleGobanLineDraw(evt) {
-        let [v1, v2] = evt.line
+        let {v1, v2} = evt.line
         sabaki.useTool(this.props.selectedTool, v1, v2)
         sabaki.editVertexData = null
     }
