@@ -1066,7 +1066,7 @@ header, #bar .bar {
         border: 5px solid #ca933a;
         margin-top: 5px;
         padding: 1px;
-        background: url('../img/goban/board.png') center #ECB55A;
+        background: url('../node_modules/@sabaki/shudan-goban/css/board.png') center #ECB55A;
         background-size: 200%;
     }
     #gamechooser li span {
@@ -1097,7 +1097,7 @@ header, #bar .bar {
 #gamechooser-animation svg {
     border: 5px solid #ca933a;
     padding: 1px;
-    background: url('../img/goban/board.png') center #ECB55A;
+    background: url('../node_modules/@sabaki/shudan-goban/css/board.png') center #ECB55A;
     background-size: 200%;
 }
 
