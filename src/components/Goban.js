@@ -24,19 +24,16 @@ class Goban extends Component {
         // Resize board when window is resizing
 
         window.addEventListener('resize', () => {
-            this.resize()
+            this.componentDidUpdate()
         })
 
-        this.resize()
+        this.componentDidUpdate()
     }
 
-    resize() {
+    componentDidUpdate() {
         if (!this.element || !this.element.parentElement) return
 
-        let {width: maxWidth, height: maxHeight} = window.getComputedStyle(this.element.parentElement)
-
-        maxWidth = parseFloat(maxWidth)
-        maxHeight = parseFloat(maxHeight)
+        let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
 
         if (maxWidth !== this.state.maxWidth || maxHeight !== this.state.maxHeight) {
             this.setState({maxWidth, maxHeight})
@@ -106,15 +103,20 @@ class Goban extends Component {
 
         drawLineMode = null
     }, {
-        maxWidth = 0,
-        maxHeight = 0,
+        maxWidth = 1,
+        maxHeight = 1,
         temporaryLine = null
     }) {
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
 
         return h(BoundedGoban, {
+            id: 'goban',
+            class: classNames({crosshair}),
+            innerProps: {ref: el => this.element = el},
+
             maxWidth,
-            maxHeight
+            maxHeight,
+            signMap: [[1, 0, -1]]
         })
 
         return h('section', {},

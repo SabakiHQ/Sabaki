@@ -16,7 +16,11 @@
         position: absolute;
         left: 50%;
         top: 50%;
+        transform: translate(-50%, -50%);
         box-shadow: 0 5px 20px rgba(20, 0, 15, .8);
+    }
+    #goban.crosshair {
+        cursor: crosshair;
 }
 
 header, #bar .bar {
