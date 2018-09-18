@@ -369,7 +369,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let sep = composed.indexOf(':')
             let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.parseVertex)
 
-            board.lines.push([v1, v2, type === 'AR'])
+            board.lines.push({v1, v2, type: type === 'AR' ? 'arrow' : 'line'})
         }
     }
 

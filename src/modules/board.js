@@ -190,7 +190,7 @@ class Board {
 
     coord2vertex(coord) {
         let x = alpha.indexOf(coord[0].toUpperCase())
-        let y = this.height - +coord.substr(1)
+        let y = this.height - +coord.slice(1)
         return [x, y]
     }
 
@@ -255,9 +255,9 @@ class Board {
         let farY = this.height - nearY - 1
         let middleX = (this.width - 1) / 2
         let middleY = (this.height - 1) / 2
-        
+
         let result
-        
+
         if (!tygemflag) {
             result = [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
         } else {

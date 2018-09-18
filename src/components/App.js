@@ -1067,12 +1067,12 @@ class App extends Component {
 
             // Check whether to remove a line
 
-            let toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [vertex, endVertex]))
+            let toDelete = board.lines.findIndex(x => helper.equals([x.v1, x.v2], [vertex, endVertex]))
 
             if (toDelete === -1) {
-                toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [endVertex, vertex]))
+                toDelete = board.lines.findIndex(x => helper.equals([x.v1, x.v2], [endVertex, vertex]))
 
-                if (toDelete >= 0 && tool !== 'line' && board.lines[toDelete][2]) {
+                if (toDelete >= 0 && tool !== 'line' && board.lines[toDelete].type === 'arrow') {
                     // Do not delete after all
                     toDelete = -1
                 }
@@ -1083,17 +1083,17 @@ class App extends Component {
             if (toDelete >= 0) {
                 board.lines.splice(toDelete, 1)
             } else {
-                board.lines.push([vertex, endVertex, tool === 'arrow'])
+                board.lines.push({v1: vertex, v2: endVertex, type: tool})
             }
 
             node.LN = []
             node.AR = []
 
-            for (let [v1, v2, arrow] of board.lines) {
+            for (let {v1, v2, type} of board.lines) {
                 let [p1, p2] = [v1, v2].map(sgf.stringifyVertex)
                 if (p1 === p2) continue
 
-                node[arrow ? 'AR' : 'LN'].push([p1, p2].join(':'))
+                node[type === 'arrow' ? 'AR' : 'LN'].push([p1, p2].join(':'))
             }
 
             if (node.LN.length === 0) delete node.LN
@@ -1106,7 +1106,7 @@ class App extends Component {
                     delete board.markups[vertex]
                 } else {
                     let number = !node.LB ? 1 : node.LB
-                        .map(x => parseFloat(x.substr(3)))
+                        .map(x => parseFloat(x.slice(3)))
                         .filter(x => !isNaN(x))
                         .sort((a, b) => a - b)
                         .filter((x, i, arr) => i === 0 || x !== arr[i - 1])

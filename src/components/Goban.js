@@ -105,6 +105,27 @@ class Goban extends Component {
     }) {
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
 
+        let lines = board.lines.filter(({v1, v2, type}) => {
+            if (drawTemporaryLine) {
+                if (
+                    helper.equals([v1, v2], temporaryLine)
+                    || (type !== 'arrow' || drawLineMode === 'line')
+                    && helper.equals([v2, v1], temporaryLine)
+                ) {
+                    drawTemporaryLine = false
+                    return false
+                }
+            }
+
+            return true
+        })
+
+        if (drawTemporaryLine) lines.push({
+            v1: temporaryLine[0],
+            v2: temporaryLine[1],
+            type: drawLineMode
+        })
+
         return h(BoundedGoban, {
             id: 'goban',
             class: classNames({crosshair}),
@@ -118,6 +139,7 @@ class Goban extends Component {
             signMap: board.arrangement,
             paintMap,
             heatMap,
+            lines,
             selectedVertices: highlightVertices,
             dimmedVertices: dimmedStones,
 
@@ -125,62 +147,6 @@ class Goban extends Component {
             onVertexMouseDown: this.handleVertexMouseDown,
             onVertexMouseMove: this.handleVertexMouseMove
         })
-
-        return h('section', {},
-            h('div', {},
-                rangeY.map(y => h('ol', {class: 'row'}, rangeX.map(x => {
-                    let sign = board.get([x, y])
-                    let [markupType, label] = board.markups[[x, y]] || [null, '']
-                    let equalsVertex = v => helper.vertexEquals(v, [x, y])
-
-                    return h(GobanVertex, {
-                        position: [x, y],
-                        shift: this.state.shifts[y][x],
-                        random: this.state.randomizer[y][x],
-                        sign,
-                        heat: heatMap && heatMap[y] && heatMap[y][x],
-                        paint: paintMap && paintMap[y] && paintMap[y][x],
-                        dimmed: dimmedStones.some(equalsVertex),
-                        highlight: highlightVertices.some(equalsVertex),
-                        hoshi: this.state.hoshis.some(equalsVertex),
-                        animate: animatedVertices.some(equalsVertex),
-                        smalllabel: label.length >= 3,
-                        markupType,
-                        label,
-                        ghostTypes: board.ghosts[[x, y]] || [],
-
-                        onMouseUp: this.handleVertexMouseUp,
-                        onMouseDown: this.handleVertexMouseDown,
-                        onMouseMove: this.handleVertexMouseMove
-                    })
-                }))),
-            ),
-
-            // Draw lines & arrows
-
-            board.lines.map(([v1, v2, arrow]) => {
-                if (drawTemporaryLine) {
-                    if (helper.equals([v1, v2], temporaryLine)
-                    || (!arrow || drawLineMode === 'line')
-                    && helper.equals([v2, v1], temporaryLine)) {
-                        drawTemporaryLine = false
-                        return
-                    }
-                }
-
-                return h(GobanLine, {
-                    v1, v2, showCoordinates, fieldSize,
-                    type: arrow ? 'arrow' : 'line'
-                })
-            }),
-
-            drawTemporaryLine && h(GobanLine, {
-                temporary: true,
-                v1: temporaryLine[0], v2: temporaryLine[1],
-                showCoordinates, fieldSize,
-                type: drawLineMode
-            })
-        )
     }
 }
 
