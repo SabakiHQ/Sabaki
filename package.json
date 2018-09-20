@@ -65,7 +65,7 @@
     "@sabaki/gtp": "^1.1.1",
     "@sabaki/influence": "^1.1.4",
     "@sabaki/sgf": "^2.1.0",
-    "@sabaki/shudan-goban": "0.0.4-beta",
+    "@sabaki/shudan-goban": "0.0.5-beta",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
     "iconv-lite": "^0.4.23",

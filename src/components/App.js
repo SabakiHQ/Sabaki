@@ -2159,7 +2159,11 @@ class App extends Component {
         }
 
         if (sabakiJson.heatmap != null) {
-            this.setState({heatMap: sabakiJson.heatmap})
+            this.setState({
+                heatMap: sabakiJson.heatmap.map(row =>
+                    row.map(value => ({strength: value}))
+                )
+            })
         }
     }
 
