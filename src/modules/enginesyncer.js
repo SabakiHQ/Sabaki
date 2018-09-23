@@ -10,9 +10,17 @@ async function setHandicapStones(controller, vertices, board) {
         .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
 
     let response = await controller.sendCommand({name: 'set_free_handicap', args: coords})
-    if (response.error) return false
+    if (!response.error) return true
 
-    return true
+    let responses = await Promises.all(
+        coords.map(coord => controller.sendCommand({
+            name: 'play',
+            args: ['B', coord]
+        }))
+    )
+    if (!responses.some(response => response.error)) return true
+
+    return false
 }
 
 async function enginePlay(controller, sign, vertex, board) {
