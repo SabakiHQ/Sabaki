@@ -62,6 +62,9 @@ class Goban extends Component {
         } else {
             onVertexClick(evt)
         }
+
+        this.setState({clicked: true})
+        setTimeout(() => this.setState({clicked: false}), 200)
     }
 
     handleVertexMouseMove(evt, vertex) {
@@ -101,6 +104,7 @@ class Goban extends Component {
     }, {
         maxWidth = 1,
         maxHeight = 1,
+        clicked = false,
         temporaryLine = null
     }) {
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
@@ -163,7 +167,7 @@ class Goban extends Component {
             maxHeight,
             showCoordinates,
             fuzzyStonePlacement,
-            animateStonePlacement,
+            animateStonePlacement: clicked && animateStonePlacement,
 
             signMap: board.arrangement,
             markerMap: board.markers,
