@@ -112,15 +112,16 @@ class Goban extends Component {
         // Calculate lines
 
         let lines = board.lines.filter(({v1, v2, type}) => {
-            if (drawTemporaryLine) {
-                if (
-                    helper.equals([v1, v2], temporaryLine)
+            if (
+                drawTemporaryLine
+                && (
+                    helper.equals([v1, v2], [temporaryLine.v1, temporaryLine.v2])
                     || (type !== 'arrow' || drawLineMode === 'line')
-                    && helper.equals([v2, v1], temporaryLine)
-                ) {
-                    drawTemporaryLine = false
-                    return false
-                }
+                    && helper.equals([v2, v1], [temporaryLine.v1, temporaryLine.v2])
+                )
+            ) {
+                drawTemporaryLine = false
+                return false
             }
 
             return true
