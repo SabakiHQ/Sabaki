@@ -919,7 +919,7 @@ header, #bar .bar {
         text-align: right;
     }
     #preferences form > div.themes input {
-        width: calc(100% - 34px - 10em);
+        width: calc(100% - 58px - 10em);
         margin-left: 10px;
     }
     #preferences form > div.themes .browse,

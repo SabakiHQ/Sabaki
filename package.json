@@ -61,6 +61,7 @@
     ]
   },
   "dependencies": {
+    "@mariotacke/color-thief": "^3.0.1",
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/gtp": "^1.1.1",
     "@sabaki/influence": "^1.1.4",
