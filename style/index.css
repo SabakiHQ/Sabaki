@@ -907,13 +907,19 @@ header, #bar .bar {
     #preferences form > div.general > p {
         clear: both;
     }
+    #preferences form > div.themes .userpaths {
+        display: grid;
+        column-gap: 1em;
+        grid-template: 1fr 1fr / 1fr 1fr;
+        grid-auto-flow: column;
+    }
     #preferences form > div.themes label span {
         display: inline-block;
         width: 10em;
         text-align: right;
     }
     #preferences form > div.themes input {
-        width: 40%;
+        width: calc(100% - 34px - 10em);
         margin-left: 10px;
     }
     #preferences form > div.themes .browse,

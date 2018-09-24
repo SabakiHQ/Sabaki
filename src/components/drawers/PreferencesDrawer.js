@@ -308,7 +308,7 @@ class ThemesTab extends Component {
         return h('div', {class: 'themes'},
             h('h3', {}, 'Custom Images'),
 
-            h('ul', {},
+            h('ul', {class: 'userpaths'},
                 h(PathInputItem, {
                     id: 'theme.custom_blackstones',
                     text: 'Black stone image:'
@@ -316,6 +316,10 @@ class ThemesTab extends Component {
                 h(PathInputItem, {
                     id: 'theme.custom_whitestones',
                     text: 'White stone image:'
+                }),
+                h(PathInputItem, {
+                    id: 'theme.custom_board',
+                    text: 'Board image:'
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_background',
@@ -327,10 +331,7 @@ class ThemesTab extends Component {
 
             h('p', {},
                 h('select',
-                    {
-                        id: 'theme.current',
-                        onChange: this.handleThemeChange
-                    },
+                    {onChange: this.handleThemeChange},
 
                     h('option', {value: '', selected: currentTheme == null}, 'Default'),
 
@@ -422,7 +423,7 @@ class EngineItem extends Component {
     render({name, path, args, commands}) {
         return h('li', {},
             h('h3', {},
-                h('a', 
+                h('a',
                     {
                         class: 'remove',
                         title: 'Remove',

@@ -106,6 +106,7 @@ let defaults = {
     'sound.enable': true,
     'theme.custom_whitestones': null,
     'theme.custom_blackstones': null,
+    'theme.custom_board': null,
     'theme.custom_background': null,
     'theme.current': null,
     'view.properties_height': 50,

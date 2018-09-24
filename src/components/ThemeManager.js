@@ -17,6 +17,7 @@ class ThemeManager extends Component {
         return state.currentThemeId !== this.state.currentThemeId
             || state.blackStonePath !== this.state.blackStonePath
             || state.whiteStonePath !== this.state.whiteStonePath
+            || state.boardPath !== this.state.boardPath
             || state.backgroundPath !== this.state.backgroundPath
     }
 
@@ -25,6 +26,7 @@ class ThemeManager extends Component {
             'theme.current': 'currentThemeId',
             'theme.custom_blackstones': 'blackStonePath',
             'theme.custom_whitestones': 'whiteStonePath',
+            'theme.custom_board': 'boardPath',
             'theme.custom_background': 'backgroundPath'
         }
 
@@ -38,7 +40,7 @@ class ThemeManager extends Component {
         }
     }
 
-    render(_, {currentThemeId, blackStonePath, whiteStonePath, backgroundPath}) {
+    render(_, {currentThemeId, blackStonePath, whiteStonePath, boardPath, backgroundPath}) {
         let currentTheme = setting.getThemes()[currentThemeId]
 
         return h('section', {},
@@ -53,12 +55,16 @@ class ThemeManager extends Component {
             // Custom images
 
             h('style', {},
-                blackStonePath != null && `.goban li.sign_1 .stone.stone img {
+                blackStonePath != null && `.shudan-vertex.shudan-sign_1 .shudan-inner {
                     background-image: url('${blackStonePath.replace(/\\/g, '/')}');
                 }`,
 
-                whiteStonePath != null && `.goban li.sign_-1 .stone.stone img {
+                whiteStonePath != null && `.shudan-vertex.shudan-sign_-1 .shudan-inner {
                     background-image: url('${whiteStonePath.replace(/\\/g, '/')}');
+                }`,
+
+                boardPath != null && `.shudan-goban {
+                    background-image: url('${boardPath.replace(/\\/g, '/')}');
                 }`,
 
                 backgroundPath != null && `main {
