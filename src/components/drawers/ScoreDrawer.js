@@ -19,7 +19,7 @@ class ScoreRow extends Component {
         return h('tr', {},
             h('th', {},
                 h('img', {
-                    src: `./node_modules/@sabaki/shudan-goban/css/stone_${sign}.png`,
+                    src: `./node_modules/@sabaki/shudan/css/stone_${sign}.png`,
                     alt: sign > 0 ? 'Black' : 'White',
                     width: 24,
                     height: 24

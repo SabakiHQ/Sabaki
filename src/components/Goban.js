@@ -1,6 +1,6 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const {BoundedGoban} = require('@sabaki/shudan-goban')
+const {BoundedGoban} = require('@sabaki/shudan')
 
 const helper = require('../modules/helper')
 
