@@ -328,7 +328,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
     board.markers = board.arrangement.map(row => row.map(_ => null))
 
-    if (vertex != null) {
+    if (vertex != null && board.hasVertex(vertex)) {
         let [x, y] = vertex
         board.markers[y][x] = {type: 'point'}
     }
@@ -340,6 +340,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         for (let value of node[prop]) {
             for (let [x, y] of sgf.parseCompressedVertices(value)) {
+                if (board.markers[y] == null) continue
                 board.markers[y][x] = {type: data[prop]}
             }
         }
@@ -352,6 +353,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let label = composed.slice(sep + 1)
             let [x, y] = sgf.parseVertex(point)
 
+            if (board.markers[y] == null) continue
             board.markers[y][x] = {type: 'label', label}
         }
     }
@@ -363,6 +365,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
             if (label == null) return
             let [x, y] = sgf.parseVertex(point)
 
+            if (board.markers[y] == null) continue
             board.markers[y][x] = {type: 'label', label}
         }
     }
