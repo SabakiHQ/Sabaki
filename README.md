@@ -44,6 +44,7 @@ This project is licensed under the [MIT license](https://github.com/SabakiHQ/Sab
 
 ## Related
 
+* [Shudan](https://github.com/SabakiHQ/Shudan) - A highly customizable, low-level Preact Goban component.
 * [deadstones](https://github.com/SabakiHQ/deadstones) - Simple Monte Carlo functions to determine dead stones.
 * [gtp](https://github.com/SabakiHQ/gtp) - A Node.js module for handling GTP engines.
 * [influence](https://github.com/SabakiHQ/influence) - Simple heuristics for estimating influence maps on Go positions.
