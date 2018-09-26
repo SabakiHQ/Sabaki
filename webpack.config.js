@@ -1,5 +1,4 @@
 const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = (env, argv) => ({
     entry: './src/components/App.js',
@@ -25,22 +24,13 @@ module.exports = (env, argv) => ({
         alias: {
             'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
             'preact': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
-            'prop-types': path.join(__dirname, 'src/modules/shims/prop-types')
+            'prop-types': path.join(__dirname, 'src/modules/shims/prop-types'),
+            './streams': path.join(__dirname, 'src/modules/shims/noop'),
+            './extend-node': path.join(__dirname, 'src/modules/shims/noop')
         }
     },
 
     externals: {
         'moment': 'null'
-    },
-
-    optimization: {
-        minimize: argv.mode === 'production',
-        minimizer: [
-            new UglifyJsPlugin({
-                uglifyOptions: {
-                    compress: false
-                }
-            })
-        ]
     }
 })
