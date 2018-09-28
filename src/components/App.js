@@ -2089,11 +2089,11 @@ class App extends Component {
         this.engineStates = [null, null]
     }
 
-    async handleCommandSent({controller, command, getResponse}) {
+    async handleCommandSent({controller, command, subscribe, getResponse}) {
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
 
-        let entry = {sign, name: controller.engine.name, command}
+        let entry = {sign, name: controller.engine.name, command, waiting: true}
         let maxLength = setting.get('console.max_history_count')
 
         this.setState(({consoleLog}) => {
@@ -2103,68 +2103,17 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        let response = await getResponse()
-        let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m) || ['', '{}']
-
-        response.content = response.content.replace(/^#sabaki(.*)$/gm, '#sabaki{…}')
-
-        this.setState(({consoleLog}) => {
+        subscribe(({response, end}) => this.setState(({consoleLog}) => {
             let index = consoleLog.indexOf(entry)
-            if (index < 0) return {}
+            if (index < 0) return
 
-            let newLog = [...consoleLog]
-            newLog[index] = Object.assign({response}, entry)
+            let newLog = consoleLog.slice()
+            Object.assign(entry, {response, waiting: !end})
 
             return {consoleLog: newLog}
-        })
+        }))
 
-        // Handle Sabaki JSON
-
-        let sabakiJson = JSON.parse(sabakiJsonMatch[1])
-
-        if (sabakiJson.variations != null) {
-            let subtrees = sgf.parse(sabakiJson.variations, {getId: helper.getId})
-
-            if (subtrees.length > 0) {
-                let {gameTrees} = this.state
-                let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
-                let gameIndex = gameTrees.indexOf(gametree.getRoot(tree))
-                let splitted = gametree.split(tree, index)
-
-                for (let subtree of subtrees) {
-                    subtree.parent = splitted[0]
-                }
-
-                splitted[0].subtrees.push(...subtrees)
-
-                let reduced = gametree.reduce(splitted[0])
-                gameTrees[gameIndex] = gametree.getRoot(reduced)
-
-                this.setState({gameTrees})
-                this.setCurrentTreePosition(...gametree.navigate(reduced, reduced.nodes.length - 1, 1))
-            }
-        }
-
-        if (sabakiJson.node != null) {
-            let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
-            let [tree, index] = this.state.treePosition
-            let node = tree.nodes[index]
-
-            for (let key in nodeInfo) {
-                if (key in node) node[key].push(...nodeInfo[key])
-                else node[key] = nodeInfo[key]
-            }
-
-            this.setCurrentTreePosition(tree, index)
-        }
-
-        if (sabakiJson.heatmap != null) {
-            this.setState({
-                heatMap: sabakiJson.heatmap.map(row =>
-                    row.map(value => ({strength: value}))
-                )
-            })
-        }
+        return await getResponse()
     }
 
     async syncEngines({passPlayer = null} = {}) {

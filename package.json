@@ -63,7 +63,7 @@
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
     "@sabaki/deadstones": "^2.1.0",
-    "@sabaki/gtp": "^1.3.1",
+    "@sabaki/gtp": "^1.3.2",
     "@sabaki/influence": "^1.1.4",
     "@sabaki/sgf": "^2.1.0",
     "@sabaki/shudan": "^1.0.0",

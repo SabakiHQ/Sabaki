@@ -5,7 +5,6 @@ const gtp = require('@sabaki/gtp')
 
 const ContentDisplay = require('./ContentDisplay')
 const helper = require('../modules/helper')
-const setting = remote.require('./setting')
 
 class ConsoleCommandEntry extends Component {
     shouldComponentUpdate({sign, name, command}) {
@@ -34,14 +33,9 @@ class ConsoleCommandEntry extends Component {
 }
 
 class ConsoleResponseEntry extends Component {
-    shouldComponentUpdate({response, waiting}) {
-        return waiting !== this.props.waiting
-            || response !== this.props.response
-    }
-
     render({response, waiting}) {
         return h('li', {class: classNames({response: true, waiting})},
-            !waiting && response != null
+            response != null
 
             ? h('pre', {},
                 !response.internal && [h('span', {
@@ -55,8 +49,10 @@ class ConsoleResponseEntry extends Component {
                 h(ContentDisplay, {
                     tag: 'span',
                     class: response.internal ? 'internal' : '',
-                    content: response.content
-                })
+                    content: response.content.replace(/(^info move.*\s*)+/gm, 'info move (…)\n')
+                }),
+
+                waiting && h('div', {class: 'internal'}, '…')
             )
 
             : h('pre', {}, h('span', {class: 'internal'}, '…'))
@@ -190,7 +186,7 @@ class GtpConsole extends Component {
                     class: 'log'
                 },
 
-                consoleLog.map(({sign, name, command, response}, i) => [
+                consoleLog.map(({sign, name, command, response, waiting}, i) => [
                     command ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
                     : !command && (
                         i == 0
@@ -199,7 +195,7 @@ class GtpConsole extends Component {
                     ) ? h(ConsoleCommandEntry, {sign, name, command})
                     : null,
 
-                    h(ConsoleResponseEntry, {response, waiting: response == null})
+                    h(ConsoleResponseEntry, {response, waiting: response == null || waiting})
                 ])
             ),
 
