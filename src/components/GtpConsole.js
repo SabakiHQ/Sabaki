@@ -133,6 +133,12 @@ class GtpConsole extends Component {
                     })
                 }
             }
+
+            this.setState({}, () => setTimeout(() => {
+                if (this.inputAutocompleteElement.scrollLeft !== this.inputElement.scrollLeft) {
+                    this.inputAutocompleteElement.scrollLeft = this.inputElement.scrollLeft
+                }
+            }, 0))
         }
     }
 
