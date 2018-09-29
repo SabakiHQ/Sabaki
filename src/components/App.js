@@ -2089,7 +2089,7 @@ class App extends Component {
         this.engineStates = [null, null]
     }
 
-    async handleCommandSent({controller, command, subscribe, getResponse}) {
+    handleCommandSent({controller, command, subscribe, getResponse}) {
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
 
@@ -2103,17 +2103,26 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        subscribe(({response, end}) => this.setState(({consoleLog}) => {
+        let updateEntry = update => this.setState(({consoleLog}) => {
             let index = consoleLog.indexOf(entry)
             if (index < 0) return
 
             let newLog = consoleLog.slice()
-            Object.assign(entry, {response, waiting: !end})
+            Object.assign(entry, update)
 
             return {consoleLog: newLog}
+        })
+
+        subscribe(({response, end}) => updateEntry({
+            response,
+            waiting: !end
         }))
 
-        return await getResponse()
+        getResponse()
+        .catch(_ => updateEntry({
+            response: {internal: true, content: 'connection failed'},
+            waiting: false
+        }))
     }
 
     async syncEngines({passPlayer = null} = {}) {
