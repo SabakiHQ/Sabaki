@@ -126,7 +126,11 @@ class GtpConsole extends Component {
                 let autocompleteText = this.getAutocompleteText()
 
                 if (autocompleteText !== '') {
-                    this.setState({commandInputText: autocompleteText})
+                    this.setState({commandInputText: autocompleteText}, () => {
+                        this.inputElement.scrollLeft = this.inputElement.scrollWidth
+                        this.inputElement.selectionStart = autocompleteText.length
+                        this.inputElement.selectionEnd = autocompleteText.length
+                    })
                 }
             }
         }
@@ -172,7 +176,7 @@ class GtpConsole extends Component {
         return ''
     }
 
-    render({consoleLog, attachedEngines, engineCommands}, {engineIndex, commandInputText}) {
+    render({consoleLog, attachedEngines}, {engineIndex, commandInputText}) {
         let selectedEngine = attachedEngines[engineIndex]
         let selectWidth = Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) * 10 + 15
         let hasEngines = attachedEngines.some(x => x != null)
@@ -229,6 +233,7 @@ class GtpConsole extends Component {
                 }),
 
                 h('input', {
+                    ref: el => this.inputAutocompleteElement = el,
                     class: 'autocomplete',
                     disabled: !hasEngines,
                     type: 'text',
