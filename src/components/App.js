@@ -2113,10 +2113,49 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        subscribe(({response, end}) => updateEntry({
-            response,
-            waiting: !end
-        }))
+        subscribe(({line, response, end}) => {
+            updateEntry({
+                response,
+                waiting: !end
+            })
+
+            // Show analysis heatmap
+
+            if (line.slice(0, 5) === 'info ') {
+                let board = gametree.getBoard(...this.state.treePosition)
+                let analysis = line
+                    .split(/\s*info\s+/).slice(1)
+                    .map(x => x.split(/\s+/))
+                    .map(x => [x.slice(0, 8), x.slice(9)])
+                    .map(([[, coord, , visits, , win, , order], variation]) => ({
+                        order,
+                        vertex: board.coord2vertex(coord),
+                        visits: +visits,
+                        win: +win / 100,
+                        variation
+                    }))
+                    .sort((x, y) => x.order - y.order)
+
+                let maxVisits = analysis.reduce((max, {visits}) => Math.max(max, visits), 0)
+                let heatMap = board.arrangement.map(row => row.map(_ => null))
+
+                for (let {vertex: [x, y], visits, win, variation} of analysis) {
+                    let strength = Math.round(visits * 8 / maxVisits) + 1
+                    win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
+
+                    heatMap[y][x] = {
+                        strength,
+                        text: visits < 10 ? '' : [
+                            win + (Math.floor(win) === win ? '%' : ''),
+                            visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
+                        ].join('\n'),
+                        variation
+                    }
+                }
+
+                this.setState({heatMap})
+            }
+        })
 
         getResponse()
         .catch(_ => updateEntry({

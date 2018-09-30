@@ -1293,3 +1293,7 @@ header, #bar .bar {
         opacity: 1;
         transition: opacity .1s;
 }
+
+.shudan-vertex .shudan-heatlabel::first-line {
+    font-weight: bold;
+}
