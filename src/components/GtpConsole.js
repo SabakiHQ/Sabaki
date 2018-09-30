@@ -90,6 +90,7 @@ class ConsoleInput extends Component {
                     command: gtp.Command.fromString(commandInputText)
                 })
 
+                this.inputPointer = null
                 this.setState({commandInputText: ''})
             } else if ([38, 40].includes(evt.keyCode)) {
                 // Up and down
@@ -114,11 +115,7 @@ class ConsoleInput extends Component {
                     if (command != null) {
                         let text = gtp.Command.toString(command)
 
-                        this.setState({commandInputText: text}, () => {
-                            this.inputElement.scrollLeft = this.inputElement.scrollWidth
-                            this.inputElement.selectionStart = text.length
-                            this.inputElement.selectionEnd = text.length
-                        })
+                        this.setState({commandInputText: text})
 
                         break
                     }
@@ -130,19 +127,23 @@ class ConsoleInput extends Component {
                 let autocompleteText = this.getAutocompleteText()
 
                 if (autocompleteText !== '') {
-                    this.setState({commandInputText: autocompleteText}, () => {
-                        this.inputElement.scrollLeft = this.inputElement.scrollWidth
-                        this.inputElement.selectionStart = autocompleteText.length
-                        this.inputElement.selectionEnd = autocompleteText.length
-                    })
+                    this.setState({commandInputText: autocompleteText})
                 }
             }
 
-            this.setState({}, () => setTimeout(() => {
-                if (this.inputAutocompleteElement.scrollLeft !== this.inputElement.scrollLeft) {
-                    this.inputAutocompleteElement.scrollLeft = this.inputElement.scrollLeft
+            this.setState({}, () => {
+                if ([13, 38, 40, 9].includes(evt.keyCode)) {
+                    this.inputElement.scrollLeft = this.inputElement.scrollWidth
+                    this.inputElement.selectionStart = this.inputElement.value.length
+                    this.inputElement.selectionEnd = this.inputElement.value.length
                 }
-            }, 0))
+
+                setTimeout(() => {
+                    if (this.inputAutocompleteElement.scrollLeft !== this.inputElement.scrollLeft) {
+                        this.inputAutocompleteElement.scrollLeft = this.inputElement.scrollLeft
+                    }
+                }, 0)
+            })
         }
     }
 
