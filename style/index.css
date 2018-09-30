@@ -1294,6 +1294,12 @@ header, #bar .bar {
         transition: opacity .1s;
 }
 
+/* Override Shudan styles */
+
 .shudan-vertex .shudan-heatlabel::first-line {
     font-weight: bold;
+}
+
+.shudan-vertex .shudan-heat {
+    transition: none;
 }
