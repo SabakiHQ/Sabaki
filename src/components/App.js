@@ -2095,7 +2095,6 @@ class App extends Component {
 
         let entry = {sign, name: controller.engine.name, command, waiting: true}
         let maxLength = setting.get('console.max_history_count')
-        let board = gametree.getBoard(...this.state.treePosition)
 
         this.setState(({consoleLog}) => {
             let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
@@ -2118,16 +2117,19 @@ class App extends Component {
             // Parse analysis info
 
             if (line.slice(0, 5) === 'info ') {
+                let sign = this.getPlayer(...this.state.treePosition)
+                let board = gametree.getBoard(...this.state.treePosition)
                 let analysis = line
                     .split(/\s*info\s+/).slice(1)
                     .map(x => x.split(/\s+/))
-                    .map(x => [x.slice(0, 8), x.slice(9)])
+                    .map(x => [x.slice(0, 8), x.slice(9).filter(x => x.length >= 2)])
                     .map(([[, coord, , visits, , win, , order], variation]) => ({
                         order,
+                        sign,
                         vertex: board.coord2vertex(coord),
                         visits: +visits,
                         win: +win / 100,
-                        variation
+                        variation: variation.map(x => board.coord2vertex(x))
                     }))
                     .sort((x, y) => x.order - y.order)
 
