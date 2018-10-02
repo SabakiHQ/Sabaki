@@ -210,6 +210,8 @@ class GtpConsole extends Component {
     constructor() {
         super()
 
+        this.scrollToBottom = true
+
         this.state = {
             engineIndex: -1
         }
@@ -231,8 +233,14 @@ class GtpConsole extends Component {
         this.inputPointer = consoleLog.length
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.consoleLog !== this.props.consoleLog) {
+    componentWillUpdate() {
+        let {scrollTop, scrollHeight, offsetHeight} = this.scrollElement
+
+        this.scrollToBottom = scrollTop >= scrollHeight - offsetHeight
+    }
+
+    componentDidUpdate() {
+        if (this.scrollToBottom) {
             this.scrollElement.scrollTop = this.scrollElement.scrollHeight
         }
     }
