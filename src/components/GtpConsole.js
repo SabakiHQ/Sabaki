@@ -1,4 +1,3 @@
-const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const gtp = require('@sabaki/gtp')
@@ -33,6 +32,11 @@ class ConsoleCommandEntry extends Component {
 }
 
 class ConsoleResponseEntry extends Component {
+    shouldComponentUpdate({response, waiting}) {
+        return waiting !== this.props.waiting
+            || response !== this.props.response
+    }
+
     render({response, waiting}) {
         return h('li', {class: classNames({response: true, waiting})},
             response != null
@@ -245,18 +249,6 @@ class GtpConsole extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        for (let key in nextProps) {
-            if (nextProps[key] !== this.props[key]) return true
-        }
-
-        for (let key in nextState) {
-            if (nextState[key] !== this.state[key]) return true
-        }
-
-        return false
-    }
-
     render({consoleLog, attachedEngines, engineCommands}, {engineIndex}) {
         return h('section', {id: 'console'},
             h('ol',
@@ -268,7 +260,7 @@ class GtpConsole extends Component {
                 consoleLog.map(({sign, name, command, response, waiting}, i) => [
                     command ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
                     : !command && (
-                        i == 0
+                        i === 0
                         || consoleLog[i - 1].sign !== sign
                         || consoleLog[i - 1].name !== name
                     ) ? h(ConsoleCommandEntry, {sign, name, command})

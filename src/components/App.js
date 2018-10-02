@@ -2103,19 +2103,14 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        let updateEntry = update => this.setState(({consoleLog}) => {
-            let index = consoleLog.indexOf(entry)
-            if (index < 0) return
-
-            let newLog = consoleLog.slice()
+        let updateEntry = update => {
             Object.assign(entry, update)
-
-            return {consoleLog: newLog}
-        })
+            this.setState(({consoleLog}) => ({consoleLog}))
+        }
 
         subscribe(({line, response, end}) => {
             updateEntry({
-                response,
+                response: Object.assign({}, response),
                 waiting: !end
             })
 
