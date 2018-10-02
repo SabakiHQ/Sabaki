@@ -209,6 +209,76 @@ exports.reduce = function(tree) {
     return tree
 }
 
+exports.mergeInsert = function(tree, index, nodes) {
+    if (nodes.length === 0) return [[tree, index]]
+
+    if (nodes.length === 1) {
+        let [node] = nodes
+
+        if (index + 1 < tree.nodes.length) {
+            let nextNode = tree.nodes[index + 1]
+
+            if (
+                'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
+                || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
+            ) {
+                // Merge
+
+                Object.assign(nextNode, node)
+                return [[tree, index], [tree, index + 1]]
+            } else {
+                // Create new subtree in the middle
+
+                let [first, ] = exports.split(tree, index)
+                let subtree = Object.assign(exports.new(), {
+                    nodes: [node],
+                    parent: first
+                })
+
+                first.subtrees.push(subtree)
+                return [[first, index], [subtree, 0]]
+            }
+        } else {
+            if (tree.subtrees.length === 0) {
+                // Append node
+
+                tree.nodes.push(node)
+                return [[tree, index], [tree, index + 1]]
+            }
+
+            let subtree = tree.subtrees.find(subtree => {
+                if (subtree.nodes.length === 0) return false
+
+                let nextNode = subtree.nodes[0]
+                return 'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
+                    || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
+            })
+
+            if (subtree == null) {
+                // Create new subtree
+
+                subtree = Object.assign(exports.new(), {
+                    nodes: [node],
+                    parent: tree
+                })
+
+                tree.subtrees.push(subtree)
+            } else {
+                // Merge
+
+                Object.assign(subtree.nodes[0], node)
+            }
+
+            return [[tree, index], [subtree, 0]]
+        }
+    }
+
+    let [, position] = exports.insert(tree, index, [nodes[0]])
+    let otherPositions = exports.insert(...position, nodes.slice(1))
+
+    return [exports.navigate(...otherPositions[0], -1), ...otherPositions]
+}
+
 exports.onCurrentTrack = function(tree) {
     return !tree.parent
     || tree.parent.subtrees[tree.parent.current] == tree
