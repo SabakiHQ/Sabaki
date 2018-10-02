@@ -76,7 +76,7 @@ class MainView extends Component {
         deadStones,
         scoringMethod,
         scoreBoard,
-        heatMap,
+        analysis,
         areaMap,
         blockedGuesses,
 
@@ -138,7 +138,7 @@ class MainView extends Component {
                     board,
                     highlightVertices: findVertex && mode === 'find' ? [findVertex]
                         : highlightVertices,
-                    heatMap,
+                    analysis,
                     paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 

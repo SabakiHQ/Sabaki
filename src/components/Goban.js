@@ -88,7 +88,7 @@ class Goban extends Component {
     render({
         board,
         paintMap,
-        heatMap,
+        analysis,
         highlightVertices = [],
         dimmedStones = [],
 
@@ -155,6 +155,28 @@ class Goban extends Component {
                     let {sign, type} = board.childrenInfo[v]
 
                     ghostStoneMap[y][x] = {sign, type: showMoveColorization ? type : null}
+                }
+            }
+        }
+
+        // Draw heatmap
+
+        let heatMap = null
+
+        if (analysis != null) {
+            let maxVisits = Math.max(...analysis.map(x => x.visits))
+            heatMap = board.arrangement.map(row => row.map(_ => null))
+
+            for (let {vertex: [x, y], visits, win, variation} of analysis) {
+                let strength = Math.round(visits * 8 / maxVisits) + 1
+                win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
+
+                heatMap[y][x] = {
+                    strength,
+                    text: visits < 10 ? '' : [
+                        win + (Math.floor(win) === win ? '%' : ''),
+                        visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
+                    ].join('\n')
                 }
             }
         }
