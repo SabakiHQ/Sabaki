@@ -1219,6 +1219,16 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
+        if (this.state.analysis != null) {
+            // Stop analysis
+
+            for (let controller of this.attachedEngineControllers) {
+                if (controller == null || controller.process == null) continue
+
+                controller.process.stdin.write('\n')
+            }
+        }
+
         this.setState({
             analysis: null,
             blockedGuesses: [],

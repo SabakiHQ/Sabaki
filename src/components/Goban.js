@@ -94,7 +94,13 @@ class Goban extends Component {
         if (variation == null) return
 
         clearInterval(this.variationIntervalId)
+
         this.variationIntervalId = setInterval(() => {
+            if (this.props.analysis == null) {
+                clearInterval(this.variationIntervalId)
+                return
+            }
+
             this.setState(({variationIndex}) => ({
                 variation,
                 variationSign: sign,
