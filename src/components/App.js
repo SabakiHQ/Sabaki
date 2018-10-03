@@ -2100,17 +2100,21 @@ class App extends Component {
                 let board = gametree.getBoard(...this.state.treePosition)
                 let analysis = line
                     .split(/\s*info\s+/).slice(1)
-                    .map(x => x.split(/\s+/))
-                    .map(x => [x.slice(0, 8), x.slice(9).filter(x => x.length >= 2)])
-                    .map(([[, coord, , visits, , win, , order], variation]) => ({
-                        order,
+                    .map(x => x.trim())
+                    .map(x => {
+                        let match = x.match(/[A-Za-z]\d+(\s+[A-Za-z]\d+)*$/)
+                        if (match == null) return [x, []]
+
+                        return [x.slice(0, match.index), match[0].split(/\s+/)]
+                    })
+                    .map(([x, y]) => [x.trim().split(/\s+/), y.filter(x => x.length >= 2)])
+                    .map(([[, coord, , visits, , win], variation]) => ({
                         sign,
                         vertex: board.coord2vertex(coord),
                         visits: +visits,
                         win: +win / 100,
                         variation: variation.map(x => board.coord2vertex(x))
                     }))
-                    .sort((x, y) => x.order - y.order)
 
                 this.setState({analysis})
             }
