@@ -379,6 +379,11 @@ let data = [
                 click: () => sabaki.syncEngines()
             },
             {
+                label: 'Analy&ze',
+                accelerator: 'F4',
+                click: () => sabaki.startAnalysis()
+            },
+            {
                 label: 'Start &Playing',
                 accelerator: 'F5',
                 click: () => sabaki.generateMove({followUp: true})

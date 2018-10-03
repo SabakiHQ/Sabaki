@@ -2168,6 +2168,38 @@ class App extends Component {
         this.setBusy(false)
     }
 
+    async startAnalysis() {
+        let {currentPlayer} = this.inferredState
+        let color = currentPlayer > 0 ? 'B' : 'W'
+        let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
+
+        let controllerIndex = controllerIndices.find(i =>
+            this.attachedEngineControllers[i] != null
+            && this.state.engineCommands[i] != null
+            && (this.state.engineCommands[i].includes('lz-analyze')
+            || this.state.engineCommands[i].includes('sabaki-analyze'))
+        )
+
+        let error = false
+
+        if (controllerIndex != null) {
+            let controller = this.attachedEngineControllers[controllerIndex]
+            let commands = this.state.engineCommands[controllerIndex]
+            let name = commands.includes('lz-analyze') ? 'lz-analyze' : 'sabaki-analyze'
+
+            await this.syncEngines()
+
+            let response = await controller.sendCommand({name, args: [color, '100']})
+            error = response.error
+        } else {
+            error = true
+        }
+
+        if (error) {
+            dialog.showMessageBox("You haven't attached any engines that supports analysis.", 'warning')
+        }
+    }
+
     async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
         this.closeDrawer()
 
