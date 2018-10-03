@@ -2071,6 +2071,10 @@ class App extends Component {
         }
 
         this.engineStates = [null, null]
+
+        this.stopGeneratingMoves()
+        this.hideInfoOverlay()
+        this.setBusy(false)
     }
 
     handleCommandSent({controller, command, subscribe, getResponse}) {

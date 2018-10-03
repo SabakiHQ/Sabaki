@@ -369,6 +369,7 @@ let data = [
             },
             {
                 label: '&Suspend',
+                enabled: true,
                 click: () => sabaki.suspendEngines()
             },
             {type: 'separator'},
