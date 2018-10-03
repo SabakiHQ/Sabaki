@@ -38,6 +38,7 @@ let defaults = {
     'autoscroll.diff': 10,
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
+    'board.variation_replay_interval': 400,
     'cleanmarkup.annotations': false,
     'cleanmarkup.arrow': true,
     'cleanmarkup.circle': true,

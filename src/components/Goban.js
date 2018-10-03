@@ -1,8 +1,10 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {BoundedGoban} = require('@sabaki/shudan')
+const {remote} = require('electron')
 
 const helper = require('../modules/helper')
+const setting = remote.require('./setting')
 
 class Goban extends Component {
     constructor(props) {
@@ -106,7 +108,7 @@ class Goban extends Component {
                 variationSign: sign,
                 variationIndex: variationIndex + 1
             }))
-        }, 500)
+        }, setting.get('board.variation_replay_interval'))
     }
 
     handleVertexMouseLeave(evt, vertex) {
