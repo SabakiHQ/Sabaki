@@ -191,7 +191,16 @@ exports.loadThemes = function() {
 }
 
 exports.save = function() {
-    fs.writeFileSync(exports.settingsPath, JSON.stringify(settings, null, '  '))
+    let keys = Object.keys(settings).sort()
+
+    fs.writeFileSync(
+        exports.settingsPath,
+        JSON.stringify(
+            keys.reduce((acc, key) => (acc[key] = settings[key], acc), {}),
+            null, '  '
+        )
+    )
+
     return exports
 }
 
