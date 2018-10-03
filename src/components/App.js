@@ -695,7 +695,31 @@ class App extends Component {
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
                 ) {
+                    // Show annotation context menu
+
                     this.openCommentMenu(tree, index, {x, y})
+                } else if (this.state.analysis != null) {
+                    // Show analysis context menu
+
+                    let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
+
+                    if (data != null) {
+                        helper.popupMenu([{
+                            label: '&Add Variation',
+                            click: () => {
+                                let [color, opponent] = data.sign > 0 ? ['B', 'W'] : ['W', 'B']
+
+                                let [position, ] = gametree.mergeInsert(
+                                    tree, index,
+                                    data.variation.map((vertex, i) => ({
+                                        [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
+                                    }))
+                                )
+
+                                this.setCurrentTreePosition(...position)
+                            }
+                        }], x, y)
+                    }
                 }
             }
         } else if (this.state.mode === 'edit') {
@@ -817,6 +841,7 @@ class App extends Component {
         }
 
         let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
         let board = gametree.getBoard(tree, index)
 
         if (typeof vertex == 'string') {
@@ -830,7 +855,7 @@ class App extends Component {
         if (!player) player = this.inferredState.currentPlayer
         let color = player > 0 ? 'B' : 'W'
         let capture = false, suicide = false, ko = false
-        let createNode = true
+        let newNode = {[color]: [sgf.stringifyVertex(vertex)]}
 
         if (!pass) {
             // Check for ko
@@ -877,65 +902,10 @@ class App extends Component {
 
         // Update data
 
-        let nextTreePosition
-
-        if (tree.subtrees.length === 0 && tree.nodes.length - 1 === index) {
-            // Append move
-
-            let node = {}
-            node[color] = [sgf.stringifyVertex(vertex)]
-            tree.nodes.push(node)
-
-            nextTreePosition = [tree, tree.nodes.length - 1]
-        } else {
-            if (index !== tree.nodes.length - 1) {
-                // Search for next move
-
-                let nextNode = tree.nodes[index + 1]
-                let moveExists = color in nextNode
-                    && helper.vertexEquals(sgf.parseVertex(nextNode[color][0]), vertex)
-
-                if (moveExists) {
-                    nextTreePosition = [tree, index + 1]
-                    createNode = false
-                }
-            } else {
-                // Search for variation
-
-                let variations = tree.subtrees.filter(subtree => {
-                    return subtree.nodes.length > 0
-                        && color in subtree.nodes[0]
-                        && helper.vertexEquals(sgf.parseVertex(subtree.nodes[0][color][0]), vertex)
-                })
-
-                if (variations.length > 0) {
-                    nextTreePosition = [variations[0], 0]
-                    createNode = false
-                }
-            }
-
-            if (createNode) {
-                // Create variation
-
-                let updateRoot = tree.parent == null
-                let splitted = gametree.split(tree, index)
-                let newTree = gametree.new()
-                let node = {[color]: [sgf.stringifyVertex(vertex)]}
-
-                newTree.nodes = [node]
-                newTree.parent = splitted[0]
-
-                splitted[0].subtrees.push(newTree)
-                splitted[0].current = splitted[0].subtrees.length - 1
-
-                if (updateRoot) {
-                    let {gameTrees} = this.state
-                    gameTrees[gameTrees.indexOf(tree)] = splitted[0]
-                }
-
-                nextTreePosition = [newTree, 0]
-            }
-        }
+        let oldTreeLength = tree.nodes.length
+        let oldSubtreesCount = tree.subtrees.length
+        let [, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -962,9 +932,8 @@ class App extends Component {
         let enterScoring = false
 
         if (pass && createNode && prev) {
-            let prevNode = tree.nodes[index]
             let prevColor = color === 'B' ? 'W' : 'B'
-            let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
+            let prevPass = prevColor in node && node[prevColor][0] === ''
 
             if (prevPass) {
                 enterScoring = true
