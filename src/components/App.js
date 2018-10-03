@@ -1968,7 +1968,7 @@ class App extends Component {
                 let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
 
                 let [position, ] = gametree.mergeInsert(
-                    tree, index,
+                    ...this.state.treePosition,
                     variation.map((vertex, i) => ({
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
                     }))
