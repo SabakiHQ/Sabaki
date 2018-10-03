@@ -222,11 +222,11 @@ class Goban extends Component {
         let heatMap = null
 
         if (drawHeatMap && analysis != null) {
-            let maxVisits = Math.max(...analysis.map(x => x.visits))
+            let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
             heatMap = board.arrangement.map(row => row.map(_ => null))
 
-            for (let {vertex: [x, y], visits, win, variation} of analysis) {
-                let strength = Math.round(visits * 8 / maxVisits) + 1
+            for (let {vertex: [x, y], visits, win} of analysis) {
+                let strength = Math.round(visits * win * 8 / maxVisitsWin) + 1
                 win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
 
                 heatMap[y][x] = {
