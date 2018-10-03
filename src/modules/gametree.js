@@ -273,8 +273,8 @@ exports.mergeInsert = function(tree, index, nodes) {
         }
     }
 
-    let [, position] = exports.insert(tree, index, [nodes[0]])
-    let otherPositions = exports.insert(...position, nodes.slice(1))
+    let [, position] = exports.mergeInsert(tree, index, [nodes[0]])
+    let otherPositions = exports.mergeInsert(...position, nodes.slice(1))
 
     return [exports.navigate(...otherPositions[0], -1), ...otherPositions]
 }
