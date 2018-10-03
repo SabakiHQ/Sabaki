@@ -704,21 +704,7 @@ class App extends Component {
                     let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
 
                     if (data != null) {
-                        helper.popupMenu([{
-                            label: '&Add Variation',
-                            click: () => {
-                                let [color, opponent] = data.sign > 0 ? ['B', 'W'] : ['W', 'B']
-
-                                let [position, ] = gametree.mergeInsert(
-                                    tree, index,
-                                    data.variation.map((vertex, i) => ({
-                                        [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
-                                    }))
-                                )
-
-                                this.setCurrentTreePosition(...position, {stopAnalysis: false})
-                            }
-                        }], x, y)
+                        this.openVariationMenu(data.sign, data.variation, {x, y})
                     }
                 }
             }
@@ -1845,7 +1831,7 @@ class App extends Component {
 
     // Menus
 
-    openNodeMenu(tree, index, options = {}) {
+    openNodeMenu(tree, index, {x, y} = {}) {
         if (this.state.mode === 'scoring') return
 
         let template = [
@@ -1889,10 +1875,10 @@ class App extends Component {
             }
         ]
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
     }
 
-    openCommentMenu(tree, index, options = {}) {
+    openCommentMenu(tree, index, {x, y} = {}) {
         let node = tree.nodes[index]
 
         let template = [
@@ -1972,7 +1958,25 @@ class App extends Component {
             item.click = () => this.setComment(tree, index, item.data)
         }
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
+    }
+
+    openVariationMenu(sign, variation, {x, y} = {}) {
+        helper.popupMenu([{
+            label: '&Add Variation',
+            click: () => {
+                let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
+
+                let [position, ] = gametree.mergeInsert(
+                    tree, index,
+                    variation.map((vertex, i) => ({
+                        [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
+                    }))
+                )
+
+                this.setCurrentTreePosition(...position, {stopAnalysis: false})
+            }
+        }], x, y)
     }
 
     // GTP Engines
