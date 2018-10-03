@@ -716,7 +716,7 @@ class App extends Component {
                                     }))
                                 )
 
-                                this.setCurrentTreePosition(...position)
+                                this.setCurrentTreePosition(...position, {stopAnalysis: false})
                             }
                         }], x, y)
                     }
@@ -1204,7 +1204,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true, stopAnalysis = true} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
@@ -1219,7 +1219,7 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
-        if (this.state.analysis != null) {
+        if (stopAnalysis && this.state.analysis != null) {
             // Stop analysis
 
             for (let controller of this.attachedEngineControllers) {
@@ -1227,10 +1227,11 @@ class App extends Component {
 
                 controller.process.stdin.write('\n')
             }
+
+            this.setState({analysis: null})
         }
 
         this.setState({
-            analysis: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
