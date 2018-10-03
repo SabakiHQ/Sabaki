@@ -149,6 +149,13 @@ exports.load = function() {
         settings[key] = defaults[key]
     }
 
+    // Delete invalid settings
+
+    for (let key in settings) {
+        if (key in defaults) continue
+        delete settings[key]
+    }
+
     // Overwrite settings
 
     for (let overwriteKey in settings) {
