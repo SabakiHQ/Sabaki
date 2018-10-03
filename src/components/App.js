@@ -2144,19 +2144,19 @@ class App extends Component {
         let {treePosition} = this.state
 
         try {
-            for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-                if (this.attachedEngineControllers[i] == null) continue
+            this.engineStates = await Promise.all(this.attachedEngineControllers.map((controller, i) => {
+                if (controller == null) return this.engineStates[i]
 
-                let player = i === 0 ? 1 : -1
-                let controller = this.attachedEngineControllers[i]
-                let engineState = this.engineStates[i]
+                return enginesyncer.sync(controller, this.engineStates[i], treePosition)
+            }))
 
-                this.engineStates[i] = await enginesyncer.sync(controller, engineState, treePosition)
+            // Send pass if required
 
-                // Send pass if required
+            if (passPlayer != null) {
+                let color = passPlayer > 0 ? 'B' : 'W'
+                let controller = this.attachedEngineControllers[passPlayer > 0 ? 0 : 1]
 
-                if (passPlayer != null && passPlayer !== player) {
-                    let color = passPlayer > 0 ? 'B' : 'W'
+                if (controller != null) {
                     controller.sendCommand({name: 'play', args: [color, 'pass']})
                 }
             }
