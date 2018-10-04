@@ -1205,16 +1205,8 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
-        if (stopAnalysis && this.state.analysis != null) {
-            // Stop analysis
-
-            for (let controller of this.attachedEngineControllers) {
-                if (controller == null || controller.process == null) continue
-
-                controller.process.stdin.write('\n')
-            }
-
-            this.setState({analysis: null})
+        if (stopAnalysis) {
+            this.stopAnalysis()
         }
 
         this.setState({
@@ -2200,6 +2192,18 @@ class App extends Component {
         if (error) {
             dialog.showMessageBox("You haven't attached any engines that supports analysis.", 'warning')
         }
+    }
+
+    stopAnalysis() {
+        if (this.state.analyis != null) return
+
+        for (let controller of this.attachedEngineControllers) {
+            if (controller == null || controller.process == null) continue
+
+            controller.process.stdin.write('\n')
+        }
+
+        this.setState({analysis: null})
     }
 
     async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
