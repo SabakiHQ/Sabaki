@@ -90,6 +90,7 @@ let defaults = {
     'graph.node_inactive_color': '#777',
     'graph.node_inactive_comment_color': '#365980',
     'graph.node_size': 4,
+    'gtp.auto_genmove': true,
     'gtp.engine_quit_timeout': 3000,
     'gtp.move_delay': 300,
     'gtp.start_game_after_attach': true,

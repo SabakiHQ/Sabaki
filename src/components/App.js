@@ -682,7 +682,8 @@ class App extends Component {
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
-                    this.makeMove(vertex, {sendToEngine: true})
+                    let autoGenmove = setting.get('gtp.auto_genmove')
+                    this.makeMove(vertex, {sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
