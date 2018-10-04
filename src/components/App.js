@@ -1846,11 +1846,11 @@ class App extends Component {
                 click: () => this.makeMainVariation(tree, index)
             },
             {
-                label: "Shift &Left",
+                label: 'Shift &Left',
                 click: () => this.shiftVariation(tree, index, -1)
             },
             {
-                label: "Shift Ri&ght",
+                label: 'Shift Ri&ght',
                 click: () => this.shiftVariation(tree, index, 1)
             },
             {type: 'separator'},
@@ -2109,13 +2109,25 @@ class App extends Component {
 
                         return [x.slice(0, match.index), match[0].split(/\s+/)]
                     })
-                    .map(([x, y]) => [x.trim().split(/\s+/), y.filter(x => x.length >= 2)])
-                    .map(([[, coord, , visits, , win], variation]) => ({
+                    .map(([x, y]) => [
+                        x.trim().split(/\s+/).slice(0, -1),
+                        y.filter(x => x.length >= 2)
+                    ])
+                    .map(([tokens, pv]) => {
+                        let keys = tokens.filter((_, i) => i % 2 === 0)
+                        let values = tokens.filter((_, i) => i % 2 === 1)
+
+                        keys.push('pv')
+                        values.push(pv)
+
+                        return keys.reduce((acc, x, i) => (acc[x] = values[i], acc), {})
+                    })
+                    .map(({move, visits, winrate, pv}) => ({
                         sign,
-                        vertex: board.coord2vertex(coord),
+                        vertex: board.coord2vertex(move),
                         visits: +visits,
-                        win: +win / 100,
-                        variation: variation.map(x => board.coord2vertex(x))
+                        win: +winrate / 100,
+                        variation: pv.map(x => board.coord2vertex(x))
                     }))
 
                 this.setState({analysis})
