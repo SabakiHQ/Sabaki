@@ -136,9 +136,10 @@ class MainView extends Component {
 
                 h(Goban, {
                     board,
-                    highlightVertices: findVertex && mode === 'find' ? [findVertex]
+                    highlightVertices: findVertex && mode === 'find'
+                        ? [findVertex]
                         : highlightVertices,
-                    analysis,
+                    analysis: mode === 'play' ? analysis : null,
                     paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 

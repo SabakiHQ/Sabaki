@@ -2174,6 +2174,9 @@ class App extends Component {
     }
 
     async startAnalysis() {
+        this.closeDrawer()
+        this.setMode('play')
+
         let {currentPlayer} = this.inferredState
         let color = currentPlayer > 0 ? 'B' : 'W'
         let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
