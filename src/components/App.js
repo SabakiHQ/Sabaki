@@ -2189,7 +2189,9 @@ class App extends Component {
 
             await this.syncEngines()
 
-            let response = await controller.sendCommand({name, args: [color, '100']})
+            let interval = setting.get('board.analysis_interval').toString()
+            let response = await controller.sendCommand({name, args: [color, interval]})
+
             error = response.error
         } else {
             error = true
