@@ -2206,7 +2206,7 @@ class App extends Component {
         }
 
         if (error) {
-            dialog.showMessageBox("You haven't attached any engines that supports analysis.", 'warning')
+            dialog.showMessageBox('You haven’t attached any engines that supports analysis.', 'warning')
         }
     }
 
