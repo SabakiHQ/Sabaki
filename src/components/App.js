@@ -66,7 +66,7 @@ class App extends Component {
             // Goban
 
             highlightVertices: [],
-            heatMap: null,
+            analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
             showNextMoves: null,
@@ -682,7 +682,8 @@ class App extends Component {
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
-                    this.makeMove(vertex, {sendToEngine: true})
+                    let autoGenmove = setting.get('gtp.auto_genmove')
+                    this.makeMove(vertex, {sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
@@ -695,7 +696,17 @@ class App extends Component {
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
                 ) {
+                    // Show annotation context menu
+
                     this.openCommentMenu(tree, index, {x, y})
+                } else if (this.state.analysis != null) {
+                    // Show analysis context menu
+
+                    let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
+
+                    if (data != null) {
+                        this.openVariationMenu(data.sign, data.variation, {x, y})
+                    }
                 }
             }
         } else if (this.state.mode === 'edit') {
@@ -817,6 +828,7 @@ class App extends Component {
         }
 
         let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
         let board = gametree.getBoard(tree, index)
 
         if (typeof vertex == 'string') {
@@ -830,7 +842,7 @@ class App extends Component {
         if (!player) player = this.inferredState.currentPlayer
         let color = player > 0 ? 'B' : 'W'
         let capture = false, suicide = false, ko = false
-        let createNode = true
+        let newNode = {[color]: [sgf.stringifyVertex(vertex)]}
 
         if (!pass) {
             // Check for ko
@@ -877,65 +889,10 @@ class App extends Component {
 
         // Update data
 
-        let nextTreePosition
-
-        if (tree.subtrees.length === 0 && tree.nodes.length - 1 === index) {
-            // Append move
-
-            let node = {}
-            node[color] = [sgf.stringifyVertex(vertex)]
-            tree.nodes.push(node)
-
-            nextTreePosition = [tree, tree.nodes.length - 1]
-        } else {
-            if (index !== tree.nodes.length - 1) {
-                // Search for next move
-
-                let nextNode = tree.nodes[index + 1]
-                let moveExists = color in nextNode
-                    && helper.vertexEquals(sgf.parseVertex(nextNode[color][0]), vertex)
-
-                if (moveExists) {
-                    nextTreePosition = [tree, index + 1]
-                    createNode = false
-                }
-            } else {
-                // Search for variation
-
-                let variations = tree.subtrees.filter(subtree => {
-                    return subtree.nodes.length > 0
-                        && color in subtree.nodes[0]
-                        && helper.vertexEquals(sgf.parseVertex(subtree.nodes[0][color][0]), vertex)
-                })
-
-                if (variations.length > 0) {
-                    nextTreePosition = [variations[0], 0]
-                    createNode = false
-                }
-            }
-
-            if (createNode) {
-                // Create variation
-
-                let updateRoot = tree.parent == null
-                let splitted = gametree.split(tree, index)
-                let newTree = gametree.new()
-                let node = {[color]: [sgf.stringifyVertex(vertex)]}
-
-                newTree.nodes = [node]
-                newTree.parent = splitted[0]
-
-                splitted[0].subtrees.push(newTree)
-                splitted[0].current = splitted[0].subtrees.length - 1
-
-                if (updateRoot) {
-                    let {gameTrees} = this.state
-                    gameTrees[gameTrees.indexOf(tree)] = splitted[0]
-                }
-
-                nextTreePosition = [newTree, 0]
-            }
-        }
+        let oldTreeLength = tree.nodes.length
+        let oldSubtreesCount = tree.subtrees.length
+        let [, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -962,9 +919,8 @@ class App extends Component {
         let enterScoring = false
 
         if (pass && createNode && prev) {
-            let prevNode = tree.nodes[index]
             let prevColor = color === 'B' ? 'W' : 'B'
-            let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
+            let prevPass = prevColor in node && node[prevColor][0] === ''
 
             if (prevPass) {
                 enterScoring = true
@@ -1235,7 +1191,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true, stopAnalysis = true} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
@@ -1250,8 +1206,11 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
+        if (stopAnalysis) {
+            this.stopAnalysis()
+        }
+
         this.setState({
-            heatMap: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
@@ -1865,7 +1824,7 @@ class App extends Component {
 
     // Menus
 
-    openNodeMenu(tree, index, options = {}) {
+    openNodeMenu(tree, index, {x, y} = {}) {
         if (this.state.mode === 'scoring') return
 
         let template = [
@@ -1887,11 +1846,11 @@ class App extends Component {
                 click: () => this.makeMainVariation(tree, index)
             },
             {
-                label: "Shift &Left",
+                label: 'Shift &Left',
                 click: () => this.shiftVariation(tree, index, -1)
             },
             {
-                label: "Shift Ri&ght",
+                label: 'Shift Ri&ght',
                 click: () => this.shiftVariation(tree, index, 1)
             },
             {type: 'separator'},
@@ -1909,10 +1868,10 @@ class App extends Component {
             }
         ]
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
     }
 
-    openCommentMenu(tree, index, options = {}) {
+    openCommentMenu(tree, index, {x, y} = {}) {
         let node = tree.nodes[index]
 
         let template = [
@@ -1992,7 +1951,25 @@ class App extends Component {
             item.click = () => this.setComment(tree, index, item.data)
         }
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
+    }
+
+    openVariationMenu(sign, variation, {x, y} = {}) {
+        helper.popupMenu([{
+            label: '&Add Variation',
+            click: () => {
+                let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
+
+                let [position, ] = gametree.mergeInsert(
+                    ...this.state.treePosition,
+                    variation.map((vertex, i) => ({
+                        [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
+                    }))
+                )
+
+                this.setCurrentTreePosition(...position, {stopAnalysis: false})
+            }
+        }], x, y)
     }
 
     // GTP Engines
@@ -2087,13 +2064,17 @@ class App extends Component {
         }
 
         this.engineStates = [null, null]
+
+        this.stopGeneratingMoves()
+        this.hideInfoOverlay()
+        this.setBusy(false)
     }
 
-    async handleCommandSent({controller, command, getResponse}) {
+    handleCommandSent({controller, command, subscribe, getResponse}) {
         let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
         if (sign > 1) sign = 0
 
-        let entry = {sign, name: controller.engine.name, command}
+        let entry = {sign, name: controller.engine.name, command, waiting: true}
         let maxLength = setting.get('console.max_history_count')
 
         this.setState(({consoleLog}) => {
@@ -2103,68 +2084,61 @@ class App extends Component {
             return {consoleLog: newLog}
         })
 
-        let response = await getResponse()
-        let sabakiJsonMatch = response.content.match(/^#sabaki(.*)$/m) || ['', '{}']
+        let updateEntry = update => {
+            Object.assign(entry, update)
+            this.setState(({consoleLog}) => ({consoleLog}))
+        }
 
-        response.content = response.content.replace(/^#sabaki(.*)$/gm, '#sabaki{…}')
+        subscribe(({line, response, end}) => {
+            updateEntry({
+                response: Object.assign({}, response),
+                waiting: !end
+            })
 
-        this.setState(({consoleLog}) => {
-            let index = consoleLog.indexOf(entry)
-            if (index < 0) return {}
+            // Parse analysis info
 
-            let newLog = [...consoleLog]
-            newLog[index] = Object.assign({response}, entry)
+            if (line.slice(0, 5) === 'info ') {
+                let sign = this.getPlayer(...this.state.treePosition)
+                let board = gametree.getBoard(...this.state.treePosition)
+                let analysis = line
+                    .split(/\s*info\s+/).slice(1)
+                    .map(x => x.trim())
+                    .map(x => {
+                        let match = x.match(/[A-Za-z]\d+(\s+[A-Za-z]\d+)*$/)
+                        if (match == null) return [x, []]
 
-            return {consoleLog: newLog}
+                        return [x.slice(0, match.index), match[0].split(/\s+/)]
+                    })
+                    .map(([x, y]) => [
+                        x.trim().split(/\s+/).slice(0, -1),
+                        y.filter(x => x.length >= 2)
+                    ])
+                    .map(([tokens, pv]) => {
+                        let keys = tokens.filter((_, i) => i % 2 === 0)
+                        let values = tokens.filter((_, i) => i % 2 === 1)
+
+                        keys.push('pv')
+                        values.push(pv)
+
+                        return keys.reduce((acc, x, i) => (acc[x] = values[i], acc), {})
+                    })
+                    .map(({move, visits, winrate, pv}) => ({
+                        sign,
+                        vertex: board.coord2vertex(move),
+                        visits: +visits,
+                        win: +winrate / 100,
+                        variation: pv.map(x => board.coord2vertex(x))
+                    }))
+
+                this.setState({analysis})
+            }
         })
 
-        // Handle Sabaki JSON
-
-        let sabakiJson = JSON.parse(sabakiJsonMatch[1])
-
-        if (sabakiJson.variations != null) {
-            let subtrees = sgf.parse(sabakiJson.variations, {getId: helper.getId})
-
-            if (subtrees.length > 0) {
-                let {gameTrees} = this.state
-                let [tree, index] = gametree.navigate(...this.state.treePosition, -1)
-                let gameIndex = gameTrees.indexOf(gametree.getRoot(tree))
-                let splitted = gametree.split(tree, index)
-
-                for (let subtree of subtrees) {
-                    subtree.parent = splitted[0]
-                }
-
-                splitted[0].subtrees.push(...subtrees)
-
-                let reduced = gametree.reduce(splitted[0])
-                gameTrees[gameIndex] = gametree.getRoot(reduced)
-
-                this.setState({gameTrees})
-                this.setCurrentTreePosition(...gametree.navigate(reduced, reduced.nodes.length - 1, 1))
-            }
-        }
-
-        if (sabakiJson.node != null) {
-            let nodeInfo = sgf.parse(`(;${sabakiJson.node})`)[0].nodes[0]
-            let [tree, index] = this.state.treePosition
-            let node = tree.nodes[index]
-
-            for (let key in nodeInfo) {
-                if (key in node) node[key].push(...nodeInfo[key])
-                else node[key] = nodeInfo[key]
-            }
-
-            this.setCurrentTreePosition(tree, index)
-        }
-
-        if (sabakiJson.heatmap != null) {
-            this.setState({
-                heatMap: sabakiJson.heatmap.map(row =>
-                    row.map(value => ({strength: value}))
-                )
-            })
-        }
+        getResponse()
+        .catch(_ => updateEntry({
+            response: {internal: true, content: 'connection failed'},
+            waiting: false
+        }))
     }
 
     async syncEngines({passPlayer = null} = {}) {
@@ -2175,19 +2149,19 @@ class App extends Component {
         let {treePosition} = this.state
 
         try {
-            for (let i = 0; i < this.attachedEngineControllers.length; i++) {
-                if (this.attachedEngineControllers[i] == null) continue
+            this.engineStates = await Promise.all(this.attachedEngineControllers.map((controller, i) => {
+                if (controller == null) return this.engineStates[i]
 
-                let player = i === 0 ? 1 : -1
-                let controller = this.attachedEngineControllers[i]
-                let engineState = this.engineStates[i]
+                return enginesyncer.sync(controller, this.engineStates[i], treePosition)
+            }))
 
-                this.engineStates[i] = await enginesyncer.sync(controller, engineState, treePosition)
+            // Send pass if required
 
-                // Send pass if required
+            if (passPlayer != null) {
+                let color = passPlayer > 0 ? 'B' : 'W'
+                let controller = this.attachedEngineControllers[passPlayer > 0 ? 0 : 1]
 
-                if (passPlayer != null && passPlayer !== player) {
-                    let color = passPlayer > 0 ? 'B' : 'W'
+                if (controller != null) {
                     controller.sendCommand({name: 'play', args: [color, 'pass']})
                 }
             }
@@ -2197,6 +2171,55 @@ class App extends Component {
         }
 
         this.setBusy(false)
+    }
+
+    async startAnalysis() {
+        this.closeDrawer()
+        this.setMode('play')
+
+        let {currentPlayer} = this.inferredState
+        let color = currentPlayer > 0 ? 'B' : 'W'
+        let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
+
+        let controllerIndex = controllerIndices.find(i =>
+            this.attachedEngineControllers[i] != null
+            && this.state.engineCommands[i] != null
+            && (this.state.engineCommands[i].includes('lz-analyze')
+            || this.state.engineCommands[i].includes('sabaki-analyze'))
+        )
+
+        let error = false
+
+        if (controllerIndex != null) {
+            let controller = this.attachedEngineControllers[controllerIndex]
+            let commands = this.state.engineCommands[controllerIndex]
+            let name = commands.includes('lz-analyze') ? 'lz-analyze' : 'sabaki-analyze'
+
+            await this.syncEngines()
+
+            let interval = setting.get('board.analysis_interval').toString()
+            let response = await controller.sendCommand({name, args: [color, interval]})
+
+            error = response.error
+        } else {
+            error = true
+        }
+
+        if (error) {
+            dialog.showMessageBox('You haven’t attached any engines that supports analysis.', 'warning')
+        }
+    }
+
+    stopAnalysis() {
+        if (this.state.analyis != null) return
+
+        for (let controller of this.attachedEngineControllers) {
+            if (controller == null || controller.process == null) continue
+
+            controller.process.stdin.write('\n')
+        }
+
+        this.setState({analysis: null})
     }
 
     async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
@@ -2263,12 +2286,6 @@ class App extends Component {
         let doublePass = previousPass && pass
 
         this.makeMove(vertex, {player: sign})
-
-        if (!doublePass && this.state.engineCommands[playerIndex].includes('sabaki-genmovelog')) {
-            // Send Sabaki specific GTP command
-
-            await playerController.sendCommand({name: 'sabaki-genmovelog'})
-        }
 
         this.engineStates[playerIndex] = {
             komi: this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi,

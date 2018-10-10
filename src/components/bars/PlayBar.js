@@ -1,7 +1,9 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const {remote} = require('electron')
 
 const helper = require('../../modules/helper')
+const setting = remote.require('./setting')
 
 class PlayBar extends Component {
     constructor() {
@@ -14,7 +16,10 @@ class PlayBar extends Component {
             let template = [
                 {
                     label: '&Pass',
-                    click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
+                    click: () => {
+                        let autoGenmove = setting.get('gtp.auto_genmove')
+                        sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
+                    }
                 },
                 {
                     label: '&Resign',

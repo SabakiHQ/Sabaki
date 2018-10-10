@@ -72,6 +72,10 @@ class GeneralTab extends Component {
         return h('div', {class: 'general'},
             h('ul', {},
                 h(PreferencesItem, {
+                    id: 'app.enable_hardware_acceleration',
+                    text: 'Enable hardware acceleration if possible'
+                }),
+                h(PreferencesItem, {
                     id: 'app.startup_check_updates',
                     text: 'Check for updates at startup'
                 }),
@@ -93,16 +97,12 @@ class GeneralTab extends Component {
                     text: 'Animate fuzzy placement'
                 }),
                 h(PreferencesItem, {
-                    id: 'file.show_reload_warning',
-                    text: 'Offer to reload file if changed externally'
-                }),
-                h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
                     text: 'Start game right after attaching engines'
                 }),
                 h(PreferencesItem, {
-                    id: 'app.enable_hardware_acceleration',
-                    text: 'Enable hardware acceleration'
+                    id: 'gtp.auto_genmove',
+                    text: 'Automatically generate engine moves'
                 })
             ),
 
@@ -126,6 +126,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'edit.show_removeothervariations_warning',
                     text: 'Show remove other variations warning'
+                }),
+                h(PreferencesItem, {
+                    id: 'file.show_reload_warning',
+                    text: 'Offer to reload file if changed externally'
                 }),
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',

@@ -1,8 +1,10 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {BoundedGoban} = require('@sabaki/shudan')
+const {remote} = require('electron')
 
 const helper = require('../modules/helper')
+const setting = remote.require('./setting')
 
 class Goban extends Component {
     constructor(props) {
@@ -11,6 +13,8 @@ class Goban extends Component {
         this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
         this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
+        this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
+        this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
     }
 
     componentDidMount() {
@@ -85,10 +89,41 @@ class Goban extends Component {
         }
     }
 
+    handleVertexMouseEnter(evt, vertex) {
+        if (this.props.analysis == null) return
+
+        let {sign, variation} = this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
+        if (variation == null) return
+
+        clearInterval(this.variationIntervalId)
+
+        this.variationIntervalId = setInterval(() => {
+            if (this.props.analysis == null) {
+                clearInterval(this.variationIntervalId)
+                return
+            }
+
+            this.setState(({variationIndex}) => ({
+                variation,
+                variationSign: sign,
+                variationIndex: variationIndex + 1
+            }))
+        }, setting.get('board.variation_replay_interval'))
+    }
+
+    handleVertexMouseLeave(evt, vertex) {
+        clearInterval(this.variationIntervalId)
+
+        this.setState({
+            variation: null,
+            variationIndex: -1
+        })
+    }
+
     render({
         board,
         paintMap,
-        heatMap,
+        analysis,
         highlightVertices = [],
         dimmedStones = [],
 
@@ -105,12 +140,15 @@ class Goban extends Component {
         maxWidth = 1,
         maxHeight = 1,
         clicked = false,
-        temporaryLine = null
-    }) {
-        let drawTemporaryLine = !!drawLineMode && !!temporaryLine
+        temporaryLine = null,
 
+        variation = null,
+        variationSign = 1,
+        variationIndex = -1
+    }) {
         // Calculate lines
 
+        let drawTemporaryLine = !!drawLineMode && !!temporaryLine
         let lines = board.lines.filter(({v1, v2, type}) => {
             if (
                 drawTemporaryLine
@@ -159,6 +197,48 @@ class Goban extends Component {
             }
         }
 
+        // Draw analysis variation
+
+        let signMap = board.arrangement
+        let markerMap = board.markers
+        let drawHeatMap = true
+
+        if (analysis != null && variation != null) {
+            markerMap = board.markers.map(x => [...x])
+
+            let variationBoard = variation
+                .slice(0, variationIndex + 1)
+                .reduce((board, [x, y], i) => {
+                    markerMap[y][x] = {type: 'label', label: (i + 1).toString()}
+                    return board.makeMove(i % 2 === 0 ? variationSign : -variationSign, [x, y])
+                }, board)
+
+            drawHeatMap = false
+            signMap = variationBoard.arrangement
+        }
+
+        // Draw heatmap
+
+        let heatMap = null
+
+        if (drawHeatMap && analysis != null) {
+            let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
+            heatMap = board.arrangement.map(row => row.map(_ => null))
+
+            for (let {vertex: [x, y], visits, win} of analysis) {
+                let strength = Math.round(visits * win * 8 / maxVisitsWin) + 1
+                win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
+
+                heatMap[y][x] = {
+                    strength,
+                    text: visits < 10 ? '' : [
+                        win + (Math.floor(win) === win ? '%' : ''),
+                        visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
+                    ].join('\n')
+                }
+            }
+        }
+
         return h(BoundedGoban, {
             id: 'goban',
             class: classNames({crosshair}),
@@ -170,8 +250,8 @@ class Goban extends Component {
             fuzzyStonePlacement,
             animateStonePlacement: clicked && animateStonePlacement,
 
-            signMap: board.arrangement,
-            markerMap: board.markers,
+            signMap,
+            markerMap,
             ghostStoneMap,
             paintMap,
             heatMap,
@@ -181,7 +261,9 @@ class Goban extends Component {
 
             onVertexMouseUp: this.handleVertexMouseUp,
             onVertexMouseDown: this.handleVertexMouseDown,
-            onVertexMouseMove: this.handleVertexMouseMove
+            onVertexMouseMove: this.handleVertexMouseMove,
+            onVertexMouseEnter: this.handleVertexMouseEnter,
+            onVertexMouseLeave: this.handleVertexMouseLeave
         })
     }
 }

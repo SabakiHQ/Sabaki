@@ -97,7 +97,10 @@ let data = [
             {
                 label: '&Pass',
                 accelerator: 'CmdOrCtrl+P',
-                click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
+                click: () => {
+                    const autoGenmove = setting.get('gtp.auto_genmove')
+                    sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
+                }
             },
             {
                 label: '&Resign',
@@ -369,6 +372,7 @@ let data = [
             },
             {
                 label: '&Suspend',
+                enabled: true,
                 click: () => sabaki.suspendEngines()
             },
             {type: 'separator'},
@@ -376,6 +380,11 @@ let data = [
                 label: 'S&ynchronize',
                 accelerator: 'F6',
                 click: () => sabaki.syncEngines()
+            },
+            {
+                label: 'Analy&ze',
+                accelerator: 'F4',
+                click: () => sabaki.startAnalysis()
             },
             {
                 label: 'Start &Playing',

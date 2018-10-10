@@ -76,7 +76,7 @@ class MainView extends Component {
         deadStones,
         scoringMethod,
         scoreBoard,
-        heatMap,
+        analysis,
         areaMap,
         blockedGuesses,
 
@@ -136,9 +136,10 @@ class MainView extends Component {
 
                 h(Goban, {
                     board,
-                    highlightVertices: findVertex && mode === 'find' ? [findVertex]
+                    highlightVertices: findVertex && mode === 'find'
+                        ? [findVertex]
                         : highlightVertices,
-                    heatMap,
+                    analysis: mode === 'play' ? analysis : null,
                     paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 
