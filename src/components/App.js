@@ -66,6 +66,7 @@ class App extends Component {
             // Goban
 
             highlightVertices: [],
+            playVariation: null,
             analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
