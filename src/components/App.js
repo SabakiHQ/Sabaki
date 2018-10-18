@@ -1212,6 +1212,7 @@ class App extends Component {
         }
 
         this.setState({
+            playVariation: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]

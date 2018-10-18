@@ -1,12 +1,13 @@
-const {shell} = require('electron')
+const {remote, shell} = require('electron')
 const {h, Component} = require('preact')
 
 const gametree = require('../modules/gametree')
+const setting = remote.require('./setting')
 
 function htmlify(input) {
     let urlRegex = '\\b(ht|f)tps?:\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
     let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-    let variationRegex = '\\b(w(hite\\s+)?|b(lack\\s+)?)?(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
+    let variationRegex = '\\b(black\\s+?|white\\s+?|[bw]\\s*)?(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
     let coordRegex = '\\b[a-hj-z]\\d+\\b'
     let movenumberRegex = '(\\B#|\\bmove[ ]+)(\\d+)\\b'
     let totalRegex = '(' + [urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex].join('|') + ')'
@@ -21,8 +22,8 @@ function htmlify(input) {
         if (info = new RegExp(variationRegex, 'i').exec(match))
             return `<span
                 class="comment-variation"
-                data-color="${info[1] ? info[1][0].toLowerCase() === 'b' : ''}"
-                data-variation="${info[4]}"
+                data-color="${info[1] ? info[1][0].toLowerCase() : ''}"
+                data-variation="${info[2]}"
             >${match}</span>`
         if (new RegExp(coordRegex, 'i').test(match))
             return `<span class="comment-coord">${match}</span>`
@@ -59,17 +60,32 @@ class ContentDisplay extends Component {
         }
 
         this.handleVariationMouseEnter = evt => {
+            let {currentTarget} = evt
             let board = gametree.getBoard(...sabaki.state.treePosition)
-            let currentPlayer = sabaki.getPlayer(...sabaki.state.treePosition)
-            let {color} = evt.currentTarget.dataset.color
-            let sign = color === '' ? currentPlayer : color === 'b' ? 1 : -1
-            let variation = evt.currentTarget.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
+            let currentVertex = board.currentVertex
+            let currentVertexSign = currentVertex && board.get(currentVertex)
+            let {color} = currentTarget.dataset
+            let sign = color === '' ? currentVertexSign : color === 'b' ? 1 : -1
+            let variation = currentTarget.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
 
-            sabaki.setState({playVariation: {sign, variation}})
+            sabaki.setState({playVariation: {sign, variation, removeCurrent: currentVertexSign === sign}})
+
+            let counter = 1
+
+            clearInterval(this.variationIntervalId)
+            this.variationIntervalId = setInterval(() => {
+                let percent = counter * 100 / (variation.length - 1)
+
+                currentTarget.style.backgroundSize = `${percent}% 100%`
+                counter++
+            }, setting.get('board.variation_replay_interval'))
         }
 
         this.handleVariationMouseLeave = evt => {
             sabaki.setState({playVariation: null})
+
+            clearInterval(this.variationIntervalId)
+            evt.currentTarget.style.backgroundSize = ''
         }
 
         this.handleCoordMouseEnter = evt => {
