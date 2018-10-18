@@ -45,10 +45,10 @@ class Goban extends Component {
 
         if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
             if (this.props.playVariation != null) {
-                let {sign, variation} = this.props.playVariation
+                let {sign, variation, removeCurrent} = this.props.playVariation
 
                 this.stopPlayingVariation()
-                this.playVariation(sign, variation)
+                this.playVariation(sign, variation, removeCurrent)
             } else {
                 this.stopPlayingVariation()
             }
@@ -113,13 +113,14 @@ class Goban extends Component {
         this.stopPlayingVariation()
     }
 
-    playVariation(sign, variation) {
+    playVariation(sign, variation, removeCurrent = false) {
         clearInterval(this.variationIntervalId)
 
         this.variationIntervalId = setInterval(() => {
             this.setState(({variationIndex}) => ({
                 variation,
                 variationSign: sign,
+                variationRemoveCurrent: removeCurrent,
                 variationIndex: variationIndex + 1
             }))
         }, setting.get('board.variation_replay_interval'))
@@ -158,6 +159,7 @@ class Goban extends Component {
 
         variation = null,
         variationSign = 1,
+        variationRemoveCurrent = false,
         variationIndex = -1
     }) {
         // Calculate lines
@@ -219,6 +221,16 @@ class Goban extends Component {
 
         if (variation != null) {
             markerMap = board.markers.map(x => [...x])
+
+            if (variationRemoveCurrent && board.currentVertex != null) {
+                let [x, y] = board.currentVertex
+
+                board = board.clone()
+                board.set([x, y], 0)
+
+                signMap = board.arrangement
+                markerMap[y][x] = null
+            }
 
             let variationBoard = variation
                 .slice(0, variationIndex + 1)

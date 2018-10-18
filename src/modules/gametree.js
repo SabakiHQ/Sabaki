@@ -376,6 +376,8 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         vertex = sgf.parseVertex(node[prop][0])
         board = baseboard.makeMove(data[prop], vertex)
+        board.currentVertex = vertex
+
         break
     }
 
