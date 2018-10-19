@@ -1575,6 +1575,8 @@ class App extends Component {
     }
 
     rotateBoard(anticlockwise) {
+        sabaki.setUndoPoint('Undo Board Rotation')
+
         let root = gametree.getRoot(this.state.treePosition[0])
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
