@@ -60,11 +60,12 @@ class ContentDisplay extends Component {
         }
 
         let getVariationInfo = target => {
-            let board = gametree.getBoard(...sabaki.state.treePosition)
+            let {treePosition} = sabaki.state
+            let board = gametree.getBoard(...treePosition)
             let currentVertex = board.currentVertex
             let currentVertexSign = currentVertex && board.get(currentVertex)
             let {color} = target.dataset
-            let sign = color === '' ? currentVertexSign : color === 'b' ? 1 : -1
+            let sign = color === '' ? sabaki.getPlayer(...treePosition) : color === 'b' ? 1 : -1
             let variation = target.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
             let removeCurrent = currentVertexSign === sign
 
