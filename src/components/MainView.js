@@ -76,6 +76,7 @@ class MainView extends Component {
         deadStones,
         scoringMethod,
         scoreBoard,
+        playVariation,
         analysis,
         areaMap,
         blockedGuesses,
@@ -151,6 +152,7 @@ class MainView extends Component {
                     fuzzyStonePlacement,
                     animateStonePlacement,
 
+                    playVariation,
                     drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
                         ? selectedTool : null,
 

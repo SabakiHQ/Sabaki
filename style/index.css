@@ -419,15 +419,21 @@ header, #bar .bar {
         display: block;
 }
 
-.coord {
+.comment-coord, .comment-variation {
         padding: 0 5px;
         background: #101010;
         color: white;
         border-radius: 3px;
         cursor: default;
     }
-    .coord:hover {
+    .comment-coord:hover {
         background: #0082F0;
+    }
+    .comment-variation:hover {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkaPrwHwAEbwJzLYyQSgAAAABJRU5ErkJggg==);
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: .5s background-size linear;
 }
 
 #sidebar {

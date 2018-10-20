@@ -34,13 +34,24 @@ class Goban extends Component {
         this.componentDidUpdate()
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         if (!this.element || !this.element.parentElement) return
 
         let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
 
         if (maxWidth !== this.state.maxWidth || maxHeight !== this.state.maxHeight) {
             this.setState({maxWidth, maxHeight})
+        }
+
+        if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
+            if (this.props.playVariation != null) {
+                let {sign, variation, removeCurrent} = this.props.playVariation
+
+                this.stopPlayingVariation()
+                this.playVariation(sign, variation, removeCurrent)
+            } else {
+                this.stopPlayingVariation()
+            }
         }
     }
 
@@ -95,23 +106,27 @@ class Goban extends Component {
         let {sign, variation} = this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
         if (variation == null) return
 
+        this.playVariation(sign, variation)
+    }
+
+    handleVertexMouseLeave(evt, vertex) {
+        this.stopPlayingVariation()
+    }
+
+    playVariation(sign, variation, removeCurrent = false) {
         clearInterval(this.variationIntervalId)
 
         this.variationIntervalId = setInterval(() => {
-            if (this.props.analysis == null) {
-                clearInterval(this.variationIntervalId)
-                return
-            }
-
             this.setState(({variationIndex}) => ({
                 variation,
                 variationSign: sign,
+                variationRemoveCurrent: removeCurrent,
                 variationIndex: variationIndex + 1
             }))
         }, setting.get('board.variation_replay_interval'))
     }
 
-    handleVertexMouseLeave(evt, vertex) {
+    stopPlayingVariation() {
         clearInterval(this.variationIntervalId)
 
         this.setState({
@@ -144,6 +159,7 @@ class Goban extends Component {
 
         variation = null,
         variationSign = 1,
+        variationRemoveCurrent = false,
         variationIndex = -1
     }) {
         // Calculate lines
@@ -197,14 +213,24 @@ class Goban extends Component {
             }
         }
 
-        // Draw analysis variation
+        // Draw variation
 
         let signMap = board.arrangement
         let markerMap = board.markers
         let drawHeatMap = true
 
-        if (analysis != null && variation != null) {
+        if (variation != null) {
             markerMap = board.markers.map(x => [...x])
+
+            if (variationRemoveCurrent && board.currentVertex != null) {
+                let [x, y] = board.currentVertex
+
+                board = board.clone()
+                board.set([x, y], 0)
+
+                signMap = board.arrangement
+                markerMap[y][x] = null
+            }
 
             let variationBoard = variation
                 .slice(0, variationIndex + 1)

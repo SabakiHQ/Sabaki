@@ -66,6 +66,7 @@ class App extends Component {
             // Goban
 
             highlightVertices: [],
+            playVariation: null,
             analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
@@ -1211,6 +1212,7 @@ class App extends Component {
         }
 
         this.setState({
+            playVariation: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
@@ -1956,20 +1958,34 @@ class App extends Component {
         helper.popupMenu(template, x, y)
     }
 
-    openVariationMenu(sign, variation, {x, y} = {}) {
+    openVariationMenu(sign, variation, {x, y, appendSibling = false} = {}) {
         helper.popupMenu([{
             label: '&Add Variation',
             click: () => {
-                let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
+                let isRootNode = this.state.treePosition[1] === 0 && this.state.treePosition[0].parent == null
 
+                if (appendSibling && isRootNode) {
+                    dialog.showMessageBox('The root node cannot have sibling nodes.', 'warning', ['OK'])
+                    return
+                }
+
+                let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
                 let [position, ] = gametree.mergeInsert(
-                    ...this.state.treePosition,
+                    ...(
+                        !appendSibling
+                        ? this.state.treePosition
+                        : gametree.navigate(...this.state.treePosition, -1)
+                    ),
                     variation.map((vertex, i) => ({
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
                     }))
                 )
 
-                this.setCurrentTreePosition(...position, {stopAnalysis: false})
+                this.setCurrentTreePosition(...(
+                    !appendSibling
+                    ? position
+                    : gametree.navigate(...position, 1)
+                ), {stopAnalysis: false})
             }
         }], x, y)
     }
