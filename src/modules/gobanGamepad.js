@@ -109,4 +109,85 @@ export class GobanGamepad {
       }
     });
   }
+
+  keyUpCallback(event) {
+
+    if (['KeyW', 'KeyS', 'KeyA', 'KeyD'].includes(event.code)) {
+      const previousCursor = this.cursor.slice();
+
+      switch (event.code) {
+        case 'KeyW':
+          if (this.cursor[1] == 0) {
+            this.cursor[1] = this.height - 1;
+          } else {
+            this.cursor[1] -= 1;
+          }
+          break;
+        case 'KeyS':
+          if (this.cursor[1] == this.height - 1) {
+            this.cursor[1] = 0;
+          } else {
+            this.cursor[1] += 1;
+          }
+          break;
+        case 'KeyD':
+          if (this.cursor[0] == this.width - 1) {
+            this.cursor[0] = 0;
+          } else {
+            this.cursor[0] += 1;
+          }
+          break;
+          break;
+        case 'KeyA':
+          if (this.cursor[0] == 0) {
+            this.cursor[0] = this.width - 1;
+          } else {
+            this.cursor[0] -= 1;
+          }
+          break;
+        default:
+      }
+
+      // Update markers to current cursor
+      this.drawCursor(
+        this.cursor,
+        {
+          type: 'cross',
+          label: null,
+        },
+        previousCursor,
+      );
+    }
+    // Make a move
+    else if (event.code === 'Space') {
+      this.makeMove(this.cursor);
+    }
+    // Disable the cursor
+    else if (event.code === 'Backspace') {
+      // Update markers to current cursor
+      this.drawCursor(
+        this.cursor,
+        {
+          type: null,
+          label: null,
+        },
+        this.cursor,
+      );
+    }
+    // Start analysis
+    else if (event.code === 'KeyZ') {
+      this.startAnalysis();
+    }
+    // Navigation: forward
+    else if (event.code === 'KeyE') {
+      this.goStep(1);
+    }
+    // Navigation: back
+    else if (event.code === 'KeyQ') {
+      this.goStep(-1);
+    } else {
+      console.log(event.code);
+    }
+
+  }
 }

@@ -282,6 +282,7 @@ class App extends Component {
             if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
                 this.stopAutoscrolling()
             }
+            this.gobanGamepad.keyUpCallback(evt)
         })
 
         // Handle window closing
