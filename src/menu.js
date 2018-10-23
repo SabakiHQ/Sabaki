@@ -382,9 +382,15 @@ let data = [
                 click: () => sabaki.syncEngines()
             },
             {
-                label: 'Analy&ze',
+                label: 'Toggle A&nalysis',
                 accelerator: 'F4',
-                click: () => sabaki.startAnalysis()
+                click: () => {
+                    if (sabaki.state.analysis == null) {
+                        sabaki.startAnalysis()
+                    } else {
+                        sabaki.stopAnalysis()
+                    }
+                }
             },
             {
                 label: 'Start &Playing',
