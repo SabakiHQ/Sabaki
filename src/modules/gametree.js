@@ -537,7 +537,12 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(`${JSON.stringify(tree.nodes)}-${tree.subtrees.map(exports.getHash).join('-')}`)
+    return helper.hash(`${
+        JSON.stringify(tree.nodes, (key, value) => {
+            if (key.toUpperCase() === key) return value
+            return undefined
+        })
+    }-${tree.subtrees.map(exports.getHash).join('-')}`)
 }
 
 exports.getMatrixHash = function(tree) {

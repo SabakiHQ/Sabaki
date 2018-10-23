@@ -2148,6 +2148,12 @@ class App extends Component {
                         variation: pv.map(x => board.coord2vertex(x))
                     }))
 
+                let winrate = Math.max(...analysis.map(({win}) => win))
+                if (sign < 0) winrate = 100 - winrate
+
+                let [tree, index] = this.state.treePosition
+                tree.nodes[index].winrate = winrate
+
                 this.setState({analysis})
             }
         })
