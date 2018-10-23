@@ -684,7 +684,7 @@ class App extends Component {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     let autoGenmove = setting.get('gtp.auto_genmove')
-                    this.makeMove(vertex, {sendToEngine: autoGenmove})
+                    this.makeMove(vertex, {analyze: this.state.analysis != null, sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
@@ -822,7 +822,9 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+        this.stopAnalysis()
+
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -933,11 +935,15 @@ class App extends Component {
 
         this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
 
-        // Send command to engine
-
         if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
+            // Send command to engine
+
             let passPlayer = pass ? player : null
-            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
+            setTimeout(() => this.generateMove({analyze, passPlayer}), setting.get('gtp.move_delay'))
+        } else if (!pass && analyze) {
+            // Start analyzing
+
+            this.waitForRender().then(() => this.startAnalysis())
         }
     }
 
@@ -2229,7 +2235,7 @@ class App extends Component {
     }
 
     stopAnalysis() {
-        if (this.state.analyis != null) return
+        if (this.state.analysis == null) return
 
         for (let controller of this.attachedEngineControllers) {
             if (controller == null || controller.process == null) continue
@@ -2334,7 +2340,11 @@ class App extends Component {
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
-            if (analyze) this.startAnalysis()
+
+            if (analyze) {
+                await this.waitForRender()
+                this.startAnalysis()
+            }
         }
 
         this.setBusy(false)
