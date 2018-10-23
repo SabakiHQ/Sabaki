@@ -75,6 +75,7 @@ class Goban extends Component {
         if (evt.line) {
             onLineDraw(evt)
         } else {
+            this.stopPlayingVariation()
             onVertexClick(evt)
         }
 
