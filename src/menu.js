@@ -395,12 +395,12 @@ let data = [
             {
                 label: 'Start &Playing',
                 accelerator: 'F5',
-                click: () => sabaki.generateMove({followUp: true})
+                click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null, followUp: true})
             },
             {
                 label: 'Generate &Move',
                 accelerator: 'F10',
-                click: () => sabaki.generateMove()
+                click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null})
             },
             {type: 'separator'},
             {
