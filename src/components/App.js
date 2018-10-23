@@ -684,7 +684,7 @@ class App extends Component {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     let autoGenmove = setting.get('gtp.auto_genmove')
-                    this.makeMove(vertex, {sendToEngine: autoGenmove})
+                    this.makeMove(vertex, {analyze: this.state.analysis != null, sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
@@ -822,7 +822,9 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+        this.stopAnalysis()
+
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -933,11 +935,15 @@ class App extends Component {
 
         this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
 
-        // Send command to engine
-
         if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
+            // Send command to engine
+
             let passPlayer = pass ? player : null
-            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
+            setTimeout(() => this.generateMove({analyze, passPlayer}), setting.get('gtp.move_delay'))
+        } else if (!pass && analyze) {
+            // Start analyzing
+
+            this.waitForRender().then(() => this.startAnalysis())
         }
     }
 
@@ -2229,7 +2235,7 @@ class App extends Component {
     }
 
     stopAnalysis() {
-        if (this.state.analyis != null) return
+        if (this.state.analysis == null) return
 
         for (let controller of this.attachedEngineControllers) {
             if (controller == null || controller.process == null) continue
@@ -2240,7 +2246,7 @@ class App extends Component {
         this.setState({analysis: null})
     }
 
-    async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
+    async generateMove({analyze = false, passPlayer = null, firstMove = true, followUp = false} = {}) {
         this.closeDrawer()
 
         if (!firstMove && !this.state.generatingMoves) {
@@ -2276,26 +2282,44 @@ class App extends Component {
 
         this.setBusy(true)
 
-        let response = await playerController.sendCommand({name: 'genmove', args: [color]})
+        let commands = this.state.engineCommands[playerIndex]
+        let commandName = !analyze
+            ? 'genmove'
+            : ['sabaki-genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
+
+        let responseContent = await (
+            commandName === 'genmove'
+            ? playerController.sendCommand({name: commandName, args: [color]}).then(res => res.content)
+            : new Promise(resolve => {
+                let interval = setting.get('board.analysis_interval').toString()
+
+                playerController.sendCommand({name: commandName, args: [color, interval]}, ({line}) => {
+                    if (line.indexOf('play ') !== 0) return
+                    resolve(line.slice('play '.length).trim())
+                })
+            })
+        )
+
         let sign = color === 'B' ? 1 : -1
         let pass = true
         let vertex = [-1, -1]
         let board = gametree.getBoard(rootTree, 0)
 
-        if (response.content.toLowerCase() !== 'pass') {
+        if (responseContent.toLowerCase() !== 'pass') {
             pass = false
-            vertex = board.coord2vertex(response.content)
-        }
 
-        if (response.content.toLowerCase() === 'resign') {
-            dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
+            if (responseContent.toLowerCase() === 'resign') {
+                dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
 
-            this.stopGeneratingMoves()
-            this.hideInfoOverlay()
-            this.makeResign()
-            this.setBusy(false)
+                this.stopGeneratingMoves()
+                this.hideInfoOverlay()
+                this.makeResign()
+                this.setBusy(false)
 
-            return
+                return
+            }
+
+            vertex = board.coord2vertex(responseContent)
         }
 
         let previousNode = this.state.treePosition[0].nodes[this.state.treePosition[1]]
@@ -2312,10 +2336,15 @@ class App extends Component {
 
         if (followUp && otherController != null && !doublePass) {
             await helper.wait(setting.get('gtp.move_delay'))
-            this.generateMove({passPlayer: pass ? sign : null, firstMove: false, followUp})
+            this.generateMove({analyze, passPlayer: pass ? sign : null, firstMove: false, followUp})
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
+
+            if (analyze) {
+                await this.waitForRender()
+                this.startAnalysis()
+            }
         }
 
         this.setBusy(false)
