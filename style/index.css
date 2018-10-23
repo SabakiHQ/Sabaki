@@ -323,7 +323,7 @@ header, #bar .bar {
         top: 0;
         bottom: 0;
         left: 0;
-        background: #181818;
+        background: #111;
         z-index: 10;
     }
     #leftsidebar .verticalresizer {
@@ -386,7 +386,7 @@ header, #bar .bar {
         left: 0;
         right: 0;
         height: 40px;
-        background: #222;
+        background: #181818;
         overflow: hidden;
     }
     #console .input select {
