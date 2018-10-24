@@ -2157,6 +2157,7 @@ class App extends Component {
         })
 
         getResponse()
+        .then(() => this.setState({analysis: null}))
         .catch(_ => updateEntry({
             response: {internal: true, content: 'connection failed'},
             waiting: false
