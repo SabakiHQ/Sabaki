@@ -822,8 +822,6 @@ class App extends Component {
     }
 
     makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
-        this.stopAnalysis()
-
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -2208,7 +2206,7 @@ class App extends Component {
             this.attachedEngineSyncers[i] != null
             && this.state.engineCommands[i] != null
             && (this.state.engineCommands[i].includes('lz-analyze')
-            || this.state.engineCommands[i].includes('sabaki-analyze'))
+            || this.state.engineCommands[i].includes('analyze'))
         )
 
         let error = false
@@ -2216,7 +2214,7 @@ class App extends Component {
         if (engineIndex != null) {
             let {controller} = this.attachedEngineSyncers[engineIndex]
             let commands = this.state.engineCommands[engineIndex]
-            let name = commands.includes('lz-analyze') ? 'lz-analyze' : 'sabaki-analyze'
+            let name = commands.includes('analyze') ? 'analyze' : 'lz-analyze'
 
             await this.syncEngines()
 
@@ -2284,7 +2282,7 @@ class App extends Component {
         let commands = this.state.engineCommands[playerIndex]
         let commandName = !analyze
             ? 'genmove'
-            : ['sabaki-genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
+            : ['genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
 
         let responseContent = await (
             commandName === 'genmove'
