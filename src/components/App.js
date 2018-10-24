@@ -2121,10 +2121,11 @@ class App extends Component {
                     .map(x => x.trim())
                     .map(x => {
                         let match = x.match(/[A-Za-z]\d+(\s+[A-Za-z]\d+)*$/)
-                        if (match == null) return [x, []]
+                        if (match == null) return null
 
                         return [x.slice(0, match.index), match[0].split(/\s+/)]
                     })
+                    .filter(x => x != null)
                     .map(([x, y]) => [
                         x.trim().split(/\s+/).slice(0, -1),
                         y.filter(x => x.length >= 2)
