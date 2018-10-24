@@ -420,7 +420,7 @@ header, #bar .bar {
 }
 
 .comment-coord, .comment-variation {
-        padding: 0 5px;
+        padding: 0 .3em;
         background: #050505;
         color: white;
         border-radius: 3px;
