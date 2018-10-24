@@ -9,11 +9,11 @@ const setting = remote.require('./setting')
 let [delay, animationDuration, commentProperties,
 edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
 nodeColor, nodeInactiveColor, nodeActiveColor,
-nodeBookmarkColor, nodeCommentColor, 
+nodeBookmarkColor, nodeCommentColor,
 nodeInactiveBookmarkColor, nodeInactiveCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
     'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
     'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
-    'graph.node_bookmark_color', 'graph.node_comment_color', 
+    'graph.node_bookmark_color', 'graph.node_comment_color',
     'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'].map(x => setting.get(x))
 
 class GameGraphNode extends Component {
@@ -159,7 +159,7 @@ class GameGraph extends Component {
             if (this.mouseDown === 0) {
                 this.drag = true
             } else {
-                ;[movementX, movementY] = [0, 0]
+                movementX = movementY = 0
                 this.drag = false
             }
 

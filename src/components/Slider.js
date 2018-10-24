@@ -43,8 +43,8 @@ class Slider extends Component {
             if (!this.sliderAreaMouseDown) return
 
             let {onChange = helper.noop} = this.props
-            let {offsetTop, offsetHeight} = this.slidingAreaElement
-            let percent = Math.min(1, Math.max(0, (evt.clientY - offsetTop) / offsetHeight))
+            let {top, height} = this.slidingAreaElement.getBoundingClientRect()
+            let percent = Math.min(1, Math.max(0, (evt.clientY - top) / height))
 
             onChange({percent})
         })
