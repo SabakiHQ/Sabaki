@@ -136,7 +136,7 @@ class GameGraph extends Component {
 
         this.state = {
             cameraPosition: [-props.gridSize, -props.gridSize],
-            viewportSize: [props.viewportWidth, props.height],
+            viewportSize: [0, 0],
             viewportPosition: [0, 0],
             matrixDict: null
         }
@@ -426,7 +426,6 @@ class GameGraph extends Component {
 
     render({
         height,
-        treePosition,
         showGameGraph
     }, {
         matrixDict,
@@ -436,17 +435,13 @@ class GameGraph extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'graph'
+                id: 'graph',
+                style: {height: `calc(${height}% - 50px)`}
             },
 
-            h('style', {}, `
-                #graph {
-                    height: ${height}%;
-                }
-                #graph svg > * {
-                    transform: translate(${-cx}px, ${-cy}px);
-                }
-            `),
+            h('style', {}, `#graph svg > * {
+                transform: translate(${-cx}px, ${-cy}px);
+            }`),
 
             showGameGraph && matrixDict && viewportSize && h('svg',
                 {

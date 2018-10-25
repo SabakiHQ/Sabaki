@@ -5,6 +5,7 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
+const WinrateGraph = require('./WinrateGraph')
 const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
@@ -139,12 +140,17 @@ class Sidebar extends Component {
             {
                 ref: el => this.element = el,
                 id: 'sidebar',
+                class: 'showwinrate',
                 style: {width: sidebarWidth}
             },
 
             h('div', {
                 class: 'verticalresizer',
                 onMouseDown: this.handleVerticalResizerMouseDown
+            }),
+
+            h(WinrateGraph, {
+
             }),
 
             h(Slider, {
@@ -161,7 +167,6 @@ class Sidebar extends Component {
             h(GameGraph, {
                 treePosition,
                 showGameGraph,
-                viewportWidth: sidebarWidth,
                 height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
                 gridSize: graphGridSize,
                 nodeSize: graphNodeSize,
