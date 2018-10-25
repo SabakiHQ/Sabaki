@@ -6,15 +6,19 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
-let [delay, animationDuration, commentProperties,
-edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
-nodeColor, nodeInactiveColor, nodeActiveColor,
-nodeBookmarkColor, nodeCommentColor,
-nodeInactiveBookmarkColor, nodeInactiveCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
+let [
+    delay, commentProperties,
+    edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
+    nodeColor, nodeInactiveColor, nodeActiveColor,
+    nodeBookmarkColor, nodeCommentColor,
+    nodeInactiveBookmarkColor, nodeInactiveCommentColor
+] = [
+    'graph.delay', 'sgf.comment_properties',
     'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
     'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
     'graph.node_bookmark_color', 'graph.node_comment_color',
-    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'].map(x => setting.get(x))
+    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'
+].map(x => setting.get(x))
 
 class GameGraphNode extends Component {
     constructor() {
