@@ -693,7 +693,7 @@ header, #bar .bar {
         z-index: 15;
     }
     .drawer.hidecontent > * {
-        display: none;
+        visibility: hidden;
     }
     .drawer.show {
         transform: translateY(-285px);
