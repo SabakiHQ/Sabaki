@@ -1,33 +1,17 @@
 const {h, Component} = require('preact')
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
 
 class WinrateGraph extends Component {
     constructor() {
         super()
     }
 
-    shouldComponentUpdate(nextProps) {
-        let [tree, index] = nextProps.treePosition
-        let node = tree.nodes[index]
-
-        let result = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
-            || this.oldWinrate !== node.winrate
-
-        this.oldWinrate = node.winrate
-
-        return result
+    shouldComponentUpdate({width, currentIndex, data}) {
+        return width !== this.props.width
+            || currentIndex !== this.props.currentIndex
+            || data[currentIndex] !== this.props.data[currentIndex]
     }
 
-    render() {
-        let [tree, index] = this.props.treePosition
-        let node = tree.nodes[index]
-        let rootTree = gametree.getRoot(...this.props.treePosition)
-        let width = Math.max(Math.ceil((gametree.getHeight(rootTree) - 1) / 50) * 50, 1)
-        let currentTrack = gametree.getCurrentTrack(rootTree)
-        let data = currentTrack.map(x => x.winrate)
-        let currentIndex = currentTrack.indexOf(node)
-
+    render({width, currentIndex, data}) {
         return h('section',
             {
                 id: 'winrategraph'

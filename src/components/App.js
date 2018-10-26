@@ -2139,6 +2139,7 @@ class App extends Component {
 
                         return keys.reduce((acc, x, i) => (acc[x] = values[i], acc), {})
                     })
+                    .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
                     .map(({move, visits, winrate, pv}) => ({
                         sign,
                         vertex: board.coord2vertex(move),
