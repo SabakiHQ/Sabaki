@@ -40,6 +40,51 @@ class WinrateGraph extends Component {
                     style: {height: '100%', width: '100%'}
                 },
 
+                // Draw background
+
+                h('defs', {},
+                    h('linearGradient', {id: 'bgGradient', x1: 0, y1: 0, x2: 0, y2: 1},
+                        h('stop', {
+                            offset: '0%',
+                            'stop-color': 'white',
+                            'stop-opacity': 0.7
+                        }),
+                        h('stop', {
+                            offset: '100%',
+                            'stop-color': 'white',
+                            'stop-opacity': 0.1
+                        })
+                    ),
+
+                    h('clipPath', {id: 'clipGradient'},
+                        h('path', {
+                            fill: 'black',
+                            'stroke-width': 0,
+                            d: (() => {
+                                let instructions = data.map((x, i) => {
+                                    if (x == null) return null
+                                    return [i, x]
+                                }).filter(x => x != null)
+
+                                if (instructions.length === 0) return ''
+
+                                return `M ${instructions[0][0]},100 `
+                                    + instructions.map(x => `L ${x.join(',')}`).join(' ')
+                                    + ` L ${instructions.slice(-1)[0][0]},100 Z`
+                            })()
+                        })
+                    )
+                ),
+
+                h('rect', {
+                    x: 0,
+                    y: 0,
+                    width,
+                    height: 100,
+                    fill: 'url(#bgGradient)',
+                    'clip-path': 'url(#clipGradient)'
+                }),
+
                 // Draw guiding lines
 
                 h('line', {
@@ -84,6 +129,7 @@ class WinrateGraph extends Component {
 
                 h('path', {
                     stroke: '#eee',
+                    fill: 'none',
                     'stroke-width': 2,
                     'vector-effect': 'non-scaling-stroke',
 
@@ -97,6 +143,7 @@ class WinrateGraph extends Component {
 
                 h('path', {
                     stroke: '#ccc',
+                    fill: 'none',
                     'stroke-width': 2,
                     'stroke-dasharray': 2,
                     'vector-effect': 'non-scaling-stroke',
