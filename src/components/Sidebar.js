@@ -1,5 +1,6 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
@@ -144,13 +145,16 @@ class Sidebar extends Component {
         let node = tree.nodes[index]
         let winrateGraphWidth = Math.max(Math.ceil((treeHeight - 1) / 50) * 50, 1)
         let currentTrack = gametree.getCurrentTrack(rootTree)
+        let winrateData = currentTrack.map(x => x.winrate)
         let level = currentTrack.indexOf(node)
 
         return h('section',
             {
                 ref: el => this.element = el,
                 id: 'sidebar',
-                class: 'showwinrate',
+                class: classNames({
+                    showwinrate: winrateData.some(x => x != null)
+                }),
                 style: {width: sidebarWidth}
             },
 
@@ -161,8 +165,8 @@ class Sidebar extends Component {
 
             h(WinrateGraph, {
                 width: winrateGraphWidth,
+                data: winrateData,
                 currentIndex: level,
-                data: currentTrack.map(x => x.winrate),
                 onCurrentIndexChange: this.handleWinrateGraphChange
             }),
 

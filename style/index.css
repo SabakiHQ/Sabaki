@@ -469,10 +469,14 @@ header, #bar .bar {
 }
 
 #winrategraph {
-    height: 50px;
-    background: #181818;
-    box-shadow: 10px 0 10px #111;
-    z-index: 3;
+        visibility: hidden;
+        height: 50px;
+        background: #181818;
+        box-shadow: 10px 0 10px #111;
+        z-index: 3;
+    }
+    .showwinrate #winrategraph {
+        visibility: visible;
 }
 
 #slider {
