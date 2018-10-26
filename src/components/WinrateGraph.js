@@ -7,11 +7,11 @@ class WinrateGraph extends Component {
         super()
     }
 
-    shouldComponentUpdate(prevProps) {
-        let [tree, index] = this.props.treePosition
+    shouldComponentUpdate(nextProps) {
+        let [tree, index] = nextProps.treePosition
         let node = tree.nodes[index]
 
-        let result = !helper.vertexEquals(prevProps.treePosition, this.props.treePosition)
+        let result = !helper.vertexEquals(nextProps.treePosition, this.props.treePosition)
             || this.oldWinrate !== node.winrate
 
         this.oldWinrate = node.winrate
@@ -23,6 +23,7 @@ class WinrateGraph extends Component {
         let [tree, index] = this.props.treePosition
         let node = tree.nodes[index]
         let rootTree = gametree.getRoot(...this.props.treePosition)
+        let width = Math.max(Math.ceil((gametree.getHeight(rootTree) - 1) / 50) * 50, 1)
         let currentTrack = gametree.getCurrentTrack(rootTree)
         let data = currentTrack.map(x => x.winrate)
         let currentIndex = currentTrack.indexOf(node)
@@ -34,7 +35,7 @@ class WinrateGraph extends Component {
 
             h('svg',
                 {
-                    viewBox: '0 0 100 100',
+                    viewBox: `0 0 ${width} 100`,
                     preserveAspectRatio: 'none',
                     style: {height: '100%', width: '100%'}
                 },
@@ -44,7 +45,7 @@ class WinrateGraph extends Component {
                 h('line', {
                     x1: 0,
                     y1: 50,
-                    x2: 100,
+                    x2: width,
                     y2: 50,
                     stroke: '#aaa',
                     'stroke-width': 1,
@@ -52,12 +53,27 @@ class WinrateGraph extends Component {
                     'vector-effect': 'non-scaling-stroke'
                 }),
 
+                [...Array(width)].map((_, i) => {
+                    if (i === 0 || i % 50 !== 0) return
+
+                    return h('line', {
+                        x1: i,
+                        y1: 0,
+                        x2: i,
+                        y2: 100,
+                        stroke: '#aaa',
+                        'stroke-width': 1,
+                        'stroke-dasharray': 2,
+                        'vector-effect': 'non-scaling-stroke'
+                    })
+                }),
+
                 // Current position marker
 
                 h('line', {
-                    x1: currentIndex * 100 / (data.length - 1),
+                    x1: currentIndex,
                     y1: 0,
-                    x2: currentIndex * 100 / (data.length - 1),
+                    x2: currentIndex,
                     y2: 100,
                     stroke: '#0082F0',
                     'stroke-width': 2,
@@ -75,7 +91,7 @@ class WinrateGraph extends Component {
                         if (x == null) return ''
 
                         let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
-                        return `${command} ${i * 100 / (data.length - 1)},${x}`
+                        return `${command} ${i},${x}`
                     }).join(' ')
                 }),
 
@@ -99,8 +115,8 @@ class WinrateGraph extends Component {
 
                         if (lastIndex == null) return
 
-                        return `M ${lastIndex * 100 / (data.length - 1)},${data[lastIndex]}`
-                            + ` L ${i * 100 / (data.length - 1)},${x}`
+                        return `M ${lastIndex},${data[lastIndex]}`
+                            + ` L ${i},${x}`
                     }).join(' ')
                 })
             )
