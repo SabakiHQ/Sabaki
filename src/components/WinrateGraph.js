@@ -1,8 +1,14 @@
 const {h, Component} = require('preact')
+const helper = require('../modules/helper')
 
 class WinrateGraph extends Component {
     constructor() {
         super()
+
+        this.handleMouseDown = evt => {
+            this.mouseDown = true
+            document.dispatchEvent(new MouseEvent('mousemove', evt))
+        }
     }
 
     shouldComponentUpdate({width, currentIndex, data}) {
@@ -11,10 +17,29 @@ class WinrateGraph extends Component {
             || data[currentIndex] !== this.props.data[currentIndex]
     }
 
+    componentDidMount() {
+        document.addEventListener('mousemove', evt => {
+            if (!this.mouseDown) return
+
+            let rect = this.element.getBoundingClientRect()
+            let percent = (evt.clientX - rect.left) / rect.width
+            let {width, data, onCurrentIndexChange = helper.noop} = this.props
+            let index = Math.max(Math.min(Math.round(width * percent), data.length - 1), 0)
+
+            if (index !== this.props.currentIndex) onCurrentIndexChange({index})
+        })
+
+        document.addEventListener('mouseup', () => {
+            this.mouseDown = false
+        })
+    }
+
     render({width, currentIndex, data}) {
         return h('section',
             {
-                id: 'winrategraph'
+                ref: el => this.element = el,
+                id: 'winrategraph',
+                onMouseDown: this.handleMouseDown
             },
 
             h('svg',

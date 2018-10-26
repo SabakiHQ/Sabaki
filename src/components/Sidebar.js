@@ -48,6 +48,10 @@ class Sidebar extends Component {
             sabaki.goToMoveNumber(moveNumber)
         }
 
+        this.handleWinrateGraphChange = ({index}) => {
+            sabaki.goToMoveNumber(index)
+        }
+
         this.handleStartAutoscrolling = ({step}) => {
             let minDelay = setting.get('autoscroll.min_interval')
             let diff = setting.get('autoscroll.diff')
@@ -154,7 +158,8 @@ class Sidebar extends Component {
             h(WinrateGraph, {
                 width: winrateGraphWidth,
                 currentIndex: level,
-                data: currentTrack.map(x => x.winrate)
+                data: currentTrack.map(x => x.winrate),
+                onCurrentIndexChange: this.handleWinrateGraphChange
             }),
 
             h(Slider, {
