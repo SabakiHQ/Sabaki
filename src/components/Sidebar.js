@@ -150,7 +150,7 @@ class Sidebar extends Component {
             }),
 
             h(WinrateGraph, {
-                rootTree
+                treePosition
             }),
 
             h(Slider, {
