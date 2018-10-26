@@ -36,8 +36,10 @@ class GameGraphNode extends Component {
             let mousePosition = [x + sx, y + sy]
             let hover = false
 
-            if (mousePosition.every((x, i) => Math.ceil(position[i] - gridSize / 2) <= x
-            && x <= Math.floor(position[i] + gridSize / 2) - 1)) {
+            if (mousePosition.every((x, i) =>
+                Math.ceil(position[i] - gridSize / 2) <= x
+                && x <= Math.floor(position[i] + gridSize / 2) - 1
+            )) {
                 hover = true
             }
 

@@ -158,21 +158,15 @@ class WinrateGraph extends Component {
                     'vector-effect': 'non-scaling-stroke',
 
                     d: data.map((x, i) => {
-                        if (x == null || i === 0 || data[i - 1] != null) return
+                        if (i === 0) return ''
 
-                        let lastIndex = null
+                        if (x == null && data[i - 1] != null)
+                            return `M ${i - 1},${data[i - 1]}`
 
-                        for (let j = i - 1; j >= 0; j--) {
-                            if (data[j] != null) {
-                                lastIndex = j
-                                break
-                            }
-                        }
+                        if (x != null && data[i - 1] == null)
+                            return `L ${i},${x}`
 
-                        if (lastIndex == null) return
-
-                        return `M ${lastIndex},${data[lastIndex]}`
-                            + ` L ${i},${x}`
+                        return ''
                     }).join(' ')
                 })
             )
