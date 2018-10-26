@@ -440,7 +440,7 @@ class GameGraph extends Component {
             {
                 ref: el => this.element = el,
                 id: 'graph',
-                style: {height: `calc(${height}% - 50px)`}
+                style: {height: `${height}%`}
             },
 
             h('style', {}, `#graph svg > * {

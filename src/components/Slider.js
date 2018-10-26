@@ -70,7 +70,7 @@ class Slider extends Component {
     }
 
     render({height, text, percent}) {
-        return h('section', {id: 'slider', style: {height: `calc(${height}% - 50px)`}},
+        return h('section', {id: 'slider', style: {height: `${height}%`}},
             h('a', {
                 href: '#',
                 class: 'prev',

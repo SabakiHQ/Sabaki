@@ -113,8 +113,12 @@ class Sidebar extends Component {
             } else if (this.horizontalResizerMouseDown) {
                 evt.preventDefault()
 
-                let sidebarSplit = Math.min(100 - sidebarMinSplit,
-                    Math.max(sidebarMinSplit, 100 - evt.clientY * 100 / this.element.offsetHeight))
+                let {top, height} = this.horizontalSplitContainer.getBoundingClientRect()
+
+                let sidebarSplit = Math.min(
+                    100 - sidebarMinSplit,
+                    Math.max(sidebarMinSplit, 100 - (evt.clientY - top) * 100 / height)
+                )
 
                 this.setState({sidebarSplit, sidebarSplitTransition: false})
             }
@@ -162,49 +166,51 @@ class Sidebar extends Component {
                 onCurrentIndexChange: this.handleWinrateGraphChange
             }),
 
-            h(Slider, {
-                showSlider: showGameGraph,
-                text: level,
-                percent: (level / (treeHeight - 1)) * 100,
-                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+            h('div', {ref: el => this.horizontalSplitContainer = el, class: 'graphproperties'},
+                h(Slider, {
+                    showSlider: showGameGraph,
+                    text: level,
+                    percent: (level / (treeHeight - 1)) * 100,
+                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
-                onChange: this.handleSliderChange,
-                onStartAutoscrolling: this.handleStartAutoscrolling,
-                onStopAutoscrolling: this.handleStopAutoscrolling
-            }),
+                    onChange: this.handleSliderChange,
+                    onStartAutoscrolling: this.handleStartAutoscrolling,
+                    onStopAutoscrolling: this.handleStopAutoscrolling
+                }),
 
-            h(GameGraph, {
-                treePosition,
-                showGameGraph,
-                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-                gridSize: graphGridSize,
-                nodeSize: graphNodeSize,
+                h(GameGraph, {
+                    treePosition,
+                    showGameGraph,
+                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                    gridSize: graphGridSize,
+                    nodeSize: graphNodeSize,
 
-                onNodeClick: this.handleGraphNodeClick
-            }),
+                    onNodeClick: this.handleGraphNodeClick
+                }),
 
-            h(CommentBox, {
-                mode,
-                treePosition,
-                showCommentBox,
-                moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
-                    : 'DO' in node ? [0, 1]
-                    : 'IT' in node ? [1, 1]
-                    : 'TE' in node ? [2, node.TE[0]]
-                    : [null, 1],
-                positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
-                    : 'GW' in node ? [-1, node.GW[0]]
-                    : 'DM' in node ? [0, node.DM[0]]
-                    : 'GB' in node ? [1, node.GB[0]]
-                    : [null, 1],
-                title: 'N' in node ? node.N[0].trim() : '',
-                comment: 'C' in node ? node.C[0] : '',
-                height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
-                sidebarSplitTransition,
+                h(CommentBox, {
+                    mode,
+                    treePosition,
+                    showCommentBox,
+                    moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
+                        : 'DO' in node ? [0, 1]
+                        : 'IT' in node ? [1, 1]
+                        : 'TE' in node ? [2, node.TE[0]]
+                        : [null, 1],
+                    positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
+                        : 'GW' in node ? [-1, node.GW[0]]
+                        : 'DM' in node ? [0, node.DM[0]]
+                        : 'GB' in node ? [1, node.GB[0]]
+                        : [null, 1],
+                    title: 'N' in node ? node.N[0].trim() : '',
+                    comment: 'C' in node ? node.C[0] : '',
+                    height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
+                    sidebarSplitTransition,
 
-                onResizerMouseDown: this.handleHorizontalResizerMouseDown,
-                onCommentInput: this.handleCommentInput
-            })
+                    onResizerMouseDown: this.handleHorizontalResizerMouseDown,
+                    onCommentInput: this.handleCommentInput
+                })
+            )
         )
     }
 }
