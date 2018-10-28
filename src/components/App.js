@@ -894,8 +894,14 @@ class App extends Component {
 
         let oldTreeLength = tree.nodes.length
         let oldSubtreesCount = tree.subtrees.length
-        let [, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let [newTreePosition, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
         let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
+
+        this.setState(({gameTrees}) => ({
+            gameTrees: gameTrees.map(x =>
+                x === tree ? newTreePosition[0] : x
+            )
+        }))
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -1968,7 +1974,8 @@ class App extends Component {
         helper.popupMenu([{
             label: '&Add Variation',
             click: () => {
-                let isRootNode = this.state.treePosition[1] === 0 && this.state.treePosition[0].parent == null
+                let isRootTree = this.state.treePosition[0].parent == null
+                let isRootNode = isRootTree && this.state.treePosition[1] === 0
 
                 if (appendSibling && isRootNode) {
                     dialog.showMessageBox('The root node cannot have sibling nodes.', 'warning', ['OK'])
@@ -1986,6 +1993,12 @@ class App extends Component {
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
                     }))
                 )
+
+                this.setState(({gameTrees}) => ({
+                    gameTrees: gameTrees.map(x =>
+                        x === this.state.treePosition[0] ? position[0] : x
+                    )
+                }))
 
                 this.setCurrentTreePosition(...(
                     !appendSibling
