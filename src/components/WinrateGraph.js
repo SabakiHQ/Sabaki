@@ -71,7 +71,7 @@ class WinrateGraph extends Component {
                             'stroke-width': 0,
                             d: (() => {
                                 let instructions = data.map((x, i) => {
-                                    if (x == null) return null
+                                    if (x == null) return i === 0 ? [i, 50] : null
                                     return [i, x]
                                 }).filter(x => x != null)
 
@@ -158,7 +158,7 @@ class WinrateGraph extends Component {
                     'vector-effect': 'non-scaling-stroke',
 
                     d: data.map((x, i) => {
-                        if (i === 0) return ''
+                        if (i === 0) return 'M 0,50'
 
                         if (x == null && data[i - 1] != null)
                             return `M ${i - 1},${data[i - 1]}`
