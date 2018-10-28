@@ -1,5 +1,9 @@
+const {remote} = require('electron')
 const {h, Component} = require('preact')
 const helper = require('../modules/helper')
+const setting = remote.require('./setting')
+
+let winrateGraphHeight = setting.get('view.winrategraph_height')
 
 class WinrateGraph extends Component {
     constructor() {
@@ -39,6 +43,7 @@ class WinrateGraph extends Component {
             {
                 ref: el => this.element = el,
                 id: 'winrategraph',
+                style: {height: winrateGraphHeight},
                 onMouseDown: this.handleMouseDown
             },
 

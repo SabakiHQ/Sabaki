@@ -122,6 +122,7 @@ let defaults = {
     'view.show_siblings': true,
     'view.sidebar_width': 200,
     'view.sidebar_minwidth': 100,
+    'view.winrategraph_height': 70,
     'infooverlay.duration': 2000,
     'window.height': 604,
     'window.minheight': 440,
