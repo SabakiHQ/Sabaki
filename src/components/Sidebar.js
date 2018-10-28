@@ -82,13 +82,6 @@ class Sidebar extends Component {
         return nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
     }
 
-    componentWillReceiveProps({treePosition, rootTree} = {}) {
-        // Update tree height
-
-        if (this.props && treePosition === this.props.treePosition) return
-        this.setState({treeHeight: gametree.getHeight(rootTree)})
-    }
-
     componentDidMount() {
         document.addEventListener('mouseup', () => {
             if (this.verticalResizerMouseDown || this.horizontalResizerMouseDown) {
@@ -126,6 +119,27 @@ class Sidebar extends Component {
         })
     }
 
+    componentWillReceiveProps({treePosition, rootTree} = {}) {
+        if (!this.props || treePosition !== this.props.treePosition) {
+            // Update tree height
+
+            this.setState({treeHeight: gametree.getHeight(rootTree)})
+        }
+
+        // Get winrate data
+
+        let currentTrack = gametree.getCurrentTrack(rootTree)
+        let winrateData = currentTrack.map(x => x.SBKV && x.SBKV[0])
+
+        this.setState({winrateData})
+    }
+
+    componentDidUpdate(_, {winrateData}) {
+        if (winrateData.some(x => x != null) !== this.state.winrateData.some(x => x != null)) {
+            this.gameGraph.remeasure()
+        }
+    }
+
     render({
         mode,
         treePosition,
@@ -138,22 +152,22 @@ class Sidebar extends Component {
         graphNodeSize
     }, {
         treeHeight,
+        winrateData,
         sidebarSplit,
         sidebarSplitTransition
     }) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
         let winrateGraphWidth = Math.max(Math.ceil((treeHeight - 1) / 50) * 50, 1)
-        let currentTrack = gametree.getCurrentTrack(rootTree)
-        let winrateData = currentTrack.map(x => x.SBKV && x.SBKV[0])
-        let level = currentTrack.indexOf(node)
+        let level = gametree.getLevel(tree, index)
+        let showWinrateGraph = winrateData.some(x => x != null)
 
         return h('section',
             {
                 ref: el => this.element = el,
                 id: 'sidebar',
                 class: classNames({
-                    showwinrate: winrateData.some(x => x != null)
+                    showwinrate: showWinrateGraph
                 }),
                 style: {width: sidebarWidth}
             },
@@ -183,6 +197,8 @@ class Sidebar extends Component {
                 }),
 
                 h(GameGraph, {
+                    ref: component => this.gameGraph = component,
+
                     treePosition,
                     showGameGraph,
                     height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
