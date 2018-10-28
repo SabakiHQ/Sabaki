@@ -185,24 +185,20 @@ class GameGraph extends Component {
     }
 
     shouldComponentUpdate({showGameGraph, height}) {
-        return height !== this.props.height || showGameGraph && !this.dirty
+        return height !== this.props.height || showGameGraph
     }
 
     componentWillReceiveProps({treePosition, showGameGraph} = {}) {
         // Debounce rendering
 
+        if (treePosition == null) return
         if (treePosition === this.props.treePosition) return
 
-        this.dirty = true
+        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
+        this.setState({matrixDict: [matrix, dict]})
 
-        if (!this.props.showGameGraph && showGameGraph) {
-            if (treePosition == null) return
-            let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
-            this.setState({matrixDict: [matrix, dict]})
-        }
-
-        clearTimeout(this.renderId)
-        this.renderId = setTimeout(() => this.updateCameraPosition(), delay)
+        clearTimeout(this.updateCameraPositionId)
+        this.updateCameraPositionId = setTimeout(() => this.updateCameraPosition(), delay)
     }
 
     componentDidUpdate({height, showGameGraph}) {
@@ -228,9 +224,9 @@ class GameGraph extends Component {
 
     updateCameraPosition() {
         let {gridSize, treePosition: [tree, index]} = this.props
-        let id = tree.id + '-' + index
+        let {matrixDict: [matrix, dict]} = this.state
 
-        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(tree))
+        let id = tree.id + '-' + index
         let [x, y] = dict[id]
         let [width, padding] = gametree.getMatrixWidth(y, matrix)
 
@@ -238,10 +234,7 @@ class GameGraph extends Component {
         let diff = (width - 1) * gridSize / 2
         diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
-        this.dirty = false
-
         this.setState({
-            matrixDict: [matrix, dict],
             cameraPosition: [
                 x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
                 y * gridSize - this.state.viewportSize[1] / 2
