@@ -469,14 +469,32 @@ header, #bar .bar {
 }
 
 #winrategraph {
+        position: relative;
         visibility: hidden;
         height: 50px;
         background: #181818;
         box-shadow: 10px 0 10px #111;
+        overflow: hidden;
         z-index: 3;
+    }
+    #winrategraph svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
     }
     .showwinrate #winrategraph {
         visibility: visible;
+    }
+    #winrategraph .marker {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #0082F0;
+        border-radius: 50%;
+        margin-top: -3px;
+        margin-left: -3px;
 }
 
 #slider {

@@ -174,7 +174,18 @@ class WinrateGraph extends Component {
                         return ''
                     }).join(' ')
                 })
-            )
+            ),
+
+            // Draw marker
+
+            data[currentIndex] && h('div', {
+                class: 'marker',
+                style: {
+                    left: `${currentIndex * 100 / width}%`,
+                    top: `${data[currentIndex]}%`
+                },
+                title: `White win rate: ${Math.round((100 - data[currentIndex]) * 100) / 100}%`
+            })
         )
     }
 }
