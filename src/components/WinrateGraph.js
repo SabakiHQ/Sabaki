@@ -184,7 +184,7 @@ class WinrateGraph extends Component {
                     left: `${currentIndex * 100 / width}%`,
                     top: `${data[currentIndex]}%`
                 },
-                title: `White win rate: ${Math.round((100 - data[currentIndex]) * 100) / 100}%`
+                title: `White winrate: ${Math.round((100 - data[currentIndex]) * 100) / 100}%`
             })
         )
     }

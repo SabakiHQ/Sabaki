@@ -50,6 +50,7 @@ let defaults = {
     'cleanmarkup.line': true,
     'cleanmarkup.square': true,
     'cleanmarkup.triangle': true,
+    'cleanmarkup.winrate': false,
     'comments.show_move_interpretation': true,
     'console.max_history_count': 1000,
     'debug.dev_tools': false,
