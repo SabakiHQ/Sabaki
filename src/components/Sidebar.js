@@ -145,7 +145,7 @@ class Sidebar extends Component {
         let node = tree.nodes[index]
         let winrateGraphWidth = Math.max(Math.ceil((treeHeight - 1) / 50) * 50, 1)
         let currentTrack = gametree.getCurrentTrack(rootTree)
-        let winrateData = currentTrack.map(x => x.winrate)
+        let winrateData = currentTrack.map(x => x.SBKV && x.SBKV[0])
         let level = currentTrack.indexOf(node)
 
         return h('section',

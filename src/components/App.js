@@ -2152,7 +2152,7 @@ class App extends Component {
                 if (sign < 0) winrate = 100 - winrate
 
                 let [tree, index] = this.state.treePosition
-                tree.nodes[index].winrate = winrate
+                tree.nodes[index].SBKV = [winrate]
 
                 this.setState({analysis})
             }
