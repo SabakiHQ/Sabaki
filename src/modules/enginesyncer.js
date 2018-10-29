@@ -34,7 +34,7 @@ async function enginePlay(controller, sign, vertex, board) {
     return true
 }
 
-exports.sync = async function(controller, engineState, treePosition) {
+exports.sync = async function(controller, engineState, treePosition, {useUndo = true} = {}) {
     let rootTree = gametree.getRoot(treePosition[0])
     let board = gametree.getBoard(...treePosition)
 
@@ -50,24 +50,6 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     if (engineState == null || komi !== engineState.komi) {
         controller.sendCommand({name: 'komi', args: [komi]})
-    }
-
-    // See if we need to update board
-
-    if (engineState != null) {
-        let engineBoard = new Board(engineState.size, engineState.size)
-
-        for (let {sign, vertex, vertices} of engineState.moves) {
-            if (vertex != null) vertices = [vertex]
-
-            for (let vertex of vertices) {
-                engineBoard = engineBoard.makeMove(sign, vertex)
-            }
-        }
-
-        if (engineBoard.getPositionHash() === board.getPositionHash()) {
-            return {komi, size: engineState.size, moves: engineState.moves}
-        }
     }
 
     // Update board size
@@ -130,19 +112,34 @@ exports.sync = async function(controller, engineState, treePosition) {
     }
 
     if (synced) {
-        let startIndex = 0
+        let sharedHistoryLength = [...Array(Math.min(engineState.moves.length, moves.length))]
+            .findIndex((_, i) => JSON.stringify(moves[i]) !== JSON.stringify(engineState.moves[i]))
+        if (sharedHistoryLength < 0) sharedHistoryLength = Math.min(engineState.moves.length, moves.length)
 
-        if (engineState.moves.length <= moves.length && engineState.moves.every((x, i) =>
-            JSON.stringify(x) === JSON.stringify(moves[i])
-        )) {
-            startIndex = engineState.moves.length
-        }
+        if (
+            useUndo
+            && sharedHistoryLength > 1
+            && engineState.moves.length > sharedHistoryLength
+            && engineState.moves.length < 2 * sharedHistoryLength
+        ) {
+            let n = engineState.moves.length - sharedHistoryLength
 
-        if (startIndex === 0) {
+            promises = [
+                ...[...Array(n)].map(() =>
+                    () => controller.sendCommand({name: 'undo'}).then(r => !r.error)
+                ),
+                ...promises.slice(sharedHistoryLength)
+            ]
+        } else if (
+            sharedHistoryLength > 0 &&
+            engineState.moves.length === sharedHistoryLength
+        ) {
+            promises = promises.slice(sharedHistoryLength)
+        } else {
             controller.sendCommand({name: 'clear_board'})
         }
 
-        let result = await Promise.all(promises.slice(startIndex).map(x => x()))
+        let result = await Promise.all(promises.map(x => x()))
         let success = result.every(x => x)
 
         if (success) return {komi, size: board.width, moves}
@@ -172,7 +169,7 @@ exports.sync = async function(controller, engineState, treePosition) {
         let result = await Promise.all(promises.map(x => x()))
         let success = result.every(x => x)
 
-        if (success) return  {komi, size: board.width, moves}
+        if (success) return {komi, size: board.width, moves}
     }
 
     throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
