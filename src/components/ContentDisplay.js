@@ -7,7 +7,7 @@ const setting = remote.require('./setting')
 function htmlify(input) {
     let urlRegex = '\\b(ht|f)tps?:\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
     let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-    let variationRegex = '\\b(black\\s+?|white\\s+?|[bw]\\s*)?(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
+    let variationRegex = '\\b(black\\s+?|white\\s+?|[bw]\\s*)(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
     let coordRegex = '\\b[a-hj-z]\\d+\\b'
     let movenumberRegex = '(\\B#|\\bmove[ ]+)(\\d+)\\b'
     let totalRegex = '(' + [urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex].join('|') + ')'
