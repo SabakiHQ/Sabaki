@@ -271,6 +271,8 @@ class GtpConsole extends Component {
             ),
 
             h(ConsoleInput, {
+                ref: component => this.inputElement = component.inputElement,
+
                 consoleLog,
                 attachedEngines,
                 engineCommands,
