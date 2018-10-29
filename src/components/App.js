@@ -22,9 +22,9 @@ const influence = require('@sabaki/influence')
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const Board = require('../modules/board')
+const EngineSyncer = require('../modules/enginesyncer')
 const boardmatcher = require('../modules/boardmatcher')
 const dialog = require('../modules/dialog')
-const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
@@ -116,12 +116,11 @@ class App extends Component {
         this.window = remote.getCurrentWindow()
 
         this.treeHash = this.generateTreeHash()
-        this.attachedEngineControllers = [null, null]
-        this.engineStates = [null, null]
+        this.attachedEngineSyncers = [null, null]
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, dialog, enginesyncer,
+        this.modules = {Board, EngineSyncer, boardmatcher, dialog,
             fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
@@ -941,7 +940,7 @@ class App extends Component {
 
         this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
 
-        if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
+        if (sendToEngine && this.attachedEngineSyncers.some(x => x != null)) {
             // Send command to engine
 
             let passPlayer = pass ? player : null
@@ -2012,15 +2011,12 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
-        let {dirname, resolve} = require('path')
-        let split = require('argv-split')
         let {engineCommands, attachedEngines} = this.state
 
         if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
             // Just swap engines
 
-            this.attachedEngineControllers.reverse()
-            this.engineStates.reverse()
+            this.attachedEngineSyncers.reverse()
 
             this.setState({
                 engineCommands: engineCommands.reverse(),
@@ -2035,45 +2031,32 @@ class App extends Component {
         for (let i = 0; i < attachedEngines.length; i++) {
             if (attachedEngines[i] === engines[i])
                 continue
-            if (this.attachedEngineControllers[i])
-                this.attachedEngineControllers[i].stop(quitTimeout)
+            if (this.attachedEngineSyncers[i])
+                this.attachedEngineSyncers[i].controller.stop(quitTimeout)
 
             try {
-                let {path, args, commands} = engines[i]
-                let controller = new gtp.Controller(path, split(args), {
-                    cwd: dirname(resolve(path))
-                })
+                let syncer = new EngineSyncer(engines[i])
+                this.attachedEngineSyncers[i] = syncer
 
-                controller.engine = engines[i]
-
-                controller.on('command-sent', evt => {
-                    this.handleCommandSent(Object.assign({controller}, evt))
-                })
-
-                controller.on('started', () => {
-                    controller.sendCommand({name: 'name'})
-                    controller.sendCommand({name: 'version'})
-                    controller.sendCommand({name: 'protocol_version'})
-                    controller.sendCommand({name: 'list_commands'}).then(response => {
-                        engineCommands[i] = response.content.split('\n')
-                    })
-
-                    if (commands == null || commands.trim() === '') return
-
-                    for (let command of commands.split(';').filter(x => x.trim() !== '')) {
-                        controller.sendCommand(gtp.Command.fromString(command))
+                syncer.controller.on('command-sent', evt => {
+                    if (evt.command.name === 'list_commands') {
+                        evt.getResponse().then(response =>
+                            this.setState(({engineCommands}) => {
+                                engineCommands[i] = response.content.split('\n')
+                                return {engineCommands}
+                            })
+                        )
                     }
+
+                    this.handleCommandSent(Object.assign({syncer}, evt))
                 })
 
-                this.attachedEngineControllers[i] = controller
-                this.engineStates[i] = null
+                syncer.controller.start()
 
-                controller.start()
-
-                controller.on('stderr', ({content}) => {
+                syncer.controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
-                            sign: this.attachedEngineControllers.indexOf(controller) === 0 ? 1 : -1,
+                            sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
                             name: engines[i].name,
                             command: null,
                             response: {content, internal: true}
@@ -2083,7 +2066,7 @@ class App extends Component {
 
                 this.setState({engineCommands})
             } catch (err) {
-                this.attachedEngineControllers[i] = null
+                this.attachedEngineSyncers[i] = null
                 engines[i] = null
             }
         }
@@ -2096,22 +2079,20 @@ class App extends Component {
     }
 
     suspendEngines() {
-        for (let controller of this.attachedEngineControllers) {
-            if (controller != null) controller.kill()
+        for (let syncer of this.attachedEngineSyncers) {
+            if (syncer != null) syncer.controller.kill()
         }
-
-        this.engineStates = [null, null]
 
         this.stopGeneratingMoves()
         this.hideInfoOverlay()
         this.setBusy(false)
     }
 
-    handleCommandSent({controller, command, subscribe, getResponse}) {
-        let sign = 1 - this.attachedEngineControllers.indexOf(controller) * 2
+    handleCommandSent({syncer, command, subscribe, getResponse}) {
+        let sign = 1 - this.attachedEngineSyncers.indexOf(syncer) * 2
         if (sign > 1) sign = 0
 
-        let entry = {sign, name: controller.engine.name, command, waiting: true}
+        let entry = {sign, name: syncer.engine.name, command, waiting: true}
         let maxLength = setting.get('console.max_history_count')
 
         this.setState(({consoleLog}) => {
@@ -2179,26 +2160,23 @@ class App extends Component {
     }
 
     async syncEngines({passPlayer = null} = {}) {
-        if (this.attachedEngineControllers.every(x => x == null)) return
+        if (this.attachedEngineSyncers.every(x => x == null)) return
 
         this.setBusy(true)
 
         let {treePosition} = this.state
 
         try {
-            this.engineStates = await Promise.all(this.attachedEngineControllers.map((controller, i) => {
-                if (controller == null) return this.engineStates[i]
-
-                return enginesyncer.sync(controller, this.engineStates[i], treePosition, {
-                    useUndo: this.state.engineCommands && this.state.engineCommands[i].includes('undo')
-                })
+            await Promise.all(this.attachedEngineSyncers.map(syncer => {
+                if (syncer == null) return
+                return syncer.sync(treePosition)
             }))
 
             // Send pass if required
 
             if (passPlayer != null) {
                 let color = passPlayer > 0 ? 'B' : 'W'
-                let controller = this.attachedEngineControllers[passPlayer > 0 ? 0 : 1]
+                let {controller} = this.attachedEngineSyncers[passPlayer > 0 ? 0 : 1] || {}
 
                 if (controller != null) {
                     controller.sendCommand({name: 'play', args: [color, 'pass']})
@@ -2220,8 +2198,8 @@ class App extends Component {
         let color = currentPlayer > 0 ? 'B' : 'W'
         let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
 
-        let controllerIndex = controllerIndices.find(i =>
-            this.attachedEngineControllers[i] != null
+        let engineIndex = controllerIndices.find(i =>
+            this.attachedEngineSyncers[i] != null
             && this.state.engineCommands[i] != null
             && (this.state.engineCommands[i].includes('lz-analyze')
             || this.state.engineCommands[i].includes('sabaki-analyze'))
@@ -2229,9 +2207,9 @@ class App extends Component {
 
         let error = false
 
-        if (controllerIndex != null) {
-            let controller = this.attachedEngineControllers[controllerIndex]
-            let commands = this.state.engineCommands[controllerIndex]
+        if (engineIndex != null) {
+            let {controller} = this.attachedEngineSyncers[engineIndex]
+            let commands = this.state.engineCommands[engineIndex]
             let name = commands.includes('lz-analyze') ? 'lz-analyze' : 'sabaki-analyze'
 
             await this.syncEngines()
@@ -2252,10 +2230,10 @@ class App extends Component {
     stopAnalysis() {
         if (this.state.analysis == null) return
 
-        for (let controller of this.attachedEngineControllers) {
-            if (controller == null || controller.process == null) continue
+        for (let syncer of this.attachedEngineSyncers) {
+            if (syncer == null || syncer.controller.process == null) continue
 
-            controller.process.stdin.write('\n')
+            syncer.controller.process.stdin.write('\n')
         }
 
         this.setState({analysis: null})
@@ -2276,22 +2254,22 @@ class App extends Component {
         let {currentPlayer, rootTree} = this.inferredState
         let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
         let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
-        let playerController = this.attachedEngineControllers[playerIndex]
-        let otherController = this.attachedEngineControllers[otherIndex]
+        let playerSyncer = this.attachedEngineSyncers[playerIndex]
+        let otherSyncer = this.attachedEngineSyncers[otherIndex]
 
-        if (playerController == null) {
-            if (otherController != null) {
+        if (playerSyncer == null) {
+            if (otherSyncer != null) {
                 // Switch engines, so the attached engine can play
 
                 let engines = [...this.state.attachedEngines].reverse()
                 this.attachEngines(...engines)
-                ;[playerController, otherController] = [otherController, playerController]
+                ;[playerSyncer, otherSyncer] = [otherSyncer, playerSyncer]
             } else {
                 return
             }
         }
 
-        if (firstMove && followUp && otherController != null) {
+        if (firstMove && followUp && otherSyncer != null) {
             this.flashInfoOverlay('Press Esc to stop playing')
         }
 
@@ -2304,11 +2282,11 @@ class App extends Component {
 
         let responseContent = await (
             commandName === 'genmove'
-            ? playerController.sendCommand({name: commandName, args: [color]}).then(res => res.content)
+            ? playerSyncer.controller.sendCommand({name: commandName, args: [color]}).then(res => res.content)
             : new Promise(resolve => {
                 let interval = setting.get('board.analysis_interval').toString()
 
-                playerController.sendCommand({name: commandName, args: [color, interval]}, ({line}) => {
+                playerSyncer.controller.sendCommand({name: commandName, args: [color, interval]}, ({line}) => {
                     if (line.indexOf('play ') !== 0) return
                     resolve(line.slice('play '.length).trim())
                 })
@@ -2324,7 +2302,7 @@ class App extends Component {
             pass = false
 
             if (responseContent.toLowerCase() === 'resign') {
-                dialog.showMessageBox(`${playerController.engine.name} has resigned.`)
+                dialog.showMessageBox(`${playerSyncer.engine.name} has resigned.`)
 
                 this.stopGeneratingMoves()
                 this.hideInfoOverlay()
@@ -2344,13 +2322,7 @@ class App extends Component {
 
         this.makeMove(vertex, {player: sign})
 
-        this.engineStates[playerIndex] = {
-            komi: this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi,
-            size: board.width,
-            moves: [...this.engineStates[playerIndex].moves, {sign, vertex}]
-        }
-
-        if (followUp && otherController != null && !doublePass) {
+        if (followUp && otherSyncer != null && !doublePass) {
             await helper.wait(setting.get('gtp.move_delay'))
             this.generateMove({analyze, passPlayer: pass ? sign : null, firstMove: false, followUp})
         } else {

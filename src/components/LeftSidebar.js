@@ -21,25 +21,8 @@ class LeftSidebar extends Component {
         }
 
         this.handleCommandSubmit = ({engineIndex, command}) => {
-            let blockedCommands = setting.get('console.blocked_commands')
-
-            if (blockedCommands.includes(command.name)) {
-                sabaki.setState(({consoleLog}) => {
-                    let newLog = consoleLog.slice(consoleLog.length >= maxConsoleLength ? 1 : 0)
-
-                    newLog.push({
-                        sign: engineIndex === 0 ? 1 : -1,
-                        name: this.props.attachedEngines[engineIndex].name,
-                        command,
-                        response: {id: command.id, content: 'blocked command', error: true, internal: true}
-                    })
-
-                    return {consoleLog: newLog}
-                })
-            } else {
-                let controller = sabaki.attachedEngineControllers[engineIndex]
-                if (controller != null) controller.sendCommand(command)
-            }
+            let syncer = sabaki.attachedEngineSyncers[engineIndex]
+            if (syncer != null) syncer.controller.sendCommand(command)
         }
     }
 

@@ -51,13 +51,6 @@ let defaults = {
     'cleanmarkup.square': true,
     'cleanmarkup.triangle': true,
     'comments.show_move_interpretation': true,
-    'console.blocked_commands': [
-        'boardsize', 'clear_board', 'play',
-        'genmove', 'undo', 'fixed_handicap',
-        'place_free_handicap', 'set_free_handicap',
-        'loadsgf', 'komi', 'lz-genmove_analyze',
-        'sabaki-genmove_analyze'
-    ],
     'console.max_history_count': 1000,
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
@@ -96,7 +89,7 @@ let defaults = {
     'gtp.start_game_after_attach': true,
     'score.estimator_iterations': 100,
     'scoring.method': 'territory',
-    'setting.overwrite.v0.16.0': ['console.blocked_commands', 'window.minheight'],
+    'setting.overwrite.v0.16.0': ['window.minheight'],
     'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
     'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
     'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],

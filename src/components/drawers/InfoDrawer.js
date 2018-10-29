@@ -55,7 +55,7 @@ class InfoDrawer extends Component {
             let i = this.props.currentPlayer > 0 ? 0 : 1
             let startGame = setting.get('gtp.start_game_after_attach')
 
-            if (startGame && sabaki.attachedEngineControllers[i] != null) {
+            if (startGame && sabaki.attachedEngineSyncers[i] != null) {
                 sabaki.generateMove({followUp: true})
             }
         }
