@@ -54,35 +54,33 @@ exports.sync = async function(controller, engineState, treePosition) {
 
     // See if we need to update board
 
-    let newEngineState = {komi, board}
-
-    if (engineState != null && engineState.board.getPositionHash() === board.getPositionHash()) {
-        return newEngineState
-    }
-
-    // Incremental board update
-
     if (engineState != null) {
-        let diff = engineState.board.diff(board).filter(v => board.get(v) !== 0)
+        let engineBoard = new Board(engineState.size, engineState.size)
 
-        if (diff != null && diff.length === 1) {
-            let [vertex] = diff
-            let sign = board.get(vertex)
-            let move = engineState.board.makeMove(sign, vertex)
+        for (let {sign, vertex, vertices} of engineState.moves) {
+            if (vertex != null) vertices = [vertex]
 
-            if (move.getPositionHash() === board.getPositionHash()) {
-                let success = await enginePlay(controller, sign, vertex, engineState.board)
-                if (success) return newEngineState
+            for (let vertex of vertices) {
+                engineBoard = engineBoard.makeMove(sign, vertex)
             }
         }
+
+        if (engineBoard.getPositionHash() === board.getPositionHash()) {
+            return {komi, size: engineState.size, moves: engineState.moves}
+        }
+    }
+
+    // Update board size
+
+    if (engineState == null || board.width !== engineState.size) {
+        controller.sendCommand({name: 'boardsize', args: [board.width]})
+        engineState = {komi, size: board.width, moves: []}
     }
 
     // Replay
 
-    controller.sendCommand({name: 'boardsize', args: [board.width]})
-    controller.sendCommand({name: 'clear_board'})
-
     let engineBoard = new Board(board.width, board.height)
+    let moves = []
     let promises = []
     let synced = true
 
@@ -95,7 +93,9 @@ exports.sync = async function(controller, engineState, treePosition) {
             // Place handicap stones
 
             let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
-            promises.push(setHandicapStones(controller, vertices, engineBoard))
+
+            promises.push(() => setHandicapStones(controller, vertices, engineBoard))
+            moves.push({sign: 1, vertices})
 
             for (let vertex of vertices) {
                 if (engineBoard.get(vertex) !== 0) continue
@@ -110,13 +110,14 @@ exports.sync = async function(controller, engineState, treePosition) {
             if (!(prop in node) || placedHandicapStones && prop === 'AB') continue
 
             let sign = prop.slice(-1) === 'B' ? 1 : -1
-            let vertices = node[prop].map(sgf.parseCompressedVertices).reduce((list, x) => [...list, ...x])
+            let vertices = [].concat(...node[prop].map(sgf.parseCompressedVertices))
 
             for (let vertex of vertices) {
                 if (engineBoard.get(vertex) !== 0) continue
 
-                promises.push(enginePlay(controller, sign, vertex, engineBoard))
+                promises.push(() => enginePlay(controller, sign, vertex, engineBoard))
                 engineBoard = engineBoard.makeMove(sign, vertex)
+                moves.push({sign, vertex})
             }
         }
 
@@ -129,38 +130,49 @@ exports.sync = async function(controller, engineState, treePosition) {
     }
 
     if (synced) {
-        let result = await Promise.all(promises)
+        let startIndex = 0
+
+        if (engineState.moves.length <= moves.length && engineState.moves.every((x, i) =>
+            JSON.stringify(x) === JSON.stringify(moves[i])
+        )) {
+            startIndex = engineState.moves.length
+        }
+
+        if (startIndex === 0) {
+            controller.sendCommand({name: 'clear_board'})
+        }
+
+        let result = await Promise.all(promises.slice(startIndex).map(x => x()))
         let success = result.every(x => x)
 
-        if (success) return newEngineState
+        if (success) return {komi, size: board.width, moves}
     }
 
     // Rearrangement
 
-    controller.sendCommand({name: 'boardsize', args: [board.width]})
     controller.sendCommand({name: 'clear_board'})
 
     engineBoard = new Board(board.width, board.height)
     promises = []
+    moves = []
 
     for (let x = 0; x < board.width; x++) {
-        if (engineBoard == null) break
-
         for (let y = 0; y < board.height; y++) {
             let vertex = [x, y]
             let sign = board.get(vertex)
             if (sign === 0) continue
 
-            promises.push(enginePlay(controller, sign, vertex, engineBoard))
+            promises.push(() => enginePlay(controller, sign, vertex, engineBoard))
             engineBoard = engineBoard.makeMove(sign, vertex)
+            moves.push({sign, vertex})
         }
     }
 
     if (engineBoard.getPositionHash() === board.getPositionHash()) {
-        let result = await Promise.all(promises)
+        let result = await Promise.all(promises.map(x => x()))
         let success = result.every(x => x)
 
-        if (success) return newEngineState
+        if (success) return  {komi, size: board.width, moves}
     }
 
     throw new Error('Current board arrangement can’t be recreated on the GTP engine.')

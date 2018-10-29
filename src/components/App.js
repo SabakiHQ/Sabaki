@@ -2344,7 +2344,8 @@ class App extends Component {
 
         this.engineStates[playerIndex] = {
             komi: this.engineStates[playerIndex] != null && this.engineStates[playerIndex].komi,
-            board: gametree.getBoard(...this.state.treePosition)
+            size: board.width,
+            moves: [...this.engineStates[playerIndex].moves, {sign, vertex}]
         }
 
         if (followUp && otherController != null && !doublePass) {
