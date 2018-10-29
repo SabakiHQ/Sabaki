@@ -2189,7 +2189,9 @@ class App extends Component {
             this.engineStates = await Promise.all(this.attachedEngineControllers.map((controller, i) => {
                 if (controller == null) return this.engineStates[i]
 
-                return enginesyncer.sync(controller, this.engineStates[i], treePosition)
+                return enginesyncer.sync(controller, this.engineStates[i], treePosition, {
+                    useUndo: this.state.engineCommands && this.state.engineCommands[i].includes('undo')
+                })
             }))
 
             // Send pass if required
