@@ -1,7 +1,7 @@
 const {dirname, resolve} = require('path')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
-const split = require('argv-split')
+const argvsplit = require('argv-split')
 const gametree = require('./gametree')
 const helper = require('./helper')
 const Board = require('./board')
@@ -31,7 +31,7 @@ class EngineSyncer {
             moves: []
         }
 
-        this.controller = new gtp.Controller(path, split(args), {
+        this.controller = new gtp.Controller(path, argvsplit(args), {
             cwd: dirname(resolve(path))
         })
 
@@ -50,11 +50,15 @@ class EngineSyncer {
             }
         })
 
-        this.controller.on('command-sent', async ({command, getResponse}) => {
-            // State management
+        this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
+            // Track engine state
 
-            let res = await getResponse()
-            if (res.error) return
+            let res = null
+
+            if (!['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)) {
+                res = await getResponse()
+                if (res.error) return
+            }
 
             if (command.name === 'boardsize' && command.args.length >= 1) {
                 this.state.size = +command.args[0]
@@ -65,9 +69,8 @@ class EngineSyncer {
             } else if (command.name === 'komi' && command.args.length >= 1) {
                 this.state.komi = +command.args[0]
             } else if (['fixed_handicap', 'place_free_handicap'].includes(command.name)) {
-                let size = this.state.size
                 let vertices = res.content.trim().split(/\s+/)
-                    .map(coord => coord2vertex(coord, size))
+                    .map(coord => coord2vertex(coord, this.state.size))
                     .filter(x => x != null)
 
                 this.state.moves.push({sign: 1, vertices})
@@ -82,17 +85,24 @@ class EngineSyncer {
                 let vertex = coord2vertex(command.args[1], this.state.size)
 
                 if (vertex) this.state.moves.push({sign, vertex})
+            } else if (command.name === 'genmove' && command.args.length >= 1) {
+                let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
+                let vertex = coord2vertex(res.content.trim(), this.state.size)
+
+                if (vertex) this.state.moves.push({sign, vertex})
             } else if (
-                ['genmove', 'lz-genmove_analyze', 'genmove_analyze'].includes(command.name)
+                ['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)
                 && command.args.length >= 1
             ) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
-                let vertex = coord2vertex(
-                    command.name === 'genmove'
-                        ? res.content.trim()
-                        : res.content.match(/^play (.*)$/mi)[1],
-                    this.state.size
-                )
+                let vertex = await new Promise(resolve => {
+                    getResponse().then(() => resolve(null))
+
+                    subscribe(({line}) => {
+                        let match = line.trim().match(/^play (.*)$/)
+                        if (match) resolve(coord2vertex(match[1], this.state.size))
+                    })
+                })
 
                 if (vertex) this.state.moves.push({sign, vertex})
             } else if (command.name === 'undo') {

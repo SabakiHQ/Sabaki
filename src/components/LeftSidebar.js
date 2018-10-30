@@ -2,11 +2,9 @@ const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const GtpConsole = require('./GtpConsole')
-const gametree = require('../modules/gametree')
 const setting = remote.require('./setting')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
-let maxConsoleLength = setting.get('console.max_history_count')
 
 class LeftSidebar extends Component {
     constructor() {
