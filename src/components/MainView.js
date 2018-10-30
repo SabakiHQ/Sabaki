@@ -33,7 +33,7 @@ class MainView extends Component {
         // Pressing Ctrl should show crosshair cursor on Goban in edit mode
 
         document.addEventListener('keydown', evt => {
-            if (evt.key !== 'Control') return
+            if (evt.key !== 'Control' || evt.key !== 'Meta') return
 
             if (this.props.mode === 'edit') {
                 this.setState({gobanCrosshair: true})

@@ -224,7 +224,7 @@ class App extends Component {
                     this.setState({fullScreen: false})
                 }
             } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
-                if (document.activeElement !== document.body || evt.ctrlKey) return
+                if (document.activeElement !== document.body || evt.ctrlKey || evt.metaKey) return
                 evt.preventDefault()
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
