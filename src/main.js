@@ -44,9 +44,9 @@ function newWindow(path) {
 
     window.loadURL(`file://${join(__dirname, '..', 'index.html')}`)
 
-    if (setting.get('debug.dev_tools')) {
+    // if (setting.get('debug.dev_tools')) {
         window.openDevTools()
-    }
+    // }
 
     return window
 }

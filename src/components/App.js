@@ -822,8 +822,6 @@ class App extends Component {
     }
 
     makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
-        this.stopAnalysis()
-
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -2123,10 +2121,11 @@ class App extends Component {
                     .map(x => x.trim())
                     .map(x => {
                         let match = x.match(/[A-Za-z]\d+(\s+[A-Za-z]\d+)*$/)
-                        if (match == null) return [x, []]
+                        if (match == null) return null
 
                         return [x.slice(0, match.index), match[0].split(/\s+/)]
                     })
+                    .filter(x => x != null)
                     .map(([x, y]) => [
                         x.trim().split(/\s+/).slice(0, -1),
                         y.filter(x => x.length >= 2)
@@ -2140,6 +2139,7 @@ class App extends Component {
 
                         return keys.reduce((acc, x, i) => (acc[x] = values[i], acc), {})
                     })
+                    .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
                     .map(({move, visits, winrate, pv}) => ({
                         sign,
                         vertex: board.coord2vertex(move),
@@ -2148,11 +2148,18 @@ class App extends Component {
                         variation: pv.map(x => board.coord2vertex(x))
                     }))
 
+                let winrate = Math.max(...analysis.map(({win}) => win))
+                if (sign < 0) winrate = 100 - winrate
+
+                let [tree, index] = this.state.treePosition
+                tree.nodes[index].SBKV = [winrate]
+
                 this.setState({analysis})
             }
         })
 
         getResponse()
+        .then(() => this.setState({analysis: null}))
         .catch(_ => updateEntry({
             response: {internal: true, content: 'connection failed'},
             waiting: false
@@ -2202,7 +2209,7 @@ class App extends Component {
             this.attachedEngineSyncers[i] != null
             && this.state.engineCommands[i] != null
             && (this.state.engineCommands[i].includes('lz-analyze')
-            || this.state.engineCommands[i].includes('sabaki-analyze'))
+            || this.state.engineCommands[i].includes('analyze'))
         )
 
         let error = false
@@ -2210,7 +2217,7 @@ class App extends Component {
         if (engineIndex != null) {
             let {controller} = this.attachedEngineSyncers[engineIndex]
             let commands = this.state.engineCommands[engineIndex]
-            let name = commands.includes('lz-analyze') ? 'lz-analyze' : 'sabaki-analyze'
+            let name = commands.includes('analyze') ? 'analyze' : 'lz-analyze'
 
             await this.syncEngines()
 
@@ -2278,7 +2285,7 @@ class App extends Component {
         let commands = this.state.engineCommands[playerIndex]
         let commandName = !analyze
             ? 'genmove'
-            : ['sabaki-genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
+            : ['genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
 
         let responseContent = await (
             commandName === 'genmove'

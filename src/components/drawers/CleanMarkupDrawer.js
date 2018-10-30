@@ -46,7 +46,7 @@ class CleanMarkupDrawer extends Component {
 
         this.handleRemoveButtonClick = evt => {
             evt.preventDefault()
-            
+
             let doRemove = async work => {
                 sabaki.setUndoPoint('Undo Clean Markup')
                 sabaki.setBusy(true)
@@ -61,7 +61,8 @@ class CleanMarkupDrawer extends Component {
                     label: ['LB'],
                     comments: ['C', 'N'],
                     annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
-                    hotspots: ['HO']
+                    hotspots: ['HO'],
+                    winrate: ['SBKV']
                 }
 
                 let properties = Object.keys(data)
@@ -170,6 +171,10 @@ class CleanMarkupDrawer extends Component {
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.hotspots',
                         text: 'Hotspots markers'
+                    }),
+                    h(CleanMarkupItem, {
+                        id: 'cleanmarkup.winrate',
+                        text: 'Winrate data'
                     })
                 ),
 
@@ -179,7 +184,7 @@ class CleanMarkupDrawer extends Component {
                         class: 'dropdown',
                         onClick: this.handleRemoveButtonClick
                     }, 'Remove'), ' ',
-                    
+
                     h('button', {onClick: this.handleCloseButtonClick}, 'Close')
                 )
             )

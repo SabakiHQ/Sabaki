@@ -323,7 +323,7 @@ header, #bar .bar {
         top: 0;
         bottom: 0;
         left: 0;
-        background: #181818;
+        background: #111;
         z-index: 10;
     }
     #leftsidebar .verticalresizer {
@@ -386,7 +386,7 @@ header, #bar .bar {
         left: 0;
         right: 0;
         height: 40px;
-        background: #222;
+        background: #181818;
         overflow: hidden;
     }
     #console .input select {
@@ -420,8 +420,8 @@ header, #bar .bar {
 }
 
 .comment-coord, .comment-variation {
-        padding: 0 5px;
-        background: #101010;
+        padding: 0 .3em;
+        background: #050505;
         color: white;
         border-radius: 3px;
         cursor: default;
@@ -442,8 +442,12 @@ header, #bar .bar {
         top: 0;
         bottom: 0;
         right: 0;
+        grid-template-rows: 0 1fr;
         background: #111;
         z-index: 10;
+    }
+    #sidebar.showwinrate {
+        grid-template-rows: auto 1fr;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -454,11 +458,43 @@ header, #bar .bar {
         cursor: ew-resize;
         z-index: 10;
     }
+    #sidebar .graphproperties {
+        position: relative;
+    }
     .sidebar #sidebar {
-        display: block;
+        display: grid;
     }
     .sidebar #main {
         right: 200px;
+}
+
+#winrategraph {
+        position: relative;
+        visibility: hidden;
+        height: 50px;
+        background: #181818;
+        box-shadow: 10px 0 10px #111;
+        overflow: hidden;
+        z-index: 3;
+    }
+    #winrategraph svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .showwinrate #winrategraph {
+        visibility: visible;
+    }
+    #winrategraph .marker {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #0082F0;
+        border-radius: 50%;
+        margin-top: -3px;
+        margin-left: -3px;
 }
 
 #slider {
@@ -467,6 +503,7 @@ header, #bar .bar {
         right: 0;
         bottom: 0;
         width: 25px;
+        height: 100%;
         background: #111;
         box-shadow: 0 0 10px #111;
         z-index: 2;
@@ -548,7 +585,7 @@ header, #bar .bar {
         background: #181818;
         box-shadow: 10px 0 10px #111;
         transition: height .2s, color .2s, background .2s;
-        z-index: 2;
+        z-index: 3;
     }
     #properties .horizontalresizer {
         position: absolute;

@@ -279,16 +279,28 @@ exports.mergeInsert = function(tree, index, nodes) {
     return [exports.navigate(...otherPositions[0], -1), ...otherPositions]
 }
 
+exports.getMainTrack = function(tree) {
+    if (tree.subtrees.length === 0) return tree.nodes
+
+    return [...tree.nodes, ...exports.getMainTrack(tree.subtrees[0])]
+}
+
+exports.getCurrentTrack = function(tree) {
+    if (tree.current == null) return tree.nodes
+
+    return [...tree.nodes, ...exports.getCurrentTrack(tree.subtrees[tree.current])]
+}
+
 exports.onCurrentTrack = function(tree) {
     return !tree.parent
-    || tree.parent.subtrees[tree.parent.current] == tree
-    && exports.onCurrentTrack(tree.parent)
+        || tree.parent.subtrees[tree.parent.current] == tree
+        && exports.onCurrentTrack(tree.parent)
 }
 
 exports.onMainTrack = function(tree) {
     return !tree.parent
-    || tree.parent.subtrees[0] == tree
-    && exports.onMainTrack(tree.parent)
+        || tree.parent.subtrees[0] == tree
+        && exports.onMainTrack(tree.parent)
 }
 
 exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
@@ -537,7 +549,12 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(`${JSON.stringify(tree.nodes)}-${tree.subtrees.map(exports.getHash).join('-')}`)
+    return helper.hash(`${
+        JSON.stringify(tree.nodes, (key, value) => {
+            if (key.toUpperCase() === key) return value
+            return undefined
+        })
+    }-${tree.subtrees.map(exports.getHash).join('-')}`)
 }
 
 exports.getMatrixHash = function(tree) {
