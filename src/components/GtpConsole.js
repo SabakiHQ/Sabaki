@@ -77,11 +77,7 @@ class ConsoleInput extends Component {
         }
 
         this.handleKeyDown = evt => {
-            let {onTextChange = helper.noop} = this.props
-
-            if (evt.keyCode === 13) {
-                // Enter
-
+            if (evt.key === 'Enter') {
                 evt.preventDefault()
 
                 let {engineIndex, onSubmit = helper.noop} = this.props
@@ -96,12 +92,10 @@ class ConsoleInput extends Component {
 
                 this.inputPointer = null
                 this.setState({commandInputText: ''})
-            } else if ([38, 40].includes(evt.keyCode)) {
-                // Up and down
-
+            } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
                 evt.preventDefault()
                 let {consoleLog} = this.props
-                let sign = evt.keyCode === 38 ? -1 : 1
+                let sign = evt.key === 'ArrowUp' ? -1 : 1
 
                 if (this.inputPointer == null) this.inputPointer = consoleLog.length
 
@@ -124,9 +118,7 @@ class ConsoleInput extends Component {
                         break
                     }
                 }
-            } else if (evt.keyCode === 9) {
-                // Tab
-
+            } else if (evt.key === 'Tab') {
                 evt.preventDefault()
                 let autocompleteText = this.getAutocompleteText()
 
@@ -136,7 +128,7 @@ class ConsoleInput extends Component {
             }
 
             this.setState({}, () => {
-                if ([13, 38, 40, 9].includes(evt.keyCode)) {
+                if (['Enter', 'ArrowUp', 'ArrowDown', 'Tab'].includes(evt.key)) {
                     this.inputElement.scrollLeft = this.inputElement.scrollWidth
                     this.inputElement.selectionStart = this.inputElement.value.length
                     this.inputElement.selectionEnd = this.inputElement.value.length

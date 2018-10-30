@@ -15,14 +15,10 @@ class InputBox extends Component {
         this.handleKeyUp = evt => {
             if (!this.props.show) return
 
-            if (evt.keyCode === 27) {
-                // Escape
-
+            if (evt.key === 'Escape') {
                 evt.stopPropagation()
                 this.cancel()
-            } else if (evt.keyCode == 13) {
-                // Enter
-
+            } else if (evt.key == 'Enter') {
                 evt.stopPropagation()
                 sabaki.setState({showInputBox: false})
 

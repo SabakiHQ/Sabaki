@@ -212,10 +212,8 @@ class App extends Component {
 
         // Handle escape key
 
-        document.addEventListener('keyup', evt => {
-            if (evt.keyCode === 27) {
-                // Escape
-
+        document.addEventListener('keydown', evt => {
+            if (evt.key === 'Escape') {
                 if (this.state.generatingMoves) {
                     this.stopGeneratingMoves()
                 } else if (this.state.openDrawer != null) {
