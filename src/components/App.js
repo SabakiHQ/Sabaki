@@ -210,7 +210,7 @@ class App extends Component {
             this.loadFile(evt.dataTransfer.files[0].path)
         })
 
-        // Handle escape key
+        // Handle keys
 
         document.addEventListener('keydown', evt => {
             if (evt.key === 'Escape') {
@@ -223,6 +223,20 @@ class App extends Component {
                 } else if (this.state.fullScreen) {
                     this.setState({fullScreen: false})
                 }
+            } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                if (document.activeElement !== document.body || evt.ctrlKey) return
+                evt.preventDefault()
+
+                let sign = evt.key === 'ArrowUp' ? -1 : 1
+                this.startAutoscrolling(sign)
+            }
+        })
+
+        document.addEventListener('keyup', evt => {
+            if (this.autoscrollId == null) return
+
+            if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                this.stopAutoscrolling()
             }
         })
 
@@ -1336,6 +1350,27 @@ class App extends Component {
         let newIndex = Math.max(0, Math.min(gameTrees.length - 1, index + step))
 
         this.setCurrentTreePosition(gameTrees[newIndex], 0)
+    }
+
+    startAutoscrolling(step) {
+        if (this.autoscrollId != null) return
+
+        let minDelay = setting.get('autoscroll.min_interval')
+        let diff = setting.get('autoscroll.diff')
+
+        let scroll = (delay = null) => {
+            this.goStep(step)
+
+            clearTimeout(this.autoscrollId)
+            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+        }
+
+        scroll(setting.get('autoscroll.max_interval'))
+    }
+
+    stopAutoscrolling() {
+        clearTimeout(this.autoscrollId)
+        this.autoscrollId = null
     }
 
     // Find Methods

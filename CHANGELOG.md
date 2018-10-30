@@ -19,6 +19,10 @@ All notable changes to this project will be documented in this file.
 * Warn user when GTP can't support board size
 * Suspending engines is now allowed while engine is thinking
 
+**Fixed**
+
+* Navigating by pressing up/down keys doesn't stutter anymore
+
 ## [Sabaki v0.35.1][v0.35.1] (2018-08-04)
 
 **Fixed**
