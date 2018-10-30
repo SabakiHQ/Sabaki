@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 
 * GTP console is now faster
 * No GTP commands are blocked in the GTP console anymore
+* Warn user when GTP can't support board size
 
 ## [Sabaki v0.35.1][v0.35.1] (2018-08-04)
 

@@ -73,13 +73,13 @@ class EngineSyncer {
                     .map(coord => coord2vertex(coord, this.state.size))
                     .filter(x => x != null)
 
-                this.state.moves.push({sign: 1, vertices})
+                if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
             } else if (command.name === 'set_free_handicap') {
                 let vertices = command.args
                     .map(coord => coord2vertex(coord, this.state.size))
                     .filter(x => x != null)
 
-                this.state.moves.push({sign: 1, vertices})
+                if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
             } else if (command.name === 'play' && command.args.length >= 2) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
                 let vertex = coord2vertex(command.args[1], this.state.size)
@@ -122,6 +122,8 @@ class EngineSyncer {
             throw new Error('GTP engines don’t support non-square boards.')
         } else if (!board.isValid()) {
             throw new Error('GTP engines don’t support invalid board positions.')
+        } else if (board.width > alpha.length) {
+            throw new Error(`GTP engines only support board sizes that don’t exceed ${alpha.length}.`)
         }
 
         // Update komi
@@ -171,24 +173,28 @@ class EngineSyncer {
                 // Place handicap stones
 
                 let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
-                let coords = vertices.map(v => board.vertex2coord(v))
+                let coords = vertices
+                    .map(v => board.vertex2coord(v))
                     .filter(x => x != null)
                     .sort()
                     .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
 
-                moves.push({sign: 1, vertices})
-                promises.push(() =>
-                    controller
-                    .sendCommand({name: 'set_free_handicap', args: coords})
-                    .then(r => !r.error)
-                )
+                if (coords.length > 0) {
+                    moves.push({sign: 1, vertices})
+                    promises.push(() =>
+                        controller
+                        .sendCommand({name: 'set_free_handicap', args: coords})
+                        .then(r => !r.error)
+                    )
 
-                for (let vertex of vertices) {
-                    if (engineBoard.get(vertex) !== 0) continue
-                    engineBoard = engineBoard.makeMove(1, vertex)
+                    for (let vertex of vertices) {
+                        if (engineBoard.get(vertex) !== 0) continue
+
+                        engineBoard = engineBoard.makeMove(1, vertex)
+                    }
+
+                    placedHandicapStones = true
                 }
-
-                placedHandicapStones = true
             }
 
             for (let prop of ['B', 'W', 'AB', 'AW']) {
