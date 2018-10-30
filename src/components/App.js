@@ -2379,6 +2379,8 @@ class App extends Component {
     }
 
     stopGeneratingMoves() {
+        if (!this.state.generatingMoves) return
+
         this.showInfoOverlay('Please wait…')
         this.setState({generatingMoves: false})
     }
