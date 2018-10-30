@@ -30,4 +30,4 @@ The documentation is incomplete and I'll be thankful for anyone contributing to 
 
 ## Donate
 
-You can also support this project by [donating](https://paypal.me/yishn/4).
+You can also support this project by [donating](https://paypal.me/yishn/5).
