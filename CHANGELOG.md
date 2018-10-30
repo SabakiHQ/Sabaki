@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.40.0][unreleased] (Unreleased)
+
+**Added**
+
+* Ability to analyze Go board using analysis GTP commands
+* Save winrate values and visualizes them in a graph
+* More efficient engine syncing
+* Support [GoKibitz](https://gokibitz.com/)-style variations in comment
+* Setting to turn off engine auto move generation
+
+**Changed**
+
+* GTP console is now faster
+* No GTP commands are blocked in the GTP console anymore
+
 ## [Sabaki v0.35.1][v0.35.1] (2018-08-04)
 
 **Fixed**
