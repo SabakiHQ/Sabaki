@@ -39,6 +39,9 @@ class WinrateGraph extends Component {
     }
 
     render({width, currentIndex, data}) {
+        let dataDiff = data.map((x, i) => i === 0 || x == null || data[i - 1] == null ? null : x - data[i - 1])
+        let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
+
         return h('section',
             {
                 ref: el => this.element = el,
@@ -139,11 +142,25 @@ class WinrateGraph extends Component {
                     'vector-effect': 'non-scaling-stroke'
                 }),
 
+                // Draw differential bar graph
+
+                h('path', {
+                    fill: 'none',
+                    stroke: '#F76047',
+                    'stroke-width': 1,
+
+                    d: dataDiff.map((x, i) => {
+                        if (x == null || Math.abs(x) <= 3) return ''
+
+                        return `M ${i},50 l 0,${x * 50 / dataDiffMax}`
+                    }).join(' ')
+                }),
+
                 // Draw data lines
 
                 h('path', {
-                    stroke: '#eee',
                     fill: 'none',
+                    stroke: '#eee',
                     'stroke-width': 2,
                     'vector-effect': 'non-scaling-stroke',
 
@@ -156,8 +173,8 @@ class WinrateGraph extends Component {
                 }),
 
                 h('path', {
-                    stroke: '#ccc',
                     fill: 'none',
+                    stroke: '#ccc',
                     'stroke-width': 2,
                     'stroke-dasharray': 2,
                     'vector-effect': 'non-scaling-stroke',
@@ -184,7 +201,15 @@ class WinrateGraph extends Component {
                     left: `${currentIndex * 100 / width}%`,
                     top: `${data[currentIndex]}%`
                 },
-                title: `White winrate: ${Math.round((100 - data[currentIndex]) * 100) / 100}%`
+                title: `White winrate: ${
+                    Math.round((100 - data[currentIndex]) * 100) / 100
+                }%${
+                    data[currentIndex - 1] == null ? '' : ` (${
+                        dataDiff[currentIndex] >= 0 ? '' : '+'
+                    }${
+                        -Math.round(dataDiff[currentIndex] * 100) / 100
+                    })`
+                }`
             })
         )
     }
