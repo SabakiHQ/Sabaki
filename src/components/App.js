@@ -186,7 +186,7 @@ class App extends Component {
 
         // Handle mouse wheel
 
-        for (let el of document.querySelectorAll('#main main, #graph')) {
+        for (let el of document.querySelectorAll('#main main, #graph, #winrategraph')) {
             el.addEventListener('wheel', evt => {
                 evt.preventDefault()
 
