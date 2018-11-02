@@ -119,22 +119,23 @@ class ThemeManager extends Component {
             // Custom images
 
             h('style', {},
-                blackStonePath != null && `.shudan-vertex.shudan-sign_1 .shudan-inner {
+                blackStonePath != null && `.shudan-stone-image.shudan-sign_1 {
                     background-image: url('${blackStonePath.replace(/\\/g, '/')}');
                 } .shudan-goban {
                     --shudan-black-background-color: ${blackStoneBackground};
                     --shudan-black-foreground-color: ${blackStoneForeground};
                 }`,
 
-                whiteStonePath != null && `.shudan-vertex.shudan-sign_-1 .shudan-inner {
+                whiteStonePath != null && `.shudan-stone-image.shudan-sign_-1 {
                     background-image: url('${whiteStonePath.replace(/\\/g, '/')}');
                 } .shudan-goban {
                     --shudan-white-background-color: ${whiteStoneBackground};
                     --shudan-white-foreground-color: ${whiteStoneForeground};
                 }`,
 
-                boardPath != null && `.shudan-goban {
+                boardPath != null && `.shudan-goban-image {
                     background-image: url('${boardPath.replace(/\\/g, '/')}');
+                } .shudan-goban {
                     --shudan-board-background-color: ${boardBackground};
                     --shudan-board-border-color: rgba(33, 24, 9, .2);
                     --shudan-board-foreground-color: rgba(33, 24, 9, 1);

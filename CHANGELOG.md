@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 * More efficient engine syncing
 * Support [GoKibitz](https://gokibitz.com/)-style variations in comments
 * Setting to turn off engine auto move generation
+* Ability to set custom board image without userstyles
 
 **Changed**
 
