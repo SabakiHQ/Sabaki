@@ -29,6 +29,7 @@ class Goban extends Component {
 
         window.addEventListener('resize', () => {
             this.componentDidUpdate()
+            this.setState({})
         })
 
         this.componentDidUpdate()
