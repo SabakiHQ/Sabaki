@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 **Changed**
 
+* **Breaking:** New future-proof theming strategy; old themes may not work in this release anymore
 * GTP console is now faster
 * No GTP commands are blocked in the GTP console anymore
 * Warn user when GTP can't support board size
