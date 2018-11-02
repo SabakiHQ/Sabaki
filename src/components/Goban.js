@@ -128,7 +128,10 @@ class Goban extends Component {
     }
 
     stopPlayingVariation() {
+        if (this.variationIntervalId == null) return
+
         clearInterval(this.variationIntervalId)
+        this.variationIntervalId = null
 
         this.setState({
             variation: null,
