@@ -4,7 +4,7 @@ Themes are just a fancy way to pack a [userstyle](userstyle-tutorial.md) and its
 
 ## Structure
 
-First, create a [userstyle](userstyle-tutorial.md) as usual. A userstyle consists of a CSS file `styles.css` and other assets such as images, fonts, or other CSS files. Put the files in a folder, say `theme`, and make sure no other files or folders are in there.
+First, create a userstyle. A userstyle consists of a CSS file `styles.css` and other assets such as images, fonts, or other CSS files. Take a look at [Shudan's documentation](https://github.com/SabakiHQ/Shudan/tree/master/docs#styling) to see how to change board and stone images in a userstyle. Put the files in a folder, say `theme`, and make sure no other files or folders are in there.
 
 ## `package.json`
 
@@ -35,6 +35,6 @@ Make sure you have [node.js](https://nodejs.org/) and npm installed. If you don'
 
 To pack your userstyle into a theme, run the following command:
 
-	$ asar pack ./theme ./theme.sabakitheme.asar
+	$ asar pack ./theme ./theme.asar
 
-`theme.sabakitheme.asar` will be created and is ready for distribution. It can be installed in Preferences.
+`theme.asar` will be created and is ready for distribution. It can be installed in Preferences.
