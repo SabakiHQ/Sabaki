@@ -66,7 +66,11 @@ class ThemeManager extends Component {
     }
 
     componentDidUpdate(_, prevState) {
-        let {blackStonePath, whiteStonePath, boardPath} = this.state
+        let {currentThemeId, blackStonePath, whiteStonePath, boardPath} = this.state
+
+        if (prevState.currentThemeId !== currentThemeId) {
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 0)
+        }
 
         if (boardPath != null && prevState.boardPath !== boardPath) {
             getColorFromPath(boardPath).then(color =>
