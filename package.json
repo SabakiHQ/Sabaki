@@ -76,10 +76,10 @@
     "remark-breaks": "^1.0.0"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-preset-env": "^1.6.0",
-    "fast-async": "^6.3.0",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "fast-async": "^7.0.6",
     "http-server": "^0.11.1",
     "raw-loader": "^0.5.1",
     "webpack": "^4.16.4",

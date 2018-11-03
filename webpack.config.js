@@ -20,13 +20,13 @@ module.exports = (env, argv) => ({
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        plugins: ['fast-async'],
+                        plugins: ['module:fast-async'],
                         presets: [
-                            ['env', {
+                            ['@babel/preset-env', {
                                 modules: false,
                                 exclude: [
-                                    'babel-plugin-transform-regenerator',
-                                    'babel-plugin-transform-async-to-generator'
+                                    'transform-regenerator',
+                                    'transform-async-to-generator'
                                 ],
                                 targets: {browsers: [
                                     'last 2 Chrome versions',
