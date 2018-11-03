@@ -119,7 +119,7 @@ class Goban extends Component {
         clearInterval(this.variationIntervalId)
 
         this.variationIntervalId = setInterval(() => {
-            this.setState(({variationIndex}) => ({
+            this.setState(({variationIndex = -1}) => ({
                 variation,
                 variationSign: sign,
                 variationRemoveCurrent: removeCurrent,
