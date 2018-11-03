@@ -65,7 +65,7 @@
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/influence": "^1.1.4",
     "@sabaki/sgf": "^2.1.0",
-    "@sabaki/shudan": "^1.2.2",
+    "@sabaki/shudan": "^1.2.3",
     "classnames": "^2.2.6",
     "copy-text-to-clipboard": "^1.0.3",
     "natsort": "^1.0.6",
