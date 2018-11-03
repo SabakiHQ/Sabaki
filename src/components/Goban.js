@@ -1,162 +1,20 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const {BoundedGoban} = require('@sabaki/shudan')
+const {remote} = require('electron')
 
 const helper = require('../modules/helper')
-
-const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-const range = n => [...Array(n)].map((_, i) => i)
-const random = n => Math.floor(Math.random() * n)
-
-class GobanVertex extends Component {
-    shouldComponentUpdate({
-        sign,
-        hoshi,
-        shift,
-        highlight,
-        heat,
-        paint,
-        dimmed,
-        animate,
-        label,
-        markupType,
-        ghostTypes
-    }) {
-        return sign !== this.props.sign
-            || highlight !== this.props.highlight
-            || ghostTypes !== this.props.ghostTypes
-            || markupType !== this.props.markupType
-            || label !== this.props.label
-            || shift !== this.props.shift
-            || animate !== this.props.animate
-            || heat !== this.props.heat
-            || paint !== this.props.paint
-            || dimmed !== this.props.dimmed
-            || hoshi !== this.props.hoshi
-    }
-
-    render({
-        position: [x, y],
-        shift,
-        random,
-        sign,
-        highlight,
-        heat,
-        paint,
-        dimmed,
-        hoshi,
-        animate,
-        markupType,
-        label,
-        ghostTypes,
-
-        onMouseDown,
-        onMouseUp,
-        onMouseMove
-    }) {
-        let classes = {
-            [`pos_${x}-${y}`]: true,
-            [`shift_${shift}`]: true,
-            [`random_${random}`]: true,
-            [`sign_${sign}`]: true,
-            [`heat_${heat}`]: !!heat,
-            [`paint_${paint}`]: !!paint,
-            [markupType]: !!markupType,
-            dimmed,
-            hoshi,
-            animate,
-            smalllabel: label.length >= 3
-        }
-
-        for (let type of ghostTypes) {
-            classes[type] = true
-        }
-
-        return h('li',
-            {
-                'data-vertex': `${x}-${y}`,
-                class: classNames(classes),
-                onMouseDown,
-                onMouseUp,
-                onMouseMove
-            },
-            
-            h('div', {class: 'heat'}),
-
-            h('div', {class: 'stone'},
-                h('img', {src: './img/goban/blank.svg'}),
-                h('span', {title: label}),
-            ),
-
-            !!paint && h('div', {class: 'paint'}),
-            highlight && h('div', {class: 'highlight'})
-        )
-    }
-}
-
-class GobanLine extends Component {
-    shouldComponentUpdate(nextProps) {
-        for (let i in nextProps)
-            if (nextProps[i] !== this.props[i]) return true
-
-        return false
-    }
-
-    render({v1, v2, type, temporary, showCoordinates, fieldSize}) {
-        if (helper.vertexEquals(v1, v2)) return
-
-        let [pos1, pos2] = [v1, v2].map(v => v.map(x => (showCoordinates ? x + 1 : x) * fieldSize))
-        let [dx, dy] = pos1.map((x, i) => pos2[i] - x)
-        let [left, top] = pos1.map((x, i) => (x + pos2[i] + fieldSize) / 2)
-
-        let angle = Math.atan2(dy, dx) * 180 / Math.PI
-        let length = Math.sqrt(dx * dx + dy * dy)
-
-        return h('hr', {
-            class: classNames({[type]: true, temporary}),
-            style: {
-                width: length,
-                transform: `
-                    translate(${left - length / 2}px, ${top}px)
-                    rotate(${angle}deg)
-                `
-            }
-        })
-    }
-}
-
-class CoordX extends Component {
-    shouldComponentUpdate({rangeX}) {
-        return rangeX.length !== this.props.rangeX.length
-    }
-
-    render({rangeX}) {
-        return h('ol', {class: 'coordx'},
-            rangeX.map(i => h('li', {}, alpha[i]))
-        )
-    }
-}
-
-class CoordY extends Component {
-    shouldComponentUpdate({rangeY}) {
-        return rangeY.length !== this.props.rangeY.length
-    }
-
-    render({rangeY}) {
-        return h('ol', {class: 'coordy'},
-            rangeY.map(i => h('li', {}, rangeY.length - i))
-        )
-    }
-}
+const setting = remote.require('./setting')
 
 class Goban extends Component {
     constructor(props) {
         super()
 
-        this.componentWillReceiveProps(props)
-
         this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
         this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
+        this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
+        this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
     }
 
     componentDidMount() {
@@ -167,170 +25,49 @@ class Goban extends Component {
                 this.setState({temporaryLine: null})
         })
 
-        // Measure CSS
-
-        let {borderLeftWidth, borderTopWidth, borderRightWidth, borderBottomWidth,
-            paddingLeft, paddingTop, paddingRight, paddingBottom} = window.getComputedStyle(this.element)
-
-        this.setState({
-            borderLeftWidth: parseFloat(borderLeftWidth),
-            borderTopWidth: parseFloat(borderTopWidth),
-            borderRightWidth: parseFloat(borderRightWidth),
-            borderBottomWidth: parseFloat(borderBottomWidth),
-            paddingLeft: parseFloat(paddingLeft),
-            paddingTop: parseFloat(paddingTop),
-            paddingRight: parseFloat(paddingRight),
-            paddingBottom: parseFloat(paddingBottom)
-        })
-
         // Resize board when window is resizing
 
         window.addEventListener('resize', () => {
-            this.resize()
+            this.componentDidUpdate()
+            this.setState({})
         })
 
-        this.resize()
+        this.componentDidUpdate()
     }
 
-    componentWillReceiveProps({board, animatedVertex}) {
-        let dim = board => [board.width, board.height]
-
-        if (!this.props || !helper.vertexEquals(dim(board), dim(this.props.board))) {
-            // Update state to accomodate new board size
-
-            let rangeX = range(board.width)
-            let rangeY = range(board.height)
-            let hoshis = board.getHandicapPlacement(9)
-
-            let shifts = rangeY.map(_ => rangeX.map(__ => random(9)))
-            this.readjustShifts(shifts)
-
-            this.setState({
-                rangeX,
-                rangeY,
-                hoshis,
-                randomizer: rangeY.map(_ => rangeX.map(__ => random(5))),
-                shifts
-            }, () => this.resize())
-        } else if (animatedVertex
-        && !(this.props.animatedVertex && helper.vertexEquals(animatedVertex, this.props.animatedVertex))) {
-            // Update shift
-
-            let [x, y] = animatedVertex
-            let {shifts} = this.state
-
-            shifts[y][x] = random(9)
-            this.readjustShifts(shifts, animatedVertex)
-
-            this.setState({shifts, animatedVertex})
-            setTimeout(() => this.setState({animatedVertex: null}), 200)
-        }
-    }
-
-    componentDidUpdate({showCoordinates}) {
-        if (showCoordinates !== this.props.showCoordinates) {
-            this.resize()
-        }
-    }
-
-    resize() {
+    componentDidUpdate(prevProps) {
         if (!this.element || !this.element.parentElement) return
 
-        let {board, showCoordinates, onBeforeResize = helper.noop} = this.props
-        onBeforeResize()
+        let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
 
-        let {width: outerWidth, height: outerHeight} = window.getComputedStyle(this.element.parentElement)
-        outerWidth = parseFloat(outerWidth)
-        outerHeight = parseFloat(outerHeight)
-
-        let boardWidth = board.width
-        let boardHeight = board.height
-
-        if (showCoordinates) {
-            boardWidth += 2
-            boardHeight += 2
+        if (maxWidth !== this.state.maxWidth || maxHeight !== this.state.maxHeight) {
+            this.setState({maxWidth, maxHeight})
         }
 
-        let width = helper.floorEven(outerWidth
-            - this.state.paddingLeft - this.state.paddingRight
-            - this.state.borderLeftWidth - this.state.borderRightWidth)
-        let height = helper.floorEven(outerHeight
-            - this.state.paddingTop - this.state.paddingBottom
-            - this.state.borderTopWidth - this.state.borderBottomWidth)
+        if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
+            if (this.props.playVariation != null) {
+                let {sign, variation, removeCurrent} = this.props.playVariation
 
-        let fieldSize = helper.floorEven(Math.min(width / boardWidth, height / boardHeight, 150))
-        let minX = fieldSize * boardWidth
-        let minY = fieldSize * boardHeight
-
-        this.setState({
-            width: minX + outerWidth - width,
-            height: minY + outerHeight - height,
-            marginLeft: -(minX + outerWidth - width) / 2,
-            marginTop: -(minY + outerHeight - height) / 2,
-            innerWidth: minX,
-            innerHeight: minY,
-            innerMarginLeft: -minX / 2,
-            innerMarginTop: -minY / 2,
-            fieldSize
-        })
-    }
-
-    readjustShifts(shifts, vertex = null) {
-        if (vertex == null) {
-            let movedVertices = []
-
-            for (let y = 0; y < shifts.length; y++) {
-                for (let x = 0; x < shifts[0].length; x++) {
-                    movedVertices.push(...this.readjustShifts(shifts, [x, y]))
-                }
-            }
-
-            return movedVertices
-        }
-
-        let [x, y] = vertex
-        let direction = shifts[y][x]
-
-        let data = [
-            // Left
-            [[1, 5, 8], [x - 1, y], [3, 7, 6]],
-            // Top
-            [[2, 5, 6], [x, y - 1], [4, 7, 8]],
-            // Right
-            [[3, 7, 6], [x + 1, y], [1, 5, 8]],
-            // Bottom
-            [[4, 7, 8], [x, y + 1], [2, 5, 6]],
-        ]
-
-        let movedVertices = []
-
-        for (let [directions, [qx, qy], removeShifts] of data) {
-            if (!directions.includes(direction)) continue
-
-            if (shifts[qy] && removeShifts.includes(shifts[qy][qx])) {
-                shifts[qy][qx] = 0
-                movedVertices.push([qx, qy])
+                this.stopPlayingVariation()
+                this.playVariation(sign, variation, removeCurrent)
+            } else {
+                this.stopPlayingVariation()
             }
         }
-
-        return movedVertices
     }
 
-    handleVertexMouseDown(evt) {
-        let {currentTarget} = evt
-
+    handleVertexMouseDown(evt, vertex) {
         this.mouseDown = true
-        this.startVertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        this.startVertex = vertex
     }
 
-    handleVertexMouseUp(evt) {
+    handleVertexMouseUp(evt, vertex) {
         if (!this.mouseDown) return
 
         let {onVertexClick = helper.noop, onLineDraw = helper.noop} = this.props
-        let {currentTarget} = evt
 
         this.mouseDown = false
-        evt.vertex = currentTarget.dataset.vertex.split('-').map(x => +x)
+        evt.vertex = vertex
         evt.line = this.state.temporaryLine
 
         if (evt.x == null) evt.x = evt.clientX
@@ -339,22 +76,25 @@ class Goban extends Component {
         if (evt.line) {
             onLineDraw(evt)
         } else {
+            this.stopPlayingVariation()
             onVertexClick(evt)
         }
+
+        this.setState({clicked: true})
+        setTimeout(() => this.setState({clicked: false}), 200)
     }
 
-    handleVertexMouseMove(evt) {
+    handleVertexMouseMove(evt, vertex) {
         let {drawLineMode, onVertexMouseMove = helper.noop} = this.props
-        let {currentTarget} = evt
 
         onVertexMouseMove(Object.assign(evt, {
             mouseDown: this.mouseDown,
             startVertex: this.startVertex,
-            vertex: currentTarget.dataset.vertex.split('-').map(x => +x)
+            vertex
         }))
 
         if (!!drawLineMode && evt.mouseDown && evt.button === 0) {
-            let temporaryLine = [evt.startVertex, evt.vertex]
+            let temporaryLine = {v1: evt.startVertex, v2: evt.vertex}
 
             if (!helper.equals(temporaryLine, this.state.temporaryLine)) {
                 this.setState({temporaryLine})
@@ -362,10 +102,48 @@ class Goban extends Component {
         }
     }
 
+    handleVertexMouseEnter(evt, vertex) {
+        if (this.props.analysis == null) return
+
+        let {sign, variation} = this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
+        if (variation == null) return
+
+        this.playVariation(sign, variation)
+    }
+
+    handleVertexMouseLeave(evt, vertex) {
+        this.stopPlayingVariation()
+    }
+
+    playVariation(sign, variation, removeCurrent = false) {
+        clearInterval(this.variationIntervalId)
+
+        this.variationIntervalId = setInterval(() => {
+            this.setState(({variationIndex = -1}) => ({
+                variation,
+                variationSign: sign,
+                variationRemoveCurrent: removeCurrent,
+                variationIndex: variationIndex + 1
+            }))
+        }, setting.get('board.variation_replay_interval'))
+    }
+
+    stopPlayingVariation() {
+        if (this.variationIntervalId == null) return
+
+        clearInterval(this.variationIntervalId)
+        this.variationIntervalId = null
+
+        this.setState({
+            variation: null,
+            variationIndex: -1
+        })
+    }
+
     render({
         board,
         paintMap,
-        heatMap,
+        analysis,
         highlightVertices = [],
         dimmedStones = [],
 
@@ -375,124 +153,149 @@ class Goban extends Component {
         showNextMoves = true,
         showSiblings = true,
         fuzzyStonePlacement = true,
-        animatedStonePlacement = true,
+        animateStonePlacement = true,
 
         drawLineMode = null
-    }, state) {
-        let {fieldSize, rangeY, rangeX, temporaryLine, animatedVertex} = state
-        let animatedVertices = animatedVertex
-            ? [animatedVertex, ...board.getNeighbors(animatedVertex)] : []
+    }, {
+        maxWidth = 1,
+        maxHeight = 1,
+        clicked = false,
+        temporaryLine = null,
+
+        variation = null,
+        variationSign = 1,
+        variationRemoveCurrent = false,
+        variationIndex = -1
+    }) {
+        // Calculate lines
+
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
+        let lines = board.lines.filter(({v1, v2, type}) => {
+            if (
+                drawTemporaryLine
+                && (
+                    helper.equals([v1, v2], [temporaryLine.v1, temporaryLine.v2])
+                    || (type !== 'arrow' || drawLineMode === 'line')
+                    && helper.equals([v2, v1], [temporaryLine.v1, temporaryLine.v2])
+                )
+            ) {
+                drawTemporaryLine = false
+                return false
+            }
 
-        return h('section',
-            {
-                ref: el => this.element = el,
-                id: 'goban',
-                class: classNames({
-                    goban: true,
-                    crosshair,
-                    coordinates: showCoordinates,
-                    movecolorization: showMoveColorization,
-                    variations: showNextMoves,
-                    siblings: showSiblings,
-                    fuzzy: fuzzyStonePlacement,
-                    animation: animatedStonePlacement
-                })
-            },
+            return true
+        })
 
-            h('style', {}, `
-                #goban {
-                    font-size: ${fieldSize}px;
-                    width: ${state.width}px;
-                    height: ${state.height}px;
-                    margin-left: ${state.marginLeft}px;
-                    margin-top: ${state.marginTop}px;
+        if (drawTemporaryLine) lines.push({
+            v1: temporaryLine.v1,
+            v2: temporaryLine.v2,
+            type: drawLineMode
+        })
+
+        // Calculate ghost stones
+
+        let ghostStoneMap = null
+
+        if (showNextMoves || showSiblings) {
+            ghostStoneMap = board.arrangement.map(row => row.map(_ => null))
+
+            if (showSiblings) {
+                for (let v in board.siblingsInfo) {
+                    let [x, y] = v.split(',').map(x => +x)
+                    let {sign} = board.siblingsInfo[v]
+
+                    ghostStoneMap[y][x] = {sign, faint: showNextMoves}
                 }
-                #goban > div {
-                    width: ${state.innerWidth}px;
-                    height: ${state.innerHeight}px;
-                    margin-left: ${state.innerMarginLeft}px;
-                    margin-top: ${state.innerMarginTop}px;
+            }
+
+            if (showNextMoves) {
+                for (let v in board.childrenInfo) {
+                    let [x, y] = v.split(',').map(x => +x)
+                    let {sign, type} = board.childrenInfo[v]
+
+                    ghostStoneMap[y][x] = {sign, type: showMoveColorization ? type : null}
                 }
-                #goban > div > ol > li {
-                    width: ${fieldSize}px;
-                    height: ${fieldSize}px;
+            }
+        }
+
+        // Draw variation
+
+        let signMap = board.arrangement
+        let markerMap = board.markers
+        let drawHeatMap = true
+
+        if (variation != null) {
+            markerMap = board.markers.map(x => [...x])
+
+            if (variationRemoveCurrent && board.currentVertex != null) {
+                let [x, y] = board.currentVertex
+
+                board = board.clone()
+                board.set([x, y], 0)
+
+                signMap = board.arrangement
+                markerMap[y][x] = null
+            }
+
+            let variationBoard = variation
+                .slice(0, variationIndex + 1)
+                .reduce((board, [x, y], i) => {
+                    markerMap[y][x] = {type: 'label', label: (i + 1).toString()}
+                    return board.makeMove(i % 2 === 0 ? variationSign : -variationSign, [x, y])
+                }, board)
+
+            drawHeatMap = false
+            signMap = variationBoard.arrangement
+        }
+
+        // Draw heatmap
+
+        let heatMap = null
+
+        if (drawHeatMap && analysis != null) {
+            let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
+            heatMap = board.arrangement.map(row => row.map(_ => null))
+
+            for (let {vertex: [x, y], visits, win} of analysis) {
+                let strength = Math.round(visits * win * 8 / maxVisitsWin) + 1
+                win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
+
+                heatMap[y][x] = {
+                    strength,
+                    text: visits < 10 ? '' : [
+                        win + (Math.floor(win) === win ? '%' : ''),
+                        visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
+                    ].join('\n')
                 }
-                #goban > div > ol:not(.coordy) {
-                    height: ${fieldSize}px;
-                    line-height: ${fieldSize}px;
-                    margin-left: ${showCoordinates ? fieldSize : 0}px;
-                }
-                #goban > div > ol.coordy {
-                    width: ${fieldSize}px;
-                    top: ${fieldSize}px;
-                    line-height: ${fieldSize}px;
-                }
-                #goban > div > ol.coordy:last-child {
-                    left: ${fieldSize * (board.width + 1)}px;
-                }
-            `),
+            }
+        }
 
-            h('div', {},
-                h(CoordY, {rangeY}),
-                h(CoordX, {rangeX}),
+        return h(BoundedGoban, {
+            id: 'goban',
+            class: classNames({crosshair}),
+            innerProps: {ref: el => this.element = el},
 
-                rangeY.map(y => h('ol', {class: 'row'}, rangeX.map(x => {
-                    let sign = board.get([x, y])
-                    let [markupType, label] = board.markups[[x, y]] || [null, '']
-                    let equalsVertex = v => helper.vertexEquals(v, [x, y])
+            maxWidth,
+            maxHeight,
+            showCoordinates,
+            fuzzyStonePlacement,
+            animateStonePlacement: clicked && animateStonePlacement,
 
-                    return h(GobanVertex, {
-                        position: [x, y],
-                        shift: this.state.shifts[y][x],
-                        random: this.state.randomizer[y][x],
-                        sign,
-                        heat: heatMap && heatMap[y] && heatMap[y][x],
-                        paint: paintMap && paintMap[y] && paintMap[y][x],
-                        dimmed: dimmedStones.some(equalsVertex),
-                        highlight: highlightVertices.some(equalsVertex),
-                        hoshi: this.state.hoshis.some(equalsVertex),
-                        animate: animatedVertices.some(equalsVertex),
-                        smalllabel: label.length >= 3,
-                        markupType,
-                        label,
-                        ghostTypes: board.ghosts[[x, y]] || [],
+            signMap,
+            markerMap,
+            ghostStoneMap,
+            paintMap,
+            heatMap,
+            lines,
+            selectedVertices: highlightVertices,
+            dimmedVertices: dimmedStones,
 
-                        onMouseUp: this.handleVertexMouseUp,
-                        onMouseDown: this.handleVertexMouseDown,
-                        onMouseMove: this.handleVertexMouseMove
-                    })
-                }))),
-
-                h(CoordX, {rangeX}),
-                h(CoordY, {rangeY})
-            ),
-
-            // Draw lines & arrows
-
-            board.lines.map(([v1, v2, arrow]) => {
-                if (drawTemporaryLine) {
-                    if (helper.equals([v1, v2], temporaryLine)
-                    || (!arrow || drawLineMode === 'line')
-                    && helper.equals([v2, v1], temporaryLine)) {
-                        drawTemporaryLine = false
-                        return
-                    }
-                }
-
-                return h(GobanLine, {
-                    v1, v2, showCoordinates, fieldSize,
-                    type: arrow ? 'arrow' : 'line'
-                })
-            }),
-
-            drawTemporaryLine && h(GobanLine, {
-                temporary: true,
-                v1: temporaryLine[0], v2: temporaryLine[1],
-                showCoordinates, fieldSize,
-                type: drawLineMode
-            })
-        )
+            onVertexMouseUp: this.handleVertexMouseUp,
+            onVertexMouseDown: this.handleVertexMouseDown,
+            onVertexMouseMove: this.handleVertexMouseMove,
+            onVertexMouseEnter: this.handleVertexMouseEnter,
+            onVertexMouseLeave: this.handleVertexMouseLeave
+        })
     }
 }
 

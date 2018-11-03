@@ -2,11 +2,9 @@ const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const GtpConsole = require('./GtpConsole')
-const gametree = require('../modules/gametree')
 const setting = remote.require('./setting')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
-let maxConsoleLength = setting.get('console.max_history_count')
 
 class LeftSidebar extends Component {
     constructor() {
@@ -21,25 +19,8 @@ class LeftSidebar extends Component {
         }
 
         this.handleCommandSubmit = ({engineIndex, command}) => {
-            let blockedCommands = setting.get('console.blocked_commands')
-
-            if (blockedCommands.includes(command.name)) {
-                sabaki.setState(({consoleLog}) => {
-                    let newLog = consoleLog.slice(consoleLog.length >= maxConsoleLength ? 1 : 0)
-
-                    newLog.push({
-                        sign: engineIndex === 0 ? 1 : -1,
-                        name: this.props.attachedEngines[engineIndex].name,
-                        command,
-                        response: {id: command.id, content: 'blocked command', error: true, internal: true}
-                    })
-
-                    return {consoleLog: newLog}
-                })
-            } else {
-                let controller = sabaki.attachedEngineControllers[engineIndex]
-                if (controller != null) controller.sendCommand(command)
-            }
+            let syncer = sabaki.attachedEngineSyncers[engineIndex]
+            if (syncer != null) syncer.controller.sendCommand(command)
         }
     }
 

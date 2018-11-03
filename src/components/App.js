@@ -22,9 +22,9 @@ const influence = require('@sabaki/influence')
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const Board = require('../modules/board')
+const EngineSyncer = require('../modules/enginesyncer')
 const boardmatcher = require('../modules/boardmatcher')
 const dialog = require('../modules/dialog')
-const enginesyncer = require('../modules/enginesyncer')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
@@ -66,14 +66,14 @@ class App extends Component {
             // Goban
 
             highlightVertices: [],
-            heatMap: null,
+            playVariation: null,
+            analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
             showNextMoves: null,
             showSiblings: null,
             fuzzyStonePlacement: null,
-            animatedStonePlacement: null,
-            animatedVertex: null,
+            animateStonePlacement: null,
 
             // Sidebar
 
@@ -116,12 +116,11 @@ class App extends Component {
         this.window = remote.getCurrentWindow()
 
         this.treeHash = this.generateTreeHash()
-        this.attachedEngineControllers = [null, null]
-        this.engineStates = [null, null]
+        this.attachedEngineSyncers = [null, null]
 
         // Expose submodules
 
-        this.modules = {Board, boardmatcher, dialog, enginesyncer,
+        this.modules = {Board, EngineSyncer, boardmatcher, dialog,
             fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
@@ -163,31 +162,9 @@ class App extends Component {
             }, 1000)
         })
 
-        // Handle main menu items
-
-        let menuData = require('../menu')
-
-        let handleMenuClicks = menu => {
-            for (let item of menu) {
-                if ('click' in item) {
-                    ipcRenderer.on(`menu-click-${item.id}`, () => {
-                        if (!this.state.showMenuBar) this.window.setMenuBarVisibility(false)
-                        dialog.closeInputBox()
-                        item.click()
-                    })
-                }
-
-                if ('submenu' in item) {
-                    handleMenuClicks(item.submenu)
-                }
-            }
-        }
-
-        handleMenuClicks(menuData)
-
         // Handle mouse wheel
 
-        for (let el of document.querySelectorAll('#main main, #graph')) {
+        for (let el of document.querySelectorAll('#main main, #graph, #winrategraph')) {
             el.addEventListener('wheel', evt => {
                 evt.preventDefault()
 
@@ -211,12 +188,10 @@ class App extends Component {
             this.loadFile(evt.dataTransfer.files[0])
         })
 
-        // Handle escape key
+        // Handle keys
 
-        document.addEventListener('keyup', evt => {
-            if (evt.keyCode === 27) {
-                // Escape
-
+        document.addEventListener('keydown', evt => {
+            if (evt.key === 'Escape') {
                 if (this.state.generatingMoves) {
                     this.stopGeneratingMoves()
                 } else if (this.state.openDrawer != null) {
@@ -226,6 +201,20 @@ class App extends Component {
                 } else if (this.state.fullScreen) {
                     this.setState({fullScreen: false})
                 }
+            } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                if (document.activeElement !== document.body || evt.ctrlKey || evt.metaKey) return
+                evt.preventDefault()
+
+                let sign = evt.key === 'ArrowUp' ? -1 : 1
+                this.startAutoscrolling(sign)
+            }
+        })
+
+        document.addEventListener('keyup', evt => {
+            if (this.autoscrollId == null) return
+
+            if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                this.stopAutoscrolling()
             }
         })
 
@@ -236,23 +225,13 @@ class App extends Component {
                 return
             }
 
-            if (evt.keyCode == 36) {
-                // Home
+            if (evt.key === 'Home') {
                 this.goToBeginning()
-            } else if (evt.keyCode == 35) {
-                // End
+            } else if (evt.key === 'End') {
                 this.goToEnd()
-            } else if (evt.keyCode == 38) {
-                // Up
-                this.goStep(-1)
-            } else if (evt.keyCode == 40) {
-                // Down
-                this.goStep(1)
-            } else if (evt.keyCode == 37) {
-                // Left
+            } else if (evt.key === 'ArrowLeft') {
                 this.goToSiblingVariation(-1)
-            } else if (evt.keyCode == 39) {
-                // Right
+            } else if (evt.key === 'ArrowRight') {
                 this.goToSiblingVariation(1)
             }
         })
@@ -332,7 +311,7 @@ class App extends Component {
             'view.show_next_moves': 'showNextMoves',
             'view.show_siblings': 'showSiblings',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
-            'view.animated_stone_placement': 'animatedStonePlacement',
+            'view.animated_stone_placement': 'animateStonePlacement',
             'graph.grid_size': 'graphGridSize',
             'graph.node_size': 'graphNodeSize',
             'engines.list': 'engines',
@@ -661,18 +640,36 @@ class App extends Component {
             vertex = board.coord2vertex(vertex)
         }
 
+        let [vx, vy] = vertex
+
         if (['play', 'autoplay'].includes(this.state.mode)) {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
-                    this.makeMove(vertex, {sendToEngine: true})
-                } else if (vertex in board.markups
-                && board.markups[vertex][0] === 'point'
-                && setting.get('edit.click_currentvertex_to_remove')) {
+                    let autoGenmove = setting.get('gtp.auto_genmove')
+                    this.makeMove(vertex, {analyze: this.state.analysis != null, sendToEngine: autoGenmove})
+                } else if (
+                    board.markers[vy][vx] != null
+                    && board.markers[vy][vx].type === 'point'
+                    && setting.get('edit.click_currentvertex_to_remove')
+                ) {
                     this.removeNode(tree, index)
                 }
             } else if (button === 2) {
-                if (vertex in board.markups && board.markups[vertex][0] === 'point') {
+                if (
+                    board.markers[vy][vx] != null
+                    && board.markers[vy][vx].type === 'point'
+                ) {
+                    // Show annotation context menu
+
                     this.openCommentMenu(tree, index, {x, y})
+                } else if (this.state.analysis != null) {
+                    // Show analysis context menu
+
+                    let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
+
+                    if (data != null) {
+                        this.openVariationMenu(data.sign, data.variation, {x, y})
+                    }
                 }
             }
         } else if (this.state.mode === 'edit') {
@@ -787,13 +784,14 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
         }
 
         let [tree, index] = this.state.treePosition
+        let node = tree.nodes[index]
         let board = gametree.getBoard(tree, index)
 
         if (typeof vertex == 'string') {
@@ -807,7 +805,7 @@ class App extends Component {
         if (!player) player = this.inferredState.currentPlayer
         let color = player > 0 ? 'B' : 'W'
         let capture = false, suicide = false, ko = false
-        let createNode = true
+        let newNode = {[color]: [sgf.stringifyVertex(vertex)]}
 
         if (!pass) {
             // Check for ko
@@ -854,65 +852,16 @@ class App extends Component {
 
         // Update data
 
-        let nextTreePosition
+        let oldTreeLength = tree.nodes.length
+        let oldSubtreesCount = tree.subtrees.length
+        let [newTreePosition, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
 
-        if (tree.subtrees.length === 0 && tree.nodes.length - 1 === index) {
-            // Append move
-
-            let node = {}
-            node[color] = [sgf.stringifyVertex(vertex)]
-            tree.nodes.push(node)
-
-            nextTreePosition = [tree, tree.nodes.length - 1]
-        } else {
-            if (index !== tree.nodes.length - 1) {
-                // Search for next move
-
-                let nextNode = tree.nodes[index + 1]
-                let moveExists = color in nextNode
-                    && helper.vertexEquals(sgf.parseVertex(nextNode[color][0]), vertex)
-
-                if (moveExists) {
-                    nextTreePosition = [tree, index + 1]
-                    createNode = false
-                }
-            } else {
-                // Search for variation
-
-                let variations = tree.subtrees.filter(subtree => {
-                    return subtree.nodes.length > 0
-                        && color in subtree.nodes[0]
-                        && helper.vertexEquals(sgf.parseVertex(subtree.nodes[0][color][0]), vertex)
-                })
-
-                if (variations.length > 0) {
-                    nextTreePosition = [variations[0], 0]
-                    createNode = false
-                }
-            }
-
-            if (createNode) {
-                // Create variation
-
-                let updateRoot = tree.parent == null
-                let splitted = gametree.split(tree, index)
-                let newTree = gametree.new()
-                let node = {[color]: [sgf.stringifyVertex(vertex)]}
-
-                newTree.nodes = [node]
-                newTree.parent = splitted[0]
-
-                splitted[0].subtrees.push(newTree)
-                splitted[0].current = splitted[0].subtrees.length - 1
-
-                if (updateRoot) {
-                    let {gameTrees} = this.state
-                    gameTrees[gameTrees.indexOf(tree)] = splitted[0]
-                }
-
-                nextTreePosition = [newTree, 0]
-            }
-        }
+        this.setState(({gameTrees}) => ({
+            gameTrees: gameTrees.map(x =>
+                x === tree ? newTreePosition[0] : x
+            )
+        }))
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -939,9 +888,8 @@ class App extends Component {
         let enterScoring = false
 
         if (pass && createNode && prev) {
-            let prevNode = tree.nodes[index]
             let prevColor = color === 'B' ? 'W' : 'B'
-            let prevPass = prevColor in prevNode && prevNode[prevColor][0] === ''
+            let prevPass = prevColor in node && node[prevColor][0] === ''
 
             if (prevPass) {
                 enterScoring = true
@@ -953,11 +901,15 @@ class App extends Component {
 
         this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
 
-        // Send command to engine
+        if (sendToEngine && this.attachedEngineSyncers.some(x => x != null)) {
+            // Send command to engine
 
-        if (sendToEngine && this.attachedEngineControllers.some(x => x != null)) {
             let passPlayer = pass ? player : null
-            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
+            setTimeout(() => this.generateMove({analyze, passPlayer}), setting.get('gtp.move_delay'))
+        } else if (!pass && analyze) {
+            // Start analyzing
+
+            this.waitForRender().then(() => this.startAnalysis())
         }
     }
 
@@ -1051,12 +1003,12 @@ class App extends Component {
 
             // Check whether to remove a line
 
-            let toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [vertex, endVertex]))
+            let toDelete = board.lines.findIndex(x => helper.equals([x.v1, x.v2], [vertex, endVertex]))
 
             if (toDelete === -1) {
-                toDelete = board.lines.findIndex(x => helper.equals(x.slice(0, 2), [endVertex, vertex]))
+                toDelete = board.lines.findIndex(x => helper.equals([x.v1, x.v2], [endVertex, vertex]))
 
-                if (toDelete >= 0 && tool !== 'line' && board.lines[toDelete][2]) {
+                if (toDelete >= 0 && tool !== 'line' && board.lines[toDelete].type === 'arrow') {
                     // Do not delete after all
                     toDelete = -1
                 }
@@ -1067,17 +1019,17 @@ class App extends Component {
             if (toDelete >= 0) {
                 board.lines.splice(toDelete, 1)
             } else {
-                board.lines.push([vertex, endVertex, tool === 'arrow'])
+                board.lines.push({v1: vertex, v2: endVertex, type: tool})
             }
 
             node.LN = []
             node.AR = []
 
-            for (let [v1, v2, arrow] of board.lines) {
+            for (let {v1, v2, type} of board.lines) {
                 let [p1, p2] = [v1, v2].map(sgf.stringifyVertex)
                 if (p1 === p2) continue
 
-                node[arrow ? 'AR' : 'LN'].push([p1, p2].join(':'))
+                node[type === 'arrow' ? 'AR' : 'LN'].push([p1, p2].join(':'))
             }
 
             if (node.LN.length === 0) delete node.LN
@@ -1085,12 +1037,17 @@ class App extends Component {
         } else {
             // Mutate board first, then apply changes to actual game tree
 
+            let [x, y] = vertex
+
             if (tool === 'number') {
-                if (vertex in board.markups && board.markups[vertex][0] === 'label') {
-                    delete board.markups[vertex]
+                if (
+                    board.markers[y][x] != null
+                    && board.markers[y][x].type === 'label'
+                ) {
+                    board.markers[y][x] = null
                 } else {
                     let number = !node.LB ? 1 : node.LB
-                        .map(x => parseFloat(x.substr(3)))
+                        .map(x => parseFloat(x.slice(3)))
                         .filter(x => !isNaN(x))
                         .sort((a, b) => a - b)
                         .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
@@ -1098,14 +1055,19 @@ class App extends Component {
                         .findIndex((x, i) => i + 1 !== x) + 1
 
                     argument = number.toString()
-                    board.markups[vertex] = [tool, number.toString()]
+                    board.markers[y][x] = {type: tool, label: number.toString()}
                 }
             } else if (tool === 'label') {
                 let label = argument
 
-                if (label != null && label.trim() === ''
-                || label == null && vertex in board.markups && board.markups[vertex][0] === 'label') {
-                    delete board.markups[vertex]
+                if (
+                    label != null
+                    && label.trim() === ''
+                    || label == null
+                    && board.markers[y][x] != null
+                    && board.markers[y][x].type === 'label'
+                ) {
+                    board.markers[y][x] = null
                 } else {
                     if (label == null) {
                         let alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -1125,13 +1087,16 @@ class App extends Component {
                         argument = label
                     }
 
-                    board.markups[vertex] = [tool, label]
+                    board.markers[y][x] = {type: tool, label}
                 }
             } else {
-                if (vertex in board.markups && board.markups[vertex][0] === tool) {
-                    delete board.markups[vertex]
+                if (
+                    board.markers[y][x] != null
+                    && board.markers[y][x].type === tool
+                ) {
+                    board.markers[y][x] = null
                 } else {
-                    board.markups[vertex] = [tool, '']
+                    board.markers[y][x] = {type: tool}
                 }
             }
 
@@ -1143,13 +1108,13 @@ class App extends Component {
             for (let x = 0; x < board.width; x++) {
                 for (let y = 0; y < board.height; y++) {
                     let v = [x, y]
-                    if (!(v in board.markups)) continue
+                    if (board.markers[y][x] == null) continue
 
-                    let prop = data[board.markups[v][0]]
+                    let prop = data[board.markers[y][x].type]
                     let value = sgf.stringifyVertex(v)
 
                     if (prop === 'LB')
-                        value += ':' + board.markups[v][1]
+                        value += ':' + board.markers[y][x].label
 
                     if (prop in node) node[prop].push(value)
                     else node[prop] = [value]
@@ -1199,7 +1164,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true, stopAnalysis = true} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
@@ -1214,8 +1179,12 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
+        if (stopAnalysis) {
+            this.stopAnalysis()
+        }
+
         this.setState({
-            heatMap: null,
+            playVariation: null,
             blockedGuesses: [],
             highlightVertices: [],
             treePosition: [tree, index]
@@ -1332,6 +1301,27 @@ class App extends Component {
         let newIndex = Math.max(0, Math.min(gameTrees.length - 1, index + step))
 
         this.setCurrentTreePosition(gameTrees[newIndex], 0)
+    }
+
+    startAutoscrolling(step) {
+        if (this.autoscrollId != null) return
+
+        let minDelay = setting.get('autoscroll.min_interval')
+        let diff = setting.get('autoscroll.diff')
+
+        let scroll = (delay = null) => {
+            this.goStep(step)
+
+            clearTimeout(this.autoscrollId)
+            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+        }
+
+        scroll(setting.get('autoscroll.max_interval'))
+    }
+
+    stopAutoscrolling() {
+        clearTimeout(this.autoscrollId)
+        this.autoscrollId = null
     }
 
     // Find Methods
@@ -1580,6 +1570,8 @@ class App extends Component {
     }
 
     rotateBoard(anticlockwise) {
+        sabaki.setUndoPoint('Undo Board Rotation')
+
         let root = gametree.getRoot(this.state.treePosition[0])
         let trees = gametree.getTreesRecursive(root)
         let info = this.getGameInfo(root)
@@ -1829,7 +1821,7 @@ class App extends Component {
 
     // Menus
 
-    openNodeMenu(tree, index, options = {}) {
+    openNodeMenu(tree, index, {x, y} = {}) {
         if (this.state.mode === 'scoring') return
 
         let template = [
@@ -1851,11 +1843,11 @@ class App extends Component {
                 click: () => this.makeMainVariation(tree, index)
             },
             {
-                label: "Shift &Left",
+                label: 'Shift &Left',
                 click: () => this.shiftVariation(tree, index, -1)
             },
             {
-                label: "Shift Ri&ght",
+                label: 'Shift Ri&ght',
                 click: () => this.shiftVariation(tree, index, 1)
             },
             {type: 'separator'},
@@ -1873,10 +1865,10 @@ class App extends Component {
             }
         ]
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
     }
 
-    openCommentMenu(tree, index, options = {}) {
+    openCommentMenu(tree, index, {x, y} = {}) {
         let node = tree.nodes[index]
 
         let template = [
@@ -1956,7 +1948,46 @@ class App extends Component {
             item.click = () => this.setComment(tree, index, item.data)
         }
 
-        helper.popupMenu(template, options.x, options.y)
+        helper.popupMenu(template, x, y)
+    }
+
+    openVariationMenu(sign, variation, {x, y, appendSibling = false} = {}) {
+        helper.popupMenu([{
+            label: '&Add Variation',
+            click: () => {
+                let isRootTree = this.state.treePosition[0].parent == null
+                let isRootNode = isRootTree && this.state.treePosition[1] === 0
+
+                if (appendSibling && isRootNode) {
+                    dialog.showMessageBox('The root node cannot have sibling nodes.', 'warning', ['OK'])
+                    return
+                }
+
+                let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
+                let [position, ] = gametree.mergeInsert(
+                    ...(
+                        !appendSibling
+                        ? this.state.treePosition
+                        : gametree.navigate(...this.state.treePosition, -1)
+                    ),
+                    variation.map((vertex, i) => ({
+                        [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
+                    }))
+                )
+
+                this.setState(({gameTrees}) => ({
+                    gameTrees: gameTrees.map(x =>
+                        x === this.state.treePosition[0] ? position[0] : x
+                    )
+                }))
+
+                this.setCurrentTreePosition(...(
+                    !appendSibling
+                    ? position
+                    : gametree.navigate(...position, 1)
+                ), {stopAnalysis: false})
+            }
+        }], x, y)
     }
 
     // GTP Engines
@@ -1970,13 +2001,19 @@ class App extends Component {
     suspendEngines() {
     }
 
-    async handleCommandSent({controller, command, getResponse}) {
+    handleCommandSent({syncer, command, subscribe, getResponse}) {
     }
 
     async syncEngines({passPlayer = null} = {}) {
     }
 
-    async startGeneratingMoves({passPlayer = null, followUp = false} = {}) {
+    async startAnalysis() {
+    }
+
+    stopAnalysis() {
+    }
+
+    async generateMove({analyze = false, passPlayer = null, firstMove = true, followUp = false} = {}) {
     }
 
     stopGeneratingMoves() {

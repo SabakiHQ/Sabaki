@@ -24,12 +24,10 @@ class PropertyItem extends Component {
         }
 
         this.handleKeyDown = evt => {
-            if (evt.keyCode === 13) {
-                // Enter
-
+            if (evt.key === 'Enter') {
                 if (!evt.shiftKey) {
                     evt.preventDefault()
-                    
+
                     let {onSubmit = helper.noop} = this.props
                     onSubmit()
                 }

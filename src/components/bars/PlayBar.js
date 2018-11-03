@@ -1,7 +1,7 @@
-const {shell, clipboard, remote} = require('electron')
-const {Menu} = require('electron').remote
+const {shell, clipboard} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const {remote} = require('electron')
 
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
@@ -74,7 +74,10 @@ class PlayBar extends Component {
                 {type: 'separator'},
                 {
                     label: '&Pass',
-                    click: () => sabaki.makeMove([-1, -1], {sendToEngine: true})
+                    click: () => {
+                        let autoGenmove = setting.get('gtp.auto_genmove')
+                        sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
+                    }
                 },
                 {
                     label: '&Resign',

@@ -1,159 +1,307 @@
+const {dirname, resolve} = require('path')
+const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
+const argvsplit = require('argv-split')
 const gametree = require('./gametree')
 const helper = require('./helper')
 const Board = require('./board')
 
-async function setHandicapStones(controller, vertices, board) {
-    let coords = vertices.map(v => board.vertex2coord(v))
-        .filter(x => x != null)
-        .sort()
-        .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
-    let response = await controller.sendCommand({name: 'set_free_handicap', args: coords})
-    if (response.error) return false
+function coord2vertex(coord, size) {
+    if (coord === 'pass') return null
 
-    return true
+    let x = alpha.indexOf(coord[0].toUpperCase())
+    let y = size - +coord.slice(1)
+
+    return [x, y]
 }
 
-async function enginePlay(controller, sign, vertex, board) {
-    let color = sign > 0 ? 'B' : 'W'
-    let coord = board.vertex2coord(vertex)
-    if (coord == null) return true
+class EngineSyncer {
+    constructor(engine) {
+        let {path, args, commands} = engine
 
-    let response = await controller.sendCommand({name: 'play', args: [color, coord]})
-    if (response.error) return false
+        this.engine = engine
+        this.commands = []
 
-    return true
-}
-
-exports.sync = async function(controller, engineState, treePosition) {
-    let rootTree = gametree.getRoot(treePosition[0])
-    let board = gametree.getBoard(...treePosition)
-
-    if (!board.isSquare()) {
-        throw new Error('GTP engines don’t support non-square boards.')
-    } else if (!board.isValid()) {
-        throw new Error('GTP engines don’t support invalid board positions.')
-    }
-
-    // Update komi
-
-    let komi = gametree.getRootProperty(rootTree, 'KM', 0)
-
-    if (engineState == null || komi !== engineState.komi) {
-        controller.sendCommand({name: 'komi', args: [komi]})
-    }
-
-    // See if we need to update board
-
-    let newEngineState = {komi, board}
-
-    if (engineState != null && engineState.board.getPositionHash() === board.getPositionHash()) {
-        return newEngineState
-    }
-
-    // Incremental board update
-
-    if (engineState != null) {
-        let diff = engineState.board.diff(board).filter(v => board.get(v) !== 0)
-
-        if (diff != null && diff.length === 1) {
-            let [vertex] = diff
-            let sign = board.get(vertex)
-            let move = engineState.board.makeMove(sign, vertex)
-
-            if (move.getPositionHash() === board.getPositionHash()) {
-                let success = await enginePlay(controller, sign, vertex, engineState.board)
-                if (success) return newEngineState
-            }
-        }
-    }
-
-    // Replay
-
-    controller.sendCommand({name: 'boardsize', args: [board.width]})
-    controller.sendCommand({name: 'clear_board'})
-
-    let engineBoard = new Board(board.width, board.height)
-    let promises = []
-    let synced = true
-
-    for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
-        let node = tp[0].nodes[tp[1]]
-        let nodeBoard = gametree.getBoard(...tp)
-        let placedHandicapStones = false
-
-        if (engineBoard.isEmpty() && node.AB && node.AB.length >= 2) {
-            // Place handicap stones
-
-            let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
-            promises.push(setHandicapStones(controller, vertices, engineBoard))
-
-            for (let vertex of vertices) {
-                if (engineBoard.get(vertex) !== 0) continue
-
-                engineBoard = engineBoard.makeMove(1, vertex)
-            }
-
-            placedHandicapStones = true
+        this.state = {
+            dirty: false,
+            komi: null,
+            size: null,
+            moves: []
         }
 
-        for (let prop of ['B', 'W', 'AB', 'AW']) {
-            if (!(prop in node) || placedHandicapStones && prop === 'AB') continue
+        this.controller = new gtp.Controller(path, argvsplit(args), {
+            cwd: dirname(resolve(path))
+        })
 
-            let sign = prop.slice(-1) === 'B' ? 1 : -1
-            let vertices = node[prop].map(sgf.parseCompressedVertices).reduce((list, x) => [...list, ...x])
+        this.controller.on('started', () => {
+            this.controller.sendCommand({name: 'name'})
+            this.controller.sendCommand({name: 'version'})
+            this.controller.sendCommand({name: 'protocol_version'})
+            this.controller.sendCommand({name: 'list_commands'}).then(response => {
+                this.commands = response.content.split('\n')
+            })
 
-            for (let vertex of vertices) {
-                if (engineBoard.get(vertex) !== 0) continue
+            if (commands == null || commands.trim() === '') return
 
-                promises.push(enginePlay(controller, sign, vertex, engineBoard))
+            for (let command of commands.split(';').filter(x => x.trim() !== '')) {
+                this.controller.sendCommand(gtp.Command.fromString(command))
+            }
+        })
+
+        this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
+            // Track engine state
+
+            let res = null
+
+            if (!['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)) {
+                res = await getResponse()
+                if (res.error) return
+            }
+
+            if (command.name === 'boardsize' && command.args.length >= 1) {
+                this.state.size = +command.args[0]
+                this.state.dirty = true
+            } else if (command.name === 'clear_board') {
+                this.state.moves = []
+                this.state.dirty = false
+            } else if (command.name === 'komi' && command.args.length >= 1) {
+                this.state.komi = +command.args[0]
+            } else if (['fixed_handicap', 'place_free_handicap'].includes(command.name)) {
+                let vertices = res.content.trim().split(/\s+/)
+                    .map(coord => coord2vertex(coord, this.state.size))
+                    .filter(x => x != null)
+
+                if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
+            } else if (command.name === 'set_free_handicap') {
+                let vertices = command.args
+                    .map(coord => coord2vertex(coord, this.state.size))
+                    .filter(x => x != null)
+
+                if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
+            } else if (command.name === 'play' && command.args.length >= 2) {
+                let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
+                let vertex = coord2vertex(command.args[1], this.state.size)
+
+                if (vertex) this.state.moves.push({sign, vertex})
+            } else if (command.name === 'genmove' && command.args.length >= 1) {
+                let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
+                let vertex = coord2vertex(res.content.trim(), this.state.size)
+
+                if (vertex) this.state.moves.push({sign, vertex})
+            } else if (
+                ['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)
+                && command.args.length >= 1
+            ) {
+                let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
+                let vertex = await new Promise(resolve => {
+                    getResponse().then(() => resolve(null))
+
+                    subscribe(({line}) => {
+                        let match = line.trim().match(/^play (.*)$/)
+                        if (match) resolve(coord2vertex(match[1], this.state.size))
+                    })
+                })
+
+                if (vertex) this.state.moves.push({sign, vertex})
+            } else if (command.name === 'undo') {
+                this.state.moves.length -= 1
+            } else if (command.name === 'loadsgf') {
+                this.state.dirty = true
+            }
+        })
+    }
+
+    async sync(treePosition) {
+        let controller = this.controller
+        let rootTree = gametree.getRoot(treePosition[0])
+        let board = gametree.getBoard(...treePosition)
+
+        if (!board.isSquare()) {
+            throw new Error('GTP engines don’t support non-square boards.')
+        } else if (!board.isValid()) {
+            throw new Error('GTP engines don’t support invalid board positions.')
+        } else if (board.width > alpha.length) {
+            throw new Error(`GTP engines only support board sizes that don’t exceed ${alpha.length}.`)
+        }
+
+        // Update komi
+
+        let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+
+        if (komi !== this.state.komi) {
+            controller.sendCommand({name: 'komi', args: [komi]})
+        }
+
+        // Update board size
+
+        if (this.state.dirty || board.width !== this.state.size) {
+            controller.sendCommand({name: 'boardsize', args: [board.width]})
+            this.state.dirty = true
+        }
+
+        // Replay
+
+        async function enginePlay(sign, vertex) {
+            let color = sign > 0 ? 'B' : 'W'
+            let coord = board.vertex2coord(vertex)
+            if (coord == null) return true
+
+            let response = await controller.sendCommand({name: 'play', args: [color, coord]})
+            if (response.error) return false
+
+            return true
+        }
+
+        let engineBoard = new Board(board.width, board.height)
+        let moves = []
+        let promises = []
+        let synced = true
+
+        for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
+            let node = tp[0].nodes[tp[1]]
+            let nodeBoard = gametree.getBoard(...tp)
+            let placedHandicapStones = false
+
+            if (
+                node.AB
+                && node.AB.length >= 2
+                && engineBoard.isEmpty()
+                && this.commands.includes('set_free_handicap')
+            ) {
+                // Place handicap stones
+
+                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
+                let coords = vertices
+                    .map(v => board.vertex2coord(v))
+                    .filter(x => x != null)
+                    .sort()
+                    .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
+
+                if (coords.length > 0) {
+                    moves.push({sign: 1, vertices})
+                    promises.push(() =>
+                        controller
+                        .sendCommand({name: 'set_free_handicap', args: coords})
+                        .then(r => !r.error)
+                    )
+
+                    for (let vertex of vertices) {
+                        if (engineBoard.get(vertex) !== 0) continue
+
+                        engineBoard = engineBoard.makeMove(1, vertex)
+                    }
+
+                    placedHandicapStones = true
+                }
+            }
+
+            for (let prop of ['B', 'W', 'AB', 'AW']) {
+                if (!(prop in node) || placedHandicapStones && prop === 'AB') continue
+
+                let sign = prop.slice(-1) === 'B' ? 1 : -1
+                let vertices = [].concat(...node[prop].map(sgf.parseCompressedVertices))
+
+                for (let vertex of vertices) {
+                    if (engineBoard.get(vertex) !== 0) continue
+
+                    moves.push({sign, vertex})
+                    promises.push(() => enginePlay(sign, vertex))
+                    engineBoard = engineBoard.makeMove(sign, vertex)
+                }
+            }
+
+            if (engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
+                synced = false
+                break
+            }
+
+            if (helper.vertexEquals(tp, treePosition)) break
+        }
+
+        if (synced) {
+            let sharedHistoryLength = [...Array(Math.min(this.state.moves.length, moves.length))]
+                .findIndex((_, i) => JSON.stringify(moves[i]) !== JSON.stringify(this.state.moves[i]))
+            if (sharedHistoryLength < 0) sharedHistoryLength = Math.min(this.state.moves.length, moves.length)
+            let undoLength = this.state.moves.length - sharedHistoryLength
+
+            if (
+                !this.state.dirty
+                && sharedHistoryLength > 0
+                && undoLength < sharedHistoryLength
+                && (this.commands.includes('undo') || undoLength === 0)
+            ) {
+                // Undo until shared history is reached, then play out rest
+
+                promises = [
+                    ...[...Array(undoLength)].map(() =>
+                        () => controller.sendCommand({name: 'undo'}).then(r => !r.error)
+                    ),
+                    ...promises.slice(sharedHistoryLength)
+                ]
+            } else {
+                // Replay from beginning
+
+                controller.sendCommand({name: 'clear_board'})
+            }
+
+            let result = await Promise.all(promises.map(x => x()))
+            let success = result.every(x => x)
+            if (success) return
+        }
+
+        // Incremental rearrangement
+
+        if (!this.state.dirty) {
+            promises = []
+            engineBoard = new Board(board.width, board.height)
+
+            for (let {sign, vertex} of this.state.moves) {
+                engineBoard = engineBoard.makeMove(sign, vertex)
+            }
+
+            let diff = engineBoard.diff(board).filter(v => board.get(v) !== 0)
+
+            for (let vertex of diff) {
+                let sign = board.get(vertex)
+
+                promises.push(() => enginePlay(sign, vertex))
+                engineBoard = engineBoard.makeMove(board.get(vertex), vertex)
+            }
+
+            if (engineBoard.getPositionHash() === board.getPositionHash()) {
+                let result = await Promise.all(promises.map(x => x()))
+                let success = result.every(x => x)
+                if (success) return
+            }
+        }
+
+        // Complete rearrangement
+
+        promises = []
+        engineBoard = new Board(board.width, board.height)
+        controller.sendCommand({name: 'clear_board'})
+
+        for (let x = 0; x < board.width; x++) {
+            for (let y = 0; y < board.height; y++) {
+                let vertex = [x, y]
+                let sign = board.get(vertex)
+                if (sign === 0) continue
+
+                promises.push(() => enginePlay(sign, vertex))
                 engineBoard = engineBoard.makeMove(sign, vertex)
             }
         }
 
-        if (engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
-            synced = false
-            break
+        if (engineBoard.getPositionHash() === board.getPositionHash()) {
+            let result = await Promise.all(promises.map(x => x()))
+            let success = result.every(x => x)
+            if (success) return
         }
 
-        if (helper.vertexEquals(tp, treePosition)) break
+        throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
     }
-
-    if (synced) {
-        let result = await Promise.all(promises)
-        let success = result.every(x => x)
-
-        if (success) return newEngineState
-    }
-
-    // Rearrangement
-
-    controller.sendCommand({name: 'boardsize', args: [board.width]})
-    controller.sendCommand({name: 'clear_board'})
-
-    engineBoard = new Board(board.width, board.height)
-    promises = []
-
-    for (let x = 0; x < board.width; x++) {
-        if (engineBoard == null) break
-
-        for (let y = 0; y < board.height; y++) {
-            let vertex = [x, y]
-            let sign = board.get(vertex)
-            if (sign === 0) continue
-
-            promises.push(enginePlay(controller, sign, vertex, engineBoard))
-            engineBoard = engineBoard.makeMove(sign, vertex)
-        }
-    }
-
-    if (engineBoard.getPositionHash() === board.getPositionHash()) {
-        let result = await Promise.all(promises)
-        let success = result.every(x => x)
-
-        if (success) return newEngineState
-    }
-
-    throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
 }
+
+module.exports = EngineSyncer

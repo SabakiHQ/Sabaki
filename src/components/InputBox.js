@@ -15,16 +15,15 @@ class InputBox extends Component {
         this.handleKeyUp = evt => {
             if (!this.props.show) return
 
-            if (evt.keyCode === 27) {
-                // Escape
-
+            if (evt.key === 'Escape') {
                 evt.stopPropagation()
                 this.cancel()
-            } else if (evt.keyCode == 13) {
-                // Enter
-
+            } else if (evt.key == 'Enter') {
                 evt.stopPropagation()
                 sabaki.setState({showInputBox: false})
+
+                if (document.activeElement === this.inputElement)
+                    this.inputElement.blur()
 
                 let {onSubmit = helper.noop} = this.props
                 onSubmit(this.state)

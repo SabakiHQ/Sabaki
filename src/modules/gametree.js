@@ -209,16 +209,98 @@ exports.reduce = function(tree) {
     return tree
 }
 
+exports.mergeInsert = function(tree, index, nodes) {
+    if (nodes.length === 0) return [[tree, index]]
+
+    if (nodes.length === 1) {
+        let [node] = nodes
+
+        if (index + 1 < tree.nodes.length) {
+            let nextNode = tree.nodes[index + 1]
+
+            if (
+                'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
+                || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
+            ) {
+                // Merge
+
+                Object.assign(nextNode, node)
+                return [[tree, index], [tree, index + 1]]
+            } else {
+                // Create new subtree in the middle
+
+                let [first, ] = exports.split(tree, index)
+                let subtree = Object.assign(exports.new(), {
+                    nodes: [node],
+                    parent: first
+                })
+
+                first.subtrees.push(subtree)
+                return [[first, index], [subtree, 0]]
+            }
+        } else {
+            if (tree.subtrees.length === 0) {
+                // Append node
+
+                tree.nodes.push(node)
+                return [[tree, index], [tree, index + 1]]
+            }
+
+            let subtree = tree.subtrees.find(subtree => {
+                if (subtree.nodes.length === 0) return false
+
+                let nextNode = subtree.nodes[0]
+                return 'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
+                    || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
+            })
+
+            if (subtree == null) {
+                // Create new subtree
+
+                subtree = Object.assign(exports.new(), {
+                    nodes: [node],
+                    parent: tree
+                })
+
+                tree.subtrees.push(subtree)
+            } else {
+                // Merge
+
+                Object.assign(subtree.nodes[0], node)
+            }
+
+            return [[tree, index], [subtree, 0]]
+        }
+    }
+
+    let [, position] = exports.mergeInsert(tree, index, [nodes[0]])
+    let otherPositions = exports.mergeInsert(...position, nodes.slice(1))
+
+    return [exports.navigate(...otherPositions[0], -1), ...otherPositions]
+}
+
+exports.getMainTrack = function(tree) {
+    if (tree.subtrees.length === 0) return tree.nodes
+
+    return [...tree.nodes, ...exports.getMainTrack(tree.subtrees[0])]
+}
+
+exports.getCurrentTrack = function(tree) {
+    if (tree.current == null) return tree.nodes
+
+    return [...tree.nodes, ...exports.getCurrentTrack(tree.subtrees[tree.current])]
+}
+
 exports.onCurrentTrack = function(tree) {
     return !tree.parent
-    || tree.parent.subtrees[tree.parent.current] == tree
-    && exports.onCurrentTrack(tree.parent)
+        || tree.parent.subtrees[tree.parent.current] == tree
+        && exports.onCurrentTrack(tree.parent)
 }
 
 exports.onMainTrack = function(tree) {
     return !tree.parent
-    || tree.parent.subtrees[0] == tree
-    && exports.onMainTrack(tree.parent)
+        || tree.parent.subtrees[0] == tree
+        && exports.onMainTrack(tree.parent)
 }
 
 exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
@@ -306,6 +388,8 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         vertex = sgf.parseVertex(node[prop][0])
         board = baseboard.makeMove(data[prop], vertex)
+        board.currentVertex = vertex
+
         break
     }
 
@@ -326,8 +410,11 @@ exports.getBoard = function(tree, index, baseboard = null) {
         }
     }
 
-    if (vertex != null) {
-        board.markups[vertex] = ['point', '']
+    board.markers = board.arrangement.map(row => row.map(_ => null))
+
+    if (vertex != null && board.hasVertex(vertex)) {
+        let [x, y] = vertex
+        board.markers[y][x] = {type: 'point'}
     }
 
     data = {CR: 'circle', MA: 'cross', SQ: 'square', TR: 'triangle'}
@@ -336,8 +423,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
         if (!(prop in node)) continue
 
         for (let value of node[prop]) {
-            for (let vertex of sgf.parseCompressedVertices(value)) {
-                board.markups[vertex] = [data[prop], '']
+            for (let [x, y] of sgf.parseCompressedVertices(value)) {
+                if (board.markers[y] == null) continue
+                board.markers[y][x] = {type: data[prop]}
             }
         }
     }
@@ -347,8 +435,10 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1)
+            let [x, y] = sgf.parseVertex(point)
 
-            board.markups[sgf.parseVertex(point)] = ['label', label]
+            if (board.markers[y] == null) continue
+            board.markers[y][x] = {type: 'label', label}
         }
     }
 
@@ -357,8 +447,10 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let point = node.L[i]
             let label = alpha[i]
             if (label == null) return
+            let [x, y] = sgf.parseVertex(point)
 
-            board.markups[sgf.parseVertex(point)] = ['label', label]
+            if (board.markers[y] == null) continue
+            board.markers[y][x] = {type: 'label', label}
         }
     }
 
@@ -369,13 +461,13 @@ exports.getBoard = function(tree, index, baseboard = null) {
             let sep = composed.indexOf(':')
             let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.parseVertex)
 
-            board.lines.push([v1, v2, type === 'AR'])
+            board.lines.push({v1, v2, type: type === 'AR' ? 'arrow' : 'line'})
         }
     }
 
     // Add variation overlays
 
-    let addOverlay = (node, type) => {
+    let addInfo = (node, list) => {
         let v, sign
 
         if ('B' in node) {
@@ -388,43 +480,37 @@ exports.getBoard = function(tree, index, baseboard = null) {
             return
         }
 
-        if (!board.hasVertex(v) || v in board.ghosts)
+        if (!board.hasVertex(v))
             return
 
-        let types = []
+        let type = null
 
-        if (type === 'child') {
-            types.push(`ghost_${sign}`)
-
-            if ('BM' in node) {
-                types.push('badmove')
-            } else if ('DO' in node) {
-                types.push('doubtfulmove')
-            } else if ('IT' in node) {
-                types.push('interestingmove')
-            } else if ('TE' in node) {
-                types.push('goodmove')
-            }
-        } else if (type === 'sibling') {
-            types.push(`siblingghost_${sign}`)
+        if ('BM' in node) {
+            type = 'bad'
+        } else if ('DO' in node) {
+            type = 'doubtful'
+        } else if ('IT' in node) {
+            type = 'interesting'
+        } else if ('TE' in node) {
+            type = 'good'
         }
 
-        board.ghosts[v] = types
+        list[v] = {sign, type}
     }
 
     if (index === tree.nodes.length - 1) {
         for (let subtree of tree.subtrees) {
             if (subtree.nodes.length === 0) continue
-            addOverlay(subtree.nodes[0], 'child')
+            addInfo(subtree.nodes[0], board.childrenInfo)
         }
     } else if (index < tree.nodes.length - 1) {
-        addOverlay(tree.nodes[index + 1], 'child')
+        addInfo(tree.nodes[index + 1], board.childrenInfo)
     }
 
     if (index === 0 && tree.parent) {
         for (let subtree of tree.parent.subtrees) {
             if (subtree.nodes.length == 0) continue
-            addOverlay(subtree.nodes[0], 'sibling')
+            addInfo(subtree.nodes[0], board.siblingsInfo)
         }
     }
 
@@ -432,7 +518,7 @@ exports.getBoard = function(tree, index, baseboard = null) {
     return board
 }
 
-exports.clearBoardCache = function(tree, index) {
+exports.clearBoardCache = function() {
     boardCache = {}
 }
 
@@ -463,7 +549,12 @@ exports.fromJson = function(json) {
 }
 
 exports.getHash = function(tree) {
-    return helper.hash(`${JSON.stringify(tree.nodes)}-${tree.subtrees.map(exports.getHash).join('-')}`)
+    return helper.hash(`${
+        JSON.stringify(tree.nodes, (key, value) => {
+            if (key.toUpperCase() === key) return value
+            return undefined
+        })
+    }-${tree.subtrees.map(exports.getHash).join('-')}`)
 }
 
 exports.getMatrixHash = function(tree) {

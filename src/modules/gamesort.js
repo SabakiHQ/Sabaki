@@ -11,7 +11,7 @@ function extractProperty(gametree, property) {
 function sortRank(gameTrees, player) {
     return stableSort(gameTrees, (tr1, tr2) => {
         let [weighted1, weighted2] = [tr1, tr2]
-            .map(tree => (weightRank(extractProperty(tree, player))))
+            .map(tree => weightRank(extractProperty(tree, player)))
         return compareResult(weighted1, weighted2)
     })
 }
@@ -30,7 +30,7 @@ function weightRank(rank) {
 // name : 'PB' | 'PW' | 'GN' | 'EV'
 function sortName(gameTrees, name) {
     return stableSort(gameTrees, (tr1, tr2) => {
-        let [name1, name2] = [tr1, tr2].map(tree => (extractProperty(tree, name)))
+        let [name1, name2] = [tr1, tr2].map(tree => extractProperty(tree, name))
         return natsort({insensitive: true})(name1, name2)
     })
 }
@@ -43,11 +43,9 @@ function stableSort(ary, fn) {
     return ary.map((element, index) => [element, index])
         .sort((pair1, pair2) => {
             let result = fn(pair1[0], pair2[0])
-            if (result === 0) {
-                return pair1[1] - pair2[1]
-            } else {
-                return result
-            }
+
+            if (result === 0) return pair1[1] - pair2[1]
+            return result
         }).map(pair => pair[0])
 }
 
@@ -82,7 +80,7 @@ exports.byEvent = function(gameTrees) {
 exports.byDate = function(gameTrees) {
     return stableSort(gameTrees, (tr1, tr2) => {
         let [date1, date2] = [tr1, tr2]
-            .map(tree => (extractProperty(tree, 'DT')))
+            .map(tree => extractProperty(tree, 'DT'))
             .map(x => sgf.parseDates(x))
             .map(x => x ? sgf.stringifyDates(x.sort(helper.lexicalCompare)) : '')
         return compareResult(date1, date2)

@@ -6,15 +6,19 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
-let [delay, animationDuration, commentProperties,
-edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
-nodeColor, nodeInactiveColor, nodeActiveColor,
-nodeBookmarkColor, nodeCommentColor, 
-nodeInactiveBookmarkColor, nodeInactiveCommentColor] = ['graph.delay', 'graph.animation_duration', 'sgf.comment_properties',
+let [
+    delay, commentProperties,
+    edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
+    nodeColor, nodeInactiveColor, nodeActiveColor,
+    nodeBookmarkColor, nodeCommentColor,
+    nodeInactiveBookmarkColor, nodeInactiveCommentColor
+] = [
+    'graph.delay', 'sgf.comment_properties',
     'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
     'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
-    'graph.node_bookmark_color', 'graph.node_comment_color', 
-    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'].map(x => setting.get(x))
+    'graph.node_bookmark_color', 'graph.node_comment_color',
+    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'
+].map(x => setting.get(x))
 
 class GameGraphNode extends Component {
     constructor() {
@@ -32,8 +36,10 @@ class GameGraphNode extends Component {
             let mousePosition = [x + sx, y + sy]
             let hover = false
 
-            if (mousePosition.every((x, i) => Math.ceil(position[i] - gridSize / 2) <= x
-            && x <= Math.floor(position[i] + gridSize / 2) - 1)) {
+            if (mousePosition.every((x, i) =>
+                Math.ceil(position[i] - gridSize / 2) <= x
+                && x <= Math.floor(position[i] + gridSize / 2) - 1
+            )) {
                 hover = true
             }
 
@@ -136,7 +142,7 @@ class GameGraph extends Component {
 
         this.state = {
             cameraPosition: [-props.gridSize, -props.gridSize],
-            viewportSize: [props.viewportWidth, props.height],
+            viewportSize: [0, 0],
             viewportPosition: [0, 0],
             matrixDict: null
         }
@@ -159,7 +165,7 @@ class GameGraph extends Component {
             if (this.mouseDown === 0) {
                 this.drag = true
             } else {
-                ;[movementX, movementY] = [0, 0]
+                movementX = movementY = 0
                 this.drag = false
             }
 
@@ -185,24 +191,20 @@ class GameGraph extends Component {
     }
 
     shouldComponentUpdate({showGameGraph, height}) {
-        return height !== this.props.height || showGameGraph && !this.dirty
+        return height !== this.props.height || showGameGraph
     }
 
     componentWillReceiveProps({treePosition, showGameGraph} = {}) {
         // Debounce rendering
 
+        if (treePosition == null) return
         if (treePosition === this.props.treePosition) return
 
-        this.dirty = true
+        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
+        this.setState({matrixDict: [matrix, dict]})
 
-        if (!this.props.showGameGraph && showGameGraph) {
-            if (treePosition == null) return
-            let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
-            this.setState({matrixDict: [matrix, dict]})
-        }
-
-        clearTimeout(this.renderId)
-        this.renderId = setTimeout(() => this.updateCameraPosition(), delay)
+        clearTimeout(this.updateCameraPositionId)
+        this.updateCameraPositionId = setTimeout(() => this.updateCameraPosition(), delay)
     }
 
     componentDidUpdate({height, showGameGraph}) {
@@ -228,9 +230,9 @@ class GameGraph extends Component {
 
     updateCameraPosition() {
         let {gridSize, treePosition: [tree, index]} = this.props
-        let id = tree.id + '-' + index
+        let {matrixDict: [matrix, dict]} = this.state
 
-        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(tree))
+        let id = tree.id + '-' + index
         let [x, y] = dict[id]
         let [width, padding] = gametree.getMatrixWidth(y, matrix)
 
@@ -238,10 +240,7 @@ class GameGraph extends Component {
         let diff = (width - 1) * gridSize / 2
         diff = Math.min(diff, this.state.viewportSize[0] / 2 - gridSize)
 
-        this.dirty = false
-
         this.setState({
-            matrixDict: [matrix, dict],
             cameraPosition: [
                 x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
                 y * gridSize - this.state.viewportSize[1] / 2
@@ -433,7 +432,6 @@ class GameGraph extends Component {
 
     render({
         height,
-        treePosition,
         showGameGraph
     }, {
         matrixDict,
@@ -443,17 +441,13 @@ class GameGraph extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'graph'
+                id: 'graph',
+                style: {height: `${height}%`}
             },
 
-            h('style', {}, `
-                #graph {
-                    height: ${height}%;
-                }
-                #graph svg > * {
-                    transform: translate(${-cx}px, ${-cy}px);
-                }
-            `),
+            h('style', {}, `#graph svg > * {
+                transform: translate(${-cx}px, ${-cy}px);
+            }`),
 
             showGameGraph && matrixDict && viewportSize && h('svg',
                 {

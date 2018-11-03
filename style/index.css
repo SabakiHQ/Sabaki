@@ -1,7 +1,12 @@
+@import url('../node_modules/@sabaki/shudan/css/goban.css');
+
 #main {
         z-index: 10;
     }
     main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         position: absolute;
         left: 0;
         top: 0;
@@ -11,10 +16,10 @@
     }
     #goban {
         box-sizing: border-box;
-        position: absolute;
-        left: 50%;
-        top: 50%;
         box-shadow: 0 5px 20px rgba(20, 0, 15, .8);
+    }
+    #goban.crosshair {
+        cursor: crosshair;
 }
 
 header, #bar .bar {
@@ -318,7 +323,7 @@ header, #bar .bar {
         top: 0;
         bottom: 0;
         left: 0;
-        background: #181818;
+        background: #111;
         z-index: 10;
     }
     #leftsidebar .verticalresizer {
@@ -381,7 +386,7 @@ header, #bar .bar {
         left: 0;
         right: 0;
         height: 40px;
-        background: #222;
+        background: #181818;
         overflow: hidden;
     }
     #console .input select {
@@ -414,15 +419,21 @@ header, #bar .bar {
         display: block;
 }
 
-.coord {
-        padding: 0 5px;
-        background: #101010;
+.comment-coord, .comment-variation {
+        padding: 0 .3em;
+        background: #050505;
         color: white;
         border-radius: 3px;
         cursor: default;
     }
-    .coord:hover {
+    .comment-coord:hover {
         background: #0082F0;
+    }
+    .comment-variation:hover {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkaPrwHwAEbwJzLYyQSgAAAABJRU5ErkJggg==);
+        background-size: 0 100%;
+        background-repeat: no-repeat;
+        transition: .5s background-size linear;
 }
 
 #sidebar {
@@ -431,8 +442,12 @@ header, #bar .bar {
         top: 0;
         bottom: 0;
         right: 0;
+        grid-template-rows: 0 1fr;
         background: #111;
         z-index: 10;
+    }
+    #sidebar.showwinrate {
+        grid-template-rows: auto 1fr;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -443,11 +458,43 @@ header, #bar .bar {
         cursor: ew-resize;
         z-index: 10;
     }
+    #sidebar .graphproperties {
+        position: relative;
+    }
     .sidebar #sidebar {
-        display: block;
+        display: grid;
     }
     .sidebar #main {
         right: 200px;
+}
+
+#winrategraph {
+        position: relative;
+        visibility: hidden;
+        height: 50px;
+        background: #181818;
+        box-shadow: 10px 0 10px #111;
+        overflow: hidden;
+        z-index: 3;
+    }
+    #winrategraph svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+    .showwinrate #winrategraph {
+        visibility: visible;
+    }
+    #winrategraph .marker {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #0082F0;
+        border-radius: 50%;
+        margin-top: -3px;
+        margin-left: -3px;
 }
 
 #slider {
@@ -456,6 +503,7 @@ header, #bar .bar {
         right: 0;
         bottom: 0;
         width: 25px;
+        height: 100%;
         background: #111;
         box-shadow: 0 0 10px #111;
         z-index: 2;
@@ -537,7 +585,7 @@ header, #bar .bar {
         background: #181818;
         box-shadow: 10px 0 10px #111;
         transition: height .2s, color .2s, background .2s;
-        z-index: 2;
+        z-index: 3;
     }
     #properties .horizontalresizer {
         position: absolute;
@@ -682,7 +730,7 @@ header, #bar .bar {
         z-index: 15;
     }
     .drawer.hidecontent > * {
-        display: none;
+        visibility: hidden;
     }
     .drawer.show {
         transform: translateY(-285px);
@@ -902,13 +950,19 @@ header, #bar .bar {
     #preferences form > div.general > p {
         clear: both;
     }
+    #preferences form > div.themes .userpaths {
+        display: grid;
+        column-gap: 1em;
+        grid-template: 1fr 1fr / 1fr 1fr;
+        grid-auto-flow: column;
+    }
     #preferences form > div.themes label span {
         display: inline-block;
         width: 10em;
         text-align: right;
     }
     #preferences form > div.themes input {
-        width: 40%;
+        width: calc(100% - 58px - 10em);
         margin-left: 10px;
     }
     #preferences form > div.themes .browse,
@@ -1064,7 +1118,7 @@ header, #bar .bar {
         border: 5px solid #ca933a;
         margin-top: 5px;
         padding: 1px;
-        background: url('../img/goban/board.png') center #ECB55A;
+        background: url('../node_modules/@sabaki/shudan/css/board.png') center #ECB55A;
         background-size: 200%;
     }
     #gamechooser li span {
@@ -1095,7 +1149,7 @@ header, #bar .bar {
 #gamechooser-animation svg {
     border: 5px solid #ca933a;
     padding: 1px;
-    background: url('../img/goban/board.png') center #ECB55A;
+    background: url('../node_modules/@sabaki/shudan/css/board.png') center #ECB55A;
     background-size: 200%;
 }
 
@@ -1281,4 +1335,14 @@ header, #bar .bar {
     #info-overlay.show {
         opacity: 1;
         transition: opacity .1s;
+}
+
+/* Override Shudan styles */
+
+.shudan-vertex .shudan-heatlabel::first-line {
+    font-weight: bold;
+}
+
+.shudan-vertex .shudan-heat {
+    transition: none;
 }

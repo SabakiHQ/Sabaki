@@ -7,15 +7,18 @@ class Board {
         this.height = height
         this.captures = captures ? captures.slice() : [0, 0]
         this.arrangement = []
-        this.markups = {}
-        this.ghosts = {}
+        this.markers = null
         this.lines = []
+        this.childrenInfo = {}
+        this.siblingsInfo = {}
 
-        // Initialize arrangement
+        // Initialize maps
 
         for (let y = 0; y < this.height; y++) {
             this.arrangement[y] = y in arrangement ? [...arrangement[y]] : Array(this.width).fill(0)
         }
+
+        this.markers = this.arrangement.map(row => row.map(_ => null))
     }
 
     get([x, y]) {
@@ -190,7 +193,7 @@ class Board {
 
     coord2vertex(coord) {
         let x = alpha.indexOf(coord[0].toUpperCase())
-        let y = this.height - +coord.substr(1)
+        let y = this.height - +coord.slice(1)
         return [x, y]
     }
 
@@ -255,9 +258,9 @@ class Board {
         let farY = this.height - nearY - 1
         let middleX = (this.width - 1) / 2
         let middleY = (this.height - 1) / 2
-        
+
         let result
-        
+
         if (!tygemflag) {
             result = [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
         } else {
@@ -323,10 +326,10 @@ class Board {
                 let i = getIndexFromVertex(v)
                 let s = this.get(v)
 
-                if (!this.markups[v] || !(this.markups[v][0] in data)) {
+                if (!this.markers[y][x] || !(this.markers[y][x].type in data)) {
                     if (s !== 0) result[i] = data.plain[s + 1]
                 } else {
-                    let [type, label] = this.markups[v]
+                    let {type, label} = this.markers[y][x]
 
                     if (type !== 'label' || s !== 0) {
                         result[i] = data[type][s + 1]
@@ -341,8 +344,8 @@ class Board {
 
         // Add lines & arrows
 
-        for (let [start, end, arrow] of this.lines) {
-            result += `{${arrow ? 'AR' : 'LN'} ${this.vertex2coord(start)} ${this.vertex2coord(end)}}${lb}`
+        for (let {v1, v2, type} of this.lines) {
+            result += `{${type === 'arrow' ? 'AR' : 'LN'} ${this.vertex2coord(v1)} ${this.vertex2coord(v2)}}${lb}`
         }
 
         return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
@@ -354,10 +357,9 @@ class Board {
 
     getHash() {
         return helper.hash(JSON.stringify([
-            this.getPositionHash(),
+            this.arrangement,
             this.captures,
-            this.markups,
-            this.ghosts,
+            this.markers,
             this.lines
         ]))
     }

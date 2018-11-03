@@ -1,4 +1,4 @@
-# Sabaki [![Build Status](https://travis-ci.org/SabakiHQ/Sabaki.svg?branch=master)](https://travis-ci.org/SabakiHQ/Sabaki)
+# Sabaki [![Build Status](https://travis-ci.org/SabakiHQ/Sabaki.svg?branch=master)](https://travis-ci.org/SabakiHQ/Sabaki) [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yishn/5)
 
 <img src="logo.png" width="156" height="156">
 
@@ -40,6 +40,7 @@ This project is licensed under the [MIT license](https://github.com/SabakiHQ/Sab
 
 ## Related
 
+* [Shudan](https://github.com/SabakiHQ/Shudan) - A highly customizable, low-level Preact Goban component.
 * [deadstones](https://github.com/SabakiHQ/deadstones) - Simple Monte Carlo functions to determine dead stones.
 * [gtp](https://github.com/SabakiHQ/gtp) - A Node.js module for handling GTP engines.
 * [influence](https://github.com/SabakiHQ/influence) - Simple heuristics for estimating influence maps on Go positions.

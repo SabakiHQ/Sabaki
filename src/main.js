@@ -1,5 +1,4 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
-const fs = require('fs')
 const {join} = require('path')
 const setting = require('./setting')
 const updater = require('./updater')
@@ -43,7 +42,7 @@ function newWindow(path) {
         window = null
     })
 
-    window.loadURL(`file://${__dirname}/../index.html`)
+    window.loadURL(`file://${join(__dirname, '..', 'index.html')}`)
 
     if (setting.get('debug.dev_tools')) {
         window.openDevTools()

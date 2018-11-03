@@ -1,10 +1,12 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
+const classNames = require('classnames')
 
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
+const WinrateGraph = require('./WinrateGraph')
 const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
@@ -47,22 +49,16 @@ class Sidebar extends Component {
             sabaki.goToMoveNumber(moveNumber)
         }
 
+        this.handleWinrateGraphChange = ({index}) => {
+            sabaki.goToMoveNumber(index)
+        }
+
         this.handleStartAutoscrolling = ({step}) => {
-            let minDelay = setting.get('autoscroll.min_interval')
-            let diff = setting.get('autoscroll.diff')
-
-            let scroll = (delay = null) => {
-                sabaki.goStep(step)
-
-                clearTimeout(this.autoscrollId)
-                this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
-            }
-
-            scroll(setting.get('autoscroll.max_interval'))
+            sabaki.startAutoscrolling(step)
         }
 
         this.handleStopAutoscrolling = () => {
-            clearTimeout(this.autoscrollId)
+            sabaki.stopAutoscrolling()
         }
 
         this.handleCommentInput = evt => {
@@ -74,13 +70,6 @@ class Sidebar extends Component {
 
     shouldComponentUpdate(nextProps) {
         return nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
-    }
-
-    componentWillReceiveProps({treePosition, rootTree} = {}) {
-        // Update tree height
-
-        if (this.props && treePosition === this.props.treePosition) return
-        this.setState({treeHeight: gametree.getHeight(rootTree)})
     }
 
     componentDidMount() {
@@ -108,12 +97,37 @@ class Sidebar extends Component {
             } else if (this.horizontalResizerMouseDown) {
                 evt.preventDefault()
 
-                let sidebarSplit = Math.min(100 - sidebarMinSplit,
-                    Math.max(sidebarMinSplit, 100 - evt.clientY * 100 / this.element.offsetHeight))
+                let {top, height} = this.horizontalSplitContainer.getBoundingClientRect()
+
+                let sidebarSplit = Math.min(
+                    100 - sidebarMinSplit,
+                    Math.max(sidebarMinSplit, 100 - (evt.clientY - top) * 100 / height)
+                )
 
                 this.setState({sidebarSplit, sidebarSplitTransition: false})
             }
         })
+    }
+
+    componentWillReceiveProps({treePosition, rootTree} = {}) {
+        if (!this.props || treePosition !== this.props.treePosition) {
+            // Update tree height
+
+            this.setState({treeHeight: gametree.getHeight(rootTree)})
+        }
+
+        // Get winrate data
+
+        let currentTrack = gametree.getCurrentTrack(rootTree)
+        let winrateData = currentTrack.map(x => x.SBKV && x.SBKV[0])
+
+        this.setState({winrateData})
+    }
+
+    componentDidUpdate(_, {winrateData}) {
+        if (winrateData.some(x => x != null) !== this.state.winrateData.some(x => x != null)) {
+            this.gameGraph.remeasure()
+        }
     }
 
     render({
@@ -128,17 +142,23 @@ class Sidebar extends Component {
         graphNodeSize
     }, {
         treeHeight,
+        winrateData,
         sidebarSplit,
         sidebarSplitTransition
     }) {
         let [tree, index] = treePosition
         let node = tree.nodes[index]
+        let winrateGraphWidth = Math.max(Math.ceil((treeHeight - 1) / 50) * 50, 1)
         let level = gametree.getLevel(tree, index)
+        let showWinrateGraph = winrateData.some(x => x != null)
 
         return h('section',
             {
                 ref: el => this.element = el,
                 id: 'sidebar',
+                class: classNames({
+                    showwinrate: showWinrateGraph
+                }),
                 style: {width: sidebarWidth}
             },
 
@@ -147,50 +167,60 @@ class Sidebar extends Component {
                 onMouseDown: this.handleVerticalResizerMouseDown
             }),
 
-            h(Slider, {
-                showSlider: showGameGraph,
-                text: level,
-                percent: (level / (treeHeight - 1)) * 100,
-                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-
-                onChange: this.handleSliderChange,
-                onStartAutoscrolling: this.handleStartAutoscrolling,
-                onStopAutoscrolling: this.handleStopAutoscrolling
+            h(WinrateGraph, {
+                width: winrateGraphWidth,
+                data: winrateData,
+                currentIndex: level,
+                onCurrentIndexChange: this.handleWinrateGraphChange
             }),
 
-            h(GameGraph, {
-                treePosition,
-                showGameGraph,
-                viewportWidth: sidebarWidth,
-                height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-                gridSize: graphGridSize,
-                nodeSize: graphNodeSize,
+            h('div', {ref: el => this.horizontalSplitContainer = el, class: 'graphproperties'},
+                h(Slider, {
+                    showSlider: showGameGraph,
+                    text: level,
+                    percent: (level / (treeHeight - 1)) * 100,
+                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
-                onNodeClick: this.handleGraphNodeClick
-            }),
+                    onChange: this.handleSliderChange,
+                    onStartAutoscrolling: this.handleStartAutoscrolling,
+                    onStopAutoscrolling: this.handleStopAutoscrolling
+                }),
 
-            h(CommentBox, {
-                mode,
-                treePosition,
-                showCommentBox,
-                moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
-                    : 'DO' in node ? [0, 1]
-                    : 'IT' in node ? [1, 1]
-                    : 'TE' in node ? [2, node.TE[0]]
-                    : [null, 1],
-                positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
-                    : 'GW' in node ? [-1, node.GW[0]]
-                    : 'DM' in node ? [0, node.DM[0]]
-                    : 'GB' in node ? [1, node.GB[0]]
-                    : [null, 1],
-                title: 'N' in node ? node.N[0].trim() : '',
-                comment: 'C' in node ? node.C[0] : '',
-                height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
-                sidebarSplitTransition,
+                h(GameGraph, {
+                    ref: component => this.gameGraph = component,
 
-                onResizerMouseDown: this.handleHorizontalResizerMouseDown,
-                onCommentInput: this.handleCommentInput
-            })
+                    treePosition,
+                    showGameGraph,
+                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                    gridSize: graphGridSize,
+                    nodeSize: graphNodeSize,
+
+                    onNodeClick: this.handleGraphNodeClick
+                }),
+
+                h(CommentBox, {
+                    mode,
+                    treePosition,
+                    showCommentBox,
+                    moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
+                        : 'DO' in node ? [0, 1]
+                        : 'IT' in node ? [1, 1]
+                        : 'TE' in node ? [2, node.TE[0]]
+                        : [null, 1],
+                    positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
+                        : 'GW' in node ? [-1, node.GW[0]]
+                        : 'DM' in node ? [0, node.DM[0]]
+                        : 'GB' in node ? [1, node.GB[0]]
+                        : [null, 1],
+                    title: 'N' in node ? node.N[0].trim() : '',
+                    comment: 'C' in node ? node.C[0] : '',
+                    height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
+                    sidebarSplitTransition,
+
+                    onResizerMouseDown: this.handleHorizontalResizerMouseDown,
+                    onCommentInput: this.handleCommentInput
+                })
+            )
         )
     }
 }

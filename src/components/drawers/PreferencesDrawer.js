@@ -72,6 +72,10 @@ class GeneralTab extends Component {
         return h('div', {class: 'general'},
             h('ul', {},
                 h(PreferencesItem, {
+                    id: 'app.enable_hardware_acceleration',
+                    text: 'Enable hardware acceleration if possible'
+                }),
+                h(PreferencesItem, {
                     id: 'app.startup_check_updates',
                     text: 'Check for updates at startup'
                 }),
@@ -93,16 +97,12 @@ class GeneralTab extends Component {
                     text: 'Animate fuzzy placement'
                 }),
                 h(PreferencesItem, {
-                    id: 'file.show_reload_warning',
-                    text: 'Offer to reload file if changed externally'
-                }),
-                h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
                     text: 'Start game right after attaching engines'
                 }),
                 h(PreferencesItem, {
-                    id: 'app.enable_hardware_acceleration',
-                    text: 'Enable hardware acceleration'
+                    id: 'gtp.auto_genmove',
+                    text: 'Automatically generate engine moves'
                 })
             ),
 
@@ -126,6 +126,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'edit.show_removeothervariations_warning',
                     text: 'Show remove other variations warning'
+                }),
+                h(PreferencesItem, {
+                    id: 'file.show_reload_warning',
+                    text: 'Offer to reload file if changed externally'
                 }),
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',
@@ -308,7 +312,7 @@ class ThemesTab extends Component {
         return h('div', {class: 'themes'},
             h('h3', {}, 'Custom Images'),
 
-            h('ul', {},
+            h('ul', {class: 'userpaths'},
                 h(PathInputItem, {
                     id: 'theme.custom_blackstones',
                     text: 'Black stone image:'
@@ -316,6 +320,10 @@ class ThemesTab extends Component {
                 h(PathInputItem, {
                     id: 'theme.custom_whitestones',
                     text: 'White stone image:'
+                }),
+                h(PathInputItem, {
+                    id: 'theme.custom_board',
+                    text: 'Board image:'
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_background',
@@ -327,10 +335,7 @@ class ThemesTab extends Component {
 
             h('p', {},
                 h('select',
-                    {
-                        id: 'theme.current',
-                        onChange: this.handleThemeChange
-                    },
+                    {onChange: this.handleThemeChange},
 
                     h('option', {value: '', selected: currentTheme == null}, 'Default'),
 
@@ -350,7 +355,7 @@ class ThemesTab extends Component {
                     h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…'),
                     ' ',
                     h('a', {
-                        href: 'https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/theme-directory.md',
+                        href: `https://github.com/SabakiHQ/Sabaki/blob/v${sabaki.version}/docs/guides/theme-directory.md`,
                         onClick: this.handleLinkClick
                     }, 'Get more themes…')
                 )
@@ -422,7 +427,7 @@ class EngineItem extends Component {
     render({name, path, args, commands}) {
         return h('li', {},
             h('h3', {},
-                h('a', 
+                h('a',
                     {
                         class: 'remove',
                         title: 'Remove',
