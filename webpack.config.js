@@ -16,10 +16,6 @@ module.exports = (env, argv) => ({
     module: {
         rules: [
             {
-                test: /\.sgf$/,
-                use: 'raw-loader'
-            },
-            {
                 test: /\.js$/,
                 use: {
                     loader: 'babel-loader',
@@ -75,6 +71,7 @@ module.exports = (env, argv) => ({
 
             './ThemeManager': noopPath,
             './LeftSidebar': noopPath,
+            './GtpConsole': noopPath,
             './drawers/AdvancedPropertiesDrawer': noopPath,
             './drawers/PreferencesDrawer': noopPath,
             './drawers/CleanMarkupDrawer': noopPath,
