@@ -136,6 +136,7 @@ class MainView extends Component {
                 },
 
                 h(Goban, {
+                    treePosition,
                     board,
                     highlightVertices: findVertex && mode === 'find'
                         ? [findVertex]

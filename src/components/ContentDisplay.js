@@ -67,17 +67,17 @@ class ContentDisplay extends Component {
             let {color} = target.dataset
             let sign = color === '' ? sabaki.getPlayer(...treePosition) : color === 'b' ? 1 : -1
             let variation = target.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
-            let removeCurrent = currentVertexSign === sign
+            let sibling = currentVertexSign === sign
 
-            return {sign, variation, removeCurrent}
+            return {sign, variation, sibling}
         }
 
         this.handleVariationMouseEnter = evt => {
             let {currentTarget} = evt
-            let {sign, variation, removeCurrent} = getVariationInfo(currentTarget)
+            let {sign, variation, sibling} = getVariationInfo(currentTarget)
             let counter = 1
 
-            sabaki.setState({playVariation: {sign, variation, removeCurrent}})
+            sabaki.setState({playVariation: {sign, variation, sibling}})
 
             clearInterval(this.variationIntervalId)
             this.variationIntervalId = setInterval(() => {
@@ -103,12 +103,12 @@ class ContentDisplay extends Component {
         this.handleVariationMouseUp = evt => {
             if (evt.button !== 2) return
 
-            let {sign, variation, removeCurrent} = getVariationInfo(evt.currentTarget)
+            let {sign, variation, sibling} = getVariationInfo(evt.currentTarget)
 
             sabaki.openVariationMenu(sign, variation, {
                 x: evt.clientX,
                 y: evt.clientY,
-                appendSibling: removeCurrent
+                appendSibling: sibling
             })
         }
 

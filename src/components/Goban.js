@@ -3,6 +3,7 @@ const classNames = require('classnames')
 const {BoundedGoban} = require('@sabaki/shudan')
 const {remote} = require('electron')
 
+const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
@@ -46,10 +47,10 @@ class Goban extends Component {
 
         if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
             if (this.props.playVariation != null) {
-                let {sign, variation, removeCurrent} = this.props.playVariation
+                let {sign, variation, sibling} = this.props.playVariation
 
                 this.stopPlayingVariation()
-                this.playVariation(sign, variation, removeCurrent)
+                this.playVariation(sign, variation, sibling)
             } else {
                 this.stopPlayingVariation()
             }
@@ -115,14 +116,14 @@ class Goban extends Component {
         this.stopPlayingVariation()
     }
 
-    playVariation(sign, variation, removeCurrent = false) {
+    playVariation(sign, variation, sibling = false) {
         clearInterval(this.variationIntervalId)
 
         this.variationIntervalId = setInterval(() => {
             this.setState(({variationIndex = -1}) => ({
                 variation,
                 variationSign: sign,
-                variationRemoveCurrent: removeCurrent,
+                variationSibling: sibling,
                 variationIndex: variationIndex + 1
             }))
         }, setting.get('board.variation_replay_interval'))
@@ -141,6 +142,7 @@ class Goban extends Component {
     }
 
     render({
+        treePosition,
         board,
         paintMap,
         analysis,
@@ -164,7 +166,7 @@ class Goban extends Component {
 
         variation = null,
         variationSign = 1,
-        variationRemoveCurrent = false,
+        variationSibling = false,
         variationIndex = -1
     }) {
         // Calculate lines
@@ -227,14 +229,13 @@ class Goban extends Component {
         if (variation != null) {
             markerMap = board.markers.map(x => [...x])
 
-            if (variationRemoveCurrent && board.currentVertex != null) {
-                let [x, y] = board.currentVertex
+            if (variationSibling) {
+                let prevPosition = gametree.navigate(...treePosition, -1)
 
-                board = board.clone()
-                board.set([x, y], 0)
-
-                signMap = board.arrangement
-                markerMap[y][x] = null
+                if (prevPosition != null) {
+                    board = gametree.getBoard(...prevPosition)
+                    signMap = board.arrangement
+                }
             }
 
             let variationBoard = variation
