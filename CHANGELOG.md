@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+* Ability to instantly replay analysis variations
+
+**Fixed**
+
+* Fix board rendering issues
+
 ## [Sabaki v0.40.0][v0.40.0] (2018-11-04)
 
 **Added**
