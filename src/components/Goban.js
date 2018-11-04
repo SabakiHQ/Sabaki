@@ -45,6 +45,17 @@ class Goban extends Component {
             this.setState({maxWidth, maxHeight})
         }
 
+        setTimeout(() => {
+            let {offsetWidth: width, offsetHeight: height} = this.element
+
+            let left = Math.round((maxWidth - width) / 2)
+            let top = Math.round((maxHeight - height) / 2)
+
+            if (left !== this.state.left || top !== this.state.top) {
+                this.setState({left, top})
+            }
+        }, 0)
+
         if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
             if (this.props.playVariation != null) {
                 let {sign, variation, sibling} = this.props.playVariation
@@ -170,6 +181,8 @@ class Goban extends Component {
 
         drawLineMode = null
     }, {
+        top = 0,
+        left = 0,
         maxWidth = 1,
         maxHeight = 1,
         clicked = false,
@@ -285,6 +298,7 @@ class Goban extends Component {
         return h(BoundedGoban, {
             id: 'goban',
             class: classNames({crosshair}),
+            style: {top, left},
             innerProps: {ref: el => this.element = el},
 
             maxWidth,

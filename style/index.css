@@ -4,9 +4,6 @@
         z-index: 10;
     }
     main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         position: absolute;
         left: 0;
         top: 0;
