@@ -1,3 +1,9 @@
+# Textures
+
+You can customize the appearance by replacing stone and board images. Here are some resources:
+
+- [by @ParmuzinAlexander](https://github.com/ParmuzinAlexander/go-themes)
+
 # Theme Directory
 
 Sabaki v0.40.0 has introduced changes the DOM structure, so themes that worked under Sabaki v0.30.x may not work in Sabaki v0.40.0 or newer.
