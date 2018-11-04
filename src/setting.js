@@ -39,6 +39,7 @@ let defaults = {
     'autoscroll.max_interval': 200,
     'autoscroll.min_interval': 50,
     'board.analysis_interval': 100,
+    'board.variation_instant_replay': false,
     'board.variation_replay_interval': 500,
     'cleanmarkup.annotations': false,
     'cleanmarkup.arrow': true,

@@ -97,6 +97,10 @@ class GeneralTab extends Component {
                     text: 'Animate fuzzy placement'
                 }),
                 h(PreferencesItem, {
+                    id: 'board.variation_instant_replay',
+                    text: 'Instantly replay analysis variations on board'
+                }),
+                h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
                     text: 'Start game right after attaching engines'
                 }),

@@ -117,16 +117,27 @@ class Goban extends Component {
     }
 
     playVariation(sign, variation, sibling = false) {
-        clearInterval(this.variationIntervalId)
+        if (setting.get('board.variation_instant_replay')) {
+            this.variationIntervalId = true
 
-        this.variationIntervalId = setInterval(() => {
-            this.setState(({variationIndex = -1}) => ({
+            this.setState({
                 variation,
                 variationSign: sign,
                 variationSibling: sibling,
-                variationIndex: variationIndex + 1
-            }))
-        }, setting.get('board.variation_replay_interval'))
+                variationIndex: variation.length
+            })
+        } else {
+            clearInterval(this.variationIntervalId)
+
+            this.variationIntervalId = setInterval(() => {
+                this.setState(({variationIndex = -1}) => ({
+                    variation,
+                    variationSign: sign,
+                    variationSibling: sibling,
+                    variationIndex: variationIndex + 1
+                }))
+            }, setting.get('board.variation_replay_interval'))
+        }
     }
 
     stopPlayingVariation() {

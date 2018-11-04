@@ -79,18 +79,22 @@ class ContentDisplay extends Component {
 
             sabaki.setState({playVariation: {sign, variation, sibling}})
 
-            clearInterval(this.variationIntervalId)
-            this.variationIntervalId = setInterval(() => {
-                if (counter >= variation.length) {
-                    clearInterval(this.variationIntervalId)
-                    return
-                }
+            if (setting.get('board.variation_instant_replay')) {
+                currentTarget.style.backgroundSize = '100% 100%'
+            } else {
+                clearInterval(this.variationIntervalId)
+                this.variationIntervalId = setInterval(() => {
+                    if (counter >= variation.length) {
+                        clearInterval(this.variationIntervalId)
+                        return
+                    }
 
-                let percent = counter * 100 / (variation.length - 1)
+                    let percent = counter * 100 / (variation.length - 1)
 
-                currentTarget.style.backgroundSize = `${percent}% 100%`
-                counter++
-            }, setting.get('board.variation_replay_interval'))
+                    currentTarget.style.backgroundSize = `${percent}% 100%`
+                    counter++
+                }, setting.get('board.variation_replay_interval'))
+            }
         }
 
         this.handleVariationMouseLeave = evt => {
