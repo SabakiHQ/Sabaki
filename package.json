@@ -19,7 +19,10 @@
     "copyright": "Copyright © 2015-2018 Yichuan Shen",
     "compression": "normal",
     "linux": {
-      "target": "AppImage",
+      "target": [
+        "snap",
+        "AppImage"
+      ],
       "category": "Game"
     },
     "mac": {
