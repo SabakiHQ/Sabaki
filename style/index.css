@@ -315,7 +315,7 @@ header, #bar .bar {
 }
 
 #leftsidebar {
-        display: none;
+        visibility: hidden;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -333,7 +333,7 @@ header, #bar .bar {
         z-index: 10;
     }
     .leftsidebar #leftsidebar {
-        display: block;
+        visibility: visible;
     }
     .leftsidebar #main {
         left: 400px;
