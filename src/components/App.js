@@ -1,5 +1,6 @@
 const fs = require('fs')
 const EventEmitter = require('events')
+const {extname} = require('path')
 const {ipcRenderer, remote} = require('electron')
 const {app, Menu} = remote
 const {h, render, Component} = require('preact')
@@ -585,14 +586,14 @@ class App extends Component {
         this.events.emit('fileLoad')
     }
 
-    saveFile(filename = null) {
-        if (!filename) {
+    saveFile(filename = null, confirmExtension = true) {
+        if (!filename || confirmExtension && extname(filename) !== '.sgf') {
             let cancel = false
 
             dialog.showSaveDialog({
                 filters: [fileformats.sgf.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
-                if (result) this.saveFile(result)
+                if (result) this.saveFile(result, false)
                 cancel = !result
             })
 

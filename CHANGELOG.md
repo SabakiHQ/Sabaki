@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Fix board rendering issues
+* Fix Sabaki accidentally saving into non-SGF files
 
 ## [Sabaki v0.40.0][v0.40.0] (2018-11-04)
 
