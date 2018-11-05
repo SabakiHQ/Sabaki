@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Fix analysis heatmap disappearing when Leela Zero reaches maximum playouts
 * Fix board rendering issues
 * Fix Sabaki accidentally saving into non-SGF files
 

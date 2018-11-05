@@ -2124,6 +2124,7 @@ class App extends Component {
         let sign = 1 - this.attachedEngineSyncers.indexOf(syncer) * 2
         if (sign > 1) sign = 0
 
+        let {treePosition} = this.state
         let entry = {sign, name: syncer.engine.name, command, waiting: true}
         let maxLength = setting.get('console.max_history_count')
 
@@ -2147,9 +2148,9 @@ class App extends Component {
 
             // Parse analysis info
 
-            if (line.slice(0, 5) === 'info ') {
-                let sign = this.getPlayer(...this.state.treePosition)
-                let board = gametree.getBoard(...this.state.treePosition)
+            if (helper.vertexEquals(treePosition, this.state.treePosition) && line.slice(0, 5) === 'info ') {
+                let sign = this.getPlayer(...treePosition)
+                let board = gametree.getBoard(...treePosition)
                 let analysis = line
                     .split(/\s*info\s+/).slice(1)
                     .map(x => x.trim())
@@ -2185,7 +2186,7 @@ class App extends Component {
                 let winrate = Math.max(...analysis.map(({win}) => win))
                 if (sign < 0) winrate = 100 - winrate
 
-                let [tree, index] = this.state.treePosition
+                let [tree, index] = treePosition
                 tree.nodes[index].SBKV = [Math.round(winrate * 100) / 100]
 
                 this.setState({analysis})
@@ -2193,7 +2194,6 @@ class App extends Component {
         })
 
         getResponse()
-        .then(() => this.setState({analysis: null}))
         .catch(_ => updateEntry({
             response: {internal: true, content: 'connection failed'},
             waiting: false
