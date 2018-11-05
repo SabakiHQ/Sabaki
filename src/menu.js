@@ -13,89 +13,89 @@ let treePosition = () => sabaki.state.treePosition
 
 let data = [
     {
-        label: '&File',
+        label: '&文件',
         submenu: [
             {
-                label: '&New',
+                label: '&新建',
                 accelerator: 'CmdOrCtrl+N',
                 click: () => sabaki.newFile({playSound: true, showInfo: true})
             },
             {
-                label: 'New &Window',
+                label: '&新窗口',
                 accelerator: 'CmdOrCtrl+Shift+N',
                 clickMain: 'newWindow',
                 enabled: true
             },
             {type: 'separator'},
             {
-                label: '&Open…',
+                label: '&打开…',
                 accelerator: 'CmdOrCtrl+O',
                 click: () => sabaki.loadFile()
             },
             {
-                label: '&Save',
+                label: '&保存',
                 accelerator: 'CmdOrCtrl+S',
                 click: () => sabaki.saveFile(sabaki.state.representedFilename)
             },
             {
-                label: 'Sa&ve As…',
+                label: '&另存为…',
                 accelerator: 'CmdOrCtrl+Shift+S',
                 click: () => sabaki.saveFile()
             },
             {type: 'separator'},
             {
-                label: '&Clipboard',
+                label: '&剪贴板',
                 submenu: [
                     {
-                        label: '&Load SGF',
+                        label: '&载入 SGF',
                         click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
                     },
                     {
-                        label: '&Copy SGF',
+                        label: '&复制 SGF',
                         click: () => clipboard.writeText(sabaki.getSGF())
                     },
                     {
-                        label: 'Copy &ASCII Diagram',
+                        label: '&复制 ASCII 图表',
                         click: () => clipboard.writeText(gametree.getBoard(...treePosition()).generateAscii())
                     }
                 ]
             },
             {type: 'separator'},
             {
-                label: 'Game &Info',
+                label: '&对局信息',
                 accelerator: 'CmdOrCtrl+I',
                 click: () => sabaki.openDrawer('info')
             },
             {
-                label: '&Manage Games…',
+                label: '&棋局管理…',
                 accelerator: 'CmdOrCtrl+Shift+M',
                 click: () => sabaki.openDrawer('gamechooser')
             },
             {type: 'separator'},
             {
-                label: '&Preferences…',
+                label: '&偏好设置…',
                 accelerator: 'CmdOrCtrl+,',
                 click: () => sabaki.openDrawer('preferences')
             }
         ]
     },
     {
-        label: '&Play',
+        label: '&运行',
         submenu: [
             {
-                label: '&Toggle Player',
+                label: '&切换对局者',
                 click: () => sabaki.setPlayer(...treePosition(), -sabaki.getPlayer(...treePosition()))
             },
             {type: 'separator'},
             {
-                label: '&Select Point',
+                label: '&选择点',
                 accelerator: 'CmdOrCtrl+L',
-                click: () => dialog.showInputBox('Enter a coordinate to select a point', ({value}) => {
+                click: () => dialog.showInputBox('输入坐标选择点', ({value}) => {
                     sabaki.clickVertex(value)
                 })
             },
             {
-                label: '&Pass',
+                label: '&Pass(通过)一手',
                 accelerator: 'CmdOrCtrl+P',
                 click: () => {
                     const autoGenmove = setting.get('gtp.auto_genmove')
@@ -103,33 +103,33 @@ let data = [
                 }
             },
             {
-                label: '&Resign',
+                label: '&认输',
                 click: () => sabaki.makeResign()
             },
             {type: 'separator'},
             {
-                label: '&Estimate',
+                label: '&估算(形势判断)',
                 click: () => sabaki.setMode('estimator')
             },
             {
-                label: 'Sc&ore',
+                label: '&比分(点目)',
                 click: () => sabaki.setMode('scoring')
             }
         ]
     },
     {
-        label: '&Edit',
+        label: '&编辑',
         submenu: [
             {
-                label: 'Toggle &Edit Mode',
+                label: '&切换编辑模式',
                 accelerator: 'CmdOrCtrl+E',
                 click: () => sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
             },
             {
-                label: '&Select Tool',
+                label: '&选择工具',
                 submenu: [
                     {
-                        label: '&Stone Tool',
+                        label: '&棋子工具',
                         accelerator: 'CmdOrCtrl+1',
                         click: () => selectTool(
                             sabaki.state.mode !== 'edit' || sabaki.state.selectedTool !== 'stone_1'
@@ -137,42 +137,42 @@ let data = [
                         )
                     },
                     {
-                        label: '&Cross Tool',
+                        label: '&交叉工具',
                         accelerator: 'CmdOrCtrl+2',
                         click: () => selectTool('cross')
                     },
                     {
-                        label: '&Triangle Tool',
+                        label: '&三角工具',
                         accelerator: 'CmdOrCtrl+3',
                         click: () => selectTool('triangle')
                     },
                     {
-                        label: 'S&quare Tool',
+                        label: '&矩形工具',
                         accelerator: 'CmdOrCtrl+4',
                         click: () => selectTool('square')
                     },
                     {
-                        label: 'C&ircle Tool',
+                        label: '&圆形工具',
                         accelerator: 'CmdOrCtrl+5',
                         click: () => selectTool('circle')
                     },
                     {
-                        label: '&Line Tool',
+                        label: '&线形工具',
                         accelerator: 'CmdOrCtrl+6',
                         click: () => selectTool('line')
                     },
                     {
-                        label: '&Arrow Tool',
+                        label: '&箭头工具',
                         accelerator: 'CmdOrCtrl+7',
                         click: () => selectTool('arrow')
                     },
                     {
-                        label: 'La&bel Tool',
+                        label: '&标签工具',
                         accelerator: 'CmdOrCtrl+8',
                         click: () => selectTool('label')
                     },
                     {
-                        label: '&Number Tool',
+                        label: '&数字工具',
                         accelerator: 'CmdOrCtrl+9',
                         click: () => selectTool('number')
                     }
@@ -180,56 +180,56 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: '&Copy Variation',
+                label: '&复制变化',
                 click: () => sabaki.copyVariation(...treePosition())
             },
             {
-                label: 'Cu&t Variation',
+                label: '&剪切变化',
                 click: () => sabaki.cutVariation(...treePosition())
             },
             {
-                label: '&Paste Variation',
+                label: '&粘贴变化',
                 click: () => sabaki.pasteVariation(...treePosition())
             },
             {type: 'separator'},
             {
-                label: 'Make Main &Variation',
+                label: '&升为主变化',
                 click: () => sabaki.makeMainVariation(...treePosition())
             },
             {
-                label: 'Shift &Left',
+                label: '&左移',
                 click: () => sabaki.shiftVariation(...treePosition(), -1)
             },
             {
-                label: 'Shift Ri&ght',
+                label: '&右移',
                 click: () => sabaki.shiftVariation(...treePosition(), 1)
             },
             {type: 'separator'},
             {
-                label: '&Flatten',
+                label: '&压平（成为根节点）',
                 click: () => sabaki.flattenVariation(...treePosition())
             },
             {
-                label: '&Remove Node',
+                label: '&删除节点',
                 accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Backspace' : 'CmdOrCtrl+Delete',
                 click: () => sabaki.removeNode(...treePosition())
             },
             {
-                label: 'Remove &Other Variations',
+                label: '&删除其它变化',
                 click: () => sabaki.removeOtherVariations(...treePosition())
             }
         ]
     },
     {
-        label: 'Fin&d',
+        label: '&查找',
         submenu: [
             {
-                label: 'Toggle &Find Mode',
+                label: '&切换查找模式',
                 accelerator: 'CmdOrCtrl+F',
                 click: () => sabaki.setMode(sabaki.state.mode === 'find' ? 'play' : 'find'),
             },
             {
-                label: 'Find &Next',
+                label: '&查找下一个',
                 accelerator: 'F3',
                 click: () => {
                     sabaki.setMode('find')
@@ -240,7 +240,7 @@ let data = [
                 }
             },
             {
-                label: 'Find &Previous',
+                label: '&查找上一个',
                 accelerator: 'Shift+F3',
                 click: () => {
                     sabaki.setMode('find')
@@ -252,137 +252,137 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'Toggle &Hotspot',
+                label: '&切换热点',
                 accelerator: 'CmdOrCtrl+B',
                 click: () => sabaki.setComment(...treePosition(), {
                     hotspot: !('HO' in treePosition()[0].nodes[treePosition()[1]])
                 })
             },
             {
-                label: 'Jump to Ne&xt Hotspot',
+                label: '&跳到下一个热点',
                 accelerator: 'F2',
                 click: () => sabaki.findHotspot(1),
             },
             {
-                label: 'Jump to Pre&vious Hotspot',
+                label: '&跳到上一个热点',
                 accelerator: 'Shift+F2',
                 click: () => sabaki.findHotspot(-1),
             }
         ]
     },
     {
-        label: '&Navigation',
+        label: '&导航',
         submenu: [
             {
-                label: '&Back',
+                label: '&后退',
                 accelerator: 'Up',
                 click: () => sabaki.goStep(-1)
             },
             {
-                label: '&Forward',
+                label: '&前进',
                 accelerator: 'Down',
                 click: () => sabaki.goStep(1)
             },
             {type: 'separator'},
             {
-                label: 'Go to &Previous Fork',
+                label: '&上一个分支',
                 accelerator: 'CmdOrCtrl+Up',
                 click: () => sabaki.goToPreviousFork()
             },
             {
-                label: 'Go to &Next Fork',
+                label: '&下一个分支',
                 accelerator: 'CmdOrCtrl+Down',
                 click: () => sabaki.goToNextFork()
             },
             {type: 'separator'},
             {
-                label: 'Go to Previous Commen&t',
+                label: '&上一注释',
                 accelerator: 'CmdOrCtrl+Shift+Up',
                 click: () => sabaki.goToComment(-1)
             },
             {
-                label: 'Go to Next &Comment',
+                label: '&下一注释',
                 accelerator: 'CmdOrCtrl+Shift+Down',
                 click: () => sabaki.goToComment(1)
             },
             {type: 'separator'},
             {
-                label: 'Go to Be&ginning',
+                label: '&开始',
                 accelerator: 'Home',
                 click: () => sabaki.goToBeginning()
             },
             {
-                label: 'Go to &End',
+                label: '&结束',
                 accelerator: 'End',
                 click: () => sabaki.goToEnd()
             },
             {type: 'separator'},
             {
-                label: 'Go to &Main Variation',
+                label: '&主变化',
                 accelerator: 'CmdOrCtrl+Left',
                 click: () => sabaki.goToMainVariation()
             },
             {
-                label: 'Go to Previous &Variation',
+                label: '&上一个变化',
                 accelerator: 'Left',
                 click: () => sabaki.goToSiblingVariation(-1)
             },
             {
-                label: 'Go to Next Va&riation',
+                label: '&下一个变化',
                 accelerator: 'Right',
                 click: () => sabaki.goToSiblingVariation(1)
             },
             {type: 'separator'},
             {
-                label: 'Go to Move N&umber',
+                label: '&跳转止数字',
                 accelerator: 'CmdOrCtrl+G',
-                click: () => dialog.showInputBox('Enter a move number to go to', ({value}) => {
+                click: () => dialog.showInputBox('输入要跳转止第几手的编号', ({value}) => {
                     sabaki.closeDrawer()
                     sabaki.goToMoveNumber(value)
                 })
             },
             {type: 'separator'},
             {
-                label: 'Go to Ne&xt Game',
+                label: '&下一个对局',
                 accelerator: 'CmdOrCtrl+PageDown',
                 click: () => sabaki.goToSiblingGame(1)
             },
             {
-                label: 'Go to Previou&s Game',
+                label: '&上一个对局',
                 accelerator: 'CmdOrCtrl+PageUp',
                 click: () => sabaki.goToSiblingGame(-1)
             }
         ]
     },
     {
-        label: 'Eng&ines',
+        label: '&引擎',
         submenu: [
             {
-                label: 'Manage &Engines…',
+                label: '&管理引擎…',
                 click: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences'))
             },
             {type: 'separator'},
             {
-                label: '&Attach…',
+                label: '&附加(引擎)…',
                 click: () => sabaki.openDrawer('info')
             },
             {
-                label: '&Detach',
+                label: '&取消(引擎)',
                 click: () => sabaki.detachEngines()
             },
             {
-                label: '&Suspend',
+                label: '&暂停(引擎)',
                 enabled: true,
                 click: () => sabaki.suspendEngines()
             },
             {type: 'separator'},
             {
-                label: 'S&ynchronize',
+                label: '&同步',
                 accelerator: 'F6',
                 click: () => sabaki.syncEngines()
             },
             {
-                label: 'Toggle A&nalysis',
+                label: '&切换分析',
                 accelerator: 'F4',
                 click: () => {
                     if (sabaki.state.analysis == null) {
@@ -393,97 +393,97 @@ let data = [
                 }
             },
             {
-                label: 'Start &Playing',
+                label: '&开始对局',
                 accelerator: 'F5',
                 click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null, followUp: true})
             },
             {
-                label: 'Generate &Move',
+                label: '&生成新点',
                 accelerator: 'F10',
                 click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null})
             },
             {type: 'separator'},
             {
-                label: 'Toggle &GTP Console',
+                label: '&切换GTP控制台',
                 click: () => {
                     toggleSetting('view.show_leftsidebar')
                     sabaki.setState(({showConsole}) => ({showConsole: !showConsole}))
                 }
             },
             {
-                label: '&Clear Console',
+                label: '&清除控制台',
                 click: () => sabaki.clearConsole()
             }
         ]
     },
     {
-        label: '&Tools',
+        label: '&工具',
         submenu: [
             {
-                label: 'Toggle Auto&play Mode',
+                label: '&切换自动打谱模式',
                 click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
             },
             {
-                label: 'Toggle &Guess Mode',
+                label: '&切换猜局打谱模式',
                 click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
             },
             {type: 'separator'},
             {
-                label: 'Clean &Markup…',
+                label: '&清除标记…',
                 click: () => sabaki.openDrawer('cleanmarkup')
             },
             {
-                label: '&Edit SGF Properties…',
+                label: '&编辑SGF属性…',
                 click: () => sabaki.openDrawer('advancedproperties')
             },
             {type: 'separator'},
             {
-                label: '&Rotate Clockwise',
+                label: '&顺时针旋转棋盘',
                 click: () => sabaki.rotateBoard(false)
             },
             {
-                label: 'Rotate &Anticlockwise',
+                label: '&逆时针旋转棋盘',
                 click: () => sabaki.rotateBoard(true)
             }
         ]
     },
     {
-        label: '&View',
+        label: '&显示',
         submenu: [
             {
-                label: 'Toggle Menu &Bar',
+                label: '&切换菜单栏',
                 click: () => toggleSetting('view.show_menubar')
             },
             {
-                label: 'Toggle &Full Screen',
+                label: '&切换全屏',
                 accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
                 click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
             },
             {type: 'separator'},
             {
-                label: 'Show &Coordinates',
+                label: '&显示坐标',
                 accelerator: 'CmdOrCtrl+Shift+C',
                 checked: 'view.show_coordinates',
                 click: () => toggleSetting('view.show_coordinates')
             },
             {
-                label: 'Show Move Colori&zation',
+                label: '&显示移动着色',
                 checked: 'view.show_move_colorization',
                 click: () => toggleSetting('view.show_move_colorization')
             },
             {
-                label: 'Show &Next Moves',
+                label: '&显示下一步',
                 checked: 'view.show_next_moves',
                 click: () => toggleSetting('view.show_next_moves')
             },
             {
-                label: 'Show &Sibling Variations',
+                label: '&显示同步变化',
                 checked: 'view.show_siblings',
                 click: () => toggleSetting('view.show_siblings')
             },
             {type: 'separator'},
             {
-                label: 'Show Game &Tree',
+                label: '&显示棋局树',
                 checked: 'view.show_graph',
                 accelerator: 'CmdOrCtrl+T',
                 click: () => {
@@ -492,7 +492,7 @@ let data = [
                 }
             },
             {
-                label: 'Show Co&mments',
+                label: '&显示注释',
                 checked: 'view.show_comments',
                 accelerator: 'CmdOrCtrl+Shift+T',
                 click: () => {
@@ -502,24 +502,24 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: 'Z&oom',
+                label: '&缩放',
                 submenu: [
                     {
-                        label: 'Increase',
+                        label: '升高',
                         accelerator: 'CmdOrCtrl+Plus',
                         click: () => setting.set('app.zoom_factor',
                             setting.get('app.zoom_factor') + .1
                         )
                     },
                     {
-                        label: 'Decrease',
+                        label: '降低',
                         accelerator: 'CmdOrCtrl+-',
                         click: () => setting.set('app.zoom_factor',
                             Math.max(0, setting.get('app.zoom_factor') - .1)
                         )
                     },
                     {
-                        label: 'Reset',
+                        label: '重置',
                         accelerator: 'CmdOrCtrl+0',
                         click: () => setting.set('app.zoom_factor', 1)
                     }
@@ -528,24 +528,28 @@ let data = [
         ]
     },
     {
-        label: '&Help',
+        label: '&帮助',
         submenu: [
             {
                 label: `${app.getName()} v${app.getVersion()}`,
                 enabled: false
             },
             {
-                label: 'Check for &Updates',
+                label: `中文编译：独角飞马`,
+                enabled: false
+            },
+            {
+                label: '&检查更新',
                 clickMain: 'checkForUpdates',
                 enabled: true
             },
             {type: 'separator'},
             {
-                label: 'GitHub &Repository',
+                label: 'GitHub &存储库',
                 click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
             },
             {
-                label: 'Report &Issue',
+                label: '&报告问题',
                 click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}/issues`)
             }
         ]
