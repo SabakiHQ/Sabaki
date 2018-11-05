@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.40.1][v0.40.1] (2018-11-05)
+## [Sabaki v0.40.1][v0.40.1] (2018-11-06)
 
 **Added**
 
@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Fix engine synchronization not working when engine has been suspended
 * Fix analysis heatmap disappearing when Leela Zero reaches maximum playouts
 * Fix board rendering issues
 * Fix Sabaki accidentally saving into non-SGF files

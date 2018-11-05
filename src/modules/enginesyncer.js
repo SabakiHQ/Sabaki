@@ -7,6 +7,12 @@ const helper = require('./helper')
 const Board = require('./board')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const defaultStateJSON = JSON.stringify({
+    dirty: false,
+    komi: null,
+    size: null,
+    moves: []
+})
 
 function coord2vertex(coord, size) {
     if (coord === 'pass') return null
@@ -23,13 +29,7 @@ class EngineSyncer {
 
         this.engine = engine
         this.commands = []
-
-        this.state = {
-            dirty: false,
-            komi: null,
-            size: null,
-            moves: []
-        }
+        this.state = JSON.parse(defaultStateJSON)
 
         this.controller = new gtp.Controller(path, argvsplit(args), {
             cwd: dirname(resolve(path))
@@ -48,6 +48,10 @@ class EngineSyncer {
             for (let command of commands.split(';').filter(x => x.trim() !== '')) {
                 this.controller.sendCommand(gtp.Command.fromString(command))
             }
+        })
+
+        this.controller.on('stopped', () => {
+            this.state = JSON.parse(defaultStateJSON)
         })
 
         this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
