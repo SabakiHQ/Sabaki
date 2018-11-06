@@ -46,9 +46,3 @@ Performs a shallow lexical comparison between two arrays. Returns `-1` iff `a < 
 * `input` `<String>`
 
 Converts `'\r\n'`, `'\n\r'`, and `'\r'` into simple linebreaks `'\n'`.
-
-### helper.markdown(input)
-
-* `input` `<String>`
-
-Returns the HTML according to [Sabaki's Markdown rules](https://github.com/SabakiHQ/Sabaki/wiki/Markdown-in-Sabaki).
