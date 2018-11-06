@@ -103,7 +103,7 @@ function buildMenu(disableAll = false) {
 
     if (process.platform === 'darwin') {
         app.dock.setMenu(Menu.buildFromTemplate([{
-            label: 'New Window',
+            label: '新窗口',
             click: () => newWindow()
         }]))
     }
@@ -116,7 +116,7 @@ function checkForUpdates(showFailDialogs) {
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['Download Update', 'Not Now'],
+                buttons: ['下载更新', '现在不更新'],
                 title: app.getName(),
                 message: `${app.getName()} v${info.latestVersion} is available now.`,
                 noLink: true,
@@ -130,8 +130,8 @@ function checkForUpdates(showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: ['OK'],
-                title: 'No update available',
-                message: `Sabaki v${app.getVersion()} is the latest version.`
+                title: '没有可用的更新',
+                message: `Sabaki v${app.getVersion()} 是最新版本。`
             }, () => {})
         }
     })
@@ -141,7 +141,7 @@ function checkForUpdates(showFailDialogs) {
                 type: 'warning',
                 buttons: ['OK'],
                 title: app.getName(),
-                message: 'An error occurred when checking for updates.'
+                message: '检查更新时出错。'
             })
         }
     })
