@@ -503,7 +503,7 @@ class App extends Component {
 
             if (gameTrees.length == 0) throw true
         } catch (err) {
-            dialog.showMessageBox('文件格式不支持，不可读。', 'warning')
+            dialog.showMessageBox('该文件不可读', 'warning')
             success = false
         }
 
