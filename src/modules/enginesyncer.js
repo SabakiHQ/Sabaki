@@ -7,6 +7,12 @@ const helper = require('./helper')
 const Board = require('./board')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const defaultStateJSON = JSON.stringify({
+    dirty: true,
+    komi: null,
+    size: null,
+    moves: []
+})
 
 function coord2vertex(coord, size) {
     if (coord === 'pass') return null
@@ -23,13 +29,7 @@ class EngineSyncer {
 
         this.engine = engine
         this.commands = []
-
-        this.state = {
-            dirty: false,
-            komi: null,
-            size: null,
-            moves: []
-        }
+        this.state = JSON.parse(defaultStateJSON)
 
         this.controller = new gtp.Controller(path, argvsplit(args), {
             cwd: dirname(resolve(path))
@@ -48,6 +48,10 @@ class EngineSyncer {
             for (let command of commands.split(';').filter(x => x.trim() !== '')) {
                 this.controller.sendCommand(gtp.Command.fromString(command))
             }
+        })
+
+        this.controller.on('stopped', () => {
+            this.state = JSON.parse(defaultStateJSON)
         })
 
         this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
@@ -119,11 +123,11 @@ class EngineSyncer {
         let board = gametree.getBoard(...treePosition)
 
         if (!board.isSquare()) {
-            throw new Error('GTP engines don’t support non-square boards.')
+            throw new Error('GTP引擎不支持非方形棋盘。')
         } else if (!board.isValid()) {
             throw new Error('GTP engines don’t support invalid board positions.')
         } else if (board.width > alpha.length) {
-            throw new Error(`GTP engines only support board sizes that don’t exceed ${alpha.length}.`)
+            throw new Error(`GTP引擎仅支持棋盘尺寸不超过${alpha.length}.`)
         }
 
         // Update komi
@@ -222,7 +226,7 @@ class EngineSyncer {
 
         if (synced) {
             let sharedHistoryLength = [...Array(Math.min(this.state.moves.length, moves.length))]
-                .findIndex((_, i) => JSON.stringify(moves[i]) !== JSON.stringify(this.state.moves[i]))
+                .findIndex((_, i) => !helper.equals(moves[i], this.state.moves[i]))
             if (sharedHistoryLength < 0) sharedHistoryLength = Math.min(this.state.moves.length, moves.length)
             let undoLength = this.state.moves.length - sharedHistoryLength
 
@@ -300,7 +304,7 @@ class EngineSyncer {
             if (success) return
         }
 
-        throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
+        throw new Error('GTP引擎无法在当前棋盘重新创建布局。')
     }
 }
 
