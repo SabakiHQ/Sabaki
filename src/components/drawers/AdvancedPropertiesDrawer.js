@@ -96,11 +96,11 @@ class AdvancedPropertiesDrawer extends Component {
         this.handleAddButtonClick = async evt => {
             evt.preventDefault()
 
-            let {value} = await new Promise(resolve => dialog.showInputBox('Enter property name', resolve))
+            let {value} = await new Promise(resolve => dialog.showInputBox('输入属性名称', resolve))
             let property = value.toUpperCase()
 
             if (blockedProperties.includes(property)) {
-                dialog.showMessageBox('This property has been blocked.', 'warning')
+                dialog.showMessageBox('此属性已被封锁。', 'warning')
                 return
             }
 
@@ -194,8 +194,8 @@ class AdvancedPropertiesDrawer extends Component {
                 ),
 
                 h('p', {},
-                    h('button', {class: 'add', type: 'button', onClick: this.handleAddButtonClick}, 'Add'),
-                    h('button', {onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {class: 'add', type: 'button', onClick: this.handleAddButtonClick}, '添加'),
+                    h('button', {onClick: this.handleCloseButtonClick}, '关闭')
                 )
             )
         )

@@ -77,8 +77,8 @@ class GameListItem extends Component {
                     visible: showThumbnail
                 }),
 
-                h('span', {class: 'black', title: blackRank}, blackName || 'Black'),
-                h('span', {class: 'white', title: whiteRank}, whiteName || 'White')
+                h('span', {class: 'black', title: blackRank}, blackName || '黑'),
+                h('span', {class: 'white', title: whiteRank}, whiteName || '白')
             )
         )
     }
@@ -110,12 +110,12 @@ class GameChooserDrawer extends Component {
         this.handleItemContextMenu = evt => {
             let template = [
                 {
-                    label: '&Remove Game',
+                    label: '&删除对局',
                     click: () => {
                         if (dialog.showMessageBox(
-                            'Do you really want to remove this game permanently?',
+                            '你真的想永久删除此对局吗？',
                             'warning',
-                            ['Remove Game', 'Cancel'], 1
+                            ['确认', '取消'], 1
                         ) === 1) return
 
                         let {gameTrees, onChange = helper.noop} = this.props
@@ -125,12 +125,12 @@ class GameChooserDrawer extends Component {
                     }
                 },
                 {
-                    label: 'Remove &Other Games',
+                    label: '&删除其它对局',
                     click: () => {
                         if (dialog.showMessageBox(
-                            'Do you really want to remove all other games permanently?',
+                            '你真的想永久删除所有其它对局吗？',
                             'warning',
-                            ['Remove Games', 'Cancel'], 1
+                            ['确认', '取消'], 1
                         ) === 1) return
 
                         let {onChange = helper.noop} = this.props
@@ -201,7 +201,7 @@ class GameChooserDrawer extends Component {
         this.handleAddButtonClick = evt => {
             let template = [
                 {
-                    label: 'Add &New Game',
+                    label: '&添加新对局',
                     click: () => {
                         let tree = sabaki.getEmptyGameTree()
                         let {gameTrees, onChange = helper.noop} = this.props
@@ -210,7 +210,7 @@ class GameChooserDrawer extends Component {
                     }
                 },
                 {
-                    label: 'Add &Existing Files…',
+                    label: '&添加现有文件…',
                     click: () => {
                         dialog.showOpenDialog({
                             properties: ['openFile', 'multiSelections'],
@@ -228,7 +228,7 @@ class GameChooserDrawer extends Component {
                                         newTrees.push(...trees)
                                     }
                                 } catch (err) {
-                                    dialog.showMessageBox('Some files are unreadable.', 'warning')
+                                    dialog.showMessageBox('某些文件无法读取。', 'warning')
                                 }
                             }
 
@@ -260,16 +260,16 @@ class GameChooserDrawer extends Component {
             }
 
             let template = [
-                {label: '&Black Player', click: sortWith(gamesort.byPlayerBlack)},
-                {label: '&White Player', click: sortWith(gamesort.byPlayerWhite)},
-                {label: 'Black R&ank', click: sortWith(gamesort.byBlackRank)},
-                {label: 'White Ran&k', click: sortWith(gamesort.byWhiteRank)},
-                {label: 'Game &Name', click: sortWith(gamesort.byGameName)},
-                {label: 'Game &Event', click: sortWith(gamesort.byEvent)},
-                {label: '&Date', click: sortWith(gamesort.byDate)},
-                {label: 'Number of &Moves', click: sortWith(gamesort.byNumberOfMoves)},
+                {label: '&执黑', click: sortWith(gamesort.byPlayerBlack)},
+                {label: '&执白', click: sortWith(gamesort.byPlayerWhite)},
+                {label: '&黑等级', click: sortWith(gamesort.byBlackRank)},
+                {label: '&白等级', click: sortWith(gamesort.byWhiteRank)},
+                {label: '&对局名称', click: sortWith(gamesort.byGameName)},
+                {label: '&赛事', click: sortWith(gamesort.byEvent)},
+                {label: '&日期', click: sortWith(gamesort.byDate)},
+                {label: '&棋局手数', click: sortWith(gamesort.byNumberOfMoves)},
                 {type: 'separator'},
-                {label: '&Reverse', click: sortWith(gamesort.reverse)}
+                {label: '&反向', click: sortWith(gamesort.reverse)}
             ]
 
             let element = evt.currentTarget
@@ -414,12 +414,12 @@ class GameChooserDrawer extends Component {
                     show
                 },
 
-                h('h2', {}, 'Manage Games'),
+                h('h2', {}, '对局管理'),
 
                 h('input', {
                     type: 'search',
                     name: 'filter',
-                    placeholder: 'Filter',
+                    placeholder: '过滤',
                     value: filterText,
                     onInput: this.handleFilterTextChange
                 }),
@@ -472,18 +472,18 @@ class GameChooserDrawer extends Component {
                         type: 'button',
                         class: 'dropdown',
                         onClick: this.handleAddButtonClick
-                    }, 'Add'),
+                    }, '添加'),
 
                     h('button', {
                         type: 'button',
                         class: 'dropdown',
                         onClick: this.handleSortButtonClick
-                    }, 'Sort By'),
+                    }, '排序方式'),
 
                     h('button', {
                         type: 'button',
                         onClick: this.handleCloseButtonClick
-                    }, 'Close')
+                    }, '关闭')
                 )
             ),
 

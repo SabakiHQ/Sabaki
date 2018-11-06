@@ -62,7 +62,7 @@ class ScoreDrawer extends Component {
         let result = method === 'area' ? score.area[0] - score.area[1] - komi
             : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
 
-        this.resultString = result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
+        this.resultString = result > 0 ? `黑胜 ${result}` : result < 0 ? `白胜 ${-result}` : '和棋'
 
         return h(Drawer,
             {
@@ -70,31 +70,31 @@ class ScoreDrawer extends Component {
                 show
             },
 
-            h('h2', {}, 'Score'),
+            h('h2', {}, '比分'),
 
             h('ul', {class: 'tabs'},
                 h('li', {class: classNames({current: method === 'area'})},
                     h('a', {
                         href: '#',
                         onClick: this.handleAreaButtonClick
-                    }, 'Area')
+                    }, '数子')
                 ),
                 h('li', {class: classNames({current: method === 'territory'})},
                     h('a', {
                         href: '#',
                         onClick: this.handleTerritoryButtonClick
-                    }, 'Territory')
+                    }, '数目')
                 )
             ),
 
             h('table', {},
                 h('thead', {}, h('tr', {},
                     h('th'),
-                    h('th', {disabled: method === 'territory'}, 'Area'),
-                    h('th', {disabled: method === 'area'}, 'Territory'),
-                    h('th', {disabled: method === 'area'}, 'Captures'),
-                    h('th', {}, 'Komi'),
-                    h('th', {}, 'Total')
+                    h('th', {disabled: method === 'territory'}, '子数'),
+                    h('th', {disabled: method === 'area'}, '目数'),
+                    h('th', {disabled: method === 'area'}, '提子'),
+                    h('th', {}, '贴目'),
+                    h('th', {}, '总计')
                 )),
                 h('tbody', {},
                     h(ScoreRow, {method, score, komi, sign: 1}),
@@ -104,18 +104,18 @@ class ScoreDrawer extends Component {
 
             h('form', {},
                 h('p', {},
-                    'Result: ',
+                    '结果: ',
                     h('span', {class: 'result'}, this.resultString), ' ',
 
                     !estimating && h('button', {
                         type: 'submit',
                         onClick: this.handleSubmitButtonClick
-                    }, 'Update Result'), ' ',
+                    }, '更新结果'), ' ',
 
                     h('button', {
                         type: 'reset',
                         onClick: this.handleCloseButtonClick
-                    }, 'Close')
+                    }, '关闭')
                 )
             )
         )

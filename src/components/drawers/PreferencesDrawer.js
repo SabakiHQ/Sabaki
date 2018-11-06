@@ -73,96 +73,96 @@ class GeneralTab extends Component {
             h('ul', {},
                 h(PreferencesItem, {
                     id: 'app.enable_hardware_acceleration',
-                    text: 'Enable hardware acceleration if possible'
+                    text: '如果可能的话启用硬件加速'
                 }),
                 h(PreferencesItem, {
                     id: 'app.startup_check_updates',
-                    text: 'Check for updates at startup'
+                    text: '启动时检查更新'
                 }),
                 h(PreferencesItem, {
                     id: 'sound.enable',
-                    text: 'Enable sounds',
+                    text: '启用声音',
                     onChange: this.handleSoundEnabledChange
                 }),
                 h(PreferencesItem, {
                     id: 'game.goto_end_after_loading',
-                    text: 'Jump to end after loading file'
+                    text: '加载棋谱文件后跳转到最后一步'
                 }),
                 h(PreferencesItem, {
                     id: 'view.fuzzy_stone_placement',
-                    text: 'Fuzzy stone placement'
+                    text: '模糊(仿真对局)棋子摆放'
                 }),
                 h(PreferencesItem, {
                     id: 'view.animated_stone_placement',
-                    text: 'Animate fuzzy placement'
+                    text: '动态模糊(仿真对局)摆放'
                 }),
                 h(PreferencesItem, {
                     id: 'board.variation_instant_replay',
-                    text: 'Instantly replay analysis variations on board'
+                    text: '在棋盘上即时显示分析变化'
                 }),
                 h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
-                    text: 'Start game right after attaching engines'
+                    text: '附加引擎后立即开始对局'
                 }),
                 h(PreferencesItem, {
                     id: 'gtp.auto_genmove',
-                    text: 'Automatically generate engine moves'
+                    text: '引擎自动生成走法（下子）'
                 })
             ),
 
             h('ul', {},
                 h(PreferencesItem, {
                     id: 'comments.show_move_interpretation',
-                    text: 'Show automatic move titles'
+                    text: '自动在注释标题栏显示行棋术语'
                 }),
                 h(PreferencesItem, {
                     id: 'game.show_ko_warning',
-                    text: 'Show ko warning'
+                    text: '显示KO警告'
                 }),
                 h(PreferencesItem, {
                     id: 'game.show_suicide_warning',
-                    text: 'Show suicide warning'
+                    text: '显示自杀警告'
                 }),
                 h(PreferencesItem, {
                     id: 'edit.show_removenode_warning',
-                    text: 'Show remove node warning'
+                    text: '显示删除节点警告'
                 }),
                 h(PreferencesItem, {
                     id: 'edit.show_removeothervariations_warning',
-                    text: 'Show remove other variations warning'
+                    text: '显示删除其它变化警告'
                 }),
                 h(PreferencesItem, {
                     id: 'file.show_reload_warning',
-                    text: 'Offer to reload file if changed externally'
+                    text: '如果外部更改则给予重新加载文件'
                 }),
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',
-                    text: 'Click last played stone to remove'
+                    text: '点击最后下的棋子删除'
                 }),
                 h(PreferencesItem, {
                     id: 'app.always_show_result',
-                    text: 'Always show game result'
+                    text: '始终显示棋局结果'
                 })
             ),
 
             h('p', {}, h('label', {},
-                'Game Tree Style: ',
+                '棋局树样式: ',
 
                 h('select', {onChange: this.handleTreeStyleChange},
                     h('option', {
                         value: 'compact',
                         selected: graphGridSize < 22
-                    }, 'Compact'),
+                    }, '紧凑'),
 
                     h('option', {
                         value: 'spacious',
                         selected: graphGridSize === 22
-                    }, 'Spacious'),
+                    }, '宽敞'),
 
                     h('option', {
                         value: 'big',
                         selected: graphGridSize > 22
-                    }, 'Big')
+                    }, '大')
                 )
             ))
         )
@@ -211,7 +211,7 @@ class PathInputItem extends Component {
 
             h('input', {
                 type: 'search',
-                placeholder: 'Path',
+                placeholder: '路径',
                 value,
                 onChange: this.handlePathChange
             }),
@@ -223,7 +223,7 @@ class PathInputItem extends Component {
                 },
                 h('img', {
                     src: './node_modules/octicons/build/svg/file-directory.svg',
-                    title: 'Browse…',
+                    title: '浏览…',
                     height: 14
                 })
             ),
@@ -231,7 +231,7 @@ class PathInputItem extends Component {
             value && !fs.existsSync(value) && h('a', {class: 'invalid'},
                 h('img', {
                     src: './node_modules/octicons/build/svg/alert.svg',
-                    title: 'File not found',
+                    title: '文件未找到',
                     height: 14
                 })
             )
@@ -263,8 +263,8 @@ class ThemesTab extends Component {
             evt.preventDefault()
 
             let result = dialog.showMessageBox(
-                'Do you really want to uninstall this theme?',
-                'warning', ['Uninstall', 'Cancel'], 1
+                '你真的要卸载这个主题？',
+                'warning', ['卸载', '取消'], 1
             )
 
             if (result === 1) return
@@ -273,7 +273,7 @@ class ThemesTab extends Component {
             let {path} = setting.getThemes()[this.state.currentTheme]
 
             rimraf(path, err => {
-                if (err) return dialog.showMessageBox('Uninstallation failed.', 'error')
+                if (err) return dialog.showMessageBox('卸载失败', 'error')
 
                 setting.loadThemes()
                 setting.set('theme.current', null)
@@ -295,7 +295,7 @@ class ThemesTab extends Component {
                 let id = uuid()
 
                 copy(result[0], join(setting.themesDirectory, id), err => {
-                    if (err) return dialog.showMessageBox('Installation failed.', 'error')
+                    if (err) return dialog.showMessageBox('安装失败', 'error')
 
                     setting.loadThemes()
                     setting.set('theme.current', id)
@@ -314,34 +314,34 @@ class ThemesTab extends Component {
         let currentTheme = setting.getThemes()[this.state.currentTheme]
 
         return h('div', {class: 'themes'},
-            h('h3', {}, 'Custom Images'),
+            h('h3', {}, '自定义图像'),
 
             h('ul', {class: 'userpaths'},
                 h(PathInputItem, {
                     id: 'theme.custom_blackstones',
-                    text: 'Black stone image:'
+                    text: '黑子图像:'
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_whitestones',
-                    text: 'White stone image:'
+                    text: '白子图像:'
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_board',
-                    text: 'Board image:'
+                    text: '棋盘图像:'
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_background',
-                    text: 'Background image:'
+                    text: '背景图像:'
                 })
             ),
 
-            h('h3', {}, 'Current Theme'),
+            h('h3', {}, '当前主题'),
 
             h('p', {},
                 h('select',
                     {onChange: this.handleThemeChange},
 
-                    h('option', {value: '', selected: currentTheme == null}, 'Default'),
+                    h('option', {value: '', selected: currentTheme == null}, '默认'),
 
                     Object.keys(setting.getThemes()).map(id => h('option',
                         {
@@ -353,15 +353,15 @@ class ThemesTab extends Component {
                     ))
                 ), ' ',
 
-                currentTheme && h('button', {type: 'button', onClick: this.handleUninstallButton}, 'Uninstall'),
+                currentTheme && h('button', {type: 'button', onClick: this.handleUninstallButton}, '卸载'),
 
                 h('div', {class: 'install'},
-                    h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…'),
+                    h('button', {type: 'button', onClick: this.handleInstallButton}, '安装主题…'),
                     ' ',
                     h('a', {
                         href: `https://github.com/SabakiHQ/Sabaki/blob/v${sabaki.version}/docs/guides/theme-directory.md`,
                         onClick: this.handleLinkClick
-                    }, 'Get more themes…')
+                    }, '获取更多主题…')
                 )
             ),
 
@@ -374,7 +374,7 @@ class ThemesTab extends Component {
                         href: currentTheme.homepage,
                         title: currentTheme.homepage,
                         onClick: this.handleLinkClick
-                    }, 'Homepage')
+                    }, '主页')
                 ),
 
                 h('p', {class: 'description'},
@@ -406,7 +406,7 @@ class EngineItem extends Component {
         this.handleBrowseButtonClick = () => {
             dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [{name: 'All Files', extensions: ['*']}]
+                filters: [{name: '所有文件', extensions: ['*']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
@@ -434,7 +434,7 @@ class EngineItem extends Component {
                 h('a',
                     {
                         class: 'remove',
-                        title: 'Remove',
+                        title: '删除',
                         onClick: this.handleRemoveButtonClick
                     },
 
@@ -442,7 +442,7 @@ class EngineItem extends Component {
                 ),
                 h('input', {
                     type: 'text',
-                    placeholder: '(Unnamed Engine)',
+                    placeholder: '(未命名的引擎)',
                     value: name,
                     name: 'name',
                     onChange: this.handleChange
@@ -452,7 +452,7 @@ class EngineItem extends Component {
                 h('a',
                     {
                         class: 'browse',
-                        title: 'Browse…',
+                        title: '浏览…',
                         onClick: this.handleBrowseButtonClick
                     },
 
@@ -460,7 +460,7 @@ class EngineItem extends Component {
                 ),
                 h('input', {
                     type: 'text',
-                    placeholder: 'Path',
+                    placeholder: '路径',
                     value: path,
                     name: 'path',
                     onChange: this.handleChange
@@ -469,7 +469,7 @@ class EngineItem extends Component {
             h('p', {},
                 h('input', {
                     type: 'text',
-                    placeholder: 'No arguments',
+                    placeholder: '没有参数',
                     value: args,
                     name: 'args',
                     onChange: this.handleChange
@@ -478,7 +478,7 @@ class EngineItem extends Component {
             h('p', {},
                 h('input', {
                     type: 'text',
-                    placeholder: 'Initial commands (;-separated)',
+                    placeholder: '初始化命令(;-英文半角分号分隔)',
                     value: commands,
                     name: 'commands',
                     onChange: this.handleChange
@@ -538,7 +538,7 @@ class EnginesTab extends Component {
             ),
 
             h('p', {},
-                h('button', {type: 'button', onClick: this.handleAddButtonClick}, 'Add')
+                h('button', {type: 'button', onClick: this.handleAddButtonClick}, '添加')
             )
         )
     }
@@ -597,7 +597,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'General')
+                    h('a', {href: '#'}, '常 规')
                 ),
                 h('li',
                     {
@@ -605,7 +605,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Themes')
+                    h('a', {href: '#'}, '主 题')
                 ),
                 h('li',
                     {
@@ -613,7 +613,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Engines')
+                    h('a', {href: '#'}, '引 擎')
                 )
             ),
 
@@ -623,7 +623,7 @@ class PreferencesDrawer extends Component {
                 h(EnginesTab, {engines}),
 
                 h('p', {},
-                    h('button', {type: 'button', onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {type: 'button', onClick: this.handleCloseButtonClick}, '关闭')
                 )
             )
         )

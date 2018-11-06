@@ -48,7 +48,7 @@ class CleanMarkupDrawer extends Component {
             evt.preventDefault()
 
             let doRemove = async work => {
-                sabaki.setUndoPoint('Undo Clean Markup')
+                sabaki.setUndoPoint('撤消清除标记')
                 sabaki.setBusy(true)
 
                 let data = {
@@ -80,7 +80,7 @@ class CleanMarkupDrawer extends Component {
 
             let template = [
                 {
-                    label: 'From Current &Position',
+                    label: '&从当前位置',
                     click: () => doRemove(properties => {
                         let [tree, i] = this.props.treePosition
 
@@ -90,7 +90,7 @@ class CleanMarkupDrawer extends Component {
                     })
                 },
                 {
-                    label: 'From Entire &Game',
+                    label: '&从整个对局',
                     click: () => doRemove(properties => {
                         let root = gametree.getRoot(...this.props.treePosition)
                         let trees = gametree.getTreesRecursive(root)
@@ -124,57 +124,57 @@ class CleanMarkupDrawer extends Component {
                 show
             },
 
-            h('h2', {}, 'Clean Markup'),
+            h('h2', {}, '清理标记'),
 
             h('form', {},
                 h('ul', {},
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.cross',
-                        text: 'Cross markers'
+                        text: '交叉标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.triangle',
-                        text: 'Triangle markers'
+                        text: '三角标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.square',
-                        text: 'Square markers'
+                        text: '方形标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.circle',
-                        text: 'Circle markers'
+                        text: '圆形标记'
                     })
                 ),
                 h('ul', {},
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.line',
-                        text: 'Line markers'
+                        text: '线标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.arrow',
-                        text: 'Arrow markers'
+                        text: '箭头标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.label',
-                        text: 'Label markers'
+                        text: '标签标记'
                     })
                 ),
                 h('ul', {},
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.comments',
-                        text: 'Comments'
+                        text: '评论'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.annotations',
-                        text: 'Annotations'
+                        text: '注释'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.hotspots',
-                        text: 'Hotspots markers'
+                        text: '热点标记'
                     }),
                     h(CleanMarkupItem, {
                         id: 'cleanmarkup.winrate',
-                        text: 'Winrate data'
+                        text: '胜率数据'
                     })
                 ),
 
@@ -183,9 +183,9 @@ class CleanMarkupDrawer extends Component {
                         type: 'button',
                         class: 'dropdown',
                         onClick: this.handleRemoveButtonClick
-                    }, 'Remove'), ' ',
+                    }, '清除'), ' ',
 
-                    h('button', {onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {onClick: this.handleCloseButtonClick}, '关闭')
                 )
             )
         )
