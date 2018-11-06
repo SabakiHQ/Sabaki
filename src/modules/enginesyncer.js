@@ -8,7 +8,7 @@ const Board = require('./board')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 const defaultStateJSON = JSON.stringify({
-    dirty: false,
+    dirty: true,
     komi: null,
     size: null,
     moves: []
