@@ -199,7 +199,7 @@ class MainView extends Component {
                     scoreBoard,
                     areaMap,
                     komi
-                }, 'Please select dead stones.'),
+                }, '请选择死子。'),
 
                 h(ScoringBar, {
                     type: 'estimator',
@@ -208,7 +208,7 @@ class MainView extends Component {
                     scoreBoard,
                     areaMap,
                     komi
-                }, 'Toggle group status.'),
+                }, '转换归属地。'),
 
                 h(FindBar, {
                     mode,
