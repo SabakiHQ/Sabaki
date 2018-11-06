@@ -2239,6 +2239,18 @@ class App extends Component {
         let color = currentPlayer > 0 ? 'B' : 'W'
         let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
 
+        if (this.attachedEngineSyncers.some(syncer => syncer && !syncer.initialized)) {
+            this.setBusy(true)
+
+            await Promise.all(this.attachedEngineSyncers.map(syncer =>
+                syncer && new Promise(resolve => {
+                    syncer.once('engine-initialized', resolve)
+                })
+            ))
+
+            this.setBusy(false)
+        }
+
         let engineIndex = controllerIndices.find(i =>
             this.attachedEngineSyncers[i] != null
             && this.state.engineCommands[i] != null

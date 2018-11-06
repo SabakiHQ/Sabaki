@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Fix Sabaki incorrectly saying no analysis capable engine is attached when engine hasn't initialized yet
 * Fix engine synchronization not working when engine has been suspended
 * Fix analysis heatmap disappearing when Leela Zero reaches maximum playouts
 * Fix board rendering issues
