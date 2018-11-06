@@ -226,7 +226,7 @@ class EngineSyncer {
 
         if (synced) {
             let sharedHistoryLength = [...Array(Math.min(this.state.moves.length, moves.length))]
-                .findIndex((_, i) => JSON.stringify(moves[i]) !== JSON.stringify(this.state.moves[i]))
+                .findIndex((_, i) => !helper.equals(moves[i], this.state.moves[i]))
             if (sharedHistoryLength < 0) sharedHistoryLength = Math.min(this.state.moves.length, moves.length)
             let undoLength = this.state.moves.length - sharedHistoryLength
 
