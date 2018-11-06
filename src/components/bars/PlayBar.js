@@ -15,36 +15,36 @@ class PlayBar extends Component {
         this.handleMenuClick = () => {
             let template = [
                 {
-                    label: '&Pass',
+                    label: '&Pass(通过)一手',
                     click: () => {
                         let autoGenmove = setting.get('gtp.auto_genmove')
                         sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
                     }
                 },
                 {
-                    label: '&Resign',
+                    label: '&认输',
                     click: () => sabaki.makeResign()
                 },
                 {type: 'separator'},
                 {
-                    label: 'Es&timate',
+                    label: '&估算(形势判断)',
                     click: () => sabaki.setMode('estimator')
                 },
                 {
-                    label: '&Score',
+                    label: '&比分(点目)',
                     click: () => sabaki.setMode('scoring')
                 },
                 {
-                    label: '&Edit',
+                    label: '&编辑',
                     click: () => sabaki.setMode('edit')
                 },
                 {
-                    label: '&Find',
+                    label: '&查找',
                     click: () => sabaki.setMode('find')
                 },
                 {type: 'separator'},
                 {
-                    label: '&Info',
+                    label: '&对局 信息',
                     click: () => sabaki.openDrawer('info')
                 }
             ]
@@ -98,14 +98,14 @@ class PlayBar extends Component {
                 h('span', {
                     class: classNames('name', {engine: isEngine[0]}),
                     title: isEngine[0] && 'Engine'
-                }, playerNames[0] || 'Black')
+                }, playerNames[0] || '  黑  ')
             ),
 
             h('span', {id: 'player_-1'},
                 h('span', {
                     class: classNames('name', {engine: isEngine[1]}),
                     title: isEngine[1] && 'Engine'
-                }, playerNames[1] || 'White'), ' ',
+                }, playerNames[1] || '  白  '), ' ',
 
                 playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
