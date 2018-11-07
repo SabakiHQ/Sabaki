@@ -6,13 +6,13 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Add setting for Sabaki to instantly replay analysis variations
+* Add setting for Sabaki to play out analysis variations instantly
 
 **Fixed**
 
-* Fix Sabaki incorrectly saying no analysis capable engine is attached when engine hasn't initialized yet
+* Fix Sabaki incorrectly not detecting analysis capabilities when engine hasn't fully initialized yet
 * Fix engine synchronization not working when engine has been suspended
-* Fix analysis heatmap disappearing when Leela Zero reaches maximum playouts
+* Fix analysis heatmap disappearing when Leela Zero reaches maximum visits/playouts
 * Fix board rendering issues
 * Fix Sabaki accidentally saving into non-SGF files
 
