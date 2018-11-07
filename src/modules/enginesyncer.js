@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const {dirname, resolve} = require('path')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
@@ -23,11 +24,14 @@ function coord2vertex(coord, size) {
     return [x, y]
 }
 
-class EngineSyncer {
+class EngineSyncer extends EventEmitter {
     constructor(engine) {
+        super()
+
         let {path, args, commands} = engine
 
         this.engine = engine
+        this.initialized = false
         this.commands = []
         this.state = JSON.parse(defaultStateJSON)
 
@@ -41,6 +45,9 @@ class EngineSyncer {
             this.controller.sendCommand({name: 'protocol_version'})
             this.controller.sendCommand({name: 'list_commands'}).then(response => {
                 this.commands = response.content.split('\n')
+            }).then(() => {
+                this.initialized = true
+                this.emit('engine-initialized')
             })
 
             if (commands == null || commands.trim() === '') return
@@ -51,6 +58,7 @@ class EngineSyncer {
         })
 
         this.controller.on('stopped', () => {
+            this.initialized = false
             this.state = JSON.parse(defaultStateJSON)
         })
 
@@ -127,7 +135,7 @@ class EngineSyncer {
         } else if (!board.isValid()) {
             throw new Error('GTP engines don’t support invalid board positions.')
         } else if (board.width > alpha.length) {
-            throw new Error(`GTP引擎仅支持棋盘尺寸不超过${alpha.length}.`)
+            throw new Error(`GTP引擎仅支持棋盘尺寸不超过 ${alpha.length}.`)
         }
 
         // Update komi
