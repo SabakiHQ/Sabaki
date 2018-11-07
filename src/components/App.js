@@ -2235,37 +2235,21 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
+        await this.syncEngines()
+
         let {currentPlayer} = this.inferredState
+        let error = false
         let color = currentPlayer > 0 ? 'B' : 'W'
         let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
-
-        if (this.attachedEngineSyncers.some(syncer => syncer && !syncer.initialized)) {
-            this.setBusy(true)
-
-            await Promise.all(this.attachedEngineSyncers.map(syncer =>
-                syncer && new Promise(resolve => {
-                    syncer.once('engine-initialized', resolve)
-                })
-            ))
-
-            this.setBusy(false)
-        }
-
         let engineIndex = controllerIndices.find(i =>
             this.attachedEngineSyncers[i] != null
-            && this.state.engineCommands[i] != null
-            && (this.state.engineCommands[i].includes('lz-analyze')
-            || this.state.engineCommands[i].includes('analyze'))
+            && (this.attachedEngineSyncers[i].commands.includes('lz-analyze')
+            || this.attachedEngineSyncers[i].commands.includes('analyze'))
         )
 
-        let error = false
-
         if (engineIndex != null) {
-            let {controller} = this.attachedEngineSyncers[engineIndex]
-            let commands = this.state.engineCommands[engineIndex]
+            let {controller, commands} = this.attachedEngineSyncers[engineIndex]
             let name = commands.includes('analyze') ? 'analyze' : 'lz-analyze'
-
-            await this.syncEngines()
 
             let interval = setting.get('board.analysis_interval').toString()
             let response = await controller.sendCommand({name, args: [color, interval]})

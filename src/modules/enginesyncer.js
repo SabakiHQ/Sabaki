@@ -31,7 +31,6 @@ class EngineSyncer extends EventEmitter {
         let {path, args, commands} = engine
 
         this.engine = engine
-        this.initialized = false
         this.commands = []
         this.state = JSON.parse(defaultStateJSON)
 
@@ -45,9 +44,6 @@ class EngineSyncer extends EventEmitter {
             this.controller.sendCommand({name: 'protocol_version'})
             this.controller.sendCommand({name: 'list_commands'}).then(response => {
                 this.commands = response.content.split('\n')
-            }).then(() => {
-                this.initialized = true
-                this.emit('engine-initialized')
             })
 
             if (commands == null || commands.trim() === '') return
@@ -58,7 +54,6 @@ class EngineSyncer extends EventEmitter {
         })
 
         this.controller.on('stopped', () => {
-            this.initialized = false
             this.state = JSON.parse(defaultStateJSON)
         })
 
@@ -143,13 +138,13 @@ class EngineSyncer extends EventEmitter {
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
         if (komi !== this.state.komi) {
-            controller.sendCommand({name: 'komi', args: [komi]})
+            await controller.sendCommand({name: 'komi', args: [komi]})
         }
 
         // Update board size
 
         if (this.state.dirty || board.width !== this.state.size) {
-            controller.sendCommand({name: 'boardsize', args: [board.width]})
+            await controller.sendCommand({name: 'boardsize', args: [board.width]})
             this.state.dirty = true
         }
 
@@ -255,7 +250,7 @@ class EngineSyncer extends EventEmitter {
             } else {
                 // Replay from beginning
 
-                controller.sendCommand({name: 'clear_board'})
+                promises.unshift(() => controller.sendCommand({name: 'clear_board'}))
             }
 
             let result = await Promise.all(promises.map(x => x()))
@@ -291,9 +286,8 @@ class EngineSyncer extends EventEmitter {
 
         // Complete rearrangement
 
-        promises = []
+        promises = [() => controller.sendCommand({name: 'clear_board'})]
         engineBoard = new Board(board.width, board.height)
-        controller.sendCommand({name: 'clear_board'})
 
         for (let x = 0; x < board.width; x++) {
             for (let y = 0; y < board.height; y++) {
