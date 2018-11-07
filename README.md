@@ -21,6 +21,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Find move by move position and comment text
 - Position & move annotations
 - [GTP engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engines.md) support
+- Board analysis with engines which support it
 - Guess mode
 - Autoplay games
 
