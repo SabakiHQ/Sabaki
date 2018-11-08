@@ -179,11 +179,10 @@ class EngineSyncer extends EventEmitter {
             ) {
                 // Place handicap stones
 
-                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
+                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices)).sort()
                 let coords = vertices
                     .map(v => board.vertex2coord(v))
                     .filter(x => x != null)
-                    .sort()
                     .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
 
                 if (coords.length > 0) {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix incremental engine synchronization not working properly when handicap stones are involved
+* Fix freeze when starting analysis after suspending an engine
+
 ## [Sabaki v0.40.1][v0.40.1] (2018-11-06)
 
 **Added**
