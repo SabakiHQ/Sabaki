@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* When adding analysis variation to the game tree, SGF move annotation will be supplied automatically
+
 **Fixed**
 
 * Fix incremental engine synchronization not working properly when handicap stones are involved

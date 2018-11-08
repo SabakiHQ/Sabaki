@@ -718,7 +718,22 @@ class App extends Component {
                     let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
 
                     if (data != null) {
-                        this.openVariationMenu(data.sign, data.variation, {x, y})
+                        let maxVisitsWin = Math.max(...this.state.analysis.map(x => x.visits * x.win))
+                        let strength = Math.round(data.visits * data.win * 8 / maxVisitsWin) + 1
+                        let annotationProp = strength >= 8 ? 'TE'
+                            : strength >= 5 ? 'IT'
+                            : strength >= 3 ? 'DO'
+                            : 'BM'
+                        let annotationValues = {'BM': '1', 'DO': '', 'IT': '', 'TE': '1'}
+                        let winrate = Math.round((data.sign > 0 ? data.win : 100 - data.win) * 100) / 100
+
+                        this.openVariationMenu(data.sign, data.variation, {
+                            x, y,
+                            startNodeProperties: {
+                                [annotationProp]: [annotationValues[annotationProp]],
+                                SBKV: [winrate.toString()]
+                            }
+                        })
                     }
                 }
             }
@@ -1599,7 +1614,7 @@ class App extends Component {
         let clearProperties = properties => properties.forEach(p => delete node[p])
 
         if ('moveAnnotation' in data) {
-            let moveProps = {'BM': 1, 'DO': '', 'IT': '', 'TE': 1}
+            let moveProps = {'BM': '1', 'DO': '', 'IT': '', 'TE': '1'}
 
             clearProperties(Object.keys(moveProps))
 
@@ -1608,7 +1623,7 @@ class App extends Component {
         }
 
         if ('positionAnnotation' in data) {
-            let positionProps = {'UC': 1, 'GW': 1, 'GB': 1, 'DM': 1}
+            let positionProps = {'UC': '1', 'GW': '1', 'GB': '1', 'DM': '1'}
 
             clearProperties(Object.keys(positionProps))
 
@@ -2001,7 +2016,7 @@ class App extends Component {
         helper.popupMenu(template, x, y)
     }
 
-    openVariationMenu(sign, variation, {x, y, appendSibling = false} = {}) {
+    openVariationMenu(sign, variation, {x, y, appendSibling = false, startNodeProperties = {}} = {}) {
         helper.popupMenu([{
             label: '&Add Variation',
             click: () => {
@@ -2020,9 +2035,9 @@ class App extends Component {
                         ? this.state.treePosition
                         : gametree.navigate(...this.state.treePosition, -1)
                     ),
-                    variation.map((vertex, i) => ({
+                    variation.map((vertex, i) => Object.assign({
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
-                    }))
+                    }, i === 0 ? startNodeProperties : {}))
                 )
 
                 this.setState(({gameTrees}) => ({

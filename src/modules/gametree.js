@@ -224,7 +224,7 @@ exports.mergeInsert = function(tree, index, nodes) {
             ) {
                 // Merge
 
-                Object.assign(nextNode, node)
+                Object.assign(nextNode, Object.assign(node, nextNode))
                 return [[tree, index], [tree, index + 1]]
             } else {
                 // Create new subtree in the middle
@@ -266,7 +266,8 @@ exports.mergeInsert = function(tree, index, nodes) {
             } else {
                 // Merge
 
-                Object.assign(subtree.nodes[0], node)
+                let nextNode = subtree.nodes[0]
+                Object.assign(nextNode, Object.assign(node, nextNode))
             }
 
             return [[tree, index], [subtree, 0]]
