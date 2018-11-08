@@ -98,7 +98,7 @@ class GeneralTab extends Component {
                 }),
                 h(PreferencesItem, {
                     id: 'board.variation_instant_replay',
-                    text: 'Instantly replay analysis variations on board'
+                    text: 'Instantly play out analysis variations on board'
                 }),
                 h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
