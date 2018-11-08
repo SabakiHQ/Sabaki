@@ -6,19 +6,8 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
-let [
-    delay, commentProperties,
-    edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
-    nodeColor, nodeInactiveColor, nodeActiveColor,
-    nodeBookmarkColor, nodeCommentColor,
-    nodeInactiveBookmarkColor, nodeInactiveCommentColor
-] = [
-    'graph.delay', 'sgf.comment_properties',
-    'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
-    'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
-    'graph.node_bookmark_color', 'graph.node_comment_color',
-    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'
-].map(x => setting.get(x))
+let delay = setting.get('graph.delay')
+let commentProperties = setting.get('sgf.comment_properties')
 
 class GameGraphNode extends Component {
     constructor() {
@@ -130,8 +119,8 @@ class GameGraphEdge extends Component {
         return h('polyline', {
             points,
             fill: 'none',
-            stroke: current ? edgeColor : edgeInactiveColor,
-            'stroke-width': current ? edgeSize : edgeInactiveSize
+            stroke: current ? '#ddd' : '#777',
+            'stroke-width': current ? 2 : 1
         })
     }
 }
@@ -338,17 +327,11 @@ class GameGraph extends Component {
 
                 // Render node
 
-                let fill = nodeColor
-                if (onCurrentTrack) {
-                    fill = helper.vertexEquals(this.props.treePosition, [tree, index]) ? nodeActiveColor
-                        : 'HO' in node ? nodeBookmarkColor
-                        : commentProperties.some(x => x in node) ? nodeCommentColor
-                        : nodeColor
-                } else {
-                    fill = 'HO' in node ? nodeInactiveBookmarkColor
-                        : commentProperties.some(x => x in node) ? nodeInactiveCommentColor
-                        : nodeInactiveColor
-                }
+                let opacity = onCurrentTrack ? 1 : .5
+                let fillRGB = helper.vertexEquals(this.props.treePosition, [tree, index]) ? [247, 96, 71]
+                    : 'HO' in node ? [198, 120, 221]
+                    : commentProperties.some(x => x in node) ? [107, 177, 255]
+                    : [238, 238, 238]
 
                 let left = x * gridSize
                 let top = y * gridSize
@@ -362,7 +345,7 @@ class GameGraph extends Component {
                         : !('B' in node || 'W' in node)
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
-                    fill,
+                    fill: `rgb(${fillRGB.map(x => x * opacity).join(',')})`,
                     nodeSize,
                     gridSize
                 }))
