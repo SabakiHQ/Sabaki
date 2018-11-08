@@ -138,13 +138,16 @@ class EngineSyncer extends EventEmitter {
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
         if (komi !== this.state.komi) {
-            await controller.sendCommand({name: 'komi', args: [komi]})
+            let {error} = await controller.sendCommand({name: 'komi', args: [komi]})
+            if (error) throw new Error('Komi is not supported by engine.')
         }
 
         // Update board size
 
         if (this.state.dirty || board.width !== this.state.size) {
-            await controller.sendCommand({name: 'boardsize', args: [board.width]})
+            let {error} = await controller.sendCommand({name: 'boardsize', args: [board.width]})
+            if (error) throw new Error('Board size is not supported by engine.')
+
             this.state.dirty = true
         }
 
@@ -155,8 +158,12 @@ class EngineSyncer extends EventEmitter {
             let coord = board.vertex2coord(vertex)
             if (coord == null) return true
 
-            let response = await controller.sendCommand({name: 'play', args: [color, coord]})
-            if (response.error) return false
+            try {
+                let {error} = await controller.sendCommand({name: 'play', args: [color, coord]})
+                if (error) return false
+            } catch (err) {
+                return false
+            }
 
             return true
         }
