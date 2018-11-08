@@ -91,7 +91,7 @@ class GameGraphNode extends Component {
                 return ''
             })(),
 
-            class: classNames({hover}, 'node'),
+            class: classNames({hover, current}, 'node'),
             fill
         })
     }
@@ -125,7 +125,7 @@ class GameGraphEdge extends Component {
         return h('polyline', {
             points,
             fill: 'none',
-            stroke: current ? '#ddd' : '#777',
+            stroke: current ? '#ccc' : '#777',
             'stroke-width': current ? 2 : 1
         })
     }
@@ -335,8 +335,8 @@ class GameGraph extends Component {
 
                 let isCurrentNode = helper.vertexEquals(this.props.treePosition, [tree, index])
                 let opacity = onCurrentTrack ? 1 : .5
-                let fillRGB = isCurrentNode ? [247, 96, 71]
-                    : commentProperties.some(x => x in node) ? [107, 177, 255]
+                let fillRGB =
+                    commentProperties.some(x => x in node) ? [107, 177, 255]
                     : [238, 238, 238]
 
                 let left = x * gridSize
@@ -356,7 +356,7 @@ class GameGraph extends Component {
                         : 'circle', // Normal node
                     current: isCurrentNode,
                     fill: `rgb(${fillRGB.map(x => x * opacity).join(',')})`,
-                    nodeSize,
+                    nodeSize: nodeSize + 1,
                     gridSize
                 }))
 

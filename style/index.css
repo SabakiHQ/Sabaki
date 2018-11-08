@@ -565,8 +565,16 @@ header, #bar .bar {
     #graph svg:not(:active) > * {
         transition: transform .3s;
     }
+    #graph svg .node {
+        stroke: #111;
+        stroke-width: 1px;
+    }
     #graph svg .node.hover {
-        stroke: white;
+        stroke: #777;
+        stroke-width: 2px;
+    }
+    #graph svg .node.current {
+        stroke: #eee;
         stroke-width: 2px;
 }
 
