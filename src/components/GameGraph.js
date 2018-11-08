@@ -46,8 +46,9 @@ class GameGraphNode extends Component {
         document.removeEventListener('mousemove', this.handleMouseMove)
     }
 
-    shouldComponentUpdate({type, fill, nodeSize, gridSize}, {hover}) {
+    shouldComponentUpdate({type, current, fill, nodeSize, gridSize}, {hover}) {
         return type !== this.props.type
+            || current !== this.props.current
             || fill !== this.props.fill
             || nodeSize !== this.props.nodeSize
             || gridSize !== this.props.gridSize
@@ -57,6 +58,7 @@ class GameGraphNode extends Component {
     render({
         position: [left, top],
         type,
+        current,
         fill,
         nodeSize
     }, {
@@ -69,7 +71,7 @@ class GameGraphNode extends Component {
 
                 if (type === 'square') {
                     return `M ${left - nodeSize} ${top - nodeSize}
-                        h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} v ${-nodeSize2}`
+                        h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} Z`
                 } else if (type === 'circle') {
                     return `M ${left} ${top} m ${-nodeSize} 0
                         a ${nodeSize} ${nodeSize} 0 1 0 ${nodeSize2} 0
@@ -79,13 +81,17 @@ class GameGraphNode extends Component {
 
                     return `M ${left} ${top - diamondSide}
                         L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}
-                        L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
+                        L ${left + diamondSide} ${top} Z`
+                } else if (type === 'bookmark') {
+                    return `M ${left - nodeSize} ${top - nodeSize * 1.3}
+                        h ${nodeSize2} v ${nodeSize2 * 1.3}
+                        l ${-nodeSize} ${-nodeSize} l ${-nodeSize} ${nodeSize} Z`
                 }
 
                 return ''
             })(),
 
-            class: classNames({hover}),
+            class: classNames({hover}, 'node'),
             fill
         })
     }
@@ -327,9 +333,9 @@ class GameGraph extends Component {
 
                 // Render node
 
+                let isCurrentNode = helper.vertexEquals(this.props.treePosition, [tree, index])
                 let opacity = onCurrentTrack ? 1 : .5
-                let fillRGB = helper.vertexEquals(this.props.treePosition, [tree, index]) ? [247, 96, 71]
-                    : 'HO' in node ? [198, 120, 221]
+                let fillRGB = isCurrentNode ? [247, 96, 71]
                     : commentProperties.some(x => x in node) ? [107, 177, 255]
                     : [238, 238, 238]
 
@@ -340,11 +346,15 @@ class GameGraph extends Component {
                     key: y,
                     mouseShift: [cx - vx, cy - vy],
                     position: [left, top],
-                    type: 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
+                    type:
+                        'HO' in node
+                        ? 'bookmark' // Bookmark node
+                        : 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
                         ? 'square' // Pass node
                         : !('B' in node || 'W' in node)
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
+                    current: isCurrentNode,
                     fill: `rgb(${fillRGB.map(x => x * opacity).join(',')})`,
                     nodeSize,
                     gridSize
