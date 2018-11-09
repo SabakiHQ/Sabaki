@@ -210,7 +210,7 @@ exports.reduce = function(tree) {
 }
 
 exports.mergeInsert = function(tree, index, nodes) {
-    if (nodes.length === 0) return [[tree, index]]
+    if (nodes.length === 0) return []
 
     if (nodes.length === 1) {
         let [node] = nodes
@@ -225,25 +225,27 @@ exports.mergeInsert = function(tree, index, nodes) {
                 // Merge
 
                 Object.assign(nextNode, Object.assign(node, nextNode))
-                return [[tree, index], [tree, index + 1]]
+                return [[tree, index + 1]]
             } else {
                 // Create new subtree in the middle
 
-                let [first, ] = exports.split(tree, index)
+                exports.split(tree, index)
+
                 let subtree = Object.assign(exports.new(), {
                     nodes: [node],
-                    parent: first
+                    parent: tree
                 })
 
-                first.subtrees.push(subtree)
-                return [[first, index], [subtree, 0]]
+                tree.subtrees.push(subtree)
+
+                return [[subtree, 0]]
             }
         } else {
             if (tree.subtrees.length === 0) {
                 // Append node
 
                 tree.nodes.push(node)
-                return [[tree, index], [tree, index + 1]]
+                return [[tree, index + 1]]
             }
 
             let subtree = tree.subtrees.find(subtree => {
@@ -270,14 +272,14 @@ exports.mergeInsert = function(tree, index, nodes) {
                 Object.assign(nextNode, Object.assign(node, nextNode))
             }
 
-            return [[tree, index], [subtree, 0]]
+            return [[subtree, 0]]
         }
     }
 
-    let [, position] = exports.mergeInsert(tree, index, [nodes[0]])
+    let [position] = exports.mergeInsert(tree, index, [nodes[0]])
     let otherPositions = exports.mergeInsert(...position, nodes.slice(1))
 
-    return [exports.navigate(...otherPositions[0], -1), ...otherPositions]
+    return [position, ...otherPositions]
 }
 
 exports.getMainTrack = function(tree) {

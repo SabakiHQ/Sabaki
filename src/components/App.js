@@ -920,14 +920,8 @@ class App extends Component {
 
         let oldTreeLength = tree.nodes.length
         let oldSubtreesCount = tree.subtrees.length
-        let [newTreePosition, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let [nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
         let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
-
-        this.setState(({gameTrees}) => ({
-            gameTrees: gameTrees.map(x =>
-                x === tree ? newTreePosition[0] : x
-            )
-        }))
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -1013,7 +1007,6 @@ class App extends Component {
             if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
                 // New variation needed
 
-                let updateRoot = tree.parent == null
                 let splitted = gametree.split(tree, index)
 
                 if (splitted[0] != tree || splitted[0].subtrees.length !== 0) {
@@ -1025,11 +1018,6 @@ class App extends Component {
                 node = {PL: currentPlayer > 0 ? ['B'] : ['W']}
                 index = tree.nodes.length
                 tree.nodes.push(node)
-
-                if (updateRoot) {
-                    let {gameTrees} = this.state
-                    gameTrees[gameIndex] = splitted[0]
-                }
             }
 
             let sign = tool === 'stone_1' ? 1 : -1
@@ -1691,19 +1679,12 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
-        let updateRoot = !tree.parent
         let oldLength = tree.nodes.length
         let splitted = gametree.split(tree, index)
         let copied = gametree.clone(this.copyVariationData)
 
         copied.parent = splitted[0]
         splitted[0].subtrees.push(copied)
-
-        if (updateRoot) {
-            let {gameTrees} = this.state
-            gameTrees[this.inferredState.gameIndex] = splitted[0]
-            this.setState({gameTrees})
-        }
 
         if (splitted[0].subtrees.length === 1) {
             let reduced = gametree.reduce(splitted[0])
@@ -2029,7 +2010,8 @@ class App extends Component {
                 }
 
                 let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
-                let [position, ] = gametree.mergeInsert(
+
+                gametree.mergeInsert(
                     ...(
                         !appendSibling
                         ? this.state.treePosition
@@ -2040,17 +2022,7 @@ class App extends Component {
                     }, i === 0 ? startNodeProperties : {}))
                 )
 
-                this.setState(({gameTrees}) => ({
-                    gameTrees: gameTrees.map(x =>
-                        x === this.state.treePosition[0] ? position[0] : x
-                    )
-                }))
-
-                this.setCurrentTreePosition(...(
-                    !appendSibling
-                    ? position
-                    : gametree.navigate(...position, 1)
-                ))
+                this.setCurrentTreePosition(...this.state.treePosition)
             }
         }], x, y)
     }
