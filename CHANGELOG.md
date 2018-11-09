@@ -6,8 +6,12 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Continuous analysis when navigating the game
 * When adding analysis variation to the game tree, SGF move annotation will be supplied automatically
+
+**Changed**
+
+* Continuous analysis when navigating the game in analysis mode
+* Record winrate values when generating moves even if analysis mode is turned off
 
 **Fixed**
 
