@@ -2193,8 +2193,8 @@ class App extends Component {
     async syncEngines({passPlayer = null} = {}) {
         if (this.attachedEngineSyncers.every(x => x == null)) return
 
-        if (this.busySyncing) return
-        this.busySyncing = true
+        if (this.engineBusySyncing) return
+        this.engineBusySyncing = true
 
         try {
             while (true) {
@@ -2223,7 +2223,7 @@ class App extends Component {
             this.detachEngines()
         }
 
-        this.busySyncing = false
+        this.engineBusySyncing = false
     }
 
     async startAnalysis({showWarning = true} = {}) {
