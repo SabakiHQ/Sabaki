@@ -1233,7 +1233,9 @@ class App extends Component {
             clearTimeout(this.navigateAnalysisId)
 
             this.stopAnalysis({removeAnalysisData: false})
-            this.navigateAnalysisId = setTimeout(() => this.startAnalysis({showWarning: false}), 500)
+            this.navigateAnalysisId = setTimeout(() => {
+                this.startAnalysis({showWarning: false})
+            }, setting.get('game.navigation_analysis_delay'))
         }
 
         this.setState({
