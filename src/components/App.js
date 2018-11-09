@@ -1243,6 +1243,8 @@ class App extends Component {
 
         if (this.state.analysisTreePosition != null) {
             clearTimeout(this.navigateAnalysisId)
+
+            this.stopAnalysis({removeAnalysisData: false})
             this.navigateAnalysisId = setTimeout(() => this.startAnalysis({showWarning: false}), 500)
         }
 
@@ -2290,7 +2292,7 @@ class App extends Component {
         }
     }
 
-    stopAnalysis() {
+    stopAnalysis({removeAnalysisData = true} = {}) {
         if (this.state.analysisTreePosition == null) return
 
         for (let syncer of this.attachedEngineSyncers) {
@@ -2299,7 +2301,7 @@ class App extends Component {
             syncer.controller.process.stdin.write('\n')
         }
 
-        this.setState({analysisTreePosition: null, analysis: null})
+        if (removeAnalysisData) this.setState({analysisTreePosition: null, analysis: null})
     }
 
     async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
