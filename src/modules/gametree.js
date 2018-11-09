@@ -163,20 +163,20 @@ exports.makeHorizontalNavigator = function(tree, index) {
 exports.split = function(tree, index) {
     if (index < 0 || index >= tree.nodes.length - 1) return [tree, tree]
 
-    let second = {}
-    let first = Object.assign(exports.new(), {
+    let second = Object.assign({}, exports.new(), {
+        nodes: tree.nodes.slice(index + 1),
+        subtrees: tree.subtrees,
+        current: tree.current
+    })
+
+    let first = Object.assign(tree, {
         nodes: tree.nodes.slice(0, index + 1),
         subtrees: [second],
         parent: tree.parent,
         current: 0
     })
 
-    Object.assign(second, exports.new(), {
-        nodes: tree.nodes.slice(index + 1),
-        subtrees: tree.subtrees,
-        parent: first,
-        current: tree.current
-    })
+    second.parent = first
 
     if (first.parent) {
         first.parent.subtrees[first.parent.subtrees.indexOf(tree)] = first

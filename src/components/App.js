@@ -68,7 +68,6 @@ class App extends Component {
 
             highlightVertices: [],
             playVariation: null,
-            analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
             showNextMoves: null,
@@ -93,6 +92,8 @@ class App extends Component {
             attachedEngines: [null, null],
             engineCommands: [[], []],
             generatingMoves: false,
+            analysisTreePosition: null,
+            analysis: null,
 
             // Drawers
 
@@ -696,7 +697,7 @@ class App extends Component {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     let autoGenmove = setting.get('gtp.auto_genmove')
-                    this.makeMove(vertex, {analyze: this.state.analysis != null, sendToEngine: autoGenmove})
+                    this.makeMove(vertex, {sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
@@ -849,7 +850,7 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -970,11 +971,7 @@ class App extends Component {
             // Send command to engine
 
             let passPlayer = pass ? player : null
-            setTimeout(() => this.generateMove({analyze, passPlayer}), setting.get('gtp.move_delay'))
-        } else if (!pass && analyze) {
-            // Start analyzing
-
-            this.waitForRender().then(() => this.startAnalysis())
+            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
         }
     }
 
@@ -1229,7 +1226,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true, stopAnalysis = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
@@ -1244,8 +1241,9 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
-        if (stopAnalysis) {
-            this.stopAnalysis()
+        if (this.state.analysisTreePosition != null) {
+            clearTimeout(this.navigateAnalysisId)
+            this.navigateAnalysisId = setTimeout(() => this.startAnalysis({showWarning: false}), 500)
         }
 
         this.setState({
@@ -2050,7 +2048,7 @@ class App extends Component {
                     !appendSibling
                     ? position
                     : gametree.navigate(...position, 1)
-                ), {stopAnalysis: false})
+                ))
             }
         }], x, y)
     }
@@ -2163,7 +2161,10 @@ class App extends Component {
 
             // Parse analysis info
 
-            if (helper.vertexEquals(treePosition, this.state.treePosition) && line.slice(0, 5) === 'info ') {
+            if (
+                line.slice(0, 5) === 'info '
+                && helper.vertexEquals(this.state.treePosition, treePosition)
+            ) {
                 let sign = this.getPlayer(...treePosition)
                 let board = gametree.getBoard(...treePosition)
                 let analysis = line
@@ -2218,15 +2219,20 @@ class App extends Component {
     async syncEngines({passPlayer = null} = {}) {
         if (this.attachedEngineSyncers.every(x => x == null)) return
 
-        this.setBusy(true)
-
-        let {treePosition} = this.state
+        if (this.busySyncing) return
+        this.busySyncing = true
 
         try {
-            await Promise.all(this.attachedEngineSyncers.map(syncer => {
-                if (syncer == null) return
-                return syncer.sync(treePosition)
-            }))
+            while (true) {
+                let {treePosition} = this.state
+
+                await Promise.all(this.attachedEngineSyncers.map(syncer => {
+                    if (syncer == null) return
+                    return syncer.sync(treePosition)
+                }))
+
+                if (helper.vertexEquals(treePosition, this.state.treePosition)) break
+            }
 
             // Send pass if required
 
@@ -2243,12 +2249,16 @@ class App extends Component {
             this.detachEngines()
         }
 
-        this.setBusy(false)
+        this.busySyncing = false
     }
 
-    async startAnalysis() {
-        this.closeDrawer()
-        this.setMode('play')
+    async startAnalysis({showWarning = true} = {}) {
+        if (
+            this.state.analysisTreePosition != null
+            && helper.vertexEquals(this.state.treePosition, this.state.analysisTreePosition)
+        ) return
+
+        this.setState({analysis: null, analysisTreePosition: this.state.treePosition})
 
         await this.syncEngines()
 
@@ -2274,13 +2284,14 @@ class App extends Component {
             error = true
         }
 
-        if (error) {
+        if (showWarning && error) {
             dialog.showMessageBox('You haven’t attached any engines that supports analysis.', 'warning')
+            this.stopAnalysis()
         }
     }
 
     stopAnalysis() {
-        if (this.state.analysis == null) return
+        if (this.state.analysisTreePosition == null) return
 
         for (let syncer of this.attachedEngineSyncers) {
             if (syncer == null || syncer.controller.process == null) continue
@@ -2288,10 +2299,10 @@ class App extends Component {
             syncer.controller.process.stdin.write('\n')
         }
 
-        this.setState({analysis: null})
+        this.setState({analysisTreePosition: null, analysis: null})
     }
 
-    async generateMove({analyze = false, passPlayer = null, firstMove = true, followUp = false} = {}) {
+    async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
         this.closeDrawer()
 
         if (!firstMove && !this.state.generatingMoves) {
@@ -2300,8 +2311,6 @@ class App extends Component {
         } else if (firstMove) {
             this.setState({generatingMoves: true})
         }
-
-        await this.syncEngines({passPlayer})
 
         let {currentPlayer, rootTree} = this.inferredState
         let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
@@ -2321,16 +2330,15 @@ class App extends Component {
             }
         }
 
+        this.setBusy(true)
+        await this.syncEngines({passPlayer})
+
         if (firstMove && followUp && otherSyncer != null) {
             this.flashInfoOverlay('Press Esc to stop playing')
         }
 
-        this.setBusy(true)
-
         let commands = this.state.engineCommands[playerIndex]
-        let commandName = !analyze
-            ? 'genmove'
-            : ['genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
+        let commandName = ['genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
 
         let responseContent = await (
             commandName === 'genmove'
@@ -2376,15 +2384,10 @@ class App extends Component {
 
         if (followUp && otherSyncer != null && !doublePass) {
             await helper.wait(setting.get('gtp.move_delay'))
-            this.generateMove({analyze, passPlayer: pass ? sign : null, firstMove: false, followUp})
+            this.generateMove({passPlayer: pass ? sign : null, firstMove: false, followUp})
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
-
-            if (analyze) {
-                await this.waitForRender()
-                this.startAnalysis()
-            }
         }
 
         this.setBusy(false)

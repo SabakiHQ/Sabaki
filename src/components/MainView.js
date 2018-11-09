@@ -9,6 +9,7 @@ const ScoringBar = require('./bars/ScoringBar')
 const FindBar = require('./bars/FindBar')
 
 const gametree = require('../modules/gametree')
+const helper = require('../modules/helper')
 
 class MainView extends Component {
     constructor() {
@@ -72,6 +73,7 @@ class MainView extends Component {
         currentPlayer,
         gameInfo,
         attachedEngines,
+        analysisTreePosition,
 
         deadStones,
         scoringMethod,
@@ -141,7 +143,11 @@ class MainView extends Component {
                     highlightVertices: findVertex && mode === 'find'
                         ? [findVertex]
                         : highlightVertices,
-                    analysis: mode === 'play' ? analysis : null,
+                    analysis: mode === 'play'
+                        && analysisTreePosition != null
+                        && helper.vertexEquals(analysisTreePosition, treePosition)
+                        ? analysis
+                        : null,
                     paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 

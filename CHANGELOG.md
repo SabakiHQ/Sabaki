@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Continuous analysis when navigating the game
 * When adding analysis variation to the game tree, SGF move annotation will be supplied automatically
 
 **Fixed**
