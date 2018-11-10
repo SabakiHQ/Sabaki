@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 * When adding analysis variation to the game tree, SGF move annotation will be supplied automatically
+* Color coded game tree nodes according to their move annotation
 
 **Changed**
 

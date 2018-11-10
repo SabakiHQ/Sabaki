@@ -335,8 +335,11 @@ class GameGraph extends Component {
 
                 let isCurrentNode = helper.vertexEquals(this.props.treePosition, [tree, index])
                 let opacity = onCurrentTrack ? 1 : .5
-                let fillRGB =
-                    commentProperties.some(x => x in node) ? [107, 177, 255]
+                let fillRGB = 'BM' in node ? [240, 35, 17]
+                    : 'DO' in node ? [146, 39, 143]
+                    : 'IT' in node ? [72, 134, 213]
+                    : 'TE' in node ? [89, 168, 15]
+                    : commentProperties.some(x => x in node) ? [255, 174, 61]
                     : [238, 238, 238]
 
                 let left = x * gridSize
