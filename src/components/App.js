@@ -2032,17 +2032,17 @@ class App extends Component {
     // GTP Engines
 
     attachEngines(...engines) {
-        let {engineCommands, attachedEngines} = this.state
+        let {attachedEngines} = this.state
 
         if (helper.vertexEquals([...engines].reverse(), attachedEngines)) {
             // Just swap engines
 
             this.attachedEngineSyncers.reverse()
 
-            this.setState({
+            this.setState(({engineCommands}) => ({
                 engineCommands: engineCommands.reverse(),
                 attachedEngines: engines
-            })
+            }))
 
             return
         }
@@ -2063,16 +2063,16 @@ class App extends Component {
                     if (evt.command.name === 'list_commands') {
                         evt.getResponse().then(response =>
                             this.setState(({engineCommands}) => {
-                                engineCommands[i] = response.content.split('\n')
+                                let j = this.attachedEngineSyncers.indexOf(syncer)
+                                engineCommands[j] = response.content.split('\n')
+
                                 return {engineCommands}
                             })
-                        )
+                        ).catch(helper.noop)
                     }
 
                     this.handleCommandSent(Object.assign({syncer}, evt))
                 })
-
-                syncer.controller.start()
 
                 syncer.controller.on('stderr', ({content}) => {
                     this.setState(({consoleLog}) => ({
@@ -2085,7 +2085,14 @@ class App extends Component {
                     }))
                 })
 
-                this.setState({engineCommands})
+                syncer.controller.on('stopped', () => this.setState(({engineCommands}) => {
+                    let j = this.attachedEngineSyncers.indexOf(syncer)
+                    engineCommands[j] = []
+
+                    return {engineCommands}
+                }))
+
+                syncer.controller.start()
             } catch (err) {
                 this.attachedEngineSyncers[i] = null
                 engines[i] = null
