@@ -2224,12 +2224,12 @@ class App extends Component {
                 let {controller} = this.attachedEngineSyncers[passPlayer > 0 ? 0 : 1] || {}
 
                 if (controller != null) {
-                    controller.sendCommand({name: 'play', args: [color, 'pass']})
+                    await controller.sendCommand({name: 'play', args: [color, 'pass']})
                 }
             }
         } catch (err) {
-            dialog.showMessageBox(err.message, 'warning')
-            this.detachEngines()
+            this.engineBusySyncing = false
+            throw err
         }
 
         this.engineBusySyncing = false
@@ -2243,27 +2243,32 @@ class App extends Component {
 
         this.setState({analysis: null, analysisTreePosition: this.state.treePosition})
 
-        await this.syncEngines()
-
-        let {currentPlayer} = this.inferredState
         let error = false
+        let {currentPlayer} = this.inferredState
         let color = currentPlayer > 0 ? 'B' : 'W'
         let controllerIndices = currentPlayer > 0 ? [0, 1] : [1, 0]
-        let engineIndex = controllerIndices.find(i =>
-            this.attachedEngineSyncers[i] != null
-            && (this.attachedEngineSyncers[i].commands.includes('lz-analyze')
-            || this.attachedEngineSyncers[i].commands.includes('analyze'))
-        )
 
-        if (engineIndex != null) {
-            let {controller, commands} = this.attachedEngineSyncers[engineIndex]
-            let name = commands.includes('analyze') ? 'analyze' : 'lz-analyze'
+        try {
+            await this.syncEngines()
 
-            let interval = setting.get('board.analysis_interval').toString()
-            let response = await controller.sendCommand({name, args: [color, interval]})
+            let engineIndex = controllerIndices.find(i =>
+                this.attachedEngineSyncers[i] != null
+                && (this.attachedEngineSyncers[i].commands.includes('lz-analyze')
+                || this.attachedEngineSyncers[i].commands.includes('analyze'))
+            )
 
-            error = response.error
-        } else {
+            if (engineIndex != null) {
+                let {controller, commands} = this.attachedEngineSyncers[engineIndex]
+                let name = commands.includes('analyze') ? 'analyze' : 'lz-analyze'
+
+                let interval = setting.get('board.analysis_interval').toString()
+                let response = await controller.sendCommand({name, args: [color, interval]})
+
+                error = response.error
+            } else {
+                error = true
+            }
+        } catch (err) {
             error = true
         }
 
@@ -2314,34 +2319,55 @@ class App extends Component {
         }
 
         this.setBusy(true)
-        await this.syncEngines({passPlayer})
+
+        try {
+            await this.syncEngines({passPlayer})
+        } catch (err) {
+            this.stopGeneratingMoves()
+            this.hideInfoOverlay()
+            this.setBusy(false)
+
+            return
+        }
 
         if (firstMove && followUp && otherSyncer != null) {
             this.flashInfoOverlay('Press Esc to stop playing')
         }
 
-        let commands = this.state.engineCommands[playerIndex]
+        let {commands} = this.attachedEngineSyncers[playerIndex]
         let commandName = ['genmove_analyze', 'lz-genmove_analyze', 'genmove'].find(x => commands.includes(x))
 
         let responseContent = await (
             commandName === 'genmove'
-            ? playerSyncer.controller.sendCommand({name: commandName, args: [color]}).then(res => res.content)
-            : new Promise(resolve => {
+            ? playerSyncer.controller.sendCommand({name: commandName, args: [color]})
+                .then(res => res.content)
+            : new Promise((resolve, reject) => {
                 let interval = setting.get('board.analysis_interval').toString()
 
-                playerSyncer.controller.sendCommand({name: commandName, args: [color, interval]}, ({line}) => {
-                    if (line.indexOf('play ') !== 0) return
-                    resolve(line.slice('play '.length).trim())
-                })
+                playerSyncer.controller.sendCommand(
+                    {name: commandName, args: [color, interval]},
+                    ({line}) => {
+                        if (line.indexOf('play ') !== 0) return
+                        resolve(line.slice('play '.length).trim())
+                    }
+                )
+                .then(() => resolve(null))
+                .catch(reject)
             })
-        )
+        ).catch(() => null)
 
         let sign = color === 'B' ? 1 : -1
         let pass = true
         let vertex = [-1, -1]
         let board = gametree.getBoard(rootTree, 0)
 
-        if (responseContent.toLowerCase() !== 'pass') {
+        if (responseContent == null) {
+            this.stopGeneratingMoves()
+            this.hideInfoOverlay()
+            this.setBusy(false)
+
+            return
+        } else if (responseContent.toLowerCase() !== 'pass') {
             pass = false
 
             if (responseContent.toLowerCase() === 'resign') {

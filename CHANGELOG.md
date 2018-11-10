@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+* Better error handling regarding GTP engine crashes
 * Fix incremental engine synchronization not working properly when handicap stones are involved
 * Fix freeze when starting analysis after suspending an engine
 

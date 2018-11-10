@@ -39,18 +39,22 @@ class EngineSyncer extends EventEmitter {
         })
 
         this.controller.on('started', () => {
-            this.controller.sendCommand({name: 'name'})
-            this.controller.sendCommand({name: 'version'})
-            this.controller.sendCommand({name: 'protocol_version'})
-            this.controller.sendCommand({name: 'list_commands'}).then(response => {
-                this.commands = response.content.split('\n')
-            })
-
-            if (commands == null || commands.trim() === '') return
-
-            for (let command of commands.split(';').filter(x => x.trim() !== '')) {
-                this.controller.sendCommand(gtp.Command.fromString(command))
-            }
+            Promise.all([
+                this.controller.sendCommand({name: 'name'}),
+                this.controller.sendCommand({name: 'version'}),
+                this.controller.sendCommand({name: 'protocol_version'}),
+                this.controller.sendCommand({name: 'list_commands'}).then(response => {
+                    this.commands = response.content.split('\n')
+                }),
+                ...(
+                    commands != null
+                    && commands.trim() !== ''
+                    ? commands.split(';').filter(x => x.trim() !== '').map(command =>
+                        this.controller.sendCommand(gtp.Command.fromString(command))
+                    )
+                    : []
+                )
+            ]).catch(helper.noop)
         })
 
         this.controller.on('stopped', () => {
@@ -63,8 +67,12 @@ class EngineSyncer extends EventEmitter {
             let res = null
 
             if (!['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)) {
-                res = await getResponse()
-                if (res.error) return
+                try {
+                    res = await getResponse()
+                    if (res.error) return
+                } catch (err) {
+                    return
+                }
             }
 
             if (command.name === 'boardsize' && command.args.length >= 1) {
@@ -103,7 +111,9 @@ class EngineSyncer extends EventEmitter {
             ) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
                 let vertex = await new Promise(resolve => {
-                    getResponse().then(() => resolve(null))
+                    getResponse()
+                    .then(() => resolve(null))
+                    .catch(() => resolve(null))
 
                     subscribe(({line}) => {
                         let match = line.trim().match(/^play (.*)$/)
