@@ -16,6 +16,8 @@ class Goban extends Component {
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
         this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
         this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
+        
+        this.componentWillReceiveProps()
     }
 
     componentDidMount() {
@@ -55,7 +57,9 @@ class Goban extends Component {
                 this.setState({left, top})
             }
         }, 0)
-
+    }
+    
+    componentWillReceiveProps(prevProps) {
         if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
             if (this.props.playVariation != null) {
                 let {sign, variation, sibling} = this.props.playVariation
