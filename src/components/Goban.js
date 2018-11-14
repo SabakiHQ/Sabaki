@@ -9,14 +9,14 @@ const setting = remote.require('./setting')
 
 class Goban extends Component {
     constructor(props) {
-        super()
+        super(props)
 
         this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
         this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
         this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
         this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
-        
+
         this.componentWillReceiveProps()
     }
 
@@ -38,7 +38,7 @@ class Goban extends Component {
         this.componentDidUpdate()
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         if (!this.element || !this.element.parentElement) return
 
         let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
@@ -58,11 +58,11 @@ class Goban extends Component {
             }
         }, 0)
     }
-    
-    componentWillReceiveProps(prevProps) {
-        if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
-            if (this.props.playVariation != null) {
-                let {sign, variation, sibling} = this.props.playVariation
+
+    componentWillReceiveProps(nextProps = {}) {
+        if (nextProps.playVariation !== this.props.playVariation) {
+            if (nextProps.playVariation != null) {
+                let {sign, variation, sibling} = nextProps.playVariation
 
                 this.stopPlayingVariation()
                 this.playVariation(sign, variation, sibling)
