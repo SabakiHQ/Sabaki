@@ -10,6 +10,7 @@ Sabaki v0.40.0 has introduced changes the DOM structure, so themes that worked u
 
 | Theme | Screenshot |
 | ----- | ---------- |
+| [BattsGo Theme](https://github.com/JJscott/BattsGo) | ![Screenshot](https://github.com/JJscott/BattsGo/raw/master/board_example.png) |
 | [Photorealistic Theme](https://github.com/SabakiHQ/theme-photorealistic) | ![Screenshot](https://github.com/SabakiHQ/theme-photorealistic/raw/master/screenshot.png) |
 | [Wood Stone Theme](https://github.com/geovens/Sabaki-Theme#wood-stone) | ![Screenshot](https://github.com/geovens/sabaki-theme/raw/master/woodstone/screenshot.jpg) |
 | [Cartoon Theme](https://github.com/geovens/Sabaki-Theme#cartoon) | ![Screenshot](https://github.com/geovens/sabaki-theme/raw/master/cartoon/screenshot.jpg) |
