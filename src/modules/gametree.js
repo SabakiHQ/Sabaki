@@ -6,333 +6,93 @@ const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 let boardCache = {}
 
-exports.new = function() {
-    return {
-        id: helper.getId(),
-        nodes: [],
-        subtrees: [],
-        current: null,
-        parent: null
-    }
-}
-
-exports.clone = function(tree, parent = null) {
-    let c = Object.assign(exports.new(), {
-        current: tree.current,
-        parent
-    })
-
-    for (let node of tree.nodes) {
-        let cn = {}
-
-        for (let key in node) {
-            if (key === 'board') continue
-
-            if (Array.isArray(node[key])) {
-                cn[key] = [...node[key]]
-            } else {
-                cn[key] = node[key]
-            }
-        }
-
-        c.nodes.push(cn)
-    }
-
-    for (let subtree of tree.subtrees) {
-        c.subtrees.push(exports.clone(subtree, c))
-    }
-
-    return c
-}
-
-exports.getRoot = function(tree) {
-    while (tree.parent !== null) tree = tree.parent
-    return tree
-}
-
 exports.getRootProperty = function(tree, property, fallback = null) {
-    let node = exports.getRoot(tree).nodes[0]
-    if (!node) return fallback
-
     let result = ''
-    if (property in node) result = node[property][0]
+    if (property in tree.root.data) result = tree.root.data[property][0]
 
     return result === '' ? fallback : result
 }
 
-exports.getHeight = function(tree) {
-    let height = 0
+exports.mergeInsert = function(tree, id, dataArr) {
+    if (dataArr.length === 0) return []
 
-    for (let subtree of tree.subtrees) {
-        height = Math.max(exports.getHeight(subtree), height)
-    }
+    let ids = null
+    let newTree = tree.mutate(draft => {
+        let inner = (id, dataArr) => {
+            if (dataArr.length === 0) return []
 
-    return height + tree.nodes.length
-}
+            if (dataArr.length > 1) {
+                let ids = inner(id, dataArr.slice(1, -1))
+                let lastId = inner(ids.slice(-1)[0], dataArr.slice(-1))
 
-exports.getCurrentHeight = function(tree) {
-    let height = tree.nodes.length
-
-    if (tree.subtrees.length !== 0)
-        height += exports.getCurrentHeight(tree.subtrees[tree.current])
-
-    return height
-}
-
-exports.getTreesRecursive = function(tree) {
-    let result = [tree]
-
-    for (let subtree of tree.subtrees) {
-        result.push(...exports.getTreesRecursive(subtree))
-    }
-
-    return result
-}
-
-exports.getLevel = function(tree, index) {
-    return index + (tree.parent ? exports.getLevel(tree.parent, tree.parent.nodes.length) : 0)
-}
-
-exports.getSection = function(tree, level) {
-    if (level < 0) return []
-    if (level < tree.nodes.length) return [[tree, level]]
-
-    let sections = []
-
-    for (let subtree of tree.subtrees) {
-        sections.push(...exports.getSection(subtree, level - tree.nodes.length))
-    }
-
-    return sections
-}
-
-exports.navigate = function(tree, index, step) {
-    if (index + step >= 0 && index + step < tree.nodes.length) {
-        return [tree, index + step]
-    } else if (index + step < 0 && tree.parent != null) {
-        let prev = tree.parent
-        let newstep = index + step + 1
-
-        return exports.navigate(prev, prev.nodes.length - 1, newstep)
-    } else if (index + step >= tree.nodes.length && tree.subtrees.length !== 0) {
-        let next = tree.subtrees[tree.current]
-        let newstep = index + step - tree.nodes.length
-
-        return exports.navigate(next, 0, newstep)
-    }
-
-    return null
-}
-
-exports.makeHorizontalNavigator = function(tree, index) {
-    let root = exports.getRoot(tree)
-    let level = exports.getLevel(tree, index, root)
-    let sections = exports.getSection(root, level)
-    let j = sections.map(x => x[0]).indexOf(tree)
-
-    return {
-        navigate(step) {
-            if (j + step >= 0 && j + step < sections.length) {
-                j = j + step
-            } else if (j + step >= sections.length) {
-                step = j + step - sections.length
-                sections = exports.getSection(root, ++level)
-                j = 0
-                if (sections.length != 0) this.navigate(step)
-            } else if (j + step < 0) {
-                step = j + step + 1
-                sections = exports.getSection(root, --level)
-                j = sections.length - 1
-                if (sections.length != 0) this.navigate(step)
+                ids.push(lastId)
+                return ids
             }
-        },
-        value() {
-            return j < sections.length && j >= 0 ? sections[j] : null
-        },
-        next() {
-            this.navigate(1)
-            return this.value()
-        },
-        prev() {
-            this.navigate(-1)
-            return this.value()
+
+            let [data] = dataArr
+            let node = draft.get(id)
+            let nextNode = node.children.find(child =>
+                data.B != null && child.data.B != null && data.B[0] === child.data.B[0]
+                || data.W != null && child.data.W != null && data.W[0] === child.data.W[0]
+            )
+
+            if (nextNode == null) {
+                // Append
+
+                let newId = draft.appendNode(id, data)
+                return [newId]
+            }
+
+            // Merge
+
+            for (let prop in data) {
+                if (nextNode.data[prop] != null) continue
+
+                draft.updateProperty(nextNode.id, prop, data[prop])
+            }
+
+            return [nextNode.id]
         }
-    }
-}
 
-exports.split = function(tree, index) {
-    if (index < 0 || index >= tree.nodes.length - 1) return [tree, tree]
-
-    let second = Object.assign({}, exports.new(), {
-        nodes: tree.nodes.slice(index + 1),
-        subtrees: tree.subtrees,
-        current: tree.current
+        ids = inner(id, dataArr)
     })
 
-    let first = Object.assign(tree, {
-        nodes: tree.nodes.slice(0, index + 1),
-        subtrees: [second],
-        parent: tree.parent,
-        current: 0
-    })
-
-    second.parent = first
-
-    if (first.parent) {
-        first.parent.subtrees[first.parent.subtrees.indexOf(tree)] = first
-    }
-
-    for (let subtree of second.subtrees) {
-        subtree.parent = second
-    }
-
-    return [first, second]
+    return {tree: newTree, ids}
 }
 
-exports.reduce = function(tree) {
-    if (tree.subtrees.length !== 1) return tree
+exports.getMatrixDict = function(tree) {
+    let matrix = [...Array(tree.getHeight())].map(_ => [])
+    let dict = {}
 
-    let onlySubtree = exports.reduce(tree.subtrees[0])
+    let inner = (node, matrix, dict, xshift, yshift) => {
+        let sequence = [...tree.getSequence(node.id)]
+        let hasCollisions = true
 
-    tree.nodes.push(...onlySubtree.nodes)
-    tree.subtrees = onlySubtree.subtrees
-    tree.current = onlySubtree.current
+        while (hasCollisions) {
+            hasCollisions = false
 
-    if (tree.parent) {
-        tree.parent.subtrees[tree.parent.subtrees.indexOf(tree)] = tree
-    }
+            for (let y = 0; y < Math.min(sequence.length + 1, matrix.length - yshift); y++) {
+                if (xshift >= matrix[yshift + y].length - (y === sequence.length)) continue
 
-    for (let subtree of tree.subtrees) {
-        subtree.parent = tree
-    }
-
-    return tree
-}
-
-exports.mergeInsert = function(tree, index, nodes) {
-    if (nodes.length === 0) return []
-
-    if (nodes.length === 1) {
-        let [node] = nodes
-
-        if (index + 1 < tree.nodes.length) {
-            let nextNode = tree.nodes[index + 1]
-
-            if (
-                'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
-                || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
-            ) {
-                // Merge
-
-                Object.assign(nextNode, Object.assign(node, nextNode))
-                return [[tree, index + 1]]
-            } else {
-                // Create new subtree in the middle
-
-                exports.split(tree, index)
-
-                let subtree = Object.assign(exports.new(), {
-                    nodes: [node],
-                    parent: tree
-                })
-
-                tree.subtrees.push(subtree)
-
-                return [[subtree, 0]]
+                hasCollisions = true
+                xshift++
+                break
             }
-        } else {
-            if (tree.subtrees.length === 0) {
-                // Append node
+        }
 
-                tree.nodes.push(node)
-                return [[tree, index + 1]]
-            }
+        for (let y = 0; y < sequence.length; y++) {
+            matrix[yshift + y].length = xshift + 1
+            matrix[yshift + y][xshift] = sequence[y].id
+            dict[sequence[y].id] = [xshift, yshift + y]
+        }
 
-            let subtree = tree.subtrees.find(subtree => {
-                if (subtree.nodes.length === 0) return false
-
-                let nextNode = subtree.nodes[0]
-                return 'B' in node && 'B' in nextNode && node.B[0] === nextNode.B[0]
-                    || 'W' in node && 'W' in nextNode && node.W[0] === nextNode.W[0]
-            })
-
-            if (subtree == null) {
-                // Create new subtree
-
-                subtree = Object.assign(exports.new(), {
-                    nodes: [node],
-                    parent: tree
-                })
-
-                tree.subtrees.push(subtree)
-            } else {
-                // Merge
-
-                let nextNode = subtree.nodes[0]
-                Object.assign(nextNode, Object.assign(node, nextNode))
-            }
-
-            return [[subtree, 0]]
+        for (let k = 0; k < node.children.length; k++) {
+            let child = tree.children[k]
+            inner(child, matrix, dict, xshift + k, yshift + sequence.length)
         }
     }
 
-    let [position] = exports.mergeInsert(tree, index, [nodes[0]])
-    let otherPositions = exports.mergeInsert(...position, nodes.slice(1))
-
-    return [position, ...otherPositions]
-}
-
-exports.getMainTrack = function(tree) {
-    if (tree.subtrees.length === 0) return tree.nodes
-
-    return [...tree.nodes, ...exports.getMainTrack(tree.subtrees[0])]
-}
-
-exports.getCurrentTrack = function(tree) {
-    if (tree.current == null) return tree.nodes
-
-    return [...tree.nodes, ...exports.getCurrentTrack(tree.subtrees[tree.current])]
-}
-
-exports.onCurrentTrack = function(tree) {
-    return !tree.parent
-        || tree.parent.subtrees[tree.parent.current] == tree
-        && exports.onCurrentTrack(tree.parent)
-}
-
-exports.onMainTrack = function(tree) {
-    return !tree.parent
-        || tree.parent.subtrees[0] == tree
-        && exports.onMainTrack(tree.parent)
-}
-
-exports.getMatrixDict = function(tree, matrix = null, dict = {}, xshift = 0, yshift = 0) {
-    if (!matrix) matrix = [...Array(exports.getHeight(tree))].map(_ => [])
-
-    let hasCollisions = true
-    while (hasCollisions) {
-        hasCollisions = false
-
-        for (let y = 0; y < Math.min(tree.nodes.length + 1, matrix.length - yshift); y++) {
-            if (xshift >= matrix[yshift + y].length - (y === tree.nodes.length)) continue
-
-            hasCollisions = true
-            xshift++
-            break
-        }
-    }
-
-    for (let y = 0; y < tree.nodes.length; y++) {
-        matrix[yshift + y].length = xshift + 1
-        matrix[yshift + y][xshift] = [tree, y]
-        dict[tree.id + '-' + y] = [xshift, yshift + y]
-    }
-
-    for (let k = 0; k < tree.subtrees.length; k++) {
-        let subtree = tree.subtrees[k]
-        exports.getMatrixDict(subtree, matrix, dict, xshift + k, yshift + tree.nodes.length)
-    }
-
+    inner(tree.root, matri, dict, 0, 0)
     return [matrix, dict]
 }
 
@@ -352,45 +112,46 @@ exports.getMatrixWidth = function(y, matrix) {
     return [width, padding]
 }
 
-exports.getBoard = function(tree, index, baseboard = null) {
-    if (index >= tree.nodes.length) return null
+exports.getBoard = function(tree, id, baseboard = null) {
+    let node = tree.get(id)
+    let parent = tree.get(node.parentId)
+    if (node == null) return null
 
-    let node = tree.nodes[index]
     let vertex = null
     let board = null
 
     // Get base board
 
     if (!baseboard) {
-        let prev = exports.navigate(tree, index, -1)
+        let prev = tree.get(node.parentId)
 
         if (!prev) {
             let size = [19, 19]
 
-            if ('SZ' in node) {
-                size = node.SZ[0].toString()
+            if (propData.SZ != null) {
+                let value = propData.SZ[0]
 
-                if (size.includes(':')) size = size.split(':')
-                else size = [size, size]
+                if (value.includes(':')) size = value.split(':')
+                else size = [value, value]
 
                 size = size.map(x => isNaN(x) ? 19 : +x)
             }
 
             baseboard = new Board(...size)
         } else {
-            baseboard = boardCache[`${prev[0].id}-${prev[1]}`] || exports.getBoard(...prev)
+            baseboard = boardCache[prev.id] || exports.getBoard(tree, prev.id)
         }
     }
 
     // Make move
 
-    let data = {B: 1, W: -1}
+    let propData = {B: 1, W: -1}
 
-    for (let prop in data) {
-        if (!(prop in node)) continue
+    for (let prop in propData) {
+        if (node.data[prop] == null) continue
 
-        vertex = sgf.parseVertex(node[prop][0])
-        board = baseboard.makeMove(data[prop], vertex)
+        vertex = sgf.parseVertex(node.data[prop][0])
+        board = baseboard.makeMove(propData[prop], vertex)
         board.currentVertex = vertex
 
         break
@@ -400,15 +161,15 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
     // Add markup
 
-    data = {AW: -1, AE: 0, AB: 1}
+    propData = {AW: -1, AE: 0, AB: 1}
 
-    for (let prop in data) {
-        if (!(prop in node)) continue
+    for (let prop in propData) {
+        if (node.data[prop] == null) continue
 
-        for (let value of node[prop]) {
+        for (let value of node.data[prop]) {
             for (let vertex of sgf.parseCompressedVertices(value)) {
                 if (!board.hasVertex(vertex)) continue
-                board.set(vertex, data[prop])
+                board.set(vertex, propData[prop])
             }
         }
     }
@@ -420,21 +181,21 @@ exports.getBoard = function(tree, index, baseboard = null) {
         board.markers[y][x] = {type: 'point'}
     }
 
-    data = {CR: 'circle', MA: 'cross', SQ: 'square', TR: 'triangle'}
+    propData = {CR: 'circle', MA: 'cross', SQ: 'square', TR: 'triangle'}
 
-    for (let prop in data) {
-        if (!(prop in node)) continue
+    for (let prop in propData) {
+        if (node.data[prop] == null) continue
 
-        for (let value of node[prop]) {
+        for (let value of node.data[prop]) {
             for (let [x, y] of sgf.parseCompressedVertices(value)) {
                 if (board.markers[y] == null) continue
-                board.markers[y][x] = {type: data[prop]}
+                board.markers[y][x] = {type: propData[prop]}
             }
         }
     }
 
-    if ('LB' in node) {
-        for (let composed of node.LB) {
+    if (node.data.LB != null) {
+        for (let composed of node.data.LB) {
             let sep = composed.indexOf(':')
             let point = composed.slice(0, sep)
             let label = composed.slice(sep + 1)
@@ -445,9 +206,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
         }
     }
 
-    if ('L' in node) {
-        for (let i = 0; i < node.L.length; i++) {
-            let point = node.L[i]
+    if (node.data.L != null) {
+        for (let i = 0; i < node.data.L.length; i++) {
+            let point = node.data.L[i]
             let label = alpha[i]
             if (label == null) return
             let [x, y] = sgf.parseVertex(point)
@@ -458,9 +219,9 @@ exports.getBoard = function(tree, index, baseboard = null) {
     }
 
     for (let type of ['AR', 'LN']) {
-        if (!(type in node)) continue
+        if (node.data[type] == null) continue
 
-        for (let composed of node[type]) {
+        for (let composed of node.data[type]) {
             let sep = composed.indexOf(':')
             let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(sgf.parseVertex)
 
@@ -473,11 +234,11 @@ exports.getBoard = function(tree, index, baseboard = null) {
     let addInfo = (node, list) => {
         let v, sign
 
-        if ('B' in node) {
-            v = sgf.parseVertex(node.B[0])
+        if (node.data.B != null) {
+            v = sgf.parseVertex(node.data.B[0])
             sign = 1
-        } else if ('W' in node) {
-            v = sgf.parseVertex(node.W[0])
+        } else if (node.data.W != null) {
+            v = sgf.parseVertex(node.data.W[0])
             sign = -1
         } else {
             return
@@ -488,36 +249,30 @@ exports.getBoard = function(tree, index, baseboard = null) {
 
         let type = null
 
-        if ('BM' in node) {
+        if (node.data.BM != null) {
             type = 'bad'
-        } else if ('DO' in node) {
+        } else if (node.data.DO != null) {
             type = 'doubtful'
-        } else if ('IT' in node) {
+        } else if (node.data.IT != null) {
             type = 'interesting'
-        } else if ('TE' in node) {
+        } else if (node.data.TE != null) {
             type = 'good'
         }
 
         list[v] = {sign, type}
     }
 
-    if (index === tree.nodes.length - 1) {
-        for (let subtree of tree.subtrees) {
-            if (subtree.nodes.length === 0) continue
-            addInfo(subtree.nodes[0], board.childrenInfo)
-        }
-    } else if (index < tree.nodes.length - 1) {
-        addInfo(tree.nodes[index + 1], board.childrenInfo)
+    for (let child of node.children) {
+        addInfo(child, board.childrenInfo)
     }
 
-    if (index === 0 && tree.parent) {
-        for (let subtree of tree.parent.subtrees) {
-            if (subtree.nodes.length == 0) continue
-            addInfo(subtree.nodes[0], board.siblingsInfo)
+    if (parent != null) {
+        for (let sibling of parent.children) {
+            addInfo(sibling, board.siblingsInfo)
         }
     }
 
-    boardCache[`${tree.id}-${index}`] = board
+    boardCache[id] = board
     return board
 }
 
@@ -525,41 +280,11 @@ exports.clearBoardCache = function() {
     boardCache = {}
 }
 
-exports.getJson = function(tree) {
-    return JSON.stringify(tree, (name, val) => {
-        let list = ['id', 'board', 'parent', 'current']
-        return list.includes(name) ? undefined : val
-    })
-}
-
-exports.fromJson = function(json) {
-    let addInformation = tree => {
-        tree.id = helper.getId()
-
-        if (tree.subtrees.length > 0) tree.current = 0
-
-        for (let i = 0; i < tree.subtrees.length; i++) {
-            tree.subtrees[i].parent = tree
-            addInformation(tree.subtrees[i])
-        }
-
-        return tree
-    }
-
-    let tree = JSON.parse(json)
-    tree.parent = null
-    return addInformation(tree)
-}
-
 exports.getHash = function(tree) {
-    return helper.hash(`${
-        JSON.stringify(tree.nodes, (key, value) => {
-            if (key.toUpperCase() === key) return value
-            return undefined
-        })
-    }-${tree.subtrees.map(exports.getHash).join('-')}`)
+    return helper.hash(JSON.stringify(tree))
 }
 
 exports.getMatrixHash = function(tree) {
-    return helper.hash(`${tree.id}-${tree.nodes.length}-${tree.subtrees.map(exports.getMatrixHash).join('-')}`)
+    let inner = node => helper.hash(`${node.id}-${node.children.map(inner).join('-')}`)
+    return inner(tree.root)
 }
