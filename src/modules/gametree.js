@@ -1,3 +1,4 @@
+const GameTree = require('@sabaki/immutable-gametree')
 const sgf = require('@sabaki/sgf')
 const Board = require('./board')
 const helper = require('./helper')
@@ -5,6 +6,10 @@ const helper = require('./helper')
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 let boardCache = {}
+
+exports.new = function() {
+    return new GameTree({getId: helper.getId})
+}
 
 exports.getRootProperty = function(tree, property, fallback = null) {
     let result = ''

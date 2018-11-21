@@ -1,8 +1,7 @@
 const fs = require('fs')
-const GameTree = require('@sabaki/immutable-gametree')
 const sgf = require('@sabaki/sgf')
 const Board = require('../board')
-const {getId} = require('../helper')
+const gametree = require('../gametree')
 
 exports.meta = {
     name: 'wBaduk NGF',
@@ -10,7 +9,7 @@ exports.meta = {
 }
 
 exports.parse = function(content) {
-    return [new GameTree({getId}).mutate(draft => {
+    return [gametree.new().mutate(draft => {
         let lines = content.split('\n')
         let rootId = draft.root.id
 
