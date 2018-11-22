@@ -11,6 +11,19 @@ exports.new = function() {
     return new GameTree({getId: helper.getId})
 }
 
+exports.cloneNode = function(node, parentId = null) {
+    if (node == null) return null
+
+    let id = helper.getId()
+
+    return {
+        id,
+        data: JSON.parse(JSON.stringify(node.data)),
+        parentId,
+        children: node.children.map(child => exports.cloneNode(child, id))
+    }
+}
+
 exports.getRootProperty = function(tree, property, fallback = null) {
     let result = ''
     if (property in tree.root.data) result = tree.root.data[property][0]

@@ -79,7 +79,7 @@
     "preact": "^8.3.1",
     "react-markdown": "^3.6.0",
     "recursive-copy": "^2.0.10",
-    "remark-breaks": "^1.0.1",
+    "remark-breaks": "^1.0.2",
     "rimraf": "^2.6.3",
     "uuid": "^3.3.2",
     "winston": "^3.2.1"
