@@ -62,6 +62,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
+    "@sabaki/boardmatcher": "^0.1.5-beta",
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/gtp": "^1.4.0",
     "@sabaki/influence": "^1.1.4",
@@ -82,11 +83,11 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "electron": "^3.0.8",
-    "electron-builder": "^20.34.0",
+    "electron": "^3.0.10",
+    "electron-builder": "^20.36.2",
     "mocha": "^5.2.0",
     "raw-loader": "^0.5.1",
-    "react": "^16.6.1",
+    "react": "^16.6.3",
     "tmp": "0.0.33",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"

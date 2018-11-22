@@ -1,11 +1,11 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const boardmatcher = require('@sabaki/boardmatcher')
 const sgf = require('@sabaki/sgf')
 
 const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
-const boardmatcher = require('../modules/boardmatcher')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
@@ -51,6 +51,8 @@ class CommentTitle extends Component {
             let today = new Date()
             if (today.getDate() === 25 && today.getMonth() === 3)
                 return 'Happy Birthday, Sabaki!'
+
+            return ''
         }
 
         // Determine end of main variation and show game result
@@ -64,31 +66,26 @@ class CommentTitle extends Component {
                 return 'Result: ' + rootNode.RE[0]
         }
 
-        // Determine capture
-
-        let prev = gametree.navigate(tree, index, -1)
-
-        if (prev) {
-            let prevBoard = gametree.getBoard(...prev)
-
-            if (!helper.vertexEquals(prevBoard.captures, board.captures))
-                return 'Take'
-        }
-
         // Get current vertex
 
-        let vertex
+        let vertex, sign
 
-        if ('B' in node && node.B[0] !== '')
+        if ('B' in node && node.B[0] !== '') {
+            sign = 1
             vertex = sgf.parseVertex(node.B[0])
-        else if ('W' in node && node.W[0] !== '')
+        } else if ('W' in node && node.W[0] !== '') {
+            sign = -1
             vertex = sgf.parseVertex(node.W[0])
-        else if ('W' in node || 'B' in node)
+        } else if ('W' in node || 'B' in node) {
             return 'Pass'
-        else
+        } else {
             return ''
+        }
 
-        return boardmatcher.getMoveInterpretation(board, vertex) || ''
+        let prev = gametree.navigate(tree, index, -1)
+        let prevBoard = gametree.getBoard(...prev)
+
+        return boardmatcher.nameMove(prevBoard.arrangement, sign, vertex) || ''
     }
 
     render({
