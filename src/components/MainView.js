@@ -1,3 +1,5 @@
+// TODO
+
 const {h, Component} = require('preact')
 
 const Goban = require('./Goban')

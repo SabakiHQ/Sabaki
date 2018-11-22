@@ -1,6 +1,5 @@
 const {h, Component} = require('preact')
 const Bar = require('./Bar')
-const helper = require('../../modules/helper')
 
 class ScoringBar extends Component {
     constructor() {

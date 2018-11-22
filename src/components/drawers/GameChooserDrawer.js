@@ -1,7 +1,6 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const sgf = require('@sabaki/sgf')
 
 const MiniGoban = require('../MiniGoban')
 const Drawer = require('./Drawer')
