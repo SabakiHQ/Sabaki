@@ -59,7 +59,6 @@ let defaults = {
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,
-    'edit.undo_delay': 100,
     'engines.list': [],
     'file.show_reload_warning': true,
     'find.delay': 100,
