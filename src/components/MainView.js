@@ -1,5 +1,3 @@
-// TODO
-
 const {h, Component} = require('preact')
 
 const Goban = require('./Goban')
@@ -17,7 +15,10 @@ class MainView extends Component {
     constructor() {
         super()
 
-        this.handleTogglePlayer = () => sabaki.setPlayer(...this.props.treePosition, -this.props.currentPlayer)
+        this.handleTogglePlayer = () => {
+            let {gameTree, treePosition, currentPlayer} = this.props
+            sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
+        }
 
         this.handleToolButtonClick = evt => {
             sabaki.setState({selectedTool: evt.tool})
@@ -70,8 +71,8 @@ class MainView extends Component {
 
     render({
         mode,
+        gameTree,
         treePosition,
-        rootTree,
         currentPlayer,
         gameInfo,
         attachedEngines,
@@ -108,11 +109,10 @@ class MainView extends Component {
         height,
         gobanCrosshair
     }) {
-        let [tree, index] = treePosition
-        let board = gametree.getBoard(tree, index)
-        let node = tree.nodes[index]
-        let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
-        let handicap = +gametree.getRootProperty(rootTree, 'HA', 0)
+        let node = gameTree.get(treePosition)
+        let board = gametree.getBoard(gameTree, treePosition)
+        let komi = +gametree.getRootProperty(gameTree, 'KM', 0)
+        let handicap = +gametree.getRootProperty(gameTree, 'HA', 0)
         let paintMap
 
         if (['scoring', 'estimator'].includes(mode)) {
@@ -141,6 +141,7 @@ class MainView extends Component {
                 },
 
                 h(Goban, {
+                    gameTree,
                     treePosition,
                     board,
                     highlightVertices: findVertex && mode === 'find'
@@ -179,7 +180,7 @@ class MainView extends Component {
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,
                     currentPlayer,
-                    showHotspot: 'HO' in node,
+                    showHotspot: node.data.HO != null,
                     undoable,
                     undoText,
                     onCurrentPlayerClick: this.handleTogglePlayer
@@ -198,6 +199,7 @@ class MainView extends Component {
 
                 h(AutoplayBar, {
                     mode,
+                    gameTree,
                     treePosition
                 }),
 
