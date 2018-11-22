@@ -69,7 +69,6 @@ class DrawerManager extends Component {
                 show: openDrawer === 'info',
                 engines: attachedEngines,
                 gameTree,
-                treePosition,
                 gameInfo,
                 currentPlayer
             }),
