@@ -1,5 +1,3 @@
-// TODO
-
 const {remote, shell} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -11,7 +9,6 @@ const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
-const Board = require('../modules/board')
 
 class CommentTitle extends Component {
     constructor() {
@@ -35,35 +32,28 @@ class CommentTitle extends Component {
         }
     }
 
-    shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
-        let [tree, index] = treePosition
-
+    shouldComponentUpdate({gameTree, treePosition, moveAnnotation, positionAnnotation, title}) {
         return title !== this.props.title
-            // First node
-            || !tree.parent && index === 0
-            // Last node
-            || tree.subtrees.length === 0 && index === tree.nodes.length - 1
-            // Other data changed
+            || gameTree !== this.props.gameTree
             || treePosition !== this.props.treePosition
             || !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation)
             || !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
     }
 
     getCurrentMoveInterpretation() {
-        let {treePosition: [tree, index], board} = this.props
-        let node = tree.nodes[index]
+        let {gameTree, treePosition} = this.props
+        let node = gameTree.get(treePosition)
 
         // Determine root node
 
-        if (!tree.parent && index === 0) {
+        if (node.parentId == null) {
             let result = []
 
-            if ('EV' in node) result.push(node.EV[0])
-            if ('GN' in node) result.push(node.GN[0])
+            if (node.data.EV != null) result.push(node.data.EV[0])
+            if (node.data.GN != null) result.push(node.data.GN[0])
 
             result = result.filter(x => x.trim() !== '').join(' — ')
-            if (result !== '')
-                return result
+            if (result !== '') return result
 
             let today = new Date()
             if (today.getDate() === 25 && today.getMonth() === 3)
@@ -74,33 +64,28 @@ class CommentTitle extends Component {
 
         // Determine end of main variation and show game result
 
-        if (tree.subtrees.length === 0
-        && index === tree.nodes.length - 1
-        && gametree.onMainTrack(tree)) {
-            let rootNode = gametree.getRoot(tree).nodes[0]
-
-            if ('RE' in rootNode && rootNode.RE[0].trim() !== '')
-                return 'Result: ' + rootNode.RE[0]
+        if (node.children.length === 0 && gameTree.onMainLine(treePosition)) {
+            let result = gametree.getRootProperty(gameTree, 'RE', '')
+            if (result.trim() !== '') return `Result: ${result}`
         }
 
         // Get current vertex
 
         let vertex, sign
 
-        if ('B' in node && node.B[0] !== '') {
+        if (node.data.B != null && node.data.B[0] !== '') {
             sign = 1
-            vertex = sgf.parseVertex(node.B[0])
-        } else if ('W' in node && node.W[0] !== '') {
+            vertex = sgf.parseVertex(node.data.B[0])
+        } else if (node.data.W != null && node.data.W[0] !== '') {
             sign = -1
-            vertex = sgf.parseVertex(node.W[0])
-        } else if ('W' in node || 'B' in node) {
+            vertex = sgf.parseVertex(node.data.W[0])
+        } else if (node.data.W != null || node.data.B != null) {
             return 'Pass'
         } else {
             return ''
         }
 
-        let prev = gametree.navigate(tree, index, -1)
-        let prevBoard = gametree.getBoard(...prev)
+        let prevBoard = gametree.getBoard(gameTree, node.parentId)
         let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
         if (patternMatch == null) return null
 
@@ -224,10 +209,6 @@ class CommentBox extends Component {
     constructor(props) {
         super()
 
-        this.state = {
-            board: new Board()
-        }
-
         this.handleCommentInput = () => {
             let {onCommentInput = helper.noop} = this.props
 
@@ -239,8 +220,9 @@ class CommentBox extends Component {
 
         this.handleMenuButtonClick = () => {
             let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
+            let {gameTree, treePosition} = this.props
 
-            sabaki.openCommentMenu(...this.props.treePosition, {
+            sabaki.openCommentMenu(gameTree, treePosition, {
                 x: Math.round(left),
                 y: Math.round(bottom)
             })
@@ -270,18 +252,15 @@ class CommentBox extends Component {
             this.dirty = false
 
             if (treePositionChanged) {
-                this.setState({
-                    board: gametree.getBoard(...this.props.treePosition)
-                })
-
                 this.element.scrollTop = 0
             } else {
-                this.setState(this.state)
+                this.setState({})
             }
         }, setting.get('graph.delay'))
     }
 
     render({
+        gameTree,
         treePosition,
         height,
         sidebarSplitTransition,
@@ -294,8 +273,6 @@ class CommentBox extends Component {
         onLinkClick = helper.noop,
         onCoordinateMouseEnter = helper.noop,
         onCoordinateMouseLeave = helper.noop
-    }, {
-        board
     }) {
         return h('section',
             {
@@ -314,7 +291,7 @@ class CommentBox extends Component {
 
             h('div', {class: 'inner'},
                 h(CommentTitle, {
-                    board,
+                    gameTree,
                     treePosition,
                     moveAnnotation,
                     positionAnnotation,

@@ -1,11 +1,7 @@
-// TODO
-
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
 const WinrateGraph = require('./WinrateGraph')
@@ -25,11 +21,11 @@ class Sidebar extends Component {
             sidebarSplitTransition: true
         }
 
-        this.handleGraphNodeClick = ({button, treePosition, x, y}) => {
+        this.handleGraphNodeClick = ({button, gameTree, treePosition, x, y}) => {
             if (button === 0) {
-                sabaki.setCurrentTreePosition(...treePosition)
+                sabaki.setCurrentTreePosition(gameTree, treePosition)
             } else {
-                sabaki.openNodeMenu(...treePosition, {x, y})
+                sabaki.openNodeMenu(gameTree, treePosition, {x, y})
             }
         }
 
@@ -111,17 +107,11 @@ class Sidebar extends Component {
         })
     }
 
-    componentWillReceiveProps({treePosition, rootTree} = {}) {
-        if (!this.props || treePosition !== this.props.treePosition) {
-            // Update tree height
-
-            this.setState({treeHeight: gametree.getHeight(rootTree)})
-        }
-
+    componentWillReceiveProps({gameTree} = {}) {
         // Get winrate data
 
-        let currentTrack = gametree.getCurrentTrack(rootTree)
-        let winrateData = currentTrack.map(x => x.SBKV && x.SBKV[0])
+        let currentTrack = [...gameTree.listCurrentNodes()]
+        let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
 
         this.setState({winrateData})
     }
@@ -134,8 +124,8 @@ class Sidebar extends Component {
 
     render({
         mode,
+        gameTree,
         treePosition,
-        rootTree,
         showGameGraph,
         showCommentBox,
         sidebarWidth,
@@ -143,15 +133,13 @@ class Sidebar extends Component {
         graphGridSize,
         graphNodeSize
     }, {
-        treeHeight,
         winrateData,
         sidebarSplit,
         sidebarSplitTransition
     }) {
-        let [tree, index] = treePosition
-        let node = tree.nodes[index]
-        let winrateGraphWidth = Math.max(Math.ceil((treeHeight - 1) / 50) * 50, 1)
-        let level = gametree.getLevel(tree, index)
+        let node = gameTree.get(treePosition)
+        let winrateGraphWidth = Math.max(Math.ceil((gameTree.getHeight() - 1) / 50) * 50, 1)
+        let level = gameTree.getLevel(treePosition)
         let showWinrateGraph = winrateData.some(x => x != null)
 
         return h('section',
@@ -180,7 +168,7 @@ class Sidebar extends Component {
                 h(Slider, {
                     showSlider: showGameGraph,
                     text: level,
-                    percent: (level / (treeHeight - 1)) * 100,
+                    percent: (level / (gameTree.getHeight() - 1)) * 100,
                     height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
                     onChange: this.handleSliderChange,
@@ -191,6 +179,7 @@ class Sidebar extends Component {
                 h(GameGraph, {
                     ref: component => this.gameGraph = component,
 
+                    gameTree,
                     treePosition,
                     showGameGraph,
                     height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
@@ -202,6 +191,7 @@ class Sidebar extends Component {
 
                 h(CommentBox, {
                     mode,
+                    gameTree,
                     treePosition,
                     showCommentBox,
                     moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
