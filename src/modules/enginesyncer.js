@@ -1,5 +1,3 @@
-// TODO
-
 const EventEmitter = require('events')
 const {dirname, resolve} = require('path')
 const gtp = require('@sabaki/gtp')
@@ -132,10 +130,9 @@ class EngineSyncer extends EventEmitter {
         })
     }
 
-    async sync(treePosition) {
+    async sync(tree, id) {
         let controller = this.controller
-        let rootTree = gametree.getRoot(treePosition[0])
-        let board = gametree.getBoard(...treePosition)
+        let board = gametree.getBoard(tree, id)
 
         if (!board.isSquare()) {
             throw new Error('GTP engines don’t support non-square boards.')
@@ -147,7 +144,7 @@ class EngineSyncer extends EventEmitter {
 
         // Update komi
 
-        let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+        let komi = +gametree.getRootProperty(tree, 'KM', 0)
 
         if (komi !== this.state.komi) {
             let {error} = await controller.sendCommand({name: 'komi', args: [komi]})
@@ -184,21 +181,21 @@ class EngineSyncer extends EventEmitter {
         let moves = []
         let promises = []
         let synced = true
+        let nodes = [...tree.listNodesVertically(id, -1, {})].reverse()
 
-        for (let tp = [rootTree, 0]; true; tp = gametree.navigate(...tp, 1)) {
-            let node = tp[0].nodes[tp[1]]
-            let nodeBoard = gametree.getBoard(...tp)
+        for (let node of nodes) {
+            let nodeBoard = gametree.getBoard(tree, node.id)
             let placedHandicapStones = false
 
             if (
-                node.AB
-                && node.AB.length >= 2
+                node.data.AB
+                && node.data.AB.length >= 2
                 && engineBoard.isEmpty()
                 && this.commands.includes('set_free_handicap')
             ) {
                 // Place handicap stones
 
-                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices)).sort()
+                let vertices = [].concat(...node.data.AB.map(sgf.parseCompressedVertices)).sort()
                 let coords = vertices
                     .map(v => board.vertex2coord(v))
                     .filter(x => x != null)
@@ -223,10 +220,10 @@ class EngineSyncer extends EventEmitter {
             }
 
             for (let prop of ['B', 'W', 'AB', 'AW']) {
-                if (!(prop in node) || placedHandicapStones && prop === 'AB') continue
+                if (node.data[prop] == null || placedHandicapStones && prop === 'AB') continue
 
                 let sign = prop.slice(-1) === 'B' ? 1 : -1
-                let vertices = [].concat(...node[prop].map(sgf.parseCompressedVertices))
+                let vertices = [].concat(...node.data[prop].map(sgf.parseCompressedVertices))
 
                 for (let vertex of vertices) {
                     if (engineBoard.get(vertex) !== 0) continue
