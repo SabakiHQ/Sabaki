@@ -18,10 +18,11 @@ class DrawerManager extends Component {
             setTimeout(() => sabaki.setMode('play'), 500)
         }
 
-        this.handleGameSelect = ({selectedTree}) => {
+        this.handleGameSelect = ({selectedTree, selectedIndex}) => {
             sabaki.closeDrawer()
             sabaki.setMode('play')
-            sabaki.setCurrentTreePosition(selectedTree, 0)
+            sabaki.setState({gameIndex: selectedIndex})
+            sabaki.setCurrentTreePosition(selectedTree, selectedTree.root.id)
         }
 
         this.handleGameTreesChange = evt => {

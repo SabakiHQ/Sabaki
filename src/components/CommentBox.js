@@ -222,10 +222,7 @@ class CommentBox extends Component {
             let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
             let {gameTree, treePosition} = this.props
 
-            sabaki.openCommentMenu(gameTree, treePosition, {
-                x: Math.round(left),
-                y: Math.round(bottom)
-            })
+            sabaki.openCommentMenu(gameTree, treePosition, {x: left, y: bottom})
         }
     }
 
