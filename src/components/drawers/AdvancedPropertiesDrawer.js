@@ -1,5 +1,3 @@
-// TODO
-
 const {h, Component} = require('preact')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
@@ -106,16 +104,12 @@ class AdvancedPropertiesDrawer extends Component {
                 return
             }
 
-            let [tree, i] = this.props.treePosition
-            let node = tree.nodes[i]
+            let {gameTree, treePosition} = this.props
+            let newTree = gameTree.mutate(draft => {
+                draft.addToProperty(treePosition, property, '')
+            })
 
-            if (property in node) {
-                node[property].push('')
-            } else {
-                node[property] = ['']
-            }
-
-            sabaki.setCurrentTreePosition(tree, i)
+            sabaki.setCurrentTreePosition(newTree, treePosition)
             await sabaki.waitForRender()
 
             let textareas = this.propertiesElement.querySelectorAll(`textarea[data-property="${property}"]`)
@@ -123,31 +117,32 @@ class AdvancedPropertiesDrawer extends Component {
         }
 
         this.handlePropertyChange = ({property, index, value}) => {
-            let [tree, i] = this.props.treePosition
-            let node = tree.nodes[i]
+            let {gameTree, treePosition} = this.props
 
-            if (index == null || !(property in node)) {
-                node[property] = [value]
-            } else {
-                node[property][index] = value
-            }
+            let newTree = gameTree.mutate(draft => {
+                let values = draft.get(treePosition).data[property]
+
+                if (values == null) values = [value]
+                else values = values.map((x, i) => i === index ? value : x)
+
+                draft.updateProperty(treePosition, property, values)
+            })
 
             let clearCache = clearCacheProperties.includes(property)
-            sabaki.setCurrentTreePosition(tree, i, {clearCache})
+            sabaki.setCurrentTreePosition(newTree, treePosition, {clearCache})
         }
 
         this.handlePropertyRemove = ({property, index}) => {
-            let [tree, i] = this.props.treePosition
-            let node = tree.nodes[i]
+            let {gameTree, treePosition} = this.props
+            let newTree = gameTree.mutate(draft => {
+                let values = draft.get(treePosition).data[property]
 
-            if (index == null) {
-                delete node[property]
-            } else if (property in node) {
-                node[property].splice(index, 1)
-            }
+                if (values[index] == null) draft.removeProperty(treePosition, property)
+                else draft.removeFromProperty(treePosition, property, values[index])
+            })
 
             let clearCache = clearCacheProperties.includes(property)
-            sabaki.setCurrentTreePosition(tree, i, {clearCache})
+            sabaki.setCurrentTreePosition(newTree, treePosition, {clearCache})
         }
     }
 
@@ -156,15 +151,14 @@ class AdvancedPropertiesDrawer extends Component {
     }
 
     componentWillReceiveProps({treePosition}) {
-        if (!helper.vertexEquals(treePosition, this.props.treePosition)) {
+        if (treePosition !== this.props.treePosition) {
             this.propertiesElement.scrollTop = 0
         }
     }
 
-    render({treePosition, show}) {
-        let [tree, index] = treePosition
-        let node = tree.nodes[index]
-        let properties = Object.keys(node).filter(x => x.toUpperCase() === x).sort()
+    render({gameTree, treePosition, show}) {
+        let node = gameTree.get(treePosition)
+        let properties = Object.keys(node.data).filter(x => x.toUpperCase() === x).sort()
 
         return h(Drawer,
             {
@@ -180,12 +174,12 @@ class AdvancedPropertiesDrawer extends Component {
                     },
 
                     h('table', {}, properties.map(property =>
-                        node[property].map((value, i) => h(PropertyItem, {
+                        node.data[property].map((value, i) => h(PropertyItem, {
                             key: `${property}-${i}`,
 
                             property,
                             value,
-                            index: node[property].length === 1 ? null : i,
+                            index: node.data[property].length === 1 ? null : i,
                             disabled: blockedProperties.includes(property),
 
                             onChange: this.handlePropertyChange,
