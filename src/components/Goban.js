@@ -1,5 +1,3 @@
-// TODO
-
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {BoundedGoban} = require('@sabaki/shudan')
@@ -170,6 +168,7 @@ class Goban extends Component {
     }
 
     render({
+        gameTree,
         treePosition,
         board,
         paintMap,
@@ -260,10 +259,10 @@ class Goban extends Component {
             markerMap = board.markers.map(x => [...x])
 
             if (variationSibling) {
-                let prevPosition = gametree.navigate(...treePosition, -1)
+                let prevPosition = gameTree.navigate(treePosition, -1, {})
 
                 if (prevPosition != null) {
-                    board = gametree.getBoard(...prevPosition)
+                    board = gametree.getBoard(gameTree, prevPosition.id)
                     signMap = board.arrangement
                 }
             }
