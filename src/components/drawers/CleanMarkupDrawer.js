@@ -1,11 +1,8 @@
-// TODO
-
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 
 const Drawer = require('./Drawer')
 
-const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -74,8 +71,9 @@ class CleanMarkupDrawer extends Component {
 
                 await helper.wait(100)
 
-                work(properties)
+                let newTree = work(properties)
 
+                sabaki.setCurrentTreePosition(newTree, this.props.treePosition)
                 sabaki.setBusy(false)
                 sabaki.closeDrawer()
             }
@@ -84,26 +82,23 @@ class CleanMarkupDrawer extends Component {
                 {
                     label: 'From Current &Position',
                     click: () => doRemove(properties => {
-                        let [tree, i] = this.props.treePosition
-
-                        for (let prop of properties) {
-                            delete tree.nodes[i][prop]
-                        }
+                        return this.props.gameTree.mutate(draft => {
+                            for (let prop of properties) {
+                                draft.removeProperty(this.props.treePosition, prop)
+                            }
+                        })
                     })
                 },
                 {
                     label: 'From Entire &Game',
                     click: () => doRemove(properties => {
-                        let root = gametree.getRoot(...this.props.treePosition)
-                        let trees = gametree.getTreesRecursive(root)
-
-                        for (let tree of trees) {
-                            for (let node of tree.nodes) {
+                        return this.props.gameTree.mutate(draft => {
+                            for (let node of this.props.gameTree.listNodes()) {
                                 for (let prop of properties) {
-                                    delete node[prop]
+                                    draft.removeProperty(node.id, prop)
                                 }
                             }
-                        }
+                        })
                     })
                 }
             ]
