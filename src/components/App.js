@@ -703,7 +703,7 @@ class App extends Component {
                     && board.markers[vy][vx].type === 'point'
                     && setting.get('edit.click_currentvertex_to_remove')
                 ) {
-                    this.removeNode(tree, index)
+                    this.removeNode(tree, treePosition)
                 }
             } else if (button === 2) {
                 if (
@@ -886,7 +886,7 @@ class App extends Component {
 
             if (prev != null && setting.get('game.show_ko_warning')) {
                 let hash = board.makeMove(player, vertex).getPositionHash()
-                let prevBoard = gametree.getBoard(tree, prev)
+                let prevBoard = gametree.getBoard(tree, prev.id)
 
                 ko = prevBoard.getPositionHash() === hash
 
@@ -1207,7 +1207,7 @@ class App extends Component {
         let currents = gameCurrents[gameIndex]
         if (gameIndex < 0) return
 
-        let n = node
+        let n = tree.get(id)
         while (n.parentId != null) {
             // Update currents
 
@@ -1215,7 +1215,7 @@ class App extends Component {
             n = tree.get(n.parentId)
         }
 
-        if (clearUndoPoint && n.root.id !== tree.root.id) {
+        if (clearUndoPoint && n.id !== tree.root.id) {
             this.clearUndoPoint()
         }
 
@@ -1233,6 +1233,7 @@ class App extends Component {
             blockedGuesses: [],
             highlightVertices: [],
             gameTrees: gameTrees.map((t, i) => i !== gameIndex ? t : tree),
+            gameIndex,
             treePosition: id
         })
 
@@ -1240,9 +1241,9 @@ class App extends Component {
     }
 
     goStep(step) {
-        let {gameTrees, gameIndex, gameCurrents} = this.state
+        let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
         let tree = gameTrees[gameIndex]
-        let node = tree.navigate(this.state.treePosition, step, gameCurrents[index])
+        let node = tree.navigate(treePosition, step, gameCurrents[gameIndex])
         if (node != null) this.setCurrentTreePosition(tree, node.id)
     }
 
@@ -1261,9 +1262,11 @@ class App extends Component {
     }
 
     goToNextFork() {
-        let {gameTrees, gameIndex, treePosition} = this.state
+        let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
         let tree = gameTrees[gameIndex]
-        let sequence = [...tree.getSequence(treePosition)]
+        let next = tree.navigate(treePosition, 1, gameCurrents[gameIndex])
+        if (next == null) return
+        let sequence = [...tree.getSequence(next.id)]
 
         this.setCurrentTreePosition(tree, sequence.slice(-1)[0].id)
     }
@@ -1271,10 +1274,16 @@ class App extends Component {
     goToPreviousFork() {
         let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
         let tree = gameTrees[gameIndex]
-        let newTreePosition = treee.root.id
+        let node = tree.get(treePosition)
+        let prev = tree.get(node.parentId)
+        if (prev == null) return
+        let newTreePosition = tree.root.id
 
-        for (let node of tree.listNodesVertically(treePosition, -1, gameCurrents[gameIndex])) {
-            if (node.children.length >= 2) newTreePosition = node.id
+        for (let node of tree.listNodesVertically(prev.id, -1, gameCurrents[gameIndex])) {
+            if (node.children.length > 1) {
+                newTreePosition = node.id
+                break
+            }
         }
 
         this.setCurrentTreePosition(tree, newTreePosition)
@@ -1286,8 +1295,8 @@ class App extends Component {
         let commentProps = setting.get('sgf.comment_properties')
         let newTreePosition = null
 
-        for (let node of tree.listNodesVertically(treePosition, step, gameCurrents[gameTrees])) {
-            if (commentProps.some(prop => node.data[prop] != null)) {
+        for (let node of tree.listNodesVertically(treePosition, step, gameCurrents[gameIndex])) {
+            if (node.id !== treePosition && commentProps.some(prop => node.data[prop] != null)) {
                 newTreePosition = node.id
                 break
             }
@@ -1314,9 +1323,11 @@ class App extends Component {
     goToSiblingVariation(step) {
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
-        let node = tree.listNodesHorizontally(treePosition, step >= 0 ? 1 : -1).next().value
+        let section = [...tree.getSection(tree.getLevel(treePosition))]
+        let index = section.findIndex(node => node.id === treePosition)
+        let newIndex = ((step + index) % section.length + section.length) % section.length
 
-        if (node != null) this.setCurrentTreePosition(tree, node.id)
+        this.setCurrentTreePosition(tree, section[newIndex].id)
     }
 
     goToMainVariation() {
@@ -1674,10 +1685,13 @@ class App extends Component {
         let gameIndex = gameTrees.findIndex(t => t.root.id === tree.root.id)
         if (gameIndex < 0) return
 
+        let board = gametree.getBoard(tree, treePosition)
         let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'SZ', 'WT', 'WR']
-        let node = gametree.clone(tree.get(treePosition))
-        let newTree = gametree.new().mutate(draft => {
-            draft.root = node
+
+        let newTree = tree.mutate(draft => {
+            let rootNode = draft.get(draft.root.id)
+            rootNode.parentId = null
+            draft.root = rootNode
 
             for (let prop of ['AB', 'AW', 'AE', 'B', 'W']) {
                 draft.removeProperty(draft.root.id, prop)
@@ -1776,6 +1790,11 @@ class App extends Component {
             draft.removeNode(treePosition)
         })
 
+        this.setState(({gameCurrents, gameIndex}) => {
+            if (gameCurrents[gameIndex][node.parentId] === node.id)  {
+                delete gameCurrents[gameIndex][node.parentId]
+            }
+        })
         this.setCurrentTreePosition(newTree, node.parentId)
     }
 

@@ -188,13 +188,9 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleItemClick = evt => {
-            let {gameTrees} = this.props
             let {onItemClick = helper.noop} = this.props
-            let index = gameTrees.indexOf(evt.tree)
 
             evt.selectedTree = evt.tree
-            evt.selectedIndex = index
-
             onItemClick(evt)
         }
 

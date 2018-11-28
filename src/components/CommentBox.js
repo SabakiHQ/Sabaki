@@ -248,11 +248,8 @@ class CommentBox extends Component {
         this.updateId = setTimeout(() => {
             this.dirty = false
 
-            if (treePositionChanged) {
-                this.element.scrollTop = 0
-            } else {
-                this.setState({})
-            }
+            if (treePositionChanged) this.element.scrollTop = 0
+            this.setState({})
         }, setting.get('graph.delay'))
     }
 

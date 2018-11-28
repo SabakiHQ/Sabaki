@@ -43,7 +43,7 @@ class Sidebar extends Component {
         }
 
         this.handleSliderChange = ({percent}) => {
-            let moveNumber = Math.round((this.state.treeHeight - 1) * percent)
+            let moveNumber = Math.round((this.props.gameTree.getHeight() - 1) * percent)
             sabaki.goToMoveNumber(moveNumber)
         }
 
@@ -197,18 +197,18 @@ class Sidebar extends Component {
                     gameTree,
                     treePosition,
                     showCommentBox,
-                    moveAnnotation: 'BM' in node ? [-1, node.BM[0]]
-                        : 'DO' in node ? [0, 1]
-                        : 'IT' in node ? [1, 1]
-                        : 'TE' in node ? [2, node.TE[0]]
+                    moveAnnotation: node.data.BM != null ? [-1, node.data.BM[0]]
+                        : node.data.DO != null ? [0, 1]
+                        : node.data.IT != null ? [1, 1]
+                        : node.data.TE != null ? [2, node.data.TE[0]]
                         : [null, 1],
-                    positionAnnotation: 'UC' in node ? [-2, node.UC[0]]
-                        : 'GW' in node ? [-1, node.GW[0]]
-                        : 'DM' in node ? [0, node.DM[0]]
-                        : 'GB' in node ? [1, node.GB[0]]
+                    positionAnnotation: node.data.UC != null ? [-2, node.data.UC[0]]
+                        : node.data.GW != null ? [-1, node.data.GW[0]]
+                        : node.data.DM != null ? [0, node.data.DM[0]]
+                        : node.data.GB != null ? [1, node.data.GB[0]]
                         : [null, 1],
-                    title: 'N' in node ? node.N[0] : '',
-                    comment: 'C' in node ? node.C[0] : '',
+                    title: node.data.N != null ? node.data.N[0] : '',
+                    comment: node.data.C != null ? node.data.C[0] : '',
                     height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
                     sidebarSplitTransition,
 
