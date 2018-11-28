@@ -14,7 +14,7 @@ let sidebarMinSplit = setting.get('view.properties_minheight')
 
 class Sidebar extends Component {
     constructor(props) {
-        super()
+        super(props)
 
         this.state = {
             sidebarSplit: setting.get('view.properties_height'),
@@ -60,7 +60,7 @@ class Sidebar extends Component {
         }
 
         this.handleCommentInput = evt => {
-            sabaki.setComment(...this.props.treePosition, evt)
+            sabaki.setComment(props.gameTree, props.treePosition, evt)
         }
 
         this.componentWillReceiveProps(props)
@@ -107,10 +107,10 @@ class Sidebar extends Component {
         })
     }
 
-    componentWillReceiveProps({gameTree} = {}) {
+    componentWillReceiveProps({gameTree, gameCurrents, gameIndex} = {}) {
         // Get winrate data
 
-        let currentTrack = [...gameTree.listCurrentNodes()]
+        let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
         let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
 
         this.setState({winrateData})
@@ -124,7 +124,9 @@ class Sidebar extends Component {
 
     render({
         mode,
+        gameIndex,
         gameTree,
+        gameCurrents,
         treePosition,
         showGameGraph,
         showCommentBox,
@@ -180,6 +182,7 @@ class Sidebar extends Component {
                     ref: component => this.gameGraph = component,
 
                     gameTree,
+                    gameCurrents: gameCurrents[gameIndex],
                     treePosition,
                     showGameGraph,
                     height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,

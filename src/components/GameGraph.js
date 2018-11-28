@@ -1,5 +1,3 @@
-// TODO
-
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -191,13 +189,13 @@ class GameGraph extends Component {
         return height !== this.props.height || showGameGraph
     }
 
-    componentWillReceiveProps({treePosition, showGameGraph} = {}) {
+    componentWillReceiveProps({treePosition, gameTree} = {}) {
         // Debounce rendering
 
         if (treePosition == null) return
         if (treePosition === this.props.treePosition) return
 
-        let [matrix, dict] = this.getMatrixDict(gametree.getRoot(treePosition[0]))
+        let [matrix, dict] = this.getMatrixDict(gameTree)
         this.setState({matrixDict: [matrix, dict]})
 
         clearTimeout(this.updateCameraPositionId)
@@ -226,11 +224,10 @@ class GameGraph extends Component {
     }
 
     updateCameraPosition() {
-        let {gridSize, treePosition: [tree, index]} = this.props
+        let {gridSize, treePosition} = this.props
         let {matrixDict: [matrix, dict]} = this.state
 
-        let id = tree.id + '-' + index
-        let [x, y] = dict[id]
+        let [x, y] = dict[treePosition]
         let [width, padding] = gametree.getMatrixWidth(y, matrix)
 
         let relX = width === 1 ? 0 : 1 - 2 * (x - padding) / (width - 1)
@@ -262,18 +259,22 @@ class GameGraph extends Component {
             return
         }
 
-        let {onNodeClick = helper.noop, gridSize} = this.props
+        let {onNodeClick = helper.noop, gameTree, gridSize} = this.props
         let {matrixDict: [matrix, ], cameraPosition: [cx, cy]} = this.state
         let [mx, my] = this.mousePosition
         let [nearestX, nearestY] = [mx + cx, my + cy].map(z => Math.round(z / gridSize))
 
         if (!matrix[nearestY] || !matrix[nearestY][nearestX]) return
 
-        evt.treePosition = matrix[nearestY][nearestX]
-        onNodeClick(evt)
+        onNodeClick(Object.assign(evt, {
+            gameTree,
+            treePosition: matrix[nearestY][nearestX]
+        }))
     }
 
     renderNodes({
+        gameTree,
+        gameCurrents,
         gridSize,
         nodeSize
     }, {
@@ -291,8 +292,7 @@ class GameGraph extends Component {
         maxY += 3
 
         let doneTreeBones = []
-        let currentTracks = []
-        let notCurrentTracks = []
+        let currentTrack = [...gameTree.listCurrentNodes(gameCurrents)]
 
         // Render only nodes that are visible
 
@@ -302,46 +302,20 @@ class GameGraph extends Component {
             for (let y = minY; y <= maxY; y++) {
                 if (matrix[y] == null || matrix[y][x] == null) continue
 
-                let [tree, index] = matrix[y][x]
-                let node = tree.nodes[index]
-                let onCurrentTrack
-
-                if (currentTracks.includes(tree.id)) {
-                    onCurrentTrack = true
-                } else if (notCurrentTracks.includes(tree.id)) {
-                    onCurrentTrack = false
-                } else {
-                    if (!tree.parent) {
-                        onCurrentTrack = true
-                        currentTracks.push(tree.id)
-                    } else if (currentTracks.includes(tree.parent.id)) {
-                        if (tree.parent.subtrees[tree.parent.current] !== tree) {
-                            onCurrentTrack = false
-                            notCurrentTracks.push(tree.id)
-                        } else {
-                            onCurrentTrack = true
-                            currentTracks.push(tree.id)
-                        }
-                    } else if (notCurrentTracks.includes(tree.parent.id)) {
-                        onCurrentTrack = false
-                        notCurrentTracks.push(tree.id)
-                    } else {
-                        onCurrentTrack = gametree.onCurrentTrack(tree)
-
-                        if (onCurrentTrack) currentTracks.push(tree.id)
-                        else notCurrentTracks.push(tree.id)
-                    }
-                }
+                let id = matrix[y][x]
+                let node = gameTree.get(id)
+                let parent = gameTree.get(node.parentId)
+                let onCurrentTrack = currentTrack.includes(node)
 
                 // Render node
 
-                let isCurrentNode = helper.vertexEquals(this.props.treePosition, [tree, index])
+                let isCurrentNode = this.props.treePosition === id
                 let opacity = onCurrentTrack ? 1 : .5
-                let fillRGB = 'BM' in node ? [240, 35, 17]
-                    : 'DO' in node ? [146, 39, 143]
-                    : 'IT' in node ? [72, 134, 213]
-                    : 'TE' in node ? [89, 168, 15]
-                    : commentProperties.some(x => x in node) ? [255, 174, 61]
+                let fillRGB = node.data.BM != null ? [240, 35, 17]
+                    : node.data.DO != null ? [146, 39, 143]
+                    : node.data.IT != null ? [72, 134, 213]
+                    : node.data.TE != null ? [89, 168, 15]
+                    : commentProperties.some(x => node.data[x] != null) ? [255, 174, 61]
                     : [238, 238, 238]
 
                 let left = x * gridSize
@@ -351,12 +325,11 @@ class GameGraph extends Component {
                     key: y,
                     mouseShift: [cx - vx, cy - vy],
                     position: [left, top],
-                    type:
-                        'HO' in node
+                    type: node.data.HO != null
                         ? 'bookmark' // Bookmark node
-                        : 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
+                        : node.data.B != null && node.data.B[0] === '' || node.data.W != null && node.data.W[0] === ''
                         ? 'square' // Pass node
-                        : !('B' in node || 'W' in node)
+                        : node.data.B == null && node.data.W == null
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
                     current: isCurrentNode,
@@ -365,59 +338,59 @@ class GameGraph extends Component {
                     gridSize
                 }))
 
-                if (!doneTreeBones.includes(tree.id)) {
-                    // A *tree bone* denotes a straight edge through the whole tree
+                if (!doneTreeBones.includes(id)) {
+                    // A *tree bone* denotes a straight edge through the tree
 
                     let positionAbove, positionBelow
 
-                    if (index === 0 && tree.parent) {
-                        // Render precedent edge with tree bone
+                    if (parent != null) {
+                        // Render parent edge with tree bone
 
-                        let [prevTree, prevIndex] = gametree.navigate(tree, index, -1)
-                        let [px, py] = dict[prevTree.id + '-' + prevIndex]
+                        let [px, py] = dict[parent.id]
 
                         positionAbove = [px * gridSize, py * gridSize]
                         positionBelow = [left, top]
                     } else {
                         // Render tree bone only
 
-                        let [sx, sy] = dict[tree.id + '-0']
-
-                        positionAbove = [sx * gridSize, sy * gridSize]
+                        positionAbove = [left, top]
                         positionBelow = positionAbove
                     }
 
+                    let sequence = [...gameTree.getSequence(id)]
+
                     if (positionAbove != null && positionBelow != null) {
                         edges[!onCurrentTrack ? 'unshift' : 'push'](h(GameGraphEdge, {
-                            key: tree.id,
+                            key: id,
                             positionAbove,
                             positionBelow,
-                            length: (tree.nodes.length - 1) * gridSize,
+                            length: (sequence.length - 1) * gridSize,
                             current: onCurrentTrack,
                             gridSize
                         }))
 
-                        doneTreeBones.push(tree.id)
+                        doneTreeBones.push(...sequence.map(node => node.id))
                     }
                 }
 
-                if (index === tree.nodes.length - 1) {
+                if (node.children.length > 1) {
                     // Render successor edges with subtree bones
 
-                    for (let subtree of tree.subtrees) {
-                        let current = onCurrentTrack && tree.subtrees[tree.current] === subtree
-                        let [nx, ny] = dict[subtree.id + '-0']
+                    for (let child of node.children) {
+                        let current = onCurrentTrack && currentTrack.includes(child)
+                        let [nx, ny] = dict[child.id]
+                        let subsequence = [...gameTree.getSequence(child.id)]
 
                         edges[!current ? 'unshift' : 'push'](h(GameGraphEdge, {
-                            key: subtree.id,
+                            key: child.id,
                             positionAbove: [left, top],
                             positionBelow: [nx * gridSize, ny * gridSize],
-                            length: (subtree.nodes.length - 1) * gridSize,
+                            length: (subsequence.length - 1) * gridSize,
                             current,
                             gridSize
                         }))
 
-                        doneTreeBones.push(subtree.id)
+                        doneTreeBones.push(...subsequence.map(node => node.id))
                     }
                 }
             }

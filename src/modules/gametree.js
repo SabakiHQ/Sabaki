@@ -104,14 +104,17 @@ exports.getMatrixDict = function(tree) {
             dict[sequence[y].id] = [xshift, yshift + y]
         }
 
-        for (let k = 0; k < node.children.length; k++) {
-            let child = tree.children[k]
+        let [lastSequenceNode] = sequence.slice(-1)
+
+        for (let k = 0; k < lastSequenceNode.children.length; k++) {
+            let child = lastSequenceNode.children[k]
             inner(child, matrix, dict, xshift + k, yshift + sequence.length)
         }
+
+        return [matrix, dict]
     }
 
-    inner(tree.root, matri, dict, 0, 0)
-    return [matrix, dict]
+    return inner(tree.root, matrix, dict, 0, 0)
 }
 
 exports.getMatrixWidth = function(y, matrix) {
@@ -146,8 +149,8 @@ exports.getBoard = function(tree, id, baseboard = null) {
         if (!prev) {
             let size = [19, 19]
 
-            if (propData.SZ != null) {
-                let value = propData.SZ[0]
+            if (node.data.SZ != null) {
+                let value = node.data.SZ[0]
 
                 if (value.includes(':')) size = value.split(':')
                 else size = [value, value]
