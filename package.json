@@ -86,7 +86,6 @@
     "electron": "^3.0.10",
     "electron-builder": "^20.36.2",
     "mocha": "^5.2.0",
-    "raw-loader": "^0.5.1",
     "react": "^16.6.3",
     "tmp": "0.0.33",
     "webpack": "^4.25.1",
