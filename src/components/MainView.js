@@ -71,7 +71,9 @@ class MainView extends Component {
 
     render({
         mode,
+        gameIndex,
         gameTree,
+        gameCurrents,
         treePosition,
         currentPlayer,
         gameInfo,
@@ -200,6 +202,7 @@ class MainView extends Component {
                 h(AutoplayBar, {
                     mode,
                     gameTree,
+                    gameCurrents: gameCurrents[gameIndex],
                     treePosition
                 }),
 

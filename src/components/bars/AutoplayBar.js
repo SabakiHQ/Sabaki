@@ -1,5 +1,3 @@
-// TODO
-
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
@@ -7,9 +5,7 @@ const sgf = require('@sabaki/sgf')
 
 const Bar = require('./Bar')
 
-const gametree = require('../../modules/gametree')
 const setting = remote.require('./setting')
-
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 
 class AutoplayBar extends Component {
@@ -52,19 +48,17 @@ class AutoplayBar extends Component {
     startAutoplay() {
         let autoplay = () => {
             sabaki.events.removeListener('navigate', this.stopAutoplay)
-
             if (!this.state.playing) return
 
-            let tp = gametree.navigate(...this.props.treePosition, 1)
-            if (!tp) return this.stopAutoplay()
+            let {gameTree, gameCurrents, treePosition} = this.props
+            let node = gameTree.navigate(treePosition, 1, gameCurrents)
+            if (!node) return this.stopAutoplay()
 
-            let node = tp[0].nodes[tp[1]]
-
-            if (!node.B && !node.W) {
+            if (node.data.B == null && node.data.W == null) {
                 sabaki.setCurrentTreePosition(...tp)
             } else {
-                let vertex = sgf.parseVertex(node.B ? node.B[0] : node.W[0])
-                sabaki.makeMove(vertex, {player: node.B ? 1 : -1})
+                let vertex = sgf.parseVertex(node.data.B != null ? node.data.B[0] : node.data.W[0])
+                sabaki.makeMove(vertex, {player: node.data.B ? 1 : -1})
             }
 
             sabaki.events.addListener('navigate', this.stopAutoplay)
