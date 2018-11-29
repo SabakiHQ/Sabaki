@@ -7,7 +7,7 @@ module.exports = {
         reader.readAsText(file)
     },
 
-    readFileSync: () => '',
+    readFileSync: _ => '',
     writeFileSync: noop,
     mkdirSync: noop,
     accessSync: noop

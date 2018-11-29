@@ -61,8 +61,6 @@
     ]
   },
   "dependencies": {
-    "@mariotacke/color-thief": "^3.0.1",
-    "@sabaki/boardmatcher": "^0.1.5-beta",
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/influence": "^1.1.4",
     "@sabaki/sgf": "^2.1.0",

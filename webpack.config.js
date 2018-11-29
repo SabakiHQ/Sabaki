@@ -26,6 +26,7 @@ module.exports = (env, argv) => ({
             'util': path.join(__dirname, 'src/modules/shims/util'),
             'electron': path.join(__dirname, 'src/modules/shims/electron'),
             'buffer': path.join(__dirname, 'src/modules/shims/buffer'),
+            '@sabaki/boardmatcher': path.join(__dirname, 'src/modules/shims/boardmatcher'),
             'character-entities': emptyPath,
             'character-entities-html4': emptyPath,
             'character-entities-legacy': emptyPath,
