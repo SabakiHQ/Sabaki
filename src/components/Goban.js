@@ -3,18 +3,21 @@ const classNames = require('classnames')
 const {BoundedGoban} = require('@sabaki/shudan')
 const {remote} = require('electron')
 
+const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
 class Goban extends Component {
     constructor(props) {
-        super()
+        super(props)
 
         this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
         this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
         this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
         this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
+
+        this.componentWillReceiveProps()
     }
 
     componentDidMount() {
@@ -35,7 +38,7 @@ class Goban extends Component {
         this.componentDidUpdate()
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate() {
         if (!this.element || !this.element.parentElement) return
 
         let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
@@ -44,12 +47,25 @@ class Goban extends Component {
             this.setState({maxWidth, maxHeight})
         }
 
-        if (prevProps == null || prevProps.playVariation !== this.props.playVariation) {
-            if (this.props.playVariation != null) {
-                let {sign, variation, removeCurrent} = this.props.playVariation
+        setTimeout(() => {
+            let {offsetWidth: width, offsetHeight: height} = this.element
+
+            let left = Math.round((maxWidth - width) / 2)
+            let top = Math.round((maxHeight - height) / 2)
+
+            if (left !== this.state.left || top !== this.state.top) {
+                this.setState({left, top})
+            }
+        }, 0)
+    }
+
+    componentWillReceiveProps(nextProps = {}) {
+        if (nextProps.playVariation !== this.props.playVariation) {
+            if (nextProps.playVariation != null) {
+                let {sign, variation, sibling} = nextProps.playVariation
 
                 this.stopPlayingVariation()
-                this.playVariation(sign, variation, removeCurrent)
+                this.playVariation(sign, variation, sibling)
             } else {
                 this.stopPlayingVariation()
             }
@@ -115,17 +131,28 @@ class Goban extends Component {
         this.stopPlayingVariation()
     }
 
-    playVariation(sign, variation, removeCurrent = false) {
-        clearInterval(this.variationIntervalId)
+    playVariation(sign, variation, sibling = false) {
+        if (setting.get('board.variation_instant_replay')) {
+            this.variationIntervalId = true
 
-        this.variationIntervalId = setInterval(() => {
-            this.setState(({variationIndex = -1}) => ({
+            this.setState({
                 variation,
                 variationSign: sign,
-                variationRemoveCurrent: removeCurrent,
-                variationIndex: variationIndex + 1
-            }))
-        }, setting.get('board.variation_replay_interval'))
+                variationSibling: sibling,
+                variationIndex: variation.length
+            })
+        } else {
+            clearInterval(this.variationIntervalId)
+
+            this.variationIntervalId = setInterval(() => {
+                this.setState(({variationIndex = -1}) => ({
+                    variation,
+                    variationSign: sign,
+                    variationSibling: sibling,
+                    variationIndex: variationIndex + 1
+                }))
+            }, setting.get('board.variation_replay_interval'))
+        }
     }
 
     stopPlayingVariation() {
@@ -141,6 +168,7 @@ class Goban extends Component {
     }
 
     render({
+        treePosition,
         board,
         paintMap,
         analysis,
@@ -157,6 +185,8 @@ class Goban extends Component {
 
         drawLineMode = null
     }, {
+        top = 0,
+        left = 0,
         maxWidth = 1,
         maxHeight = 1,
         clicked = false,
@@ -164,7 +194,7 @@ class Goban extends Component {
 
         variation = null,
         variationSign = 1,
-        variationRemoveCurrent = false,
+        variationSibling = false,
         variationIndex = -1
     }) {
         // Calculate lines
@@ -227,14 +257,13 @@ class Goban extends Component {
         if (variation != null) {
             markerMap = board.markers.map(x => [...x])
 
-            if (variationRemoveCurrent && board.currentVertex != null) {
-                let [x, y] = board.currentVertex
+            if (variationSibling) {
+                let prevPosition = gametree.navigate(...treePosition, -1)
 
-                board = board.clone()
-                board.set([x, y], 0)
-
-                signMap = board.arrangement
-                markerMap[y][x] = null
+                if (prevPosition != null) {
+                    board = gametree.getBoard(...prevPosition)
+                    signMap = board.arrangement
+                }
             }
 
             let variationBoard = variation
@@ -273,6 +302,7 @@ class Goban extends Component {
         return h(BoundedGoban, {
             id: 'goban',
             class: classNames({crosshair}),
+            style: {top, left},
             innerProps: {ref: el => this.element = el},
 
             maxWidth,

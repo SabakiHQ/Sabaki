@@ -6,19 +6,8 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
-let [
-    delay, commentProperties,
-    edgeColor, edgeInactiveColor, edgeSize, edgeInactiveSize,
-    nodeColor, nodeInactiveColor, nodeActiveColor,
-    nodeBookmarkColor, nodeCommentColor,
-    nodeInactiveBookmarkColor, nodeInactiveCommentColor
-] = [
-    'graph.delay', 'sgf.comment_properties',
-    'graph.edge_color', 'graph.edge_inactive_color', 'graph.edge_size', 'graph.edge_inactive_size',
-    'graph.node_color', 'graph.node_inactive_color', 'graph.node_active_color',
-    'graph.node_bookmark_color', 'graph.node_comment_color',
-    'graph.node_inactive_bookmark_color', 'graph.node_inactive_comment_color'
-].map(x => setting.get(x))
+let delay = setting.get('graph.delay')
+let commentProperties = setting.get('sgf.comment_properties')
 
 class GameGraphNode extends Component {
     constructor() {
@@ -57,8 +46,9 @@ class GameGraphNode extends Component {
         document.removeEventListener('mousemove', this.handleMouseMove)
     }
 
-    shouldComponentUpdate({type, fill, nodeSize, gridSize}, {hover}) {
+    shouldComponentUpdate({type, current, fill, nodeSize, gridSize}, {hover}) {
         return type !== this.props.type
+            || current !== this.props.current
             || fill !== this.props.fill
             || nodeSize !== this.props.nodeSize
             || gridSize !== this.props.gridSize
@@ -68,6 +58,7 @@ class GameGraphNode extends Component {
     render({
         position: [left, top],
         type,
+        current,
         fill,
         nodeSize
     }, {
@@ -80,7 +71,7 @@ class GameGraphNode extends Component {
 
                 if (type === 'square') {
                     return `M ${left - nodeSize} ${top - nodeSize}
-                        h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} v ${-nodeSize2}`
+                        h ${nodeSize2} v ${nodeSize2} h ${-nodeSize2} Z`
                 } else if (type === 'circle') {
                     return `M ${left} ${top} m ${-nodeSize} 0
                         a ${nodeSize} ${nodeSize} 0 1 0 ${nodeSize2} 0
@@ -90,13 +81,17 @@ class GameGraphNode extends Component {
 
                     return `M ${left} ${top - diamondSide}
                         L ${left - diamondSide} ${top} L ${left} ${top + diamondSide}
-                        L ${left + diamondSide} ${top} L ${left} ${top - diamondSide}`
+                        L ${left + diamondSide} ${top} Z`
+                } else if (type === 'bookmark') {
+                    return `M ${left - nodeSize} ${top - nodeSize * 1.3}
+                        h ${nodeSize2} v ${nodeSize2 * 1.3}
+                        l ${-nodeSize} ${-nodeSize} l ${-nodeSize} ${nodeSize} Z`
                 }
 
                 return ''
             })(),
 
-            class: classNames({hover}),
+            class: classNames({hover, current}, 'node'),
             fill
         })
     }
@@ -130,8 +125,8 @@ class GameGraphEdge extends Component {
         return h('polyline', {
             points,
             fill: 'none',
-            stroke: current ? edgeColor : edgeInactiveColor,
-            'stroke-width': current ? edgeSize : edgeInactiveSize
+            stroke: current ? '#ccc' : '#777',
+            'stroke-width': current ? 2 : 1
         })
     }
 }
@@ -338,17 +333,14 @@ class GameGraph extends Component {
 
                 // Render node
 
-                let fill = nodeColor
-                if (onCurrentTrack) {
-                    fill = helper.vertexEquals(this.props.treePosition, [tree, index]) ? nodeActiveColor
-                        : 'HO' in node ? nodeBookmarkColor
-                        : commentProperties.some(x => x in node) ? nodeCommentColor
-                        : nodeColor
-                } else {
-                    fill = 'HO' in node ? nodeInactiveBookmarkColor
-                        : commentProperties.some(x => x in node) ? nodeInactiveCommentColor
-                        : nodeInactiveColor
-                }
+                let isCurrentNode = helper.vertexEquals(this.props.treePosition, [tree, index])
+                let opacity = onCurrentTrack ? 1 : .5
+                let fillRGB = 'BM' in node ? [240, 35, 17]
+                    : 'DO' in node ? [146, 39, 143]
+                    : 'IT' in node ? [72, 134, 213]
+                    : 'TE' in node ? [89, 168, 15]
+                    : commentProperties.some(x => x in node) ? [255, 174, 61]
+                    : [238, 238, 238]
 
                 let left = x * gridSize
                 let top = y * gridSize
@@ -357,13 +349,17 @@ class GameGraph extends Component {
                     key: y,
                     mouseShift: [cx - vx, cy - vy],
                     position: [left, top],
-                    type: 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
+                    type:
+                        'HO' in node
+                        ? 'bookmark' // Bookmark node
+                        : 'B' in node && node.B[0] === '' || 'W' in node && node.W[0] === ''
                         ? 'square' // Pass node
                         : !('B' in node || 'W' in node)
                         ? 'diamond' // Non-move node
                         : 'circle', // Normal node
-                    fill,
-                    nodeSize,
+                    current: isCurrentNode,
+                    fill: `rgb(${fillRGB.map(x => x * opacity).join(',')})`,
+                    nodeSize: nodeSize + 1,
                     gridSize
                 }))
 

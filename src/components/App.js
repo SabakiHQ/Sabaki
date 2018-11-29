@@ -1,5 +1,6 @@
 const fs = require('fs')
 const EventEmitter = require('events')
+const {extname} = require('path')
 const {ipcRenderer, remote} = require('electron')
 const {app, Menu} = remote
 const {h, render, Component} = require('preact')
@@ -14,6 +15,7 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
+const boardmatcher = require('@sabaki/boardmatcher')
 const deadstones = require('@sabaki/deadstones')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
@@ -23,7 +25,6 @@ deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const Board = require('../modules/board')
 const EngineSyncer = require('../modules/enginesyncer')
-const boardmatcher = require('../modules/boardmatcher')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
@@ -67,7 +68,6 @@ class App extends Component {
 
             highlightVertices: [],
             playVariation: null,
-            analysis: null,
             showCoordinates: null,
             showMoveColorization: null,
             showNextMoves: null,
@@ -92,6 +92,8 @@ class App extends Component {
             attachedEngines: [null, null],
             engineCommands: [[], []],
             generatingMoves: false,
+            analysisTreePosition: null,
+            analysis: null,
 
             // Drawers
 
@@ -427,30 +429,11 @@ class App extends Component {
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
-        if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
-        this.setMode('play')
-
-        this.clearUndoPoint()
-        this.detachEngines()
-        this.clearConsole()
-
-        await this.waitForRender()
-
         let emptyTree = this.getEmptyGameTree()
 
-        this.setState({
-            openDrawer: showInfo ? 'info' : null,
-            gameTrees: [emptyTree],
-            representedFilename: null
-        })
+        await this.loadGameTrees([emptyTree], {suppressAskForSave})
 
-        this.setCurrentTreePosition(emptyTree, 0, {clearCache: true})
-
-        this.treeHash = this.generateTreeHash()
-        this.fileHash = this.generateFileHash()
-
+        if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
     }
 
@@ -551,6 +534,8 @@ class App extends Component {
         if (gameTrees.length != 0) {
             this.clearUndoPoint()
             this.detachEngines()
+            this.clearConsole()
+
             this.setState({
                 representedFilename: null,
                 gameTrees
@@ -563,15 +548,13 @@ class App extends Component {
         }
 
         this.setBusy(false)
-
-        if (gameTrees.length > 1) {
-            setTimeout(() => {
-                this.openDrawer('gamechooser')
-            }, setting.get('gamechooser.show_delay'))
-        }
-
         this.window.setProgressBar(-1)
         this.events.emit('fileLoad')
+
+        if (gameTrees.length > 1) {
+            await helper.wait(setting.get('gamechooser.show_delay'))
+            this.openDrawer('gamechooser')
+        }
     }
 
     saveFile(filename = null) {
@@ -646,7 +629,7 @@ class App extends Component {
             if (button === 0) {
                 if (board.get(vertex) === 0) {
                     let autoGenmove = setting.get('gtp.auto_genmove')
-                    this.makeMove(vertex, {analyze: this.state.analysis != null, sendToEngine: autoGenmove})
+                    this.makeMove(vertex, {sendToEngine: autoGenmove})
                 } else if (
                     board.markers[vy][vx] != null
                     && board.markers[vy][vx].type === 'point'
@@ -668,7 +651,22 @@ class App extends Component {
                     let data = this.state.analysis.find(x => helper.vertexEquals(x.vertex, vertex))
 
                     if (data != null) {
-                        this.openVariationMenu(data.sign, data.variation, {x, y})
+                        let maxVisitsWin = Math.max(...this.state.analysis.map(x => x.visits * x.win))
+                        let strength = Math.round(data.visits * data.win * 8 / maxVisitsWin) + 1
+                        let annotationProp = strength >= 8 ? 'TE'
+                            : strength >= 5 ? 'IT'
+                            : strength >= 3 ? 'DO'
+                            : 'BM'
+                        let annotationValues = {'BM': '1', 'DO': '', 'IT': '', 'TE': '1'}
+                        let winrate = Math.round((data.sign > 0 ? data.win : 100 - data.win) * 100) / 100
+
+                        this.openVariationMenu(data.sign, data.variation, {
+                            x, y,
+                            startNodeProperties: {
+                                [annotationProp]: [annotationValues[annotationProp]],
+                                SBKV: [winrate.toString()]
+                            }
+                        })
                     }
                 }
             }
@@ -784,7 +782,7 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {analyze = false, player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -854,14 +852,8 @@ class App extends Component {
 
         let oldTreeLength = tree.nodes.length
         let oldSubtreesCount = tree.subtrees.length
-        let [newTreePosition, nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
+        let [nextTreePosition] = gametree.mergeInsert(tree, index, [newNode])
         let createNode = tree.nodes.length > oldTreeLength || tree.subtrees.length > oldSubtreesCount
-
-        this.setState(({gameTrees}) => ({
-            gameTrees: gameTrees.map(x =>
-                x === tree ? newTreePosition[0] : x
-            )
-        }))
 
         this.setCurrentTreePosition(...nextTreePosition)
 
@@ -905,11 +897,7 @@ class App extends Component {
             // Send command to engine
 
             let passPlayer = pass ? player : null
-            setTimeout(() => this.generateMove({analyze, passPlayer}), setting.get('gtp.move_delay'))
-        } else if (!pass && analyze) {
-            // Start analyzing
-
-            this.waitForRender().then(() => this.startAnalysis())
+            setTimeout(() => this.generateMove({passPlayer}), setting.get('gtp.move_delay'))
         }
     }
 
@@ -951,7 +939,6 @@ class App extends Component {
             if ('B' in node || 'W' in node || gametree.navigate(tree, index, 1)) {
                 // New variation needed
 
-                let updateRoot = tree.parent == null
                 let splitted = gametree.split(tree, index)
 
                 if (splitted[0] != tree || splitted[0].subtrees.length !== 0) {
@@ -963,11 +950,6 @@ class App extends Component {
                 node = {PL: currentPlayer > 0 ? ['B'] : ['W']}
                 index = tree.nodes.length
                 tree.nodes.push(node)
-
-                if (updateRoot) {
-                    let {gameTrees} = this.state
-                    gameTrees[gameIndex] = splitted[0]
-                }
             }
 
             let sign = tool === 'stone_1' ? 1 : -1
@@ -1164,7 +1146,7 @@ class App extends Component {
 
     // Navigation
 
-    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true, stopAnalysis = true} = {}) {
+    setCurrentTreePosition(tree, index, {clearCache = false, clearUndoPoint = true} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode))
             return
@@ -1179,8 +1161,13 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
-        if (stopAnalysis) {
-            this.stopAnalysis()
+        if (this.state.analysisTreePosition != null) {
+            clearTimeout(this.navigateAnalysisId)
+
+            this.stopAnalysis({removeAnalysisData: false})
+            this.navigateAnalysisId = setTimeout(() => {
+                this.startAnalysis({showWarning: false})
+            }, setting.get('game.navigation_analysis_delay'))
         }
 
         this.setState({
@@ -1549,7 +1536,7 @@ class App extends Component {
         let clearProperties = properties => properties.forEach(p => delete node[p])
 
         if ('moveAnnotation' in data) {
-            let moveProps = {'BM': 1, 'DO': '', 'IT': '', 'TE': 1}
+            let moveProps = {'BM': '1', 'DO': '', 'IT': '', 'TE': '1'}
 
             clearProperties(Object.keys(moveProps))
 
@@ -1558,7 +1545,7 @@ class App extends Component {
         }
 
         if ('positionAnnotation' in data) {
-            let positionProps = {'UC': 1, 'GW': 1, 'GB': 1, 'DM': 1}
+            let positionProps = {'UC': '1', 'GW': '1', 'GB': '1', 'DM': '1'}
 
             clearProperties(Object.keys(positionProps))
 
@@ -1626,19 +1613,12 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
-        let updateRoot = !tree.parent
         let oldLength = tree.nodes.length
         let splitted = gametree.split(tree, index)
         let copied = gametree.clone(this.copyVariationData)
 
         copied.parent = splitted[0]
         splitted[0].subtrees.push(copied)
-
-        if (updateRoot) {
-            let {gameTrees} = this.state
-            gameTrees[this.inferredState.gameIndex] = splitted[0]
-            this.setState({gameTrees})
-        }
 
         if (splitted[0].subtrees.length === 1) {
             let reduced = gametree.reduce(splitted[0])
@@ -1951,7 +1931,7 @@ class App extends Component {
         helper.popupMenu(template, x, y)
     }
 
-    openVariationMenu(sign, variation, {x, y, appendSibling = false} = {}) {
+    openVariationMenu(sign, variation, {x, y, appendSibling = false, startNodeProperties = {}} = {}) {
         helper.popupMenu([{
             label: '&Add Variation',
             click: () => {
@@ -1964,28 +1944,19 @@ class App extends Component {
                 }
 
                 let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
-                let [position, ] = gametree.mergeInsert(
+
+                gametree.mergeInsert(
                     ...(
                         !appendSibling
                         ? this.state.treePosition
                         : gametree.navigate(...this.state.treePosition, -1)
                     ),
-                    variation.map((vertex, i) => ({
+                    variation.map((vertex, i) => Object.assign({
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
-                    }))
+                    }, i === 0 ? startNodeProperties : {}))
                 )
 
-                this.setState(({gameTrees}) => ({
-                    gameTrees: gameTrees.map(x =>
-                        x === this.state.treePosition[0] ? position[0] : x
-                    )
-                }))
-
-                this.setCurrentTreePosition(...(
-                    !appendSibling
-                    ? position
-                    : gametree.navigate(...position, 1)
-                ), {stopAnalysis: false})
+                this.setCurrentTreePosition(...this.state.treePosition)
             }
         }], x, y)
     }
@@ -2007,7 +1978,7 @@ class App extends Component {
     async syncEngines({passPlayer = null} = {}) {
     }
 
-    async startAnalysis() {
+    async startAnalysis({showWarning = true} = {}) {
     }
 
     stopAnalysis() {

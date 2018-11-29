@@ -385,7 +385,9 @@ let data = [
                 label: 'Toggle A&nalysis',
                 accelerator: 'F4',
                 click: () => {
-                    if (sabaki.state.analysis == null) {
+                    if (sabaki.state.analysisTreePosition == null) {
+                        sabaki.closeDrawer()
+                        sabaki.setMode('play')
                         sabaki.startAnalysis()
                     } else {
                         sabaki.stopAnalysis()

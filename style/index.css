@@ -4,9 +4,6 @@
         z-index: 10;
     }
     main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         position: absolute;
         left: 0;
         top: 0;
@@ -318,7 +315,7 @@ header, #bar .bar {
 }
 
 #leftsidebar {
-        display: none;
+        visibility: hidden;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -336,7 +333,7 @@ header, #bar .bar {
         z-index: 10;
     }
     .leftsidebar #leftsidebar {
-        display: block;
+        visibility: visible;
     }
     .leftsidebar #main {
         left: 400px;
@@ -568,10 +565,17 @@ header, #bar .bar {
     #graph svg:not(:active) > * {
         transition: transform .3s;
     }
-    #graph svg path.hover {
-        stroke: white;
-        stroke-width: 3px;
-        stroke-linecap: square;
+    #graph svg .node {
+        stroke: #111;
+        stroke-width: 1px;
+    }
+    #graph svg .node.hover {
+        stroke: #777;
+        stroke-width: 2px;
+    }
+    #graph svg .node.current {
+        stroke: #eee;
+        stroke-width: 2px;
 }
 
 #properties {

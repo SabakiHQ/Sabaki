@@ -12,9 +12,9 @@ Most of the Go engines support optional parameters to tune their capacities. Lis
 
   Arguments: None
 
-* [**Leela Zero**](http://zero.sjeng.org/): Download the latest appropriate version for you system (binary and source code available). Then get a network hash file, likely the [best network](http://zero.sjeng.org/best-network) is the one you want. For a nicer interface with Sabaki containing some additional options see [LeelaSabaki](https://github.com/SabakiHQ/LeelaSabaki)
+* [**Leela Zero**](http://zero.sjeng.org/): Download the latest appropriate version for you system (binary and source code available). Then get a network hash file, likely the [best network](http://zero.sjeng.org/best-network) is the one you want.
 
-  Arguments: `--gtp -w path\weightsfile.txt` 
+  Arguments: `--gtp -w path/to/weightsfile` 
 
 * [**Leela**](https://www.sjeng.org/leela.html): Download the *engine only (commandline/GTP engine)* version.
 

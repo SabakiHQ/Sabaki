@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const {dirname, resolve} = require('path')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
@@ -7,6 +8,12 @@ const helper = require('./helper')
 const Board = require('./board')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const defaultStateJSON = JSON.stringify({
+    dirty: true,
+    komi: null,
+    size: null,
+    moves: []
+})
 
 function coord2vertex(coord, size) {
     if (coord === 'pass') return null
@@ -17,37 +24,41 @@ function coord2vertex(coord, size) {
     return [x, y]
 }
 
-class EngineSyncer {
+class EngineSyncer extends EventEmitter {
     constructor(engine) {
+        super()
+
         let {path, args, commands} = engine
 
         this.engine = engine
         this.commands = []
-
-        this.state = {
-            dirty: false,
-            komi: null,
-            size: null,
-            moves: []
-        }
+        this.state = JSON.parse(defaultStateJSON)
 
         this.controller = new gtp.Controller(path, argvsplit(args), {
             cwd: dirname(resolve(path))
         })
 
         this.controller.on('started', () => {
-            this.controller.sendCommand({name: 'name'})
-            this.controller.sendCommand({name: 'version'})
-            this.controller.sendCommand({name: 'protocol_version'})
-            this.controller.sendCommand({name: 'list_commands'}).then(response => {
-                this.commands = response.content.split('\n')
-            })
+            Promise.all([
+                this.controller.sendCommand({name: 'name'}),
+                this.controller.sendCommand({name: 'version'}),
+                this.controller.sendCommand({name: 'protocol_version'}),
+                this.controller.sendCommand({name: 'list_commands'}).then(response => {
+                    this.commands = response.content.split('\n')
+                }),
+                ...(
+                    commands != null
+                    && commands.trim() !== ''
+                    ? commands.split(';').filter(x => x.trim() !== '').map(command =>
+                        this.controller.sendCommand(gtp.Command.fromString(command))
+                    )
+                    : []
+                )
+            ]).catch(helper.noop)
+        })
 
-            if (commands == null || commands.trim() === '') return
-
-            for (let command of commands.split(';').filter(x => x.trim() !== '')) {
-                this.controller.sendCommand(gtp.Command.fromString(command))
-            }
+        this.controller.on('stopped', () => {
+            this.state = JSON.parse(defaultStateJSON)
         })
 
         this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
@@ -56,8 +67,12 @@ class EngineSyncer {
             let res = null
 
             if (!['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)) {
-                res = await getResponse()
-                if (res.error) return
+                try {
+                    res = await getResponse()
+                    if (res.error) return
+                } catch (err) {
+                    return
+                }
             }
 
             if (command.name === 'boardsize' && command.args.length >= 1) {
@@ -96,7 +111,9 @@ class EngineSyncer {
             ) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
                 let vertex = await new Promise(resolve => {
-                    getResponse().then(() => resolve(null))
+                    getResponse()
+                    .then(() => resolve(null))
+                    .catch(() => resolve(null))
 
                     subscribe(({line}) => {
                         let match = line.trim().match(/^play (.*)$/)
@@ -131,13 +148,16 @@ class EngineSyncer {
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
 
         if (komi !== this.state.komi) {
-            controller.sendCommand({name: 'komi', args: [komi]})
+            let {error} = await controller.sendCommand({name: 'komi', args: [komi]})
+            if (error) throw new Error('Komi is not supported by engine.')
         }
 
         // Update board size
 
         if (this.state.dirty || board.width !== this.state.size) {
-            controller.sendCommand({name: 'boardsize', args: [board.width]})
+            let {error} = await controller.sendCommand({name: 'boardsize', args: [board.width]})
+            if (error) throw new Error('Board size is not supported by engine.')
+
             this.state.dirty = true
         }
 
@@ -148,8 +168,12 @@ class EngineSyncer {
             let coord = board.vertex2coord(vertex)
             if (coord == null) return true
 
-            let response = await controller.sendCommand({name: 'play', args: [color, coord]})
-            if (response.error) return false
+            try {
+                let {error} = await controller.sendCommand({name: 'play', args: [color, coord]})
+                if (error) return false
+            } catch (err) {
+                return false
+            }
 
             return true
         }
@@ -172,11 +196,10 @@ class EngineSyncer {
             ) {
                 // Place handicap stones
 
-                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices))
+                let vertices = [].concat(...node.AB.map(sgf.parseCompressedVertices)).sort()
                 let coords = vertices
                     .map(v => board.vertex2coord(v))
                     .filter(x => x != null)
-                    .sort()
                     .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
 
                 if (coords.length > 0) {
@@ -222,7 +245,7 @@ class EngineSyncer {
 
         if (synced) {
             let sharedHistoryLength = [...Array(Math.min(this.state.moves.length, moves.length))]
-                .findIndex((_, i) => JSON.stringify(moves[i]) !== JSON.stringify(this.state.moves[i]))
+                .findIndex((_, i) => !helper.equals(moves[i], this.state.moves[i]))
             if (sharedHistoryLength < 0) sharedHistoryLength = Math.min(this.state.moves.length, moves.length)
             let undoLength = this.state.moves.length - sharedHistoryLength
 
@@ -243,7 +266,7 @@ class EngineSyncer {
             } else {
                 // Replay from beginning
 
-                controller.sendCommand({name: 'clear_board'})
+                promises.unshift(() => controller.sendCommand({name: 'clear_board'}))
             }
 
             let result = await Promise.all(promises.map(x => x()))
@@ -279,9 +302,8 @@ class EngineSyncer {
 
         // Complete rearrangement
 
-        promises = []
+        promises = [() => controller.sendCommand({name: 'clear_board'})]
         engineBoard = new Board(board.width, board.height)
-        controller.sendCommand({name: 'clear_board'})
 
         for (let x = 0; x < board.width; x++) {
             for (let y = 0; y < board.height; y++) {

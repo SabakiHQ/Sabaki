@@ -20,11 +20,6 @@ exports.hash = function(str) {
     return hash
 }
 
-exports.floorEven = function(float) {
-    let value = Math.floor(float)
-    return value % 2 === 0 ? value : value - 1
-}
-
 exports.equals = function(a, b) {
     if (a === b) return true
     if (a == null || b == null) return a == b

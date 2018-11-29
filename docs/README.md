@@ -12,7 +12,7 @@ This documentation is incomplete and a work in progress.
 * [Debugging](guides/debugging.md)
 * [Engines](guides/engines.md)
 * [Markdown in Sabaki](guides/markdown.md)
-* [Theme Directory](guides/theme-directory.md)
+* [Textures & Theme Directory](guides/theme-directory.md)
 * [Create Themes](guides/create-themes.md)
 * [Userstyle Tutorial](guides/userstyle-tutorial.md)
 

@@ -235,8 +235,8 @@ class GtpConsole extends Component {
         this.scrollToBottom = scrollTop >= scrollHeight - offsetHeight
     }
 
-    componentDidUpdate() {
-        if (this.scrollToBottom) {
+    componentDidUpdate(prevProps) {
+        if (!prevProps.show && this.props.show || this.scrollToBottom) {
             this.scrollElement.scrollTop = this.scrollElement.scrollHeight
         }
     }
