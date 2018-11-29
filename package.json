@@ -77,13 +77,8 @@
     "remark-breaks": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
-    "babel-loader": "^8.0.4",
-    "fast-async": "^7.0.6",
     "http-server": "^0.11.1",
-    "raw-loader": "^0.5.1",
-    "webpack": "^4.16.4",
+    "webpack": "^4.26.1",
     "webpack-cli": "^3.1.0"
   },
   "scripts": {

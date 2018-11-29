@@ -13,34 +13,6 @@ module.exports = (env, argv) => ({
 
     devtool: argv.mode === 'production' ? false : 'cheap-module-eval-source-map',
 
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        plugins: ['module:fast-async'],
-                        presets: [
-                            ['@babel/preset-env', {
-                                modules: false,
-                                exclude: [
-                                    'transform-regenerator',
-                                    'transform-async-to-generator'
-                                ],
-                                targets: {browsers: [
-                                    'last 2 Chrome versions',
-                                    'last 2 Firefox versions',
-                                    'last 2 Edge versions'
-                                ]}
-                            }]
-                        ]
-                    }
-                }
-            }
-        ]
-    },
-
     node: {
         Buffer: false
     },
