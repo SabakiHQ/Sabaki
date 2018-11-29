@@ -445,7 +445,7 @@ class App extends Component {
                 GM: ['1'], FF: ['4'], CA: ['UTF-8'],
                 AP: [`${this.appName}:${this.version}`],
                 KM: [setting.get('game.default_komi')],
-                SZ: [sizeInfo], DT: dateInfo
+                SZ: [sizeInfo], DT: [dateInfo]
             }
 
             if (handicapStones.length > 0) {
