@@ -443,30 +443,11 @@ class App extends Component {
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
-        if (showInfo && this.state.openDrawer === 'info') this.closeDrawer()
-        this.setMode('play')
-
-        this.clearUndoPoint()
-        this.detachEngines()
-        this.clearConsole()
-
-        await this.waitForRender()
-
         let emptyTree = this.getEmptyGameTree()
 
-        this.setState({
-            openDrawer: showInfo ? 'info' : null,
-            gameTrees: [emptyTree],
-            representedFilename: null
-        })
+        await this.loadGameTrees([emptyTree], {suppressAskForSave})
 
-        this.setCurrentTreePosition(emptyTree, 0, {clearCache: true})
-
-        this.treeHash = this.generateTreeHash()
-        this.fileHash = this.generateFileHash()
-
+        if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
     }
 
@@ -564,6 +545,8 @@ class App extends Component {
         if (gameTrees.length != 0) {
             this.clearUndoPoint()
             this.detachEngines()
+            this.clearConsole()
+
             this.setState({
                 representedFilename: null,
                 gameTrees
@@ -576,15 +559,13 @@ class App extends Component {
         }
 
         this.setBusy(false)
-
-        if (gameTrees.length > 1) {
-            setTimeout(() => {
-                this.openDrawer('gamechooser')
-            }, setting.get('gamechooser.show_delay'))
-        }
-
         this.window.setProgressBar(-1)
         this.events.emit('fileLoad')
+
+        if (gameTrees.length > 1) {
+            await helper.wait(setting.get('gamechooser.show_delay'))
+            this.openDrawer('gamechooser')
+        }
     }
 
     saveFile(filename = null, confirmExtension = true) {
