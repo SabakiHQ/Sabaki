@@ -43,6 +43,20 @@ See [Building & Tests](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guide
 
 This project is licensed under the [MIT license](https://github.com/SabakiHQ/Sabaki/blob/master/LICENSE.md).
 
+## Donators
+
+A big thank you to these lovely people:
+
+- Eric Wainwright
+- Michael Noll
+- John Hager
+- David Göbel
+- Andrew Thieman
+- Adrian Petrescu
+- Karlheinz Agsteiner
+- Sergio Villegas
+- Jake Pivnik
+
 ## Related
 
 * [Shudan](https://github.com/SabakiHQ/Shudan) - A highly customizable, low-level Preact Goban component.
