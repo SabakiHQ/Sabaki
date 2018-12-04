@@ -9,7 +9,7 @@ const gametree = sabaki && require('./modules/gametree')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
-let treePosition = () => sabaki.state.treePosition
+let treePosition = () => [sabaki.state.gameTrees[sabaki.state.gameIndex], sabaki.state.treePosition]
 
 let data = [
     {
@@ -255,7 +255,7 @@ let data = [
                 label: 'Toggle &Hotspot',
                 accelerator: 'CmdOrCtrl+B',
                 click: () => sabaki.setComment(...treePosition(), {
-                    hotspot: !('HO' in treePosition()[0].nodes[treePosition()[1]])
+                    hotspot: treePosition()[0].get(treePosition()[1]).data.HO == null
                 })
             },
             {
