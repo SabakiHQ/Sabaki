@@ -239,7 +239,7 @@ class EngineSyncer extends EventEmitter {
                 break
             }
 
-            if (helper.vertexEquals(tp, treePosition)) break
+            if (node.id === id) break
         }
 
         if (synced) {

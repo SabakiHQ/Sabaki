@@ -1219,7 +1219,7 @@ class App extends Component {
             this.clearUndoPoint()
         }
 
-        if (this.state.analysisTreePosition != null) {
+        if (this.state.analysisTreePosition != null && id !== this.state.analysisTreePosition) {
             clearTimeout(this.navigateAnalysisId)
 
             this.stopAnalysis({removeAnalysisData: false})
@@ -1479,7 +1479,7 @@ class App extends Component {
                     let value = data.size
                     value = value.map(x => isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x)))
 
-                    if (value[0] === value[1]) value = value[0]
+                    if (value[0] === value[1]) value = value[0].toString()
                     else value = value.join(':')
 
                     setting.set('game.default_board_size', value)
@@ -1527,7 +1527,7 @@ class App extends Component {
                         draft.updateProperty(draft.root.id, 'AB', stones.map(sgf.stringifyVertex))
                     }
 
-                    draft.updateProperty(draft.root.id, props[key], [value])
+                    draft.updateProperty(draft.root.id, props[key], [value.toString()])
                 } else {
                     draft.removeProperty(draft.root.id, props[key])
                 }
@@ -2229,7 +2229,7 @@ class App extends Component {
                 if (sign < 0) winrate = 100 - winrate
 
                 let newTree = tree.mutate(draft => {
-                    draft.updateProperty(treePosition, 'SBKV', [Math.round(winrate * 100) / 100])
+                    draft.updateProperty(treePosition, 'SBKV', [(Math.round(winrate * 100) / 100).toString()])
                 })
 
                 this.setState({analysis})
@@ -2362,7 +2362,8 @@ class App extends Component {
             this.setState({generatingMoves: true})
         }
 
-        let {gameTrees, gameIndex, currentPlayer} = this.inferredState
+        let {gameTrees, gameIndex} = this.state
+        let {currentPlayer} = this.inferredState
         let tree = gameTrees[gameIndex]
         let [color, opponent] = currentPlayer > 0 ? ['B', 'W'] : ['W', 'B']
         let [playerIndex, otherIndex] = currentPlayer > 0 ? [0, 1] : [1, 0]
@@ -2449,7 +2450,7 @@ class App extends Component {
         }
 
         let previousNode = tree.navigate(this.state.treePosition, -1, {})
-        let previousPass = ['W', 'B'].some(color =>
+        let previousPass = previousNode != null && ['W', 'B'].some(color =>
             previousNode.data[color] != null
             && !board.hasVertex(sgf.parseVertex(previousNode.data[color][0]))
         )

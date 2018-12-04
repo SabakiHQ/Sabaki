@@ -40,8 +40,8 @@ exports.mergeInsert = function(tree, id, dataArr) {
             if (dataArr.length === 0) return []
 
             if (dataArr.length > 1) {
-                let ids = inner(id, dataArr.slice(1, -1))
-                let lastId = inner(ids.slice(-1)[0], dataArr.slice(-1))
+                let ids = inner(id, dataArr.slice(0, -1))
+                let [lastId] = inner(ids.slice(-1)[0], dataArr.slice(-1))
 
                 ids.push(lastId)
                 return ids

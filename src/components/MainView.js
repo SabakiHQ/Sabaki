@@ -151,7 +151,7 @@ class MainView extends Component {
                         : highlightVertices,
                     analysis: mode === 'play'
                         && analysisTreePosition != null
-                        && helper.vertexEquals(analysisTreePosition, treePosition)
+                        && analysisTreePosition === treePosition
                         ? analysis
                         : null,
                     paintMap,

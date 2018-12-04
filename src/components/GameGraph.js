@@ -193,10 +193,11 @@ class GameGraph extends Component {
         // Debounce rendering
 
         if (treePosition == null) return
-        if (treePosition === this.props.treePosition) return
 
-        let [matrix, dict] = this.getMatrixDict(gameTree)
-        this.setState({matrixDict: [matrix, dict]})
+        if (gameTree !== this.props.gameTree) {
+            let [matrix, dict] = this.getMatrixDict(gameTree)
+            this.setState({matrixDict: [matrix, dict]})
+        }
 
         clearTimeout(this.updateCameraPositionId)
         this.updateCameraPositionId = setTimeout(() => this.updateCameraPosition(), delay)
