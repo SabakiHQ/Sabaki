@@ -60,7 +60,7 @@ class Sidebar extends Component {
         }
 
         this.handleCommentInput = evt => {
-            sabaki.setComment(props.gameTree, props.treePosition, evt)
+            sabaki.setComment(this.props.gameTree, this.props.treePosition, evt)
         }
 
         this.componentWillReceiveProps(props)
