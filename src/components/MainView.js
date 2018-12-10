@@ -96,8 +96,6 @@ class MainView extends Component {
         fuzzyStonePlacement,
         animateStonePlacement,
 
-        undoable,
-        undoText,
         selectedTool,
         findText,
         findVertex,
@@ -183,8 +181,6 @@ class MainView extends Component {
                     playerCaptures: board.captures,
                     currentPlayer,
                     showHotspot: node.data.HO != null,
-                    undoable,
-                    undoText,
                     onCurrentPlayerClick: this.handleTogglePlayer
                 }),
 

@@ -100,7 +100,7 @@ header, #bar .bar {
         border-left: 6px solid transparent;
     }
     header.hotspot .hotspot { top: 0; }
-    header > img, #headermenu, header .undo {
+    header > img, #headermenu {
         display: block;
         position: absolute;
         left: 50%;
@@ -111,7 +111,7 @@ header, #bar .bar {
         margin-top: -11px;
     }
     header > img { cursor: pointer; }
-    #headermenu, header .undo {
+    #headermenu {
         left: auto;
         right: 0;
         width: 32px;
@@ -120,22 +120,14 @@ header, #bar .bar {
         margin-left: 0;
         margin-top: -21px;
     }
-    header .undo {
-        right: auto;
-        left: 0;
-        top: 61px;
-        transition: top .2s, left .2s;
-    }
-    header .undo img, #headermenu img {
+    #headermenu img {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         filter: invert(100%);
     }
-    header.undoable .undo { top: 50%; }
-    header.hotspot .undo { left: 32px; }
-    #headermenu:hover, header .undo:hover {
+    #headermenu:hover {
         background: #222;
 }
 

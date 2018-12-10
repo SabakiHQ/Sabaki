@@ -53,7 +53,6 @@ class ContentDisplay extends Component {
                 evt.preventDefault()
                 let moveNumber = +linkElement.dataset.movenumber
 
-                sabaki.setUndoPoint('Go Back')
                 sabaki.goToMainVariation()
                 sabaki.goToMoveNumber(moveNumber)
             }

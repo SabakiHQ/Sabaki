@@ -10,7 +10,6 @@ class PlayBar extends Component {
         super()
 
         this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
-        this.handleUndoButtonClick = () => sabaki.undo()
 
         this.handleMenuClick = () => {
             let template = [
@@ -66,8 +65,6 @@ class PlayBar extends Component {
         playerCaptures,
         currentPlayer,
         showHotspot,
-        undoable,
-        undoText,
 
         onCurrentPlayerClick = helper.noop
     }) {
@@ -85,7 +82,6 @@ class PlayBar extends Component {
         return h('header',
             {
                 class: classNames({
-                    undoable,
                     hotspot: showHotspot,
                     current: mode === 'play'
                 })
@@ -120,15 +116,6 @@ class PlayBar extends Component {
             }),
 
             h('div', {class: 'hotspot', title: 'Hotspot'}),
-
-            h('a',
-                {
-                    class: 'undo',
-                    title: undoText,
-                    onClick: this.handleUndoButtonClick
-                },
-                h('img', {src: './node_modules/octicons/build/svg/reply.svg', height: 21})
-            ),
 
             h('a',
                 {

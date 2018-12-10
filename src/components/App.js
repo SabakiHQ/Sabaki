@@ -55,8 +55,6 @@ class App extends Component {
 
             // Bars
 
-            undoable: false,
-            undoText: 'Undo',
             selectedTool: 'stone_1',
             scoringMethod: null,
             findText: '',
@@ -560,7 +558,6 @@ class App extends Component {
         await helper.wait(setting.get('app.loadgame_delay'))
 
         if (gameTrees.length != 0) {
-            this.clearUndoPoint()
             this.detachEngines()
             this.clearConsole()
 
@@ -857,7 +854,7 @@ class App extends Component {
         this.events.emit('vertexClick')
     }
 
-    makeMove(vertex, {player = null, clearUndoPoint = true, sendToEngine = false} = {}) {
+    makeMove(vertex, {player = null, sendToEngine = false} = {}) {
         if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
             this.closeDrawer()
             this.setMode('play')
@@ -943,10 +940,6 @@ class App extends Component {
             sound.playPass()
         }
 
-        // Clear undo point
-
-        if (createNode && clearUndoPoint) this.clearUndoPoint()
-
         // Enter scoring mode after two consecutive passes
 
         let enterScoring = false
@@ -973,21 +966,19 @@ class App extends Component {
         }
     }
 
-    makeResign({player = null, setUndoPoint = true} = {}) {
+    makeResign({player = null} = {}) {
         let {gameTrees, gameIndex, treePosition} = this.state
         let {currentPlayer} = this.inferredState
         if (player == null) player = currentPlayer
         let color = player > 0 ? 'W' : 'B'
         let tree = gameTrees[gameIndex]
 
-        if (setUndoPoint) this.setUndoPoint('Undo Resignation')
-
         let newTree = tree.mutate(draft => {
             draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
         })
 
-        this.makeMove([-1, -1], {player, clearUndoPoint: false})
-        this.makeMainVariation(newTree, treePosition, {setUndoPoint: false})
+        this.makeMove([-1, -1], {player})
+        this.makeMainVariation(newTree, treePosition)
 
         this.events.emit('resign', {player})
     }
@@ -1166,39 +1157,14 @@ class App extends Component {
             }
         })
 
-        this.clearUndoPoint()
         this.setCurrentTreePosition(newTree, node.id)
 
         this.events.emit('toolUse', {tool, vertex, argument})
     }
 
-    // Undo Methods
-
-    setUndoPoint(undoText = 'Undo') {
-        let {gameTrees, gameIndex, treePosition} = this.state
-
-        this.undoData = {gameTrees, gameIndex, treePosition}
-        this.setState({undoable: true, undoText})
-    }
-
-    clearUndoPoint() {
-        this.undoData = null
-        this.setState({undoable: false})
-    }
-
-    undo() {
-        if (!this.state.undoable || !this.undoData) return
-
-        let {gameTrees, gameIndex, treePosition} = this.undoData
-
-        this.setState({gameTrees, gameIndex, treePosition})
-        this.setCurrentTreePosition(gameTrees[gameIndex], treePosition, {clearCache: true})
-        this.clearUndoPoint()
-    }
-
     // Navigation
 
-    setCurrentTreePosition(tree, id, {clearCache = false, clearUndoPoint = true} = {}) {
+    setCurrentTreePosition(tree, id, {clearCache = false} = {}) {
         if (clearCache) gametree.clearBoardCache()
         if (['scoring', 'estimator'].includes(this.state.mode)) return
 
@@ -1213,10 +1179,6 @@ class App extends Component {
 
             currents[n.parentId] = n.id
             n = tree.get(n.parentId)
-        }
-
-        if (clearUndoPoint && n.id !== tree.root.id) {
-            this.clearUndoPoint()
         }
 
         if (this.state.analysisTreePosition != null && id !== this.state.analysisTreePosition) {
@@ -1558,7 +1520,7 @@ class App extends Component {
             }
         })
 
-        this.setCurrentTreePosition(newTree, treePosition, {clearUndoPoint: true})
+        this.setCurrentTreePosition(newTree, treePosition)
     }
 
     getComment(tree, treePosition) {
@@ -1626,12 +1588,10 @@ class App extends Component {
             }
         })
 
-        this.setCurrentTreePosition(newTree, treePosition, {clearUndoPoint: true})
+        this.setCurrentTreePosition(newTree, treePosition)
     }
 
     rotateBoard(tree, anticlockwise) {
-        this.setUndoPoint('Undo Board Rotation')
-
         let {treePosition} = this.state
         let newTree = rotation.rotateTree(tree, size[0], size[1], anticlockwise)
 
@@ -1654,20 +1614,14 @@ class App extends Component {
         this.copyVariationData = clone
     }
 
-    cutVariation(tree, treePosition, {setUndoPoint = true} = {}) {
-        if (setUndoPoint) this.setUndoPoint('Undo Cut Variation')
-
+    cutVariation(tree, treePosition) {
         this.copyVariation(tree, treePosition)
-        this.removeNode(tree, treePosition, {
-            suppressConfirmation: true,
-            setUndoPoint: false
-        })
+        this.removeNode(tree, treePosition, {suppressConfirmation: true})
     }
 
-    pasteVariation(tree, treePosition, {setUndoPoint = true} = {}) {
+    pasteVariation(tree, treePosition) {
         if (this.copyVariationData == null) return
 
-        if (setUndoPoint) this.setUndoPoint('Undo Paste Variation')
         this.closeDrawer()
         this.setMode('play')
 
@@ -1680,8 +1634,7 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, copied.id)
     }
 
-    flattenVariation(tree, treePosition, {setUndoPoint = true} = {}) {
-        if (setUndoPoint) this.setUndoPoint('Undo Flatten')
+    flattenVariation(tree, treePosition) {
         this.closeDrawer()
         this.setMode('play')
 
@@ -1716,11 +1669,10 @@ class App extends Component {
         })
 
         this.setState({gameTrees: gameTrees.map((t, i) => i === gameIndex ? newTree : t)})
-        this.setCurrentTreePosition(newTree, newTree.root.id, {clearUndoPoint: false})
+        this.setCurrentTreePosition(newTree, newTree.root.id)
     }
 
-    makeMainVariation(tree, treePosition, {setUndoPoint = true} = {}) {
-        if (setUndoPoint) this.setUndoPoint('Restore Main Variation')
+    makeMainVariation(tree, treePosition) {
         this.closeDrawer()
         this.setMode('play')
 
@@ -1742,8 +1694,7 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition)
     }
 
-    shiftVariation(tree, treePosition, step, {setUndoPoint = true} = {}) {
-        if (setUndoPoint) this.setUndoPoint('Undo Shift Variation')
+    shiftVariation(tree, treePosition, step) {
         this.closeDrawer()
         this.setMode('play')
 
@@ -1766,7 +1717,7 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition)
     }
 
-    removeNode(tree, treePosition, {suppressConfirmation = false, setUndoPoint = true} = {}) {
+    removeNode(tree, treePosition, {suppressConfirmation = false} = {}) {
         let node = tree.get(treePosition)
 
         if (node.parentId == null) {
@@ -1784,7 +1735,6 @@ class App extends Component {
             ) === 1
         ) return
 
-        if (setUndoPoint) this.setUndoPoint('Undo Remove Node')
         this.closeDrawer()
         this.setMode('play')
 
@@ -1802,7 +1752,7 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, node.parentId)
     }
 
-    removeOtherVariations(tree, treePosition, {suppressConfirmation = false, setUndoPoint = true} = {}) {
+    removeOtherVariations(tree, treePosition, {suppressConfirmation = false} = {}) {
         if (
             suppressConfirmation !== true
             && setting.get('edit.show_removeothervariations_warning')
@@ -1813,9 +1763,6 @@ class App extends Component {
             ) == 1
         ) return
 
-        // Save undo information
-
-        if (setUndoPoint) this.setUndoPoint('Undo Remove Other Variations')
         this.closeDrawer()
         this.setMode('play')
 

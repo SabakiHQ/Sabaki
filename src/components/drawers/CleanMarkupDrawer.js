@@ -47,7 +47,6 @@ class CleanMarkupDrawer extends Component {
             evt.preventDefault()
 
             let doRemove = async work => {
-                sabaki.setUndoPoint('Undo Clean Markup')
                 sabaki.setBusy(true)
 
                 let data = {
