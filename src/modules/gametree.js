@@ -304,8 +304,3 @@ exports.clearBoardCache = function() {
 exports.getHash = function(tree) {
     return helper.hash(JSON.stringify(tree))
 }
-
-exports.getMatrixHash = function(tree) {
-    let inner = node => helper.hash(`${node.id}-${node.children.map(inner).join('-')}`)
-    return inner(tree.root)
-}

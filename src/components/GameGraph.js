@@ -214,10 +214,8 @@ class GameGraph extends Component {
     }
 
     getMatrixDict(tree) {
-        let hash = gametree.getMatrixHash(tree)
-
-        if (hash !== this.matrixDictHash) {
-            this.matrixDictHash = hash
+        if (tree !== this.matrixDictTree) {
+            this.matrixDictTree = tree
             this.matrixDictCache = gametree.getMatrixDict(tree)
         }
 
