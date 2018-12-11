@@ -79,7 +79,7 @@ exports.mergeInsert = function(tree, id, dataArr) {
 }
 
 exports.getMatrixDict = function(tree) {
-    let matrix = [...Array(tree.getHeight())].map(_ => [])
+    let matrix = [...Array(tree.getHeight() + 1)].map(_ => [])
     let dict = {}
 
     let inner = (node, matrix, dict, xshift, yshift) => {
@@ -89,7 +89,7 @@ exports.getMatrixDict = function(tree) {
         while (hasCollisions) {
             hasCollisions = false
 
-            for (let y = 0; y < Math.min(sequence.length + 1, matrix.length - yshift); y++) {
+            for (let y = 0; y <= sequence.length; y++) {
                 if (xshift >= matrix[yshift + y].length - (y === sequence.length)) continue
 
                 hasCollisions = true
@@ -99,12 +99,11 @@ exports.getMatrixDict = function(tree) {
         }
 
         for (let y = 0; y < sequence.length; y++) {
-            matrix[yshift + y].length = xshift + 1
             matrix[yshift + y][xshift] = sequence[y].id
             dict[sequence[y].id] = [xshift, yshift + y]
         }
 
-        let [lastSequenceNode] = sequence.slice(-1)
+        let lastSequenceNode = sequence.slice(-1)[0]
 
         for (let k = 0; k < lastSequenceNode.children.length; k++) {
             let child = lastSequenceNode.children[k]
