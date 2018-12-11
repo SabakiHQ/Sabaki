@@ -190,8 +190,6 @@ class GameGraph extends Component {
     }
 
     componentWillReceiveProps({treePosition, gameTree} = {}) {
-        // Debounce rendering
-
         if (treePosition == null) return
 
         if (gameTree !== this.props.gameTree) {
