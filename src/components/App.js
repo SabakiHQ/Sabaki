@@ -226,7 +226,11 @@ class App extends Component {
                     this.setState({fullScreen: false})
                 }
             } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
-                if (document.activeElement !== document.body || evt.ctrlKey || evt.metaKey) return
+                if (
+                    evt.ctrlKey || evt.metaKey
+                    || helper.isTextLikeElement(document.activeElement)
+                ) return
+
                 evt.preventDefault()
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
@@ -1342,6 +1346,8 @@ class App extends Component {
     startAutoscrolling(step) {
         if (this.autoscrollId != null) return
 
+        let first = true
+        let maxDelay = setting.get('autoscroll.max_interval')
         let minDelay = setting.get('autoscroll.min_interval')
         let diff = setting.get('autoscroll.diff')
 
@@ -1349,10 +1355,13 @@ class App extends Component {
             this.goStep(step)
 
             clearTimeout(this.autoscrollId)
-            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+            this.autoscrollId = setTimeout(() => {
+                scroll(first ? maxDelay : Math.max(minDelay, delay - diff))
+                first = false
+            }, delay)
         }
 
-        scroll(setting.get('autoscroll.max_interval'))
+        scroll(400)
     }
 
     stopAutoscrolling() {

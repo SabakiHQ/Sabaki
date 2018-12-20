@@ -75,6 +75,12 @@ exports.normalizeEndings = function(input) {
     return input.replace(/\r\n|\n\r|\r/g, '\n')
 }
 
+exports.isTextLikeElement = function(element) {
+    return ['textarea', 'select'].includes(element.tagName.toLowerCase())
+        || element.tagName.toLowerCase() === 'input'
+        && !['submit', 'reset', 'button', 'checkbox', 'radio', 'color', 'file'].includes(element.type)
+}
+
 exports.popupMenu = function(template, x, y) {
     let {remote} = require('electron')
     let setting = remote.require('./setting')

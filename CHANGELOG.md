@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* More precise navigation when navigating by pressing up/down arrow keys
+
 ## [Sabaki v0.41.0][v0.41.0] (2018-11-29)
 
 **Added**
