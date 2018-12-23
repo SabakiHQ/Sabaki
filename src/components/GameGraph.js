@@ -210,6 +210,9 @@ class GameGraph extends Component {
         if (showGameGraph !== this.props.showGameGraph) {
             setTimeout(() => this.updateCameraPosition(), 200)
         }
+
+        // In case it was changed externally
+        delay = setting.get('graph.delay')
     }
 
     getMatrixDict(tree) {

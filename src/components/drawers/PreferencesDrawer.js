@@ -164,6 +164,22 @@ class GeneralTab extends Component {
                         selected: graphGridSize > 22
                     }, 'Big')
                 )
+            )),
+
+            h('p', {}, h('label', {},
+                'Game Tree Animation Delay: ',
+
+                h('select', {onChange: (evt) => setting.set('graph.delay', Number(evt.currentTarget.value))},
+                    h('option', {
+                        value: 0,
+                        selected: setting.get('graph.delay') === 0
+                    }, 'None'),
+
+                    h('option', {
+                        value: 200,
+                        selected: setting.get('graph.delay') === 200
+                    }, 'Default')
+                )
             ))
         )
     }
