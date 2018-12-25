@@ -107,6 +107,10 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'gtp.auto_genmove',
                     text: 'Automatically generate engine moves'
+                }),
+                h(PreferencesItem, {
+                    id: 'graph.animation',
+                    text: 'Enable game tree animation'
                 })
             ),
 
@@ -163,22 +167,6 @@ class GeneralTab extends Component {
                         value: 'big',
                         selected: graphGridSize > 22
                     }, 'Big')
-                )
-            )),
-
-            h('p', {}, h('label', {},
-                'Game Tree Animation Delay: ',
-
-                h('select', {onChange: (evt) => setting.set('graph.delay', Number(evt.currentTarget.value))},
-                    h('option', {
-                        value: 0,
-                        selected: setting.get('graph.delay') === 0
-                    }, 'None'),
-
-                    h('option', {
-                        value: 200,
-                        selected: setting.get('graph.delay') === 200
-                    }, 'Default')
                 )
             ))
         )
