@@ -6,7 +6,9 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
-let delay = setting.get('graph.delay')
+const getDelay = () => setting.get('graph.delay') * Number(setting.get('graph.animation'))
+
+let delay = getDelay();
 let commentProperties = setting.get('sgf.comment_properties')
 
 class GameGraphNode extends Component {
@@ -212,7 +214,7 @@ class GameGraph extends Component {
         }
 
         // In case it was changed externally
-        delay = setting.get('graph.delay')
+        delay = getDelay()
     }
 
     getMatrixDict(tree) {

@@ -73,6 +73,7 @@ let defaults = {
     'game.show_suicide_warning': true,
     'gamechooser.show_delay': 100,
     'gamechooser.thumbnail_size': 153,
+    'graph.animation': true,
     'graph.delay': 200,
     'graph.grid_size': 22,
     'graph.node_size': 4,
