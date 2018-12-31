@@ -110,6 +110,7 @@ class MainView extends Component {
         let board = gametree.getBoard(tree, index)
         let node = tree.nodes[index]
         let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+        let handicap = +gametree.getRootProperty(rootTree, 'HA', 0)
         let paintMap
 
         if (['scoring', 'estimator'].includes(mode)) {
@@ -204,7 +205,8 @@ class MainView extends Component {
                     method: scoringMethod,
                     scoreBoard,
                     areaMap,
-                    komi
+                    komi,
+                    handicap
                 }, 'Please select dead stones.'),
 
                 h(ScoringBar, {
@@ -213,7 +215,8 @@ class MainView extends Component {
                     method: scoringMethod,
                     scoreBoard,
                     areaMap,
-                    komi
+                    komi,
+                    handicap
                 }, 'Toggle group status.'),
 
                 h(FindBar, {
