@@ -2144,7 +2144,7 @@ class App extends Component {
                     .split(/\s*info\s+/).slice(1)
                     .map(x => x.trim())
                     .map(x => {
-                        let match = x.match(/(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*$/)
+                        let match = x.match(/(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*\s*$/)
                         if (match == null)
                           return null
                         let match2 = match[0].match(/pass/)
