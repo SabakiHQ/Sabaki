@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 **Changed**
 
 * More precise navigation when navigating by pressing up/down arrow keys
+* In area scoring, number of handicap stones are added to white's score, according to Chinese scoring (Thanks to [@dbosst](https://github.com/dbosst))
 
 ## [Sabaki v0.41.0][v0.41.0] (2018-11-29)
 
