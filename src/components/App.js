@@ -2144,10 +2144,15 @@ class App extends Component {
                     .split(/\s*info\s+/).slice(1)
                     .map(x => x.trim())
                     .map(x => {
-                        let match = x.match(/[A-Za-z]\d+(\s+[A-Za-z]\d+)*$/)
-                        if (match == null) return null
-
-                        return [x.slice(0, match.index), match[0].split(/\s+/)]
+                        let matchPV = x.match(/(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*\s*$/)
+                        if (matchPV == null)
+                            return null
+                        let matchPass = matchPV[0].match(/pass/)
+                        if (matchPass == null) {
+                            return [x.slice(0, matchPV.index), matchPV[0].split(/\s+/)]
+                        } else {
+                            return [x.slice(0, matchPV.index), matchPV[0].slice(0, matchPass.index).split(/\s+/)]
+                        }
                     })
                     .filter(x => x != null)
                     .map(([x, y]) => [
