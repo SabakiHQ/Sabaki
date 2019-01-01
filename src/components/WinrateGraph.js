@@ -11,8 +11,7 @@ class WinrateGraph extends Component {
         super()
 
         this.state = {
-            sidebarWinrateGraphSplit: setting.get('view.winrategraph_height'),
-            sidebarWinrateGraphSplitTransition: true
+            height: setting.get('view.winrategraph_height'),
         }
 
         this.handleMouseDown = evt => {
@@ -28,7 +27,7 @@ class WinrateGraph extends Component {
 
     shouldComponentUpdate({width, currentIndex, data}) {
         return width !== this.props.width
-            || winrateGraphHeight !== this.state.sidebarWinrateGraphSplit
+            || winrateGraphHeight !== this.state.height
             || currentIndex !== this.props.currentIndex
             || data[currentIndex] !== this.props.data[currentIndex]
     }
@@ -38,13 +37,13 @@ class WinrateGraph extends Component {
             if (!this.mouseDown) return
 
             if (this.horizontalResizerWinrateMouseDown) {
-              evt.preventDefault()
+                evt.preventDefault()
 
-              let sidebarWinrateGraphSplit = Math.min(
-                500, Math.max(winrateGraphMinHeight, evt.clientY)
-              )
-              this.setState({sidebarWinrateGraphSplit, sidebarWinrateGraphSplitTransition: false})
-              return
+                let height = Math.min(
+                    500, Math.max(winrateGraphMinHeight, evt.clientY)
+                )
+                this.setState({height})
+                return
             }
 
             let rect = this.element.getBoundingClientRect()
@@ -58,8 +57,7 @@ class WinrateGraph extends Component {
         document.addEventListener('mouseup', () => {
             if (this.horizontalResizerWinrateMouseDown) {
                 this.horizontalResizerWinrateMouseDown = false
-                setting.set('view.winrategraph_height', this.state.sidebarWinrateGraphSplit)
-                this.setState({sidebarWinrateGraphSplitTransition: false})
+                setting.set('view.winrategraph_height', this.state.height)
                 window.dispatchEvent(new Event('resize'))
             }
             this.mouseDown = false
@@ -77,8 +75,7 @@ class WinrateGraph extends Component {
                 ref: el => this.element = el,
                 id: 'winrategraph',
                 style: {
-                    transition: this.sidebarWinrateGraphSplitTransition ? null : 'none',
-                    height: this.state.sidebarWinrateGraphSplit + 'px'
+                    height: this.state.height + 'px'
                 },
                 onMouseDown: this.handleMouseDown
             },
