@@ -3,20 +3,32 @@ const {h, Component} = require('preact')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
+let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
 let winrateGraphHeight = setting.get('view.winrategraph_height')
 
 class WinrateGraph extends Component {
     constructor() {
         super()
 
+        this.state = {
+            sidebarWinrateGraphSplit: setting.get('view.winrategraph_height'),
+            sidebarWinrateGraphSplitTransition: true
+        }
+
         this.handleMouseDown = evt => {
             this.mouseDown = true
             document.dispatchEvent(new MouseEvent('mousemove', evt))
+        }
+
+        this.handleHorizontalResizerWinrateMouseDown = ({button}) => {
+            if (button !== 0) return
+            this.horizontalResizerWinrateMouseDown = true
         }
     }
 
     shouldComponentUpdate({width, currentIndex, data}) {
         return width !== this.props.width
+            || winrateGraphHeight !== this.state.sidebarWinrateGraphSplit
             || currentIndex !== this.props.currentIndex
             || data[currentIndex] !== this.props.data[currentIndex]
     }
@@ -24,6 +36,16 @@ class WinrateGraph extends Component {
     componentDidMount() {
         document.addEventListener('mousemove', evt => {
             if (!this.mouseDown) return
+
+            if (this.horizontalResizerWinrateMouseDown) {
+              evt.preventDefault()
+
+              let sidebarWinrateGraphSplit = Math.min(
+                500, Math.max(winrateGraphMinHeight, evt.clientY)
+              )
+              this.setState({sidebarWinrateGraphSplit, sidebarWinrateGraphSplitTransition: false})
+              return
+            }
 
             let rect = this.element.getBoundingClientRect()
             let percent = (evt.clientX - rect.left) / rect.width
@@ -34,8 +56,15 @@ class WinrateGraph extends Component {
         })
 
         document.addEventListener('mouseup', () => {
+            if (this.horizontalResizerWinrateMouseDown) {
+                this.horizontalResizerWinrateMouseDown = false
+                setting.set('view.winrategraph_height', this.state.sidebarWinrateGraphSplit)
+                this.setState({sidebarWinrateGraphSplitTransition: false})
+                window.dispatchEvent(new Event('resize'))
+            }
             this.mouseDown = false
         })
+
     }
 
     render({width, currentIndex, data}) {
@@ -43,12 +72,21 @@ class WinrateGraph extends Component {
         let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
         return h('section',
+
             {
                 ref: el => this.element = el,
                 id: 'winrategraph',
-                style: {height: winrateGraphHeight},
+                style: {
+                    transition: this.sidebarWinrateGraphSplitTransition ? null : 'none',
+                    height: this.state.sidebarWinrateGraphSplit + 'px'
+                },
                 onMouseDown: this.handleMouseDown
             },
+
+            h('div', {
+                class: 'horizontalresizer',
+                onMouseDown: this.handleHorizontalResizerWinrateMouseDown
+            }),
 
             h('svg',
                 {

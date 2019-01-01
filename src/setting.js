@@ -117,6 +117,7 @@ let defaults = {
     'view.sidebar_width': 200,
     'view.sidebar_minwidth': 100,
     'view.winrategraph_height': 60,
+    'view.winrategraph_minheight': 25,
     'infooverlay.duration': 2000,
     'window.height': 604,
     'window.minheight': 440,
