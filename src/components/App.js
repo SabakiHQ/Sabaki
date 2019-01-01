@@ -2146,12 +2146,12 @@ class App extends Component {
                     .map(x => {
                         let match = x.match(/(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*\s*$/)
                         if (match == null)
-                          return null
-                        let match2 = match[0].match(/pass/)
-                        if (match2 == null) {
-                          return [x.slice(0, match.index), match[0].split(/\s+/)]
+                            return null
+                        let matchpass = match[0].match(/pass/)
+                        if (matchpass == null) {
+                            return [x.slice(0, match.index), match[0].split(/\s+/)]
                         } else {
-                          return [x.slice(0, match.index), match[0].slice(0, match2.index).split(/\s+/)]
+                            return [x.slice(0, match.index), match[0].slice(0, matchpass.index).split(/\s+/)]
                         }
                     })
                     .filter(x => x != null)
