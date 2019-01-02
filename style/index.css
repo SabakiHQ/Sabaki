@@ -474,6 +474,15 @@ header, #bar .bar {
         overflow: hidden;
         z-index: 3;
     }
+    #winrategraph .horizontalresizer {
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        height: 5px;
+        cursor: ns-resize;
+        z-index: 10;
+    }
     #winrategraph svg {
         position: absolute;
         top: 0;
