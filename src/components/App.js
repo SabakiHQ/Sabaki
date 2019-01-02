@@ -313,6 +313,7 @@ class App extends Component {
             if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
                 this.window.setContentSize(width + widthDiff, height)
             }
+            window.dispatchEvent(new Event('resize'))
         }
 
         // Handle zoom factor
