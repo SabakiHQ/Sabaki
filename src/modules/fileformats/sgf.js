@@ -3,7 +3,7 @@ const {getId} = require('../helper')
 
 exports.meta = {
     name: 'Smart Game Format',
-    extensions: ['sgf']
+    extensions: ['sgf', 'rsgf']
 }
 
 exports.parse = function(content, onProgress = () => {}) {
