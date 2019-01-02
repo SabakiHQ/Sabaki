@@ -25,11 +25,11 @@ class WinrateGraph extends Component {
         }
     }
 
-    shouldComponentUpdate({width, currentIndex, data}) {
+    shouldComponentUpdate({width, currentIndex, data}, {height}) {
         return width !== this.props.width
-            || winrateGraphHeight !== this.state.height
             || currentIndex !== this.props.currentIndex
             || data[currentIndex] !== this.props.data[currentIndex]
+            || height !== this.state.height
     }
 
     componentDidMount() {
