@@ -331,6 +331,8 @@ class App extends Component {
             'view.show_move_colorization': 'showMoveColorization',
             'view.show_next_moves': 'showNextMoves',
             'view.show_siblings': 'showSiblings',
+            'view.show_graph': 'showGameGraph',
+            'view.show_comments': 'showCommentBox',
             'view.fuzzy_stone_placement': 'fuzzyStonePlacement',
             'view.animated_stone_placement': 'animateStonePlacement',
             'graph.grid_size': 'graphGridSize',
