@@ -16,8 +16,10 @@ class Goban extends Component {
         this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
         this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
         this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
+        this.handlePauseContinuousUpdates = this.handlePauseContinuousUpdates.bind(this)
 
         this.componentWillReceiveProps()
+        this.setState({pauseContinuousUpdates: false});
     }
 
     componentDidMount() {
@@ -33,6 +35,13 @@ class Goban extends Component {
         window.addEventListener('resize', () => {
             this.componentDidUpdate()
             this.setState({})
+        })
+
+        document.addEventListener('keydown', evt => {
+            if (!(event.ctrlKey || event.metaKey)) return
+            if (event.code == 'Space') {
+                this.handlePauseContinuousUpdates()
+            }
         })
 
         this.componentDidUpdate()
@@ -118,6 +127,10 @@ class Goban extends Component {
         }
     }
 
+    handlePauseContinuousUpdates(e) {
+        this.setState({pauseContinuousUpdates: !this.state.pauseContinuousUpdates});
+    }
+
     handleVertexMouseEnter(evt, vertex) {
         if (this.props.analysis == null) return
 
@@ -132,15 +145,48 @@ class Goban extends Component {
     }
 
     playVariation(sign, variation, sibling = false) {
+        this.setState({pauseContinuousUpdates: false});
         if (setting.get('board.variation_instant_replay')) {
-            this.variationIntervalId = true
+            if (!setting.get('board.variation_instant_replay_update_continuously')) {
+                this.setState({
+                    variation,
+                    variationSign: sign,
+                    variationSibling: sibling,
+                    variationIndex: variation.length
+                })
+                return
+            }
 
-            this.setState({
-                variation,
-                variationSign: sign,
-                variationSibling: sibling,
-                variationIndex: variation.length
-            })
+            clearInterval(this.variationIntervalId)
+
+            this.variationIntervalId = setInterval(() => {
+                if (!this.state.pauseContinuousUpdates) {
+                    let vertex = variation[0];
+                    if (vertex != null && this.props.analysis != null) {
+                        let analysisline = this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
+                        if (analysisline != null) {
+                            let nextvariation = analysisline["variation"]
+                            let nextsign = analysisline["sign"]
+                            if (nextvariation != null) {
+                                if (sign != nextsign) {
+                                    this.stopPlayingVariation()
+                                    return
+                                }
+                                if (!(helper.equals(variation,nextvariation))) {
+                                    variation = nextvariation
+                                }
+                            }
+                        }
+                    }
+                }
+
+                this.setState({
+                    variation,
+                    variationSign: sign,
+                    variationSibling: sibling,
+                    variationIndex: variation.length
+                })
+            }, setting.get('board.variation_replay_interval'))
         } else {
             clearInterval(this.variationIntervalId)
 
@@ -165,6 +211,7 @@ class Goban extends Component {
             variation: null,
             variationIndex: -1
         })
+        this.setState({pauseContinuousUpdates: false});
     }
 
     render({
