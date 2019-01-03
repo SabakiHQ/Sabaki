@@ -145,6 +145,27 @@ class Goban extends Component {
             clearInterval(this.variationIntervalId)
 
             this.variationIntervalId = setInterval(() => {
+                if (this.state.variationIndex) {
+                    if (this.state.variationIndex >= variation.length) {
+                        let vertex = variation[0];
+                        if (vertex == null) return
+                        let analysisline = this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
+                        if (analysisline == null)
+                            return
+                        let nextvariation = analysisline["variation"]
+                        let nextsign = analysisline["sign"]
+                        if (nextvariation == null) return
+                        if (nextsign != sign) return
+
+                        if (variation.length == nextvariation.length) return
+                        //if (variation != nextvariation.slice(0,variation.length)) {
+                        if (!helper.equals(variation,nextvariation.slice(0,variation.length))) {
+                            return
+                        } else {
+                            variation = nextvariation
+                        }
+                    }
+                }
                 this.setState(({variationIndex = -1}) => ({
                     variation,
                     variationSign: sign,
