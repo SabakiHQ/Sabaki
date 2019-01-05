@@ -2,6 +2,7 @@ const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const {join} = require('path')
 const setting = require('./setting')
 const updater = require('./updater')
+const logger = require('./modules/logger');
 
 let windows = []
 let openfile = null
@@ -152,6 +153,10 @@ ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
 ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
 
 app.on('window-all-closed', () => {
+    try {
+        logger.close()
+    } catch(err) {}
+
     if (process.platform !== 'darwin') {
         app.quit()
     } else {
@@ -177,6 +182,8 @@ app.on('ready', () => {
     if (setting.get('app.startup_check_updates')) {
         setTimeout(() => checkForUpdates(), setting.get('app.startup_check_updates_delay'))
     }
+
+    setTimeout(() => logger.load(), 3000)
 })
 
 app.on('activate', (evt, hasVisibleWindows) => {
@@ -201,6 +208,10 @@ process.on('uncaughtException', err => {
         `${app.getName()}’s repository on GitHub.\n\n`,
         err.stack
     ].join(''))
+
+    try {
+        logger.close()
+    } catch(err) {}
 
     process.exit(1)
 })

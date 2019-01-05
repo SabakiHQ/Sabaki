@@ -8,6 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
+const logger = remote.require('./modules/logger')
 
 class PreferencesItem extends Component {
     constructor(props) {
@@ -184,13 +185,21 @@ class PathInputItem extends Component {
         }
 
         this.handleBrowseButtonClick = evt => {
-            dialog.showOpenDialog({
-                properties: ['openFile'],
-            }, ({result}) => {
-                if (!result || result.length === 0) return
+            if (this.props.chooseGTPLogFile != null) {
+                dialog.showSaveDialog({}, ({result}) => {
+                    if (!result || result.length === 0) return
 
-                this.handlePathChange({currentTarget: {value: result[0]}})
-            })
+                    this.handlePathChange({currentTarget: {value: result}})
+                })
+            } else {
+                dialog.showOpenDialog({
+                    properties: ['openFile'],
+                }, ({result}) => {
+                    if (!result || result.length === 0) return
+
+                    this.handlePathChange({currentTarget: {value: result[0]}})
+                })
+            }
         }
 
         setting.events.on('change', ({key}) => {
@@ -228,7 +237,7 @@ class PathInputItem extends Component {
                 })
             ),
 
-            value && !fs.existsSync(value) && h('a', {class: 'invalid'},
+            value && !((this.props.chooseGTPLogFile == null && fs.existsSync(value)) || (this.props.chooseGTPLogFile != null && logger.validLogFilePathGTP())) && h('a', {class: 'invalid'},
                 h('img', {
                     src: './node_modules/octicons/build/svg/alert.svg',
                     title: 'File not found',
@@ -522,6 +531,20 @@ class EnginesTab extends Component {
 
     render({engines}) {
         return h('div', {ref: el => this.element = el, class: 'engines'},
+            h('div', {class: 'gtp-console-log'},
+                h('ul', {},
+                    h(PreferencesItem, {
+                        id: 'gtp.console_log_enabled',
+                        text: 'Enable logging for the GTP console:'
+                    }),
+
+                    h(PathInputItem, {
+                        id: 'gtp.console_log_path',
+                        text: '',
+                        chooseGTPLogFile: true
+                    })
+                )
+            ),
             h('div', {class: 'engines-list'},
                 h('ul', {}, engines.map(({name, path, args, commands}, id) =>
                     h(EngineItem, {
@@ -577,6 +600,9 @@ class PreferencesDrawer extends Component {
             let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
             setting.set('engines.list', engines)
+
+            logger.validLogFilePathGTP()
+            logger.updateLogFilePathGTP()
 
             // Reset tab selection
 

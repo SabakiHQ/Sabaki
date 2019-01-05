@@ -1194,13 +1194,46 @@ header, #bar .bar {
         background: #1a1a1a;
 }
 
+.gtp-console-log {
+    border: 1px solid #111;
+    margin: 0 0 0 0;
+}
+    .gtp-console-log ul {
+        margin: 0 0 0 0 !important;
+        list-style: none;
+    }
+    .gtp-console-log li {
+        display:inline-block;
+        position: relative;
+        margin: 0 0 0 0 !important;
+        padding: 0px;
+    }
+    .gtp-console-log a {
+        display: inline-block;
+        position: relative;
+        top: 2px;
+        margin-left: 10px;
+        opacity: .5;
+        filter: invert(100%);
+        transition: opacity .2s;
+    }
+    .gtp-console-log li:nth-child(2) {
+        width: calc(100% - 75px - 16em) !important;
+        margin-left: 10px !important;
+    }
+    .gtp-console-log li:nth-child(2) input {
+        width: calc(100% - 50px) !important;
+}
+
+
+
 .engines-list, .properties-list {
         border: 1px solid #111;
         background: #1a1a1a;
         overflow: auto;
     }
     .engines-list {
-        height: 21em;
+        height: 19em;
         margin: 1.5em 0;
     }
     .engines-list ul {
