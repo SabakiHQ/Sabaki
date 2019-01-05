@@ -1225,8 +1225,6 @@ header, #bar .bar {
         width: calc(100% - 50px) !important;
 }
 
-
-
 .engines-list, .properties-list {
         border: 1px solid #111;
         background: #1a1a1a;
