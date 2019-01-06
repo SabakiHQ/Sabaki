@@ -57,7 +57,8 @@
       "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
       "!data/shapes.sgf",
       "!src/components${/*}",
-      "!src/modules${/*}"
+      "!src/modules${/*}",
+      "src/modules/logger.js"
     ]
   },
   "dependencies": {
