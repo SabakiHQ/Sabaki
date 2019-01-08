@@ -8,7 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const logger = remote.require('./modules/logger')
+const logger = remote.require('./logger')
 
 class PreferencesItem extends Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 const {app, dialog, remote} = require('electron')
 const fs = require('fs');
-const setting = require('../setting')
+const setting = require('./setting')
 const winston = require('winston');
 const path = require('path')
 

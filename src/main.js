@@ -2,7 +2,7 @@ const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const {join} = require('path')
 const setting = require('./setting')
 const updater = require('./updater')
-const logger = require('./modules/logger');
+const logger = require('./logger');
 
 let windows = []
 let openfile = null

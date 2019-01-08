@@ -32,7 +32,7 @@ const helper = require('../modules/helper')
 const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const logger = remote.require('./modules/logger')
+const logger = remote.require('./logger')
 
 class App extends Component {
     constructor() {
