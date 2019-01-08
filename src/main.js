@@ -182,8 +182,6 @@ app.on('ready', () => {
     if (setting.get('app.startup_check_updates')) {
         setTimeout(() => checkForUpdates(), setting.get('app.startup_check_updates_delay'))
     }
-
-    setTimeout(() => logger.load(), 3000)
 })
 
 app.on('activate', (evt, hasVisibleWindows) => {

@@ -4,7 +4,7 @@ const setting = require('./setting')
 const winston = require('winston');
 const path = require('path')
 
-let logger = {}
+let logger = null
 let logFileGTP = {}
 let staleLogFilePath = false
 
@@ -147,26 +147,27 @@ exports.validLogFilePathGTP = function() {
     }
 }
 
-exports.load = function() {
-    if(setting.get('gtp.console_log_timestamps')) {
-        logger = winston.createLogger({
-            format: winston.format.combine(
-                winston.format.timestamp(),
-                winston.format.printf(info => {
-                    return `\[${info.timestamp}\] ${info.message}`;
-                })),
-            handleExceptions: false,
-            exitOnError: false});
-    } else {
-        logger = winston.createLogger({
-            format: winston.format.combine(
-                winston.format.printf(info => {
-                    return `${info.message}`;
-                })),
-            handleExceptions: false,
-            exitOnError: false});
+exports.loadOnce = function() {
+    if (logger == null) {
+        if(setting.get('gtp.console_log_timestamps')) {
+            logger = winston.createLogger({
+                format: winston.format.combine(
+                    winston.format.timestamp(),
+                    winston.format.printf(info => {
+                        return `\[${info.timestamp}\] ${info.message}`;
+                    })),
+                handleExceptions: false,
+                exitOnError: false});
+        } else {
+            logger = winston.createLogger({
+                format: winston.format.combine(
+                    winston.format.printf(info => {
+                        return `${info.message}`;
+                    })),
+                handleExceptions: false,
+                exitOnError: false});
+        }
     }
-
     if (!exports.validLogFilePathGTP()) {
         let loggingEnabled = setting.get('gtp.console_log_enabled')
         if (loggingEnabled)

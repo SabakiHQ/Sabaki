@@ -2039,6 +2039,8 @@ class App extends Component {
             return
         }
 
+        logger.loadOnce()
+
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
