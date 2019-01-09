@@ -8,7 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const logger = remote.require('./logger')
+const logger = require('../../modules/logger')
 
 class PreferencesItem extends Component {
     constructor(props) {
@@ -601,8 +601,7 @@ class PreferencesDrawer extends Component {
 
             setting.set('engines.list', engines)
 
-            logger.validLogFilePathGTP()
-            logger.updateLogFilePathGTP()
+            sabaki.window.webContents.send('updateLogger')
 
             // Reset tab selection
 

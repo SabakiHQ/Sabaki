@@ -1,6 +1,7 @@
-const {app, dialog, remote} = require('electron')
+const {remote} = require('electron')
 const fs = require('fs');
-const setting = require('./setting')
+const setting = remote.require('./setting')
+const dialog = require('./dialog')
 const winston = require('winston');
 const path = require('path')
 
@@ -28,7 +29,7 @@ exports.writeToLogFileGTP = function(enginestream) {
             GTPText = GTPText + enginestream.stdout
         }
 
-        GTPText = ((enginestream.winid).toString()) + "." + ((enginestream.sign === 0) ? "B" : "W" ) +
+        GTPText = (sabaki.window.webContents.getOSProcessId().toString()) + " : " + ((enginestream.sign === 0) ? "B" : "W" ) +
             (enginestream.name != null ? " <" + enginestream.name + ">" : " <>") + " " +
             GTPText
 
@@ -147,6 +148,22 @@ exports.validLogFilePathGTP = function() {
     }
 }
 
+exports.validateLoggerSettings = function() {
+  if (!exports.validLogFilePathGTP()) {
+      let loggingEnabled = setting.get('gtp.console_log_enabled')
+      if (loggingEnabled) {
+          dialog.showMessageBox([
+              'You have an invalid log file path for GTP console logging in your settings.\n\n',
+              'Please change the path for the log file in your Preferences or disable GTP console logging.',
+              ].join(''), 'warning'
+          )
+      }
+      return false
+  } else {
+      return true
+  }
+}
+
 exports.loadOnce = function() {
     if (logger == null) {
         if(setting.get('gtp.console_log_timestamps')) {
@@ -168,17 +185,15 @@ exports.loadOnce = function() {
                 exitOnError: false});
         }
     }
-    if (!exports.validLogFilePathGTP()) {
-        let loggingEnabled = setting.get('gtp.console_log_enabled')
-        if (loggingEnabled)
-            dialog.showErrorBox(`${app.getName()} v${app.getVersion()}`, [
-                'You have an invalid log file path for GTP console logging in your settings.\n\n',
-                'Please change the path for the log file in your Preferences or disable GTP console logging.\n\n',
-                'GTP console logging will not work properly until this problem is corrected.'
-            ].join(''))
-    } else {
+    if (exports.validateLoggerSettings()) {
         exports.updateLogFilePathGTP()
     }
+}
+
+exports.unload = function() {
+    try {
+        logger.close()
+    } catch(err) {}
 }
 
 exports.close = function() {

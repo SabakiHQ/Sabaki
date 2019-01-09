@@ -1195,7 +1195,7 @@ header, #bar .bar {
 }
 
 .gtp-console-log {
-    border: 1px solid #111;
+    border: none;
     margin: 0 0 0 0;
 }
     .gtp-console-log ul {

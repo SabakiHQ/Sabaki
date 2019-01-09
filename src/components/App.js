@@ -32,7 +32,7 @@ const helper = require('../modules/helper')
 const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const logger = remote.require('./logger')
+const logger = require('../modules/logger')
 
 class App extends Component {
     constructor() {
@@ -124,7 +124,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, boardmatcher, dialog,
-            fileformats, gametree, helper, setting, sound}
+            fileformats, gametree, helper, setting, sound, logger}
 
         // Bind state to settings
 
@@ -247,6 +247,14 @@ class App extends Component {
             }
         })
 
+        ipcRenderer.on('updateLogger', (evt, ...args) => {
+            if (logger.validateLoggerSettings()) {
+                if (this.attachedEngineSyncers.some(x => x != null)) {
+                    logger.updateLogFilePathGTP()
+                }
+            }
+        })
+
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
@@ -257,6 +265,9 @@ class App extends Component {
             setTimeout(() => {
                 if (this.askForSave()) {
                     this.detachEngines()
+                    try {
+                        logger.close()
+                    } catch(err) {}
                     this.closeWindow = true
                     this.window.close()
                 }
