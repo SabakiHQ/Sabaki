@@ -255,6 +255,12 @@ class App extends Component {
             }
         })
 
+        ipcRenderer.on('closeLogger', (evt, ...args) => {
+            try {
+                logger.close()
+            } catch(err) {}
+        })
+
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
