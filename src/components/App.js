@@ -248,17 +248,17 @@ class App extends Component {
         })
 
         ipcRenderer.on('updateLogger', (evt, ...args) => {
-            if (logger.validateLoggerSettings()) {
-                if (this.attachedEngineSyncers.some(x => x != null)) {
-                    logger.updateLogFilePathGTP()
+            try {
+                if (logger.validateLoggerSettings()) {
+                    if (this.attachedEngineSyncers.some(x => x != null)) {
+                        logger.updateLogFilePathGTP()
+                    }
                 }
-            }
+            } catch (err) {}
         })
 
         ipcRenderer.on('closeLogger', (evt, ...args) => {
-            try {
-                logger.close()
-            } catch(err) {}
+            try {logger.close()} catch (err) {}
         })
 
         // Handle window closing
@@ -271,9 +271,7 @@ class App extends Component {
             setTimeout(() => {
                 if (this.askForSave()) {
                     this.detachEngines()
-                    try {
-                        logger.close()
-                    } catch(err) {}
+                    try {logger.close()} catch (err) {}
                     this.closeWindow = true
                     this.window.close()
                 }
@@ -470,6 +468,8 @@ class App extends Component {
 
         await this.loadGameTrees([emptyTree], {suppressAskForSave})
 
+        try {logger.rotateLog()} catch (err) {}
+
         if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
     }
@@ -522,6 +522,8 @@ class App extends Component {
             if (setting.get('game.goto_end_after_loading')) {
                 this.goToEnd()
             }
+
+            try {logger.rotateLog()} catch (err) {}
         }
 
         this.setBusy(false)
@@ -551,6 +553,8 @@ class App extends Component {
 
         if (success) {
             await this.loadGameTrees(gameTrees, {suppressAskForSave})
+
+            try {logger.rotateLog()} catch (err) {}
         }
 
         this.setBusy(false)
@@ -2056,7 +2060,7 @@ class App extends Component {
             return
         }
 
-        logger.loadOnce()
+        try {logger.loadOnce()} catch (err) {}
 
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
@@ -2077,7 +2081,7 @@ class App extends Component {
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
                         'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch(err) {}
+                    })} catch (err) {}
                     if (evt.command.name === 'list_commands') {
                         evt.getResponse().then(response =>
                             this.setState(({engineCommands}) => {
@@ -2098,7 +2102,7 @@ class App extends Component {
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
                         'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch(err) {}
+                    })} catch (err) {}
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
                             sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
@@ -2115,7 +2119,7 @@ class App extends Component {
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
                         'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch(err) {}
+                    })} catch (err) {}
                 })
 
                 syncer.controller.on('stopped', () => this.setState(({engineCommands}) => {
@@ -2124,7 +2128,7 @@ class App extends Component {
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
                         'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch(err) {}
+                    })} catch (err) {}
                     let j = this.attachedEngineSyncers.indexOf(syncer)
                     engineCommands[j] = []
 
@@ -2153,7 +2157,7 @@ class App extends Component {
                     'sign': this.attachedEngineSyncers.indexOf(syncer),
                     'winid': this.window.id,
                     'name': syncer.engine.name
-                })} catch(err) {}
+                })} catch (err) {}
                 syncer.controller.kill()
             }
         }
@@ -2194,7 +2198,7 @@ class App extends Component {
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
                 'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch(err) {}
+            })} catch (err) {}
 
             // Parse analysis info
 
@@ -2258,7 +2262,7 @@ class App extends Component {
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
                 'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch(err) {}
+            })} catch (err) {}
             updateEntry({
             response: {internal: true, content: 'connection failed'},
             waiting: false
@@ -2356,7 +2360,7 @@ class App extends Component {
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
                 'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch(err) {}
+            })} catch (err) {}
         }
 
         if (removeAnalysisData) this.setState({analysisTreePosition: null, analysis: null})

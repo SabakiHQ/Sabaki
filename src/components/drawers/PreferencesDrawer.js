@@ -185,11 +185,13 @@ class PathInputItem extends Component {
         }
 
         this.handleBrowseButtonClick = evt => {
-            if (this.props.chooseGTPLogFile != null) {
-                dialog.showSaveDialog({}, ({result}) => {
-                    if (!result || result.length === 0) return
-
-                    this.handlePathChange({currentTarget: {value: result}})
+            if (this.props.chooseGTPLogDir != null) {
+                dialog.showOpenDialog({
+                    properties: ['openDirectory', 'createDirectory'],
+                    title: 'Choose directory for log files'
+                    }, ({result}) => {
+                        if (!result || result.length === 0) return
+                        this.handlePathChange({currentTarget: {value: result[0]}})
                 })
             } else {
                 dialog.showOpenDialog({
@@ -237,10 +239,10 @@ class PathInputItem extends Component {
                 })
             ),
 
-            value && !((this.props.chooseGTPLogFile == null && fs.existsSync(value)) || (this.props.chooseGTPLogFile != null && logger.validLogFilePathGTP())) && h('a', {class: 'invalid'},
+            value && !((this.props.chooseGTPLogDir == null && fs.existsSync(value)) || (this.props.chooseGTPLogDir != null && logger.validLogFilePathGTP())) && h('a', {class: 'invalid'},
                 h('img', {
                     src: './node_modules/octicons/build/svg/alert.svg',
-                    title: 'File not found',
+                    title: ((this.props.chooseGTPLogDir == null) ? 'File' : 'Directory') + ' not found',
                     height: 14
                 })
             )
@@ -535,13 +537,13 @@ class EnginesTab extends Component {
                 h('ul', {},
                     h(PreferencesItem, {
                         id: 'gtp.console_log_enabled',
-                        text: 'Enable logging for the GTP console:'
+                        text: 'Enable GTP logging to directory:'
                     }),
 
                     h(PathInputItem, {
                         id: 'gtp.console_log_path',
                         text: '',
-                        chooseGTPLogFile: true
+                        chooseGTPLogDir: true
                     })
                 )
             ),

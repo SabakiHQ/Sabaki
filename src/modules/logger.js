@@ -6,13 +6,12 @@ const winston = require('winston');
 const path = require('path')
 
 let logger = null
-let logFileGTP = {}
+let logFileNameGTP = null
 let staleLogFilePath = false
 
 exports.writeToLogFileGTP = function(enginestream) {
     let GTPText = ""
     try {
-
         let loggingEnabled = setting.get('gtp.console_log_enabled')
         if (!loggingEnabled) { return }
 
@@ -29,12 +28,12 @@ exports.writeToLogFileGTP = function(enginestream) {
             GTPText = GTPText + enginestream.stdout
         }
 
-        GTPText = (sabaki.window.webContents.getOSProcessId().toString()) + " : " + ((enginestream.sign === 0) ? "B" : "W" ) +
+        GTPText = ((enginestream.sign === 0) ? "B" : "W" ) +
             (enginestream.name != null ? " <" + enginestream.name + ">" : " <>") + " " +
             GTPText
 
         logger.log('info',GTPText)
-    } catch(err) {}
+    } catch (err) {}
 }
 
 exports.clearLoggers = function() {
@@ -43,28 +42,61 @@ exports.clearLoggers = function() {
     } catch (err) {}
 }
 
+getFileTimestamp = function() {
+    let now = new Date();
+    let t = {};
+    t['mon'] = 1 + now.getMonth();
+    t['day'] = now.getDate();
+    t['hour'] = now.getHours();
+    t['min'] = now.getMinutes();
+    t['sec'] = now.getSeconds();
+    for(let idx in t) {
+        if (t[idx] < 10) {
+            t[idx] = "0" + t[idx]
+        }
+    }
+    t['year'] = now.getFullYear();
+    return t['year'] + "-" + t['mon'] + "-" + t['day'] + "-" + t['hour'] + "-" + t['min'] + "-" + t['sec'];
+}
+
 exports.updateLogFilePathGTP = function() {
     if (!staleLogFilePath)
         return
 
-    let newLogFilePathGTP = setting.get('gtp.console_log_path')
-    let loggingEnabled = setting.get('gtp.console_log_enabled')
+    let newLogFileDir = null;
+    let loggingEnabled = null;
+    try {
+        // remove trailing separators and normalize
+        newLogFileDir = path.resolve(setting.get('gtp.console_log_path'))
+        loggingEnabled = setting.get('gtp.console_log_enabled')
+
+    } catch (err) {}
+
     staleLogFilePath = false
 
-    // winston drops the trailing separator, so here we can use path to compare
-    let newLogFileName = path.basename(newLogFilePathGTP)
-    let newLogFileDir = path.dirname(newLogFilePathGTP)
+    let newLogFileName = null
+    if (logFileNameGTP == null) {
+        // generate a new log file name
+        newLogFileName = "sabaki" + "_" +
+            getFileTimestamp() + "_" +
+            (sabaki.window.webContents.getOSProcessId().toString()) +
+            ".log"
+    } else {
+        newLogFileName = logFileNameGTP
+    }
 
     try {
-        if (loggingEnabled && (newLogFilePathGTP != null)) {
+        if ((loggingEnabled != null) && (newLogFileDir != null) && loggingEnabled) {
+            let newLogFilePathGTP = path.join(newLogFileDir, newLogFileName)
             let matchingLog = logger.transports.find(transport => {
-                return (transport.filename === newLogFileName) && (transport.dirname === newLogFileDir)
+                return (transport.filename === newLogFileName) && (path.resolve(transport.dirname) === newLogFileDir)
             });
             if (matchingLog != null) {
                 return
             }
+            logFileNameGTP = newLogFileName
             let notMatchingLog = logger.transports.find(transport => {
-                return (transport.filename !== newLogFileName) || (transport.dirname !== newLogFileDir)
+                return (transport.filename !== newLogFileName) || (path.resolve(transport.dirname) !== newLogFileDir)
             });
             logger.add(new winston.transports.File({ filename: newLogFilePathGTP }))
             if (notMatchingLog != null) {
@@ -75,14 +107,12 @@ exports.updateLogFilePathGTP = function() {
 }
 
 exports.validLogFilePathGTP = function() {
-    /* Verify any path to either a writable & regular file, or
-    verify a path to a file that doesn't exist, but whose parent directory is writable */
+    /* Verify any path to directory is writable */
 
     let newLogFilePathGTP = setting.get('gtp.console_log_path')
     let loggingEnabled = setting.get('gtp.console_log_enabled')
     // For GUI don't show a warning when logging is disabled AND the path is empty
     if (newLogFilePathGTP === null) {
-        exports.clearLoggers()
         if (!loggingEnabled) {
             staleLogFilePath = false
             return true
@@ -92,76 +122,43 @@ exports.validLogFilePathGTP = function() {
         }
     }
 
-    // Path doesn't care about separators when getting the directory, but we do for this case
-    let newLogFileName = null;
-    let lastsep = newLogFilePathGTP.lastIndexOf(path.sep)
-    if (lastsep == -1) {
-        lastsep = 0
-    } else {
-        lastsep++
-    }
-
-    // case where no filename (but still has trailing slash)
-    newLogFileName = newLogFilePathGTP.slice(lastsep)
-    if (newLogFileName === null || newLogFileName === "") {
-        exports.clearLoggers()
-        staleLogFilePath = false
-        return false
-    }
-
     let fileStats = null
     try {
         fileStats = fs.statSync(newLogFilePathGTP)
     } catch (err) {}
 
-    // if fileStats null: either file, folder, or both don't exist
+    // if fileStats null, path doesnt exist
     if (fileStats != null) {
-        if (fileStats.isFile()) {
+        if (fileStats.isDirectory()) {
             try {
                 fs.accessSync(newLogFilePathGTP, fs.W_OK)
                 staleLogFilePath = true
                 return true
             } catch (err) {}
         }
-        // Path exists but we can't write to the file, or path is not a file
+        // Path exists, either no write permissions to directory, or path is not a directory
         staleLogFilePath = true
         return false
-    }
-
-    // Only valid possibility left is if directory is valid & writable and file doesn't exist
-    let newLogFileDir = null
-    let canWriteToLogDir = false
-
-    try {
-        newLogFileDir = newLogFilePathGTP.slice(0, lastsep)
-        fs.accessSync(newLogFileDir, fs.W_OK)
-        canWriteToLogDir = true;
-    } catch (err) {}
-
-    if (canWriteToLogDir) {
-        staleLogFilePath = true
-        return true
     } else {
-        exports.clearLoggers()
         staleLogFilePath = false
         return false
     }
 }
 
 exports.validateLoggerSettings = function() {
-  if (!exports.validLogFilePathGTP()) {
-      let loggingEnabled = setting.get('gtp.console_log_enabled')
-      if (loggingEnabled) {
-          dialog.showMessageBox([
-              'You have an invalid log file path for GTP console logging in your settings.\n\n',
-              'Please change the path for the log file in your Preferences or disable GTP console logging.',
-              ].join(''), 'warning'
-          )
-      }
-      return false
-  } else {
-      return true
-  }
+    if (!exports.validLogFilePathGTP()) {
+        let loggingEnabled = setting.get('gtp.console_log_enabled')
+        if (loggingEnabled) {
+            dialog.showMessageBox([
+                'You have an invalid log folder for GTP console logging in your settings.\n\n',
+                'Please make sure the log directory is valid & writable or disable GTP console logging.',
+                ].join(''), 'warning'
+            )
+        }
+        return false
+    } else {
+        return true
+    }
 }
 
 exports.loadOnce = function() {
@@ -169,7 +166,7 @@ exports.loadOnce = function() {
         if(setting.get('gtp.console_log_timestamps')) {
             logger = winston.createLogger({
                 format: winston.format.combine(
-                    winston.format.timestamp(),
+                    winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss.SSS'}),
                     winston.format.printf(info => {
                         return `\[${info.timestamp}\] ${info.message}`;
                     })),
@@ -190,14 +187,19 @@ exports.loadOnce = function() {
     }
 }
 
+exports.rotateLog = function() {
+    // On next engine attach, we will use a new log file
+    logFileNameGTP = null;
+}
+
 exports.unload = function() {
     try {
         logger.close()
-    } catch(err) {}
+    } catch (err) {}
 }
 
 exports.close = function() {
     try {
         logger.close()
-    } catch(err) {}
+    } catch (err) {}
 }

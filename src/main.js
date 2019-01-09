@@ -208,10 +208,10 @@ process.on('uncaughtException', err => {
             for (i = 0; i < windows.length; i++) {
                 try {
                     windows[i].webContents.send('closeLogger')
-                } catch(err) {}
+                } catch (err) {}
             }
         }
-    } catch(err) {}
+    } catch (err) {}
 
     process.exit(1)
 })
