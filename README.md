@@ -51,6 +51,8 @@ A big thank you to these lovely people:
 - Michael Noll
 - John Hager
 - David Göbel
+- Dominik Olszewski
+- Philippe Fanaro
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
