@@ -603,7 +603,13 @@ class PreferencesDrawer extends Component {
 
             setting.set('engines.list', engines)
 
-            sabaki.window.webContents.send('updateLogger')
+            try {
+                if (sabaki.modules.logger.validateLoggerSettings()) {
+                    if (sabaki.attachedEngineSyncers.some(x => x != null)) {
+                        sabaki.modules.logger.updateLogFilePathGTP()
+                    }
+                }
+            } catch (err) {}
 
             // Reset tab selection
 

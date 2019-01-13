@@ -247,16 +247,6 @@ class App extends Component {
             }
         })
 
-        ipcRenderer.on('updateLogger', (evt, ...args) => {
-            try {
-                if (logger.validateLoggerSettings()) {
-                    if (this.attachedEngineSyncers.some(x => x != null)) {
-                        logger.updateLogFilePathGTP()
-                    }
-                }
-            } catch (err) {}
-        })
-
         ipcRenderer.on('closeLogger', (evt, ...args) => {
             try {logger.close()} catch (err) {}
         })
