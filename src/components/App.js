@@ -555,9 +555,9 @@ class App extends Component {
     }
 
     async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
-        if (!suppressAskForSave && !this.askForSave()) return
-
         try {logger.rotateLog()} catch (err) {}
+
+        if (!suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
