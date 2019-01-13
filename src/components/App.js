@@ -468,8 +468,6 @@ class App extends Component {
 
         await this.loadGameTrees([emptyTree], {suppressAskForSave})
 
-        try {logger.rotateLog()} catch (err) {}
-
         if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
     }
@@ -522,8 +520,6 @@ class App extends Component {
             if (setting.get('game.goto_end_after_loading')) {
                 this.goToEnd()
             }
-
-            try {logger.rotateLog()} catch (err) {}
         }
 
         this.setBusy(false)
@@ -553,8 +549,6 @@ class App extends Component {
 
         if (success) {
             await this.loadGameTrees(gameTrees, {suppressAskForSave})
-
-            try {logger.rotateLog()} catch (err) {}
         }
 
         this.setBusy(false)
@@ -562,6 +556,8 @@ class App extends Component {
 
     async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
+
+        try {logger.rotateLog()} catch (err) {}
 
         this.setBusy(true)
         if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
