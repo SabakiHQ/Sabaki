@@ -32,7 +32,7 @@ const helper = require('../modules/helper')
 const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const logger = require('../modules/logger')
+const gtplogger = require('../modules/gtplogger')
 
 class App extends Component {
     constructor() {
@@ -124,7 +124,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, boardmatcher, dialog,
-            fileformats, gametree, helper, setting, sound, logger}
+            fileformats, gametree, helper, setting, sound, gtplogger}
 
         // Bind state to settings
 
@@ -247,10 +247,6 @@ class App extends Component {
             }
         })
 
-        ipcRenderer.on('closeLogger', (evt, ...args) => {
-            try {logger.close()} catch (err) {}
-        })
-
         // Handle window closing
 
         window.addEventListener('beforeunload', evt => {
@@ -261,7 +257,7 @@ class App extends Component {
             setTimeout(() => {
                 if (this.askForSave()) {
                     this.detachEngines()
-                    try {logger.close()} catch (err) {}
+                    gtplogger.close()
                     this.closeWindow = true
                     this.window.close()
                 }
@@ -545,7 +541,7 @@ class App extends Component {
     }
 
     async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
-        try {logger.rotateLog()} catch (err) {}
+        gtplogger.rotate()
 
         if (!suppressAskForSave && !this.askForSave()) return
 
@@ -2046,7 +2042,7 @@ class App extends Component {
             return
         }
 
-        try {logger.loadOnce()} catch (err) {}
+        gtplogger.loadOnce()
 
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
@@ -2061,13 +2057,12 @@ class App extends Component {
                 this.attachedEngineSyncers[i] = syncer
 
                 syncer.controller.on('command-sent', evt => {
-                    try {logger.writeToLogFileGTP({
+                    gtplogger.write({
                         'stdin': evt.command.name,
                         'args': evt.command.args,
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch (err) {}
+                    })
                     if (evt.command.name === 'list_commands') {
                         evt.getResponse().then(response =>
                             this.setState(({engineCommands}) => {
@@ -2083,12 +2078,11 @@ class App extends Component {
                 })
 
                 syncer.controller.on('stderr', ({content}) => {
-                    try {logger.writeToLogFileGTP({
+                    gtplogger.write({
                         'stderr': content,
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch (err) {}
+                    })
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
                             sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
@@ -2100,21 +2094,19 @@ class App extends Component {
                 })
 
                 syncer.controller.on('started', () => {
-                    try {logger.writeToLogFileGTP({
+                    gtplogger.write({
                         'stdout': "Sabaki: Engine Started",
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch (err) {}
+                    })
                 })
 
                 syncer.controller.on('stopped', () => this.setState(({engineCommands}) => {
-                    try {logger.writeToLogFileGTP({
+                    gtplogger.write({
                         'stdout': "Sabaki: Engine Stopped",
                         'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'winid': this.window.id,
                         'name': engines[i].name
-                    })} catch (err) {}
+                    })
                     let j = this.attachedEngineSyncers.indexOf(syncer)
                     engineCommands[j] = []
 
@@ -2138,12 +2130,11 @@ class App extends Component {
     suspendEngines() {
         for (let syncer of this.attachedEngineSyncers) {
             if (syncer != null) {
-                try {logger.writeToLogFileGTP({
+                gtplogger.write({
                     'stdout': "Sabaki: Engine Suspending",
                     'sign': this.attachedEngineSyncers.indexOf(syncer),
-                    'winid': this.window.id,
                     'name': syncer.engine.name
-                })} catch (err) {}
+                })
                 syncer.controller.kill()
             }
         }
@@ -2179,12 +2170,11 @@ class App extends Component {
                 waiting: !end
             })
 
-            try {logger.writeToLogFileGTP({
+            gtplogger.write({
                 'stdout': line,
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch (err) {}
+            })
 
             // Parse analysis info
 
@@ -2243,12 +2233,11 @@ class App extends Component {
 
         getResponse()
         .catch(_ => {
-            try {logger.writeToLogFileGTP({
+            gtplogger.write({
                 'stdout': "Sabaki: Connection Failed",
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch (err) {}
+            })
             updateEntry({
             response: {internal: true, content: 'connection failed'},
             waiting: false
@@ -2341,12 +2330,11 @@ class App extends Component {
             if (syncer == null || syncer.controller.process == null) continue
 
             syncer.controller.process.stdin.write('\n')
-            try {logger.writeToLogFileGTP({
+            gtplogger.write({
                 'stdout': "Sabaki: Stopping Analysis",
                 'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'winid': this.window.id,
                 'name': syncer.engine.name
-            })} catch (err) {}
+            })
         }
 
         if (removeAnalysisData) this.setState({analysisTreePosition: null, analysis: null})

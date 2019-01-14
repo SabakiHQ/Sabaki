@@ -202,16 +202,5 @@ process.on('uncaughtException', err => {
         err.stack
     ].join(''))
 
-    try {
-        if (windows != null) {
-            var i;
-            for (i = 0; i < windows.length; i++) {
-                try {
-                    windows[i].webContents.send('closeLogger')
-                } catch (err) {}
-            }
-        }
-    } catch (err) {}
-
     process.exit(1)
 })

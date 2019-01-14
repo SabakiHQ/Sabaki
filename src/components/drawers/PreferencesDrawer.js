@@ -8,7 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const logger = require('../../modules/logger')
+const gtplogger = require('../../modules/gtplogger')
 
 class PreferencesItem extends Component {
     constructor(props) {
@@ -239,12 +239,16 @@ class PathInputItem extends Component {
                 })
             ),
 
-            value && !((this.props.chooseGTPLogDir == null && fs.existsSync(value)) || (this.props.chooseGTPLogDir != null && logger.validLogFilePathGTP())) && h('a', {class: 'invalid'},
-                h('img', {
-                    src: './node_modules/octicons/build/svg/alert.svg',
-                    title: ((this.props.chooseGTPLogDir == null) ? 'File' : 'Directory') + ' not found',
-                    height: 14
-                })
+            value &&
+                !((this.props.chooseGTPLogDir == null && fs.existsSync(value)) ||
+                    (this.props.chooseGTPLogDir != null && gtplogger.validPath())) &&
+                h('a', {class: 'invalid'},
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/alert.svg',
+                        title: ((this.props.chooseGTPLogDir == null) ?
+                            'File' : 'Directory') + ' not found',
+                        height: 14
+                    })
             )
         ))
     }
@@ -603,13 +607,11 @@ class PreferencesDrawer extends Component {
 
             setting.set('engines.list', engines)
 
-            try {
-                if (sabaki.modules.logger.validateLoggerSettings()) {
-                    if (sabaki.attachedEngineSyncers.some(x => x != null)) {
-                        sabaki.modules.logger.updateLogFilePathGTP()
-                    }
+            if (sabaki.modules.gtplogger.validate()) {
+                if (sabaki.attachedEngineSyncers.some(x => x != null)) {
+                    sabaki.modules.gtplogger.updatePath()
                 }
-            } catch (err) {}
+            }
 
             // Reset tab selection
 
