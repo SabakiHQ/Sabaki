@@ -79,7 +79,6 @@ let defaults = {
     'gtp.auto_genmove': true,
     'gtp.console_log_enabled': false,
     'gtp.console_log_path': null,
-    'gtp.console_log_timestamps': true,
     'gtp.engine_quit_timeout': 3000,
     'gtp.move_delay': 300,
     'gtp.start_game_after_attach': true,

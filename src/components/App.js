@@ -2058,10 +2058,12 @@ class App extends Component {
 
                 syncer.controller.on('command-sent', evt => {
                     gtplogger.write({
-                        'stdin': evt.command.name,
-                        'args': evt.command.args,
-                        'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'name': engines[i].name
+                        'type': 'stdin',
+                        'message': evt.command.name + ((args == null) ?
+                            '' : " " + evt.command.args.join(" ")),
+                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                            1 : -1,
+                        'engine': engines[i].name
                     })
                     if (evt.command.name === 'list_commands') {
                         evt.getResponse().then(response =>
@@ -2079,9 +2081,11 @@ class App extends Component {
 
                 syncer.controller.on('stderr', ({content}) => {
                     gtplogger.write({
-                        'stderr': content,
-                        'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'name': engines[i].name
+                        'type': 'stderr',
+                        'message': content,
+                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                            1 : -1,
+                        'engine': engines[i].name
                     })
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
@@ -2095,17 +2099,21 @@ class App extends Component {
 
                 syncer.controller.on('started', () => {
                     gtplogger.write({
-                        'stdout': "Sabaki: Engine Started",
-                        'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'name': engines[i].name
+                        'type': 'meta',
+                        'message': "Engine Started",
+                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                            1 : -1,
+                        'engine': engines[i].name
                     })
                 })
 
                 syncer.controller.on('stopped', () => this.setState(({engineCommands}) => {
                     gtplogger.write({
-                        'stdout': "Sabaki: Engine Stopped",
-                        'sign': this.attachedEngineSyncers.indexOf(syncer),
-                        'name': engines[i].name
+                        'type': 'meta',
+                        'message': "Engine Stopped",
+                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                            1 : -1,
+                        'engine': engines[i].name
                     })
                     let j = this.attachedEngineSyncers.indexOf(syncer)
                     engineCommands[j] = []
@@ -2131,9 +2139,11 @@ class App extends Component {
         for (let syncer of this.attachedEngineSyncers) {
             if (syncer != null) {
                 gtplogger.write({
-                    'stdout': "Sabaki: Engine Suspending",
-                    'sign': this.attachedEngineSyncers.indexOf(syncer),
-                    'name': syncer.engine.name
+                    'type': 'meta',
+                    'message': "Engine Suspending",
+                    'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                        1 : -1,
+                    'engine': syncer.engine.name
                 })
                 syncer.controller.kill()
             }
@@ -2171,9 +2181,11 @@ class App extends Component {
             })
 
             gtplogger.write({
-                'stdout': line,
-                'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'name': syncer.engine.name
+                'type': 'stdout',
+                'message': line,
+                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                    1 : -1,
+                'engine': syncer.engine.name
             })
 
             // Parse analysis info
@@ -2234,9 +2246,11 @@ class App extends Component {
         getResponse()
         .catch(_ => {
             gtplogger.write({
-                'stdout': "Sabaki: Connection Failed",
-                'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'name': syncer.engine.name
+                'type': 'meta',
+                'message': "Connection Failed",
+                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                    1 : -1,
+                'engine': syncer.engine.name
             })
             updateEntry({
             response: {internal: true, content: 'connection failed'},
@@ -2331,9 +2345,11 @@ class App extends Component {
 
             syncer.controller.process.stdin.write('\n')
             gtplogger.write({
-                'stdout': "Sabaki: Stopping Analysis",
-                'sign': this.attachedEngineSyncers.indexOf(syncer),
-                'name': syncer.engine.name
+                'type': 'meta',
+                'message': "Stopping Analysis",
+                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
+                    1 : -1,
+                'engine': syncer.engine.name
             })
         }
 

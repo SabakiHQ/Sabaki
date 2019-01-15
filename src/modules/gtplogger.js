@@ -5,52 +5,72 @@ const dialog = require('./dialog')
 const winston = require('winston');
 const path = require('path')
 
-let gtplogger = null
 let filename = null
 let stalePath = false
 
+let winstonLogger = winston.createLogger({
+    format: winston.format.combine(
+        winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss.SSS'}),
+        winston.format.printf(info => {
+            return `\[${info.timestamp}\] ${info.message}`;
+        })),
+    handleExceptions: false,
+    exitOnError: false});
+
 exports.write = function(stream) {
-    let GTPText = ""
+    let gtpText = ""
 
     let enabled = setting.get('gtp.console_log_enabled')
     if (enabled == null || !enabled) { return }
 
-    if (stream.stderr != null && typeof(stream.stderr) == 'string') {
-        GTPText = GTPText + stream.stderr
-    }
-    if (stream.stdin != null && typeof(stream.stdin) == 'string') {
-        GTPText = GTPText + stream.stdin
-        if (stream.args != null) {
-            GTPText = GTPText + " " + stream.args.join(" ")
-        }
-    }
-    if (stream.stdout != null && typeof(stream.stdout) == 'string') {
-        GTPText = GTPText + stream.stdout
+    if (stream.type === 'stderr') {
+        gtpText += "e:" stream.message
+    } else if (stream.type === 'stdin') {
+        gtpText += "i:" stream.message
+    } else if (stream.type === 'stdout') {
+        gtpText += "o:" + stream.message
+    } else if (stream.type === 'meta') {
+        gtpText += "m: " + stream.message
     }
 
-    GTPText = ((stream.sign === 0) ? "B" : "W" ) +
-        (stream.name != null ? " <" + stream.name + ">" : " <>") + " " +
-        GTPText
+    let color
+    if (stream.sign === 1) {
+        color = "B"
+    } else if (stream.sign === -1) {
+        color = "W"
+    } else {
+        color = ''
+    }
 
-    try {gtplogger.log('info', GTPText)} catch (err) {}
+    let engine
+    if (stream.engine != null) {
+        engine = " <" + stream.name + ">"
+    } else {
+        engine = '<>'
+    }
+
+    gtpText = color + engine + " " + gtpText
+
+    try {winstonLogger.log('info', gtpText)} catch (err) {}
 }
 
-timestamp = function() {
+let timestamp = function() {
     let now = new Date();
-    let t = {};
-    t['mon'] = 1 + now.getMonth();
-    t['day'] = now.getDate();
-    t['hour'] = now.getHours();
-    t['min'] = now.getMinutes();
-    t['sec'] = now.getSeconds();
+    let t = {
+        'month': 1 + now.getMonth();
+        'day': now.getDate();
+        'hour': now.getHours();
+        'minute': now.getMinutes();
+        'second': now.getSeconds();
+    }
     for(let idx in t) {
         if (t[idx] < 10) {
             t[idx] = "0" + t[idx]
         }
     }
     t['year'] = now.getFullYear();
-    return t['year'] + "-" + t['mon'] + "-" + t['day'] + "-" +
-        t['hour'] + "-" + t['min'] + "-" + t['sec'];
+    return t['year'] + "-" + t['month'] + "-" + t['day'] + "-" +
+        t['hour'] + "-" + t['minute'] + "-" + t['second'];
 }
 
 exports.updatePath = function() {
@@ -82,7 +102,7 @@ exports.updatePath = function() {
     try {
         if ((enabled != null) && (newDir != null) && enabled) {
             let newPath = path.join(newDir, newName)
-            let matching = gtplogger.transports.find(transport => {
+            let matching = winstonLogger.transports.find(transport => {
                 return (transport.filename === newName) &&
                     (path.resolve(transport.dirname) === newDir)
             });
@@ -90,13 +110,13 @@ exports.updatePath = function() {
                 return
             }
             filename = newName
-            let notmatching = gtplogger.transports.find(transport => {
+            let notmatching = winstonLogger.transports.find(transport => {
                 return (transport.filename !== newName) ||
                     (path.resolve(transport.dirname) !== newDir)
             });
-            gtplogger.add(new winston.transports.File({ filename: newPath }))
+            winstonLogger.add(new winston.transports.File({ filename: newPath }))
             if (notmatching != null) {
-                gtplogger.remove(notmatching)
+                winstonLogger.remove(notmatching)
             }
         }
     } catch (err) {}
@@ -158,26 +178,6 @@ exports.validate = function() {
 }
 
 exports.loadOnce = function() {
-    if (gtplogger == null) {
-        if(setting.get('gtp.console_log_timestamps')) {
-            gtplogger = winston.createLogger({
-                format: winston.format.combine(
-                    winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss.SSS'}),
-                    winston.format.printf(info => {
-                        return `\[${info.timestamp}\] ${info.message}`;
-                    })),
-                handleExceptions: false,
-                exitOnError: false});
-        } else {
-            gtplogger = winston.createLogger({
-                format: winston.format.combine(
-                    winston.format.printf(info => {
-                        return `${info.message}`;
-                    })),
-                handleExceptions: false,
-                exitOnError: false});
-        }
-    }
     if (exports.validate()) {
         exports.updatePath()
     }
@@ -190,6 +190,6 @@ exports.rotate = function() {
 
 exports.close = function() {
     try {
-        gtplogger.close()
+        winstonLogger.close()
     } catch (err) {}
 }
