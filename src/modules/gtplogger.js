@@ -56,7 +56,7 @@ exports.write = function(stream) {
 
     gtpText = color + engine + typeText + " : " + gtpText
 
-    winstonLogger.log('info', gtpText)
+    try {winstonLogger.log('info', gtpText)} catch(err) {}
 }
 
 let timestamp = function() {
