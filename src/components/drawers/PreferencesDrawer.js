@@ -185,10 +185,10 @@ class PathInputItem extends Component {
         }
 
         this.handleBrowseButtonClick = evt => {
-            if (this.props.chooseGTPLogDir != null) {
+            if (this.props.chooseDirectory != null) {
                 dialog.showOpenDialog({
                     properties: ['openDirectory', 'createDirectory'],
-                    title: 'Choose directory for log files'
+                    title: 'Choose a directory'
                     }, ({result}) => {
                         if (!result || result.length === 0) return
                         this.handlePathChange({currentTarget: {value: result[0]}})
@@ -240,12 +240,13 @@ class PathInputItem extends Component {
             ),
 
             value &&
-                !((this.props.chooseGTPLogDir == null && fs.existsSync(value)) ||
-                    (this.props.chooseGTPLogDir != null && gtplogger.validPath())) &&
+                !((this.props.chooseDirectory == null) ?
+                    fs.existsSync(value) : helper.isWritableDirectory(
+                        value)) &&
                 h('a', {class: 'invalid'},
                     h('img', {
                         src: './node_modules/octicons/build/svg/alert.svg',
-                        title: ((this.props.chooseGTPLogDir == null) ?
+                        title: ((this.props.chooseDirectory == null) ?
                             'File' : 'Directory') + ' not found',
                         height: 14
                     })
@@ -547,7 +548,7 @@ class EnginesTab extends Component {
                     h(PathInputItem, {
                         id: 'gtp.console_log_path',
                         text: '',
-                        chooseGTPLogDir: true
+                        chooseDirectory: true
                     })
                 )
             ),

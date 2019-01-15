@@ -2059,8 +2059,9 @@ class App extends Component {
                 syncer.controller.on('command-sent', evt => {
                     gtplogger.write({
                         'type': 'stdin',
-                        'message': evt.command.name + ((args == null) ?
-                            '' : " " + evt.command.args.join(" ")),
+                        'message': evt.command.name +
+                            ((evt.command.args == null) ?
+                                '' : " " + evt.command.args.join(" ")),
                         'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
                             1 : -1,
                         'engine': engines[i].name

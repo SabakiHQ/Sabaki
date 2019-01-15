@@ -1,21 +1,21 @@
 const {remote} = require('electron')
-const fs = require('fs');
+const fs = require('fs')
 const setting = remote.require('./setting')
 const dialog = require('./dialog')
-const winston = require('winston');
+const winston = require('winston')
 const path = require('path')
+const helper = require('../modules/helper')
 
 let filename = null
-let stalePath = false
 
 let winstonLogger = winston.createLogger({
     format: winston.format.combine(
         winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss.SSS'}),
         winston.format.printf(info => {
-            return `\[${info.timestamp}\] ${info.message}`;
+            return `\[${info.timestamp}\] ${info.message}`
         })),
     handleExceptions: false,
-    exitOnError: false});
+    exitOnError: false})
 
 exports.write = function(stream) {
     let gtpText = ""
@@ -23,14 +23,19 @@ exports.write = function(stream) {
     let enabled = setting.get('gtp.console_log_enabled')
     if (enabled == null || !enabled) { return }
 
+    let typeText = ""
     if (stream.type === 'stderr') {
-        gtpText += "e:" stream.message
+        gtpText += stream.message
+        typeText = "  (err)"
     } else if (stream.type === 'stdin') {
-        gtpText += "i:" stream.message
+        gtpText += stream.message
+        typeText = "   (in)"
     } else if (stream.type === 'stdout') {
-        gtpText += "o:" + stream.message
+        gtpText += stream.message
+        typeText = "  (out)"
     } else if (stream.type === 'meta') {
-        gtpText += "m: " + stream.message
+        gtpText += stream.message
+        typeText = " (meta)"
     }
 
     let color
@@ -39,54 +44,49 @@ exports.write = function(stream) {
     } else if (stream.sign === -1) {
         color = "W"
     } else {
-        color = ''
+        color = ""
     }
 
     let engine
     if (stream.engine != null) {
-        engine = " <" + stream.name + ">"
+        engine = " <" + stream.engine + ">"
     } else {
-        engine = '<>'
+        engine = "<>"
     }
 
-    gtpText = color + engine + " " + gtpText
+    gtpText = color + engine + typeText + " : " + gtpText
 
-    try {winstonLogger.log('info', gtpText)} catch (err) {}
+    winstonLogger.log('info', gtpText)
 }
 
 let timestamp = function() {
-    let now = new Date();
+    let now = new Date()
     let t = {
-        'month': 1 + now.getMonth();
-        'day': now.getDate();
-        'hour': now.getHours();
-        'minute': now.getMinutes();
-        'second': now.getSeconds();
+        'month': 1 + now.getMonth(),
+        'day': now.getDate(),
+        'hour': now.getHours(),
+        'minute': now.getMinutes(),
+        'second': now.getSeconds()
     }
     for(let idx in t) {
         if (t[idx] < 10) {
             t[idx] = "0" + t[idx]
         }
     }
-    t['year'] = now.getFullYear();
+    t['year'] = now.getFullYear()
     return t['year'] + "-" + t['month'] + "-" + t['day'] + "-" +
-        t['hour'] + "-" + t['minute'] + "-" + t['second'];
+        t['hour'] + "-" + t['minute'] + "-" + t['second']
 }
 
 exports.updatePath = function() {
-    if (!stalePath)
-        return
-
-    let newDir = null;
-    let enabled = null;
+    let newDir = null
+    let enabled = null
     // remove trailing separators and normalize
     let logPath = setting.get('gtp.console_log_path')
     if (logPath != null && typeof logPath === 'string') {
         newDir = path.resolve(setting.get('gtp.console_log_path'))
     }
     enabled = setting.get('gtp.console_log_enabled')
-
-    stalePath = false
 
     let newName = null
     if (filename == null) {
@@ -105,7 +105,7 @@ exports.updatePath = function() {
             let matching = winstonLogger.transports.find(transport => {
                 return (transport.filename === newName) &&
                     (path.resolve(transport.dirname) === newDir)
-            });
+            })
             if (matching != null) {
                 return
             }
@@ -113,7 +113,7 @@ exports.updatePath = function() {
             let notmatching = winstonLogger.transports.find(transport => {
                 return (transport.filename !== newName) ||
                     (path.resolve(transport.dirname) !== newDir)
-            });
+            })
             winstonLogger.add(new winston.transports.File({ filename: newPath }))
             if (notmatching != null) {
                 winstonLogger.remove(notmatching)
@@ -122,47 +122,8 @@ exports.updatePath = function() {
     } catch (err) {}
 }
 
-exports.validPath = function() {
-    /* Verify any path to directory is writable */
-
-    let newPath = setting.get('gtp.console_log_path')
-    let enabled = setting.get('gtp.console_log_enabled')
-    // For GUI don't show a warning when logging is disabled AND the path is empty
-    if (newPath == null) {
-        if (!enabled) {
-            stalePath = false
-            return true
-        } else {
-            stalePath = false
-            return false
-        }
-    }
-
-    let fileStats = null
-    try {
-        fileStats = fs.statSync(newPath)
-    } catch (err) {}
-
-    // if fileStats null, path doesnt exist
-    if (fileStats != null) {
-        if (fileStats.isDirectory()) {
-            try {
-                fs.accessSync(newPath, fs.W_OK)
-                stalePath = true
-                return true
-            } catch (err) {}
-        }
-        // Path exists, either no write permissions to directory, or path is not a directory
-        stalePath = true
-        return false
-    } else {
-        stalePath = false
-        return false
-    }
-}
-
 exports.validate = function() {
-    if (!exports.validPath()) {
+    if (!helper.isWritableDirectory(setting.get('gtp.console_log_path'))) {
         let enabled = setting.get('gtp.console_log_enabled')
         if (enabled != null && enabled) {
             dialog.showMessageBox([
@@ -185,7 +146,7 @@ exports.loadOnce = function() {
 
 exports.rotate = function() {
     // On next engine attach, we will use a new log file
-    filename = null;
+    filename = null
 }
 
 exports.close = function() {
