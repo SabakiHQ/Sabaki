@@ -78,15 +78,22 @@ let timestamp = function() {
         t['hour'] + "-" + t['minute'] + "-" + t['second']
 }
 
-exports.updatePath = function() {
-    let newDir = null
-    let enabled = null
+exports.updatePath = function(attaching) {
+    /* return false when we did not update the log path but wanted to */
+    let enabled = setting.get('gtp.console_log_enabled')
+    if (enabled == null || !enabled) return true
+    if (validate() !== true) return false
+
+    // don't create a log file when we aren't attaching, and there are no engines
+    if (!attaching && !sabaki.attachedEngineSyncers.some(x => x != null)) return true
+
     // remove trailing separators and normalize
     let logPath = setting.get('gtp.console_log_path')
+    let newDir = null
     if (logPath != null && typeof logPath === 'string') {
-        newDir = path.resolve(setting.get('gtp.console_log_path'))
+        newDir = path.resolve(logPath)
     }
-    enabled = setting.get('gtp.console_log_enabled')
+    if (newDir == null) return false
 
     let newName = null
     if (filename == null) {
@@ -100,47 +107,39 @@ exports.updatePath = function() {
     }
 
     try {
-        if ((enabled != null) && (newDir != null) && enabled) {
-            let newPath = path.join(newDir, newName)
-            let matching = winstonLogger.transports.find(transport => {
-                return (transport.filename === newName) &&
-                    (path.resolve(transport.dirname) === newDir)
-            })
-            if (matching != null) {
-                return
-            }
-            filename = newName
-            let notmatching = winstonLogger.transports.find(transport => {
-                return (transport.filename !== newName) ||
-                    (path.resolve(transport.dirname) !== newDir)
-            })
-            winstonLogger.add(new winston.transports.File({ filename: newPath }))
-            if (notmatching != null) {
-                winstonLogger.remove(notmatching)
-            }
+        let newPath = path.join(newDir, newName)
+        let matching = winstonLogger.transports.find(transport => {
+            return (transport.filename === newName) &&
+                (path.resolve(transport.dirname) === newDir)
+        })
+        if (matching != null) {
+            /* log file path has not changed */
+            return true
         }
-    } catch (err) {}
+
+        filename = newName
+        let notmatching = winstonLogger.transports.find(transport => {
+            return (transport.filename !== newName) ||
+                (path.resolve(transport.dirname) !== newDir)
+        })
+        winstonLogger.add(new winston.transports.File({ filename: newPath }))
+        if (notmatching != null) {
+            winstonLogger.remove(notmatching)
+        }
+        return true
+    } catch (err) { return false }
 }
 
-exports.validate = function() {
+let validate = function() {
     if (!helper.isWritableDirectory(setting.get('gtp.console_log_path'))) {
-        let enabled = setting.get('gtp.console_log_enabled')
-        if (enabled != null && enabled) {
-            dialog.showMessageBox([
-                'You have an invalid log folder for GTP console logging in your settings.\n\n',
-                'Please make sure the log directory is valid & writable or disable GTP console logging.',
-                ].join(''), 'warning'
-            )
-        }
+        dialog.showMessageBox([
+            'You have an invalid log folder for GTP console logging in your settings.\n\n',
+            'Please make sure the log directory is valid & writable or disable GTP console logging.',
+            ].join(''), 'warning'
+        )
         return false
     } else {
         return true
-    }
-}
-
-exports.loadOnce = function() {
-    if (exports.validate()) {
-        exports.updatePath()
     }
 }
 

@@ -2046,7 +2046,7 @@ class App extends Component {
         this is necessary since loadGameTrees() rotates to a new log, and
         we need to wait for the previous engines to finish logging */
         if (engines != null && engines.length && engines.some(x => x != null)) {
-            gtplogger.loadOnce()
+            gtplogger.updatePath(true)
         }
 
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
