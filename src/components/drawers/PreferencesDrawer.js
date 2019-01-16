@@ -609,13 +609,15 @@ class PreferencesDrawer extends Component {
             setting.set('engines.list', engines)
 
             // don't create an empty log file
-            if (!sabaki.modules.gtplogger.updatePath(false)) {
-                // force the user to fix the issue
-                setTimeout(() => {
-                    sabaki.setState({preferencesTab: 'engines'})
-                    sabaki.openDrawer('preferences')
-                }, 500)
-                return
+            if (sabaki.attachedEngineSyncers.some(x => x != null)) {
+                if (!sabaki.modules.gtplogger.updatePath()) {
+                    // force the user to fix the issue
+                    setTimeout(() => {
+                        sabaki.setState({preferencesTab: 'engines'})
+                        sabaki.openDrawer('preferences')
+                    }, 500)
+                    return
+                }
             }
 
             // Reset tab selection

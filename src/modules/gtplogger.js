@@ -78,14 +78,11 @@ let timestamp = function() {
         t['hour'] + "-" + t['minute'] + "-" + t['second']
 }
 
-exports.updatePath = function(attaching) {
+exports.updatePath = function() {
     /* return false when we did not update the log path but wanted to */
     let enabled = setting.get('gtp.console_log_enabled')
     if (enabled == null || !enabled) return true
     if (validate() !== true) return false
-
-    // don't create a log file when we aren't attaching, and there are no engines
-    if (!attaching && !sabaki.attachedEngineSyncers.some(x => x != null)) return true
 
     // remove trailing separators and normalize
     let logPath = setting.get('gtp.console_log_path')
