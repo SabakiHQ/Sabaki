@@ -2042,10 +2042,11 @@ class App extends Component {
             return
         }
 
-        /* only load the logger when actually attaching engines (not detaching):
-        this is necessary since loadGameTrees() rotates to a new log, and
-        we need to wait for the previous engines to finish logging */
-        if (engines != null && engines.length && engines.some(x => x != null)) {
+        if (engines != null && engines.some(x => x != null)) {
+            // Only load the logger when actually attaching engines (not detaching):
+            // This is necessary since loadGameTrees() rotates to a new log, and
+            // we need to wait for the previous engines to finish logging
+
             gtplogger.updatePath()
         }
 
@@ -2063,14 +2064,12 @@ class App extends Component {
 
                 syncer.controller.on('command-sent', evt => {
                     gtplogger.write({
-                        'type': 'stdin',
-                        'message': evt.command.name +
-                            ((evt.command.args == null) ?
-                                '' : " " + evt.command.args.join(" ")),
-                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                            1 : -1,
-                        'engine': engines[i].name
+                        type: 'stdin',
+                        message: gtp.Command.toString(evt.command),
+                        sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                        engine: engines[i].name
                     })
+
                     if (evt.command.name === 'list_commands') {
                         evt.getResponse().then(response =>
                             this.setState(({engineCommands}) => {
@@ -2087,12 +2086,12 @@ class App extends Component {
 
                 syncer.controller.on('stderr', ({content}) => {
                     gtplogger.write({
-                        'type': 'stderr',
-                        'message': content,
-                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                            1 : -1,
-                        'engine': engines[i].name
+                        type: 'stderr',
+                        message: content,
+                        sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                        engine: engines[i].name
                     })
+
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
                             sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
@@ -2105,22 +2104,21 @@ class App extends Component {
 
                 syncer.controller.on('started', () => {
                     gtplogger.write({
-                        'type': 'meta',
-                        'message': "Engine Started",
-                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                            1 : -1,
-                        'engine': engines[i].name
+                        type: 'meta',
+                        message: 'Engine Started',
+                        sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                        engine: engines[i].name
                     })
                 })
 
                 syncer.controller.on('stopped', () => this.setState(({engineCommands}) => {
                     gtplogger.write({
-                        'type': 'meta',
-                        'message': "Engine Stopped",
-                        'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                            1 : -1,
-                        'engine': engines[i].name
+                        type: 'meta',
+                        message: 'Engine Stopped',
+                        sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                        engine: engines[i].name
                     })
+
                     let j = this.attachedEngineSyncers.indexOf(syncer)
                     engineCommands[j] = []
 
@@ -2145,12 +2143,12 @@ class App extends Component {
         for (let syncer of this.attachedEngineSyncers) {
             if (syncer != null) {
                 gtplogger.write({
-                    'type': 'meta',
-                    'message': "Engine Suspending",
-                    'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                        1 : -1,
-                    'engine': syncer.engine.name
+                    type: 'meta',
+                    message: 'Engine Suspending',
+                    sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                    engine: syncer.engine.name
                 })
+
                 syncer.controller.kill()
             }
         }
@@ -2187,11 +2185,10 @@ class App extends Component {
             })
 
             gtplogger.write({
-                'type': 'stdout',
-                'message': line,
-                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                    1 : -1,
-                'engine': syncer.engine.name
+                type: 'stdout',
+                message: line,
+                sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                engine: syncer.engine.name
             })
 
             // Parse analysis info
@@ -2252,16 +2249,17 @@ class App extends Component {
         getResponse()
         .catch(_ => {
             gtplogger.write({
-                'type': 'meta',
-                'message': "Connection Failed",
-                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                    1 : -1,
-                'engine': syncer.engine.name
+                type: 'meta',
+                message: 'Connection Failed',
+                sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                engine: syncer.engine.name
             })
+
             updateEntry({
-            response: {internal: true, content: 'connection failed'},
-            waiting: false
-        })})
+                response: {internal: true, content: 'connection failed'},
+                waiting: false
+            })
+        })
     }
 
     async syncEngines({passPlayer = null} = {}) {
@@ -2350,12 +2348,12 @@ class App extends Component {
             if (syncer == null || syncer.controller.process == null) continue
 
             syncer.controller.process.stdin.write('\n')
+
             gtplogger.write({
-                'type': 'meta',
-                'message': "Stopping Analysis",
-                'sign': (this.attachedEngineSyncers.indexOf(syncer) === 0) ?
-                    1 : -1,
-                'engine': syncer.engine.name
+                type: 'meta',
+                message: 'Stopping Analysis',
+                sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
+                engine: syncer.engine.name
             })
         }
 

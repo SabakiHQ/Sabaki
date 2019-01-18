@@ -185,23 +185,17 @@ class PathInputItem extends Component {
         }
 
         this.handleBrowseButtonClick = evt => {
-            if (this.props.chooseDirectory != null) {
-                dialog.showOpenDialog({
-                    properties: ['openDirectory', 'createDirectory'],
-                    title: 'Choose a directory'
-                    }, ({result}) => {
-                        if (!result || result.length === 0) return
-                        this.handlePathChange({currentTarget: {value: result[0]}})
-                })
-            } else {
-                dialog.showOpenDialog({
-                    properties: ['openFile'],
-                }, ({result}) => {
-                    if (!result || result.length === 0) return
+            let dialogProperties = this.props.chooseDirectory != null
+                ? ['openDirectory', 'createDirectory']
+                : ['openFile']
 
-                    this.handlePathChange({currentTarget: {value: result[0]}})
-                })
-            }
+            dialog.showOpenDialog({
+                properties: dialogProperties,
+            }, ({result}) => {
+                if (!result || result.length === 0) return
+
+                this.handlePathChange({currentTarget: {value: result[0]}})
+            })
         }
 
         setting.events.on('change', ({key}) => {
@@ -239,17 +233,18 @@ class PathInputItem extends Component {
                 })
             ),
 
-            value &&
-                !((this.props.chooseDirectory == null) ?
-                    fs.existsSync(value) : helper.isWritableDirectory(
-                        value)) &&
-                h('a', {class: 'invalid'},
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/alert.svg',
-                        title: ((this.props.chooseDirectory == null) ?
-                            'File' : 'Directory') + ' not found',
-                        height: 14
-                    })
+            value && !(
+                this.props.chooseDirectory
+                ? helper.isWritableDirectory(value)
+                : fs.existsSync(value)
+            ) && h('a', {class: 'invalid'},
+                h('img', {
+                    src: './node_modules/octicons/build/svg/alert.svg',
+                    title: this.props.chooseDirectory
+                        ? 'Directory not found'
+                        : 'File not found',
+                    height: 14
+                })
             )
         ))
     }
@@ -602,20 +597,23 @@ class PreferencesDrawer extends Component {
             let natsort = require('natsort')
             let cmp = natsort({insensitive: true})
 
-            // Sort engines.
+            // Sort engines
 
             let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
             setting.set('engines.list', engines)
 
-            // don't create an empty log file
+            // Don't create an empty log file
+
             if (sabaki.attachedEngineSyncers.some(x => x != null)) {
-                if (!sabaki.modules.gtplogger.updatePath()) {
-                    // force the user to fix the issue
+                if (!gtplogger.updatePath()) {
+                    // Force the user to fix the issue
+
                     setTimeout(() => {
                         sabaki.setState({preferencesTab: 'engines'})
                         sabaki.openDrawer('preferences')
                     }, 500)
+
                     return
                 }
             }

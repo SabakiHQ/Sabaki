@@ -99,17 +99,14 @@ exports.wait = function(ms) {
 }
 
 exports.isWritableDirectory = function(path) {
-    /* Verify any path to directory is writable */
-    if (path == null || typeof path !== 'string') {
-        return false
-    }
+    if (path == null) return false
 
     let fileStats = null
+
     try {
         fileStats = fs.statSync(path)
     } catch (err) {}
 
-    // if fileStats null, path doesnt exist
     if (fileStats != null) {
         if (fileStats.isDirectory()) {
             try {
@@ -117,9 +114,11 @@ exports.isWritableDirectory = function(path) {
                 return true
             } catch (err) {}
         }
-        // Path exists, either no write permissions to directory, or path is not a directory
+
+        // Path exists, either no write permissions to directory or path is not a directory
         return false
     } else {
+        // Path doesn't exist
         return false
     }
 }
