@@ -124,7 +124,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, boardmatcher, dialog,
-            fileformats, gametree, helper, setting, sound, gtplogger}
+            fileformats, gametree, helper, setting, sound}
 
         // Bind state to settings
 
