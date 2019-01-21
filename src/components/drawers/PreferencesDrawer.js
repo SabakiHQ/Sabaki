@@ -656,7 +656,7 @@ class PreferencesDrawer extends Component {
                 )
             ),
 
-            h('form', {class: tab},
+            h('form', {class: classNames(tab, 'tab-content')},
                 h(GeneralTab, {graphGridSize}),
                 h(ThemesTab),
                 h(EnginesTab, {engines}),

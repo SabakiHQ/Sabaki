@@ -940,8 +940,7 @@ header, #bar .bar {
     #preferences form > div label select {
         margin-left: 10px;
     }
-    #preferences form > div.general,
-    #preferences form > div.themes {
+    #preferences .tab-content > div {
         padding-top: 1.5em;
     }
     #preferences form > div.general ul {
@@ -1030,6 +1029,7 @@ header, #bar .bar {
     }
     #preferences .gtp-console-log ul {
         display: flex;
+        margin: 0 0 .5rem;
     }
     #preferences .gtp-console-log .preferences-item {
         line-height: 2;
@@ -1210,8 +1210,7 @@ header, #bar .bar {
         overflow: auto;
     }
     .engines-list {
-        height: 19em;
-        margin: 1.5em 0;
+        height: 18em;
     }
     .engines-list ul {
         margin: 0 !important;
