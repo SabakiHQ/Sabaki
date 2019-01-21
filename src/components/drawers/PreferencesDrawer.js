@@ -38,7 +38,7 @@ class PreferencesItem extends Component {
     }
 
     render({text}, {checked}) {
-        return h('li', {},
+        return h('li', {class: 'preferences-item'},
             h('label', {},
                 h('input', {
                     type: 'checkbox',
@@ -211,8 +211,8 @@ class PathInputItem extends Component {
     }
 
     render({text}, {value}) {
-        return h('li', {}, h('label', {},
-            h('span', {}, text),
+        return h('li', {class: 'path-input-item'}, h('label', {},
+            text != null && h('span', {}, text),
 
             h('input', {
                 type: 'search',
@@ -542,7 +542,6 @@ class EnginesTab extends Component {
 
                     h(PathInputItem, {
                         id: 'gtp.console_log_path',
-                        text: '',
                         chooseDirectory: true
                     })
                 )

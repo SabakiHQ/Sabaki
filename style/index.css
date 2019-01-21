@@ -969,27 +969,27 @@ header, #bar .bar {
         grid-template: 1fr 1fr / 1fr 1fr;
         grid-auto-flow: column;
     }
-    #preferences form > div.themes label span {
-        display: inline-block;
+    #preferences .path-input-item label {
+        display: flex;
+    }
+    #preferences .path-input-item label span {
         width: 10em;
+        line-height: 2;
         text-align: right;
     }
-    #preferences form > div.themes input {
-        width: calc(100% - 58px - 10em);
+    #preferences .path-input-item input {
+        flex-grow: 1;
         margin-left: 10px;
     }
-    #preferences form > div.themes .browse,
-    #preferences form > div.themes .invalid {
-        display: inline-block;
-        position: relative;
-        top: 2px;
+    #preferences .path-input-item .browse,
+    #preferences .path-input-item .invalid {
         margin-left: 10px;
         opacity: .5;
         filter: invert(100%);
         transition: opacity .2s;
     }
-    #preferences form > div.themes .browse:active,
-    #preferences form > div.themes .invalid {
+    #preferences .path-input-item .browse:active,
+    #preferences .path-input-item .invalid {
         opacity: 1;
     }
     #preferences form > div.themes .meta {
@@ -1027,6 +1027,16 @@ header, #bar .bar {
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
+    }
+    #preferences .gtp-console-log ul {
+        display: flex;
+    }
+    #preferences .gtp-console-log .preferences-item {
+        line-height: 2;
+    }
+    #preferences .gtp-console-log .path-input-item {
+        flex-grow: 1;
+        margin-left: 10px;
 }
 
 #cleanmarkup form {
@@ -1192,37 +1202,6 @@ header, #bar .bar {
     .tabs li:not(.current) a:hover, .tabs li:not(.current) a:focus {
         border-color: transparent;
         background: #1a1a1a;
-}
-
-.gtp-console-log {
-    border: none;
-    margin: 0 0 0 0;
-}
-    .gtp-console-log ul {
-        margin: 0 0 0 0 !important;
-        list-style: none;
-    }
-    .gtp-console-log li {
-        display:inline-block;
-        position: relative;
-        margin: 0 0 0 0 !important;
-        padding: 0px;
-    }
-    .gtp-console-log a {
-        display: inline-block;
-        position: relative;
-        top: 2px;
-        margin-left: 10px;
-        opacity: .5;
-        filter: invert(100%);
-        transition: opacity .2s;
-    }
-    .gtp-console-log li:nth-child(2) {
-        width: calc(100% - 75px - 16em) !important;
-        margin-left: 10px !important;
-    }
-    .gtp-console-log li:nth-child(2) input {
-        width: calc(100% - 50px) !important;
 }
 
 .engines-list, .properties-list {
