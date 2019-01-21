@@ -77,6 +77,8 @@ let defaults = {
     'graph.grid_size': 22,
     'graph.node_size': 4,
     'gtp.auto_genmove': true,
+    'gtp.console_log_enabled': false,
+    'gtp.console_log_path': null,
     'gtp.engine_quit_timeout': 3000,
     'gtp.move_delay': 300,
     'gtp.start_game_after_attach': true,

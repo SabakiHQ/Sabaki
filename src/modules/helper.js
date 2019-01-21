@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 let id = 0
 
 exports.linebreak = process.platform === 'win32' ? '\r\n' : '\n'
@@ -94,4 +96,29 @@ exports.popupMenu = function(template, x, y) {
 
 exports.wait = function(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+exports.isWritableDirectory = function(path) {
+    if (path == null) return false
+
+    let fileStats = null
+
+    try {
+        fileStats = fs.statSync(path)
+    } catch (err) {}
+
+    if (fileStats != null) {
+        if (fileStats.isDirectory()) {
+            try {
+                fs.accessSync(path, fs.W_OK)
+                return true
+            } catch (err) {}
+        }
+
+        // Path exists, either no write permissions to directory or path is not a directory
+        return false
+    } else {
+        // Path doesn't exist
+        return false
+    }
 }
