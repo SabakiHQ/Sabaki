@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.42.0][v0.42.0] (2019-01-21)
 
 **Added**
 
 * Winrate graph is now resizable (Thanks to [@dbosst](https://github.com/dbosst))
+* GTP console logging (Thanks to [@dbosst](https://github.com/dbosst))
 
 **Changed**
 
