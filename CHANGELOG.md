@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.42.0][v0.42.0] (2019-01-21)
+## [Sabaki v0.42.0][v0.42.0] (2019-01-22)
 
 **Added**
 
