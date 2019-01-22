@@ -40,6 +40,7 @@ module.exports = (env, argv) => ({
             '@sabaki/gtp': emptyPath,
             '../modules/rotation': emptyPath,
             '../modules/enginesyncer': emptyPath,
+            '../modules/gtplogger': path.join(__dirname, 'src/modules/shims/gtplogger'),
             '../menu': emptyPath,
 
             './ThemeManager': noopPath,
