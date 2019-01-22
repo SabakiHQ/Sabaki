@@ -8,6 +8,7 @@ const Drawer = require('./Drawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
+const gtplogger = require('../../modules/gtplogger')
 
 class PreferencesItem extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class PreferencesItem extends Component {
     }
 
     render({text}, {checked}) {
-        return h('li', {},
+        return h('li', {class: 'preferences-item'},
             h('label', {},
                 h('input', {
                     type: 'checkbox',
@@ -184,8 +185,12 @@ class PathInputItem extends Component {
         }
 
         this.handleBrowseButtonClick = evt => {
+            let dialogProperties = this.props.chooseDirectory != null
+                ? ['openDirectory', 'createDirectory']
+                : ['openFile']
+
             dialog.showOpenDialog({
-                properties: ['openFile'],
+                properties: dialogProperties,
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
@@ -206,8 +211,8 @@ class PathInputItem extends Component {
     }
 
     render({text}, {value}) {
-        return h('li', {}, h('label', {},
-            h('span', {}, text),
+        return h('li', {class: 'path-input-item'}, h('label', {},
+            text != null && h('span', {}, text),
 
             h('input', {
                 type: 'search',
@@ -228,10 +233,16 @@ class PathInputItem extends Component {
                 })
             ),
 
-            value && !fs.existsSync(value) && h('a', {class: 'invalid'},
+            value && !(
+                this.props.chooseDirectory
+                ? helper.isWritableDirectory(value)
+                : fs.existsSync(value)
+            ) && h('a', {class: 'invalid'},
                 h('img', {
                     src: './node_modules/octicons/build/svg/alert.svg',
-                    title: 'File not found',
+                    title: this.props.chooseDirectory
+                        ? 'Directory not found'
+                        : 'File not found',
                     height: 14
                 })
             )
@@ -522,6 +533,19 @@ class EnginesTab extends Component {
 
     render({engines}) {
         return h('div', {ref: el => this.element = el, class: 'engines'},
+            h('div', {class: 'gtp-console-log'},
+                h('ul', {},
+                    h(PreferencesItem, {
+                        id: 'gtp.console_log_enabled',
+                        text: 'Enable GTP logging to directory:'
+                    }),
+
+                    h(PathInputItem, {
+                        id: 'gtp.console_log_path',
+                        chooseDirectory: true
+                    })
+                )
+            ),
             h('div', {class: 'engines-list'},
                 h('ul', {}, engines.map(({name, path, args, commands}, id) =>
                     h(EngineItem, {
@@ -572,11 +596,26 @@ class PreferencesDrawer extends Component {
             let natsort = require('natsort')
             let cmp = natsort({insensitive: true})
 
-            // Sort engines.
+            // Sort engines
 
             let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
             setting.set('engines.list', engines)
+
+            // Don't create an empty log file
+
+            if (sabaki.attachedEngineSyncers.some(x => x != null)) {
+                if (!gtplogger.updatePath()) {
+                    // Force the user to fix the issue
+
+                    setTimeout(() => {
+                        sabaki.setState({preferencesTab: 'engines'})
+                        sabaki.openDrawer('preferences')
+                    }, 500)
+
+                    return
+                }
+            }
 
             // Reset tab selection
 
@@ -617,7 +656,7 @@ class PreferencesDrawer extends Component {
                 )
             ),
 
-            h('form', {class: tab},
+            h('form', {class: classNames(tab, 'tab-content')},
                 h(GeneralTab, {graphGridSize}),
                 h(ThemesTab),
                 h(EnginesTab, {engines}),

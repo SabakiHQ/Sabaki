@@ -3,6 +3,7 @@ const {h, Component} = require('preact')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
+let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
 let winrateGraphHeight = setting.get('view.winrategraph_height')
 
 class WinrateGraph extends Component {
@@ -23,7 +24,7 @@ class WinrateGraph extends Component {
                 id: 'winrategraph',
                 style: {height: 0},
                 onMouseDown: this.handleMouseDown
-            },
+            }
         )
     }
 }

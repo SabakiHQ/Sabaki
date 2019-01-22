@@ -7,7 +7,7 @@ let gib = require('./gib')
 
 let modules = {sgf, ngf, gib}
 
-exports = module.exports = modules
+exports = module.exports = Object.assign({}, modules)
 
 let extensions = Object.keys(modules).map(key => modules[key].meta)
 let combinedExtensions = extensions.map(x => x.extensions)

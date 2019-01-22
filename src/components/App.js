@@ -32,6 +32,7 @@ const helper = require('../modules/helper')
 const rotation = require('../modules/rotation')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
+const gtplogger = require('../modules/gtplogger')
 
 class App extends Component {
     constructor() {
@@ -204,7 +205,11 @@ class App extends Component {
                     this.setState({fullScreen: false})
                 }
             } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
-                if (document.activeElement !== document.body || evt.ctrlKey || evt.metaKey) return
+                if (
+                    evt.ctrlKey || evt.metaKey
+                    || helper.isTextLikeElement(document.activeElement)
+                ) return
+
                 evt.preventDefault()
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
@@ -295,6 +300,7 @@ class App extends Component {
             if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
                 this.window.setContentSize(width + widthDiff, height)
             }
+            window.dispatchEvent(new Event('resize'))
         }
 
         // Handle zoom factor
@@ -523,6 +529,8 @@ class App extends Component {
     }
 
     async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
+        gtplogger.rotate()
+
         if (!suppressAskForSave && !this.askForSave()) return
 
         this.setBusy(true)
@@ -1293,6 +1301,8 @@ class App extends Component {
     startAutoscrolling(step) {
         if (this.autoscrollId != null) return
 
+        let first = true
+        let maxDelay = setting.get('autoscroll.max_interval')
         let minDelay = setting.get('autoscroll.min_interval')
         let diff = setting.get('autoscroll.diff')
 
@@ -1300,10 +1310,13 @@ class App extends Component {
             this.goStep(step)
 
             clearTimeout(this.autoscrollId)
-            this.autoscrollId = setTimeout(() => scroll(Math.max(minDelay, delay - diff)), delay)
+            this.autoscrollId = setTimeout(() => {
+                scroll(first ? maxDelay : Math.max(minDelay, delay - diff))
+                first = false
+            }, delay)
         }
 
-        scroll(setting.get('autoscroll.max_interval'))
+        scroll(400)
     }
 
     stopAutoscrolling() {

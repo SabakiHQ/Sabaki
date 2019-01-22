@@ -8,13 +8,14 @@ const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
 class ScoreRow extends Component {
-    render({method, score, komi, sign}) {
+    render({method, score, komi, handicap, sign}) {
         let index = sign > 0 ? 0 : 1
 
         let total = method === 'area' ? score.area[index]
             : score.territory[index] + score.captures[index]
 
         if (sign < 0) total += komi
+        if (method === 'area' && sign < 0) total += handicap
 
         return h('tr', {},
             h('th', {},
@@ -29,6 +30,7 @@ class ScoreRow extends Component {
             h('td', {class: classNames({disabled: method === 'area'})}, score.territory[index]),
             h('td', {class: classNames({disabled: method === 'area'})}, score.captures[index]),
             h('td', {}, sign < 0 ? komi : '-'),
+            h('td', {class: classNames({disabled: method === 'territory'})}, sign < 0 ? handicap : '-'),
             h('td', {}, total)
         )
     }
@@ -55,11 +57,12 @@ class ScoreDrawer extends Component {
         return areaMap != null
     }
 
-    render({show, estimating, method, areaMap, board, komi}) {
+    render({show, estimating, method, areaMap, board, komi, handicap}) {
         if (isNaN(komi)) komi = 0
+        if (isNaN(handicap)) handicap = 0
 
         let score = board ? board.getScore(areaMap) : {area: [], territory: [], captures: []}
-        let result = method === 'area' ? score.area[0] - score.area[1] - komi
+        let result = method === 'area' ? score.area[0] - score.area[1] - komi - handicap
             : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
 
         this.resultString = result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
@@ -94,11 +97,12 @@ class ScoreDrawer extends Component {
                     h('th', {disabled: method === 'area'}, 'Territory'),
                     h('th', {disabled: method === 'area'}, 'Captures'),
                     h('th', {}, 'Komi'),
+                    h('th', {disabled: method === 'territory'}, 'Handicap'),
                     h('th', {}, 'Total')
                 )),
                 h('tbody', {},
-                    h(ScoreRow, {method, score, komi, sign: 1}),
-                    h(ScoreRow, {method, score, komi, sign: -1})
+                    h(ScoreRow, {method, score, komi, handicap: 0, sign: 1}),
+                    h(ScoreRow, {method, score, komi, handicap, sign: -1})
                 )
             ),
 

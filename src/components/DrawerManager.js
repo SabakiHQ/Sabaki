@@ -105,6 +105,7 @@ class DrawerManager extends Component {
                 board: scoreBoard,
                 method: scoringMethod,
                 komi: +gametree.getRootProperty(treePosition[0], 'KM', 0),
+                handicap: +gametree.getRootProperty(treePosition[0], 'HA', 0),
 
                 onSubmitButtonClick: this.handleScoreSubmit
             })

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.42.0][v0.42.0] (2019-01-22)
+
+**Added**
+
+* Winrate graph is now resizable (Thanks to [@dbosst](https://github.com/dbosst))
+* GTP console logging (Thanks to [@dbosst](https://github.com/dbosst))
+
+**Changed**
+
+* More precise navigation when navigating by pressing up/down arrow keys
+* In area scoring, number of handicap stones are added to white's score, according to Chinese scoring (Thanks to [@dbosst](https://github.com/dbosst))
+
+**Fixed**
+
+* Fix Sabaki hanging sometimes when analysis variations contain pass moves (Thanks to [@dbosst](https://github.com/dbosst))
+
 ## [Sabaki v0.41.0][v0.41.0] (2018-11-29)
 
 **Added**

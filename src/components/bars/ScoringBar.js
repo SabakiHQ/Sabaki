@@ -9,9 +9,9 @@ class ScoringBar extends Component {
         this.handleButtonClick = () => sabaki.openDrawer('score')
     }
 
-    render({type, children, method, areaMap, scoreBoard, komi}) {
+    render({type, children, method, areaMap, scoreBoard, komi, handicap}) {
         let score = scoreBoard ? scoreBoard.getScore(areaMap) : {area: [], territory: [], captures: []}
-        let result = method === 'area' ? score.area[0] - score.area[1] - komi
+        let result = method === 'area' ? score.area[0] - score.area[1] - komi - handicap
             : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
         let resultString = !scoreBoard ? '' : result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
 
