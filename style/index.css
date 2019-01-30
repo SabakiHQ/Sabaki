@@ -714,6 +714,19 @@ header, #bar .bar {
     #properties .inner .header.movestatus img.movestatus {
         display: inline;
     }
+    #properties .inner .header .help {
+        display: inline-flex;
+        padding: 2px;
+        vertical-align: bottom;
+    }
+    #properties .inner .header .help img {
+        filter: invert(100%);
+        opacity: .7;
+        transition: opacity .2s;
+    }
+    #properties .inner .header .help:hover img {
+        opacity: .9;
+    }
     #properties .inner .header .edit-button {
         position: relative;
         top: -1px;

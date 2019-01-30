@@ -1,4 +1,4 @@
-const {remote} = require('electron')
+const {remote, shell} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 const boardmatcher = require('@sabaki/boardmatcher')
@@ -16,6 +16,22 @@ class CommentTitle extends Component {
         super()
 
         this.handleEditButtonClick = () => sabaki.setMode('edit')
+
+        this.handleMoveNameHelpClick = evt => {
+            evt.preventDefault()
+            shell.openExternal(evt.currentTarget.href)
+        }
+
+        this.handleMoveNameHelpMouseEnter = evt => {
+            let matchedVertices = evt.currentTarget.dataset.vertices.split(';')
+                .map(x => x.split(',').map(y => +y))
+
+            sabaki.setState({highlightVertices: matchedVertices})
+        }
+
+        this.handleMoveNameHelpMouseLeave = evt => {
+            sabaki.setState({highlightVertices: []})
+        }
     }
 
     shouldComponentUpdate({treePosition, moveAnnotation, positionAnnotation, title}) {
@@ -85,8 +101,29 @@ class CommentTitle extends Component {
         let prev = gametree.navigate(tree, index, -1)
         let prevBoard = gametree.getBoard(...prev)
         let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
+        if (patternMatch == null) return null
 
-        return helper.typographer(patternMatch == null ? '' : patternMatch.pattern.name)
+        let matchedVertices = [...patternMatch.match.anchors, ...patternMatch.match.vertices]
+            .filter(v => board.get(v) !== 0)
+
+        return [
+            helper.typographer(patternMatch.pattern.name), ' ',
+
+            patternMatch.pattern.url && h('a',
+                {
+                    class: 'help',
+                    href: patternMatch.pattern.url,
+                    title: 'View article on Sensei’s Library',
+                    'data-vertices': matchedVertices.map(v => v.join(',')).join(';'),
+
+                    onClick: this.handleMoveNameHelpClick,
+                    onMouseEnter: this.handleMoveNameHelpMouseEnter,
+                    onMouseLeave: this.handleMoveNameHelpMouseLeave
+                },
+
+                h('img', {src: './node_modules/octicons/build/svg/question.svg', width: 16, height: 16})
+            )
+        ]
     }
 
     render({

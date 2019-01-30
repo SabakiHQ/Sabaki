@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Ability to highlight relevant stones for automatically generated move names
+* Link to Sensei's Library for some automatically generated move names
+
 **Fixed**
 
 * Fix Sabaki not being able to append space characters in comment titles
