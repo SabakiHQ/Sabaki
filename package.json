@@ -62,7 +62,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
-    "@sabaki/boardmatcher": "^0.1.5-beta",
+    "@sabaki/boardmatcher": "^1.1.0",
     "@sabaki/deadstones": "^2.1.0",
     "@sabaki/gtp": "^1.4.0",
     "@sabaki/influence": "^1.1.4",

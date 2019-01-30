@@ -15,7 +15,6 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
-const boardmatcher = require('@sabaki/boardmatcher')
 const deadstones = require('@sabaki/deadstones')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
@@ -123,8 +122,8 @@ class App extends Component {
 
         // Expose submodules
 
-        this.modules = {Board, EngineSyncer, boardmatcher, dialog,
-            fileformats, gametree, helper, setting, sound}
+        this.modules = {Board, EngineSyncer, dialog, fileformats,
+            gametree, helper, setting, sound}
 
         // Bind state to settings
 

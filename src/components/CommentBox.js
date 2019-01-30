@@ -84,8 +84,9 @@ class CommentTitle extends Component {
 
         let prev = gametree.navigate(tree, index, -1)
         let prevBoard = gametree.getBoard(...prev)
+        let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
 
-        return boardmatcher.nameMove(prevBoard.arrangement, sign, vertex) || ''
+        return helper.typographer(patternMatch == null ? '' : patternMatch.pattern.name)
     }
 
     render({
@@ -155,11 +156,11 @@ class CommentTitle extends Component {
                 onClick: this.handleEditButtonClick
             }),
 
-            h('span', {}, helper.typographer(
-                title !== '' ? title
+            h('span', {},
+                title !== '' ? helper.typographer(title)
                 : showMoveInterpretation ? this.getCurrentMoveInterpretation()
                 : ''
-            ))
+            )
         )
     }
 }
