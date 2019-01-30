@@ -23,8 +23,7 @@ class CommentTitle extends Component {
         }
 
         this.handleMoveNameHelpMouseEnter = evt => {
-            let matchedVertices = evt.currentTarget.dataset.vertices.split(';')
-                .map(x => x.split(',').map(y => +y))
+            let matchedVertices = JSON.parse(evt.currentTarget.dataset.vertices)
 
             sabaki.setState({highlightVertices: matchedVertices})
         }
@@ -114,7 +113,7 @@ class CommentTitle extends Component {
                     class: 'help',
                     href: patternMatch.pattern.url,
                     title: 'View article on Sensei’s Library',
-                    'data-vertices': matchedVertices.map(v => v.join(',')).join(';'),
+                    'data-vertices': JSON.stringify(matchedVertices),
 
                     onClick: this.handleMoveNameHelpClick,
                     onMouseEnter: this.handleMoveNameHelpMouseEnter,

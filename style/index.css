@@ -721,11 +721,11 @@ header, #bar .bar {
     }
     #properties .inner .header .help img {
         filter: invert(100%);
-        opacity: .7;
+        opacity: .5;
         transition: opacity .2s;
     }
     #properties .inner .header .help:hover img {
-        opacity: .9;
+        opacity: .7;
     }
     #properties .inner .header .edit-button {
         position: relative;
