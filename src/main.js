@@ -109,21 +109,23 @@ function buildMenu(disableAll = false) {
     }
 }
 
-function checkForUpdates(showFailDialogs) {
-    updater
-    .check(`SabakiHQ/${app.getName()}`)
-    .then(info => {
+async function checkForUpdates(showFailDialogs) {
+    let info = await updater.check(`SabakiHQ/${app.getName()}`)
+
+    try {
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['Download Update', 'Not Now'],
+                buttons: ['Download Update', 'View Changelog', 'Not Now'],
                 title: app.getName(),
                 message: `${app.getName()} v${info.latestVersion} is available now.`,
                 noLink: true,
-                cancelId: 1
+                cancelId: 2
             }, response => {
                 if (response === 0) {
                     shell.openExternal(info.downloadUrl || info.url)
+                } else if (response === 1) {
+                    shell.openExternal(info.url)
                 }
             })
         } else if (showFailDialogs) {
@@ -134,17 +136,16 @@ function checkForUpdates(showFailDialogs) {
                 message: `Sabaki v${app.getVersion()} is the latest version.`
             }, () => {})
         }
-    })
-    .catch(err => {
+    } catch (err) {
         if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'warning',
                 buttons: ['OK'],
                 title: app.getName(),
-                message: 'An error occurred when checking for updates.'
+                message: 'An error occurred while checking for updates.'
             })
         }
-    })
+    }
 }
 
 ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
