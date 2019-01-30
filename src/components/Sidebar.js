@@ -212,7 +212,7 @@ class Sidebar extends Component {
                         : 'DM' in node ? [0, node.DM[0]]
                         : 'GB' in node ? [1, node.GB[0]]
                         : [null, 1],
-                    title: 'N' in node ? node.N[0].trim() : '',
+                    title: 'N' in node ? node.N[0] : '',
                     comment: 'C' in node ? node.C[0] : '',
                     height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
                     sidebarSplitTransition,

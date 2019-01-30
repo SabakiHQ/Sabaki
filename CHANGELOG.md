@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Fixed**
+
+* Fix Sabaki not being able to append space characters in comment titles
+
 ## [Sabaki v0.42.0][v0.42.0] (2019-01-22)
 
 **Added**
@@ -788,7 +794,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.41.0...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.42.0...master
+[v0.42.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.41.0...v0.42.0
 [v0.41.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.40.1...v0.41.0
 [v0.40.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.40.0...v0.40.1
 [v0.40.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.35.1...v0.40.0
