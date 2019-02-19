@@ -10,6 +10,8 @@ const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
+let commentsCommitDelay = setting.get('comments.commit_delay')
+
 class CommentTitle extends Component {
     constructor() {
         super()
@@ -206,15 +208,28 @@ class CommentText extends Component {
 
 class CommentBox extends Component {
     constructor(props) {
-        super()
+        super(props)
+
+        this.state = {
+            title: '',
+            comment: ''
+        }
 
         this.handleCommentInput = () => {
             let {onCommentInput = helper.noop} = this.props
 
-            onCommentInput({
+            this.setState({
                 title: this.titleInputElement.value,
                 comment: this.textareaElement.value
             })
+
+            clearTimeout(this.commentInputTimeout)
+            this.commentInputTimeout = setTimeout(() => {
+                onCommentInput({
+                    title: this.titleInputElement.value,
+                    comment: this.textareaElement.value
+                })
+            }, commentsCommitDelay)
         }
 
         this.handleMenuButtonClick = () => {
@@ -229,13 +244,14 @@ class CommentBox extends Component {
         return height !== this.props.height || showCommentBox && !this.dirty
     }
 
-    componentWillReceiveProps({treePosition, mode}) {
+    componentWillReceiveProps({treePosition, mode, title, comment}) {
         let treePositionChanged = treePosition !== this.props.treePosition
 
         if (mode === 'edit') {
             this.element.scrollTop = 0
             if (treePositionChanged) this.textareaElement.scrollTop = 0
 
+            this.setState({title, comment})
             return
         }
 
@@ -248,7 +264,7 @@ class CommentBox extends Component {
             this.dirty = false
 
             if (treePositionChanged) this.element.scrollTop = 0
-            this.setState({})
+            this.setState({title, comment})
         }, setting.get('graph.delay'))
     }
 
@@ -259,13 +275,14 @@ class CommentBox extends Component {
         sidebarSplitTransition,
         moveAnnotation,
         positionAnnotation,
-        title,
-        comment,
 
         onResizerMouseDown = helper.noop,
         onLinkClick = helper.noop,
         onCoordinateMouseEnter = helper.noop,
         onCoordinateMouseLeave = helper.noop
+    }, {
+        title,
+        comment
     }) {
         return h('section',
             {
