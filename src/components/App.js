@@ -1603,7 +1603,14 @@ class App extends Component {
     }
 
     copyVariation(tree, treePosition) {
-        let clone = gametree.cloneNode(tree.get(treePosition))
+        let node = tree.get(treePosition)
+        let copy = {
+            id: node.id,
+            data: Object.assign({}, node.data),
+            parentId: null,
+            children: node.children
+        }
+
         let stripProperties = [
             'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
             'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
@@ -1612,10 +1619,10 @@ class App extends Component {
         ]
 
         for (let prop of stripProperties) {
-            delete clone.data[prop]
+            delete copy.data[prop]
         }
 
-        this.copyVariationData = clone
+        this.copyVariationData = copy
     }
 
     cutVariation(tree, treePosition) {
@@ -1629,15 +1636,26 @@ class App extends Component {
         this.closeDrawer()
         this.setMode('play')
 
-        // TODO
-
-        let copied = gametree.cloneNode(this.copyVariationData)
+        let newPosition
+        let copied = this.copyVariationData
         let newTree = tree.mutate(draft => {
-            let node = draft.get(treePosition)
-            node.children.push(copied)
+            let inner = (id, children) => {
+                let childIds = []
+
+                for (let child of children) {
+                    let childId = draft.appendNode(id, child.data)
+                    childIds.push(childId)
+
+                    inner(childId, child.children)
+                }
+
+                return childIds
+            }
+
+            newPosition = inner(treePosition, [copied])[0]
         })
 
-        this.setCurrentTreePosition(newTree, copied.id)
+        this.setCurrentTreePosition(newTree, newPosition)
     }
 
     flattenVariation(tree, treePosition) {
