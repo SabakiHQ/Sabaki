@@ -73,22 +73,21 @@ class CommentTitle extends Component {
 
         let vertex, sign
 
-        if (node.data.B != null && node.data.B[0] !== '') {
+        if (node.data.B != null) {
             sign = 1
             vertex = sgf.parseVertex(node.data.B[0])
-        } else if (node.data.W != null && node.data.W[0] !== '') {
+        } else if (node.data.W != null) {
             sign = -1
             vertex = sgf.parseVertex(node.data.W[0])
-        } else if (node.data.W != null || node.data.B != null) {
-            return 'Pass'
         } else {
-            return ''
+            return null
         }
 
         let prevBoard = gametree.getBoard(gameTree, node.parentId)
         let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
         if (patternMatch == null) return null
 
+        let board = gametree.getBoard(gameTree, treePosition)
         let matchedVertices = [...patternMatch.match.anchors, ...patternMatch.match.vertices]
             .filter(v => board.get(v) !== 0)
 
