@@ -15,9 +15,7 @@ module.exports = (env, argv) => ({
         alias: {
             'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
             'preact': path.join(__dirname, 'node_modules/preact/dist/preact.min'),
-            'prop-types': path.join(__dirname, 'src/modules/shims/prop-types'),
-            './streams': path.join(__dirname, 'src/modules/shims/noop'),
-            './extend-node': path.join(__dirname, 'src/modules/shims/noop')
+            'prop-types': path.join(__dirname, 'src/modules/shims/prop-types')
         }
     },
 
