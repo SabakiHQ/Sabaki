@@ -7,8 +7,28 @@ const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 let boardCache = {}
 
-exports.new = function() {
-    return new GameTree({getId: helper.getId})
+function nodeMerger(node, data) {
+    if (
+        (data.B == null || node.data.B == null || data.B[0] !== node.data.B[0])
+        && (data.W == null || node.data.W == null || data.W[0] !== node.data.W[0])
+    ) return null
+
+    let merged = Object.assign({}, data)
+
+    for (let prop in data) {
+        if (node.data[prop] != null) continue
+
+        merged[prop] = data[prop]
+    }
+
+    return merged
+}
+
+exports.new = function(options = {}) {
+    return new GameTree(Object.assign({
+        getId: helper.getId,
+        merger: nodeMerger
+    }, options))
 }
 
 exports.cloneNode = function(node, parentId = null) {
@@ -29,53 +49,6 @@ exports.getRootProperty = function(tree, property, fallback = null) {
     if (property in tree.root.data) result = tree.root.data[property][0]
 
     return result === '' ? fallback : result
-}
-
-exports.mergeInsert = function(tree, id, dataArr) {
-    if (dataArr.length === 0) return []
-
-    let ids = null
-    let newTree = tree.mutate(draft => {
-        let inner = (id, dataArr) => {
-            if (dataArr.length === 0) return []
-
-            if (dataArr.length > 1) {
-                let ids = inner(id, dataArr.slice(0, -1))
-                let [lastId] = inner(ids.slice(-1)[0], dataArr.slice(-1))
-
-                ids.push(lastId)
-                return ids
-            }
-
-            let [data] = dataArr
-            let node = draft.get(id)
-            let nextNode = node.children.find(child =>
-                data.B != null && child.data.B != null && data.B[0] === child.data.B[0]
-                || data.W != null && child.data.W != null && data.W[0] === child.data.W[0]
-            )
-
-            if (nextNode == null) {
-                // Append
-
-                let newId = draft.appendNode(id, data)
-                return [newId]
-            }
-
-            // Merge
-
-            for (let prop in data) {
-                if (nextNode.data[prop] != null) continue
-
-                draft.updateProperty(nextNode.id, prop, data[prop])
-            }
-
-            return [nextNode.id]
-        }
-
-        ids = inner(id, dataArr)
-    })
-
-    return {tree: newTree, ids}
 }
 
 exports.getMatrixDict = function(tree) {

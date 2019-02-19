@@ -927,8 +927,12 @@ class App extends Component {
 
         // Update data
 
-        let {tree: newTree, ids: [nextTreePosition]} = gametree.mergeInsert(tree, treePosition, [newNodeData])
-        let createNode = tree.get(nextTreePosition) != null
+        let nextTreePosition
+        let newTree = tree.mutate(draft => {
+            nextTreePosition = draft.appendNode(treePosition, newNodeData)
+        })
+
+        let createNode = tree.get(nextTreePosition) == null
 
         this.setCurrentTreePosition(newTree, nextTreePosition)
 
@@ -1975,13 +1979,16 @@ class App extends Component {
 
                 let [color, opponent] = sign > 0 ? ['B', 'W'] : ['W', 'B']
 
-                let {tree: newTree} = gametree.mergeInsert(
-                    tree,
-                    !appendSibling ? treePosition : tree.navigate(treePosition, -1, {}),
-                    variation.map((vertex, i) => Object.assign({
+                let newTree = tree.mutate(draft => {
+                    let parentId = !appendSibling ? treePosition : tree.get(treePosition).parentId
+                    let variationData = variation.map((vertex, i) => Object.assign({
                         [i % 2 === 0 ? color : opponent]: [sgf.stringifyVertex(vertex)]
                     }, i === 0 ? startNodeProperties : {}))
-                )
+
+                    for (let data of variationData) {
+                        parentId = draft.appendNode(parentId, data)
+                    }
+                })
 
                 this.setCurrentTreePosition(newTree, treePosition)
             }
