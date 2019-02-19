@@ -618,10 +618,12 @@ class App extends Component {
     getSGF() {
         let {gameTrees} = this.state
 
-        this.setState({gameTrees: gameTrees.map(tree => tree.mutate(draft => {
+        gameTrees = gameTrees.map(tree => tree.mutate(draft => {
             draft.updateProperty(draft.root.id, 'AP', [`${this.appName}:${this.version}`])
             draft.updateProperty(draft.root.id, 'CA', ['UTF-8'])
-        }))})
+        }))
+
+        this.setState({gameTrees})
 
         return sgf.stringify(gameTrees.map(tree => tree.root))
     }
