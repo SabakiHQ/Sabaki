@@ -113,8 +113,8 @@ exports.events = new EventEmitter()
 exports.events.setMaxListeners(100)
 
 exports.load = function() {
-    if (localStorage.settings != null) {
-        settings = JSON.parse(localStorage.settings)
+    if (localStorage.sabaki_settings != null) {
+        settings = JSON.parse(localStorage.sabaki_settings)
     } else {
         settings = {}
     }
@@ -158,7 +158,7 @@ exports.loadThemes = function() {
 exports.save = function() {
     let keys = Object.keys(settings).sort()
 
-    localStorage.settings = JSON.stringify(
+    localStorage.sabaki_settings = JSON.stringify(
         keys.reduce((acc, key) => (acc[key] = settings[key], acc), {}),
         null, '  '
     )
