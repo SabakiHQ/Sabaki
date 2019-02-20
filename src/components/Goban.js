@@ -1,5 +1,6 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
+const sgf = require('@sabaki/sgf')
 const {BoundedGoban} = require('@sabaki/shudan')
 const {remote} = require('electron')
 
@@ -179,6 +180,7 @@ class Goban extends Component {
         crosshair = false,
         showCoordinates = false,
         showMoveColorization = true,
+        showMoveNumbers = false,
         showNextMoves = true,
         showSiblings = true,
         fuzzyStonePlacement = true,
@@ -198,6 +200,9 @@ class Goban extends Component {
         variationSibling = false,
         variationIndex = -1
     }) {
+        let signMap = board.arrangement
+        let markerMap = board.markers
+
         // Calculate lines
 
         let drawTemporaryLine = !!drawLineMode && !!temporaryLine
@@ -249,10 +254,30 @@ class Goban extends Component {
             }
         }
 
+        // Draw move numbers
+
+        if (showMoveNumbers) {
+            markerMap = markerMap.map(row => row.map(_ => null))
+
+            let history = [...gameTree.listNodesVertically(treePosition, -1, {})].reverse()
+
+            for (let i = 0; i < history.length; i++) {
+                let node = history[i]
+                let vertex = [-1, -1]
+
+                if (node.data.B != null) vertex = sgf.parseVertex(node.data.B[0])
+                else if (node.data.W != null) vertex = sgf.parseVertex(node.data.W[0])
+
+                let [x, y] = vertex
+
+                if (markerMap[y] != null && x < markerMap[y].length) {
+                    markerMap[y][x] = {type: 'label', label: i.toString()}
+                }
+            }
+        }
+
         // Draw variation
 
-        let signMap = board.arrangement
-        let markerMap = board.markers
         let drawHeatMap = true
 
         if (variation != null) {

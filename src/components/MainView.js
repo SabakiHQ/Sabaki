@@ -159,7 +159,7 @@ class MainView extends Component {
                     crosshair: gobanCrosshair,
                     showCoordinates,
                     showMoveColorization,
-                    showMoveNumbers,
+                    showMoveNumbers: mode !== 'edit' && showMoveNumbers,
                     showNextMoves: mode !== 'guess' && showNextMoves,
                     showSiblings: mode !== 'guess' && showSiblings,
                     fuzzyStonePlacement,
