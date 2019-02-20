@@ -469,6 +469,11 @@ let data = [
                 click: () => toggleSetting('view.show_coordinates')
             },
             {
+                label: 'Show Move N&umbers',
+                checked: 'view.show_move_numbers',
+                click: () => toggleSetting('view.show_move_numbers')
+            },
+            {
                 label: 'Show Move Colori&zation',
                 checked: 'view.show_move_colorization',
                 click: () => toggleSetting('view.show_move_colorization')
@@ -507,21 +512,21 @@ let data = [
                 label: 'Z&oom',
                 submenu: [
                     {
-                        label: 'Increase',
+                        label: '&Increase',
                         accelerator: 'CmdOrCtrl+Plus',
                         click: () => setting.set('app.zoom_factor',
                             setting.get('app.zoom_factor') + .1
                         )
                     },
                     {
-                        label: 'Decrease',
+                        label: '&Decrease',
                         accelerator: 'CmdOrCtrl+-',
                         click: () => setting.set('app.zoom_factor',
                             Math.max(0, setting.get('app.zoom_factor') - .1)
                         )
                     },
                     {
-                        label: 'Reset',
+                        label: '&Reset',
                         accelerator: 'CmdOrCtrl+0',
                         click: () => setting.set('app.zoom_factor', 1)
                     }
