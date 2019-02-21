@@ -1456,21 +1456,26 @@ class App extends Component {
 
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
+        let node = tree.get(treePosition)
 
         function* listNodes() {
-            yield* tree.listNodesHorizontally(treePosition, step)
+            let iterator = tree.listNodesHorizontally(treePosition, step)
+            iterator.next()
 
-            let node = tree.root
-            if (step < 0) node = [...tree.getSection(tree.getHeight() - 1)].slice(-1)[0]
+            yield* iterator
+
+            let node = step > 0
+                ? tree.root
+                : [...tree.getSection(tree.getHeight() - 1)].slice(-1)[0]
 
             yield* tree.listNodesHorizontally(node.id, step)
         }
 
-        for (let node of listNodes()) {
+        for (node of listNodes()) {
             if (node.id === treePosition || condition(node)) break
         }
 
-        this.setCurrentTreePosition(tree, treePosition)
+        this.setCurrentTreePosition(tree, node.id)
         this.setBusy(false)
     }
 
