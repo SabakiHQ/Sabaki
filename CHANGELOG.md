@@ -6,8 +6,13 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
+* Ability to undo/redo all of your edits
 * Ability to highlight relevant stones for automatically generated move names
 * Link to Sensei's Library for some automatically generated move names
+
+**Changed**
+
+* New next/previous variation switch behavior
 
 **Fixed**
 
