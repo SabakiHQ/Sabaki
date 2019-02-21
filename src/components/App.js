@@ -873,7 +873,7 @@ class App extends Component {
                     this.useTool(tool, vertex)
                     this.editVertexData = [tool, vertex]
                 } else {
-                    this.useTool(tool, vertex, this.editVertexData[1])
+                    this.useTool(tool, this.editVertexData[1], vertex)
                     this.editVertexData = null
                 }
             } else {
