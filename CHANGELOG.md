@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.43.0][unreleased] (Unreleased)
 
 **Added**
 
 * Ability to undo/redo all of your edits
+* Ability to display move numbers on the board
 * Ability to highlight relevant stones for automatically generated move names
 * Link to Sensei's Library for some automatically generated move names
 
