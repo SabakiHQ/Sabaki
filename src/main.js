@@ -110,9 +110,9 @@ function buildMenu(disableAll = false) {
 }
 
 async function checkForUpdates(showFailDialogs) {
-    let info = await updater.check(`SabakiHQ/${app.getName()}`)
-
     try {
+        let info = await updater.check(`SabakiHQ/${app.getName()}`)
+
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
