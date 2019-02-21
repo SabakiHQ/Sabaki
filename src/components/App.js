@@ -119,6 +119,10 @@ class App extends Component {
         this.treeHash = this.generateTreeHash()
         this.attachedEngineSyncers = [null, null]
 
+        this.historyPointer = 0
+        this.history = []
+        this.recordHistory()
+
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, dialog, fileformats,
@@ -426,6 +430,32 @@ class App extends Component {
 
     clearConsole() {
         this.setState({consoleLog: []})
+    }
+
+    // History Management
+
+    recordHistory() {
+        let currentEntry = this.history[this.historyPointer]
+        let newEntry = {
+            gameIndex: this.state.gameIndex,
+            gameTrees: this.state.gameTrees,
+            treePosition: this.state.treePosition,
+            timestamp: Date.now()
+        }
+
+        if (helper.shallowEquals(currentEntry.gameTrees, newEntry.gameTrees)) return
+
+        this.history = this.history.slice(0, this.historyPointer + 1)
+
+        if (
+            currentEntry != null
+            && newEntry.timestamp - currentEntry.timestamp < setting.get('edit.new_history_delay')
+        ) {
+            this.history[this.historyPointer] = newEntry
+        } else {
+            this.history.push(newEntry)
+            this.historyPointer = this.history.length - 1
+        }
     }
 
     // File Management
