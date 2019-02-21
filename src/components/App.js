@@ -906,15 +906,16 @@ class App extends Component {
         } else if (this.state.mode === 'guess') {
             if (button !== 0) return
 
-            let tp = tree.navigate(treePosition, 1, gameCurrents[gameIndex])
-            if (tp == null) return this.setMode('play')
-
-            let nextNode = tree.get(tp)
-            if (nextNode.data.B == null && nextNode.data.W == null) return this.setMode('play')
+            let nextNode = tree.navigate(treePosition, 1, gameCurrents[gameIndex])
+            if (nextNode == null || (nextNode.data.B == null && nextNode.data.W == null)) {
+                return this.setMode('play')
+            }
 
             let nextVertex = sgf.parseVertex(nextNode.data[nextNode.data.B != null ? 'B' : 'W'][0])
             let board = gametree.getBoard(tree, treePosition)
-            if (!board.hasVertex(nextVertex)) return this.setMode('play')
+            if (!board.hasVertex(nextVertex)) {
+                return this.setMode('play')
+            }
 
             if (helper.vertexEquals(vertex, nextVertex)) {
                 this.makeMove(vertex, {player: nextNode.data.B != null ? 1 : -1})
