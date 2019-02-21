@@ -16,6 +16,7 @@ const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
 const deadstones = require('@sabaki/deadstones')
+const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
 const influence = require('@sabaki/influence')
 
