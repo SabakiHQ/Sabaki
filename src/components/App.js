@@ -229,21 +229,29 @@ class App extends Component {
                 } else if (this.state.fullScreen) {
                     this.setState({fullScreen: false})
                 }
-            } else if ((evt.ctrlKey || evt.metaKey) && ['ArrowUp', 'ArrowDown'].includes(evt.key)) {
-                if (helper.isTextLikeElement(document.activeElement)) return
+            } else if (!evt.ctrlKey && !evt.metaKey && ['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                if (
+                    this.state.busy > 0
+                    || helper.isTextLikeElement(document.activeElement)
+                ) return
 
                 evt.preventDefault()
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
                 this.startAutoscrolling(sign)
             } else if ((evt.ctrlKey || evt.metaKey) && ['z', 'Z', 'y'].includes(evt.key)) {
+                if (
+                    this.state.busy > 0
+                    || helper.isTextLikeElement(document.activeElement)
+                ) return
+
                 // Hijack browser undo/redo
 
-                evt.preventDefault()
-
                 if (evt.key === 'z') {
+                    evt.preventDefault()
                     this.undo()
                 } else if (['Z', 'y'].includes(evt.key)) {
+                    evt.preventDefault()
                     this.redo()
                 }
             }
