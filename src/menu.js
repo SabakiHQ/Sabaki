@@ -122,10 +122,12 @@ let data = [
         submenu: [
             {
                 label: '&Undo',
+                accelerator: 'CmdOrCtrl+Z',
                 click: () => sabaki.undo()
             },
             {
                 label: 'Re&do',
+                accelerator: process.platform === 'win32' ? 'CmdOrCtrl+Y' : 'CmdOrCtrl+Shift+Z',
                 click: () => sabaki.redo()
             },
             {type: 'separator'},
