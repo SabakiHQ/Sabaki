@@ -1245,12 +1245,14 @@ class App extends Component {
 
     setCurrentTreePosition(tree, id, {clearCache = false} = {}) {
         if (clearCache) gametree.clearBoardCache()
-        if (['scoring', 'estimator'].includes(this.state.mode)) return
+
+        if (['scoring', 'estimator'].includes(this.state.mode)) {
+            this.setState({mode: 'play'})
+        }
 
         let {gameTrees, gameCurrents} = this.state
         let gameIndex = gameTrees.findIndex(t => t.root.id === tree.root.id)
         let currents = gameCurrents[gameIndex]
-        if (gameIndex < 0) return
 
         let n = tree.get(id)
         while (n.parentId != null) {
