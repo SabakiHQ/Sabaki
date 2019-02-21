@@ -301,8 +301,10 @@ class App extends Component {
 
         // Handle sidebar showing/hiding
 
-        if (prevState.showLeftSidebar !== this.state.showLeftSidebar
-        || prevState.showSidebar !== this.state.showSidebar) {
+        if (
+            prevState.showLeftSidebar !== this.state.showLeftSidebar
+            || prevState.showSidebar !== this.state.showSidebar
+        ) {
             let [width, height] = this.window.getContentSize()
             let widthDiff = 0
 
@@ -317,6 +319,7 @@ class App extends Component {
             if (!this.window.isMaximized() && !this.window.isMinimized() && !this.window.isFullScreen()) {
                 this.window.setContentSize(width + widthDiff, height)
             }
+
             window.dispatchEvent(new Event('resize'))
         }
 
@@ -443,7 +446,10 @@ class App extends Component {
             timestamp: Date.now()
         }
 
-        if (helper.shallowEquals(currentEntry.gameTrees, newEntry.gameTrees)) return
+        if (
+            currentEntry != null
+            && helper.shallowEquals(currentEntry.gameTrees, newEntry.gameTrees)
+        ) return
 
         this.history = this.history.slice(0, this.historyPointer + 1)
 
@@ -456,6 +462,34 @@ class App extends Component {
             this.history.push(newEntry)
             this.historyPointer = this.history.length - 1
         }
+    }
+
+    clearHistory() {
+        this.history = []
+        this.recordHistory()
+    }
+
+    checkoutHistory(historyPointer) {
+        let entry = this.history[historyPointer]
+        if (entry == null) return
+
+        let gameTree = entry.gameTrees[entry.gameIndex]
+
+        this.historyPointer = historyPointer
+        this.setState({
+            gameIndex: entry.gameIndex,
+            gameTrees: entry.gameTrees
+        })
+
+        this.setCurrentTreePosition(gameTree, entry.treePosition, {clearCache: true})
+    }
+
+    undo() {
+        this.checkoutHistory(this.historyPointer - 1)
+    }
+
+    redo() {
+        this.checkoutHistory(this.historyPointer + 1)
     }
 
     // File Management
@@ -609,6 +643,8 @@ class App extends Component {
 
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
+
+            this.clearHistory()
         }
 
         this.setBusy(false)
@@ -656,6 +692,7 @@ class App extends Component {
         }))
 
         this.setState({gameTrees})
+        this.recordHistory()
 
         return sgf.stringify(gameTrees.map(tree => tree.root))
     }
@@ -1224,6 +1261,8 @@ class App extends Component {
         }
 
         if (this.state.analysisTreePosition != null && id !== this.state.analysisTreePosition) {
+            // Continuous analysis
+
             clearTimeout(this.navigateAnalysisId)
 
             this.stopAnalysis({removeAnalysisData: false})
@@ -1240,6 +1279,8 @@ class App extends Component {
             gameIndex,
             treePosition: id
         })
+
+        this.recordHistory()
 
         this.events.emit('navigate')
     }
@@ -1808,7 +1849,10 @@ class App extends Component {
             if (gameCurrents[gameIndex][node.parentId] === node.id)  {
                 delete gameCurrents[gameIndex][node.parentId]
             }
+
+            return {gameCurrents}
         })
+
         this.setCurrentTreePosition(newTree, node.parentId)
     }
 
