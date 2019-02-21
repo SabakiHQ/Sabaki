@@ -121,6 +121,15 @@ let data = [
         label: '&Edit',
         submenu: [
             {
+                label: '&Undo',
+                click: () => sabaki.undo()
+            },
+            {
+                label: 'Re&do',
+                click: () => sabaki.redo()
+            },
+            {type: 'separator'},
+            {
                 label: 'Toggle &Edit Mode',
                 accelerator: 'CmdOrCtrl+E',
                 click: () => sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
