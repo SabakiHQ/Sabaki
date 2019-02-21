@@ -13,15 +13,7 @@ function nodeMerger(node, data) {
         && (data.W == null || node.data.W == null || data.W[0] !== node.data.W[0])
     ) return null
 
-    let merged = Object.assign({}, data)
-
-    for (let prop in data) {
-        if (node.data[prop] != null) continue
-
-        merged[prop] = data[prop]
-    }
-
-    return merged
+    return Object.assign({}, data, node.data)
 }
 
 exports.new = function(options = {}) {
