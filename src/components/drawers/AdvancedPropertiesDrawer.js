@@ -122,7 +122,7 @@ class AdvancedPropertiesDrawer extends Component {
             let newTree = gameTree.mutate(draft => {
                 let values = draft.get(treePosition).data[property]
 
-                if (values == null) values = [value]
+                if (values == null || index == null) values = [value]
                 else values = values.map((x, i) => i === index ? value : x)
 
                 draft.updateProperty(treePosition, property, values)
