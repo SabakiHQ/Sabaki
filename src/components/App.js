@@ -2,7 +2,7 @@ const fs = require('fs')
 const EventEmitter = require('events')
 const {extname} = require('path')
 const {ipcRenderer, remote} = require('electron')
-const {app, Menu} = remote
+const {app} = remote
 const {h, render, Component} = require('preact')
 const classNames = require('classnames')
 
@@ -228,16 +228,23 @@ class App extends Component {
                 } else if (this.state.fullScreen) {
                     this.setState({fullScreen: false})
                 }
-            } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
-                if (
-                    evt.ctrlKey || evt.metaKey
-                    || helper.isTextLikeElement(document.activeElement)
-                ) return
+            } else if ((evt.ctrlKey || evt.metaKey) && ['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+                if (helper.isTextLikeElement(document.activeElement)) return
 
                 evt.preventDefault()
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
                 this.startAutoscrolling(sign)
+            } else if ((evt.ctrlKey || evt.metaKey) && ['z', 'Z', 'y'].includes(evt.key)) {
+                // Hijack browser undo/redo
+
+                evt.preventDefault()
+
+                if (evt.key === 'z') {
+                    this.undo()
+                } else if (['Z', 'y'].includes(evt.key)) {
+                    this.redo()
+                }
             }
         })
 
