@@ -1835,7 +1835,7 @@ class App extends Component {
         if (shiftNode == null) return
 
         let newTree = tree.mutate(draft => {
-            draft.shiftNode(shiftNode.id, step >= 0 ? '1' : '-1')
+            draft.shiftNode(shiftNode.id, step >= 0 ? 'right' : 'left')
         })
 
         this.setCurrentTreePosition(newTree, treePosition)
