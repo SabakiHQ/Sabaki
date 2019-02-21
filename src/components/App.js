@@ -1913,18 +1913,19 @@ class App extends Component {
 
             // Remove all precedent variations
 
-            let prev = treePosition
+            let prevId = treePosition
 
             for (let node of tree.listNodesVertically(treePosition, -1, {})) {
-                if (node.id === prev) continue
-                gameCurrents[gameIndex][node.id] = prev.id
+                if (node.id !== prevId && node.children.length > 1) {
+                    gameCurrents[gameIndex][node.id] = prevId
 
-                for (let child of node.children) {
-                    if (child.id === prev.id) continue
-                    draft.removeNode(child.id)
+                    for (let child of node.children) {
+                        if (child.id === prevId) continue
+                        draft.removeNode(child.id)
+                    }
                 }
 
-                prev = node
+                prevId = node.id
             }
         })
 
