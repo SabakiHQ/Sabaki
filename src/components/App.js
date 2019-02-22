@@ -497,7 +497,8 @@ class App extends Component {
         this.historyPointer = historyPointer
         this.setState({
             gameIndex: entry.gameIndex,
-            gameTrees: entry.gameTrees
+            gameTrees: entry.gameTrees,
+            gameCurrents: entry.gameTrees.map(_ => ({}))
         })
 
         this.setCurrentTreePosition(gameTree, entry.treePosition, {clearCache: true})
