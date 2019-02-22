@@ -1701,8 +1701,10 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition)
     }
 
-    rotateBoard(tree, anticlockwise) {
-        let {treePosition} = this.state
+    rotateBoard(anticlockwise) {
+        let {treePosition, gameTrees, gameIndex} = this.state
+        let tree = gameTrees[gameIndex]
+        let {size} = this.getGameInfo(tree)
         let newTree = rotation.rotateTree(tree, size[0], size[1], anticlockwise)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})

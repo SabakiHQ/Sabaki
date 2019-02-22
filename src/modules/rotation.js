@@ -159,8 +159,8 @@ exports.rotateTree = function(tree, width, height, anticlockwise) {
 
         rotateNode(draft.root)
 
-        if (draft.root.data.SZ != null && draft.root.data.SZ.include(':')) {
-            draft.updateProperty(draft.root.id, 'SZ', draft.root.data.SZ.split(':').reverse().join(':'))
+        if (draft.root.data.SZ != null && draft.root.data.SZ[0].includes(':')) {
+            draft.updateProperty(draft.root.id, 'SZ', [draft.root.data.SZ[0].split(':').reverse().join(':')])
         }
     })
 }
