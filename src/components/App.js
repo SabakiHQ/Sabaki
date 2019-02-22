@@ -1584,7 +1584,7 @@ class App extends Component {
             }
 
             for (let key in props) {
-                if (data.key == null) continue
+                if (data[key] == null) continue
                 let value = data[key]
 
                 if (value && value.toString().trim() !== '') {
