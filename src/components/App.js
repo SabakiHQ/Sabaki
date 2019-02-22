@@ -456,7 +456,7 @@ class App extends Component {
 
     // History Management
 
-    recordHistory() {
+    recordHistory({prevGameIndex, prevTreePosition} = {}) {
         let currentEntry = this.history[this.historyPointer]
         let newEntry = {
             gameIndex: this.state.gameIndex,
@@ -478,6 +478,11 @@ class App extends Component {
         ) {
             this.history[this.historyPointer] = newEntry
         } else {
+            if (currentEntry != null && prevGameIndex != null && prevTreePosition != null) {
+                currentEntry.gameIndex = prevGameIndex
+                currentEntry.treePosition = prevTreePosition
+            }
+
             this.history.push(newEntry)
             this.historyPointer = this.history.length - 1
         }
@@ -1294,6 +1299,9 @@ class App extends Component {
             }, setting.get('game.navigation_analysis_delay'))
         }
 
+        let prevGameIndex = this.state.gameIndex
+        let prevTreePosition = this.state.treePosition
+
         this.setState({
             playVariation: null,
             blockedGuesses: [],
@@ -1303,7 +1311,7 @@ class App extends Component {
             treePosition: id
         })
 
-        this.recordHistory()
+        this.recordHistory({prevGameIndex, prevTreePosition})
 
         this.events.emit('navigate')
     }
