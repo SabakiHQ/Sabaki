@@ -240,19 +240,22 @@ class App extends Component {
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
                 this.startAutoscrolling(sign)
             } else if ((evt.ctrlKey || evt.metaKey) && ['z', 'Z', 'y'].includes(evt.key)) {
-                if (
-                    this.state.busy > 0
-                    || helper.isTextLikeElement(document.activeElement)
-                ) return
+                if (this.state.busy > 0) return
 
                 // Hijack browser undo/redo
 
-                if (evt.key === 'z') {
-                    evt.preventDefault()
-                    this.undo()
-                } else if (['Z', 'y'].includes(evt.key)) {
-                    evt.preventDefault()
-                    this.redo()
+                evt.preventDefault()
+
+                let action = evt.key === 'z' ? 'undo'
+                    : ['Z', 'y'].includes(evt.key) ? 'redo'
+                    : null
+
+                if (action != null) {
+                    if (helper.isTextLikeElement(document.activeElement)) {
+                        this.window.webContents[action]()
+                    } else {
+                        this[action]()
+                    }
                 }
             }
         })
