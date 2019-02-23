@@ -474,7 +474,7 @@ class App extends Component {
 
         if (
             currentEntry != null
-            && newEntry.timestamp - currentEntry.timestamp < setting.get('edit.new_history_delay')
+            && newEntry.timestamp - currentEntry.timestamp < setting.get('edit.history_batch_interval')
         ) {
             this.history[this.historyPointer] = newEntry
         } else {

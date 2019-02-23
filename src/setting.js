@@ -60,7 +60,7 @@ let defaults = {
     'edit.click_currentvertex_to_remove': true,
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,
-    'edit.new_history_delay': 500,
+    'edit.history_batch_interval': 500,
     'edit.history_count': 1000,
     'engines.list': [],
     'file.show_reload_warning': true,
