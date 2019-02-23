@@ -197,8 +197,10 @@ class GameGraph extends Component {
             this.setState({matrixDict: [matrix, dict]})
         }
 
-        clearTimeout(this.updateCameraPositionId)
-        this.updateCameraPositionId = setTimeout(() => this.updateCameraPosition(), delay)
+        if (treePosition !== this.props.treePosition) {
+            clearTimeout(this.updateCameraPositionId)
+            this.updateCameraPositionId = setTimeout(() => this.updateCameraPosition(), delay)
+        }
     }
 
     componentDidUpdate({height, showGameGraph}) {
