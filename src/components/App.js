@@ -1,6 +1,5 @@
 const fs = require('fs')
 const EventEmitter = require('events')
-const {extname} = require('path')
 const {ipcRenderer, remote} = require('electron')
 const {app} = remote
 const {h, render, Component} = require('preact')

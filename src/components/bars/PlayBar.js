@@ -103,6 +103,15 @@ class PlayBar extends Component {
                 {
                     label: '&Info',
                     click: () => sabaki.openDrawer('info')
+                },
+                {type: 'separator'},
+                {
+                    label: 'Undo',
+                    click: () => sabaki.undo()
+                },
+                {
+                    label: 'Redo',
+                    click: () => sabaki.redo()
                 }
             ]
 
