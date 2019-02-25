@@ -470,7 +470,7 @@ class App extends Component {
             && helper.shallowEquals(currentEntry.gameTrees, newEntry.gameTrees)
         ) return
 
-        this.history = this.history.slice(-setting.get('edit.history_count'), this.historyPointer + 1)
+        this.history = this.history.slice(-setting.get('edit.max_history_count'), this.historyPointer + 1)
 
         if (
             currentEntry != null

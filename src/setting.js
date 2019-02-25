@@ -68,10 +68,10 @@ let defaults = {
         'BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB',
         'PW', 'RE', 'SO', 'SZ', 'WT', 'WR'
     ],
+    'edit.history_batch_interval': 500,
+    'edit.max_history_count': 1000,
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,
-    'edit.history_batch_interval': 500,
-    'edit.history_count': 1000,
     'engines.list': [],
     'file.show_reload_warning': true,
     'find.delay': 100,
