@@ -1082,14 +1082,14 @@ class App extends Component {
             draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
         })
 
-        this.makeMove([-1, -1], {player})
         this.makeMainVariation(newTree, treePosition)
+        this.makeMove([-1, -1], {player})
 
         this.events.emit('resign', {player})
     }
 
     useTool(tool, vertex, argument = null) {
-        let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
+        let {gameTrees, gameIndex, treePosition} = this.state
         let {currentPlayer} = this.inferredState
         let tree = gameTrees[gameIndex]
         let board = gametree.getBoard(tree, treePosition)
