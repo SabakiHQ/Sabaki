@@ -4,7 +4,7 @@ const Bar = require('./Bar')
 class GuessBar extends Component {
     render(props) {
         return h(Bar, Object.assign({type: 'guess'}, props),
-            'Guess the next move.'
+            'Click on the board to guess the next move.'
         )
     }
 }

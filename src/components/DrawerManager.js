@@ -21,35 +21,43 @@ class DrawerManager extends Component {
         this.handleGameSelect = ({selectedTree}) => {
             sabaki.closeDrawer()
             sabaki.setMode('play')
-            sabaki.setCurrentTreePosition(selectedTree, 0)
+            sabaki.setCurrentTreePosition(selectedTree, selectedTree.root.id)
         }
 
         this.handleGameTreesChange = evt => {
             let newGameTrees = evt.gameTrees
-            let {gameTrees, gameIndex, rootTree} = this.props
+            let {gameTrees, gameCurrents, gameIndex} = this.props
+            let tree = gameTrees[gameIndex]
+            let newIndex = newGameTrees.findIndex(t => t.root.id === tree.root.id)
 
-            if (!newGameTrees.includes(rootTree)) {
-                if (newGameTrees.length === 0) {
-                    newGameTrees = [sabaki.getEmptyGameTree()]
-                }
+            if (newIndex < 0) {
+                if (newGameTrees.length === 0) newGameTrees = [sabaki.getEmptyGameTree()]
 
-                let newIndex = Math.min(Math.max(gameIndex - 1, 0), newGameTrees.length - 1)
-                let newTreePosition = [newGameTrees[newIndex], 0]
-
-                sabaki.setCurrentTreePosition(...newTreePosition)
+                newIndex = Math.min(Math.max(gameIndex - 1, 0), newGameTrees.length - 1)
+                tree = newGameTrees[newIndex]
             }
 
-            sabaki.setState({gameTrees: newGameTrees})
+            sabaki.setState({
+                gameTrees: newGameTrees,
+                gameCurrents: newGameTrees.map((tree, i) => {
+                    let oldIndex = gameTrees.findIndex(t => t.root.id === tree.root.id)
+                    if (oldIndex < 0) return {}
+
+                    return gameCurrents[oldIndex]
+                })
+            })
+
+            sabaki.setCurrentTreePosition(tree, tree.root.id)
         }
     }
 
     render({
         mode,
         openDrawer,
+        gameTree,
         gameTrees,
         gameIndex,
         treePosition,
-        rootTree,
 
         gameInfo,
         currentPlayer,
@@ -67,7 +75,7 @@ class DrawerManager extends Component {
             h(InfoDrawer, {
                 show: openDrawer === 'info',
                 engines: attachedEngines,
-                treePosition,
+                gameTree,
                 gameInfo,
                 currentPlayer
             }),
@@ -90,11 +98,13 @@ class DrawerManager extends Component {
 
             h(CleanMarkupDrawer, {
                 show: openDrawer === 'cleanmarkup',
+                gameTree,
                 treePosition
             }),
 
             h(AdvancedPropertiesDrawer, {
                 show: openDrawer === 'advancedproperties',
+                gameTree,
                 treePosition
             }),
 
@@ -104,8 +114,8 @@ class DrawerManager extends Component {
                 areaMap,
                 board: scoreBoard,
                 method: scoringMethod,
-                komi: +gametree.getRootProperty(treePosition[0], 'KM', 0),
-                handicap: +gametree.getRootProperty(treePosition[0], 'HA', 0),
+                komi: +gametree.getRootProperty(gameTree, 'KM', 0),
+                handicap: +gametree.getRootProperty(gameTree, 'HA', 0),
 
                 onSubmitButtonClick: this.handleScoreSubmit
             })

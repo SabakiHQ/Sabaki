@@ -15,6 +15,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Open wBaduk NGF and Tygem GIB files
 - Display formatted SGF comments using a [subset of Markdown](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/markdown.md)
 - SGF editing tools
+- Powerful undo/redo
 - Lines & arrows board markup
 - Copy & paste variations
 - Fast game tree

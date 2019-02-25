@@ -9,7 +9,7 @@ const gametree = sabaki && require('./modules/gametree')
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
-let treePosition = () => sabaki.state.treePosition
+let treePosition = () => [sabaki.state.gameTrees[sabaki.state.gameIndex], sabaki.state.treePosition]
 
 let data = [
     {
@@ -120,6 +120,17 @@ let data = [
     {
         label: '&Edit',
         submenu: [
+            {
+                label: '&Undo',
+                accelerator: 'CmdOrCtrl+Z',
+                click: () => sabaki.undo()
+            },
+            {
+                label: 'Re&do',
+                accelerator: process.platform === 'win32' ? 'CmdOrCtrl+Y' : 'CmdOrCtrl+Shift+Z',
+                click: () => sabaki.redo()
+            },
+            {type: 'separator'},
             {
                 label: 'Toggle &Edit Mode',
                 accelerator: 'CmdOrCtrl+E',
@@ -255,7 +266,7 @@ let data = [
                 label: 'Toggle &Hotspot',
                 accelerator: 'CmdOrCtrl+B',
                 click: () => sabaki.setComment(...treePosition(), {
-                    hotspot: !('HO' in treePosition()[0].nodes[treePosition()[1]])
+                    hotspot: treePosition()[0].get(treePosition()[1]).data.HO == null
                 })
             },
             {
@@ -469,6 +480,11 @@ let data = [
                 click: () => toggleSetting('view.show_coordinates')
             },
             {
+                label: 'Show Move N&umbers',
+                checked: 'view.show_move_numbers',
+                click: () => toggleSetting('view.show_move_numbers')
+            },
+            {
                 label: 'Show Move Colori&zation',
                 checked: 'view.show_move_colorization',
                 click: () => toggleSetting('view.show_move_colorization')
@@ -507,21 +523,21 @@ let data = [
                 label: 'Z&oom',
                 submenu: [
                     {
-                        label: 'Increase',
+                        label: '&Increase',
                         accelerator: 'CmdOrCtrl+Plus',
                         click: () => setting.set('app.zoom_factor',
                             setting.get('app.zoom_factor') + .1
                         )
                     },
                     {
-                        label: 'Decrease',
+                        label: '&Decrease',
                         accelerator: 'CmdOrCtrl+-',
                         click: () => setting.set('app.zoom_factor',
                             Math.max(0, setting.get('app.zoom_factor') - .1)
                         )
                     },
                     {
-                        label: 'Reset',
+                        label: '&Reset',
                         accelerator: 'CmdOrCtrl+0',
                         click: () => setting.set('app.zoom_factor', 1)
                     }
@@ -580,9 +596,6 @@ if (process.platform === 'darwin') {
         {
             label: 'Text',
             submenu: [
-                {role: 'undo'},
-                {role: 'redo'},
-                {type: 'separator'},
                 {role: 'cut'},
                 {role: 'copy'},
                 {role: 'paste'},

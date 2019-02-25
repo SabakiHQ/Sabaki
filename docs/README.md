@@ -27,7 +27,6 @@ This documentation is incomplete and a work in progress.
 * [Sabaki](api/sabaki.md)
 * [Game Tree](api/gametree.md)
 * [Board](api/board.md)
-* [Board Matcher](api/boardmatcher.md)
 * [Dialog](api/dialog.md)
 * [File Formats](api/fileformats.md)
 * [Helper](api/helper.md)

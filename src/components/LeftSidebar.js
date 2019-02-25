@@ -50,7 +50,7 @@ class LeftSidebar extends Component {
         })
     }
 
-    render({treePosition, showLeftSidebar, leftSidebarWidth, consoleLog, attachedEngines, engineCommands}) {
+    render({showLeftSidebar, leftSidebarWidth, consoleLog, attachedEngines, engineCommands}) {
         return h('section',
             {
                 ref: el => this.element = el,
