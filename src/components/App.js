@@ -1728,12 +1728,7 @@ class App extends Component {
             children: node.children
         }
 
-        let stripProperties = [
-            'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
-            'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
-            'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
-            'US', 'WR', 'WT'
-        ]
+        let stripProperties = setting.get('edit.copy_variation_strip_props')
 
         for (let prop of stripProperties) {
             delete copy.data[prop]
@@ -1784,7 +1779,7 @@ class App extends Component {
         if (gameIndex < 0) return
 
         let board = gametree.getBoard(tree, treePosition)
-        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'SZ', 'WT', 'WR']
+        let inherit = setting.get('edit.flatten_inherit_root_props')
 
         let newTree = tree.mutate(draft => {
             draft.makeRoot(treePosition)
