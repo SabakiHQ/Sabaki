@@ -1,3 +1,5 @@
+const noop = require('./noop')
+
 module.exports = {
-    nameMove: _ => ''
+    findPatternInMove: noop
 }
