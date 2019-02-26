@@ -3,7 +3,7 @@ const winston = require('winston')
 const path = require('path')
 const setting = remote.require('./setting')
 const dialog = require('./dialog')
-const helper = require('../modules/helper')
+const helper = require('./helper')
 
 let filename = null
 
