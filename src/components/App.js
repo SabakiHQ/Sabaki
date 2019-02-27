@@ -445,9 +445,13 @@ class App extends Component {
         this.setState({showInfoOverlay: false})
     }
 
-    flashInfoOverlay(text) {
+    flashInfoOverlay(text, duration = null) {
+        if (duration == null) duration = setting.get('infooverlay.duration')
+
         this.showInfoOverlay(text)
-        setTimeout(() => this.hideInfoOverlay(), setting.get('infooverlay.duration'))
+
+        clearTimeout(this.hideInfoOverlayId)
+        this.hideInfoOverlayId = setTimeout(() => this.hideInfoOverlay(), duration)
     }
 
     clearConsole() {
