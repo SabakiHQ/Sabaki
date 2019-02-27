@@ -112,16 +112,17 @@ The score drawer should only be opened in scoring mode or estimator mode.
 
 * `busy` `<Boolean>`
 
-Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. The user cannot interact with the UI in busy state.
+Set `busy` to `true` to indicate to the user that Sabaki is busy doing stuff. The user cannot interact with the UI in busy state. Don't forget to call `setBusy(false)` after `setBusy(true)`.
 
 #### sabaki.showInfoOverlay(text)
 
 * `text` `<String>`
 
 #### sabaki.hideInfoOverlay()
-#### sabaki.flashInfoOverlay(text)
+#### sabaki.flashInfoOverlay(text[, duration])
 
 * `text` `<String>`
+* `duration` `<Integer>` - Default: `infooverlay.duration` setting
 
 ### File Management
 
@@ -214,26 +215,21 @@ Updates game information that the current player has resigned and shows the game
 
 Uses `tool` to mark the board at `vertex`. If `tool` is `'arrow'` or `'line'`, `argument` has to be set as the second [vertex](vertex.md). Otherwise `argument` is optional. If `tool` is `label`, `argument` can be a string specifying the label text.
 
-### Undo
+### History
 
-#### sabaki.setUndoPoint([undoText])
-
-* `undoText` `<String>` *(optional)*
-
-#### sabaki.clearUndoPoint()
 #### sabaki.undo()
+#### sabaki.redo()
 
 ### Navigation
 
-#### sabaki.setCurrentTreePosition(tree, index[, options])
+#### sabaki.setCurrentTreePosition(tree, treePosition[, options])
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `options` `<Object>` *(optional)*
     * `clearCache` `<Boolean>` - Default: `false`
-    * `clearUndoPoint` `<Boolean>` - Default: `true`
 
-Jumps to the [tree position](treeposition.md) specified by `tree` and `index`.
+Updates the tree and jumps to the given `treePosition`. Make sure the root id of the given `tree` coincides with a tree in the `gameTrees` state.
 
 #### sabaki.goStep(step)
 
@@ -317,23 +313,23 @@ Returns an object with the following values:
 
 Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
 
-#### sabaki.getPlayer(tree, index)
+#### sabaki.getPlayer(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 
-Returns a [sign](sign.md) corresponding to the player that should be playing at the given [tree position](treeposition.md).
+Returns a [sign](sign.md) corresponding to the player that should be playing at the given `treePosition`.
 
-#### sabaki.setPlayer(tree, index, sign)
+#### sabaki.setPlayer(tree, treePosition, sign)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `sign` [`<Sign>`](sign.md) - Cannot be `0`
 
-#### sabaki.getComment(tree, index)
+#### sabaki.getComment(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 
 Returns an object with the following keys:
 
@@ -345,10 +341,10 @@ Returns an object with the following keys:
 
 This only returns what is encoded in the [game tree](gametree.md), so it won't return automatic titles by Sabaki.
 
-#### sabaki.setComment(tree, index, data)
+#### sabaki.setComment(tree, treePosition, data)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `data` `<Object>`
     * `title` `<String>` | `<Null>` *(optional)*
     * `comment` `<String>` | `<Null>` *(optional)*
@@ -358,77 +354,65 @@ This only returns what is encoded in the [game tree](gametree.md), so it won't r
 
 Don't provide keys in `data` to leave corresponding information unchanged in the game tree. Set corresponding keys in `data` to `null` to remove the data from the game tree.
 
-#### sabaki.copyVariation(tree, index)
+#### sabaki.copyVariation(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 
-#### sabaki.cutVariation(tree, index[, options])
-
-* `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
-* `options` `<Object>` *(optional)*
-    * `setUndoPoint` `<Boolean>` - Default: `true`
-
-#### sabaki.pasteVariation(tree, index[, options])
+#### sabaki.cutVariation(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
-* `options` `<Object>` *(optional)*
-    * `setUndoPoint` `<Boolean>` - Default: `true`
+* `treePosition` `<TreePosition>`
 
-#### sabaki.flattenVariation(tree, index[, options])
+#### sabaki.pasteVariation(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
-* `options` `<Object>` *(optional)*
-    * `setUndoPoint` `<Boolean>` - Default: `true`
+* `treePosition` `<TreePosition>`
 
-#### sabaki.makeMainVariation(tree, index[, options])
+#### sabaki.flattenVariation(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
-* `options` `<Object>` *(optional)*
-    * `setUndoPoint` `<Boolean>` - Default: `true`
+* `treePosition` `<TreePosition>`
 
-#### sabaki.shiftVariation(tree, index, step, [, options])
+#### sabaki.makeMainVariation(tree, treePosition)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
+
+#### sabaki.shiftVariation(tree, treePosition, step)
+
+* `tree` [`<GameTree>`](gametree.md)
+* `treePosition` `<TreePosition>`
 * `step` `<Integer>`
-* `options` `<Object>` *(optional)*
-    * `setUndoPoint` `<Boolean>` - Default: `true`
 
-#### sabaki.removeNode(tree, index[, options])
+#### sabaki.removeNode(tree, treePosition[, options])
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `options` `<Object>` *(optional)*
     * `suppressConfirmation` `<Boolean>` - Default: `false`
-    * `setUndoPoint` `<Boolean>` - Default: `true`
 
-#### sabaki.removeOtherVariations(tree, index[, options])
+#### sabaki.removeOtherVariations(tree, treePosition[, options])
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `options` `<Object>` *(optional)*
     * `suppressConfirmation` `<Boolean>` - Default: `false`
-    * `setUndoPoint` `<Boolean>` - Default: `true`
 
 ### Menus
 
-#### sabaki.openNodeMenu(tree, index, options)
+#### sabaki.openNodeMenu(tree, treePosition, options)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `options` `<Object>`
     * `x` `<Integer>`
     * `y` `<Integer>`
 
-#### sabaki.openCommentMenu(tree, index, options)
+#### sabaki.openCommentMenu(tree, treePosition, options)
 
 * `tree` [`<GameTree>`](gametree.md)
-* `index` `<Integer>`
+* `treePosition` `<TreePosition>`
 * `options` `<Object>`
     * `x` `<Integer>`
     * `y` `<Integer>`
