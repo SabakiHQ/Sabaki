@@ -199,6 +199,12 @@ class InfoDrawer extends Component {
         this.preparePikaday()
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.show && this.props.show) {
+            this.firstFocusElement.focus()
+        }
+    }
+
     shouldComponentUpdate({show}) {
         return show !== this.props.show || show
     }
@@ -329,6 +335,7 @@ class InfoDrawer extends Component {
                 h('section', {},
                     h('span', {},
                         h('img', {
+                            tabIndex: 0,
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
@@ -345,6 +352,7 @@ class InfoDrawer extends Component {
                         }),
 
                         h('input', {
+                            ref: el => this.firstFocusElement = el,
                             type: 'text',
                             name: 'name_1',
                             placeholder: 'Black',
@@ -379,6 +387,7 @@ class InfoDrawer extends Component {
                         }), ' ',
 
                         h('img', {
+                            tabIndex: 0,
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
