@@ -3,6 +3,7 @@ const classNames = require('classnames')
 const gtp = require('@sabaki/gtp')
 
 const ContentDisplay = require('./ContentDisplay')
+const TextSpinner = require('./TextSpinner')
 const helper = require('../modules/helper')
 
 class ConsoleCommandEntry extends Component {
@@ -56,10 +57,10 @@ class ConsoleResponseEntry extends Component {
                     content: response.content.replace(/(^info move.*\s*)+/gm, 'info move (…)\n')
                 }),
 
-                waiting && h('div', {class: 'internal'}, '…')
+                waiting && h('div', {class: 'internal'}, h(TextSpinner))
             )
 
-            : h('pre', {}, h('span', {class: 'internal'}, '…'))
+            : h('pre', {}, h('span', {class: 'internal'}, h(TextSpinner)))
         )
     }
 }

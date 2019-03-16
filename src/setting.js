@@ -40,10 +40,20 @@ let defaults = {
     'console.max_history_count': 1000,
     'debug.dev_tools': false,
     'edit.click_currentvertex_to_remove': true,
+    'edit.copy_variation_strip_props': [
+        'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
+        'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
+        'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
+        'US', 'WR', 'WT'
+    ],
+    'edit.flatten_inherit_root_props': [
+        'BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB',
+        'PW', 'RE', 'SO', 'SZ', 'WT', 'WR'
+    ],
+    'edit.history_batch_interval': 500,
+    'edit.max_history_count': 1000,
     'edit.show_removenode_warning': true,
     'edit.show_removeothervariations_warning': true,
-    'edit.history_batch_interval': 500,
-    'edit.history_count': 1000,
     'engines.list': [],
     'file.show_reload_warning': true,
     'find.delay': 100,

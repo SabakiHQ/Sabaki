@@ -89,6 +89,7 @@ class App extends Component {
 
             engines: null,
             attachedEngines: [null, null],
+            engineBusy: [false, false],
             engineCommands: [[], []],
             generatingMoves: false,
             analysisTreePosition: null,
@@ -141,7 +142,6 @@ class App extends Component {
 
         window.addEventListener('load', () => {
             this.events.emit('ready')
-            this.window.show()
         })
 
         ipcRenderer.on('load-file', (evt, ...args) => {
@@ -429,9 +429,13 @@ class App extends Component {
         this.setState({showInfoOverlay: false})
     }
 
-    flashInfoOverlay(text) {
+    flashInfoOverlay(text, duration = null) {
+        if (duration == null) duration = setting.get('infooverlay.duration')
+
         this.showInfoOverlay(text)
-        setTimeout(() => this.hideInfoOverlay(), setting.get('infooverlay.duration'))
+
+        clearTimeout(this.hideInfoOverlayId)
+        this.hideInfoOverlayId = setTimeout(() => this.hideInfoOverlay(), duration)
     }
 
     clearConsole() {
@@ -454,7 +458,7 @@ class App extends Component {
             && helper.shallowEquals(currentEntry.gameTrees, newEntry.gameTrees)
         ) return
 
-        this.history = this.history.slice(-setting.get('edit.history_count'), this.historyPointer + 1)
+        this.history = this.history.slice(-setting.get('edit.max_history_count'), this.historyPointer + 1)
 
         if (
             currentEntry != null
@@ -1031,14 +1035,14 @@ class App extends Component {
             draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
         })
 
-        this.makeMove([-1, -1], {player})
         this.makeMainVariation(newTree, treePosition)
+        this.makeMove([-1, -1], {player})
 
         this.events.emit('resign', {player})
     }
 
     useTool(tool, vertex, argument = null) {
-        let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
+        let {gameTrees, gameIndex, treePosition} = this.state
         let {currentPlayer} = this.inferredState
         let tree = gameTrees[gameIndex]
         let board = gametree.getBoard(tree, treePosition)
@@ -1677,12 +1681,7 @@ class App extends Component {
             children: node.children
         }
 
-        let stripProperties = [
-            'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
-            'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
-            'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
-            'US', 'WR', 'WT'
-        ]
+        let stripProperties = setting.get('edit.copy_variation_strip_props')
 
         for (let prop of stripProperties) {
             delete copy.data[prop]
@@ -1733,7 +1732,7 @@ class App extends Component {
         if (gameIndex < 0) return
 
         let board = gametree.getBoard(tree, treePosition)
-        let inherit = ['BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB', 'PW', 'RE', 'SO', 'SZ', 'WT', 'WR']
+        let inherit = setting.get('edit.flatten_inherit_root_props')
 
         let newTree = tree.mutate(draft => {
             draft.makeRoot(treePosition)

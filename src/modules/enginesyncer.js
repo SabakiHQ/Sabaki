@@ -30,6 +30,7 @@ class EngineSyncer extends EventEmitter {
 
         let {path, args, commands} = engine
 
+        this._busy = false
         this.engine = engine
         this.commands = []
         this.state = JSON.parse(defaultStateJSON)
@@ -59,12 +60,15 @@ class EngineSyncer extends EventEmitter {
 
         this.controller.on('stopped', () => {
             this.state = JSON.parse(defaultStateJSON)
+            this.busy = false
         })
 
         this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {
             // Track engine state
 
             let res = null
+
+            this.busy = this.controller.busy
 
             if (!['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)) {
                 try {
@@ -128,6 +132,21 @@ class EngineSyncer extends EventEmitter {
                 this.state.dirty = true
             }
         })
+
+        this.controller.on('response-received', () => {
+            this.busy = this.controller.busy
+        })
+    }
+
+    get busy() {
+        return this._busy
+    }
+
+    set busy(value) {
+        if (value !== this._busy) {
+            this._busy = value
+            this.emit('busy-changed')
+        }
     }
 
     async sync(tree, id) {

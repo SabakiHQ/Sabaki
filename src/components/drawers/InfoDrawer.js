@@ -199,6 +199,12 @@ class InfoDrawer extends Component {
         this.preparePikaday()
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.show && this.props.show) {
+            this.firstFocusElement.focus()
+        }
+    }
+
     shouldComponentUpdate({show}) {
         return show !== this.props.show || show
     }
@@ -328,14 +334,6 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        false && h('img', {
-                            src: './node_modules/octicons/build/svg/chevron-down.svg',
-                            width: 16,
-                            height: 16,
-                            class: classNames({menu: true, active: engines[0] != null}),
-                            onClick: this.handleEngineMenuClick[0]
-                        }), ' ',
-
                         h('input', {
                             type: 'text',
                             name: 'rank_1',
@@ -345,6 +343,7 @@ class InfoDrawer extends Component {
                         }),
 
                         h('input', {
+                            ref: el => this.firstFocusElement = el,
                             type: 'text',
                             name: 'name_1',
                             placeholder: 'Black',
@@ -376,15 +375,7 @@ class InfoDrawer extends Component {
                             placeholder: 'Rank',
                             value: whiteRank,
                             onInput: this.handleInputChange.whiteRank
-                        }), ' ',
-
-                        false && h('img', {
-                            src: './node_modules/octicons/build/svg/chevron-down.svg',
-                            width: 16,
-                            height: 16,
-                            class: classNames({menu: true, active: engines[1] != null}),
-                            onClick: this.handleEngineMenuClick[1]
-                        })
+                        }), ' '
                     )
                 ),
 

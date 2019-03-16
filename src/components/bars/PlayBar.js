@@ -3,6 +3,8 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {remote} = require('electron')
 
+const TextSpinner = require('../TextSpinner')
+
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -127,6 +129,7 @@ class PlayBar extends Component {
     render({
         mode,
         attachedEngines,
+        playerBusy,
         playerNames,
         playerRanks,
         playerCaptures,
@@ -158,17 +161,27 @@ class PlayBar extends Component {
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
                 playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
 
-                h('span', {
-                    class: classNames('name', {engine: isEngine[0]}),
-                    title: isEngine[0] && 'Engine'
-                }, playerNames[0] || 'Black')
+                h('span',
+                    {
+                        class: classNames('name', {engine: isEngine[0]}),
+                        title: isEngine[0] && 'Engine'
+                    },
+                    isEngine[0] && playerBusy[0] && h(TextSpinner),
+                    ' ',
+                    playerNames[0] || 'Black'
+                )
             ),
 
             h('span', {id: 'player_-1'},
-                h('span', {
-                    class: classNames('name', {engine: isEngine[1]}),
-                    title: isEngine[1] && 'Engine'
-                }, playerNames[1] || 'White'), ' ',
+                h('span',
+                    {
+                        class: classNames('name', {engine: isEngine[1]}),
+                        title: isEngine[1] && 'Engine'
+                    },
+                    playerNames[1] || 'White',
+                    ' ',
+                    isEngine[1] && playerBusy[1] && h(TextSpinner)
+                ), ' ',
 
                 playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])

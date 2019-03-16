@@ -9,11 +9,10 @@ const ScoringBar = require('./bars/ScoringBar')
 const FindBar = require('./bars/FindBar')
 
 const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
 
 class MainView extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
         this.handleTogglePlayer = () => {
             let {gameTree, treePosition, currentPlayer} = this.props
@@ -78,6 +77,7 @@ class MainView extends Component {
         currentPlayer,
         gameInfo,
         attachedEngines,
+        engineBusy,
         analysisTreePosition,
 
         deadStones,
@@ -178,6 +178,7 @@ class MainView extends Component {
                 h(PlayBar, {
                     mode,
                     attachedEngines,
+                    playerBusy: engineBusy,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,
