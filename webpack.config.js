@@ -46,6 +46,8 @@ module.exports = (env, argv) => ({
             './ThemeManager': noopPath,
             './LeftSidebar': noopPath,
             './GtpConsole': noopPath,
+            './TextSpinner': noopPath,
+            '../TextSpinner': noopPath,
             './drawers/AdvancedPropertiesDrawer': noopPath,
             './drawers/PreferencesDrawer': noopPath,
             './drawers/CleanMarkupDrawer': noopPath,
