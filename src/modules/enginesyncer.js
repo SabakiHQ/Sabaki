@@ -60,6 +60,7 @@ class EngineSyncer extends EventEmitter {
 
         this.controller.on('stopped', () => {
             this.state = JSON.parse(defaultStateJSON)
+            this.busy = false
         })
 
         this.controller.on('command-sent', async ({command, getResponse, subscribe}) => {

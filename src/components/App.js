@@ -90,6 +90,7 @@ class App extends Component {
 
             engines: null,
             attachedEngines: [null, null],
+            engineBusy: [false, false],
             engineCommands: [[], []],
             generatingMoves: false,
             analysisTreePosition: null,
@@ -2120,8 +2121,9 @@ class App extends Component {
 
             this.attachedEngineSyncers.reverse()
 
-            this.setState(({engineCommands}) => ({
+            this.setState(({engineBusy, engineCommands}) => ({
                 engineCommands: engineCommands.reverse(),
+                engineBusy: engineBusy.reverse(),
                 attachedEngines: engines
             }))
 
@@ -2139,21 +2141,32 @@ class App extends Component {
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] === engines[i])
-                continue
-            if (this.attachedEngineSyncers[i])
+            if (attachedEngines[i] === engines[i]) continue
+
+            if (this.attachedEngineSyncers[i]) {
                 this.attachedEngineSyncers[i].controller.stop(quitTimeout)
+            }
 
             try {
-                let syncer = new EngineSyncer(engines[i])
+                let engine = engines[i]
+                let syncer = new EngineSyncer(engine)
                 this.attachedEngineSyncers[i] = syncer
+
+                syncer.on('busy-changed', () => {
+                    this.setState(({engineBusy}) => {
+                        let j = this.attachedEngineSyncers.indexOf(syncer)
+                        engineBusy[j] = syncer.busy
+
+                        return {engineBusy}
+                    })
+                })
 
                 syncer.controller.on('command-sent', evt => {
                     gtplogger.write({
                         type: 'stdin',
                         message: gtp.Command.toString(evt.command),
                         sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
-                        engine: engines[i].name
+                        engine: engine.name
                     })
 
                     if (evt.command.name === 'list_commands') {
@@ -2175,13 +2188,13 @@ class App extends Component {
                         type: 'stderr',
                         message: content,
                         sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
-                        engine: engines[i].name
+                        engine: engine.name
                     })
 
                     this.setState(({consoleLog}) => ({
                         consoleLog: [...consoleLog, {
                             sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
-                            name: engines[i].name,
+                            name: engine.name,
                             command: null,
                             response: {content, internal: true}
                         }]
@@ -2193,7 +2206,7 @@ class App extends Component {
                         type: 'meta',
                         message: 'Engine Started',
                         sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
-                        engine: engines[i].name
+                        engine: engine.name
                     })
                 })
 
@@ -2202,7 +2215,7 @@ class App extends Component {
                         type: 'meta',
                         message: 'Engine Stopped',
                         sign: this.attachedEngineSyncers.indexOf(syncer) === 0 ? 1 : -1,
-                        engine: engines[i].name
+                        engine: engine.name
                     })
 
                     let j = this.attachedEngineSyncers.indexOf(syncer)
