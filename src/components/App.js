@@ -221,16 +221,15 @@ class App extends Component {
 
                 // Hijack browser undo/redo
 
-                evt.preventDefault()
-
                 let action = evt.key === 'z' ? 'undo'
                     : ['Z', 'y'].includes(evt.key) ? 'redo'
                     : null
 
                 if (action != null) {
                     if (helper.isTextLikeElement(document.activeElement)) {
-                        this.window.webContents[action]()
+                        return
                     } else {
+                        evt.preventDefault()
                         this[action]()
                     }
                 }
