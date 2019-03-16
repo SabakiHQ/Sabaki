@@ -90,6 +90,7 @@ class App extends Component {
 
             engines: null,
             attachedEngines: [null, null],
+            engineBusy: [false, false],
             engineCommands: [[], []],
             generatingMoves: false,
             analysisTreePosition: null,
@@ -2139,14 +2140,23 @@ class App extends Component {
         let quitTimeout = setting.get('gtp.engine_quit_timeout')
 
         for (let i = 0; i < attachedEngines.length; i++) {
-            if (attachedEngines[i] === engines[i])
-                continue
-            if (this.attachedEngineSyncers[i])
+            if (attachedEngines[i] === engines[i]) continue
+
+            if (this.attachedEngineSyncers[i]) {
                 this.attachedEngineSyncers[i].controller.stop(quitTimeout)
+                .then(() => this.attachedEngineSyncers[i].controller.removeAllListeners())
+            }
 
             try {
                 let syncer = new EngineSyncer(engines[i])
                 this.attachedEngineSyncers[i] = syncer
+
+                syncer.on('busy-changed', () => {
+                    this.setState(({engineBusy}) => {
+                        engineBusy[i] = syncer.busy
+                        return {engineBusy}
+                    })
+                })
 
                 syncer.controller.on('command-sent', evt => {
                     gtplogger.write({
