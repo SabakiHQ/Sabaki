@@ -12,7 +12,7 @@ Most of the Go engines support optional parameters to tune their capacities. Lis
 
   Arguments: `--mode gtp`
 
-* [**Pachi**](http://pachi.or.cz): There are binaries available for Windows. On Linux and macOS you can compile the engine from source.
+* [**Pachi**](https://github.com/pasky/pachi): There are binaries available for Windows and Linux. The source code is available to compile the engine.
 
   Arguments: None
 

@@ -216,14 +216,15 @@ class App extends Component {
 
                 let sign = evt.key === 'ArrowUp' ? -1 : 1
                 this.startAutoscrolling(sign)
-            } else if ((evt.ctrlKey || evt.metaKey) && ['z', 'Z', 'y'].includes(evt.key)) {
+            } else if ((evt.ctrlKey || evt.metaKey) && ['z', 'y'].includes(evt.key.toLowerCase())) {
                 if (this.state.busy > 0) return
 
                 // Hijack browser undo/redo
 
-                let action = evt.key === 'z' ? 'undo'
-                    : ['Z', 'y'].includes(evt.key) ? 'redo'
-                    : null
+                let step = evt.key.toLowerCase() === 'z' ? -1 : 1
+                if (evt.shiftKey) step = -step
+
+                let action = step < 0 ? 'undo' : 'redo'
 
                 if (action != null) {
                     if (helper.isTextLikeElement(document.activeElement)) {
@@ -1545,7 +1546,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(tree, 0)
+                        let board = gametree.getBoard(tree, tree.root.id)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
