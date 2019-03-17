@@ -29,6 +29,7 @@ let defaults = {
     'app.always_show_result': false,
     'app.enable_hardware_acceleration': true,
     'app.hide_busy_delay': 200,
+    'app.lang': 'default',
     'app.loadgame_delay': 100,
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 3000,

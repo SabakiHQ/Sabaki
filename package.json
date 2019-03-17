@@ -71,6 +71,7 @@
     "@sabaki/shudan": "^1.3.10",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
+    "dolm": "^0.3.0-alpha",
     "iconv-lite": "^0.4.24",
     "jschardet": "^2.1.0",
     "natsort": "^1.0.6",
