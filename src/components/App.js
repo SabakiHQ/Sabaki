@@ -22,16 +22,17 @@ const influence = require('@sabaki/influence')
 
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
+const i18n = require('../i18n')
 const Board = require('../modules/board')
 const EngineSyncer = require('../modules/enginesyncer')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
+const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
 const treetransformer = require('../modules/treetransformer')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const gtplogger = require('../modules/gtplogger')
 
 class App extends Component {
     constructor() {
@@ -128,7 +129,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, dialog, fileformats,
-            gametree, helper, setting, sound}
+            gametree, helper, i18n, setting, sound}
 
         // Bind state to settings
 

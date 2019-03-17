@@ -17,9 +17,8 @@ try {
 
 const dolm = require('dolm').load(strings)
 
-exports.context = function(...args) {
-    return dolm.context(...args)
-}
+exports.t = dolm.t
+exports.context = dolm.context
 
 exports.serialize = function() {
     let result = dolm.serialize()
