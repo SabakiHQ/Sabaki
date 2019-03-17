@@ -1598,7 +1598,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(tree, 0)
+                        let board = gametree.getBoard(tree, tree.root.id)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
