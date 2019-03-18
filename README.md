@@ -63,7 +63,9 @@ A big thank you to these lovely people:
 ## Related
 
 * [Shudan](https://github.com/SabakiHQ/Shudan) - A highly customizable, low-level Preact Goban component.
+* [boardmatcher](https://github.com/SabakiHQ/boardmatcher) - Finds patterns & shapes in Go board arrangements and names moves.
 * [deadstones](https://github.com/SabakiHQ/deadstones) - Simple Monte Carlo functions to determine dead stones.
 * [gtp](https://github.com/SabakiHQ/gtp) - A Node.js module for handling GTP engines.
+* [immutable-gametree](https://github.com/SabakiHQ/immutable-gametree) - An immutable game tree data type.
 * [influence](https://github.com/SabakiHQ/influence) - Simple heuristics for estimating influence maps on Go positions.
 * [sgf](https://github.com/SabakiHQ/sgf) - A library for parsing and creating SGF files.
