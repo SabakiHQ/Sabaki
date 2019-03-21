@@ -665,7 +665,7 @@ if (process.platform === 'darwin') {
 
 let generateIds = (menu, idPrefix = '') => {
     menu.forEach((item, i) => {
-        if (item.id != null) {
+        if (item.id == null) {
             item.id = idPrefix + i
         }
 
