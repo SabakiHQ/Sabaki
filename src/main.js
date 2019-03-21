@@ -1,6 +1,6 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const {join} = require('path')
-const {t} = require('./i18n')
+const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
 
@@ -107,9 +107,11 @@ function buildMenu(disableAll = false) {
 
     // Create dock menu
 
+    let t = i18n.context('menu.macos')
+
     let dockMenu = Menu.buildFromTemplate([
         {
-            label: t('menu.dock', 'New Window'),
+            label: t('New Window'),
             click: () => newWindow()
         }
     ])
@@ -121,18 +123,19 @@ function buildMenu(disableAll = false) {
 
 async function checkForUpdates(showFailDialogs) {
     try {
+        let t = i18n.context('updater')
         let info = await updater.check(`SabakiHQ/${app.getName()}`)
 
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: [
-                    t('updater', 'Download Update'),
-                    t('updater', 'View Changelog'),
-                    t('updater', 'Not Now')
+                    t('Download Update'),
+                    t('View Changelog'),
+                    t('Not Now')
                 ],
                 title: app.getName(),
-                message: t('updater', p => `${p.appName} v${p.version} is available now.`, {
+                message: t(p => `${p.appName} v${p.version} is available now.`, {
                     appName: app.getName(),
                     version: info.latestVersion
                 }),
@@ -148,9 +151,9 @@ async function checkForUpdates(showFailDialogs) {
         } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: [t('updater', 'OK')],
-                title: t('updater', 'No update available'),
-                message: t('updater', p => `Sabaki v${p.version} is the latest version.`, {
+                buttons: [t('OK')],
+                title: t('No update available'),
+                message: t(p => `Sabaki v${p.version} is the latest version.`, {
                     version: app.getVersion()
                 })
             }, () => {})
@@ -159,9 +162,9 @@ async function checkForUpdates(showFailDialogs) {
         if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'warning',
-                buttons: [t('updater', 'OK')],
+                buttons: [t('OK')],
                 title: app.getName(),
-                message: t('updater', 'An error occurred while checking for updates.')
+                message: t('An error occurred while checking for updates.')
             })
         }
     }
