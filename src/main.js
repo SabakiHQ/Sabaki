@@ -1,5 +1,6 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const {join} = require('path')
+const {t} = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
 
@@ -64,7 +65,7 @@ function buildMenu(disableAll = false) {
     // Process menu items
 
     let processMenu = items => {
-        items.forEach(item => {
+        return items.map(item => {
             if ('click' in item) {
                 item.click = () => {
                     let window = BrowserWindow.getFocusedWindow()
@@ -97,22 +98,24 @@ function buildMenu(disableAll = false) {
             if ('submenu' in item) {
                 processMenu(item.submenu)
             }
+
+            return item
         })
     }
 
-    processMenu(template)
-
-    // Build
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    Menu.setApplicationMenu(Menu.buildFromTemplate(processMenu(template)))
 
     // Create dock menu
 
-    if (process.platform === 'darwin') {
-        app.dock.setMenu(Menu.buildFromTemplate([{
-            label: 'New Window',
+    let dockMenu = Menu.buildFromTemplate([
+        {
+            label: t('menu.dock', 'New Window'),
             click: () => newWindow()
-        }]))
+        }
+    ])
+
+    if (process.platform === 'darwin') {
+        app.dock.setMenu(dockMenu)
     }
 }
 
@@ -123,9 +126,16 @@ async function checkForUpdates(showFailDialogs) {
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['Download Update', 'View Changelog', 'Not Now'],
+                buttons: [
+                    t('updater', 'Download Update'),
+                    t('updater', 'View Changelog'),
+                    t('updater', 'Not Now')
+                ],
                 title: app.getName(),
-                message: `${app.getName()} v${info.latestVersion} is available now.`,
+                message: t('updater', p => `${p.appName} v${p.version} is available now.`, {
+                    appName: app.getName(),
+                    version: info.latestVersion
+                }),
                 noLink: true,
                 cancelId: 2
             }, response => {
@@ -138,18 +148,20 @@ async function checkForUpdates(showFailDialogs) {
         } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['OK'],
-                title: 'No update available',
-                message: `Sabaki v${app.getVersion()} is the latest version.`
+                buttons: [t('updater', 'OK')],
+                title: t('updater', 'No update available'),
+                message: t('updater', p => `Sabaki v${p.version} is the latest version.`, {
+                    version: app.getVersion()
+                })
             }, () => {})
         }
     } catch (err) {
         if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'warning',
-                buttons: ['OK'],
+                buttons: [t('updater', 'OK')],
                 title: app.getName(),
-                message: 'An error occurred while checking for updates.'
+                message: t('updater', 'An error occurred while checking for updates.')
             })
         }
     }
@@ -202,13 +214,15 @@ app.on('open-file', (evt, path) => {
 })
 
 process.on('uncaughtException', err => {
-    dialog.showErrorBox(`${app.getName()} v${app.getVersion()}`, [
-        'Something weird happened. ',
-        `${app.getName()} will shut itself down. `,
-        'If possible, please report this on ',
-        `${app.getName()}’s repository on GitHub.\n\n`,
-        err.stack
-    ].join(''))
+    dialog.showErrorBox(
+        t('exception', p => `${p.appName} v${p.version}`, {
+            appName: app.getName(),
+            version: app.getVersion()
+        }),
+        t('exception', p => `Something weird happened. ${p.appName} will shut itself down. If possible, please report this on ${p.appName}’s repository on GitHub.`, {
+            appName: app.getName()
+        }) + '\n\n' + err.stack
+    )
 
     process.exit(1)
 })
