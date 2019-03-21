@@ -1,8 +1,9 @@
-const {ipcRenderer, remote} = require('electron')
+const {remote} = require('electron')
 const {app, dialog} = remote
 const helper = require('./helper')
+const t = require('../i18n').context('dialog')
 
-exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
+exports.showMessageBox = function(message, type = 'info', buttons = [t('OK')], cancelId = 0) {
     sabaki.setBusy(true)
 
     let result = dialog.showMessageBox(remote.getCurrentWindow(), {
