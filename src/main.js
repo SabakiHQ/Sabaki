@@ -152,7 +152,7 @@ async function checkForUpdates(showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
                 buttons: [t('OK')],
-                title: t('No update available'),
+                title: t('No updates available'),
                 message: t(p => `Sabaki v${p.version} is the latest version.`, {
                     version: app.getVersion()
                 })
@@ -222,7 +222,10 @@ process.on('uncaughtException', err => {
             appName: app.getName(),
             version: app.getVersion()
         }),
-        t('exception', p => `Something weird happened. ${p.appName} will shut itself down. If possible, please report this on ${p.appName}’s repository on GitHub.`, {
+        t('exception', p => [
+            `Something weird happened. ${p.appName} will shut itself down.`,
+            `If possible, please report this on ${p.appName}’s repository on GitHub.`
+        ].join(' '), {
             appName: app.getName()
         }) + '\n\n' + err.stack
     )

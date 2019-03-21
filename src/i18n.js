@@ -33,9 +33,10 @@ exports.serialize = function() {
         let mainUsedStrings = mainI18n.usedStrings
 
         for (context in mainStrings) {
-            if (context in exports.strings) continue
-
             exports.strings[context] = mainStrings[context]
+        }
+
+        for (context in mainUsedStrings) {
             exports.usedStrings[context] = mainUsedStrings[context]
         }
     }
