@@ -5,6 +5,7 @@ const classNames = require('classnames')
 
 const Drawer = require('./Drawer')
 
+const t = require('../../i18n').context('PreferencesDrawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
@@ -74,96 +75,96 @@ class GeneralTab extends Component {
             h('ul', {},
                 h(PreferencesItem, {
                     id: 'app.enable_hardware_acceleration',
-                    text: 'Enable hardware acceleration if possible'
+                    text: t('Enable hardware acceleration if possible')
                 }),
                 h(PreferencesItem, {
                     id: 'app.startup_check_updates',
-                    text: 'Check for updates at startup'
+                    text: t('Check for updates at startup')
                 }),
                 h(PreferencesItem, {
                     id: 'sound.enable',
-                    text: 'Enable sounds',
+                    text: t('Enable sounds'),
                     onChange: this.handleSoundEnabledChange
                 }),
                 h(PreferencesItem, {
                     id: 'game.goto_end_after_loading',
-                    text: 'Jump to end after loading file'
+                    text: t('Jump to end after loading file')
                 }),
                 h(PreferencesItem, {
                     id: 'view.fuzzy_stone_placement',
-                    text: 'Fuzzy stone placement'
+                    text: t('Fuzzy stone placement')
                 }),
                 h(PreferencesItem, {
                     id: 'view.animated_stone_placement',
-                    text: 'Animate fuzzy placement'
+                    text: t('Animate fuzzy placement')
                 }),
                 h(PreferencesItem, {
                     id: 'board.variation_instant_replay',
-                    text: 'Instantly play out analysis variations on board'
+                    text: t('Instantly play out analysis variations on board')
                 }),
                 h(PreferencesItem, {
                     id: 'gtp.start_game_after_attach',
-                    text: 'Start game right after attaching engines'
+                    text: t('Start game right after attaching engines')
                 }),
                 h(PreferencesItem, {
                     id: 'gtp.auto_genmove',
-                    text: 'Automatically generate engine moves'
+                    text: t('Automatically generate engine moves')
                 })
             ),
 
             h('ul', {},
                 h(PreferencesItem, {
                     id: 'comments.show_move_interpretation',
-                    text: 'Show automatic move titles'
+                    text: t('Show automatic move titles')
                 }),
                 h(PreferencesItem, {
                     id: 'game.show_ko_warning',
-                    text: 'Show ko warning'
+                    text: t('Show ko warning')
                 }),
                 h(PreferencesItem, {
                     id: 'game.show_suicide_warning',
-                    text: 'Show suicide warning'
+                    text: t('Show suicide warning')
                 }),
                 h(PreferencesItem, {
                     id: 'edit.show_removenode_warning',
-                    text: 'Show remove node warning'
+                    text: t('Show remove node warning')
                 }),
                 h(PreferencesItem, {
                     id: 'edit.show_removeothervariations_warning',
-                    text: 'Show remove other variations warning'
+                    text: t('Show remove other variations warning')
                 }),
                 h(PreferencesItem, {
                     id: 'file.show_reload_warning',
-                    text: 'Offer to reload file if changed externally'
+                    text: t('Offer to reload file if changed externally')
                 }),
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',
-                    text: 'Click last played stone to remove'
+                    text: t('Click last played stone to remove')
                 }),
                 h(PreferencesItem, {
                     id: 'app.always_show_result',
-                    text: 'Always show game result'
+                    text: t('Always show game result')
                 })
             ),
 
             h('p', {}, h('label', {},
-                'Game Tree Style: ',
+                t('Game Tree Style:'), ' ',
 
                 h('select', {onChange: this.handleTreeStyleChange},
                     h('option', {
                         value: 'compact',
                         selected: graphGridSize < 22
-                    }, 'Compact'),
+                    }, t('Compact')),
 
                     h('option', {
                         value: 'spacious',
                         selected: graphGridSize === 22
-                    }, 'Spacious'),
+                    }, t('Spacious')),
 
                     h('option', {
                         value: 'big',
                         selected: graphGridSize > 22
-                    }, 'Big')
+                    }, t('Big'))
                 )
             ))
         )
@@ -216,7 +217,7 @@ class PathInputItem extends Component {
 
             h('input', {
                 type: 'search',
-                placeholder: 'Path',
+                placeholder: t('Path'),
                 value,
                 onChange: this.handlePathChange
             }),
@@ -228,7 +229,7 @@ class PathInputItem extends Component {
                 },
                 h('img', {
                     src: './node_modules/octicons/build/svg/file-directory.svg',
-                    title: 'Browse…',
+                    title: t('Browse…'),
                     height: 14
                 })
             ),
@@ -241,8 +242,8 @@ class PathInputItem extends Component {
                 h('img', {
                     src: './node_modules/octicons/build/svg/alert.svg',
                     title: this.props.chooseDirectory
-                        ? 'Directory not found'
-                        : 'File not found',
+                        ? t('Directory not found')
+                        : t('File not found'),
                     height: 14
                 })
             )
@@ -274,8 +275,8 @@ class ThemesTab extends Component {
             evt.preventDefault()
 
             let result = dialog.showMessageBox(
-                'Do you really want to uninstall this theme?',
-                'warning', ['Uninstall', 'Cancel'], 1
+                t('Do you really want to uninstall this theme?'),
+                'warning', [t('Uninstall'), t('Cancel')], 1
             )
 
             if (result === 1) return
@@ -284,7 +285,7 @@ class ThemesTab extends Component {
             let {path} = setting.getThemes()[this.state.currentTheme]
 
             rimraf(path, err => {
-                if (err) return dialog.showMessageBox('Uninstallation failed.', 'error')
+                if (err) return dialog.showMessageBox(t('Uninstallation failed.'), 'error')
 
                 setting.loadThemes()
                 setting.set('theme.current', null)
@@ -296,7 +297,7 @@ class ThemesTab extends Component {
 
             dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [{name: 'Sabaki Themes', extensions: ['asar']}]
+                filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
@@ -306,7 +307,7 @@ class ThemesTab extends Component {
                 let id = uuid()
 
                 copy(result[0], join(setting.themesDirectory, id), err => {
-                    if (err) return dialog.showMessageBox('Installation failed.', 'error')
+                    if (err) return dialog.showMessageBox(t('Installation failed.'), 'error')
 
                     setting.loadThemes()
                     setting.set('theme.current', id)
@@ -325,24 +326,24 @@ class ThemesTab extends Component {
         let currentTheme = setting.getThemes()[this.state.currentTheme]
 
         return h('div', {class: 'themes'},
-            h('h3', {}, 'Custom Images'),
+            h('h3', {}, t('Custom Images')),
 
             h('ul', {class: 'userpaths'},
                 h(PathInputItem, {
                     id: 'theme.custom_blackstones',
-                    text: 'Black stone image:'
+                    text: t('Black stone image:')
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_whitestones',
-                    text: 'White stone image:'
+                    text: t('White stone image:')
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_board',
-                    text: 'Board image:'
+                    text: t('Board image:')
                 }),
                 h(PathInputItem, {
                     id: 'theme.custom_background',
-                    text: 'Background image:'
+                    text: t('Background image:')
                 })
             ),
 
@@ -352,7 +353,7 @@ class ThemesTab extends Component {
                 h('select',
                     {onChange: this.handleThemeChange},
 
-                    h('option', {value: '', selected: currentTheme == null}, 'Default'),
+                    h('option', {value: '', selected: currentTheme == null}, t('Default')),
 
                     Object.keys(setting.getThemes()).map(id => h('option',
                         {
@@ -364,28 +365,36 @@ class ThemesTab extends Component {
                     ))
                 ), ' ',
 
-                currentTheme && h('button', {type: 'button', onClick: this.handleUninstallButton}, 'Uninstall'),
+                currentTheme && h('button', {
+                    type: 'button',
+                    onClick: this.handleUninstallButton
+                }, t('Uninstall')),
 
                 h('div', {class: 'install'},
-                    h('button', {type: 'button', onClick: this.handleInstallButton}, 'Install Theme…'),
+                    h('button', {
+                        type: 'button',
+                        onClick: this.handleInstallButton
+                    }, t('Install Theme…')),
                     ' ',
                     h('a', {
                         href: `https://github.com/SabakiHQ/Sabaki/blob/v${sabaki.version}/docs/guides/theme-directory.md`,
                         onClick: this.handleLinkClick
-                    }, 'Get more themes…')
+                    }, t('Get more themes…'))
                 )
             ),
 
             currentTheme && [
                 h('p', {class: 'meta'},
-                    currentTheme.author && 'by ' + currentTheme.author,
+                    currentTheme.author && t(p => `by ${p.author}`, {
+                        author: currentTheme.author
+                    }),
                     currentTheme.author && currentTheme.homepage && ' — ',
                     currentTheme.homepage && h('a', {
                         class: 'homepage',
                         href: currentTheme.homepage,
                         title: currentTheme.homepage,
                         onClick: this.handleLinkClick
-                    }, 'Homepage')
+                    }, t('Homepage'))
                 ),
 
                 h('p', {class: 'description'},
@@ -417,7 +426,7 @@ class EngineItem extends Component {
         this.handleBrowseButtonClick = () => {
             dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [{name: 'All Files', extensions: ['*']}]
+                filters: [{name: t('All Files'), extensions: ['*']}]
             }, ({result}) => {
                 if (!result || result.length === 0) return
 
@@ -445,7 +454,7 @@ class EngineItem extends Component {
                 h('a',
                     {
                         class: 'remove',
-                        title: 'Remove',
+                        title: t('Remove'),
                         onClick: this.handleRemoveButtonClick
                     },
 
@@ -453,7 +462,7 @@ class EngineItem extends Component {
                 ),
                 h('input', {
                     type: 'text',
-                    placeholder: '(Unnamed Engine)',
+                    placeholder: t('(Unnamed Engine)'),
                     value: name,
                     name: 'name',
                     onChange: this.handleChange
@@ -463,7 +472,7 @@ class EngineItem extends Component {
                 h('a',
                     {
                         class: 'browse',
-                        title: 'Browse…',
+                        title: t('Browse…'),
                         onClick: this.handleBrowseButtonClick
                     },
 
@@ -471,7 +480,7 @@ class EngineItem extends Component {
                 ),
                 h('input', {
                     type: 'text',
-                    placeholder: 'Path',
+                    placeholder: t('Path'),
                     value: path,
                     name: 'path',
                     onChange: this.handleChange
@@ -480,7 +489,7 @@ class EngineItem extends Component {
             h('p', {},
                 h('input', {
                     type: 'text',
-                    placeholder: 'No arguments',
+                    placeholder: t('No arguments'),
                     value: args,
                     name: 'args',
                     onChange: this.handleChange
@@ -489,7 +498,7 @@ class EngineItem extends Component {
             h('p', {},
                 h('input', {
                     type: 'text',
-                    placeholder: 'Initial commands (;-separated)',
+                    placeholder: t('Initial commands (;-separated)'),
                     value: commands,
                     name: 'commands',
                     onChange: this.handleChange
@@ -537,7 +546,7 @@ class EnginesTab extends Component {
                 h('ul', {},
                     h(PreferencesItem, {
                         id: 'gtp.console_log_enabled',
-                        text: 'Enable GTP logging to directory:'
+                        text: t('Enable GTP logging to directory:')
                     }),
 
                     h(PathInputItem, {
@@ -562,7 +571,7 @@ class EnginesTab extends Component {
             ),
 
             h('p', {},
-                h('button', {type: 'button', onClick: this.handleAddButtonClick}, 'Add')
+                h('button', {type: 'button', onClick: this.handleAddButtonClick}, t('Add'))
             )
         )
     }
@@ -636,7 +645,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'General')
+                    h('a', {href: '#'}, t('General'))
                 ),
                 h('li',
                     {
@@ -644,7 +653,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Themes')
+                    h('a', {href: '#'}, t('Themes'))
                 ),
                 h('li',
                     {
@@ -652,7 +661,7 @@ class PreferencesDrawer extends Component {
                         onClick: this.handleTabClick
                     },
 
-                    h('a', {href: '#'}, 'Engines')
+                    h('a', {href: '#'}, t('Engines'))
                 )
             ),
 
@@ -662,7 +671,7 @@ class PreferencesDrawer extends Component {
                 h(EnginesTab, {engines}),
 
                 h('p', {},
-                    h('button', {type: 'button', onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {type: 'button', onClick: this.handleCloseButtonClick}, t('Close'))
                 )
             )
         )
