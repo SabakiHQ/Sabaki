@@ -25,8 +25,9 @@ class Goban extends Component {
         document.addEventListener('mouseup', () => {
             this.mouseDown = false
 
-            if (this.state.temporaryLine)
+            if (this.state.temporaryLine) {
                 this.setState({temporaryLine: null})
+            }
         })
 
         // Resize board when window is resizing
