@@ -95,9 +95,12 @@ but is faster.
 
 * `vertex` [`<Vertex>`](vertex.md)
 
-### board.getScore(areaMap)
+### board.getScore(areaMap[, options])
 
 * `areaMap` - A precomputed area map or area estimate map using `board.getAreaMap()` or `board.getAreaEstimateMap()`
+* `options` `<Object>` *(optional)*
+    * `handicap` `<Integer>` - Default: `0`
+    * `komi` `<Number>` - Default: `0`
 
 Returns an object with the following keys:
 

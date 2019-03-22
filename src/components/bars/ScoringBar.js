@@ -10,15 +10,14 @@ class ScoringBar extends Component {
     }
 
     render({type, method, areaMap, scoreBoard, komi, handicap}) {
-        let score = scoreBoard ? scoreBoard.getScore(areaMap) : {area: [], territory: [], captures: []}
-        let result = method === 'area' ? score.area[0] - score.area[1] - komi - handicap
-            : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
+        let score = scoreBoard && scoreBoard.getScore(areaMap, {komi, handicap})
+        let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
 
         return h(Bar, Object.assign({type}, this.props),
             h('div', {class: 'result'},
                 h('button', {onClick: this.handleButtonClick}, t('Details')),
                 h('strong', {},
-                    !scoreBoard ? ''
+                    !result ? ''
                     : result > 0 ? t(p => `B+${p.result}`, {result})
                     : result < 0 ? t(p => `W+${p.result}`, {result: -result})
                     : t('Draw')
