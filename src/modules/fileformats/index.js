@@ -1,4 +1,5 @@
 const {extname} = require('path')
+const t = require('../../i18n').context('fileformats')
 
 let sgf = require('./sgf')
 let ngf = require('./ngf')
@@ -13,7 +14,7 @@ let combinedExtensions = extensions.map(x => x.extensions)
     .reduce((acc, x) => [...acc, ...x], [])
 
 exports.meta = [
-    {name: 'Game Records', extensions: combinedExtensions},
+    {name: t('Game Records'), extensions: combinedExtensions},
     ...extensions
 ]
 

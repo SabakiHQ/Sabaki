@@ -1,10 +1,12 @@
 const GameTree = require('@sabaki/immutable-gametree')
 const sgf = require('@sabaki/sgf')
+
+const t = require('../../i18n').context('fileformats')
 const {getId} = require('../helper')
 const gametree = require('../gametree')
 
 exports.meta = {
-    name: 'Smart Game Format',
+    name: t('Smart Game Format'),
     extensions: ['sgf', 'rsgf']
 }
 

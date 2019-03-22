@@ -1,10 +1,12 @@
 const fs = require('fs')
 const sgf = require('@sabaki/sgf')
+
+const t = require('../../i18n').context('fileformats')
 const Board = require('../board')
 const gametree = require('../gametree')
 
 exports.meta = {
-    name: 'Tygem GIB',
+    name: t('Tygem GIB'),
     extensions: ['gib']
 }
 
