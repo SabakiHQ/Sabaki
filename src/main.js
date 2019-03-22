@@ -217,12 +217,14 @@ app.on('open-file', (evt, path) => {
 })
 
 process.on('uncaughtException', err => {
+    let t = i18n.context('exception')
+
     dialog.showErrorBox(
-        t('exception', p => `${p.appName} v${p.version}`, {
+        t(p => `${p.appName} v${p.version}`, {
             appName: app.getName(),
             version: app.getVersion()
         }),
-        t('exception', p => [
+        t(p => [
             `Something weird happened. ${p.appName} will shut itself down.`,
             `If possible, please report this on ${p.appName}’s repository on GitHub.`
         ].join(' '), {
