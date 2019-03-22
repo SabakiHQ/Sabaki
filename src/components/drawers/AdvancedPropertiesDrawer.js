@@ -3,6 +3,7 @@ const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 
 const Drawer = require('./Drawer')
+const t = require('../../i18n').context('AdvancedPropertiesDrawer')
 
 const blockedProperties = ['AP', 'CA']
 const clearCacheProperties = ['AE', 'AW', 'AB', 'SZ', 'W', 'B']
@@ -72,7 +73,7 @@ class PropertyItem extends Component {
                 !disabled && h('a',
                     {
                         class: 'remove',
-                        title: 'Remove',
+                        title: t('Remove'),
                         href: '#',
                         onClick: this.handleRemoveButtonClick
                     },
@@ -96,11 +97,15 @@ class AdvancedPropertiesDrawer extends Component {
         this.handleAddButtonClick = async evt => {
             evt.preventDefault()
 
-            let {value} = await new Promise(resolve => dialog.showInputBox('Enter property name', resolve))
+            let {value} = await new Promise(resolve =>
+                dialog.showInputBox(t('Enter property name'), resolve, () => resolve({}))
+            )
+
+            if (value == null) return
             let property = value.toUpperCase()
 
             if (blockedProperties.includes(property)) {
-                dialog.showMessageBox('This property has been blocked.', 'warning')
+                dialog.showMessageBox(t('This property has been blocked.'), 'warning')
                 return
             }
 
@@ -190,8 +195,8 @@ class AdvancedPropertiesDrawer extends Component {
                 ),
 
                 h('p', {},
-                    h('button', {class: 'add', type: 'button', onClick: this.handleAddButtonClick}, 'Add'),
-                    h('button', {onClick: this.handleCloseButtonClick}, 'Close')
+                    h('button', {class: 'add', type: 'button', onClick: this.handleAddButtonClick}, t('Add')),
+                    h('button', {onClick: this.handleCloseButtonClick}, t('Close'))
                 )
             )
         )
