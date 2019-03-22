@@ -253,6 +253,13 @@ class InfoDrawer extends Component {
             firstDay: 1,
             yearRange: 6,
             keyboardInput: false,
+            i18n: {
+                previousMonth: t('Previous Month'),
+                nextMonth: t('Next Month'),
+                months: [t('January'), t('February'), t('March'), t('April'), t('May'), t('June'), t('July'), t('August'), t('September'), t('October'), t('November'), t('December')],
+                weekdays: [t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday'), t('Saturday')],
+                weekdaysShort: [t('Sun'), t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat')]
+            },
 
             onOpen: () => {
                 if (!this.pikaday) return
