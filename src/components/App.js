@@ -1997,14 +1997,14 @@ class App extends Component {
     openNodeMenu(tree, treePosition, {x, y} = {}) {
         if (this.state.mode === 'scoring') return
 
-        let t = i18n.context('app.node')
+        let t = i18n.context('menu.edit')
         let template = [
             {
-                label: t('C&opy Variation'),
+                label: t('&Copy Variation'),
                 click: () => this.copyVariation(tree, treePosition)
             },
             {
-                label: t('C&ut Variation'),
+                label: t('Cu&t Variation'),
                 click: () => this.cutVariation(tree, treePosition)
             },
             {
@@ -2013,7 +2013,7 @@ class App extends Component {
             },
             {type: 'separator'},
             {
-                label: t('Make &Main Variation'),
+                label: t('Make Main &Variation'),
                 click: () => this.makeMainVariation(tree, treePosition)
             },
             {
@@ -2043,7 +2043,7 @@ class App extends Component {
     }
 
     openCommentMenu(tree, treePosition, {x, y} = {}) {
-        let t = i18n.context('app.node')
+        let t = i18n.context('menu.comment')
         let node = tree.get(treePosition)
 
         let template = [
@@ -2127,7 +2127,7 @@ class App extends Component {
     }
 
     openVariationMenu(sign, variation, {x, y, appendSibling = false, startNodeProperties = {}} = {}) {
-        let t = i18n.context('app.node')
+        let t = i18n.context('menu.variation')
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
 

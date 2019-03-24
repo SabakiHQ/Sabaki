@@ -107,11 +107,9 @@ function buildMenu(disableAll = false) {
 
     // Create dock menu
 
-    let t = i18n.context('menu.macos')
-
     let dockMenu = Menu.buildFromTemplate([
         {
-            label: t('New Window'),
+            label: i18n.t('menu.file', 'New &Window'),
             click: () => newWindow()
         }
     ])

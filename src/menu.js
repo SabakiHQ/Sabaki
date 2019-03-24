@@ -644,7 +644,7 @@ if (process.platform === 'darwin') {
     data.splice(data.length - 1, 0, {
         submenu: [
             {
-                label: t('menu.macos', 'New Window'),
+                label: t('menu.file', 'New &Window'),
                 clickMain: 'newWindow',
                 enabled: true
             },
