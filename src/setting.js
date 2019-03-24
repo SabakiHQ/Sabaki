@@ -3,18 +3,18 @@ const fs = require('fs')
 const path = require('path')
 const {app} = require('electron')
 
-exports.userDataDirectory = app.getPath('userData')
-exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')
-
-try { fs.mkdirSync(exports.userDataDirectory) } catch (err) {}
-try { fs.mkdirSync(exports.themesDirectory) } catch (err) {}
+for (let dir of [
+    exports.userDataDirectory = app.getPath('userData'),
+    exports.themesDirectory = path.join(exports.userDataDirectory, 'themes'),
+    exports.langDirectory = path.join(exports.userDataDirectory, 'lang')
+]) {
+    try { fs.mkdirSync(dir) } catch (err) {}
+}
 
 exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
 exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
 
-try {
-    fs.accessSync(exports.stylesPath, fs.R_OK)
-} catch (err) {
+if (!fs.existsSync(exports.stylesPath)) {
     fs.writeFileSync(
         exports.stylesPath,
         `/* This stylesheet is loaded when ${app.getName()} starts up. */`
