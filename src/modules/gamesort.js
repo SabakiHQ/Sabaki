@@ -1,15 +1,14 @@
 const natsort = require('natsort')
 const sgf = require('@sabaki/sgf')
 const helper = require('./helper')
-const gametree = require('./gametree')
 
-function extractProperty(gametree, property) {
-    return property in gametree.nodes[0] ? gametree.nodes[0][property][0] : ''
+function extractProperty(tree, property) {
+    return property in tree.root.data ? tree.root.data[property][0] : ''
 }
 
 // player : 'BR' | 'WR'
-function sortRank(gameTrees, player) {
-    return stableSort(gameTrees, (tr1, tr2) => {
+function sortRank(trees, player) {
+    return stableSort(trees, (tr1, tr2) => {
         let [weighted1, weighted2] = [tr1, tr2]
             .map(tree => weightRank(extractProperty(tree, player)))
         return compareResult(weighted1, weighted2)
@@ -19,6 +18,7 @@ function sortRank(gameTrees, player) {
 // rank : string like '30k', '1d', '1p'
 function weightRank(rank) {
     let rank_number = parseFloat(rank)
+
     if (isNaN(rank_number)) {
         return -Infinity
     } else {
@@ -28,8 +28,8 @@ function weightRank(rank) {
 }
 
 // name : 'PB' | 'PW' | 'GN' | 'EV'
-function sortName(gameTrees, name) {
-    return stableSort(gameTrees, (tr1, tr2) => {
+function sortName(trees, name) {
+    return stableSort(trees, (tr1, tr2) => {
         let [name1, name2] = [tr1, tr2].map(tree => extractProperty(tree, name))
         return natsort({insensitive: true})(name1, name2)
     })
@@ -39,8 +39,8 @@ function compareResult(item1, item2) {
     return item1 < item2 ? -1 : +(item1 !== item2)
 }
 
-function stableSort(ary, fn) {
-    return ary.map((element, index) => [element, index])
+function stableSort(arr, fn) {
+    return arr.map((element, index) => [element, index])
         .sort((pair1, pair2) => {
             let result = fn(pair1[0], pair2[0])
 
@@ -49,36 +49,36 @@ function stableSort(ary, fn) {
         }).map(pair => pair[0])
 }
 
-exports.reverse = function(gameTrees) {
-    return gameTrees.slice().reverse()
+exports.reverse = function(trees) {
+    return trees.slice().reverse()
 }
 
-exports.byBlackRank = function(gameTrees) {
-    return sortRank(gameTrees, 'BR')
+exports.byBlackRank = function(trees) {
+    return sortRank(trees, 'BR')
 }
 
-exports.byWhiteRank = function(gameTrees) {
-    return sortRank(gameTrees, 'WR')
+exports.byWhiteRank = function(trees) {
+    return sortRank(trees, 'WR')
 }
 
-exports.byPlayerBlack = function(gameTrees) {
-    return sortName(gameTrees, 'PB')
+exports.byPlayerBlack = function(trees) {
+    return sortName(trees, 'PB')
 }
 
-exports.byPlayerWhite = function(gameTrees) {
-    return sortName(gameTrees, 'PW')
+exports.byPlayerWhite = function(trees) {
+    return sortName(trees, 'PW')
 }
 
-exports.byGameName = function(gameTrees) {
-    return sortName(gameTrees, 'GN')
+exports.byGameName = function(trees) {
+    return sortName(trees, 'GN')
 }
 
-exports.byEvent = function(gameTrees) {
-    return sortName(gameTrees, 'EV')
+exports.byEvent = function(trees) {
+    return sortName(trees, 'EV')
 }
 
-exports.byDate = function(gameTrees) {
-    return stableSort(gameTrees, (tr1, tr2) => {
+exports.byDate = function(trees) {
+    return stableSort(trees, (tr1, tr2) => {
         let [date1, date2] = [tr1, tr2]
             .map(tree => extractProperty(tree, 'DT'))
             .map(x => sgf.parseDates(x))
@@ -87,8 +87,8 @@ exports.byDate = function(gameTrees) {
     })
 }
 
-exports.byNumberOfMoves = function(gameTrees) {
-    return stableSort(gameTrees, (tr1, tr2) => {
-        return compareResult(gametree.getHeight(tr1), gametree.getHeight(tr2))
+exports.byNumberOfMoves = function(trees) {
+    return stableSort(trees, (tr1, tr2) => {
+        return compareResult(tr1.getHeight(), tr2.getHeight())
     })
 }

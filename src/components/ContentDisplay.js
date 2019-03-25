@@ -53,44 +53,47 @@ class ContentDisplay extends Component {
                 evt.preventDefault()
                 let moveNumber = +linkElement.dataset.movenumber
 
-                sabaki.setUndoPoint('Go Back')
                 sabaki.goToMainVariation()
                 sabaki.goToMoveNumber(moveNumber)
             }
         }
 
         let getVariationInfo = target => {
-            let {treePosition} = sabaki.state
-            let board = gametree.getBoard(...treePosition)
+            let {gameTrees, gameIndex, treePosition} = sabaki.state
+            let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
             let currentVertex = board.currentVertex
             let currentVertexSign = currentVertex && board.get(currentVertex)
             let {color} = target.dataset
             let sign = color === '' ? sabaki.getPlayer(...treePosition) : color === 'b' ? 1 : -1
             let variation = target.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
-            let removeCurrent = currentVertexSign === sign
+            let sibling = currentVertexSign === sign
 
-            return {sign, variation, removeCurrent}
+            return {sign, variation, sibling}
         }
 
         this.handleVariationMouseEnter = evt => {
             let {currentTarget} = evt
-            let {sign, variation, removeCurrent} = getVariationInfo(currentTarget)
+            let {sign, variation, sibling} = getVariationInfo(currentTarget)
             let counter = 1
 
-            sabaki.setState({playVariation: {sign, variation, removeCurrent}})
+            sabaki.setState({playVariation: {sign, variation, sibling}})
 
-            clearInterval(this.variationIntervalId)
-            this.variationIntervalId = setInterval(() => {
-                if (counter >= variation.length) {
-                    clearInterval(this.variationIntervalId)
-                    return
-                }
+            if (setting.get('board.variation_instant_replay')) {
+                currentTarget.style.backgroundSize = '100% 100%'
+            } else {
+                clearInterval(this.variationIntervalId)
+                this.variationIntervalId = setInterval(() => {
+                    if (counter >= variation.length) {
+                        clearInterval(this.variationIntervalId)
+                        return
+                    }
 
-                let percent = counter * 100 / (variation.length - 1)
+                    let percent = counter * 100 / (variation.length - 1)
 
-                currentTarget.style.backgroundSize = `${percent}% 100%`
-                counter++
-            }, setting.get('board.variation_replay_interval'))
+                    currentTarget.style.backgroundSize = `${percent}% 100%`
+                    counter++
+                }, setting.get('board.variation_replay_interval'))
+            }
         }
 
         this.handleVariationMouseLeave = evt => {
@@ -103,17 +106,18 @@ class ContentDisplay extends Component {
         this.handleVariationMouseUp = evt => {
             if (evt.button !== 2) return
 
-            let {sign, variation, removeCurrent} = getVariationInfo(evt.currentTarget)
+            let {sign, variation, sibling} = getVariationInfo(evt.currentTarget)
 
             sabaki.openVariationMenu(sign, variation, {
                 x: evt.clientX,
                 y: evt.clientY,
-                appendSibling: removeCurrent
+                appendSibling: sibling
             })
         }
 
         this.handleCoordMouseEnter = evt => {
-            let board = gametree.getBoard(...sabaki.state.treePosition)
+            let {gameTrees, gameIndex, treePosition} = sabaki.state
+            let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
             let vertex = board.coord2vertex(evt.currentTarget.innerText)
 
             sabaki.setState({highlightVertices: [vertex]})

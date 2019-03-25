@@ -2,6 +2,8 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {remote} = require('electron')
 
+const TextSpinner = require('../TextSpinner')
+
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -10,7 +12,6 @@ class PlayBar extends Component {
         super()
 
         this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
-        this.handleUndoButtonClick = () => sabaki.undo()
 
         this.handleMenuClick = () => {
             let template = [
@@ -61,13 +62,12 @@ class PlayBar extends Component {
     render({
         mode,
         attachedEngines,
+        playerBusy,
         playerNames,
         playerRanks,
         playerCaptures,
         currentPlayer,
         showHotspot,
-        undoable,
-        undoText,
 
         onCurrentPlayerClick = helper.noop
     }) {
@@ -85,7 +85,6 @@ class PlayBar extends Component {
         return h('header',
             {
                 class: classNames({
-                    undoable,
                     hotspot: showHotspot,
                     current: mode === 'play'
                 })
@@ -95,17 +94,27 @@ class PlayBar extends Component {
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
                 playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
 
-                h('span', {
-                    class: classNames('name', {engine: isEngine[0]}),
-                    title: isEngine[0] && 'Engine'
-                }, playerNames[0] || 'Black')
+                h('span',
+                    {
+                        class: classNames('name', {engine: isEngine[0]}),
+                        title: isEngine[0] && 'Engine'
+                    },
+                    isEngine[0] && playerBusy[0] && h(TextSpinner),
+                    ' ',
+                    playerNames[0] || 'Black'
+                )
             ),
 
             h('span', {id: 'player_-1'},
-                h('span', {
-                    class: classNames('name', {engine: isEngine[1]}),
-                    title: isEngine[1] && 'Engine'
-                }, playerNames[1] || 'White'), ' ',
+                h('span',
+                    {
+                        class: classNames('name', {engine: isEngine[1]}),
+                        title: isEngine[1] && 'Engine'
+                    },
+                    playerNames[1] || 'White',
+                    ' ',
+                    isEngine[1] && playerBusy[1] && h(TextSpinner)
+                ), ' ',
 
                 playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
@@ -120,15 +129,6 @@ class PlayBar extends Component {
             }),
 
             h('div', {class: 'hotspot', title: 'Hotspot'}),
-
-            h('a',
-                {
-                    class: 'undo',
-                    title: undoText,
-                    onClick: this.handleUndoButtonClick
-                },
-                h('img', {src: './node_modules/octicons/build/svg/reply.svg', height: 21})
-            ),
 
             h('a',
                 {

@@ -130,7 +130,7 @@ form p, form ul li {
         height: 1.5em;
         width: 1.5em;
         margin-right: 5px;
-        vertical-align: top;
+        vertical-align: text-bottom;
     }
     input[type="checkbox"]::before {
         content: '';

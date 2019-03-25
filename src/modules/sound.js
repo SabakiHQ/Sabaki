@@ -1,42 +1,27 @@
 const helper = require('./helper')
 
-let lastPachiIndex = -1
-let lastCaptureIndex = -1
+function prepareFunction(sounds) {
+    let lastIndex = -1
 
-let captureSounds = [...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`))
-let pachiSounds = [...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`))
+    return async function(delay) {
+        let index = 0
 
-let newGameSound = new Audio('./data/newgame.mp3')
-let passSound = new Audio('./data/pass.mp3')
+        if (sounds.length === 0) return
+        if (sounds.length > 1) {
+            index = lastIndex
+            while (index === lastIndex) index = Math.floor(Math.random() * sounds.length)
+            lastIndex = index
+        }
 
-exports.playPachi = function(delay = 0) {
-    let index = lastPachiIndex
-
-    while (index === lastPachiIndex) {
-        index = Math.floor(Math.random() * pachiSounds.length)
+        await helper.wait(delay)
+        sounds[index].play().catch(helper.noop)
     }
-
-    lastPachiIndex = index
-
-    setTimeout(() => pachiSounds[index].play().catch(helper.noop), delay)
 }
 
-exports.playCapture = function(delay = 0) {
-    let index = lastCaptureIndex
+exports.playPachi = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`)))
 
-    while (index === lastCaptureIndex) {
-        index = Math.floor(Math.random() * captureSounds.length)
-    }
+exports.playCapture = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`)))
 
-    lastCaptureIndex = index
+exports.playPass = prepareFunction([new Audio('./data/pass.mp3')])
 
-    setTimeout(() => captureSounds[index].play().catch(helper.noop), delay)
-}
-
-exports.playPass = function(delay = 0) {
-    setTimeout(() => passSound.play().catch(helper.noop), delay)
-}
-
-exports.playNewGame = function(delay = 0) {
-    setTimeout(() => newGameSound.play().catch(helper.noop), delay)
-}
+exports.playNewGame = prepareFunction([new Audio('./data/newgame.mp3')])

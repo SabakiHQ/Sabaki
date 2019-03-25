@@ -1,7 +1,6 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const sgf = require('@sabaki/sgf')
 
 const MiniGoban = require('../MiniGoban')
 const Drawer = require('./Drawer')
@@ -18,9 +17,10 @@ let itemMinWidth = thumbnailSize + 12 + 20
 let itemHeight = 253 + 10 + 20
 
 let getPreviewBoard = tree => {
-    let tp = gametree.navigate(tree, 0, 30)
-    if (!tp) tp = gametree.navigate(tree, 0, gametree.getCurrentHeight(tree) - 1)
-    return gametree.getBoard(...tp)
+    let node = tree.navigate(tree.root.id, 30, {})
+    if (!node) node = tree.navigate(tree.root.id, tree.getCurrentHeight({}) - 1, {})
+
+    return gametree.getBoard(tree, node.id)
 }
 
 class GameListItem extends Component {
@@ -188,13 +188,9 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleItemClick = evt => {
-            let {gameTrees} = this.props
             let {onItemClick = helper.noop} = this.props
-            let index = gameTrees.indexOf(evt.tree)
 
             evt.selectedTree = evt.tree
-            evt.selectedIndex = index
-
             onItemClick(evt)
         }
 
@@ -246,17 +242,14 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleSortButtonClick = evt => {
-            let sortWith = (sorter) => {
-                return () => {
-                    sabaki.setBusy(true)
+            let sortWith = (sorter) => () => {
+                sabaki.setBusy(true)
 
-                    let {gameTrees, onChange = helper.noop} = this.props
+                let {gameTrees, onChange = helper.noop} = this.props
+                let newGameTrees = sorter(gameTrees.slice())
 
-                    gameTrees = sorter(gameTrees)
-
-                    onChange({gameTrees})
-                    sabaki.setBusy(false)
-                }
+                onChange({gameTrees: newGameTrees})
+                sabaki.setBusy(false)
             }
 
             let template = [
@@ -299,7 +292,7 @@ class GameChooserDrawer extends Component {
             this.setState({scrollTop: this.gamesListElement.scrollTop})
         }
 
-        if (this.props.show && prevProps.gameTrees.length !== this.props.gameTrees.length) {
+        if (this.props.show && prevProps.gameTrees.length < this.props.gameTrees.length) {
             // Scroll down
 
             this.gamesListElement.scrollTop = this.gamesListElement.scrollHeight

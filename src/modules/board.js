@@ -73,19 +73,6 @@ class Board {
         return Math.abs(v[0] - w[0]) + Math.abs(v[1] - w[1])
     }
 
-    getDistanceToGround(vertex) {
-        return this.getCanonicalVertex(vertex)[0]
-    }
-
-    getCanonicalVertex(vertex) {
-        if (!this.hasVertex(vertex)) return [-1, -1]
-
-        let boardSize = [this.width, this.height]
-
-        return vertex.map((x, i) => Math.min(x, boardSize[i] - x - 1))
-            .sort((x, y) => x - y)
-    }
-
     getNeighbors(vertex, ignoreBoard = false) {
         if (!ignoreBoard && !this.hasVertex(vertex)) return []
 

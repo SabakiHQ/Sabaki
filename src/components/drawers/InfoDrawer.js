@@ -6,7 +6,6 @@ const sgf = require('@sabaki/sgf')
 
 const Drawer = require('./Drawer')
 
-const gametree = require('../../modules/gametree')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -29,9 +28,7 @@ class InfoDrawer extends Component {
         this.handleSubmitButtonClick = async evt => {
             evt.preventDefault()
 
-            let [tree, index] = this.props.treePosition
-            let emptyTree = !tree.parent && tree.nodes.length === 1 && tree.subtrees.length === 0
-
+            let emptyTree = this.props.gameTree.root.children.length === 0
             let keys = ['blackName', 'blackRank', 'whiteName', 'whiteRank',
                 'gameName', 'eventName', 'date', 'result', 'komi']
 
@@ -46,7 +43,7 @@ class InfoDrawer extends Component {
                 data.size = this.state.size
             }
 
-            sabaki.setGameInfo(this.props.treePosition[0], data)
+            sabaki.setGameInfo(this.props.gameTree, data)
             sabaki.closeDrawer()
             sabaki.attachEngines(...this.state.engines)
 
@@ -202,6 +199,12 @@ class InfoDrawer extends Component {
         this.preparePikaday()
     }
 
+    componentDidUpdate(prevProps) {
+        if (!prevProps.show && this.props.show) {
+            this.firstFocusElement.focus()
+        }
+    }
+
     shouldComponentUpdate({show}) {
         return show !== this.props.show || show
     }
@@ -302,7 +305,7 @@ class InfoDrawer extends Component {
     }
 
     render({
-        treePosition,
+        gameTree,
         currentPlayer,
         show
     }, {
@@ -320,8 +323,7 @@ class InfoDrawer extends Component {
         handicap = 0,
         size = [null, null]
     }) {
-        let [tree, index] = treePosition
-        let emptyTree = !tree.parent && tree.nodes.length === 1 && tree.subtrees.length === 0
+        let emptyTree = gameTree.root.children.length === 0
 
         return h(Drawer,
             {
@@ -333,6 +335,7 @@ class InfoDrawer extends Component {
                 h('section', {},
                     h('span', {},
                         h('img', {
+                            tabIndex: 0,
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,
@@ -349,6 +352,7 @@ class InfoDrawer extends Component {
                         }),
 
                         h('input', {
+                            ref: el => this.firstFocusElement = el,
                             type: 'text',
                             name: 'name_1',
                             placeholder: 'Black',
@@ -383,6 +387,7 @@ class InfoDrawer extends Component {
                         }), ' ',
 
                         h('img', {
+                            tabIndex: 0,
                             src: './node_modules/octicons/build/svg/chevron-down.svg',
                             width: 16,
                             height: 16,

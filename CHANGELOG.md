@@ -2,7 +2,78 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.40.0][unreleased] (Unreleased)
+## [Sabaki v0.43.1][unreleased]
+
+**Fixed**
+
+* Fix setting handicap stones not working
+
+## [Sabaki v0.43.0][v0.43.0] (2019-03-16)
+
+**Added**
+
+* Ability to undo/redo all of your edits
+* Ability to display move numbers on the board
+* Ability to highlight relevant stones for automatically generated move names
+* Link to Sensei's Library for some automatically generated move names
+
+**Changed**
+
+* New next/previous variation switch behavior
+
+**Fixed**
+
+* Fix Sabaki not being able to append space characters in comment titles
+
+## [Sabaki v0.42.0][v0.42.0] (2019-01-22)
+
+**Added**
+
+* Winrate graph is now resizable (Thanks to [@dbosst](https://github.com/dbosst))
+* GTP console logging (Thanks to [@dbosst](https://github.com/dbosst))
+
+**Changed**
+
+* More precise navigation when navigating by pressing up/down arrow keys
+* In area scoring, number of handicap stones are added to white's score, according to Chinese scoring (Thanks to [@dbosst](https://github.com/dbosst))
+
+**Fixed**
+
+* Fix Sabaki hanging sometimes when analysis variations contain pass moves (Thanks to [@dbosst](https://github.com/dbosst))
+
+## [Sabaki v0.41.0][v0.41.0] (2018-11-29)
+
+**Added**
+
+* When adding analysis variation to the game tree, SGF move annotation will be supplied automatically
+* Color coded game tree nodes according to their move annotation
+
+**Changed**
+
+* Continuous analysis when navigating the game in analysis mode
+* Record winrate values when generating moves even if analysis mode is turned off
+
+**Fixed**
+
+* Better error handling regarding GTP engine crashes
+* Fix incremental engine synchronization not working properly when handicap stones are involved
+* Fix freeze when starting analysis after suspending an engine
+
+## [Sabaki v0.40.1][v0.40.1] (2018-11-06)
+
+**Added**
+
+* Add setting for Sabaki to play out analysis variations instantly
+
+**Fixed**
+
+* Fix Sabaki incorrectly not detecting analysis capabilities when engine hasn't fully initialized yet
+* Fix engine synchronization not working when engine has been suspended
+* Fix analysis heatmap disappearing when Leela Zero reaches maximum visits/playouts
+* Fix board rendering issues
+* Fix Sabaki accidentally saving into non-SGF files
+
+## [Sabaki v0.40.0][v0.40.0] (2018-11-04)
 
 **Added**
 
@@ -740,7 +811,12 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.35.1...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.0...master
+[v0.43.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.42.0...v0.43.0
+[v0.42.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.41.0...v0.42.0
+[v0.41.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.40.1...v0.41.0
+[v0.40.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.40.0...v0.40.1
+[v0.40.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.35.1...v0.40.0
 [v0.35.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.35.0...v0.35.1
 [v0.35.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.1...v0.35.0
 [v0.34.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.34.0...v0.34.1

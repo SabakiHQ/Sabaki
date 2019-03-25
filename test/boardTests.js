@@ -84,16 +84,6 @@ describe('Board', () => {
         })
     })
 
-    describe('getCanonicalVertex', () => {
-        it('should work', () => {
-            let board = new Board()
-            assert.deepEqual(board.getCanonicalVertex([3, 4]), [3, 4])
-            assert.deepEqual(board.getCanonicalVertex([4, 3]), [3, 4])
-            assert.deepEqual(board.getCanonicalVertex([18, 3]), [0, 3])
-            assert.deepEqual(board.getCanonicalVertex([15, 5]), [3, 5])
-        })
-    })
-
     describe('getNeighbors', () => {
         it('should return neighbors for vertices in the middle', () => {
             let board = new Board()

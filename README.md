@@ -12,8 +12,9 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Read and save SGF games and collections
 - Open wBaduk NGF and Tygem GIB files
 - Display formatted SGF comments using a [subset of Markdown](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/markdown.md)
-- Personalize board appearance with [themes](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/theme-directory.md)
+- Personalize board appearance with [textures & themes](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/theme-directory.md)
 - SGF editing tools
+- Powerful undo/redo
 - Lines & arrows board markup
 - Copy & paste variations
 - Fast game tree
@@ -21,6 +22,7 @@ An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age. [Downlo
 - Find move by move position and comment text
 - Position & move annotations
 - [GTP engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engines.md) support
+- Board analysis with engines which support it
 - Guess mode
 - Autoplay games
 
@@ -42,10 +44,28 @@ See [Building & Tests](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guide
 
 This project is licensed under the [MIT license](https://github.com/SabakiHQ/Sabaki/blob/master/LICENSE.md).
 
+## Donators
+
+A big thank you to these lovely people:
+
+- Eric Wainwright
+- Michael Noll
+- John Hager
+- David Göbel
+- Dominik Olszewski
+- Philippe Fanaro
+- Andrew Thieman
+- Adrian Petrescu
+- Karlheinz Agsteiner
+- Sergio Villegas
+- Jake Pivnik
+
 ## Related
 
 * [Shudan](https://github.com/SabakiHQ/Shudan) - A highly customizable, low-level Preact Goban component.
+* [boardmatcher](https://github.com/SabakiHQ/boardmatcher) - Finds patterns & shapes in Go board arrangements and names moves.
 * [deadstones](https://github.com/SabakiHQ/deadstones) - Simple Monte Carlo functions to determine dead stones.
 * [gtp](https://github.com/SabakiHQ/gtp) - A Node.js module for handling GTP engines.
+* [immutable-gametree](https://github.com/SabakiHQ/immutable-gametree) - An immutable game tree data type.
 * [influence](https://github.com/SabakiHQ/influence) - Simple heuristics for estimating influence maps on Go positions.
 * [sgf](https://github.com/SabakiHQ/sgf) - A library for parsing and creating SGF files.

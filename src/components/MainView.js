@@ -11,10 +11,13 @@ const FindBar = require('./bars/FindBar')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
 
-        this.handleTogglePlayer = () => sabaki.setPlayer(...this.props.treePosition, -this.props.currentPlayer)
+        this.handleTogglePlayer = () => {
+            let {gameTree, treePosition, currentPlayer} = this.props
+            sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
+        }
 
         this.handleToolButtonClick = evt => {
             sabaki.setState({selectedTool: evt.tool})
@@ -67,11 +70,15 @@ class MainView extends Component {
 
     render({
         mode,
+        gameIndex,
+        gameTree,
+        gameCurrents,
         treePosition,
-        rootTree,
         currentPlayer,
         gameInfo,
         attachedEngines,
+        engineBusy,
+        analysisTreePosition,
 
         deadStones,
         scoringMethod,
@@ -84,13 +91,12 @@ class MainView extends Component {
         highlightVertices,
         showCoordinates,
         showMoveColorization,
+        showMoveNumbers,
         showNextMoves,
         showSiblings,
         fuzzyStonePlacement,
         animateStonePlacement,
 
-        undoable,
-        undoText,
         selectedTool,
         findText,
         findVertex,
@@ -104,10 +110,10 @@ class MainView extends Component {
         height,
         gobanCrosshair
     }) {
-        let [tree, index] = treePosition
-        let board = gametree.getBoard(tree, index)
-        let node = tree.nodes[index]
-        let komi = +gametree.getRootProperty(rootTree, 'KM', 0)
+        let node = gameTree.get(treePosition)
+        let board = gametree.getBoard(gameTree, treePosition)
+        let komi = +gametree.getRootProperty(gameTree, 'KM', 0)
+        let handicap = +gametree.getRootProperty(gameTree, 'HA', 0)
         let paintMap
 
         if (['scoring', 'estimator'].includes(mode)) {
@@ -136,17 +142,24 @@ class MainView extends Component {
                 },
 
                 h(Goban, {
+                    gameTree,
+                    treePosition,
                     board,
                     highlightVertices: findVertex && mode === 'find'
                         ? [findVertex]
                         : highlightVertices,
-                    analysis: mode === 'play' ? analysis : null,
+                    analysis: mode === 'play'
+                        && analysisTreePosition != null
+                        && analysisTreePosition === treePosition
+                        ? analysis
+                        : null,
                     paintMap,
                     dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
 
                     crosshair: gobanCrosshair,
                     showCoordinates,
                     showMoveColorization,
+                    showMoveNumbers: mode !== 'edit' && showMoveNumbers,
                     showNextMoves: mode !== 'guess' && showNextMoves,
                     showSiblings: mode !== 'guess' && showSiblings,
                     fuzzyStonePlacement,
@@ -165,13 +178,12 @@ class MainView extends Component {
                 h(PlayBar, {
                     mode,
                     attachedEngines,
+                    playerBusy: engineBusy,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: board.captures,
                     currentPlayer,
-                    showHotspot: 'HO' in node,
-                    undoable,
-                    undoText,
+                    showHotspot: node.data.HO != null,
                     onCurrentPlayerClick: this.handleTogglePlayer
                 }),
 
@@ -188,6 +200,8 @@ class MainView extends Component {
 
                 h(AutoplayBar, {
                     mode,
+                    gameTree,
+                    gameCurrents: gameCurrents[gameIndex],
                     treePosition
                 }),
 
@@ -197,7 +211,8 @@ class MainView extends Component {
                     method: scoringMethod,
                     scoreBoard,
                     areaMap,
-                    komi
+                    komi,
+                    handicap
                 }, 'Please select dead stones.'),
 
                 h(ScoringBar, {
@@ -206,7 +221,8 @@ class MainView extends Component {
                     method: scoringMethod,
                     scoreBoard,
                     areaMap,
-                    komi
+                    komi,
+                    handicap
                 }, 'Toggle group status.'),
 
                 h(FindBar, {

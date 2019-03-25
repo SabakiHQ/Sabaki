@@ -1,7 +1,5 @@
 const assert = require('assert')
-const helper = require('../src/modules/helper')
 const fileformats = require('../src/modules/fileformats')
-const gametree = require('../src/modules/gametree')
 const gamesort = require('../src/modules/gamesort')
 
 const blank = fileformats.parseFile(`${__dirname}/sgf/blank_game.sgf`)[0]

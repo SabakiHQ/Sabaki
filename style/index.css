@@ -4,9 +4,6 @@
         z-index: 10;
     }
     main {
-        display: flex;
-        justify-content: center;
-        align-items: center;
         position: absolute;
         left: 0;
         top: 0;
@@ -103,7 +100,7 @@ header, #bar .bar {
         border-left: 6px solid transparent;
     }
     header.hotspot .hotspot { top: 0; }
-    header > img, #headermenu, header .undo {
+    header > img, #headermenu {
         display: block;
         position: absolute;
         left: 50%;
@@ -114,7 +111,7 @@ header, #bar .bar {
         margin-top: -11px;
     }
     header > img { cursor: pointer; }
-    #headermenu, header .undo {
+    #headermenu {
         left: auto;
         right: 0;
         width: 32px;
@@ -123,22 +120,14 @@ header, #bar .bar {
         margin-left: 0;
         margin-top: -21px;
     }
-    header .undo {
-        right: auto;
-        left: 0;
-        top: 61px;
-        transition: top .2s, left .2s;
-    }
-    header .undo img, #headermenu img {
+    #headermenu img {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         filter: invert(100%);
     }
-    header.undoable .undo { top: 50%; }
-    header.hotspot .undo { left: 32px; }
-    #headermenu:hover, header .undo:hover {
+    #headermenu:hover {
         background: #222;
 }
 
@@ -318,7 +307,7 @@ header, #bar .bar {
 }
 
 #leftsidebar {
-        display: none;
+        visibility: hidden;
         position: absolute;
         top: 0;
         bottom: 0;
@@ -336,7 +325,7 @@ header, #bar .bar {
         z-index: 10;
     }
     .leftsidebar #leftsidebar {
-        display: block;
+        visibility: visible;
     }
     .leftsidebar #main {
         left: 400px;
@@ -477,6 +466,15 @@ header, #bar .bar {
         overflow: hidden;
         z-index: 3;
     }
+    #winrategraph .horizontalresizer {
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        right: 0;
+        height: 5px;
+        cursor: ns-resize;
+        z-index: 10;
+    }
     #winrategraph svg {
         position: absolute;
         top: 0;
@@ -568,10 +566,17 @@ header, #bar .bar {
     #graph svg:not(:active) > * {
         transition: transform .3s;
     }
-    #graph svg path.hover {
-        stroke: white;
-        stroke-width: 3px;
-        stroke-linecap: square;
+    #graph svg .node {
+        stroke: #111;
+        stroke-width: 1px;
+    }
+    #graph svg .node.hover {
+        stroke: #777;
+        stroke-width: 2px;
+    }
+    #graph svg .node.current {
+        stroke: #eee;
+        stroke-width: 2px;
 }
 
 #properties {
@@ -700,6 +705,19 @@ header, #bar .bar {
     #properties .inner .header.positionstatus img.positionstatus,
     #properties .inner .header.movestatus img.movestatus {
         display: inline;
+    }
+    #properties .inner .header .help {
+        display: inline-flex;
+        padding: 2px;
+        vertical-align: bottom;
+    }
+    #properties .inner .header .help img {
+        filter: invert(100%);
+        opacity: .5;
+        transition: opacity .2s;
+    }
+    #properties .inner .header .help:hover img {
+        opacity: .7;
     }
     #properties .inner .header .edit-button {
         position: relative;
@@ -927,8 +945,7 @@ header, #bar .bar {
     #preferences form > div label select {
         margin-left: 10px;
     }
-    #preferences form > div.general,
-    #preferences form > div.themes {
+    #preferences .tab-content > div {
         padding-top: 1.5em;
     }
     #preferences form > div.general ul {
@@ -956,27 +973,27 @@ header, #bar .bar {
         grid-template: 1fr 1fr / 1fr 1fr;
         grid-auto-flow: column;
     }
-    #preferences form > div.themes label span {
-        display: inline-block;
+    #preferences .path-input-item label {
+        display: flex;
+    }
+    #preferences .path-input-item label span {
         width: 10em;
+        line-height: 2;
         text-align: right;
     }
-    #preferences form > div.themes input {
-        width: calc(100% - 58px - 10em);
+    #preferences .path-input-item input {
+        flex-grow: 1;
         margin-left: 10px;
     }
-    #preferences form > div.themes .browse,
-    #preferences form > div.themes .invalid {
-        display: inline-block;
-        position: relative;
-        top: 2px;
+    #preferences .path-input-item .browse,
+    #preferences .path-input-item .invalid {
         margin-left: 10px;
         opacity: .5;
         filter: invert(100%);
         transition: opacity .2s;
     }
-    #preferences form > div.themes .browse:active,
-    #preferences form > div.themes .invalid {
+    #preferences .path-input-item .browse:active,
+    #preferences .path-input-item .invalid {
         opacity: 1;
     }
     #preferences form > div.themes .meta {
@@ -1014,6 +1031,17 @@ header, #bar .bar {
     #preferences form.themes > div.themes,
     #preferences form.engines > div.engines {
         display: block;
+    }
+    #preferences .gtp-console-log ul {
+        display: flex;
+        margin: 0 0 .5rem;
+    }
+    #preferences .gtp-console-log .preferences-item {
+        line-height: 2;
+    }
+    #preferences .gtp-console-log .path-input-item {
+        flex-grow: 1;
+        margin-left: 10px;
 }
 
 #cleanmarkup form {
@@ -1187,8 +1215,7 @@ header, #bar .bar {
         overflow: auto;
     }
     .engines-list {
-        height: 21em;
-        margin: 1.5em 0;
+        height: 18em;
     }
     .engines-list ul {
         margin: 0 !important;
