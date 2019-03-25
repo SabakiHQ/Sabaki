@@ -66,7 +66,7 @@ class ScoreDrawer extends Component {
         let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
 
         this.resultString = result > 0 ? t(p => `B+${p.result}`, {result})
-            : result < 0 ? t(p => `W+${result}`, {result: -result})
+            : result < 0 ? t(p => `W+${p.result}`, {result: -result})
             : t('Draw')
 
         return h(Drawer,
