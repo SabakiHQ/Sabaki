@@ -37,18 +37,10 @@ function pointIntegers(point, width, height) {
     // point is something like 'ae'
     // Returns [null, null] on failure; otherwise returns something like [0,4]
 
-    if (typeof point !== 'string') return [null, null]
-    if (point.length !== 2) return [null, null]
-    if (typeof width !== 'number') return [null, null]
-    if (width < 1 || width > 52) return [null, null]
-    if (typeof height !== 'number') return [null, null]
-    if (height < 1 || height > 52) return [null, null]
-
+    if (typeof point !== 'string' || point.length !== 2) return [null, null]
     let index0 = alpha.indexOf(point[0])
     let index1 = alpha.indexOf(point[1])
-    if (index0 === -1 || index1 === -1) return [null, null]
-    if (index0 >= width || index1 >= height) return [null, null]
-
+    if (index0 === -1 || index1 === -1 || index0 >= width || index1 >= height) return [null, null]
     return [index0, index1]
 }
 
@@ -56,9 +48,7 @@ function extractTwoPoints(s) {
     // s is something like 'aa:cc'
     // Returns [null, null] on failure; otherwise returns something like ['aa','cc']
 
-    if (typeof s !== 'string') return [null, null]
-    if (s.length !== 5) return [null, null]
-    if (s[2] !== ':') return [null, null]
+    if (typeof s !== 'string' || s.length !== 5 || s[2] !== ':') return [null, null]
     return [s.slice(0, 2), s.slice(3, 5)]
 }
 
