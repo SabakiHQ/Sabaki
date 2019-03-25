@@ -1724,6 +1724,15 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
+    flipBoard(horizontal) {
+        let {treePosition, gameTrees, gameIndex} = this.state
+        let tree = gameTrees[gameIndex]
+        let {size} = this.getGameInfo(tree)
+        let newTree = rotation.flipTree(tree, size[0], size[1], horizontal)
+
+        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+    }
+
     copyVariation(tree, treePosition) {
         let node = tree.get(treePosition)
         let copy = {
