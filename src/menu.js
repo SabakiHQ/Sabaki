@@ -459,11 +459,11 @@ let data = [
                 click: () => sabaki.rotateBoard(true)
             },
             {
-                label: '&Flip Horizontal',
+                label: '&Flip Horizontally',
                 click: () => sabaki.flipBoard(true)
             },
             {
-                label: 'Flip &Vertical',
+                label: 'Flip &Vertically',
                 click: () => sabaki.flipBoard(false)
             }
         ]
