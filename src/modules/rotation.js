@@ -5,7 +5,7 @@ const arrowish = ['AR', 'LN']
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = [...alpha].reverse()
 
-const colorSwapMap = {
+const colorInvertMap = {
     'AB': 'AW',
     'AW': 'AB',
     'B': 'W',
@@ -265,18 +265,18 @@ exports.flipTree = function(tree, width, height, horizontal) {
     })
 }
 
-exports.swapTreeColors = function(tree) {
+exports.invertTreeColors = function(tree) {
     return tree.mutate(draft => {
         for (let node of tree.listNodes()) {
 
             let newProperties = Object.create(null)
 
-            for (let key of Object.keys(colorSwapMap)) {
+            for (let key of Object.keys(colorInvertMap)) {
                 let data = node.data[key]
                 if (data == null) {
                     continue
                 }
-                let newKey = colorSwapMap[key]
+                let newKey = colorInvertMap[key]
                 newProperties[newKey] = data
                 draft.removeProperty(node.id, key)      // Get rid of the old property
             }

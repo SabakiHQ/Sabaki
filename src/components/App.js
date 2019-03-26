@@ -1733,10 +1733,10 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
-    swapColors() {
+    invertColors() {
         let {treePosition, gameTrees, gameIndex} = this.state
         let tree = gameTrees[gameIndex]
-        let newTree = rotation.swapTreeColors(tree)
+        let newTree = rotation.invertTreeColors(tree)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }

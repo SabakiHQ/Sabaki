@@ -467,8 +467,8 @@ let data = [
                 click: () => sabaki.flipBoard(false)
             },
             {
-                label: '&Swap Colors',
-                click: () => sabaki.swapColors()
+                label: '&Invert Colors',
+                click: () => sabaki.invertColors()
             }
         ]
     },
