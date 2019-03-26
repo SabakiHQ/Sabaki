@@ -268,17 +268,15 @@ exports.flipTree = function(tree, width, height, horizontal) {
 exports.invertTreeColors = function(tree) {
     return tree.mutate(draft => {
         for (let node of tree.listNodes()) {
-
-            let newProperties = Object.create(null)
+            let newProperties = {}
 
             for (let key of Object.keys(colorInvertMap)) {
                 let data = node.data[key]
-                if (data == null) {
-                    continue
-                }
+                if (data == null) continue
+
                 let newKey = colorInvertMap[key]
                 newProperties[newKey] = data
-                draft.removeProperty(node.id, key)      // Get rid of the old property
+                draft.removeProperty(node.id, key)
             }
 
             for (let key of Object.keys(newProperties)) {
