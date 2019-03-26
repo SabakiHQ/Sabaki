@@ -6,10 +6,10 @@ const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = [...alpha].reverse()
 
 const colorSwapMap = {
-	'AB': 'AW',
-	'AW': 'AB',
-	'B': 'W',
-	'W': 'B',
+    'AB': 'AW',
+    'AW': 'AB',
+    'B': 'W',
+    'W': 'B',
 }
 
 // Special functions that return the "min" and "max"
@@ -269,21 +269,21 @@ exports.swapTreeColors = function(tree) {
     return tree.mutate(draft => {
         for (let node of tree.listNodes()) {
 
-        	let newProperties = Object.create(null)
+            let newProperties = Object.create(null)
 
-        	for (let key of Object.keys(colorSwapMap)) {
-        		let data = node.data[key]
-        		if (data == null) {
-        			continue
-        		}
-        		let newKey = colorSwapMap[key]
-        		newProperties[newKey] = data
-        		draft.removeProperty(node.id, key)		// Get rid of the old property
-        	}
+            for (let key of Object.keys(colorSwapMap)) {
+                let data = node.data[key]
+                if (data == null) {
+                    continue
+                }
+                let newKey = colorSwapMap[key]
+                newProperties[newKey] = data
+                draft.removeProperty(node.id, key)      // Get rid of the old property
+            }
 
-        	for (let key of Object.keys(newProperties)) {
-        		draft.updateProperty(node.id, key, newProperties[key])
-        	}
+            for (let key of Object.keys(newProperties)) {
+                draft.updateProperty(node.id, key, newProperties[key])
+            }
         }
     })
 }
