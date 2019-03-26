@@ -111,7 +111,6 @@ exports.rotateArrow = function(twopoints, width, height, anticlockwise) {
 exports.rotateTree = function(tree, width, height, anticlockwise) {
     return tree.mutate(draft => {
         for (let node of tree.listNodes()) {
-
             // 'simple' cases are either a single point (e.g. 'aa') or a rect (e.g. 'aa:cc')
 
             for (let key of simple) {
@@ -213,7 +212,6 @@ exports.flipArrow = function(twopoints, width, height, horizontal) {
 exports.flipTree = function(tree, width, height, horizontal) {
     return tree.mutate(draft => {
         for (let node of tree.listNodes()) {
-
             for (let key of simple) {
                 if (node.data[key] == null) continue
 

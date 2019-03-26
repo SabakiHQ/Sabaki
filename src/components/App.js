@@ -28,7 +28,7 @@ const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
-const rotation = require('../modules/rotation')
+const treetransformer = require('../modules/treetransformer')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
 const gtplogger = require('../modules/gtplogger')
@@ -1719,7 +1719,7 @@ class App extends Component {
         let {treePosition, gameTrees, gameIndex} = this.state
         let tree = gameTrees[gameIndex]
         let {size} = this.getGameInfo(tree)
-        let newTree = rotation.rotateTree(tree, size[0], size[1], anticlockwise)
+        let newTree = treetransformer.rotateTree(tree, size[0], size[1], anticlockwise)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
@@ -1728,7 +1728,7 @@ class App extends Component {
         let {treePosition, gameTrees, gameIndex} = this.state
         let tree = gameTrees[gameIndex]
         let {size} = this.getGameInfo(tree)
-        let newTree = rotation.flipTree(tree, size[0], size[1], horizontal)
+        let newTree = treetransformer.flipTree(tree, size[0], size[1], horizontal)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
@@ -1736,7 +1736,7 @@ class App extends Component {
     invertColors() {
         let {treePosition, gameTrees, gameIndex} = this.state
         let tree = gameTrees[gameIndex]
-        let newTree = rotation.invertTreeColors(tree)
+        let newTree = treetransformer.invertTreeColors(tree)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
