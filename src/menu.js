@@ -465,6 +465,10 @@ let data = [
             {
                 label: 'Flip &Vertically',
                 click: () => sabaki.flipBoard(false)
+            },
+            {
+                label: '&Swap Colors',
+                click: () => sabaki.swapColors()
             }
         ]
     },
