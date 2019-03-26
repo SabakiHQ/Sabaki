@@ -5,6 +5,13 @@ const arrowish = ['AR', 'LN']
 const alpha = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const alphaRev = [...alpha].reverse()
 
+const colorInvertMap = {
+    'AB': 'AW',
+    'AW': 'AB',
+    'B': 'W',
+    'W': 'B',
+}
+
 // Special functions that return the "min" and "max"
 // for the SGF coordinate system...
 //
@@ -253,6 +260,27 @@ exports.flipTree = function(tree, width, height, horizontal) {
 
                     return value
                 }))
+            }
+        }
+    })
+}
+
+exports.invertTreeColors = function(tree) {
+    return tree.mutate(draft => {
+        for (let node of tree.listNodes()) {
+            let newProperties = {}
+
+            for (let key of Object.keys(colorInvertMap)) {
+                let data = node.data[key]
+                if (data == null) continue
+
+                let newKey = colorInvertMap[key]
+                newProperties[newKey] = data
+                draft.removeProperty(node.id, key)
+            }
+
+            for (let key of Object.keys(newProperties)) {
+                draft.updateProperty(node.id, key, newProperties[key])
             }
         }
     })

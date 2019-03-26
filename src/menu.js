@@ -465,6 +465,10 @@ let data = [
             {
                 label: 'Flip &Vertically',
                 click: () => sabaki.flipBoard(false)
+            },
+            {
+                label: '&Invert Colors',
+                click: () => sabaki.invertColors()
             }
         ]
     },

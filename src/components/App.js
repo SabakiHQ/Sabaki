@@ -1733,6 +1733,14 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
+    invertColors() {
+        let {treePosition, gameTrees, gameIndex} = this.state
+        let tree = gameTrees[gameIndex]
+        let newTree = rotation.invertTreeColors(tree)
+
+        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+    }
+
     copyVariation(tree, treePosition) {
         let node = tree.get(treePosition)
         let copy = {
