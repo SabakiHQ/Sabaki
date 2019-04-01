@@ -9,6 +9,10 @@ All notable changes to this project will be documented in this file.
 * Ability to flip board horizontally/vertically (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 * Ability to invert colors (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
+**Fixed**
+
+* Don't clear edit history on reloading file when file has been changed externally
+
 ## [Sabaki v0.43.1][v0.43.1] (2019-03-17)
 
 **Fixed**

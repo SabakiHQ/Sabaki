@@ -564,7 +564,7 @@ class App extends Component {
         if (playSound) sound.playNewGame()
     }
 
-    async loadFile(filename = null, {suppressAskForSave = false} = {}) {
+    async loadFile(filename = null, {suppressAskForSave = false, clearHistory = true} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
 
         if (!filename) {
@@ -573,7 +573,7 @@ class App extends Component {
                 filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
             }, ({result}) => {
                 if (result) filename = result[0]
-                if (filename) this.loadFile(filename, {suppressAskForSave: true})
+                if (filename) this.loadFile(filename, {suppressAskForSave: true, clearHistory})
             })
 
             return
@@ -604,7 +604,7 @@ class App extends Component {
         }
 
         if (success) {
-            await this.loadGameTrees(gameTrees, {suppressAskForSave: true})
+            await this.loadGameTrees(gameTrees, {suppressAskForSave: true, clearHistory})
 
             this.setState({representedFilename: filename})
             this.fileHash = this.generateFileHash()
@@ -617,7 +617,7 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    async loadContent(content, extension, {suppressAskForSave = false} = {}) {
+    async loadContent(content, extension, options = {}) {
         this.setBusy(true)
 
         let gameTrees = []
@@ -640,13 +640,13 @@ class App extends Component {
         }
 
         if (success) {
-            await this.loadGameTrees(gameTrees, {suppressAskForSave})
+            await this.loadGameTrees(gameTrees, options)
         }
 
         this.setBusy(false)
     }
 
-    async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
+    async loadGameTrees(gameTrees, {suppressAskForSave = false, clearHistory = true} = {}) {
         gtplogger.rotate()
 
         if (!suppressAskForSave && !this.askForSave()) return
@@ -657,7 +657,7 @@ class App extends Component {
 
         await helper.wait(setting.get('app.loadgame_delay'))
 
-        if (gameTrees.length != 0) {
+        if (gameTrees.length > 0) {
             this.detachEngines()
             this.clearConsole()
 
@@ -674,7 +674,7 @@ class App extends Component {
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
 
-            this.clearHistory()
+            if (clearHistory) this.clearHistory()
         }
 
         this.setBusy(false)
@@ -770,7 +770,10 @@ class App extends Component {
             ].join('\n'), 'warning', ['Reload', 'Don’t Reload'], 1)
 
             if (answer === 0) {
-                this.loadFile(this.state.representedFilename, {suppressAskForSave: true})
+                this.loadFile(this.state.representedFilename, {
+                    suppressAskForSave: true,
+                    clearHistory: false
+                })
             } else {
                 this.treeHash = null
             }
