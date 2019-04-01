@@ -1,30 +1,39 @@
-// Prevent webpack from bundling modules required using customReq
-const customReq = p => require(p)
+const nativeRequire = eval('require')
 
 const {remote} = require('electron')
 const isRenderer = remote != null
 
 const fs = require('fs')
-const path = require('path')
-const setting = isRenderer ? remote.require('./setting') : customReq('./setting')
+const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
 
-const lang = setting.get('app.lang')
+let dolm = null
 
-exports.strings = {}
+exports.loadStrings = function(strings) {
+    dolm = require('dolm').load(strings)
+
+    exports.strings = strings
+    exports.usedStrings = dolm.usedStrings
+    exports.t = dolm.t
+    exports.context = dolm.context
+}
 
 try {
-    exports.strings = isRenderer
-        ? customReq(`./lang/${lang}.js`)
-        : customReq(`../lang/${lang}.js`)
-} catch (err) {}
+    let lang = setting.get('app.lang')
 
-const dolm = require('dolm').load(exports.strings)
+    exports.loadStrings(
+        isRenderer
+        ? nativeRequire(`./lang/${lang}.js`)
+        : nativeRequire(`../lang/${lang}.js`)
+    )
+} catch (err) {
+    exports.loadStrings({})
+}
 
-exports.usedStrings = dolm.usedStrings
-exports.t = dolm.t
-exports.context = dolm.context
+exports.load = function(filename) {
+    exports.loadStrings(nativeRequire(filename))
+}
 
-exports.serialize = function() {
+exports.serialize = function(filename) {
     if (isRenderer) {
         // Merge with dolm serialization result in main process
 
@@ -44,9 +53,7 @@ exports.serialize = function() {
     let result = dolm.serialize()
     let js = `module.exports = ${result.js}`
 
-    if (isRenderer) {
-        fs.writeFileSync(path.join(__dirname, 'lang', `${lang}.js`), js)
-    }
+    fs.writeFileSync(filename, js)
 
     return result
 }

@@ -1,12 +1,15 @@
+const nativeRequire = eval('require')
+
 const {shell, clipboard, remote} = require('electron')
-const {app} = remote || require('electron')
+const isRenderer = remote != null
+const {app} = isRenderer ? remote : require('electron')
 
 const {t} = require('./i18n')
-const setting = remote && remote.require('./setting')
+const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
 
-const sabaki = typeof window !== 'undefined' && window.sabaki
-const dialog = sabaki && require('./modules/dialog')
-const gametree = sabaki && require('./modules/gametree')
+const sabaki = isRenderer ? window.sabaki : null
+const dialog = isRenderer ? require('./modules/dialog') : null
+const gametree = isRenderer ? require('./modules/gametree') : null
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
@@ -592,8 +595,27 @@ let data = [
                 click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}/issues`)
             }
         ]
+    },
+    setting.get('debug.dev_tools') && {
+        id: 'developer',
+        label: t('menu.developer', 'Develo&per'),
+        submenu: [
+            {
+                label: t('menu.developer', 'Toggle &Developer Tools'),
+                click: () => remote.getCurrentWindow().webContents.toggleDevTools()
+            },
+            {type: 'separator'},
+            {
+                label: t('menu.developer', 'Load &Language File'),
+                click: () => {}
+            },
+            {
+                label: t('menu.developer', '&Save Language File'),
+                click: () => {}
+            }
+        ]
     }
-]
+].filter(x => !!x)
 
 let findMenuItem = str => data.find(item => item.id === str)
 
@@ -641,7 +663,7 @@ if (process.platform === 'darwin') {
 
     // Add 'Window' menu
 
-    data.splice(data.length - 1, 0, {
+    data.splice(data.indexOf(helpMenu), 0, {
         submenu: [
             {
                 label: t('menu.file', 'New &Window'),
