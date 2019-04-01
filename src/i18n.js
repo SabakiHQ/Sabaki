@@ -13,8 +13,9 @@ exports.loadStrings = function(strings) {
 
     exports.strings = strings
     exports.usedStrings = dolm.usedStrings
-    exports.t = dolm.t
-    exports.context = dolm.context
+
+    exports.t = (...args) => dolm.t(...args)
+    exports.context = (...args) => dolm.context(...args)
 }
 
 try {

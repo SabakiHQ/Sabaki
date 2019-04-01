@@ -620,6 +620,25 @@ let data = [
             },
             {type: 'separator'},
             {
+                label: t('menu.developer', 'Load &Language File…'),
+                click: () => {
+                    dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters: [
+                            {
+                                name: t('menu.developer', 'JavaScript Files'),
+                                extensions: ['js']
+                            }
+                        ]
+                    }, ({result}) => {
+                        if (!result || result.length === 0) return
+
+                        i18n.load(result[0])
+                        sabaki.waitForRender()
+                    })
+                }
+            },
+            {
                 label: t('menu.developer', '&Save Language File…'),
                 click: () => {
                     dialog.showSaveDialog({
