@@ -475,7 +475,7 @@ let data = [
                 click: () => sabaki.flipBoard(false)
             },
             {
-                label: '&Invert Colors',
+                label: t('menu.tools', '&Invert Colors'),
                 click: () => sabaki.invertColors()
             }
         ]
