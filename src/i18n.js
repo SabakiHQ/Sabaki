@@ -20,11 +20,7 @@ exports.loadStrings = function(strings) {
 try {
     let lang = setting.get('app.lang')
 
-    exports.loadStrings(
-        isRenderer
-        ? nativeRequire(`./lang/${lang}.js`)
-        : nativeRequire(`../lang/${lang}.js`)
-    )
+    exports.load(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
 } catch (err) {
     exports.loadStrings({})
 }

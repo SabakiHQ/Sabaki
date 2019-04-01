@@ -4,7 +4,8 @@ const {shell, clipboard, remote} = require('electron')
 const isRenderer = remote != null
 const {app} = isRenderer ? remote : require('electron')
 
-const {t} = require('./i18n')
+const i18n = require('./i18n')
+const t = i18n.t
 const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
 
 const sabaki = isRenderer ? window.sabaki : null
@@ -569,6 +570,19 @@ let data = [
             }
         ]
     },
+    process.platform === 'darwin' && {
+        submenu: [
+            {
+                label: t('menu.file', 'New &Window'),
+                clickMain: 'newWindow',
+                enabled: true
+            },
+            {role: 'minimize'},
+            {type: 'separator'},
+            {role: 'front'}
+        ],
+        role: 'window'
+    },
     {
         id: 'help',
         label: t('menu.help', '&Help'),
@@ -606,12 +620,27 @@ let data = [
             },
             {type: 'separator'},
             {
-                label: t('menu.developer', 'Load &Language File'),
-                click: () => {}
-            },
-            {
-                label: t('menu.developer', '&Save Language File'),
-                click: () => {}
+                label: t('menu.developer', '&Save Language File…'),
+                click: () => {
+                    dialog.showSaveDialog({
+                        filters: [
+                            {
+                                name: t('menu.developer', 'JavaScript Files'),
+                                extensions: ['js']
+                            }
+                        ]
+                    }, ({result}) => {
+                        if (!result) return
+
+                        let summary = i18n.serialize(result)
+
+                        dialog.showMessageBox(t('menu.developer', p => [
+                            `Translated strings: ${p.translatedCount}`,
+                            `Untranslated strings: ${p.untranslatedCount}`,
+                            `Completion: ${Math.round(p.complete * 100)}%`
+                        ].join('\n'), summary))
+                    })
+                }
             }
         ]
     }
@@ -659,22 +688,6 @@ if (process.platform === 'darwin') {
     data.unshift({
         label: app.getName(),
         submenu: appMenu
-    })
-
-    // Add 'Window' menu
-
-    data.splice(data.indexOf(helpMenu), 0, {
-        submenu: [
-            {
-                label: t('menu.file', 'New &Window'),
-                clickMain: 'newWindow',
-                enabled: true
-            },
-            {role: 'minimize'},
-            {type: 'separator'},
-            {role: 'front'}
-        ],
-        role: 'window'
     })
 
     // Remove 'Toggle Menu Bar' menu item
