@@ -6,6 +6,7 @@ const isRenderer = isElectron && remote != null
 const fs = require('fs')
 const dolm = require('dolm').load({})
 
+const mainI18n = isRenderer ? remote.require('./i18n') : exports
 const setting = isRenderer ? remote.require('./setting')
     : isElectron ? nativeRequire('./setting')
     : null
@@ -15,6 +16,7 @@ exports.context = dolm.context
 
 exports.loadStrings = function(strings) {
     dolm.load(strings)
+    if (isRenderer) mainI18n.loadStrings(strings)
 
     exports.strings = strings
     exports.usedStrings = dolm.usedStrings
@@ -28,7 +30,6 @@ exports.serialize = function(filename) {
     if (isRenderer) {
         // Merge with dolm serialization result in main process
 
-        let mainI18n = remote.require('./i18n')
         let mainStrings = mainI18n.strings
         let mainUsedStrings = mainI18n.usedStrings
 
