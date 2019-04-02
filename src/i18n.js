@@ -1,11 +1,14 @@
 const nativeRequire = eval('require')
 
 const {remote} = require('electron')
-const isRenderer = remote != null
+const isElectron = process.versions.electron != null
+const isRenderer = isElectron && remote != null
 const fs = require('fs')
 const dolm = require('dolm').load({})
 
-const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
+const setting = isRenderer ? remote.require('./setting')
+    : isElectron ? nativeRequire('./setting')
+    : null
 
 exports.t = dolm.t
 exports.context = dolm.context
