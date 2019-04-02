@@ -560,9 +560,11 @@ class App extends Component {
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
+
         let emptyTree = this.getEmptyGameTree()
 
-        await this.loadGameTrees([emptyTree], {suppressAskForSave})
+        await this.loadGameTrees([emptyTree], {suppressAskForSave: true})
 
         if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
@@ -990,6 +992,7 @@ class App extends Component {
             this.setMode('play')
         }
 
+        let t = i18n.context('app.play')
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
         let node = tree.get(treePosition)

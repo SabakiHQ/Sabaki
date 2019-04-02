@@ -663,8 +663,12 @@ let data = [
                         dialog.showMessageBox(t('menu.developer', p => [
                             `Translated strings: ${p.translatedCount}`,
                             `Untranslated strings: ${p.untranslatedCount}`,
-                            `Completion: ${Math.round(p.complete * 100)}%`
-                        ].join('\n'), summary))
+                            `Completion: ${p.complete}%`
+                        ].join('\n'), {
+                            translatedCount: summary.translatedCount,
+                            untranslatedCount: summary.untranslatedCount,
+                            complete: Math.round(summary.complete * 100)
+                        }))
                     })
                 }
             }
