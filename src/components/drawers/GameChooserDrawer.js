@@ -109,7 +109,7 @@ class GameChooserDrawer extends Component {
         }
 
         this.handleItemContextMenu = evt => {
-            let template = [
+            helper.popupMenu([
                 {
                     label: t('&Remove Game'),
                     click: () => {
@@ -138,9 +138,7 @@ class GameChooserDrawer extends Component {
                         onChange({gameTrees: [evt.tree]})
                     }
                 }
-            ]
-
-            helper.popupMenu(template, evt.clientX, evt.clientY)
+            ], evt.clientX, evt.clientY)
         }
 
         this.handleItemDragStart = evt => {

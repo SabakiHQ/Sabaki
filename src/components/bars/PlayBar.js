@@ -8,42 +8,6 @@ const t = require('../../i18n').context('PlayBar')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
-let menuTemplate = [
-    {
-        label: t('&Pass'),
-        click: () => {
-            let autoGenmove = setting.get('gtp.auto_genmove')
-            sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
-        }
-    },
-    {
-        label: t('&Resign'),
-        click: () => sabaki.makeResign()
-    },
-    {type: 'separator'},
-    {
-        label: t('Es&timate'),
-        click: () => sabaki.setMode('estimator')
-    },
-    {
-        label: t('&Score'),
-        click: () => sabaki.setMode('scoring')
-    },
-    {
-        label: t('&Edit'),
-        click: () => sabaki.setMode('edit')
-    },
-    {
-        label: t('&Find'),
-        click: () => sabaki.setMode('find')
-    },
-    {type: 'separator'},
-    {
-        label: t('&Info'),
-        click: () => sabaki.openDrawer('info')
-    }
-]
-
 class PlayBar extends Component {
     constructor() {
         super()
@@ -52,7 +16,41 @@ class PlayBar extends Component {
 
         this.handleMenuClick = () => {
             let {left, top} = this.menuButtonElement.getBoundingClientRect()
-            helper.popupMenu(menuTemplate, left, top)
+            helper.popupMenu([
+                {
+                    label: t('&Pass'),
+                    click: () => {
+                        let autoGenmove = setting.get('gtp.auto_genmove')
+                        sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
+                    }
+                },
+                {
+                    label: t('&Resign'),
+                    click: () => sabaki.makeResign()
+                },
+                {type: 'separator'},
+                {
+                    label: t('Es&timate'),
+                    click: () => sabaki.setMode('estimator')
+                },
+                {
+                    label: t('&Score'),
+                    click: () => sabaki.setMode('scoring')
+                },
+                {
+                    label: t('&Edit'),
+                    click: () => sabaki.setMode('edit')
+                },
+                {
+                    label: t('&Find'),
+                    click: () => sabaki.setMode('find')
+                },
+                {type: 'separator'},
+                {
+                    label: t('&Info'),
+                    click: () => sabaki.openDrawer('info')
+                }
+            ], left, top)
         }
     }
 

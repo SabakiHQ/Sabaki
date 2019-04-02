@@ -639,6 +639,13 @@ let data = [
                 }
             },
             {
+                label: t('menu.developer', '&Unload Language File'),
+                click: () => {
+                    i18n.loadStrings({})
+                    sabaki.waitForRender()
+                }
+            },
+            {
                 label: t('menu.developer', '&Save Language File…'),
                 click: () => {
                     dialog.showSaveDialog({

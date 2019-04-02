@@ -2,28 +2,19 @@ const nativeRequire = eval('require')
 
 const {remote} = require('electron')
 const isRenderer = remote != null
-
 const fs = require('fs')
+const dolm = require('dolm').load({})
+
 const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
 
-let dolm = null
+exports.t = dolm.t
+exports.context = dolm.context
 
 exports.loadStrings = function(strings) {
-    dolm = require('dolm').load(strings)
+    dolm.load(strings)
 
     exports.strings = strings
     exports.usedStrings = dolm.usedStrings
-
-    exports.t = (...args) => dolm.t(...args)
-    exports.context = (...args) => dolm.context(...args)
-}
-
-try {
-    let lang = setting.get('app.lang')
-
-    exports.load(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
-} catch (err) {
-    exports.loadStrings({})
 }
 
 exports.load = function(filename) {
@@ -53,4 +44,12 @@ exports.serialize = function(filename) {
     fs.writeFileSync(filename, js)
 
     return result
+}
+
+try {
+    let lang = setting.get('app.lang')
+
+    exports.load(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
+} catch (err) {
+    exports.loadStrings({})
 }
