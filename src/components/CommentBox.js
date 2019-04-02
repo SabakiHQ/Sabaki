@@ -88,7 +88,19 @@ class CommentTitle extends Component {
 
         let prevBoard = gametree.getBoard(gameTree, node.parentId)
         let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
-        if (patternMatch == null) return null
+
+        if (patternMatch == null) {
+            let diff = vertex
+                .map((z, i) => Math.min(z + 1, [prevBoard.width, prevBoard.height][i] - z))
+                .sort((a, b) => a - b)
+
+            if (diff[0] > 6) return null
+
+            return t(p => `${p.a}-${p.b} Point`, {
+                a: diff[0],
+                b: diff[1]
+            })
+        }
 
         let board = gametree.getBoard(gameTree, treePosition)
         let matchedVertices = [...patternMatch.match.anchors, ...patternMatch.match.vertices]
