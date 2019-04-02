@@ -10,8 +10,7 @@ let modules = {sgf, ngf, gib}
 exports = module.exports = Object.assign({}, modules)
 
 let extensions = Object.keys(modules).map(key => modules[key].meta)
-let combinedExtensions = extensions.map(x => x.extensions)
-    .reduce((acc, x) => [...acc, ...x], [])
+let combinedExtensions = [].concat(...extensions.map(x => x.extensions))
 
 exports.meta = [
     {name: t('Game Records'), extensions: combinedExtensions},
