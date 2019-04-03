@@ -22,12 +22,17 @@ exports.loadStrings = function(strings) {
     }
 
     dolm.load(strings)
+
     exports.strings = strings
     exports.usedStrings = dolm.usedStrings
 }
 
-exports.load = function(filename) {
+exports.loadFile = function(filename) {
     exports.loadStrings(nativeRequire(filename))
+}
+
+exports.loadLang = function(lang) {
+    exports.loadFile(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
 }
 
 exports.serialize = function(filename) {
@@ -55,9 +60,15 @@ exports.serialize = function(filename) {
 }
 
 try {
-    let lang = setting.get('app.lang')
-
-    exports.load(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
+    exports.loadLang(setting.get('app.lang'))
 } catch (err) {
     exports.loadStrings({})
+}
+
+if (isRenderer) {
+    setting.events.on('change', ({key}) => {
+        if (key !== 'app.lang') return
+
+        exports.loadLang(setting.get('app.lang'))
+    })
 }
