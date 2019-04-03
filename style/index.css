@@ -9,7 +9,7 @@
         top: 0;
         right: 0;
         bottom: 40px;
-        background: #C2CB9C url('../img/ui/tatami.png') center;
+        background: #C2CB9C url('../img/ui/tatami.png') left top;
     }
     #goban {
         box-sizing: border-box;
