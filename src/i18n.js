@@ -15,9 +15,13 @@ exports.t = dolm.t
 exports.context = dolm.context
 
 exports.loadStrings = function(strings) {
-    dolm.load(strings)
-    if (isRenderer) mainI18n.loadStrings(strings)
+    if (isRenderer && window.sabaki != null) {
+        mainI18n.loadStrings(strings)
+        sabaki.buildMenu(true)
+        sabaki.waitForRender()
+    }
 
+    dolm.load(strings)
     exports.strings = strings
     exports.usedStrings = dolm.usedStrings
 }

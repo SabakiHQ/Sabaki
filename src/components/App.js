@@ -155,7 +155,7 @@ class App extends Component {
                 this.askForReload()
             }
 
-            ipcRenderer.send('build-menu', this.state.busy > 0)
+            this.buildMenu()
         })
 
         this.window.on('resize', () => {
@@ -171,7 +171,7 @@ class App extends Component {
 
         // Handle main menu items
 
-        let menuData = require('../menu')
+        let menuData = require('../menu').clone()
 
         let handleMenuClicks = menu => {
             for (let item of menu) {
@@ -377,7 +377,7 @@ class App extends Component {
         }
 
         if (key in data) {
-            ipcRenderer.send('build-menu', this.state.busy > 0)
+            this.buildMenu()
             this.setState({[data[key]]: setting.get(key)})
         }
     }
@@ -387,6 +387,11 @@ class App extends Component {
     }
 
     // User Interface
+
+    buildMenu(rebuild = false) {
+        if (rebuild) remote.require('./menu').buildMenu()
+        ipcRenderer.send('build-menu', this.state.busy > 0)
+    }
 
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
