@@ -12,7 +12,8 @@ All notable changes to this project will be documented in this file.
 **Fixed**
 
 * Don't clear edit history on reloading file when file has been changed externally
-* Fix engines making three consecutive passes in AI vs. AI games
+* Fix engines making three consecutive passes in engine vs. engine games
+* Fix engine vs. engine games getting stuck in analysis mode
 
 ## [Sabaki v0.43.1][v0.43.1] (2019-03-17)
 
