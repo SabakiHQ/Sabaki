@@ -2463,6 +2463,8 @@ class App extends Component {
 
         this.setState({analysis: null, analysisTreePosition: this.state.treePosition})
 
+        if (this.state.generatingMoves) return
+
         let t = i18n.context('app.engine')
         let error = false
         let {currentPlayer} = this.inferredState
@@ -2474,8 +2476,10 @@ class App extends Component {
 
             let engineIndex = controllerIndices.find(i =>
                 this.attachedEngineSyncers[i] != null
-                && (this.attachedEngineSyncers[i].commands.includes('lz-analyze')
-                || this.attachedEngineSyncers[i].commands.includes('analyze'))
+                && (
+                    this.attachedEngineSyncers[i].commands.includes('lz-analyze')
+                    || this.attachedEngineSyncers[i].commands.includes('analyze')
+                )
             )
 
             if (engineIndex != null) {
