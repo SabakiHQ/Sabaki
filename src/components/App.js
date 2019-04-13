@@ -1325,7 +1325,9 @@ class App extends Component {
             n = tree.get(n.parentId)
         }
 
-        if (this.state.analysisTreePosition != null && id !== this.state.analysisTreePosition) {
+        if (this.state.analysisTreePosition != null &&
+            id !== this.state.analysisTreePosition &&
+            !this.state.generatingMoves) {
             // Continuous analysis
 
             clearTimeout(this.navigateAnalysisId)
@@ -2527,6 +2529,7 @@ class App extends Component {
         } else if (firstMove) {
             this.setState({generatingMoves: true})
         }
+        clearTimeout(this.navigateAnalysisId)
 
         let t = i18n.context('app.engine')
         let {gameTrees, gameIndex} = this.state
@@ -2633,6 +2636,8 @@ class App extends Component {
         } else {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
+            if (this.state.analysisTreePosition != null)
+                this.startAnalysis({showWarning: false})
         }
 
         this.setBusy(false)
