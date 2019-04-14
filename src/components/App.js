@@ -746,7 +746,9 @@ class App extends Component {
         this.setState({gameTrees})
         this.recordHistory()
 
-        return sgf.stringify(gameTrees.map(tree => tree.root))
+        return sgf.stringify(gameTrees.map(tree => tree.root), {
+            linebreak: setting.get('sgf.format_code') ? helper.linebreak : ''
+        })
     }
 
     generateTreeHash() {

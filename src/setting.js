@@ -107,6 +107,7 @@ let defaults = {
     'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
     'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
+    'sgf.format_code': false,
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,
