@@ -66,6 +66,13 @@ class WinrateGraph extends Component {
     }
 
     render({width, currentIndex, data}) {
+
+        let inv = setting.get('view.winrategraph_invert')
+
+        if (inv) {
+            data = data.map(x => x == null ? null : 100 - x)
+        }
+
         let dataDiff = data.map((x, i) => i === 0 || x == null || data[i - 1] == null ? null : x - data[i - 1])
         let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
@@ -95,7 +102,7 @@ class WinrateGraph extends Component {
                 // Draw background
 
                 h('defs', {},
-                    h('linearGradient', {id: 'bgGradient', x1: 0, y1: 0, x2: 0, y2: 1},
+                    h('linearGradient', {id: 'bgGradient', x1: 0, y1: inv ? 1 : 0, x2: 0, y2: inv ? 0 : 1},
                         h('stop', {
                             offset: '0%',
                             'stop-color': 'white',
@@ -120,9 +127,9 @@ class WinrateGraph extends Component {
 
                                 if (instructions.length === 0) return ''
 
-                                return `M ${instructions[0][0]},100 `
+                                return `M ${instructions[0][0]},${inv ? 0 : 100} `
                                     + instructions.map(x => `L ${x.join(',')}`).join(' ')
-                                    + ` L ${instructions.slice(-1)[0][0]},100 Z`
+                                    + ` L ${instructions.slice(-1)[0][0]},${inv ? 0 : 100} Z`
                             })()
                         })
                     )

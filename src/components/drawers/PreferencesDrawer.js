@@ -144,7 +144,11 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'app.always_show_result',
                     text: t('Always show game result')
-                })
+                }),
+                h(PreferencesItem, {
+                    id: 'view.winrategraph_invert',
+                    text: t('Invert winrate graph')
+                }),
             ),
 
             h('p', {}, h('label', {},
