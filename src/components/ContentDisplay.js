@@ -1,6 +1,7 @@
 const {remote, shell} = require('electron')
 const {h, Component} = require('preact')
 
+const t = require('../i18n').context('ContentDisplay')
 const gametree = require('../modules/gametree')
 const setting = remote.require('./setting')
 
@@ -31,7 +32,7 @@ function htmlify(input) {
             return `<a
                 href="#"
                 class="comment-movenumber"
-                title="Jump to Move Number"
+                title="${t('Jump to Move Number')}"
                 data-movenumber="${tokens[2]}"
             >${match}</a>`
     })

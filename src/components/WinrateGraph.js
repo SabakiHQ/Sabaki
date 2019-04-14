@@ -1,10 +1,10 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
 const helper = require('../modules/helper')
+const t = require('../i18n').context('WinrateGraph')
 const setting = remote.require('./setting')
 
 let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
-let winrateGraphHeight = setting.get('view.winrategraph_height')
 
 class WinrateGraph extends Component {
     constructor() {
@@ -236,15 +236,14 @@ class WinrateGraph extends Component {
                     left: `${currentIndex * 100 / width}%`,
                     top: `${data[currentIndex]}%`
                 },
-                title: `White winrate: ${
-                    Math.round((100 - data[currentIndex]) * 100) / 100
-                }%${
-                    data[currentIndex - 1] == null ? '' : ` (${
-                        dataDiff[currentIndex] >= 0 ? '' : '+'
-                    }${
-                        -Math.round(dataDiff[currentIndex] * 100) / 100
-                    })`
-                }`
+                title: t(p => `White winrate: ${p.whiteWinrate}%${
+                    p.diff == null ? '' : ` (${p.diff >= 0 ? '+' : ''}${p.diff})`
+                }`, {
+                    whiteWinrate: Math.round((100 - data[currentIndex]) * 100) / 100,
+                    diff: dataDiff[currentIndex] == null
+                        ? null
+                        : -Math.round(dataDiff[currentIndex] * 100) / 100
+                })
             })
         )
     }

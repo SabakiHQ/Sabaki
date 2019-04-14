@@ -4,6 +4,7 @@ const path = require('path')
 const setting = remote.require('./setting')
 const dialog = require('./dialog')
 const helper = require('./helper')
+const t = require('../i18n').context('gtplogger')
 
 let filename = null
 
@@ -55,10 +56,13 @@ let timestamp = function() {
 
 let validate = function() {
     if (!helper.isWritableDirectory(setting.get('gtp.console_log_path'))) {
-        dialog.showMessageBox([
-            'You have an invalid log folder for GTP console logging in your settings.',
-            'Please make sure the log directory is valid and writable, or disable GTP console logging.',
-        ].join('\n\n'), 'warning')
+        dialog.showMessageBox(
+            t([
+                'You have an invalid log folder for GTP console logging in your settings.',
+                'Please make sure the log directory is valid and writable, or disable GTP console logging.',
+            ].join('\n\n')),
+            'warning'
+        )
 
         return false
     }

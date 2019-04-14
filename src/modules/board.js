@@ -151,7 +151,7 @@ class Board {
         return area.filter(v => this.get(v) === this.get(vertex))
     }
 
-    getScore(areaMap) {
+    getScore(areaMap, {komi = 0, handicap = 0} = {}) {
         let score = {
             area: [0, 0],
             territory: [0, 0],
@@ -169,6 +169,10 @@ class Board {
                 if (this.get([x, y]) === 0) score.territory[index]++
             }
         }
+
+        score.areaScore = score.area[0] - score.area[1] - komi - handicap
+        score.territoryScore = score.territory[0] - score.territory[1]
+            + score.captures[0] - score.captures[1] - komi
 
         return score
     }

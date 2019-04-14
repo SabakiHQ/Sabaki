@@ -33,7 +33,7 @@ class MainView extends Component {
     }
 
     componentDidMount() {
-        // Pressing Ctrl should show crosshair cursor on Goban in edit mode
+        // Pressing Ctrl/Cmd should show crosshair cursor on Goban in edit mode
 
         document.addEventListener('keydown', evt => {
             if (evt.key !== 'Control' || evt.key !== 'Meta') return
@@ -44,7 +44,7 @@ class MainView extends Component {
         })
 
         document.addEventListener('keyup', evt => {
-            if (evt.key !== 'Control') return
+            if (evt.key !== 'Control' || evt.key !== 'Meta') return
 
             if (this.props.mode === 'edit') {
                 this.setState({gobanCrosshair: false})
@@ -213,7 +213,7 @@ class MainView extends Component {
                     areaMap,
                     komi,
                     handicap
-                }, 'Please select dead stones.'),
+                }),
 
                 h(ScoringBar, {
                     type: 'estimator',
@@ -223,7 +223,7 @@ class MainView extends Component {
                     areaMap,
                     komi,
                     handicap
-                }, 'Toggle group status.'),
+                }),
 
                 h(FindBar, {
                     mode,

@@ -4,6 +4,7 @@ const classNames = require('classnames')
 
 const Drawer = require('./Drawer')
 
+const t = require('../../i18n').context('ScoreDrawer')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -11,7 +12,7 @@ class ScoreRow extends Component {
     render({method, score, komi, handicap, sign}) {
         let index = sign > 0 ? 0 : 1
 
-        let total = method === 'area' ? score.area[index]
+        let total = !score ? 0 : method === 'area' ? score.area[index]
             : score.territory[index] + score.captures[index]
 
         if (sign < 0) total += komi
@@ -21,14 +22,14 @@ class ScoreRow extends Component {
             h('th', {},
                 h('img', {
                     src: `./node_modules/@sabaki/shudan/css/stone_${sign}.png`,
-                    alt: sign > 0 ? 'Black' : 'White',
+                    alt: sign > 0 ? t('Black') : t('White'),
                     width: 24,
                     height: 24
                 })
             ),
-            h('td', {class: classNames({disabled: method === 'territory'})}, score.area[index]),
-            h('td', {class: classNames({disabled: method === 'area'})}, score.territory[index]),
-            h('td', {class: classNames({disabled: method === 'area'})}, score.captures[index]),
+            h('td', {class: classNames({disabled: method === 'territory'})}, score ? score.area[index] : '-'),
+            h('td', {class: classNames({disabled: method === 'area'})}, score ? score.territory[index] : '-'),
+            h('td', {class: classNames({disabled: method === 'area'})}, score ? score.captures[index] : '-'),
             h('td', {}, sign < 0 ? komi : '-'),
             h('td', {class: classNames({disabled: method === 'territory'})}, sign < 0 ? handicap : '-'),
             h('td', {}, total)
@@ -61,11 +62,12 @@ class ScoreDrawer extends Component {
         if (isNaN(komi)) komi = 0
         if (isNaN(handicap)) handicap = 0
 
-        let score = board ? board.getScore(areaMap) : {area: [], territory: [], captures: []}
-        let result = method === 'area' ? score.area[0] - score.area[1] - komi - handicap
-            : score.territory[0] - score.territory[1] + score.captures[0] - score.captures[1] - komi
+        let score = board && board.getScore(areaMap, {handicap, komi})
+        let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
 
-        this.resultString = result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : 'Draw'
+        this.resultString = result > 0 ? t(p => `B+${p.result}`, {result})
+            : result < 0 ? t(p => `W+${p.result}`, {result: -result})
+            : t('Draw')
 
         return h(Drawer,
             {
@@ -80,25 +82,25 @@ class ScoreDrawer extends Component {
                     h('a', {
                         href: '#',
                         onClick: this.handleAreaButtonClick
-                    }, 'Area')
+                    }, t('Area'))
                 ),
                 h('li', {class: classNames({current: method === 'territory'})},
                     h('a', {
                         href: '#',
                         onClick: this.handleTerritoryButtonClick
-                    }, 'Territory')
+                    }, t('Territory'))
                 )
             ),
 
             h('table', {},
                 h('thead', {}, h('tr', {},
                     h('th'),
-                    h('th', {disabled: method === 'territory'}, 'Area'),
-                    h('th', {disabled: method === 'area'}, 'Territory'),
-                    h('th', {disabled: method === 'area'}, 'Captures'),
-                    h('th', {}, 'Komi'),
-                    h('th', {disabled: method === 'territory'}, 'Handicap'),
-                    h('th', {}, 'Total')
+                    h('th', {disabled: method === 'territory'}, t('Area')),
+                    h('th', {disabled: method === 'area'}, t('Territory')),
+                    h('th', {disabled: method === 'area'}, t('Captures')),
+                    h('th', {}, t('Komi')),
+                    h('th', {disabled: method === 'territory'}, t('Handicap')),
+                    h('th', {}, t('Total'))
                 )),
                 h('tbody', {},
                     h(ScoreRow, {method, score, komi, handicap: 0, sign: 1}),
@@ -108,18 +110,18 @@ class ScoreDrawer extends Component {
 
             h('form', {},
                 h('p', {},
-                    'Result: ',
+                    t('Result:'), ' ',
                     h('span', {class: 'result'}, this.resultString), ' ',
 
                     !estimating && h('button', {
                         type: 'submit',
                         onClick: this.handleSubmitButtonClick
-                    }, 'Update Result'), ' ',
+                    }, t('Update Result')), ' ',
 
                     h('button', {
                         type: 'reset',
                         onClick: this.handleCloseButtonClick
-                    }, 'Close')
+                    }, t('Close'))
                 )
             )
         )

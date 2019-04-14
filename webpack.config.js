@@ -11,6 +11,10 @@ module.exports = (env, argv) => ({
     devtool: argv.mode === 'production' ? false : 'cheap-module-eval-source-map',
     target: 'electron-renderer',
 
+    node: {
+        __dirname: false
+    },
+
     resolve: {
         alias: {
             'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),

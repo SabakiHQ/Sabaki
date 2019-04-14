@@ -4,6 +4,7 @@ const {remote} = require('electron')
 
 const TextSpinner = require('../TextSpinner')
 
+const t = require('../../i18n').context('PlayBar')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
@@ -14,44 +15,42 @@ class PlayBar extends Component {
         this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
 
         this.handleMenuClick = () => {
-            let template = [
+            let {left, top} = this.menuButtonElement.getBoundingClientRect()
+            helper.popupMenu([
                 {
-                    label: '&Pass',
+                    label: t('&Pass'),
                     click: () => {
                         let autoGenmove = setting.get('gtp.auto_genmove')
                         sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
                     }
                 },
                 {
-                    label: '&Resign',
+                    label: t('&Resign'),
                     click: () => sabaki.makeResign()
                 },
                 {type: 'separator'},
                 {
-                    label: 'Es&timate',
+                    label: t('Es&timate'),
                     click: () => sabaki.setMode('estimator')
                 },
                 {
-                    label: '&Score',
+                    label: t('&Score'),
                     click: () => sabaki.setMode('scoring')
                 },
                 {
-                    label: '&Edit',
+                    label: t('&Edit'),
                     click: () => sabaki.setMode('edit')
                 },
                 {
-                    label: '&Find',
+                    label: t('&Find'),
                     click: () => sabaki.setMode('find')
                 },
                 {type: 'separator'},
                 {
-                    label: '&Info',
+                    label: t('&Info'),
                     click: () => sabaki.openDrawer('info')
                 }
-            ]
-
-            let {left, top} = this.menuButtonElement.getBoundingClientRect()
-            helper.popupMenu(template, left, top)
+            ], left, top)
         }
     }
 
@@ -92,16 +91,22 @@ class PlayBar extends Component {
 
             h('span', {id: 'player_1'},
                 h('span', {class: 'captures', style: captureStyle(0)}, playerCaptures[0]), ' ',
-                playerRanks[0] && h('span', {class: 'rank'}, playerRanks[0]), ' ',
+
+                playerRanks[0] && h('span',
+                    {class: 'rank'},
+                    t(p => p.playerRank, {
+                        playerRank: playerRanks[0]
+                    })
+                ), ' ',
 
                 h('span',
                     {
                         class: classNames('name', {engine: isEngine[0]}),
-                        title: isEngine[0] && 'Engine'
+                        title: isEngine[0] && t('Engine')
                     },
                     isEngine[0] && playerBusy[0] && h(TextSpinner),
                     ' ',
-                    playerNames[0] || 'Black'
+                    playerNames[0] || t('Black')
                 )
             ),
 
@@ -109,14 +114,20 @@ class PlayBar extends Component {
                 h('span',
                     {
                         class: classNames('name', {engine: isEngine[1]}),
-                        title: isEngine[1] && 'Engine'
+                        title: isEngine[1] && t('Engine')
                     },
-                    playerNames[1] || 'White',
+                    playerNames[1] || t('White'),
                     ' ',
                     isEngine[1] && playerBusy[1] && h(TextSpinner)
                 ), ' ',
 
-                playerRanks[1] && h('span', {class: 'rank'}, playerRanks[1]), ' ',
+                playerRanks[1] && h('span',
+                    {class: 'rank'},
+                    t(p => p.playerRank, {
+                        playerRank: playerRanks[1]
+                    })
+                ), ' ',
+
                 h('span', {class: 'captures', style: captureStyle(1)}, playerCaptures[1])
             ),
 
@@ -124,11 +135,11 @@ class PlayBar extends Component {
                 src: `./img/ui/player_${currentPlayer}.svg`,
                 class: 'current-player',
                 height: 22,
-                title: 'Change Player',
+                title: t('Change Player'),
                 onClick: onCurrentPlayerClick
             }),
 
-            h('div', {class: 'hotspot', title: 'Hotspot'}),
+            h('div', {class: 'hotspot', title: t('Hotspot')}),
 
             h('a',
                 {

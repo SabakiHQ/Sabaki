@@ -3,18 +3,18 @@ const fs = require('fs')
 const path = require('path')
 const {app} = require('electron')
 
-exports.userDataDirectory = app.getPath('userData')
-exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')
-
-try { fs.mkdirSync(exports.userDataDirectory) } catch (err) {}
-try { fs.mkdirSync(exports.themesDirectory) } catch (err) {}
+for (let dir of [
+    exports.userDataDirectory = app.getPath('userData'),
+    exports.themesDirectory = path.join(exports.userDataDirectory, 'themes'),
+    exports.langDirectory = path.join(exports.userDataDirectory, 'lang')
+]) {
+    try { fs.mkdirSync(dir) } catch (err) {}
+}
 
 exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
 exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
 
-try {
-    fs.accessSync(exports.stylesPath, fs.R_OK)
-} catch (err) {
+if (!fs.existsSync(exports.stylesPath)) {
     fs.writeFileSync(
         exports.stylesPath,
         `/* This stylesheet is loaded when ${app.getName()} starts up. */`
@@ -29,6 +29,7 @@ let defaults = {
     'app.always_show_result': false,
     'app.enable_hardware_acceleration': true,
     'app.hide_busy_delay': 200,
+    'app.lang': 'default',
     'app.loadgame_delay': 100,
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 3000,
@@ -106,6 +107,7 @@ let defaults = {
     'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
     'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
+    'sgf.format_code': false,
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,

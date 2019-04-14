@@ -82,7 +82,7 @@ State properties can be accessed through the object `sabaki.state`. Generally, *
 * `fullScreen` `<Boolean>`
 * `representedFilename` `<String>` | `<Null>`
 * `gameTrees` [`<GameTree[]>`](gametree.md)
-* `treePosition` [`<TreePosition>`](treeposition.md)
+* `treePosition` `<TreePosition>`
 * `undoable` `<Boolean>`
 * `selectedTool` `<String>` - One of `'stone_1'`, `'stone_'-1`, `'cross'`, `'triangle'`, `'square'`, `'circle'`, `'line'`, `'arrow'`, `'label'`, `'number'`
 * `scoringMethod` `<String>` - One of `'territory'`, `'area'`
