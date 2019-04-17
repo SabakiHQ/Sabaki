@@ -231,7 +231,7 @@ exports.get = function(key) {
 exports.set = function(key, value) {
     settings[key] = value
     exports.save()
-    exports.events.emit('change', {key})
+    exports.events.emit('change', {key, value})
     return exports
 }
 

@@ -66,9 +66,9 @@ try {
 }
 
 if (isRenderer) {
-    setting.events.on('change', ({key}) => {
+    setting.events.on('change', ({key, value}) => {
         if (key !== 'app.lang') return
 
-        exports.loadLang(setting.get('app.lang'))
+        exports.loadLang(value)
     })
 }

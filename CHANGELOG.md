@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Ability to flip board horizontally/vertically (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 * Ability to invert colors (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* Ability to invert winrate graph (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
 **Changed**
 
