@@ -615,8 +615,12 @@ exports.buildMenu = function() {
         },
         setting.get('debug.dev_tools') && {
             id: 'developer',
-            label: t('menu.developer', 'Develo&per'),
+            label: t('menu.developer', 'Devel&oper'),
             submenu: [
+                {
+                    label: t('menu.developer', 'Open Settings &Folder'),
+                    click: () => shell.showItemInFolder(setting.settingsPath)
+                },
                 {
                     label: t('menu.developer', 'Toggle &Developer Tools'),
                     click: () => remote.getCurrentWindow().webContents.toggleDevTools()
