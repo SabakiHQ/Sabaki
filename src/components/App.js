@@ -2420,7 +2420,7 @@ class App extends Component {
         })
     }
 
-    async syncEngines({passPlayer = null} = {}) {
+    async syncEngines() {
         if (this.attachedEngineSyncers.every(x => x == null)) return
 
         if (this.engineBusySyncing) return
@@ -2437,17 +2437,6 @@ class App extends Component {
                 }))
 
                 if (treePosition === this.state.treePosition) break
-            }
-
-            // Send pass if required
-
-            if (passPlayer != null) {
-                let color = passPlayer > 0 ? 'B' : 'W'
-                let {controller} = this.attachedEngineSyncers[passPlayer > 0 ? 0 : 1] || {}
-
-                if (controller != null) {
-                    await controller.sendCommand({name: 'play', args: [color, 'pass']})
-                }
             }
         } catch (err) {
             this.engineBusySyncing = false
@@ -2524,7 +2513,7 @@ class App extends Component {
         if (removeAnalysisData) this.setState({analysisTreePosition: null, analysis: null})
     }
 
-    async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
+    async generateMove({firstMove = true, followUp = false} = {}) {
         this.closeDrawer()
 
         if (!firstMove && !this.state.generatingMoves) {
@@ -2558,7 +2547,7 @@ class App extends Component {
         this.setBusy(true)
 
         try {
-            await this.syncEngines({passPlayer})
+            await this.syncEngines()
         } catch (err) {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
