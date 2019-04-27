@@ -1468,6 +1468,7 @@ class App extends Component {
         let {gameTrees, gameIndex} = this.state
         let newIndex = Math.max(0, Math.min(gameTrees.length - 1, gameIndex + step))
 
+        this.closeDrawer()
         this.setCurrentTreePosition(gameTrees[newIndex], gameTrees[newIndex].root.id)
     }
 
