@@ -12,7 +12,7 @@ let fileInput = render(h('input', {
     style: hiddenStyle
 }), document.body)
 
-exports.showMessageBox = function(message, type = 'info', buttons = ['OK'], cancelId = 0) {
+exports.showMessageBox = function(message, type = 'info', buttons = [t('OK')], cancelId = 0) {
     if (buttons.length <= 1) {
         alert(message)
         return 0

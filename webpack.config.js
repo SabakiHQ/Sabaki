@@ -45,6 +45,9 @@ module.exports = (env, argv) => ({
             '../modules/rotation': emptyPath,
             '../modules/enginesyncer': emptyPath,
             '../modules/gtplogger': path.join(__dirname, 'src/modules/shims/gtplogger'),
+            './i18n': path.join(__dirname, 'src/modules/shims/i18n'),
+            '../i18n': path.join(__dirname, 'src/modules/shims/i18n'),
+            '../../i18n': path.join(__dirname, 'src/modules/shims/i18n'),
             '../menu': emptyPath,
 
             './ThemeManager': noopPath,
