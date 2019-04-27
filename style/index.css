@@ -748,7 +748,7 @@ header, #bar .bar {
         z-index: 15;
     }
     .drawer.hidecontent > * {
-        visibility: hidden;
+        display: none;
     }
     .drawer.show {
         transform: translateY(-285px);

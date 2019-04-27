@@ -285,9 +285,11 @@ class GameChooserDrawer extends Component {
         return animation !== this.state.animation || show || show !== this.props.show
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.state.scrollTop !== prevState.scrollTop
-        && this.state.scrollTop !== this.gamesListElement.scrollTop) {
+    async componentDidUpdate(prevProps, prevState) {
+        if (
+            this.state.scrollTop !== prevState.scrollTop
+            && this.state.scrollTop !== this.gamesListElement.scrollTop
+        ) {
             // Update scroll top
 
             this.gamesListElement.scrollTop = this.state.scrollTop
@@ -303,6 +305,8 @@ class GameChooserDrawer extends Component {
 
         if (!prevProps.show && this.props.show) {
             // Scroll current list element into view
+
+            await this.resize()
 
             let index = this.shownGameTrees.findIndex(([, i]) => i === this.props.gameIndex)
             let scrollTop = 0
@@ -339,12 +343,14 @@ class GameChooserDrawer extends Component {
         }
     }
 
-    resize() {
+    async resize() {
         let innerWidth = this.gamesListElement.offsetWidth - 28
         let height = this.gamesListElement.offsetHeight
         let rowCount = Math.floor(innerWidth / itemMinWidth)
 
-        this.setState({innerWidth, height, rowCount})
+        return new Promise(resolve => {
+            this.setState({innerWidth, height, rowCount}, resolve)
+        })
     }
 
     getRowFromIndex(i) {
