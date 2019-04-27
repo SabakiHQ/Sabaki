@@ -1835,6 +1835,7 @@ class App extends Component {
         if (gameIndex < 0) return
 
         let board = gametree.getBoard(tree, treePosition)
+        let player_sign = this.getPlayer(tree, treePosition)
         let inherit = setting.get('edit.flatten_inherit_root_props')
 
         let newTree = tree.mutate(draft => {
@@ -1860,6 +1861,7 @@ class App extends Component {
 
         this.setState({gameTrees: gameTrees.map((t, i) => i === gameIndex ? newTree : t)})
         this.setCurrentTreePosition(newTree, newTree.root.id)
+        this.setPlayer(newTree, treePosition, player_sign)
     }
 
     makeMainVariation(tree, treePosition) {
