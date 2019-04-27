@@ -6,6 +6,7 @@ const sgf = require('@sabaki/sgf')
 
 const MarkdownContentDisplay = require('./MarkdownContentDisplay')
 
+const t = require('../i18n').context('CommentBox')
 const gametree = require('../modules/gametree')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
@@ -55,11 +56,11 @@ class CommentTitle extends Component {
             if (node.data.GN != null) result.push(node.data.GN[0])
 
             result = result.filter(x => x.trim() !== '').join(' — ')
-            if (result !== '') return result
+            if (result !== '') return helper.typographer(result)
 
             let today = new Date()
             if (today.getDate() === 25 && today.getMonth() === 3)
-                return 'Happy Birthday, Sabaki!'
+                return t('Happy Birthday, Sabaki!')
 
             return ''
         }
@@ -68,7 +69,7 @@ class CommentTitle extends Component {
 
         if (node.children.length === 0 && gameTree.onMainLine(treePosition)) {
             let result = gametree.getRootProperty(gameTree, 'RE', '')
-            if (result.trim() !== '') return `Result: ${result}`
+            if (result.trim() !== '') return t(p => `Result: ${p.result}`, {result})
         }
 
         // Get current vertex
@@ -87,20 +88,32 @@ class CommentTitle extends Component {
 
         let prevBoard = gametree.getBoard(gameTree, node.parentId)
         let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
-        if (patternMatch == null) return null
+
+        if (patternMatch == null) {
+            let diff = vertex
+                .map((z, i) => Math.min(z + 1, [prevBoard.width, prevBoard.height][i] - z))
+                .sort((a, b) => a - b)
+
+            if (diff[0] > 6) return null
+
+            return t(p => `${p.a}-${p.b} Point`, {
+                a: diff[0],
+                b: diff[1]
+            })
+        }
 
         let board = gametree.getBoard(gameTree, treePosition)
         let matchedVertices = [...patternMatch.match.anchors, ...patternMatch.match.vertices]
             .filter(v => board.get(v) !== 0)
 
         return [
-            helper.typographer(patternMatch.pattern.name), ' ',
+            t(patternMatch.pattern.name), ' ',
 
             patternMatch.pattern.url && h('a',
                 {
                     class: 'help',
                     href: patternMatch.pattern.url,
-                    title: 'View article on Sensei’s Library',
+                    title: t('View article on Sensei’s Library'),
                     'data-vertices': JSON.stringify(matchedVertices),
 
                     onClick: this.handleMoveNameHelpClick,
@@ -119,28 +132,28 @@ class CommentTitle extends Component {
         title
     }) {
         let moveData = {
-            '-1': ['Bad move', 'badmove'],
-            '0': ['Doubtful move', 'doubtfulmove'],
-            '1': ['Interesting move', 'interestingmove'],
-            '2': ['Good move', 'goodmove']
+            '-1': [t('Bad move'), 'badmove'],
+            '0': [t('Doubtful move'), 'doubtfulmove'],
+            '1': [t('Interesting move'), 'interestingmove'],
+            '2': [t('Good move'), 'goodmove']
         }
 
         if (mv > 1) {
             for (let s in moveData) {
-                moveData[s][0] = 'Very ' + moveData[s][0].toLowerCase()
+                moveData[s][0] = t('Very ' + moveData[s][0].toLowerCase())
             }
         }
 
         let positionData = {
-            '-1': ['Good for white', 'white'],
-            '0': ['Even position', 'balance'],
-            '1': ['Good for black', 'black'],
-            '-2': ['Unclear position', 'unclear']
+            '-1': [t('Good for white'), 'white'],
+            '0': [t('Even position'), 'balance'],
+            '1': [t('Good for black'), 'black'],
+            '-2': [t('Unclear position'), 'unclear']
         }
 
         if (pv > 1) {
             for (let s in positionData) {
-                positionData[s][0] = 'Very ' + positionData[s][0].toLowerCase()
+                positionData[s][0] = t('Very ' + positionData[s][0].toLowerCase())
             }
         }
 
@@ -174,7 +187,7 @@ class CommentTitle extends Component {
             h('img', {
                 src: './node_modules/octicons/build/svg/pencil.svg',
                 class: 'edit-button',
-                title: 'Edit',
+                title: t('Edit'),
                 width: 16,
                 height: 16,
                 onClick: this.handleEditButtonClick
@@ -332,7 +345,7 @@ class CommentBox extends Component {
                             type: 'text',
                             name: 'title',
                             value: title,
-                            placeholder: 'Title',
+                            placeholder: t('Title'),
                             onInput: this.handleCommentInput
                         })
                     )
@@ -340,7 +353,7 @@ class CommentBox extends Component {
 
                 h('textarea', {
                     ref: el => this.textareaElement = el,
-                    placeholder: 'Comment',
+                    placeholder: t('Comment'),
                     value: comment,
                     onInput: this.handleCommentInput
                 })

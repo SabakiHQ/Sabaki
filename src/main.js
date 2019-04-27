@@ -1,5 +1,6 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
 const {join} = require('path')
+const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
 
@@ -51,10 +52,6 @@ function newWindow(path) {
 
     window.loadURL(`file://${join(__dirname, '..', 'index.html')}`)
 
-    if (setting.get('debug.dev_tools')) {
-        window.openDevTools()
-    }
-
     return window
 }
 
@@ -64,7 +61,7 @@ function buildMenu(disableAll = false) {
     // Process menu items
 
     let processMenu = items => {
-        items.forEach(item => {
+        return items.map(item => {
             if ('click' in item) {
                 item.click = () => {
                     let window = BrowserWindow.getFocusedWindow()
@@ -97,35 +94,45 @@ function buildMenu(disableAll = false) {
             if ('submenu' in item) {
                 processMenu(item.submenu)
             }
+
+            return item
         })
     }
 
-    processMenu(template)
-
-    // Build
-
-    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+    Menu.setApplicationMenu(Menu.buildFromTemplate(processMenu(template)))
 
     // Create dock menu
 
-    if (process.platform === 'darwin') {
-        app.dock.setMenu(Menu.buildFromTemplate([{
-            label: 'New Window',
+    let dockMenu = Menu.buildFromTemplate([
+        {
+            label: i18n.t('menu.file', 'New &Window'),
             click: () => newWindow()
-        }]))
+        }
+    ])
+
+    if (process.platform === 'darwin') {
+        app.dock.setMenu(dockMenu)
     }
 }
 
 async function checkForUpdates(showFailDialogs) {
     try {
+        let t = i18n.context('updater')
         let info = await updater.check(`SabakiHQ/${app.getName()}`)
 
         if (info.hasUpdates) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['Download Update', 'View Changelog', 'Not Now'],
+                buttons: [
+                    t('Download Update'),
+                    t('View Changelog'),
+                    t('Not Now')
+                ],
                 title: app.getName(),
-                message: `${app.getName()} v${info.latestVersion} is available now.`,
+                message: t(p => `${p.appName} v${p.version} is available now.`, {
+                    appName: app.getName(),
+                    version: info.latestVersion
+                }),
                 noLink: true,
                 cancelId: 2
             }, response => {
@@ -138,18 +145,20 @@ async function checkForUpdates(showFailDialogs) {
         } else if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'info',
-                buttons: ['OK'],
-                title: 'No update available',
-                message: `Sabaki v${app.getVersion()} is the latest version.`
+                buttons: [t('OK')],
+                title: t('No updates available'),
+                message: t(p => `Sabaki v${p.version} is the latest version.`, {
+                    version: app.getVersion()
+                })
             }, () => {})
         }
     } catch (err) {
         if (showFailDialogs) {
             dialog.showMessageBox({
                 type: 'warning',
-                buttons: ['OK'],
+                buttons: [t('OK')],
                 title: app.getName(),
-                message: 'An error occurred while checking for updates.'
+                message: t('An error occurred while checking for updates.')
             })
         }
     }
@@ -202,13 +211,20 @@ app.on('open-file', (evt, path) => {
 })
 
 process.on('uncaughtException', err => {
-    dialog.showErrorBox(`${app.getName()} v${app.getVersion()}`, [
-        'Something weird happened. ',
-        `${app.getName()} will shut itself down. `,
-        'If possible, please report this on ',
-        `${app.getName()}’s repository on GitHub.\n\n`,
-        err.stack
-    ].join(''))
+    let t = i18n.context('exception')
+
+    dialog.showErrorBox(
+        t(p => `${p.appName} v${p.version}`, {
+            appName: app.getName(),
+            version: app.getVersion()
+        }),
+        t(p => [
+            `Something weird happened. ${p.appName} will shut itself down.`,
+            `If possible, please report this on ${p.appName}’s repository on GitHub.`
+        ].join(' '), {
+            appName: app.getName()
+        }) + '\n\n' + err.stack
+    )
 
     process.exit(1)
 })

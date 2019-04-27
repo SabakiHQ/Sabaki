@@ -21,16 +21,17 @@ const influence = require('@sabaki/influence')
 
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
+const i18n = require('../i18n')
 const Board = require('../modules/board')
 const EngineSyncer = require('../modules/enginesyncer')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
+const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
-const rotation = require('../modules/rotation')
+const treetransformer = require('../modules/treetransformer')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const gtplogger = require('../modules/gtplogger')
 
 class App extends Component {
     constructor() {
@@ -127,7 +128,7 @@ class App extends Component {
         // Expose submodules
 
         this.modules = {Board, EngineSyncer, dialog, fileformats,
-            gametree, helper, setting, sound}
+            gametree, helper, i18n, setting, sound}
 
         // Bind state to settings
 
@@ -153,7 +154,7 @@ class App extends Component {
                 this.askForReload()
             }
 
-            ipcRenderer.send('build-menu', this.state.busy > 0)
+            this.buildMenu()
         })
 
         this.window.on('resize', () => {
@@ -278,11 +279,14 @@ class App extends Component {
         let {basename} = require('path')
         let title = this.appName
         let {representedFilename, gameIndex, gameTrees} = this.state
+        let t = i18n.context('app')
 
         if (representedFilename)
             title = basename(representedFilename)
         if (gameTrees.length > 1)
-            title += ' — Game ' + (gameIndex + 1)
+            title += ' — ' + t(p => `Game ${p.gameNumber}`, {
+                gameNumber: gameIndex + 1
+            })
         if (representedFilename && process.platform != 'darwin')
             title += ' — ' + this.appName
 
@@ -292,12 +296,12 @@ class App extends Component {
         // Handle full screen & menu bar
 
         if (prevState.fullScreen !== this.state.fullScreen) {
-            if (this.state.fullScreen) this.flashInfoOverlay('Press Esc to exit full screen mode')
+            if (this.state.fullScreen) this.flashInfoOverlay(t('Press Esc to exit full screen mode'))
             this.window.setFullScreen(this.state.fullScreen)
         }
 
         if (prevState.showMenuBar !== this.state.showMenuBar) {
-            if (!this.state.showMenuBar) this.flashInfoOverlay('Press Alt to show menu bar')
+            if (!this.state.showMenuBar) this.flashInfoOverlay(t('Press Alt to show menu bar'))
             this.window.setMenuBarVisibility(this.state.showMenuBar)
             this.window.setAutoHideMenuBar(!this.state.showMenuBar)
         }
@@ -356,7 +360,7 @@ class App extends Component {
         }
 
         if (key in data) {
-            ipcRenderer.send('build-menu', this.state.busy > 0)
+            this.buildMenu()
             this.setState({[data[key]]: setting.get(key)})
         }
     }
@@ -366,6 +370,11 @@ class App extends Component {
     }
 
     // User Interface
+
+    buildMenu(rebuild = false) {
+        if (rebuild) remote.require('./menu').buildMenu()
+        ipcRenderer.send('build-menu', this.state.busy > 0)
+    }
 
     setSidebarWidth(sidebarWidth) {
         this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
@@ -539,24 +548,31 @@ class App extends Component {
     }
 
     async newFile({playSound = false, showInfo = false, suppressAskForSave = false} = {}) {
+        if (!suppressAskForSave && !this.askForSave()) return
+
         let emptyTree = this.getEmptyGameTree()
 
-        await this.loadGameTrees([emptyTree], {suppressAskForSave})
+        await this.loadGameTrees([emptyTree], {suppressAskForSave: true})
 
         if (showInfo) this.openDrawer('info')
         if (playSound) sound.playNewGame()
     }
 
-    async loadFile(file = null, {suppressAskForSave = false} = {}) {
+    async loadFile(file = null, {suppressAskForSave = false, clearHistory = true} = {}) {
         if (!suppressAskForSave && !this.askForSave()) return
+
+        let t = i18n.context('app.file')
 
         if (!file) {
             dialog.showOpenDialog({
                 properties: ['openFile'],
-                filters: [...fileformats.meta, {name: 'All Files', extensions: ['*']}]
+                filters: [
+                    ...fileformats.meta,
+                    {name: t('All Files'), extensions: ['*']}
+                ]
             }, ({result}) => {
                 if (result) file = result[0]
-                if (file) this.loadFile(file, {suppressAskForSave: true})
+                if (file) this.loadFile(file, {suppressAskForSave: true, clearHistory})
             })
 
             return
@@ -585,12 +601,12 @@ class App extends Component {
 
             if (gameTrees.length == 0) throw true
         } catch (err) {
-            dialog.showMessageBox('This file is unreadable.', 'warning')
+            dialog.showMessageBox(t('This file is unreadable.'), 'warning')
             success = false
         }
 
         if (success) {
-            await this.loadGameTrees(gameTrees, {suppressAskForSave: true})
+            await this.loadGameTrees(gameTrees, {suppressAskForSave: true, clearHistory})
 
             this.setState({representedFilename: file.name})
             this.fileHash = this.generateFileHash()
@@ -603,9 +619,10 @@ class App extends Component {
         this.setBusy(false)
     }
 
-    async loadContent(content, extension, {suppressAskForSave = false} = {}) {
+    async loadContent(content, extension, options = {}) {
         this.setBusy(true)
 
+        let t = i18n.context('app.file')
         let gameTrees = []
         let success = true
         let lastProgress = -1
@@ -621,18 +638,18 @@ class App extends Component {
 
             if (gameTrees.length == 0) throw true
         } catch (err) {
-            dialog.showMessageBox('This file is unreadable.', 'warning')
+            dialog.showMessageBox(t('This file is unreadable.'), 'warning')
             success = false
         }
 
         if (success) {
-            await this.loadGameTrees(gameTrees, {suppressAskForSave})
+            await this.loadGameTrees(gameTrees, options)
         }
 
         this.setBusy(false)
     }
 
-    async loadGameTrees(gameTrees, {suppressAskForSave = false} = {}) {
+    async loadGameTrees(gameTrees, {suppressAskForSave = false, clearHistory = true} = {}) {
         gtplogger.rotate()
 
         if (!suppressAskForSave && !this.askForSave()) return
@@ -643,7 +660,7 @@ class App extends Component {
 
         await helper.wait(setting.get('app.loadgame_delay'))
 
-        if (gameTrees.length != 0) {
+        if (gameTrees.length > 0) {
             this.detachEngines()
             this.clearConsole()
 
@@ -660,7 +677,7 @@ class App extends Component {
             this.treeHash = this.generateTreeHash()
             this.fileHash = this.generateFileHash()
 
-            this.clearHistory()
+            if (clearHistory) this.clearHistory()
         }
 
         this.setBusy(false)
@@ -697,7 +714,9 @@ class App extends Component {
         this.setState({gameTrees})
         this.recordHistory()
 
-        return sgf.stringify(gameTrees.map(tree => tree.root))
+        return sgf.stringify(gameTrees.map(tree => tree.root), {
+            linebreak: setting.get('sgf.format_code') ? helper.linebreak : ''
+        })
     }
 
     generateTreeHash() {
@@ -708,13 +727,14 @@ class App extends Component {
     }
 
     askForSave() {
+        let t = i18n.context('app.file')
         let hash = this.generateTreeHash()
 
         if (hash !== this.treeHash) {
             let answer = dialog.showMessageBox(
-                'Your changes will be lost if you close this file without saving. Do you want to continue?',
+                t('Your changes will be lost if you close this file without saving. Do you want to continue?'),
                 'warning',
-                ['Save', 'Don’t Save', 'Cancel'], 2
+                [t('Save'), t('Don’t Save'), t('Cancel')], 2
             )
 
             if (answer === 0) return true
@@ -732,6 +752,7 @@ class App extends Component {
     clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
         this.closeDrawer()
 
+        let t = i18n.context('app.play')
         let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
         let tree = gameTrees[gameIndex]
         let board = gametree.getBoard(tree, treePosition)
@@ -817,11 +838,11 @@ class App extends Component {
                 } else if (['number', 'label'].includes(tool)) {
                     // Show label editing context menu
 
-                    let click = () => dialog.showInputBox('Enter label text', ({value}) => {
+                    let click = () => dialog.showInputBox(t('Enter label text'), ({value}) => {
                         this.useTool('label', vertex, value)
                     })
 
-                    let template = [{label: '&Edit Label', click}]
+                    let template = [{label: t('&Edit Label'), click}]
                     helper.popupMenu(template, x, y)
 
                     return
@@ -914,6 +935,7 @@ class App extends Component {
             this.setMode('play')
         }
 
+        let t = i18n.context('app.play')
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
         let node = tree.get(treePosition)
@@ -942,12 +964,12 @@ class App extends Component {
                 ko = prevBoard.getPositionHash() === hash
 
                 if (ko && dialog.showMessageBox(
-                    [
+                    t([
                         'You are about to play a move which repeats a previous board position.',
                         'This is invalid in some rulesets. Do you want to play anyway?'
-                    ].join('\n'),
+                    ].join('\n')),
                     'info',
-                    ['Play Anyway', 'Don’t Play'], 1
+                    [t('Play Anyway'), t('Don’t Play')], 1
                 ) != 0) return
             }
 
@@ -965,12 +987,12 @@ class App extends Component {
 
             if (suicide && setting.get('game.show_suicide_warning')) {
                 if (dialog.showMessageBox(
-                    [
+                    t([
                         'You are about to play a suicide move.',
                         'This is invalid in some rulesets. Do you want to play anyway?'
-                    ].join('\n'),
+                    ].join('\n')),
                     'info',
-                    ['Play Anyway', 'Don’t Play'], 1
+                    [t('Play Anyway'), t('Don’t Play')], 1
                 ) != 0) return
             }
         }
@@ -1537,10 +1559,10 @@ class App extends Component {
             }
 
             for (let key in props) {
-                if (data[key] == null) continue
+                if (!(key in data)) continue
                 let value = data[key]
 
-                if (value && value.toString().trim() !== '') {
+                if (value && value.toString() !== '') {
                     if (key === 'komi') {
                         if (isNaN(value)) value = 0
 
@@ -1667,7 +1689,24 @@ class App extends Component {
         let {treePosition, gameTrees, gameIndex} = this.state
         let tree = gameTrees[gameIndex]
         let {size} = this.getGameInfo(tree)
-        let newTree = rotation.rotateTree(tree, size[0], size[1], anticlockwise)
+        let newTree = treetransformer.rotateTree(tree, size[0], size[1], anticlockwise)
+
+        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+    }
+
+    flipBoard(horizontal) {
+        let {treePosition, gameTrees, gameIndex} = this.state
+        let tree = gameTrees[gameIndex]
+        let {size} = this.getGameInfo(tree)
+        let newTree = treetransformer.flipTree(tree, size[0], size[1], horizontal)
+
+        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+    }
+
+    invertColors() {
+        let {treePosition, gameTrees, gameIndex} = this.state
+        let tree = gameTrees[gameIndex]
+        let newTree = treetransformer.invertTreeColors(tree)
 
         this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
@@ -1805,10 +1844,11 @@ class App extends Component {
     }
 
     removeNode(tree, treePosition, {suppressConfirmation = false} = {}) {
+        let t = i18n.context('app.node')
         let node = tree.get(treePosition)
 
         if (node.parentId == null) {
-            dialog.showMessageBox('The root node cannot be removed.', 'warning')
+            dialog.showMessageBox(t('The root node cannot be removed.'), 'warning')
             return
         }
 
@@ -1816,9 +1856,9 @@ class App extends Component {
             suppressConfirmation !== true
             && setting.get('edit.show_removenode_warning')
             && dialog.showMessageBox(
-                'Do you really want to remove this node?',
+                t('Do you really want to remove this node?'),
                 'warning',
-                ['Remove Node', 'Cancel'], 1
+                [t('Remove Node'), t('Cancel')], 1
             ) === 1
         ) return
 
@@ -1843,13 +1883,15 @@ class App extends Component {
     }
 
     removeOtherVariations(tree, treePosition, {suppressConfirmation = false} = {}) {
+        let t = i18n.context('app.node')
+
         if (
             suppressConfirmation !== true
             && setting.get('edit.show_removeothervariations_warning')
             && dialog.showMessageBox(
-                'Do you really want to remove all other variations?',
+                t('Do you really want to remove all other variations?'),
                 'warning',
-                ['Remove Variations', 'Cancel'], 1
+                [t('Remove Variations'), t('Cancel')], 1
             ) == 1
         ) return
 
@@ -1901,43 +1943,44 @@ class App extends Component {
     openNodeMenu(tree, treePosition, {x, y} = {}) {
         if (this.state.mode === 'scoring') return
 
+        let t = i18n.context('menu.edit')
         let template = [
             {
-                label: 'C&opy Variation',
+                label: t('&Copy Variation'),
                 click: () => this.copyVariation(tree, treePosition)
             },
             {
-                label: 'C&ut Variation',
+                label: t('Cu&t Variation'),
                 click: () => this.cutVariation(tree, treePosition)
             },
             {
-                label: '&Paste Variation',
+                label: t('&Paste Variation'),
                 click: () => this.pasteVariation(tree, treePosition)
             },
             {type: 'separator'},
             {
-                label: 'Make &Main Variation',
+                label: t('Make Main &Variation'),
                 click: () => this.makeMainVariation(tree, treePosition)
             },
             {
-                label: 'Shift &Left',
+                label: t('Shift &Left'),
                 click: () => this.shiftVariation(tree, treePosition, -1)
             },
             {
-                label: 'Shift Ri&ght',
+                label: t('Shift Ri&ght'),
                 click: () => this.shiftVariation(tree, treePosition, 1)
             },
             {type: 'separator'},
             {
-                label: '&Flatten',
+                label: t('&Flatten'),
                 click: () => this.flattenVariation(tree, treePosition)
             },
             {
-                label: '&Remove Node',
+                label: t('&Remove Node'),
                 click: () => this.removeNode(tree, treePosition)
             },
             {
-                label: 'Remove &Other Variations',
+                label: t('Remove &Other Variations'),
                 click: () => this.removeOtherVariations(tree, treePosition)
             }
         ]
@@ -1946,33 +1989,34 @@ class App extends Component {
     }
 
     openCommentMenu(tree, treePosition, {x, y} = {}) {
+        let t = i18n.context('menu.comment')
         let node = tree.get(treePosition)
 
         let template = [
             {
-                label: '&Clear Annotations',
+                label: t('&Clear Annotations'),
                 click: () => {
                     this.setComment(tree, treePosition, {positionAnnotation: null, moveAnnotation: null})
                 }
             },
             {type: 'separator'},
             {
-                label: 'Good for &Black',
+                label: t('Good for &Black'),
                 type: 'checkbox',
                 data: {positionAnnotation: 'GB'}
             },
             {
-                label: '&Unclear Position',
+                label: t('&Unclear Position'),
                 type: 'checkbox',
                 data: {positionAnnotation: 'UC'}
             },
             {
-                label: '&Even Position',
+                label: t('&Even Position'),
                 type: 'checkbox',
                 data: {positionAnnotation: 'DM'}
             },
             {
-                label: 'Good for &White',
+                label: t('Good for &White'),
                 type: 'checkbox',
                 data: {positionAnnotation: 'GW'}
             }
@@ -1982,22 +2026,22 @@ class App extends Component {
             template.push(
                 {type: 'separator'},
                 {
-                    label: '&Good Move',
+                    label: t('&Good Move'),
                     type: 'checkbox',
                     data: {moveAnnotation: 'TE'}
                 },
                 {
-                    label: '&Interesting Move',
+                    label: t('&Interesting Move'),
                     type: 'checkbox',
                     data: {moveAnnotation: 'IT'}
                 },
                 {
-                    label: '&Doubtful Move',
+                    label: t('&Doubtful Move'),
                     type: 'checkbox',
                     data: {moveAnnotation: 'DO'}
                 },
                 {
-                    label: 'B&ad Move',
+                    label: t('B&ad Move'),
                     type: 'checkbox',
                     data: {moveAnnotation: 'BM'}
                 }
@@ -2007,7 +2051,7 @@ class App extends Component {
         template.push(
             {type: 'separator'},
             {
-                label: '&Hotspot',
+                label: t('&Hotspot'),
                 type: 'checkbox',
                 data: {hotspot: true}
             }
@@ -2029,16 +2073,17 @@ class App extends Component {
     }
 
     openVariationMenu(sign, variation, {x, y, appendSibling = false, startNodeProperties = {}} = {}) {
+        let t = i18n.context('menu.variation')
         let {gameTrees, gameIndex, treePosition} = this.state
         let tree = gameTrees[gameIndex]
 
         helper.popupMenu([{
-            label: '&Add Variation',
+            label: t('&Add Variation'),
             click: () => {
                 let isRootNode = tree.get(treePosition).parentId == null
 
                 if (appendSibling && isRootNode) {
-                    dialog.showMessageBox('The root node cannot have sibling nodes.', 'warning', ['OK'])
+                    dialog.showMessageBox(t('The root node cannot have sibling nodes.'), 'warning')
                     return
                 }
 

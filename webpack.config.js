@@ -17,6 +17,10 @@ module.exports = (env, argv) => ({
         Buffer: false
     },
 
+    node: {
+        __dirname: false
+    },
+
     resolve: {
         alias: {
             'react': path.join(__dirname, 'node_modules/preact/dist/preact.min'),

@@ -1,11 +1,13 @@
 const Buffer = require('buffer')
 const fs = require('fs')
 const sgf = require('@sabaki/sgf')
+
+const t = require('../../i18n').context('fileformats')
 const Board = require('../board')
 const gametree = require('../gametree')
 
 exports.meta = {
-    name: 'wBaduk NGF',
+    name: t('wBaduk NGF'),
     extensions: ['ngf']
 }
 

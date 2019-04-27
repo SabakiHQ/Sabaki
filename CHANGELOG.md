@@ -2,7 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.43.1][unreleased]
+## [Sabaki v0.43.2][v0.43.2] (2019-04-27)
+
+**Added**
+
+* Ability to flip board horizontally/vertically (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* Ability to invert colors (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+* Ability to invert winrate graph (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+
+**Changed**
+
+* Create compressed SGF with no unnecessary whitespace by default
+
+**Fixed**
+
+* Don't clear edit history on reloading file when file has been changed externally
+* Fix clearing certain game info fields not working
+* Fix engines making three consecutive passes in engine vs. engine games
+* Fix engine vs. engine games getting stuck in analysis mode
+* Fix engine synchronization problems with passing moves
+
+## [Sabaki v0.43.1][v0.43.1] (2019-03-17)
 
 **Fixed**
 
@@ -820,7 +840,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.0...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...master
+[v0.43.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.1...v0.43.2
+[v0.43.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.0...v0.43.1
 [v0.43.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.42.0...v0.43.0
 [v0.42.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.41.0...v0.42.0
 [v0.41.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.40.1...v0.41.0

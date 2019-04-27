@@ -1,7 +1,4 @@
 const EventEmitter = require('events')
-const fs = require('fs')
-const path = require('path')
-const {app} = require('electron')
 
 let settings = {}
 
@@ -11,6 +8,7 @@ let defaults = {
     'app.always_show_result': false,
     'app.enable_hardware_acceleration': true,
     'app.hide_busy_delay': 200,
+    'app.lang': 'default',
     'app.loadgame_delay': 100,
     'app.startup_check_updates': true,
     'app.startup_check_updates_delay': 3000,
@@ -88,6 +86,7 @@ let defaults = {
     'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
     'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
     'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
+    'sgf.format_code': false,
     'sound.capture_delay_max': 500,
     'sound.capture_delay_min': 300,
     'sound.enable': true,
@@ -115,6 +114,7 @@ let defaults = {
     'view.sidebar_minwidth': 100,
     'view.winrategraph_height': 60,
     'view.winrategraph_minheight': 25,
+    'view.winrategraph_invert': false,
     'infooverlay.duration': 2000,
     'window.height': 604,
     'window.minheight': 440,
@@ -188,7 +188,7 @@ exports.get = function(key) {
 exports.set = function(key, value) {
     settings[key] = value
     exports.save()
-    exports.events.emit('change', {key})
+    exports.events.emit('change', {key, value})
     return exports
 }
 

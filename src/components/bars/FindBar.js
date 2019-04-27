@@ -1,6 +1,7 @@
 const {h, Component} = require('preact')
 const Bar = require('./Bar')
 const helper = require('../../modules/helper')
+const t = require('../../i18n').context('FindBar')
 
 class FindBar extends Component {
     constructor() {
@@ -37,16 +38,24 @@ class FindBar extends Component {
                 h('input', {
                     ref: el => this.inputElement = el,
                     type: 'text',
-                    placeholder: 'Find',
+                    placeholder: t('Find'),
                     value: findText,
                     onInput: this.handleChange
                 }),
 
                 h('button', {class: 'next', onClick: this.handleButtonClick},
-                    h('img', {src: './node_modules/octicons/build/svg/chevron-down.svg', height: 20, alt: 'Next'})
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/chevron-down.svg',
+                        height: 20,
+                        alt: t('Next')
+                    })
                 ),
                 h('button', {class: 'prev', onClick: this.handleButtonClick},
-                    h('img', {src: './node_modules/octicons/build/svg/chevron-up.svg', height: 20, alt: 'Previous'})
+                    h('img', {
+                        src: './node_modules/octicons/build/svg/chevron-up.svg',
+                        height: 20,
+                        alt: t('Previous')
+                    })
                 )
             )
         )

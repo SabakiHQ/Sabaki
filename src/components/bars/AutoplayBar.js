@@ -3,9 +3,10 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const sgf = require('@sabaki/sgf')
 
+const t = require('../../i18n').context('AutoplayBar')
 const Bar = require('./Bar')
-
 const setting = remote.require('./setting')
+
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 
 class AutoplayBar extends Component {
@@ -85,15 +86,14 @@ class AutoplayBar extends Component {
                 h('label', {},
                     h('input', {
                         type: 'number',
-                        name: 'duration',
                         value: secondsPerMove,
                         min: 1,
                         max: maxSecPerMove,
                         step: 1,
 
                         onChange: this.handleValueChange
-                    }),
-                    ' sec per move'
+                    }), ' ',
+                    t('sec per move')
                 )
             ),
 

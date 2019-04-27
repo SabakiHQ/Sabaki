@@ -16,7 +16,8 @@ const defaultStateJSON = JSON.stringify({
 })
 
 function coord2vertex(coord, size) {
-    if (coord === 'pass') return null
+    if (coord == null || coord === 'resign') return null
+    if (coord === 'pass') return [-1, -1]
 
     let x = alpha.indexOf(coord[0].toUpperCase())
     let y = size - +coord.slice(1)
@@ -104,27 +105,28 @@ class EngineSyncer extends EventEmitter {
                 let vertex = coord2vertex(command.args[1], this.state.size)
 
                 if (vertex) this.state.moves.push({sign, vertex})
-            } else if (command.name === 'genmove' && command.args.length >= 1) {
-                let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
-                let vertex = coord2vertex(res.content.trim(), this.state.size)
-
-                if (vertex) this.state.moves.push({sign, vertex})
             } else if (
-                ['lz-genmove_analyze', 'genmove_analyze'].includes(command.name)
-                && command.args.length >= 1
+                [
+                    'genmove',
+                    'lz-genmove_analyze',
+                    'genmove_analyze'
+                ].includes(command.name) && command.args.length >= 1
             ) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
-                let vertex = await new Promise(resolve => {
-                    getResponse()
-                    .then(() => resolve(null))
-                    .catch(() => resolve(null))
+                let coord = !command.name.includes('analyze')
+                    ? res.content.trim()
+                    : await new Promise(resolve => {
+                        getResponse()
+                        .then(() => resolve(null))
+                        .catch(() => resolve(null))
 
-                    subscribe(({line}) => {
-                        let match = line.trim().match(/^play (.*)$/)
-                        if (match) resolve(coord2vertex(match[1], this.state.size))
+                        subscribe(({line}) => {
+                            let match = line.trim().match(/^play (.*)$/)
+                            if (match) resolve(match[1])
+                        })
                     })
-                })
 
+                let vertex = coord2vertex(coord, this.state.size)
                 if (vertex) this.state.moves.push({sign, vertex})
             } else if (command.name === 'undo') {
                 this.state.moves.length -= 1
@@ -184,7 +186,7 @@ class EngineSyncer extends EventEmitter {
         async function enginePlay(sign, vertex) {
             let color = sign > 0 ? 'B' : 'W'
             let coord = board.vertex2coord(vertex)
-            if (coord == null) return true
+            if (coord == null) coord = 'pass'
 
             try {
                 let {error} = await controller.sendCommand({name: 'play', args: [color, coord]})
@@ -245,7 +247,8 @@ class EngineSyncer extends EventEmitter {
                 let vertices = [].concat(...node.data[prop].map(sgf.parseCompressedVertices))
 
                 for (let vertex of vertices) {
-                    if (engineBoard.get(vertex) !== 0) continue
+                    if (engineBoard.hasVertex(vertex) && engineBoard.get(vertex) !== 0) continue
+                    else if (!engineBoard.hasVertex(vertex)) vertex = [-1, -1]
 
                     moves.push({sign, vertex})
                     promises.push(() => enginePlay(sign, vertex))

@@ -1,5 +1,6 @@
 const {h, render} = require('preact')
 const helper = require('./helper')
+const t = require('../i18n').context('dialog')
 
 let hiddenStyle = {
     opacity: 0,
