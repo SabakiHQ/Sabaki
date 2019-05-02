@@ -89,7 +89,7 @@ exports.getBoard = function(tree, id) {
     let board = null
 
     for (let node of tree.listNodesVertically(id, -1, {})) {
-        if (boardCache[node.id] != null) {
+        if (boardCache[node.id] != null && node.id !== id) {
             board = boardCache[node.id]
             break
         }
