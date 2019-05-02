@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+* Node flattening operation now preserves player's turn
+
 **Fixed**
 
 * Files with really long variations don't freeze the app anymore
