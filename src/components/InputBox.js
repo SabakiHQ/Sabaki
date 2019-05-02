@@ -22,11 +22,11 @@ class InputBox extends Component {
                 evt.stopPropagation()
                 sabaki.setState({showInputBox: false})
 
-                if (document.activeElement === this.inputElement)
-                    this.inputElement.blur()
-
                 let {onSubmit = helper.noop} = this.props
                 onSubmit(this.state)
+
+                if (document.activeElement === this.inputElement)
+                    this.inputElement.blur()
             }
         }
 
