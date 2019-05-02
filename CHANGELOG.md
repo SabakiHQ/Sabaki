@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 * Files with really long variations don't freeze the app anymore
 * Fix adding SGF properties via the 'Edit SGF Properties' drawer not working
+* Fix handicap stones in wrong positions when changing board size
 
 ## [Sabaki v0.43.2][v0.43.2] (2019-04-27)
 

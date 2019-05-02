@@ -1609,7 +1609,9 @@ class App extends Component {
                     draft.removeProperty(draft.root.id, 'SZ')
                 }
             }
+        })
 
+        newTree = newTree.mutate(draft => {
             let props = {
                 blackName: 'PB',
                 blackRank: 'BR',
@@ -1633,7 +1635,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(tree, tree.root.id)
+                        let board = gametree.getBoard(newTree, newTree.root.id)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
