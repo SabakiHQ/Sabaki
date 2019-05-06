@@ -460,6 +460,16 @@ class InfoDrawer extends Component {
                             onClick: this.handleShowResultClick
                         }, t('Show'))
                     ),
+                    h(InfoDrawerItem, {title: t('Komi')},
+                        h('input', {
+                            type: 'number',
+                            name: 'komi',
+                            step: 0.5,
+                            placeholder: 0,
+                            value: komi == null ? '' : komi,
+                            onInput: this.handleInputChange.komi
+                        })
+                    ),
                     h(InfoDrawerItem, {title: t('Handicap')},
                         h('select',
                             {
@@ -475,16 +485,6 @@ class InfoDrawer extends Component {
                                 }))
                             )
                         )
-                    ),
-                    h(InfoDrawerItem, {title: t('Komi')},
-                        h('input', {
-                            type: 'number',
-                            name: 'komi',
-                            step: 0.5,
-                            placeholder: 0,
-                            value: komi == null ? '' : komi,
-                            onInput: this.handleInputChange.komi
-                        })
                     ),
                     h(InfoDrawerItem, {title: t('Board Size')},
                         h('input', {
