@@ -6,7 +6,8 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-* Node flattening operation now preserves player's turn
+* Node flattening operation now preserves player's turn (Thanks to [@dfannius](https://github.com/dfannius))
+* Add ability to see and edit game comment (`GC` SGF property) in the info drawer (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
 
 **Fixed**
 
