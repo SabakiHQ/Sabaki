@@ -25,6 +25,7 @@ function newWindow(path) {
         backgroundColor: '#111111',
         show: false,
         webPreferences: {
+            nodeIntegration: true,
             zoomFactor: setting.get('app.zoom_factor')
         }
     })
