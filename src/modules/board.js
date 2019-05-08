@@ -241,32 +241,25 @@ class Board {
     }
 
     getHandicapPlacement(count, tygemflag = false) {
-        if (Math.min(this.width, this.height) < 6 || count < 2) return []
+        if (Math.min(this.width, this.height) <= 6 || count < 2) return []
 
-        let nearX = this.width >= 13 ? 3 : 2
-        let nearY = this.height >= 13 ? 3 : 2
-        let farX = this.width - nearX - 1
-        let farY = this.height - nearY - 1
-        let middleX = (this.width - 1) / 2
-        let middleY = (this.height - 1) / 2
+        let [nearX, nearY] = [this.width, this.height].map(x => x >= 13 ? 3 : 2)
+        let [farX, farY] = [this.width - nearX - 1, this.height - nearY - 1]
+        let [middleX, middleY] = [this.width, this.height].map(x => (x - 1) / 2)
 
-        let result
+        let result = !tygemflag
+            ? [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
+            : [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
 
-        if (!tygemflag) {
-            result = [[nearX, farY], [farX, nearY], [farX, farY], [nearX, nearY]]
-        } else {
-            result = [[nearX, farY], [farX, nearY], [nearX, nearY], [farX, farY]]
-        }
-
-        if (this.width % 2 !== 0 && this.height % 2 !== 0) {
+        if (this.width % 2 !== 0 && this.height % 2 !== 0 && this.width !== 7 && this.height !== 7) {
             if (count === 5) result.push([middleX, middleY])
             result.push([nearX, middleY], [farX, middleY])
 
             if (count === 7) result.push([middleX, middleY])
             result.push([middleX, nearY], [middleX, farY], [middleX, middleY])
-        } else if (this.width % 2 !== 0) {
+        } else if (this.width % 2 !== 0 && this.width !== 7) {
             result.push([middleX, nearY], [middleX, farY])
-        } else if (this.height % 2 !== 0) {
+        } else if (this.height % 2 !== 0 && this.height !== 7) {
             result.push([nearX, middleY], [farX, middleY])
         }
 
