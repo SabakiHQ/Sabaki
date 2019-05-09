@@ -20,70 +20,27 @@
 }
 
 header, #bar .bar {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        height: 40px;
-        overflow: hidden;
-        transition: transform .2s;
-    }
-    #player_1, #player_-1 {
-        position: absolute;
-        left: 0;
-        right: 50%;
-        top: 0;
-        bottom: 0;
-        padding-left: 10px;
-        padding-right: 30px;
-        overflow: hidden;
-        text-align: right;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-    #player_-1 {
-        left: 50%;
-        right: 0;
-        padding-right: 42px;
-        padding-left: 30px;
-        text-align: left;
-    }
-    header > span > .rank {
-        opacity: .4;
-    }
-    #player_1 .rank {
-        margin-right: 5px;
-    }
-    #player_-1 .rank {
-        margin-left: 5px;
-    }
-    header > span > .engine {
-        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
-    }
-    header > span > .captures {
-        position: relative;
-        top: -1px;
-        display: inline-block;
-        height: 20px;
-        min-width: 10px;
-        border-radius: 10px;
-        padding: 0 5px;
-        margin: 0 5px;
-        background: black;
-        line-height: 20px;
-        text-align: center;
-        opacity: .7;
-        font-size: .8em;
-        transition: opacity .2s;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 40px;
+    overflow: hidden;
+    transition: transform .2s;
+}
+
+header {
+        display: flex;
     }
     header .hotspot {
-        position: absolute;
-        left: 10px;
-        top: -42px;
+        position: relative;
         width: 12px;
         height: 20px;
+        flex: none;
+        margin: 0 10px;
         background: #a456bb;
-        transition: top .2s;
+        transform: translateY(-42px);
+        transition: transform .2s;
     }
     header .hotspot::before, header .hotspot::after {
         content: '';
@@ -99,36 +56,68 @@ header, #bar .bar {
         border-right: none;
         border-left: 6px solid transparent;
     }
-    header.hotspot .hotspot { top: 0; }
-    header > img, #headermenu {
-        display: block;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 35px;
-        height: 22px;
-        margin-left: -17px;
-        margin-top: -11px;
+    header.hotspot .hotspot {
+        transform: none;
     }
-    header > img { cursor: pointer; }
-    #headermenu {
-        left: auto;
-        right: 0;
-        width: 32px;
-        height: 32px;
+    header .playercontent {
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        flex: none;
+        justify-content: flex-end;
+        flex: 1 0;
+        padding: 0 10px;
+    }
+    header .playercontent.player_-1 {
+        justify-content: flex-start;
+    }
+    header .playercontent > * + * {
+        margin-left: 5px;
+    }
+    header .name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    header .engine {
+        font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
+    }
+    header .rank {
+        flex: 0 1 auto;
+        opacity: .4;
+    }
+    header .captures {
+        flex: none;
+        display: inline-block;
+        height: 20px;
+        min-width: 10px;
+        border-radius: 10px;
+        padding: 0 5px;
+        background: black;
+        line-height: 20px;
+        text-align: center;
+        opacity: .7;
+        font-size: .8em;
+        transition: opacity .2s;
+    }
+    header .current-player, header .menu {
+        display: flex;
+        align-items: center;
+        flex: none;
+        justify-content: center;
         padding: 5px;
-        margin-left: 0;
-        margin-top: -21px;
     }
-    #headermenu img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        filter: invert(100%);
+    header .current-player {
+        cursor: pointer;
     }
-    #headermenu:hover {
+    header .menu {
+        width: 32px;
+    }
+    header .menu:hover, header .menu:focus {
         background: #222;
+    }
+    header .menu img {
+        filter: invert(100%);
 }
 
 #bar {

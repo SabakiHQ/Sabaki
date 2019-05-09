@@ -24,7 +24,6 @@ body, input, button, select, option, textarea {
 body, a {
     cursor: default;
     overflow: hidden;
-    outline: 0;
     user-select: none;
     -ms-user-select: none;
     -moz-user-select: none;
