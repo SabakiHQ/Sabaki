@@ -1710,7 +1710,7 @@ class App extends Component {
         let newTree = tree.mutate(draft => {
             for (let [key, prop] of [['title', 'N'], ['comment', 'C']]) {
                 if (key in data) {
-                    if (data[key] && data[key].trim() !== '') {
+                    if (data[key] && data[key] !== '') {
                         draft.updateProperty(treePosition, prop, [data[key]])
                     } else {
                         draft.removeProperty(treePosition, prop)
