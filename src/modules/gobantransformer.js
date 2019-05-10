@@ -1,6 +1,9 @@
 exports.normalize = function(transformation) {
     // Change transformation so that we rotate first, then flip
     // i.e. replace 'fr' by 'rrrf'
+    //
+    // 'r' denotes an anti-clockwise rotation
+    // 'f' denotes a horizontal flip
 
     transformation = [...transformation].filter(c => 'rf'.includes(c))
 
