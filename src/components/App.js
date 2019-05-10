@@ -696,7 +696,8 @@ class App extends Component {
                 representedFilename: null,
                 gameIndex: 0,
                 gameTrees,
-                gameCurrents: gameTrees.map(_ => ({}))
+                gameCurrents: gameTrees.map(_ => ({})),
+                boardTransformation: ''
             })
 
             let [firstTree, ] = gameTrees
