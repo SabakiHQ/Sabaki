@@ -3,7 +3,7 @@ exports.normalize = function(transformation) {
     // i.e. replace 'fr' by 'rrrf', 'if' by 'fi', 'ir' by 'ri'
     //
     // 'i' denotes a color inversion
-    // 'r' denotes an anti-clockwise rotation
+    // 'r' denotes a clockwise rotation
     // 'f' denotes a horizontal flip
 
     let inversions = [...transformation].filter(c => c === 'i').length
