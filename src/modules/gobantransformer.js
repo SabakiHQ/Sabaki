@@ -1,5 +1,5 @@
 exports.normalize = function(transformation) {
-    // Change transformation so that rotate first, flip, then invert
+    // Change transformation so that we rotate first, flip next, then invert
     // i.e. replace 'fr' by 'rrrf', 'if' by 'fi', 'ir' by 'ri'
     //
     // 'i' denotes a color inversion

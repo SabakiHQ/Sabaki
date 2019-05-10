@@ -96,7 +96,6 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animateStonePlacement,
-        gobanTransformation,
 
         selectedTool,
         findText,
@@ -164,7 +163,6 @@ class MainView extends Component {
                     playVariation,
                     drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
                         ? selectedTool : null,
-                    transformation: gobanTransformation,
 
                     onVertexClick: this.handleGobanVertexClick,
                     onLineDraw: this.handleGobanLineDraw
