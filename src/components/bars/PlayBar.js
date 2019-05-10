@@ -67,7 +67,6 @@ class PlayBar extends Component {
         playerCaptures,
         currentPlayer,
         showHotspot,
-        invertColor,
 
         onCurrentPlayerClick = helper.noop
     }) {
@@ -86,8 +85,7 @@ class PlayBar extends Component {
             {
                 class: classNames({
                     hotspot: showHotspot,
-                    current: mode === 'play',
-                    invertcolor: invertColor
+                    current: mode === 'play'
                 })
             },
 
@@ -121,11 +119,8 @@ class PlayBar extends Component {
                     onClick: onCurrentPlayerClick
                 },
                 h('img', {
-                    src: `./img/ui/player_${!invertColor ? currentPlayer : -currentPlayer}.svg`,
+                    src: `./img/ui/player_${currentPlayer}.svg`,
                     height: 21,
-                    style: {
-                        transform: !invertColor ? null : 'scaleX(-1)'
-                    },
                     alt: t(p =>
                         `${
                             p.player < 0 ? 'White'
