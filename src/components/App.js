@@ -28,11 +28,11 @@ const EngineSyncer = require('../modules/enginesyncer')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
+const gobantransformer = require('../modules/gobantransformer')
 const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
-const treetransformer = require('../modules/treetransformer')
 
 class App extends Component {
     constructor() {
@@ -75,6 +75,7 @@ class App extends Component {
             showSiblings: null,
             fuzzyStonePlacement: null,
             animateStonePlacement: null,
+            gobanTransformation: '',
 
             // Sidebar
 
@@ -1757,29 +1758,22 @@ class App extends Component {
     }
 
     rotateBoard(anticlockwise) {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let {size} = this.getGameInfo(tree)
-        let newTree = treetransformer.rotateTree(tree, size[0], size[1], anticlockwise)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+        this.setState(({gobanTransformation}) => ({
+            gobanTransformation: gobantransformer.normalize(
+                gobanTransformation + (anticlockwise ? 'rrr' : 'r')
+            )
+        }))
     }
 
     flipBoard(horizontal) {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let {size} = this.getGameInfo(tree)
-        let newTree = treetransformer.flipTree(tree, size[0], size[1], horizontal)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
+        this.setState(({gobanTransformation}) => ({
+            gobanTransformation: gobantransformer.normalize(
+                gobanTransformation + (horizontal ? 'f' : 'frr')
+            )
+        }))
     }
 
     invertColors() {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let newTree = treetransformer.invertTreeColors(tree)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
     copyVariation(tree, treePosition) {
