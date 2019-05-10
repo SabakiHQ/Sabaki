@@ -5,7 +5,7 @@ exports.normalize = function(transformation) {
     transformation = [...transformation].filter(c => 'rf'.includes(c))
 
     while (true) {
-        let firstFlipIndex = transformation.findIndex((c, i, t) => c === 'f' && t[i + 1] === 'r')
+        let firstFlipIndex = transformation.findIndex((c, i, arr) => c === 'f' && arr[i + 1] === 'r')
         if (firstFlipIndex < 0) break
 
         transformation.splice(firstFlipIndex, 2, ...'rrrf')
@@ -30,17 +30,20 @@ exports.invert = function(transformation) {
     return exports.normalize(result)
 }
 
-exports.transformSize = function(width, height, transformation) {
+exports.transformationSwapsSides = function(transformation) {
     let rotations = [...transformation].filter(c => c === 'r').length
-    if (rotations % 2 === 1) [width, height] = [height, width]
+    return rotations % 2 === 1
+}
+
+exports.transformSize = function(width, height, transformation) {
+    if (exports.transformationSwapsSides(transformation)) [width, height] = [height, width]
 
     return {width, height}
 }
 
 exports.transformCoords = function(coordX, coordY, transformation, width, height) {
     let inverse = exports.invert(transformation)
-    let rotations = [...transformation].filter(c => c === 'r').length
-    let sidesSwapped = rotations % 2 === 1
+    let sidesSwapped = exports.transformationSwapsSides(transformation)
     if (sidesSwapped) [width, height] = [height, width]
 
     let inner = v => {
@@ -55,11 +58,11 @@ exports.transformCoords = function(coordX, coordY, transformation, width, height
 }
 
 exports.transformVertex = function(vertex, transformation, width, height) {
-    transformation = [...exports.normalize(transformation)]
-
     let {width: newWidth, height: newHeight} = exports.transformSize(width, height, transformation)
-    let [x, y] = transformation.reduce(([x, y], c) =>
-        c === 'f' ? [-x - 1, y] : [-y - 1, x],
+    let [x, y] = [...transformation].reduce(([x, y], c) =>
+        c === 'f' ? [-x - 1, y]
+        : c === 'r' ? [-y - 1, x]
+        : [x, y],
         vertex
     )
 
