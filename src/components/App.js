@@ -388,9 +388,12 @@ class App extends Component {
 
     // User Interface
 
-    buildMenu(rebuild = false) {
-        if (rebuild) remote.require('./menu').buildMenu()
-        ipcRenderer.send('build-menu', this.state.busy > 0)
+    buildMenu({rebuild = false} = {}) {
+        if (rebuild) remote.require('./menu').rebuild()
+
+        ipcRenderer.send('build-menu', {
+            disableAll: this.state.busy > 0
+        })
     }
 
     setSidebarWidth(sidebarWidth) {

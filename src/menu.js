@@ -18,7 +18,7 @@ let treePosition = () => [sabaki.state.gameTrees[sabaki.state.gameIndex], sabaki
 
 let menu = null
 
-exports.buildMenu = function() {
+exports.rebuild = function() {
     let data = [
         {
             id: 'file',
@@ -751,7 +751,7 @@ exports.buildMenu = function() {
     return menu
 }
 
-exports.buildMenu()
+exports.rebuild()
 
 exports.clone = function(x = menu) {
     if (Array.isArray(x)) {

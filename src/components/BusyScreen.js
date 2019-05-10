@@ -7,14 +7,13 @@ class BusyScreen extends Component {
     componentWillReceiveProps({show}) {
         if (show === this.props.show) return
 
+        sabaki.buildMenu()
         clearTimeout(this.busyId)
 
         if (show) {
-            ipcRenderer.send('build-menu', true)
             this.setState({show: true})
             document.activeElement.blur()
         } else {
-            ipcRenderer.send('build-menu')
             let delay = setting.get('app.hide_busy_delay')
             this.busyId = setTimeout(() => this.setState({show: false}), delay)
         }

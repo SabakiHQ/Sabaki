@@ -56,7 +56,7 @@ function newWindow(path) {
     return window
 }
 
-function buildMenu(disableAll = false) {
+function buildMenu(props = {}) {
     let template = require('./menu').clone()
 
     // Process menu items
@@ -88,7 +88,7 @@ function buildMenu(disableAll = false) {
                 item.checked = !!setting.get(item.checked)
             }
 
-            if (disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
+            if (props.disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
                 item.enabled = false
             }
 
@@ -173,7 +173,7 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     } else {
-        buildMenu(true)
+        buildMenu({disableAll: true})
     }
 })
 
