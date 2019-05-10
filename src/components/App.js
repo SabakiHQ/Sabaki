@@ -1757,10 +1757,10 @@ class App extends Component {
     }
 
     setBoardTransformation(tree, transformation) {
-        transformation = gobantransformer.normalize(transformation)
+        transformation = transformation ? gobantransformer.normalize(transformation) : ''
 
         let newTree = tree.mutate(draft => {
-            if (transformation.trim() === '') {
+            if (transformation === '') {
                 draft.removeProperty(tree.root.id, 'SBKTF')
             } else {
                 draft.updateProperty(tree.root.id, 'SBKTF', [transformation])

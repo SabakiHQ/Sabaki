@@ -498,6 +498,11 @@ exports.build = function(props = {}) {
                     label: t('menu.tools', '&Invert Colors'),
                     accelerator: 'CmdOrCtrl+Alt+Up',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'i')
+                },
+                {
+                    label: t('menu.tools', 'Reset &Transformations'),
+                    accelerator: 'CmdOrCtrl+Alt+0',
+                    click: () => sabaki.setBoardTransformation(treePosition()[0], '')
                 }
             ]
         },
