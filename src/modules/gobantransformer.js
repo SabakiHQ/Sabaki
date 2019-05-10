@@ -23,7 +23,7 @@ exports.normalize = function(transformation) {
 }
 
 exports.invert = function(transformation) {
-    transformation = [...exports.normalize(transformation)]
+    transformation = exports.normalize(transformation)
 
     let result = ''
     let flipped = transformation.includes('f')
