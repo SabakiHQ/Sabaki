@@ -323,6 +323,17 @@ class App extends Component {
             this.window.setAutoHideMenuBar(!this.state.showMenuBar)
         }
 
+        // Handle bars & drawers
+
+        if (
+            ['estimator', 'scoring'].includes(prevState.mode)
+            && this.state.mode !== 'estimator'
+            && this.state.mode !== 'scoring'
+            && this.state.openDrawer === 'score'
+        ) {
+            this.closeDrawer()
+        }
+
         // Handle sidebar showing/hiding
 
         if (
