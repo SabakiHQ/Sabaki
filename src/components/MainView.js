@@ -106,8 +106,6 @@ class MainView extends Component {
         sidebarWidth,
         leftSidebarWidth
     }, {
-        width,
-        height,
         gobanCrosshair
     }) {
         let node = gameTree.get(treePosition)
@@ -136,10 +134,7 @@ class MainView extends Component {
             },
 
             h('main',
-                {
-                    ref: el => this.mainElement = el,
-                    style: {width, height}
-                },
+                {ref: el => this.mainElement = el},
 
                 h(Goban, {
                     gameTree,
