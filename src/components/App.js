@@ -75,6 +75,7 @@ class App extends Component {
             showSiblings: null,
             fuzzyStonePlacement: null,
             animateStonePlacement: null,
+            boardTransformation: '',
 
             // Sidebar
 
@@ -1767,23 +1768,16 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition)
     }
 
-    setBoardTransformation(tree, transformation) {
-        transformation = transformation ? gobantransformer.normalize(transformation) : ''
-
-        let newTree = tree.mutate(draft => {
-            if (transformation === '') {
-                draft.removeProperty(tree.root.id, 'SBKTF')
-            } else {
-                draft.updateProperty(tree.root.id, 'SBKTF', [transformation])
-            }
+    setBoardTransformation(transformation) {
+        this.setState({
+            boardTransformation: transformation
         })
-
-        this.setCurrentTreePosition(newTree, this.state.treePosition)
     }
 
-    pushBoardTransformation(tree, transformation) {
-        let base = (tree.root.data.SBKTF || [''])[0]
-        this.setBoardTransformation(tree, base + transformation)
+    pushBoardTransformation(transformation) {
+        this.setState(({boardTransformation}) => ({
+            boardTransformation: boardTransformation + transformation
+        }))
     }
 
     copyVariation(tree, treePosition) {
