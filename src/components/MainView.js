@@ -182,7 +182,6 @@ class MainView extends Component {
                     playerCaptures: board.captures,
                     currentPlayer,
                     showHotspot: node.data.HO != null,
-                    invertColor: gobantransformer.normalize(boardTransformation).includes('i'),
                     onCurrentPlayerClick: this.handleTogglePlayer
                 }),
 
