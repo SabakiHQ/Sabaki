@@ -376,7 +376,7 @@ class Goban extends Component {
             signMap: gobantransformer.transformMap(signMap, transformation),
             markerMap: gobantransformer.transformMap(markerMap, transformation),
             ghostStoneMap: gobantransformer.transformMap(ghostStoneMap, transformation),
-            paintMap: gobantransformer.transformMap(paintMap, transformation),
+            paintMap: gobantransformer.transformMap(paintMap, transformation, {ignoreInvert: true}),
             heatMap: gobantransformer.transformMap(heatMap, transformation),
             lines: lines.map(transformLine),
             selectedVertices: highlightVertices.map(transformVertex),

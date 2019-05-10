@@ -86,7 +86,7 @@ exports.transformLine = function(line, transformation, width, height) {
     })
 }
 
-exports.transformMap = function(map, transformation) {
+exports.transformMap = function(map, transformation, {ignoreInvert = false} = {}) {
     let inverse = exports.invert(transformation)
     let inverted = inverse.includes('i')
     let {width, height} = exports.transformSize(map.length === 0 ? 0 : map[0].length, map.length, inverse)
@@ -95,7 +95,7 @@ exports.transformMap = function(map, transformation) {
         let [ix, iy] = exports.transformVertex([x, y], inverse, width, height)
         let entry = map[iy][ix]
 
-        if (inverted && entry != null) {
+        if (!ignoreInvert && inverted && entry != null) {
             if (typeof entry === 'number') entry = -entry
             else if (entry.sign != null) entry.sign = -entry.sign
         }
