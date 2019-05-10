@@ -1,33 +1,38 @@
 exports.normalize = function(transformation) {
-    // Change transformation so that we rotate first, then flip
-    // i.e. replace 'fr' by 'rrrf'
+    // Change transformation so that rotate first, flip, then invert
+    // i.e. replace 'fr' by 'rrrf', 'if' by 'fi', 'ir' by 'ri'
     //
+    // 'i' denotes a color inversion
     // 'r' denotes an anti-clockwise rotation
     // 'f' denotes a horizontal flip
 
-    transformation = [...transformation].filter(c => 'rf'.includes(c))
+    let inversions = [...transformation].filter(c => c === 'i').length
+    let rf = [...transformation].filter(c => 'rf'.includes(c))
 
     while (true) {
-        let firstFlipIndex = transformation.findIndex((c, i, arr) => c === 'f' && arr[i + 1] === 'r')
+        let firstFlipIndex = rf.findIndex((c, i, arr) => c === 'f' && arr[i + 1] === 'r')
         if (firstFlipIndex < 0) break
 
-        transformation.splice(firstFlipIndex, 2, ...'rrrf')
+        rf.splice(firstFlipIndex, 2, ...'rrrf')
     }
 
     // Eliminate unnecessary rotations/flips
-    // i.e. remove full rotations and double flips
+    // i.e. remove full rotations, double flips
 
-    return transformation.join('').replace(/(rrrr|ff)/g, '')
+    return rf.join('').replace(/(rrrr|ff)/g, '') + (inversions % 2 === 1 ? 'i' : '')
 }
 
 exports.invert = function(transformation) {
     transformation = [...exports.normalize(transformation)]
 
     let result = ''
-    let flipped = transformation.slice(-1)[0] === 'f'
-    if (flipped) result += 'f'
+    let flipped = transformation.includes('f')
+    let inverted = transformation.includes('i')
 
-    let rotations = transformation.length - +flipped
+    if (flipped) result += 'f'
+    if (inverted) result += 'i'
+
+    let rotations = transformation.length - +flipped - +inverted
     result += Array((rotations * 3) % 4).fill('r').join('')
 
     return exports.normalize(result)
@@ -83,10 +88,18 @@ exports.transformLine = function(line, transformation, width, height) {
 
 exports.transformMap = function(map, transformation) {
     let inverse = exports.invert(transformation)
+    let inverted = inverse.includes('i')
     let {width, height} = exports.transformSize(map.length === 0 ? 0 : map[0].length, map.length, inverse)
 
     return [...Array(height)].map((_, y) => [...Array(width)].map((__, x) => {
         let [ix, iy] = exports.transformVertex([x, y], inverse, width, height)
-        return map[iy][ix]
+        let entry = map[iy][ix]
+
+        if (inverted && entry != null) {
+            if (typeof entry === 'number') entry = -entry
+            else if (entry.sign != null) entry.sign = -entry.sign
+        }
+
+        return entry
     }))
 }

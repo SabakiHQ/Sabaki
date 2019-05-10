@@ -1774,6 +1774,11 @@ class App extends Component {
     }
 
     invertColors() {
+        this.setState(({gobanTransformation}) => ({
+            gobanTransformation: gobantransformer.normalize(
+                gobanTransformation + 'i'
+            )
+        }))
     }
 
     copyVariation(tree, treePosition) {
