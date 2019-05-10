@@ -477,32 +477,32 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.tools', 'Rotate &Anticlockwise'),
                     accelerator: 'CmdOrCtrl+Alt+Left',
-                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrr')
+                    click: () => sabaki.pushBoardTransformation('rrr')
                 },
                 {
                     label: t('menu.tools', '&Rotate Clockwise'),
                     accelerator: 'CmdOrCtrl+Alt+Right',
-                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'r')
+                    click: () => sabaki.pushBoardTransformation('r')
                 },
                 {
                     label: t('menu.tools', '&Flip Horizontally'),
                     accelerator: 'CmdOrCtrl+Alt+Down',
-                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'f')
+                    click: () => sabaki.pushBoardTransformation('f')
                 },
                 {
                     label: t('menu.tools', 'Flip &Vertically'),
                     accelerator: 'CmdOrCtrl+Alt+Shift+Down',
-                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrf')
+                    click: () => sabaki.pushBoardTransformation('rrf')
                 },
                 {
                     label: t('menu.tools', '&Invert Colors'),
                     accelerator: 'CmdOrCtrl+Alt+Up',
-                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'i')
+                    click: () => sabaki.pushBoardTransformation('i')
                 },
                 {
                     label: t('menu.tools', 'Reset &Transformations'),
                     accelerator: 'CmdOrCtrl+Alt+0',
-                    click: () => sabaki.setBoardTransformation(treePosition()[0], '')
+                    click: () => sabaki.setBoardTransformation('')
                 }
             ]
         },

@@ -8,6 +8,7 @@ const AutoplayBar = require('./bars/AutoplayBar')
 const ScoringBar = require('./bars/ScoringBar')
 const FindBar = require('./bars/FindBar')
 
+const gobantransformer = require('../modules/gobantransformer')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
@@ -96,6 +97,7 @@ class MainView extends Component {
         showSiblings,
         fuzzyStonePlacement,
         animateStonePlacement,
+        boardTransformation,
 
         selectedTool,
         findText,
@@ -163,6 +165,7 @@ class MainView extends Component {
                     playVariation,
                     drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
                         ? selectedTool : null,
+                    transformation: boardTransformation,
 
                     onVertexClick: this.handleGobanVertexClick,
                     onLineDraw: this.handleGobanLineDraw
@@ -179,6 +182,7 @@ class MainView extends Component {
                     playerCaptures: board.captures,
                     currentPlayer,
                     showHotspot: node.data.HO != null,
+                    invertColor: gobantransformer.normalize(boardTransformation).includes('i'),
                     onCurrentPlayerClick: this.handleTogglePlayer
                 }),
 
