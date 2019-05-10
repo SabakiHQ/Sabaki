@@ -477,27 +477,27 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.tools', '&Rotate Clockwise'),
                     enabled: !disableGameNavigation,
-                    click: () => sabaki.rotateBoard(false)
+                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrr')
                 },
                 {
                     label: t('menu.tools', 'Rotate &Anticlockwise'),
                     enabled: !disableGameNavigation,
-                    click: () => sabaki.rotateBoard(true)
+                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'r')
                 },
                 {
                     label: t('menu.tools', '&Flip Horizontally'),
                     enabled: !disableGameNavigation,
-                    click: () => sabaki.flipBoard(true)
+                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'f')
                 },
                 {
                     label: t('menu.tools', 'Flip &Vertically'),
                     enabled: !disableGameNavigation,
-                    click: () => sabaki.flipBoard(false)
+                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrf')
                 },
                 {
                     label: t('menu.tools', '&Invert Colors'),
                     enabled: !disableGameNavigation,
-                    click: () => sabaki.invertColors()
+                    click: () => sabaki.pushBoardTransformation(treePosition()[0], 'i')
                 }
             ]
         },
