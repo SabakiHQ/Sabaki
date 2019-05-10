@@ -121,9 +121,14 @@ class PlayBar extends Component {
                 h('img', {
                     src: `./img/ui/player_${currentPlayer}.svg`,
                     height: 21,
-                    alt: t(p => `${p.player < 0 ? 'White' : 'Black'} to play`, {
-                        player: currentPlayer
-                    })
+                    alt: t(p =>
+                        `${
+                            p.player < 0 ? 'White'
+                            : p.player > 0 ? 'Black'
+                            : p.player
+                        } to play`,
+                        {player: currentPlayer}
+                    )
                 })
             ),
 

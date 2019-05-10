@@ -19,6 +19,11 @@ let treePosition = () => [sabaki.state.gameTrees[sabaki.state.gameIndex], sabaki
 let menu = null
 
 exports.build = function(props = {}) {
+    let {
+        disableAll = false,
+        disableGameNavigation = false
+    } = props
+
     let data = [
         {
             id: 'file',
@@ -27,18 +32,20 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.file', '&New'),
                     accelerator: 'CmdOrCtrl+N',
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.newFile({playSound: true, showInfo: true})
                 },
                 {
                     label: t('menu.file', 'New &Window'),
                     accelerator: 'CmdOrCtrl+Shift+N',
                     clickMain: 'newWindow',
-                    enabled: true
+                    neverDisable: true
                 },
                 {type: 'separator'},
                 {
                     label: t('menu.file', '&Open…'),
                     accelerator: 'CmdOrCtrl+O',
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.loadFile()
                 },
                 {
@@ -57,6 +64,7 @@ exports.build = function(props = {}) {
                     submenu: [
                         {
                             label: t('menu.file', '&Load SGF'),
+                            enabled: !disableGameNavigation,
                             click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
                         },
                         {
@@ -78,6 +86,7 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.file', '&Manage Games…'),
                     accelerator: 'CmdOrCtrl+Shift+M',
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.openDrawer('gamechooser')
                 },
                 {type: 'separator'},
@@ -397,7 +406,7 @@ exports.build = function(props = {}) {
                 },
                 {
                     label: t('menu.engines', '&Suspend'),
-                    enabled: true,
+                    neverDisable: true,
                     click: () => sabaki.suspendEngines()
                 },
                 {type: 'separator'},
@@ -467,22 +476,27 @@ exports.build = function(props = {}) {
                 {type: 'separator'},
                 {
                     label: t('menu.tools', '&Rotate Clockwise'),
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.rotateBoard(false)
                 },
                 {
                     label: t('menu.tools', 'Rotate &Anticlockwise'),
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.rotateBoard(true)
                 },
                 {
                     label: t('menu.tools', '&Flip Horizontally'),
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.flipBoard(true)
                 },
                 {
                     label: t('menu.tools', 'Flip &Vertically'),
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.flipBoard(false)
                 },
                 {
                     label: t('menu.tools', '&Invert Colors'),
+                    enabled: !disableGameNavigation,
                     click: () => sabaki.invertColors()
                 }
             ]
@@ -585,7 +599,7 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.file', 'New &Window'),
                     clickMain: 'newWindow',
-                    enabled: true
+                    neverDisable: true
                 },
                 {role: 'minimize'},
                 {type: 'separator'},
@@ -607,7 +621,7 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.help', 'Check for &Updates'),
                     clickMain: 'checkForUpdates',
-                    enabled: true
+                    neverDisable: true
                 },
                 {type: 'separator'},
                 {
@@ -748,7 +762,7 @@ exports.build = function(props = {}) {
 
             // Handle disableAll prop
 
-            if (props.disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
+            if (disableAll && !item.neverDisable && !('submenu' in item || 'role' in item)) {
                 item.enabled = false
             }
 
