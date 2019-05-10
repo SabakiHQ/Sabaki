@@ -30,9 +30,9 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
-const treetransformer = require('../modules/treetransformer')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
+const treetransformer = require('../modules/treetransformer')
 
 class App extends Component {
     constructor() {
@@ -171,7 +171,7 @@ class App extends Component {
 
         // Handle main menu items
 
-        let menuData = require('../menu').clone()
+        let menuData = require('../menu').get()
 
         let handleMenuClicks = menu => {
             for (let item of menu) {
@@ -354,7 +354,7 @@ class App extends Component {
         }
     }
 
-    updateSettingState(key = null) {
+    updateSettingState(key = null, {buildMenu = true} = {}) {
         let data = {
             'app.zoom_factor': 'zoomFactor',
             'view.show_menubar': 'showMenuBar',
@@ -372,12 +372,13 @@ class App extends Component {
         }
 
         if (key == null) {
-            for (let k in data) this.updateSettingState(k)
+            for (let k in data) this.updateSettingState(k, {buildMenu: false})
+            this.buildMenu()
             return
         }
 
         if (key in data) {
-            this.buildMenu()
+            if (buildMenu) this.buildMenu()
             this.setState({[data[key]]: setting.get(key)})
         }
     }
@@ -388,9 +389,7 @@ class App extends Component {
 
     // User Interface
 
-    buildMenu({rebuild = false} = {}) {
-        if (rebuild) remote.require('./menu').rebuild()
-
+    buildMenu() {
         ipcRenderer.send('build-menu', {
             disableAll: this.state.busy > 0
         })

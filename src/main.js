@@ -57,7 +57,7 @@ function newWindow(path) {
 }
 
 function buildMenu(props = {}) {
-    let template = require('./menu').clone()
+    let template = require('./menu').get(props)
 
     // Process menu items
 
@@ -77,19 +77,10 @@ function buildMenu(props = {}) {
 
                 item.click = () => ({
                     newWindow,
-                    checkForUpdates: () => checkForUpdates(true)
+                    checkForUpdates: () => checkForUpdates({showFailDialogs: true})
                 })[key]()
 
                 delete item.clickMain
-            }
-
-            if ('checked' in item) {
-                item.type = 'checkbox'
-                item.checked = !!setting.get(item.checked)
-            }
-
-            if (props.disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
-                item.enabled = false
             }
 
             if ('submenu' in item) {
@@ -116,7 +107,7 @@ function buildMenu(props = {}) {
     }
 }
 
-async function checkForUpdates(showFailDialogs) {
+async function checkForUpdates({showFailDialogs = false} = {}) {
     try {
         let t = i18n.context('updater')
         let info = await updater.check(`SabakiHQ/${app.getName()}`)
@@ -137,11 +128,13 @@ async function checkForUpdates(showFailDialogs) {
                 noLink: true,
                 cancelId: 2
             }, response => {
-                if (response === 0) {
-                    shell.openExternal(info.downloadUrl || info.url)
-                } else if (response === 1) {
-                    shell.openExternal(info.url)
-                }
+                if (response === 2) return
+
+                shell.openExternal(
+                    response === 0
+                    ? info.downloadUrl || info.url
+                    : info.url
+                )
             })
         } else if (showFailDialogs) {
             dialog.showMessageBox({
