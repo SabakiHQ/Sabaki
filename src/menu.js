@@ -475,28 +475,28 @@ exports.build = function(props = {}) {
                 },
                 {type: 'separator'},
                 {
-                    label: t('menu.tools', '&Rotate Clockwise'),
-                    enabled: !disableGameNavigation,
+                    label: t('menu.tools', 'Rotate &Anticlockwise'),
+                    accelerator: 'CmdOrCtrl+Alt+Left',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrr')
                 },
                 {
-                    label: t('menu.tools', 'Rotate &Anticlockwise'),
-                    enabled: !disableGameNavigation,
+                    label: t('menu.tools', '&Rotate Clockwise'),
+                    accelerator: 'CmdOrCtrl+Alt+Right',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'r')
                 },
                 {
                     label: t('menu.tools', '&Flip Horizontally'),
-                    enabled: !disableGameNavigation,
+                    accelerator: 'CmdOrCtrl+Alt+Down',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'f')
                 },
                 {
                     label: t('menu.tools', 'Flip &Vertically'),
-                    enabled: !disableGameNavigation,
+                    accelerator: 'CmdOrCtrl+Alt+Shift+Down',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'rrf')
                 },
                 {
                     label: t('menu.tools', '&Invert Colors'),
-                    enabled: !disableGameNavigation,
+                    accelerator: 'CmdOrCtrl+Alt+Up',
                     click: () => sabaki.pushBoardTransformation(treePosition()[0], 'i')
                 }
             ]
