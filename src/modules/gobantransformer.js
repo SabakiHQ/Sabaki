@@ -41,10 +41,10 @@ exports.transformCoords = function(coordX, coordY, transformation, width, height
     let inverse = exports.invert(transformation)
     let rotations = [...transformation].filter(c => c === 'r').length
     let sidesSwapped = rotations % 2 === 1
-    if (sidesSwapped) [newWidth, newHeight] = [height, width]
+    if (sidesSwapped) [width, height] = [height, width]
 
     let inner = v => {
-        let [x, y] = exports.transformVertex(v, inverse, newWidth, newHeight)
+        let [x, y] = exports.transformVertex(v, inverse, width, height)
         return [coordX(x), coordY(y)]
     }
 
