@@ -75,7 +75,6 @@ class App extends Component {
             showSiblings: null,
             fuzzyStonePlacement: null,
             animateStonePlacement: null,
-            gobanTransformation: '',
 
             // Sidebar
 
@@ -1757,28 +1756,23 @@ class App extends Component {
         this.setCurrentTreePosition(newTree, treePosition)
     }
 
-    rotateBoard(anticlockwise) {
-        this.setState(({gobanTransformation}) => ({
-            gobanTransformation: gobantransformer.normalize(
-                gobanTransformation + (anticlockwise ? 'rrr' : 'r')
-            )
-        }))
+    setBoardTransformation(tree, transformation) {
+        transformation = gobantransformer.normalize(transformation)
+
+        let newTree = tree.mutate(draft => {
+            if (transformation.trim() === '') {
+                draft.removeProperty(tree.root.id, 'SBKTF')
+            } else {
+                draft.updateProperty(tree.root.id, 'SBKTF', [transformation])
+            }
+        })
+
+        this.setCurrentTreePosition(newTree, this.state.treePosition)
     }
 
-    flipBoard(horizontal) {
-        this.setState(({gobanTransformation}) => ({
-            gobanTransformation: gobantransformer.normalize(
-                gobanTransformation + (horizontal ? 'f' : 'frr')
-            )
-        }))
-    }
-
-    invertColors() {
-        this.setState(({gobanTransformation}) => ({
-            gobanTransformation: gobantransformer.normalize(
-                gobanTransformation + 'i'
-            )
-        }))
+    pushBoardTransformation(tree, transformation) {
+        let base = (tree.root.data.SBKTF || [''])[0]
+        this.setBoardTransformation(tree, base + transformation)
     }
 
     copyVariation(tree, treePosition) {

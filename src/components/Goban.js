@@ -24,11 +24,12 @@ class Goban extends Component {
         ]) {
             let oldHandler = this[handler].bind(this)
             this[handler] = (evt, vertex) => {
-                let inverse = gobantransformer.invert(this.props.transformation)
+                let transformation = (this.props.gameTree.root.data.SBKTF || [''])[0]
+                let inverse = gobantransformer.invert(transformation)
                 let {width, height} = gobantransformer.transformSize(
                     this.props.board.width,
                     this.props.board.height,
-                    this.props.transformation
+                    transformation
                 )
 
                 let originalVertex = gobantransformer.transformVertex(vertex, inverse, width, height)
@@ -206,8 +207,7 @@ class Goban extends Component {
         fuzzyStonePlacement = true,
         animateStonePlacement = true,
 
-        drawLineMode = null,
-        transformation = ''
+        drawLineMode = null
     }, {
         top = 0,
         left = 0,
@@ -223,6 +223,7 @@ class Goban extends Component {
     }) {
         let signMap = board.arrangement
         let markerMap = board.markers
+        let transformation = (gameTree.root.data.SBKTF || [''])[0]
 
         let transformLine = line => gobantransformer.transformLine(line, transformation, board.width, board.height)
         let transformVertex = v => gobantransformer.transformVertex(v, transformation, board.width, board.height)
