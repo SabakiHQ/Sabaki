@@ -33,7 +33,7 @@ exports.invert = function(transformation) {
     if (inverted) result += 'i'
 
     let rotations = transformation.length - +flipped - +inverted
-    result += Array((rotations * 3) % 4).fill('r').join('')
+    result += Array(4 - rotations % 4).fill('r').join('')
 
     return exports.normalize(result)
 }
