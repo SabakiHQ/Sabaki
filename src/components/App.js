@@ -1771,13 +1771,13 @@ class App extends Component {
 
     setBoardTransformation(transformation) {
         this.setState({
-            boardTransformation: transformation
+            boardTransformation: gobantransformer.normalize(transformation)
         })
     }
 
     pushBoardTransformation(transformation) {
         this.setState(({boardTransformation}) => ({
-            boardTransformation: boardTransformation + transformation
+            boardTransformation: gobantransformer.normalize(boardTransformation + transformation)
         }))
     }
 
