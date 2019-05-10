@@ -5,18 +5,37 @@ const {BoundedGoban} = require('@sabaki/shudan')
 const {remote} = require('electron')
 
 const gametree = require('../modules/gametree')
+const gobantransformer = require('../modules/gobantransformer')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
+
+const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 class Goban extends Component {
     constructor(props) {
         super(props)
 
-        this.handleVertexMouseUp = this.handleVertexMouseUp.bind(this)
-        this.handleVertexMouseDown = this.handleVertexMouseDown.bind(this)
-        this.handleVertexMouseMove = this.handleVertexMouseMove.bind(this)
-        this.handleVertexMouseEnter = this.handleVertexMouseEnter.bind(this)
-        this.handleVertexMouseLeave = this.handleVertexMouseLeave.bind(this)
+        for (let handler of [
+            'handleVertexMouseUp',
+            'handleVertexMouseDown',
+            'handleVertexMouseMove',
+            'handleVertexMouseEnter',
+            'handleVertexMouseLeave'
+        ]) {
+            let oldHandler = this[handler].bind(this)
+            this[handler] = (evt, vertex) => {
+                let inverse = gobantransformer.invert(this.props.transformation)
+                let {width, height} = gobantransformer.transformSize(
+                    this.props.board.width,
+                    this.props.board.height,
+                    this.props.transformation
+                )
+
+                let originalVertex = gobantransformer.transformVertex(vertex, inverse, width, height)
+
+                oldHandler(evt, originalVertex)
+            }
+        }
 
         this.componentWillReceiveProps()
     }
@@ -173,7 +192,7 @@ class Goban extends Component {
         gameTree,
         treePosition,
         board,
-        paintMap,
+        paintMap = [],
         analysis,
         highlightVertices = [],
         dimmedStones = [],
@@ -187,7 +206,8 @@ class Goban extends Component {
         fuzzyStonePlacement = true,
         animateStonePlacement = true,
 
-        drawLineMode = null
+        drawLineMode = null,
+        transformation = ''
     }, {
         top = 0,
         left = 0,
@@ -203,6 +223,17 @@ class Goban extends Component {
     }) {
         let signMap = board.arrangement
         let markerMap = board.markers
+
+        let transformLine = line => gobantransformer.transformLine(line, transformation, board.width, board.height)
+        let transformVertex = v => gobantransformer.transformVertex(v, transformation, board.width, board.height)
+
+        let {coordX, coordY} = gobantransformer.transformCoords(
+            x => alpha[x],
+            y => board.height - y,
+            transformation,
+            board.width,
+            board.height
+        )
 
         // Calculate lines
 
@@ -231,7 +262,7 @@ class Goban extends Component {
 
         // Calculate ghost stones
 
-        let ghostStoneMap = null
+        let ghostStoneMap = []
 
         if (showNextMoves || showSiblings) {
             ghostStoneMap = board.arrangement.map(row => row.map(_ => null))
@@ -306,7 +337,7 @@ class Goban extends Component {
 
         // Draw heatmap
 
-        let heatMap = null
+        let heatMap = []
 
         if (drawHeatMap && analysis != null) {
             let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
@@ -334,18 +365,21 @@ class Goban extends Component {
 
             maxWidth,
             maxHeight,
+
             showCoordinates,
+            coordX,
+            coordY,
             fuzzyStonePlacement,
             animateStonePlacement: clicked && animateStonePlacement,
 
-            signMap,
-            markerMap,
-            ghostStoneMap,
-            paintMap,
-            heatMap,
-            lines,
-            selectedVertices: highlightVertices,
-            dimmedVertices: dimmedStones,
+            signMap: gobantransformer.transformMap(signMap, transformation),
+            markerMap: gobantransformer.transformMap(markerMap, transformation),
+            ghostStoneMap: gobantransformer.transformMap(ghostStoneMap, transformation),
+            paintMap: gobantransformer.transformMap(paintMap, transformation),
+            heatMap: gobantransformer.transformMap(heatMap, transformation),
+            lines: lines.map(transformLine),
+            selectedVertices: highlightVertices.map(transformVertex),
+            dimmedVertices: dimmedStones.map(transformVertex),
 
             onVertexMouseUp: this.handleVertexMouseUp,
             onVertexMouseDown: this.handleVertexMouseDown,
