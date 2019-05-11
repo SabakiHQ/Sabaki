@@ -174,6 +174,10 @@ Saves current file in given `filename` as SGF. If `filename` is not set, Sabaki 
 
 Returns the SGF of the current file as a string.
 
+#### sabaki.getBoardAscii()
+
+Returns a text diagram that represents the visible board.
+
 #### sabaki.askForSave()
 
 If there's a modified file opened, Sabaki will ask the user to save the file first or to cancel the action. Returns `true` if the user saved the file or wants to proceed without saving, and `false` if the user wants to cancel the action.

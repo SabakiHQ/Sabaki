@@ -73,7 +73,7 @@ exports.build = function(props = {}) {
                         },
                         {
                             label: t('menu.file', 'Copy &ASCII Diagram'),
-                            click: () => clipboard.writeText(gametree.getBoard(...treePosition()).generateAscii())
+                            click: () => clipboard.writeText(sabaki.getBoardAscii())
                         }
                     ]
                 },
