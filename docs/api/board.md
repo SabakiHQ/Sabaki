@@ -139,8 +139,6 @@ Positive `sign` corresponds to the black player, while negative `sign` correspon
 
 * `count` `<Integer>`
 
-### board.generateAscii()
-
 ### board.getPositionHash()
 
 ### board.getHash()

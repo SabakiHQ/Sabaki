@@ -766,6 +766,87 @@ class App extends Component {
         })
     }
 
+    getBoardAscii() {
+        let {boardTransformation} = this.state
+        let tree = this.state.gameTrees[this.state.gameIndex]
+        let board = gametree.getBoard(tree, this.state.treePosition)
+        let signMap = gobantransformer.transformMap(board.arrangement, boardTransformation)
+        let markerMap = gobantransformer.transformMap(board.markers, boardTransformation)
+        let lines = board.lines.map(l =>
+            gobantransformer.transformLine(l, boardTransformation, board.width, board.height)
+        )
+
+        let height = signMap.length
+        let width = height === 0 ? 0 : signMap[0].length
+        let result = []
+        let lb = helper.linebreak
+
+        let getIndexFromVertex = ([x, y]) => {
+            let rowLength = 4 + width * 2
+            return rowLength + rowLength * y + 1 + x * 2 + 1
+        }
+
+        // Make empty board
+
+        result.push('+')
+        for (let x = 0; x < width; x++) result.push('-', '-')
+        result.push('-', '+', lb)
+
+        for (let y = 0; y < height; y++) {
+            result.push('|')
+            for (let x = 0; x < width; x++) result.push(' ', '.')
+            result.push(' ', '|', lb)
+        }
+
+        result.push('+')
+        for (let x = 0; x < width; x++) result.push('-', '-')
+        result.push('-', '+', lb)
+
+        for (let vertex of new Board(width, height).getHandicapPlacement(9)){
+            result[getIndexFromVertex(vertex)] = ','
+        }
+
+        // Place markers & stones
+
+        let data = {
+            plain: ['O', null, 'X'],
+            circle: ['W', 'C', 'B'],
+            square: ['@', 'S', '#'],
+            triangle: ['Q', 'T', 'Y'],
+            cross: ['P', 'M', 'Z'],
+            label: ['O', null, 'X']
+        }
+
+        for (let x = 0; x < width; x++) {
+            for (let y = 0; y < height; y++) {
+                let i = getIndexFromVertex([x, y])
+                let s = signMap[y][x]
+
+                if (!markerMap[y][x] || !(markerMap[y][x].type in data)) {
+                    if (s !== 0) result[i] = data.plain[s + 1]
+                } else {
+                    let {type, label} = markerMap[y][x]
+
+                    if (type !== 'label' || s !== 0) {
+                        result[i] = data[type][s + 1]
+                    } else if (s === 0 && label.length === 1 && isNaN(parseFloat(label))) {
+                        result[i] = label.toLowerCase()
+                    }
+                }
+            }
+        }
+
+        result = result.join('')
+
+        // Add lines & arrows
+
+        for (let {v1, v2, type} of lines) {
+            result += `{${type === 'arrow' ? 'AR' : 'LN'} ${this.vertex2coord(v1)} ${this.vertex2coord(v2)}}${lb}`
+        }
+
+        return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
+    }
+
     generateTreeHash() {
         return this.state.gameTrees.map(tree => gametree.getHash(tree)).join('-')
     }
