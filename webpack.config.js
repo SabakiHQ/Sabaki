@@ -24,6 +24,7 @@ module.exports = (env, argv) => ({
     },
 
     externals: {
-        'moment': 'null'
+        'moment': 'null',
+        'iconv-lite': 'require("iconv-lite")'
     }
 })
