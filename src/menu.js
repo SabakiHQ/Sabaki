@@ -413,7 +413,7 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.engines', 'S&ynchronize'),
                     accelerator: 'F6',
-                    click: () => sabaki.syncEngines()
+                    click: () => await sabaki.syncEngines({showErrorDialog: true})
                 },
                 {
                     label: t('menu.engines', 'Toggle A&nalysis'),

@@ -2429,10 +2429,11 @@ class App extends Component {
         })
     }
 
-    async syncEngines() {
+    async syncEngines({showErrorDialog = false} = {}) {
         if (this.attachedEngineSyncers.every(x => x == null)) return
-
         if (this.engineBusySyncing) return
+
+        let t = i18n.context('app.engine')
         this.engineBusySyncing = true
 
         try {
@@ -2449,7 +2450,12 @@ class App extends Component {
             }
         } catch (err) {
             this.engineBusySyncing = false
-            throw err
+
+            if (showErrorDialog) {
+                dialog.show(t(err.message), 'warning')
+            } else {
+                throw err
+            }
         }
 
         this.engineBusySyncing = false
@@ -2556,7 +2562,7 @@ class App extends Component {
         this.setBusy(true)
 
         try {
-            await this.syncEngines()
+            await this.syncEngines({showErrorDialog: true})
         } catch (err) {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
