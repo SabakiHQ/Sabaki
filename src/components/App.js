@@ -2452,7 +2452,7 @@ class App extends Component {
             this.engineBusySyncing = false
 
             if (showErrorDialog) {
-                dialog.show(t(err.message), 'warning')
+                dialog.showMessageBox(t(err.message), 'warning')
             } else {
                 throw err
             }
