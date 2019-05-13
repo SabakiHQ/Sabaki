@@ -25,6 +25,7 @@ function newWindow(path) {
         backgroundColor: '#111111',
         show: false,
         webPreferences: {
+            nodeIntegration: true,
             zoomFactor: setting.get('app.zoom_factor')
         }
     })
@@ -55,8 +56,8 @@ function newWindow(path) {
     return window
 }
 
-function buildMenu(disableAll = false) {
-    let template = require('./menu').clone()
+function buildMenu(props = {}) {
+    let template = require('./menu').get(props)
 
     // Process menu items
 
@@ -76,19 +77,10 @@ function buildMenu(disableAll = false) {
 
                 item.click = () => ({
                     newWindow,
-                    checkForUpdates: () => checkForUpdates(true)
+                    checkForUpdates: () => checkForUpdates({showFailDialogs: true})
                 })[key]()
 
                 delete item.clickMain
-            }
-
-            if ('checked' in item) {
-                item.type = 'checkbox'
-                item.checked = !!setting.get(item.checked)
-            }
-
-            if (disableAll && !item.enabled && !('submenu' in item || 'role' in item)) {
-                item.enabled = false
             }
 
             if ('submenu' in item) {
@@ -115,7 +107,7 @@ function buildMenu(disableAll = false) {
     }
 }
 
-async function checkForUpdates(showFailDialogs) {
+async function checkForUpdates({showFailDialogs = false} = {}) {
     try {
         let t = i18n.context('updater')
         let info = await updater.check(`SabakiHQ/${app.getName()}`)
@@ -136,11 +128,13 @@ async function checkForUpdates(showFailDialogs) {
                 noLink: true,
                 cancelId: 2
             }, response => {
-                if (response === 0) {
-                    shell.openExternal(info.downloadUrl || info.url)
-                } else if (response === 1) {
-                    shell.openExternal(info.url)
-                }
+                if (response === 2) return
+
+                shell.openExternal(
+                    response === 0
+                    ? info.downloadUrl || info.url
+                    : info.url
+                )
             })
         } else if (showFailDialogs) {
             dialog.showMessageBox({
@@ -172,17 +166,15 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     } else {
-        buildMenu(true)
+        buildMenu({disableAll: true})
     }
 })
 
 app.on('ready', () => {
     isReady = true
 
-    let endsIn = (str, end) => str.slice(-end.length) === end
-
     if (!openfile && process.argv.length >= 2) {
-        if (!endsIn(process.argv[0], 'electron.exe') && !endsIn(process.argv[0], 'electron')) {
+        if (!process.argv[0].endsWith('electron.exe') && !process.argv[0].endsWith('electron')) {
             openfile = process.argv[1]
         } else if (process.argv.length >= 3) {
             openfile = process.argv[2]

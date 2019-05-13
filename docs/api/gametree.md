@@ -22,13 +22,12 @@ Returns a new empty game tree that automatically merges nodes that represent the
 
 * `tree` `<GameTree>`
 
-### gametree.getBoard(tree, treePosition[, baseboard])
+### gametree.getBoard(tree, treePosition)
 
 * `tree` `<GameTree>`
 * `treePosition` [`<TreePosition>`](treeposition.md)
-* `baseboard` [`<Board>`](board.md) *(optional)* - Default: Previous board
 
-Returns a [board object](board.md) at the given [tree position](treeposition.md) with the assumption that the previous board position is `baseboard`.
+Returns a [board object](board.md) at the given [tree position](treeposition.md).
 
 ### gametree.getHash(tree)
 

@@ -29,9 +29,9 @@ const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')
 const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
-const treetransformer = require('../modules/treetransformer')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
+const treetransformer = require('../modules/treetransformer')
 
 class App extends Component {
     constructor() {
@@ -337,7 +337,7 @@ class App extends Component {
         }
     }
 
-    updateSettingState(key = null) {
+    updateSettingState(key = null, {buildMenu = true} = {}) {
         let data = {
             'app.zoom_factor': 'zoomFactor',
             'view.show_menubar': 'showMenuBar',
@@ -355,12 +355,13 @@ class App extends Component {
         }
 
         if (key == null) {
-            for (let k in data) this.updateSettingState(k)
+            for (let k in data) this.updateSettingState(k, {buildMenu: false})
+            this.buildMenu()
             return
         }
 
         if (key in data) {
-            this.buildMenu()
+            if (buildMenu) this.buildMenu()
             this.setState({[data[key]]: setting.get(key)})
         }
     }
@@ -371,9 +372,10 @@ class App extends Component {
 
     // User Interface
 
-    buildMenu(rebuild = false) {
-        if (rebuild) remote.require('./menu').buildMenu()
-        ipcRenderer.send('build-menu', this.state.busy > 0)
+    buildMenu() {
+        ipcRenderer.send('build-menu', {
+            disableAll: this.state.busy > 0
+        })
     }
 
     setSidebarWidth(sidebarWidth) {
@@ -1404,6 +1406,7 @@ class App extends Component {
         let {gameTrees, gameIndex} = this.state
         let newIndex = Math.max(0, Math.min(gameTrees.length - 1, gameIndex + step))
 
+        this.closeDrawer()
         this.setCurrentTreePosition(gameTrees[newIndex], gameTrees[newIndex].root.id)
     }
 
@@ -1518,6 +1521,7 @@ class App extends Component {
             whiteRank: playerRanks[1],
             gameName: gametree.getRootProperty(tree, 'GN'),
             eventName: gametree.getRootProperty(tree, 'EV'),
+            gameComment: gametree.getRootProperty(tree, 'GC'),
             date: gametree.getRootProperty(tree, 'DT'),
             result: gametree.getRootProperty(tree, 'RE'),
             komi,
@@ -1544,7 +1548,9 @@ class App extends Component {
                     draft.removeProperty(draft.root.id, 'SZ')
                 }
             }
+        })
 
+        newTree = newTree.mutate(draft => {
             let props = {
                 blackName: 'PB',
                 blackRank: 'BR',
@@ -1552,6 +1558,7 @@ class App extends Component {
                 whiteRank: 'WR',
                 gameName: 'GN',
                 eventName: 'EV',
+                gameComment: 'GC',
                 date: 'DT',
                 result: 'RE',
                 komi: 'KM',
@@ -1568,7 +1575,7 @@ class App extends Component {
 
                         setting.set('game.default_komi', value)
                     } else if (key === 'handicap') {
-                        let board = gametree.getBoard(tree, tree.root.id)
+                        let board = gametree.getBoard(newTree, newTree.root.id)
                         let stones = board.getHandicapPlacement(+value)
 
                         value = stones.length
@@ -1641,7 +1648,7 @@ class App extends Component {
         let newTree = tree.mutate(draft => {
             for (let [key, prop] of [['title', 'N'], ['comment', 'C']]) {
                 if (key in data) {
-                    if (data[key] && data[key].trim() !== '') {
+                    if (data[key] && data[key] !== '') {
                         draft.updateProperty(treePosition, prop, [data[key]])
                     } else {
                         draft.removeProperty(treePosition, prop)
@@ -1771,6 +1778,7 @@ class App extends Component {
         if (gameIndex < 0) return
 
         let board = gametree.getBoard(tree, treePosition)
+        let playerSign = this.getPlayer(tree, treePosition)
         let inherit = setting.get('edit.flatten_inherit_root_props')
 
         let newTree = tree.mutate(draft => {
@@ -1796,6 +1804,7 @@ class App extends Component {
 
         this.setState({gameTrees: gameTrees.map((t, i) => i === gameIndex ? newTree : t)})
         this.setCurrentTreePosition(newTree, newTree.root.id)
+        this.setPlayer(newTree, treePosition, playerSign)
     }
 
     makeMainVariation(tree, treePosition) {
@@ -2119,7 +2128,7 @@ class App extends Component {
     handleCommandSent({syncer, command, subscribe, getResponse}) {
     }
 
-    async syncEngines({passPlayer = null} = {}) {
+    async syncEngines() {
     }
 
     async startAnalysis({showWarning = true} = {}) {
@@ -2128,7 +2137,7 @@ class App extends Component {
     stopAnalysis() {
     }
 
-    async generateMove({passPlayer = null, firstMove = true, followUp = false} = {}) {
+    async generateMove({firstMove = true, followUp = false} = {}) {
     }
 
     stopGeneratingMoves() {

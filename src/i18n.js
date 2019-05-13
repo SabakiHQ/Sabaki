@@ -17,7 +17,7 @@ exports.context = dolm.context
 exports.loadStrings = function(strings) {
     if (isRenderer && window.sabaki != null) {
         mainI18n.loadStrings(strings)
-        sabaki.buildMenu(true)
+        sabaki.buildMenu()
         sabaki.waitForRender()
     }
 

@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.43.3][v0.43.3] (2019-05-12)
+
+**Added**
+
+* Node flattening operation now preserves player's turn (Thanks to [@dfannius](https://github.com/dfannius))
+* Add ability to see and edit game comment (`GC` SGF property) in the info drawer (Thanks to [@fohristiwhirl](https://github.com/fohristiwhirl))
+
+**Fixed**
+
+* Files with really long variations don't freeze the app anymore
+* Fix adding SGF properties via the 'Edit SGF Properties' drawer not working
+* Fix handicap stones in wrong positions when changing board size
+* Fix encoding detection not working
+
 ## [Sabaki v0.43.2][v0.43.2] (2019-04-27)
 
 **Added**
@@ -840,7 +854,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...master
+[v0.43.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...v0.43.3
 [v0.43.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.1...v0.43.2
 [v0.43.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.0...v0.43.1
 [v0.43.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.42.0...v0.43.0

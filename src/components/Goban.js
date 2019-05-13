@@ -191,8 +191,8 @@ class Goban extends Component {
     }, {
         top = 0,
         left = 0,
-        maxWidth = 1,
-        maxHeight = 1,
+        maxWidth = 100,
+        maxHeight = 100,
         clicked = false,
         temporaryLine = null,
 
