@@ -1693,29 +1693,12 @@ class App extends Component {
     }
 
     rotateBoard(anticlockwise) {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let {size} = this.getGameInfo(tree)
-        let newTree = treetransformer.rotateTree(tree, size[0], size[1], anticlockwise)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
     flipBoard(horizontal) {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let {size} = this.getGameInfo(tree)
-        let newTree = treetransformer.flipTree(tree, size[0], size[1], horizontal)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
     invertColors() {
-        let {treePosition, gameTrees, gameIndex} = this.state
-        let tree = gameTrees[gameIndex]
-        let newTree = treetransformer.invertTreeColors(tree)
-
-        this.setCurrentTreePosition(newTree, treePosition, {clearCache: true})
     }
 
     copyVariation(tree, treePosition) {

@@ -42,9 +42,9 @@ module.exports = (env, argv) => ({
             'rimraf': noopPath,
             'argv-split': noopPath,
             '@sabaki/gtp': emptyPath,
-            '../modules/rotation': emptyPath,
             '../modules/enginesyncer': emptyPath,
             '../modules/gtplogger': path.join(__dirname, 'src/modules/shims/gtplogger'),
+            '../modules/treetransformer': emptyPath,
             './i18n': path.join(__dirname, 'src/modules/shims/i18n'),
             '../i18n': path.join(__dirname, 'src/modules/shims/i18n'),
             '../../i18n': path.join(__dirname, 'src/modules/shims/i18n'),
@@ -61,5 +61,11 @@ module.exports = (env, argv) => ({
             './bars/AutoplayBar': noopPath,
             './bars/GuessBar': noopPath
         }
+    },
+
+    externals: {
+        'moment': 'null',
+        'iconv-lite': 'null',
+        'jschardet': 'null'
     }
 })
