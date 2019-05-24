@@ -13,7 +13,12 @@ class DrawerManager extends Component {
         super()
 
         this.handleScoreSubmit = ({resultString}) => {
-            this.props.rootTree.nodes[0].RE = [resultString]
+            let gameTree = this.props.gameTrees[this.props.gameIndex]
+            let newTree = gameTree.mutate(draft => {
+                draft.updateProperty(draft.root.id, 'RE', [resultString])
+            })
+
+            sabaki.setCurrentTreePosition(newTree, this.props.treePosition)
             sabaki.closeDrawer()
             setTimeout(() => sabaki.setMode('play'), 500)
         }

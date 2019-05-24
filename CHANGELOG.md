@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Changed**
+
+* Board transformations (rotation/flip/inversion) are now temporary and faster, transforms coordinates as well, located in the 'View' main menu, and have dedicated keyboard shortcuts
+
+**Fixed**
+
+* Fix 'Update Result' not working in the score drawer
+
 ## [Sabaki v0.43.3][v0.43.3] (2019-05-13)
 
 **Added**
