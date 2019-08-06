@@ -15,6 +15,7 @@ This documentation is incomplete and a work in progress.
 * [Textures & Theme Directory](guides/theme-directory.md)
 * [Create Themes](guides/create-themes.md)
 * [Userstyle Tutorial](guides/userstyle-tutorial.md)
+* [Engine Analysis Integration](guides/engine-analysis-integration.md)
 
 ## Concepts
 
