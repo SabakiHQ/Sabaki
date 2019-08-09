@@ -15,6 +15,7 @@ const InputBox = require('./InputBox')
 const BusyScreen = require('./BusyScreen')
 const InfoOverlay = require('./InfoOverlay')
 
+const Board = require('@sabaki/go-board')
 const deadstones = require('@sabaki/deadstones')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
@@ -23,7 +24,6 @@ const influence = require('@sabaki/influence')
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const i18n = require('../i18n')
-const Board = require('../modules/board')
 const EngineSyncer = require('../modules/enginesyncer')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
@@ -425,7 +425,7 @@ class App extends Component {
             let iterations = setting.get('score.estimator_iterations')
             let tree = gameTrees[gameIndex]
 
-            deadstones.guess(gametree.getBoard(tree, treePosition).arrangement, {
+            deadstones.guess(gametree.getBoard(tree, treePosition).signMap, {
                 finished: mode === 'scoring',
                 iterations
             }).then(result => {
@@ -551,7 +551,9 @@ class App extends Component {
         let handicap = setting.get('game.default_handicap')
         let size = setting.get('game.default_board_size').toString().split(':').map(x => +x)
         let [width, height] = [size[0], size.slice(-1)[0]]
-        let handicapStones = new Board(width, height).getHandicapPlacement(handicap).map(sgf.stringifyVertex)
+        let handicapStones = Board.fromDimensions(width, height)
+            .getHandicapPlacement(handicap)
+            .map(sgf.stringifyVertex)
 
         let sizeInfo = width === height ? width.toString() : `${width}:${height}`
         let date = new Date()
@@ -770,7 +772,7 @@ class App extends Component {
         let {boardTransformation} = this.state
         let tree = this.state.gameTrees[this.state.gameIndex]
         let board = gametree.getBoard(tree, this.state.treePosition)
-        let signMap = gobantransformer.transformMap(board.arrangement, boardTransformation)
+        let signMap = gobantransformer.transformMap(board.signMap, boardTransformation)
         let markerMap = gobantransformer.transformMap(board.markers, boardTransformation)
         let lines = board.lines.map(l =>
             gobantransformer.transformLine(l, boardTransformation, board.width, board.height)
@@ -802,7 +804,7 @@ class App extends Component {
         for (let x = 0; x < width; x++) result.push('-', '-')
         result.push('-', '+', lb)
 
-        for (let vertex of new Board(width, height).getHandicapPlacement(9)){
+        for (let vertex of board.getHandicapPlacement(9)){
             result[getIndexFromVertex(vertex)] = ','
         }
 
@@ -841,7 +843,7 @@ class App extends Component {
         // Add lines & arrows
 
         for (let {v1, v2, type} of lines) {
-            result += `{${type === 'arrow' ? 'AR' : 'LN'} ${this.vertex2coord(v1)} ${this.vertex2coord(v2)}}${lb}`
+            result += `{${type === 'arrow' ? 'AR' : 'LN'} ${board.stringifyVertex(v1)} ${board.stringifyVertex(v2)}}${lb}`
         }
 
         return (lb + result.trim()).split(lb).map(l => `$$ ${l}`).join(lb)
@@ -919,7 +921,7 @@ class App extends Component {
         let node = tree.get(treePosition)
 
         if (typeof vertex == 'string') {
-            vertex = board.coord2vertex(vertex)
+            vertex = board.parseVertex(vertex)
         }
 
         let [vx, vy] = vertex
@@ -973,7 +975,7 @@ class App extends Component {
             if (ctrlKey) {
                 // Add coordinates to comment
 
-                let coord = board.vertex2coord(vertex)
+                let coord = board.stringifyVertex(vertex)
                 let commentText = node.data.C ? node.data.C[0] : ''
 
                 let newTree = tree.mutate(draft => {
@@ -1056,7 +1058,7 @@ class App extends Component {
 
             let nextVertex = sgf.parseVertex(nextNode.data[nextNode.data.B != null ? 'B' : 'W'][0])
             let board = gametree.getBoard(tree, treePosition)
-            if (!board.hasVertex(nextVertex)) {
+            if (!board.has(nextVertex)) {
                 return this.setMode('play')
             }
 
@@ -1102,10 +1104,10 @@ class App extends Component {
         let board = gametree.getBoard(tree, treePosition)
 
         if (typeof vertex == 'string') {
-            vertex = board.coord2vertex(vertex)
+            vertex = board.parseVertex(vertex)
         }
 
-        let pass = !board.hasVertex(vertex)
+        let pass = !board.has(vertex)
         if (!pass && board.get(vertex) !== 0) return
 
         let prev = tree.get(node.parentId)
@@ -1118,10 +1120,10 @@ class App extends Component {
             // Check for ko
 
             if (prev != null && setting.get('game.show_ko_warning')) {
-                let hash = board.makeMove(player, vertex).getPositionHash()
+                let nextBoard = board.makeMove(player, vertex)
                 let prevBoard = gametree.getBoard(tree, prev.id)
 
-                ko = prevBoard.getPositionHash() === hash
+                ko = helper.equals(prevBoard.signMap, nextBoard.signMap)
 
                 if (ko && dialog.showMessageBox(
                     t([
@@ -1231,7 +1233,7 @@ class App extends Component {
         let node = tree.get(treePosition)
 
         if (typeof vertex == 'string') {
-            vertex = board.coord2vertex(vertex)
+            vertex = board.parseVertex(vertex)
         }
 
         let data = {
@@ -2475,10 +2477,10 @@ class App extends Component {
                     .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
                     .map(({move, visits, winrate, pv}) => ({
                         sign,
-                        vertex: board.coord2vertex(move),
+                        vertex: board.parseVertex(move),
                         visits: +visits,
                         win: +winrate / 100,
-                        variation: pv.map(x => board.coord2vertex(x))
+                        variation: pv.map(x => board.parseVertex(x))
                     }))
 
                 let winrate = Math.max(...analysis.map(({win}) => win))
@@ -2704,13 +2706,13 @@ class App extends Component {
                 return
             }
 
-            vertex = board.coord2vertex(responseContent)
+            vertex = board.parseVertex(responseContent)
         }
 
         let previousNode = tree.get(this.state.treePosition)
         let previousPass = previousNode != null && ['W', 'B'].some(color =>
             previousNode.data[color] != null
-            && !board.hasVertex(sgf.parseVertex(previousNode.data[color][0]))
+            && !board.has(sgf.parseVertex(previousNode.data[color][0]))
         )
         let doublePass = previousPass && pass
 
@@ -2754,13 +2756,13 @@ class App extends Component {
                 let sign = scoreBoard.get(vertex)
                 if (sign === 0) continue
 
-                scoreBoard.captures[sign > 0 ? 1 : 0]++
+                scoreBoard.setCaptures(sign, x => x + 1)
                 scoreBoard.set(vertex, 0)
             }
 
             areaMap = state.mode === 'estimator'
-                ? influence.map(scoreBoard.arrangement, {discrete: true})
-                : influence.areaMap(scoreBoard.arrangement)
+                ? influence.map(scoreBoard.signMap, {discrete: true})
+                : influence.areaMap(scoreBoard.signMap)
         }
 
         this.inferredState = {

@@ -26,7 +26,6 @@ This documentation is incomplete and a work in progress.
 ## API References
 
 * [Sabaki](api/sabaki.md)
-* [Board](api/board.md)
 * [Dialog](api/dialog.md)
 * [File Formats](api/fileformats.md)
 * [Helper](api/helper.md)

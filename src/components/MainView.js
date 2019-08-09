@@ -179,7 +179,7 @@ class MainView extends Component {
                     playerBusy: engineBusy,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
-                    playerCaptures: board.captures,
+                    playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),
                     currentPlayer,
                     showHotspot: node.data.HO != null,
                     onCurrentPlayerClick: this.handleTogglePlayer

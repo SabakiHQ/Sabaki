@@ -66,7 +66,7 @@ class ContentDisplay extends Component {
             let currentVertexSign = currentVertex && board.get(currentVertex)
             let {color} = target.dataset
             let sign = color === '' ? sabaki.getPlayer(...treePosition) : color === 'b' ? 1 : -1
-            let variation = target.dataset.variation.split(/\s+/).map(x => board.coord2vertex(x))
+            let variation = target.dataset.variation.split(/\s+/).map(x => board.parseVertex(x))
             let sibling = currentVertexSign === sign
 
             return {sign, variation, sibling}
@@ -119,7 +119,7 @@ class ContentDisplay extends Component {
         this.handleCoordMouseEnter = evt => {
             let {gameTrees, gameIndex, treePosition} = sabaki.state
             let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
-            let vertex = board.coord2vertex(evt.currentTarget.innerText)
+            let vertex = board.parseVertex(evt.currentTarget.innerText)
 
             sabaki.setState({highlightVertices: [vertex]})
         }

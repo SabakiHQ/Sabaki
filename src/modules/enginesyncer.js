@@ -1,11 +1,11 @@
 const EventEmitter = require('events')
 const {dirname, resolve} = require('path')
+const Board = require('@sabaki/go-board')
 const gtp = require('@sabaki/gtp')
 const sgf = require('@sabaki/sgf')
 const argvsplit = require('argv-split')
 const gametree = require('./gametree')
 const helper = require('./helper')
-const Board = require('./board')
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 const defaultStateJSON = JSON.stringify({
@@ -15,7 +15,7 @@ const defaultStateJSON = JSON.stringify({
     moves: []
 })
 
-function coord2vertex(coord, size) {
+function parseVertex(coord, size) {
     if (coord == null || coord === 'resign') return null
     if (coord === 'pass') return [-1, -1]
 
@@ -90,19 +90,19 @@ class EngineSyncer extends EventEmitter {
                 this.state.komi = +command.args[0]
             } else if (['fixed_handicap', 'place_free_handicap'].includes(command.name)) {
                 let vertices = res.content.trim().split(/\s+/)
-                    .map(coord => coord2vertex(coord, this.state.size))
+                    .map(coord => parseVertex(coord, this.state.size))
                     .filter(x => x != null)
 
                 if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
             } else if (command.name === 'set_free_handicap') {
                 let vertices = command.args
-                    .map(coord => coord2vertex(coord, this.state.size))
+                    .map(coord => parseVertex(coord, this.state.size))
                     .filter(x => x != null)
 
                 if (vertices.length > 0) this.state.moves.push({sign: 1, vertices})
             } else if (command.name === 'play' && command.args.length >= 2) {
                 let sign = command.args[0][0].toLowerCase() === 'w' ? -1 : 1
-                let vertex = coord2vertex(command.args[1], this.state.size)
+                let vertex = parseVertex(command.args[1], this.state.size)
 
                 if (vertex) this.state.moves.push({sign, vertex})
             } else if (
@@ -126,7 +126,7 @@ class EngineSyncer extends EventEmitter {
                         })
                     })
 
-                let vertex = coord2vertex(coord, this.state.size)
+                let vertex = parseVertex(coord, this.state.size)
                 if (vertex) this.state.moves.push({sign, vertex})
             } else if (command.name === 'undo') {
                 this.state.moves.length -= 1
@@ -185,7 +185,7 @@ class EngineSyncer extends EventEmitter {
 
         async function enginePlay(sign, vertex) {
             let color = sign > 0 ? 'B' : 'W'
-            let coord = board.vertex2coord(vertex)
+            let coord = board.stringifyVertex(vertex)
             if (coord == null) coord = 'pass'
 
             try {
@@ -198,7 +198,7 @@ class EngineSyncer extends EventEmitter {
             return true
         }
 
-        let engineBoard = new Board(board.width, board.height)
+        let engineBoard = Board.fromDimensions(board.width, board.height)
         let moves = []
         let promises = []
         let synced = true
@@ -218,7 +218,7 @@ class EngineSyncer extends EventEmitter {
 
                 let vertices = [].concat(...node.data.AB.map(sgf.parseCompressedVertices)).sort()
                 let coords = vertices
-                    .map(v => board.vertex2coord(v))
+                    .map(v => board.stringifyVertex(v))
                     .filter(x => x != null)
                     .filter((x, i, arr) => i === 0 || x !== arr[i - 1])
 
@@ -247,8 +247,8 @@ class EngineSyncer extends EventEmitter {
                 let vertices = [].concat(...node.data[prop].map(sgf.parseCompressedVertices))
 
                 for (let vertex of vertices) {
-                    if (engineBoard.hasVertex(vertex) && engineBoard.get(vertex) !== 0) continue
-                    else if (!engineBoard.hasVertex(vertex)) vertex = [-1, -1]
+                    if (engineBoard.has(vertex) && engineBoard.get(vertex) !== 0) continue
+                    else if (!engineBoard.has(vertex)) vertex = [-1, -1]
 
                     moves.push({sign, vertex})
                     promises.push(() => enginePlay(sign, vertex))
@@ -256,7 +256,7 @@ class EngineSyncer extends EventEmitter {
                 }
             }
 
-            if (engineBoard.getPositionHash() !== nodeBoard.getPositionHash()) {
+            if (!helper.equals(engineBoard.signMap, nodeBoard.signMap)) {
                 synced = false
                 break
             }
@@ -299,7 +299,7 @@ class EngineSyncer extends EventEmitter {
 
         if (!this.state.dirty) {
             promises = []
-            engineBoard = new Board(board.width, board.height)
+            engineBoard = Board.fromDimensions(board.width, board.height)
 
             for (let {sign, vertex} of this.state.moves) {
                 engineBoard = engineBoard.makeMove(sign, vertex)
@@ -314,7 +314,7 @@ class EngineSyncer extends EventEmitter {
                 engineBoard = engineBoard.makeMove(board.get(vertex), vertex)
             }
 
-            if (engineBoard.getPositionHash() === board.getPositionHash()) {
+            if (helper.equals(engineBoard.signMap, board.signMap)) {
                 let result = await Promise.all(promises.map(x => x()))
                 let success = result.every(x => x)
                 if (success) return
@@ -324,7 +324,7 @@ class EngineSyncer extends EventEmitter {
         // Complete rearrangement
 
         promises = [() => controller.sendCommand({name: 'clear_board'})]
-        engineBoard = new Board(board.width, board.height)
+        engineBoard = Board.fromDimensions(board.width, board.height)
 
         for (let x = 0; x < board.width; x++) {
             for (let y = 0; y < board.height; y++) {
@@ -337,7 +337,7 @@ class EngineSyncer extends EventEmitter {
             }
         }
 
-        if (engineBoard.getPositionHash() === board.getPositionHash()) {
+        if (helper.equals(engineBoard.signMap, board.signMap)) {
             let result = await Promise.all(promises.map(x => x()))
             let success = result.every(x => x)
             if (success) return

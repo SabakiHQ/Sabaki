@@ -1,8 +1,8 @@
 const fs = require('fs')
+const Board = require('@sabaki/go-board')
 const sgf = require('@sabaki/sgf')
 
 const t = require('../../i18n').context('fileformats')
-const Board = require('../board')
 const gametree = require('../gametree')
 
 exports.meta = {
@@ -154,8 +154,8 @@ exports.parse = function(content) {
                 if (handicap >= 2 && handicap <= 9) {
                     draft.updateProperty(rootId, 'HA', [handicap.toString()])
 
-                    let tmp = new Board()       // Created solely for .getHandicapPlacement()
-                    let points = tmp.getHandicapPlacement(handicap, true)
+                    let points = Board.fromDimensions(19, 19)
+                        .getHandicapPlacement(handicap, {tygem: true})
 
                     for (let [x, y] of points) {
                         let s = sgf.stringifyVertex([x, y])

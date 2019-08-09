@@ -87,7 +87,7 @@ class CommentTitle extends Component {
         }
 
         let prevBoard = gametree.getBoard(gameTree, node.parentId)
-        let patternMatch = boardmatcher.findPatternInMove(prevBoard.arrangement, sign, vertex)
+        let patternMatch = boardmatcher.findPatternInMove(prevBoard.signMap, sign, vertex)
 
         if (patternMatch == null) {
             let diff = vertex

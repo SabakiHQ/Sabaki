@@ -222,7 +222,7 @@ class Goban extends Component {
         variationSibling = false,
         variationIndex = -1
     }) {
-        let signMap = board.arrangement
+        let signMap = board.signMap
         let markerMap = board.markers
 
         let transformLine = line => gobantransformer.transformLine(line, transformation, board.width, board.height)
@@ -266,7 +266,7 @@ class Goban extends Component {
         let ghostStoneMap = []
 
         if (showNextMoves || showSiblings) {
-            ghostStoneMap = board.arrangement.map(row => row.map(_ => null))
+            ghostStoneMap = board.signMap.map(row => row.map(_ => null))
 
             if (showSiblings) {
                 for (let v in board.siblingsInfo) {
@@ -321,7 +321,7 @@ class Goban extends Component {
 
                 if (prevPosition != null) {
                     board = gametree.getBoard(gameTree, prevPosition.id)
-                    signMap = board.arrangement
+                    signMap = board.signMap
                 }
             }
 
@@ -333,7 +333,7 @@ class Goban extends Component {
                 }, board)
 
             drawHeatMap = false
-            signMap = variationBoard.arrangement
+            signMap = variationBoard.signMap
         }
 
         // Draw heatmap
@@ -342,7 +342,7 @@ class Goban extends Component {
 
         if (drawHeatMap && analysis != null) {
             let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
-            heatMap = board.arrangement.map(row => row.map(_ => null))
+            heatMap = board.signMap.map(row => row.map(_ => null))
 
             for (let {vertex: [x, y], visits, win} of analysis) {
                 let strength = Math.round(visits * win * 8 / maxVisitsWin) + 1

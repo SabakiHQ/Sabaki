@@ -1,6 +1,6 @@
+const Board = require('@sabaki/go-board')
 const GameTree = require('@sabaki/immutable-gametree')
 const sgf = require('@sabaki/sgf')
-const Board = require('./board')
 const helper = require('./helper')
 
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -109,7 +109,7 @@ exports.getBoard = function(tree, id) {
             size = size.map(x => isNaN(x) ? 19 : +x)
         }
 
-        board = new Board(...size)
+        board = Board.fromDimensions(...size)
     }
 
     let inner = (tree, id, baseboard) => {
@@ -145,15 +145,20 @@ exports.getBoard = function(tree, id) {
 
             for (let value of node.data[prop]) {
                 for (let vertex of sgf.parseCompressedVertices(value)) {
-                    if (!board.hasVertex(vertex)) continue
+                    if (!board.has(vertex)) continue
                     board.set(vertex, propData[prop])
                 }
             }
         }
 
-        board.markers = board.arrangement.map(row => row.map(_ => null))
+        Object.assign(board, {
+            markers: board.signMap.map(row => row.map(_ => null)),
+            lines: [],
+            childrenInfo: [],
+            siblingsInfo: []
+        })
 
-        if (vertex != null && board.hasVertex(vertex)) {
+        if (vertex != null && board.has(vertex)) {
             let [x, y] = vertex
             board.markers[y][x] = {type: 'point'}
         }
@@ -221,8 +226,7 @@ exports.getBoard = function(tree, id) {
                 return
             }
 
-            if (!board.hasVertex(v))
-                return
+            if (!board.has(v)) return
 
             let type = null
 
