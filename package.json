@@ -88,7 +88,7 @@
   },
   "devDependencies": {
     "electron": "^6.0.1",
-    "electron-builder": "^20.39.0",
+    "electron-builder": "^21.2.0",
     "mocha": "^6.1.4",
     "react": "^16.8.4",
     "tmp": "^0.1.0",
