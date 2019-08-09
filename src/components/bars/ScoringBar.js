@@ -1,6 +1,8 @@
 const {h, Component} = require('preact')
 const Bar = require('./Bar')
+
 const t = require('../../i18n').context('ScoringBar')
+const helper = require('../../modules/helper')
 
 class ScoringBar extends Component {
     constructor() {
@@ -10,7 +12,7 @@ class ScoringBar extends Component {
     }
 
     render({type, method, areaMap, scoreBoard, komi, handicap}) {
-        let score = scoreBoard && scoreBoard.getScore(areaMap, {komi, handicap})
+        let score = scoreBoard && helper.getScore(scoreBoard, areaMap, {komi, handicap})
         let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
 
         return h(Bar, Object.assign({type}, this.props),

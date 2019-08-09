@@ -58,7 +58,7 @@ class ScoreDrawer extends Component {
         if (isNaN(komi)) komi = 0
         if (isNaN(handicap)) handicap = 0
 
-        let score = areaMap && board && board.getScore(areaMap, {handicap, komi})
+        let score = areaMap && board && helper.getScore(board, areaMap, {handicap, komi})
         let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
 
         this.resultString = result > 0 ? t(p => `B+${p.result}`, {result})

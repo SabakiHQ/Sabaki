@@ -122,3 +122,29 @@ exports.isWritableDirectory = function(path) {
         return false
     }
 }
+
+exports.getScore = function(board, areaMap, {komi = 0, handicap = 0} = {}) {
+    let score = {
+        area: [0, 0],
+        territory: [0, 0],
+        captures: [1, -1].map(sign => board.getCaptures(sign))
+    }
+
+    for (let x = 0; x < board.width; x++) {
+        for (let y = 0; y < board.height; y++) {
+            let sign = areaMap[y][x]
+            if (sign === 0) continue
+
+            let index = sign > 0 ? 0 : 1
+
+            score.area[index]++
+            if (board.get([x, y]) === 0) score.territory[index]++
+        }
+    }
+
+    score.areaScore = score.area[0] - score.area[1] - komi - handicap
+    score.territoryScore = score.territory[0] - score.territory[1]
+        + score.captures[0] - score.captures[1] - komi
+
+    return score
+}
