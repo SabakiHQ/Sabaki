@@ -8,7 +8,7 @@ function extractProperty(tree, property) {
 
 // player : 'BR' | 'WR'
 function sortRank(trees, player) {
-    return stableSort(trees, (tr1, tr2) => {
+    return [...trees].sort((tr1, tr2) => {
         let [weighted1, weighted2] = [tr1, tr2]
             .map(tree => weightRank(extractProperty(tree, player)))
         return compareResult(weighted1, weighted2)
@@ -29,7 +29,7 @@ function weightRank(rank) {
 
 // name : 'PB' | 'PW' | 'GN' | 'EV'
 function sortName(trees, name) {
-    return stableSort(trees, (tr1, tr2) => {
+    return [...trees].sort((tr1, tr2) => {
         let [name1, name2] = [tr1, tr2].map(tree => extractProperty(tree, name))
         return natsort({insensitive: true})(name1, name2)
     })
@@ -37,16 +37,6 @@ function sortName(trees, name) {
 
 function compareResult(item1, item2) {
     return item1 < item2 ? -1 : +(item1 !== item2)
-}
-
-function stableSort(arr, fn) {
-    return arr.map((element, index) => [element, index])
-        .sort((pair1, pair2) => {
-            let result = fn(pair1[0], pair2[0])
-
-            if (result === 0) return pair1[1] - pair2[1]
-            return result
-        }).map(pair => pair[0])
 }
 
 exports.reverse = function(trees) {
@@ -78,7 +68,7 @@ exports.byEvent = function(trees) {
 }
 
 exports.byDate = function(trees) {
-    return stableSort(trees, (tr1, tr2) => {
+    return [...trees].sort((tr1, tr2) => {
         let [date1, date2] = [tr1, tr2]
             .map(tree => extractProperty(tree, 'DT'))
             .map(x => sgf.parseDates(x))
@@ -88,7 +78,7 @@ exports.byDate = function(trees) {
 }
 
 exports.byNumberOfMoves = function(trees) {
-    return stableSort(trees, (tr1, tr2) => {
+    return [...trees].sort((tr1, tr2) => {
         return compareResult(tr1.getHeight(), tr2.getHeight())
     })
 }
