@@ -1,4 +1,4 @@
-const natsort = require('natsort')
+const natsort = require('natsort').default
 const sgf = require('@sabaki/sgf')
 const helper = require('./helper')
 
@@ -17,13 +17,13 @@ function sortRank(trees, player) {
 
 // rank : string like '30k', '1d', '1p'
 function weightRank(rank) {
-    let rank_number = parseFloat(rank)
+    let rankNumber = parseFloat(rank)
 
-    if (isNaN(rank_number)) {
+    if (isNaN(rankNumber)) {
         return -Infinity
     } else {
         let weight = rank.includes('k') ? -1 : rank.includes('p') ? 10 : 1
-        return weight * rank_number
+        return weight * rankNumber
     }
 }
 

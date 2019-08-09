@@ -6,7 +6,7 @@ const t = require('../i18n').context('dialog')
 exports.showMessageBox = function(message, type = 'info', buttons = [t('OK')], cancelId = 0) {
     sabaki.setBusy(true)
 
-    let result = dialog.showMessageBox(remote.getCurrentWindow(), {
+    let result = dialog.showMessageBoxSync(remote.getCurrentWindow(), {
         type,
         buttons,
         title: app.getName(),
@@ -25,7 +25,7 @@ exports.showFileDialog = function(type, options, callback = helper.noop) {
     let [t, ...ype] = [...type]
     type = t.toUpperCase() + ype.join('').toLowerCase()
 
-    let result = dialog[`show${type}Dialog`](remote.getCurrentWindow(), options)
+    let result = dialog[`show${type}DialogSync`](remote.getCurrentWindow(), options)
 
     sabaki.setBusy(false)
     callback({result})

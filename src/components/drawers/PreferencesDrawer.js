@@ -606,7 +606,7 @@ class PreferencesDrawer extends Component {
         if (prevProps.show && !this.props.show) {
             // On closing
 
-            let natsort = require('natsort')
+            let natsort = require('natsort').default
             let cmp = natsort({insensitive: true})
 
             // Sort engines
