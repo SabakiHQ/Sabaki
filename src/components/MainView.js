@@ -117,7 +117,9 @@ class MainView extends Component {
         let paintMap
 
         if (['scoring', 'estimator'].includes(mode)) {
-            paintMap = areaMap
+            paintMap = areaMap.map(row =>
+                row.map(x => (Math.abs(x) * 2 + 1) / 3 * Math.sign(x))
+            )
         } else if (mode === 'guess') {
             paintMap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
 

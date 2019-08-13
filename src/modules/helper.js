@@ -132,15 +132,16 @@ exports.getScore = function(board, areaMap, {komi = 0, handicap = 0} = {}) {
 
     for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
-            let sign = areaMap[y][x]
-            if (sign === 0) continue
+            let z = areaMap[y][x]
+            let index = z > 0 ? 0 : 1
 
-            let index = sign > 0 ? 0 : 1
-
-            score.area[index]++
-            if (board.get([x, y]) === 0) score.territory[index]++
+            score.area[index] += Math.abs(Math.sign(z))
+            if (board.get([x, y]) === 0) score.territory[index] += Math.abs(Math.sign(z))
         }
     }
+
+    score.area = score.area.map(Math.round)
+    score.territory = score.territory.map(Math.round)
 
     score.areaScore = score.area[0] - score.area[1] - komi - handicap
     score.territoryScore = score.territory[0] - score.territory[1]

@@ -2761,7 +2761,7 @@ class App extends Component {
             }
 
             areaMap = state.mode === 'estimator'
-                ? influence.map(scoreBoard.signMap, {discrete: true})
+                ? influence.map(scoreBoard.signMap)
                 : influence.areaMap(scoreBoard.signMap)
         }
 
