@@ -649,11 +649,13 @@ exports.build = function(props = {}) {
             submenu: [
                 {
                     label: t('menu.developer', 'Open Settings &Folder'),
-                    click: () => shell.showItemInFolder(setting.settingsPath)
+                    click: () => shell.showItemInFolder(setting.settingsPath),
+                    neverDisable: true
                 },
                 {
                     label: t('menu.developer', 'Toggle &Developer Tools'),
-                    click: () => remote.getCurrentWindow().webContents.toggleDevTools()
+                    click: () => remote.getCurrentWindow().webContents.toggleDevTools(),
+                    neverDisable: true
                 },
                 {type: 'separator'},
                 {

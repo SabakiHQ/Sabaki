@@ -2512,11 +2512,9 @@ class App extends Component {
     }
 
     async syncEngines({showErrorDialog = false} = {}) {
-        if (this.attachedEngineSyncers.every(x => x == null)) return
-        if (this.engineBusySyncing) return
+        if (this.attachedEngineSyncers.every(x => x == null)) return true
 
         let t = i18n.context('app.engine')
-        this.engineBusySyncing = true
 
         try {
             while (true) {
@@ -2531,16 +2529,16 @@ class App extends Component {
                 if (treePosition === this.state.treePosition) break
             }
         } catch (err) {
-            this.engineBusySyncing = false
-
             if (showErrorDialog) {
                 dialog.showMessageBox(t(err.message), 'warning')
             } else {
                 throw err
             }
+
+            return false
         }
 
-        this.engineBusySyncing = false
+        return true
     }
 
     async startAnalysis({showWarning = true} = {}) {
@@ -2643,9 +2641,9 @@ class App extends Component {
 
         this.setBusy(true)
 
-        try {
-            await this.syncEngines({showErrorDialog: true})
-        } catch (err) {
+        let syncSuccessful = await this.syncEngines({showErrorDialog: true})
+
+        if (!syncSuccessful) {
             this.stopGeneratingMoves()
             this.hideInfoOverlay()
             this.setBusy(false)
