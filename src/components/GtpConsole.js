@@ -1,6 +1,6 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
-const gtp = require('@sabaki/gtp')
+const {Command} = require('@sabaki/gtp')
 
 const ContentDisplay = require('./ContentDisplay')
 const TextSpinner = require('./TextSpinner')
@@ -15,6 +15,7 @@ class ConsoleCommandEntry extends Component {
 
     render({sign, name, command}) {
         if (command == null) command = {name: ''}
+        if (sign == null) sign = 0
 
         return h('li', {class: 'command'},
             h('pre', {},
@@ -88,7 +89,7 @@ class ConsoleInput extends Component {
 
                 onSubmit({
                     engineIndex,
-                    command: gtp.Command.fromString(commandInputText)
+                    command: Command.fromString(commandInputText)
                 })
 
                 this.inputPointer = null
@@ -112,7 +113,7 @@ class ConsoleInput extends Component {
                     let {command} = consoleLog[this.inputPointer]
 
                     if (command != null) {
-                        let text = gtp.Command.toString(command)
+                        let text = Command.toString(command)
 
                         this.setState({commandInputText: text})
 
@@ -121,10 +122,9 @@ class ConsoleInput extends Component {
                 }
             } else if (evt.key === 'Tab') {
                 evt.preventDefault()
-                let autocompleteText = this.getAutocompleteText()
 
-                if (autocompleteText !== '') {
-                    this.setState({commandInputText: autocompleteText})
+                if (this.autocompleteText !== '') {
+                    this.setState({commandInputText: this.autocompleteText})
                 }
             }
 
@@ -144,38 +144,41 @@ class ConsoleInput extends Component {
         }
     }
 
-    getAutocompleteText() {
-        let {engineIndex, engineCommands} = this.props
+    get autocompleteText() {
+        let {engineIndex, attachedEngines} = this.props
         let {commandInputText} = this.state
 
-        if (engineCommands[engineIndex] && commandInputText.length > 0) {
-            return engineCommands[engineIndex].find(x => x.indexOf(commandInputText) === 0) || ''
+        if (attachedEngines[engineIndex] && commandInputText.length > 0) {
+            return attachedEngines[engineIndex].commands
+                .find(x => x.indexOf(commandInputText) === 0) || ''
         }
 
         return ''
     }
 
     render({engineIndex, attachedEngines}, {commandInputText}) {
+        let hasEngines = attachedEngines.length > 0
         let selectedEngine = attachedEngines[engineIndex]
-        let selectWidth = Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) * 10 + 15
+        let selectWidth = Math.max(
+            5,
+            selectedEngine ? selectedEngine.name.trim().length + 3 : 3
+        ) * 10 + 15
         let inputStyle = {left: selectWidth, width: `calc(100% - ${selectWidth}px)`}
-        let autocompleteText = this.getAutocompleteText()
-        let hasEngines = attachedEngines.some(x => x != null)
 
         return h('form', {class: 'input'},
             h('select',
                 {
-                    disabled: !hasEngines || attachedEngines.filter(x => x != null).length === 1,
+                    disabled: !hasEngines || attachedEngines.length === 1,
                     style: {width: selectWidth},
 
                     onChange: this.props.onSelectChange
                 },
 
                 attachedEngines.map((engine, i) =>
-                    engine && h('option', {
+                    h('option', {
                         value: i,
                         selected: engineIndex === i
-                    }, `${['○', '●'][i]} ${engine.name.trim()}>`)
+                    }, `${engine.name.trim()}>`)
                 )
             ),
 
@@ -196,7 +199,7 @@ class ConsoleInput extends Component {
                 class: 'autocomplete',
                 disabled: !hasEngines,
                 type: 'text',
-                value: autocompleteText,
+                value: this.autocompleteText,
                 style: inputStyle
             })
         )
@@ -242,6 +245,20 @@ class GtpConsole extends Component {
         }
     }
 
+    getSign(command) {
+        if (!command) return 0
+
+        for (let arg of command.args) {
+            if (['b', 'black'].includes(arg.toLowerCase())) {
+                return 1
+            } else if (['w', 'white'].includes(arg.toLowerCase())) {
+                return -1
+            }
+        }
+
+        return 0
+    }
+
     render({consoleLog, attachedEngines, engineCommands}, {engineIndex}) {
         return h('section', {id: 'console'},
             h('ol',
@@ -250,17 +267,20 @@ class GtpConsole extends Component {
                     class: 'log'
                 },
 
-                consoleLog.map(({sign, name, command, response, waiting}, i) => [
-                    command ? h(ConsoleCommandEntry, {key: command.internalId, sign, name, command})
-                    : !command && (
-                        i === 0
-                        || consoleLog[i - 1].sign !== sign
-                        || consoleLog[i - 1].name !== name
-                    ) ? h(ConsoleCommandEntry, {sign, name, command})
-                    : null,
+                consoleLog.map(({name, command, response, waiting}, i) => {
+                    let sign = this.getSign(command)
 
-                    h(ConsoleResponseEntry, {response, waiting: response == null || waiting})
-                ])
+                    return [
+                        command || (
+                            i === 0
+                            || consoleLog[i - 1].name !== name
+                            || sign !== 0 && consoleLog[i - 1].sign !== sign
+                        ) ? h(ConsoleCommandEntry, {sign, name, command})
+                        : null,
+
+                        h(ConsoleResponseEntry, {response, waiting: response == null || waiting})
+                    ]
+                })
             ),
 
             h(ConsoleInput, {

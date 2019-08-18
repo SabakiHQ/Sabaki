@@ -24,8 +24,8 @@ class LeftSidebar extends Component {
             h(GtpConsole, {
                 show: showLeftSidebar,
                 consoleLog,
+                engineIndex: 0,
                 attachedEngines: [],
-                engineCommands: [[], []],
 
                 onSubmit: this.handleCommandSubmit
             })
