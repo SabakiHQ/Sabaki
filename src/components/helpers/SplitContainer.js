@@ -27,7 +27,10 @@ class SplitContainer extends Component {
             let mousePosition = !vertical ? evt.clientX : evt.clientY
             let containerBegin = !vertical ? rect.left : rect.top
             let containerEnd = !vertical ? rect.right : rect.bottom
-            let sideSize = !invert ? containerEnd - mousePosition : mousePosition - containerBegin
+            let sideSize = Math.min(
+                !invert ? containerEnd - mousePosition : mousePosition - containerBegin,
+                containerEnd - containerBegin
+            )
 
             if (procentualSplit) {
                 sideSize = containerEnd === containerBegin ? 0

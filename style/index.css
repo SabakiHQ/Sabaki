@@ -1,6 +1,15 @@
 @import url('../node_modules/@sabaki/shudan/css/goban.css');
 
+#mainlayout {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
 #main {
+        position: relative;
         z-index: 10;
     }
     main {
@@ -296,28 +305,13 @@ header {
 }
 
 #leftsidebar {
-        visibility: hidden;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
+        position: relative;
         background: #111;
+        visibility: hidden;
         z-index: 10;
     }
-    #leftsidebar .verticalresizer {
-        position: absolute;
-        top: 0;
-        right: -5px;
-        bottom: 0;
-        width: 5px;
-        cursor: ew-resize;
-        z-index: 10;
-    }
-    .leftsidebar #leftsidebar {
+    .showleftsidebar #leftsidebar {
         visibility: visible;
-    }
-    .leftsidebar #main {
-        left: 400px;
 }
 
 #console {
@@ -415,33 +409,19 @@ header {
 }
 
 #sidebar {
-        display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: 0;
+        position: relative;
+        display: grid;
         grid-template: 1fr / 1fr;
         background: #111;
+        visibility: hidden;
         z-index: 10;
     }
-    #sidebar .verticalresizer {
-        position: absolute;
-        top: 0;
-        left: -5px;
-        bottom: 0;
-        width: 5px;
-        cursor: ew-resize;
-        z-index: 10;
+    .showsidebar #sidebar {
+        visibility: visible;
     }
     #sidebar .graphproperties {
         position: relative;
         z-index: 1;
-    }
-    .sidebar #sidebar {
-        display: grid;
-    }
-    .sidebar #main {
-        right: 200px;
 }
 
 #winrategraph {
@@ -559,15 +539,6 @@ header {
         box-shadow: 10px 0 10px #111;
         transition: color .2s, background .2s;
         z-index: 3;
-    }
-    #properties .horizontalresizer {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        cursor: ns-resize;
-        z-index: 10;
     }
     #properties .edit {
         display: none;

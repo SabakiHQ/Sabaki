@@ -6,6 +6,7 @@ const {app} = remote
 const {h, render, Component} = require('preact')
 const classNames = require('classnames')
 
+const TripleSplitContainer = require('./helpers/TripleSplitContainer')
 const ThemeManager = require('./ThemeManager')
 const MainView = require('./MainView')
 const LeftSidebar = require('./LeftSidebar')
@@ -33,6 +34,9 @@ const gtplogger = require('../modules/gtplogger')
 const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 const sound = require('../modules/sound')
+
+const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
+const sidebarMinWidth = setting.get('view.leftsidebar_minwidth')
 
 class App extends Component {
     constructor() {
@@ -136,6 +140,9 @@ class App extends Component {
 
         setting.events.on('change', ({key}) => this.updateSettingState(key))
         this.updateSettingState()
+
+        this.handleMainLayoutSplitChange = this.handleMainLayoutSplitChange.bind(this)
+        this.handleMainLayoutSplitFinish = this.handleMainLayoutSplitFinish.bind(this)
     }
 
     componentDidMount() {
@@ -407,12 +414,24 @@ class App extends Component {
         })
     }
 
-    setSidebarWidth(sidebarWidth) {
-        this.setState({sidebarWidth}, () => window.dispatchEvent(new Event('resize')))
+    handleMainLayoutSplitChange({beginSideSize, endSideSize}) {
+        this.setState(
+            ({leftSidebarWidth, sidebarWidth, showLeftSidebar, showSidebar}) => ({
+                leftSidebarWidth: showLeftSidebar
+                    ? Math.max(beginSideSize, leftSidebarMinWidth)
+                    : leftSidebarWidth,
+                sidebarWidth: showSidebar
+                    ? Math.max(endSideSize, sidebarMinWidth)
+                    : sidebarWidth,
+            }),
+            () => window.dispatchEvent(new Event('resize'))
+        )
     }
 
-    setLeftSidebarWidth(leftSidebarWidth) {
-        this.setState({leftSidebarWidth}, () => window.dispatchEvent(new Event('resize')))
+    handleMainLayoutSplitFinish() {
+        setting
+        .set('view.sidebar_width', this.state.sidebarWidth)
+        .set('view.leftsidebar_width', this.state.leftSidebarWidth)
     }
 
     setMode(mode) {
@@ -2777,16 +2796,28 @@ class App extends Component {
         return h('section',
             {
                 class: classNames({
-                    leftsidebar: state.showLeftSidebar,
-                    sidebar: state.showSidebar,
+                    showleftsidebar: state.showLeftSidebar,
+                    showsidebar: state.showSidebar,
                     [state.mode]: true
                 })
             },
 
             h(ThemeManager),
-            h(MainView, state),
-            h(LeftSidebar, state),
-            h(Sidebar, state),
+
+            h(TripleSplitContainer, {
+                id: 'mainlayout',
+
+                beginSideSize: state.showLeftSidebar ? state.leftSidebarWidth : 0,
+                endSideSize: state.showSidebar ? state.sidebarWidth : 0,
+
+                beginSideContent: h(LeftSidebar, state),
+                mainContent: h(MainView, state),
+                endSideContent: h(Sidebar, state),
+
+                onChange: this.handleMainLayoutSplitChange,
+                onFinish: this.handleMainLayoutSplitFinish
+            }),
+
             h(DrawerManager, state),
 
             h(InputBox, {

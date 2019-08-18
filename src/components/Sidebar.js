@@ -9,7 +9,6 @@ const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
 
-let sidebarMinWidth = setting.get('view.sidebar_minwidth')
 let propertiesMinHeight = setting.get('view.properties_minheight')
 let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
 let winrateGraphMaxHeight = setting.get('view.winrategraph_maxheight')
@@ -29,14 +28,6 @@ class Sidebar extends Component {
             } else {
                 sabaki.openNodeMenu(gameTree, treePosition, {x, y})
             }
-        }
-
-        this.handleVerticalResizerMouseDown = ({button, x, y}) => {
-            if (button !== 0) return
-
-            this.oldSidebarWidth = this.props.sidebarWidth
-            this.oldMousePosition = [x, y]
-            this.verticalResizerMouseDown = true
         }
 
         this.handleSliderChange = ({percent}) => {
@@ -93,29 +84,6 @@ class Sidebar extends Component {
         return nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
     }
 
-    componentDidMount() {
-        document.addEventListener('mouseup', () => {
-            if (this.verticalResizerMouseDown) {
-                this.verticalResizerMouseDown = false
-
-                setting.set('view.sidebar_width', this.props.sidebarWidth)
-                window.dispatchEvent(new Event('resize'))
-            }
-        })
-
-        document.addEventListener('mousemove', evt => {
-            if (this.verticalResizerMouseDown) {
-                evt.preventDefault()
-
-                let {sidebarWidth} = this.props
-                let diff = [evt.clientX, evt.clientY].map((x, i) => x - this.oldMousePosition[i])
-
-                sidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth - diff[0])
-                sabaki.setSidebarWidth(sidebarWidth)
-            }
-        })
-    }
-
     componentWillReceiveProps({gameTree, gameCurrents, gameIndex} = {}) {
         // Get winrate data
 
@@ -139,7 +107,6 @@ class Sidebar extends Component {
         treePosition,
         showGameGraph,
         showCommentBox,
-        sidebarWidth,
 
         graphGridSize,
         graphNodeSize
@@ -156,14 +123,8 @@ class Sidebar extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'sidebar',
-                style: {width: sidebarWidth}
+                id: 'sidebar'
             },
-
-            h('div', {
-                class: 'verticalresizer',
-                onMouseDown: this.handleVerticalResizerMouseDown
-            }),
 
             h(SplitContainer, {
                 vertical: true,

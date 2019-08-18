@@ -8,7 +8,6 @@ const AutoplayBar = require('./bars/AutoplayBar')
 const ScoringBar = require('./bars/ScoringBar')
 const FindBar = require('./bars/FindBar')
 
-const gobantransformer = require('../modules/gobantransformer')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
@@ -130,11 +129,7 @@ class MainView extends Component {
 
         return h('section',
             {
-                id: 'main',
-                style: {
-                    left: showLeftSidebar ? leftSidebarWidth : null,
-                    right: showSidebar ? sidebarWidth : null
-                }
+                id: 'main'
             },
 
             h('main',
