@@ -420,12 +420,9 @@ header {
         top: 0;
         bottom: 0;
         right: 0;
-        grid-template-rows: 0 1fr;
+        grid-template: 1fr / 1fr;
         background: #111;
         z-index: 10;
-    }
-    #sidebar.showwinrate {
-        grid-template-rows: auto 1fr;
     }
     #sidebar .verticalresizer {
         position: absolute;
@@ -438,6 +435,7 @@ header {
     }
     #sidebar .graphproperties {
         position: relative;
+        z-index: 1;
     }
     .sidebar #sidebar {
         display: grid;
@@ -446,23 +444,16 @@ header {
         right: 200px;
 }
 
+.winrategraph-splitcontainer .resizer {
+    z-index: 3;
+}
+
 #winrategraph {
         position: relative;
-        visibility: hidden;
-        height: 50px;
         background: #181818;
         box-shadow: 10px 0 10px #111;
         overflow: hidden;
-        z-index: 3;
-    }
-    #winrategraph .horizontalresizer {
-        position: absolute;
-        bottom: 0px;
-        left: 0;
-        right: 0;
-        height: 5px;
-        cursor: ns-resize;
-        z-index: 10;
+        z-index: 2;
     }
     #winrategraph svg {
         position: absolute;
@@ -470,9 +461,6 @@ header {
         left: 0;
         right: 0;
         bottom: 0;
-    }
-    .showwinrate #winrategraph {
-        visibility: visible;
     }
     #winrategraph .marker {
         position: absolute;

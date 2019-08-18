@@ -11,48 +11,25 @@ class WinrateGraph extends Component {
         super()
 
         this.state = {
-            height: setting.get('view.winrategraph_height'),
             invert: setting.get('view.winrategraph_invert')
         }
-
-        setting.events.on('change', ({key, value}) => {
-            if (key === 'view.winrategraph_invert') {
-                this.setState({invert: value})
-            }
-        })
 
         this.handleMouseDown = evt => {
             this.mouseDown = true
             document.dispatchEvent(new MouseEvent('mousemove', evt))
         }
-
-        this.handleHorizontalResizerWinrateMouseDown = ({button}) => {
-            if (button !== 0) return
-            this.horizontalResizerWinrateMouseDown = true
-        }
     }
 
-    shouldComponentUpdate({width, currentIndex, data}, {height, invert}) {
+    shouldComponentUpdate({width, currentIndex, data}, {invert}) {
         return width !== this.props.width
             || currentIndex !== this.props.currentIndex
             || data[currentIndex] !== this.props.data[currentIndex]
-            || height !== this.state.height
             || invert !== this.state.invert
     }
 
     componentDidMount() {
         document.addEventListener('mousemove', evt => {
             if (!this.mouseDown) return
-
-            if (this.horizontalResizerWinrateMouseDown) {
-                evt.preventDefault()
-
-                let height = Math.min(
-                    500, Math.max(winrateGraphMinHeight, evt.clientY)
-                )
-                this.setState({height})
-                return
-            }
 
             let rect = this.element.getBoundingClientRect()
             let percent = (evt.clientX - rect.left) / rect.width
@@ -63,14 +40,8 @@ class WinrateGraph extends Component {
         })
 
         document.addEventListener('mouseup', () => {
-            if (this.horizontalResizerWinrateMouseDown) {
-                this.horizontalResizerWinrateMouseDown = false
-                setting.set('view.winrategraph_height', this.state.height)
-                window.dispatchEvent(new Event('resize'))
-            }
             this.mouseDown = false
         })
-
     }
 
     render() {
@@ -94,11 +65,6 @@ class WinrateGraph extends Component {
                 },
                 onMouseDown: this.handleMouseDown
             },
-
-            h('div', {
-                class: 'horizontalresizer',
-                onMouseDown: this.handleHorizontalResizerWinrateMouseDown
-            }),
 
             h('svg',
                 {

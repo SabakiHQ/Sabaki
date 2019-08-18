@@ -4,6 +4,7 @@ const classNames = require('classnames')
 
 const setting = remote.require('./setting')
 
+const SplitContainer = require('./helpers/SplitContainer')
 const WinrateGraph = require('./WinrateGraph')
 const Slider = require('./Slider')
 const GameGraph = require('./GameGraph')
@@ -17,6 +18,7 @@ class Sidebar extends Component {
         super(props)
 
         this.state = {
+            winrateGraphHeight: setting.get('view.winrategraph_height'),
             sidebarSplit: setting.get('view.properties_height'),
             sidebarSplitTransition: true
         }
@@ -49,6 +51,11 @@ class Sidebar extends Component {
 
         this.handleWinrateGraphChange = ({index}) => {
             sabaki.goToMoveNumber(index)
+        }
+
+        this.handleWinrateGraphSplitChange = ({sideSize}) => {
+            setting.set('view.winrategraph_height', sideSize)
+            this.setState({winrateGraphHeight: sideSize})
         }
 
         this.handleStartAutoscrolling = ({step}) => {
@@ -136,6 +143,7 @@ class Sidebar extends Component {
         graphNodeSize
     }, {
         winrateData,
+        winrateGraphHeight,
         sidebarSplit,
         sidebarSplitTransition
     }) {
@@ -148,9 +156,6 @@ class Sidebar extends Component {
             {
                 ref: el => this.element = el,
                 id: 'sidebar',
-                class: classNames({
-                    showwinrate: showWinrateGraph
-                }),
                 style: {width: sidebarWidth}
             },
 
@@ -159,63 +164,78 @@ class Sidebar extends Component {
                 onMouseDown: this.handleVerticalResizerMouseDown
             }),
 
-            h(WinrateGraph, {
-                width: winrateGraphWidth,
-                data: winrateData,
-                currentIndex: level,
-                onCurrentIndexChange: this.handleWinrateGraphChange
-            }),
+            h(SplitContainer, {
+                class: 'winrategraph-splitcontainer',
+                vertical: true,
+                invert: true,
+                sideSize: !showWinrateGraph ? 0 : winrateGraphHeight,
 
-            h('div', {ref: el => this.horizontalSplitContainer = el, class: 'graphproperties'},
-                h(Slider, {
-                    showSlider: showGameGraph,
-                    text: level,
-                    percent: (level / (gameTree.getHeight() - 1)) * 100,
-                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-
-                    onChange: this.handleSliderChange,
-                    onStartAutoscrolling: this.handleStartAutoscrolling,
-                    onStopAutoscrolling: this.handleStopAutoscrolling
+                sideContent: h(WinrateGraph, {
+                    width: winrateGraphWidth,
+                    data: winrateData,
+                    currentIndex: level,
+                    onCurrentIndexChange: this.handleWinrateGraphChange
                 }),
 
-                h(GameGraph, {
-                    ref: component => this.gameGraph = component,
+                mainContent: h('div',
+                    {
+                        ref: el => this.horizontalSplitContainer = el,
+                        class: 'graphproperties'
+                    },
 
-                    gameTree,
-                    gameCurrents: gameCurrents[gameIndex],
-                    treePosition,
-                    showGameGraph,
-                    height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-                    gridSize: graphGridSize,
-                    nodeSize: graphNodeSize,
+                    h(Slider, {
+                        showSlider: showGameGraph,
+                        text: level,
+                        percent: gameTree.getHeight() <= 1 ? 0
+                            : (level / (gameTree.getHeight() - 1)) * 100,
+                        height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
 
-                    onNodeClick: this.handleGraphNodeClick
-                }),
+                        onChange: this.handleSliderChange,
+                        onStartAutoscrolling: this.handleStartAutoscrolling,
+                        onStopAutoscrolling: this.handleStopAutoscrolling
+                    }),
 
-                h(CommentBox, {
-                    mode,
-                    gameTree,
-                    treePosition,
-                    showCommentBox,
-                    moveAnnotation: node.data.BM != null ? [-1, node.data.BM[0]]
-                        : node.data.DO != null ? [0, 1]
-                        : node.data.IT != null ? [1, 1]
-                        : node.data.TE != null ? [2, node.data.TE[0]]
-                        : [null, 1],
-                    positionAnnotation: node.data.UC != null ? [-2, node.data.UC[0]]
-                        : node.data.GW != null ? [-1, node.data.GW[0]]
-                        : node.data.DM != null ? [0, node.data.DM[0]]
-                        : node.data.GB != null ? [1, node.data.GB[0]]
-                        : [null, 1],
-                    title: node.data.N != null ? node.data.N[0] : '',
-                    comment: node.data.C != null ? node.data.C[0] : '',
-                    height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
-                    sidebarSplitTransition,
+                    h(GameGraph, {
+                        ref: component => this.gameGraph = component,
 
-                    onResizerMouseDown: this.handleHorizontalResizerMouseDown,
-                    onCommentInput: this.handleCommentInput
-                })
-            )
+                        gameTree,
+                        gameCurrents: gameCurrents[gameIndex],
+                        treePosition,
+                        showGameGraph,
+                        height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                        gridSize: graphGridSize,
+                        nodeSize: graphNodeSize,
+
+                        onNodeClick: this.handleGraphNodeClick
+                    }),
+
+                    h(CommentBox, {
+                        mode,
+                        gameTree,
+                        treePosition,
+                        showCommentBox,
+                        moveAnnotation: node.data.BM != null ? [-1, node.data.BM[0]]
+                            : node.data.DO != null ? [0, 1]
+                            : node.data.IT != null ? [1, 1]
+                            : node.data.TE != null ? [2, node.data.TE[0]]
+                            : [null, 1],
+                        positionAnnotation: node.data.UC != null ? [-2, node.data.UC[0]]
+                            : node.data.GW != null ? [-1, node.data.GW[0]]
+                            : node.data.DM != null ? [0, node.data.DM[0]]
+                            : node.data.GB != null ? [1, node.data.GB[0]]
+                            : [null, 1],
+                        title: node.data.N != null ? node.data.N[0] : '',
+                        comment: node.data.C != null ? node.data.C[0] : '',
+                        height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
+                        sidebarSplitTransition,
+
+                        onResizerMouseDown: this.handleHorizontalResizerMouseDown,
+                        onCommentInput: this.handleCommentInput
+                    })
+                ),
+
+                onChange: this.handleWinrateGraphSplitChange
+            })
         )
     }
 }

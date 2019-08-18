@@ -54,8 +54,8 @@ class SplitContainer extends Component {
         let gridTemplate = ['1fr', `${sideSize}px`]
         if (invert) gridTemplate.reverse()
 
-        let gridTemplateRows = !vertical ? 'none' : gridTemplate.join(' ')
-        let gridTemplateColumns = vertical ? 'none' : gridTemplate.join(' ')
+        let gridTemplateRows = !vertical ? '1fr' : gridTemplate.join(' ')
+        let gridTemplateColumns = vertical ? '1fr' : gridTemplate.join(' ')
 
         let resizer = h('div', {
             class: 'resizer',
