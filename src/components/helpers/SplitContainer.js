@@ -56,8 +56,8 @@ class SplitContainer extends Component {
             vertical,
             invert,
             procentualSplit,
-            sideContent,
             mainContent,
+            sideContent,
             sideSize = 200,
             splitterSize = 5
         } = this.props
