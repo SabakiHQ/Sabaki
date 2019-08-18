@@ -50,11 +50,12 @@ class Slider extends Component {
         })
     }
 
-    shouldComponentUpdate({showSlider, height}) {
-        return showSlider && (height !== this.props.height
-            || this.sliderAreaMouseDown
+    shouldComponentUpdate({showSlider}) {
+        return showSlider && (
+            this.sliderAreaMouseDown
             || this.buttonMouseDown
-            || !this.dirty)
+            || !this.dirty
+        )
     }
 
     componentWillReceiveProps() {
@@ -69,8 +70,8 @@ class Slider extends Component {
         }, setting.get('graph.delay'))
     }
 
-    render({height, text, percent}) {
-        return h('section', {id: 'slider', style: {height: `${height}%`}},
+    render({text, percent}) {
+        return h('section', {id: 'slider'},
             h('a', {
                 href: '#',
                 class: 'prev',

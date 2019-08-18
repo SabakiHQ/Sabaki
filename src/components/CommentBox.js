@@ -253,8 +253,8 @@ class CommentBox extends Component {
         }
     }
 
-    shouldComponentUpdate({showCommentBox, height}) {
-        return height !== this.props.height || showCommentBox && !this.dirty
+    shouldComponentUpdate({showCommentBox}) {
+        return showCommentBox && !this.dirty
     }
 
     componentWillReceiveProps({treePosition, mode, title, comment}) {
@@ -284,15 +284,10 @@ class CommentBox extends Component {
     render({
         gameTree,
         treePosition,
-        height,
-        sidebarSplitTransition,
         moveAnnotation,
         positionAnnotation,
 
-        onResizerMouseDown = helper.noop,
-        onLinkClick = helper.noop,
-        onCoordinateMouseEnter = helper.noop,
-        onCoordinateMouseLeave = helper.noop
+        onLinkClick = helper.noop
     }, {
         title,
         comment
@@ -300,17 +295,8 @@ class CommentBox extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'properties',
-                style: {
-                    transition: sidebarSplitTransition ? null : 'none',
-                    height: height + '%'
-                }
+                id: 'properties'
             },
-
-            h('div', {
-                class: 'horizontalresizer',
-                onMouseDown: onResizerMouseDown
-            }),
 
             h('div', {class: 'inner'},
                 h(CommentTitle, {
@@ -323,9 +309,7 @@ class CommentBox extends Component {
 
                 h(CommentText, {
                     comment,
-                    onLinkClick,
-                    onCoordinateMouseEnter,
-                    onCoordinateMouseLeave
+                    onLinkClick
                 })
             ),
 

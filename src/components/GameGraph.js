@@ -401,7 +401,6 @@ class GameGraph extends Component {
     }
 
     render({
-        height,
         showGameGraph
     }, {
         matrixDict,
@@ -411,8 +410,7 @@ class GameGraph extends Component {
         return h('section',
             {
                 ref: el => this.element = el,
-                id: 'graph',
-                style: {height: `${height}%`}
+                id: 'graph'
             },
 
             h('style', {}, `#graph svg > * {

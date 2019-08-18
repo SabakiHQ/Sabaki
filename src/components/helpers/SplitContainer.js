@@ -10,19 +10,29 @@ class SplitContainer extends Component {
         }
 
         this.handleMouseUp = evt => {
+            if (!this.resizerMouseDown) return
+
+            let {onFinish = () => {}} = this.props
+
             this.resizerMouseDown = false
+            onFinish()
         }
 
         this.handleMouseMove = evt => {
             if (!this.resizerMouseDown) return
 
-            let {vertical, invert, onChange = () => {}} = this.props
+            let {vertical, invert, procentualSplit, onChange = () => {}} = this.props
             let rect = this.element.getBoundingClientRect()
 
             let mousePosition = !vertical ? evt.clientX : evt.clientY
             let containerBegin = !vertical ? rect.left : rect.top
             let containerEnd = !vertical ? rect.right : rect.bottom
             let sideSize = !invert ? containerEnd - mousePosition : mousePosition - containerBegin
+
+            if (procentualSplit) {
+                sideSize = containerEnd === containerBegin ? 0
+                    : sideSize * 100 / (containerEnd - containerBegin)
+            }
 
             onChange({sideSize})
         }
@@ -45,13 +55,16 @@ class SplitContainer extends Component {
             style = {},
             vertical,
             invert,
+            procentualSplit,
             sideContent,
             mainContent,
             sideSize = 200,
             splitterSize = 5
         } = this.props
 
-        let gridTemplate = ['1fr', `${sideSize}px`]
+        let gridTemplate = procentualSplit
+            ? [`${100 - sideSize}%`, `${sideSize}%`]
+            : ['1fr', `${sideSize}px`]
         if (invert) gridTemplate.reverse()
 
         let gridTemplateRows = !vertical ? '1fr' : gridTemplate.join(' ')
@@ -61,13 +74,14 @@ class SplitContainer extends Component {
             class: 'resizer',
             style: {
                 position: 'absolute',
-                width: vertical ? 'auto' : splitterSize,
-                height: !vertical ? 'auto' : splitterSize,
+                width: vertical ? null : splitterSize,
+                height: !vertical ? null : splitterSize,
                 cursor: vertical ? 'ns-resize' : 'ew-resize',
-                left: vertical ? 0 : !invert ? 0 : 'auto',
-                right: vertical ? 0 : invert ? 0 : 'auto',
-                top: !vertical ? 0 : !invert ? 0 : 'auto',
-                bottom: !vertical ? 0 : invert ? 0 : 'auto',
+                left: vertical ? 0 : !invert ? 0 : null,
+                right: vertical ? 0 : invert ? 0 : null,
+                top: !vertical ? 0 : !invert ? 0 : null,
+                bottom: !vertical ? 0 : invert ? 0 : null,
+                zIndex: 999
             },
 
             onMouseDown: this.handleResizerMouseDown

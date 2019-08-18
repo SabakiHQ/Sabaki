@@ -444,10 +444,6 @@ header {
         right: 200px;
 }
 
-.winrategraph-splitcontainer .resizer {
-    z-index: 3;
-}
-
 #winrategraph {
         position: relative;
         background: #181818;
@@ -557,16 +553,11 @@ header {
 }
 
 #properties {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        height: 0;
         overflow: auto;
         color: #d0d0d0;
         background: #181818;
         box-shadow: 10px 0 10px #111;
-        transition: height .2s, color .2s, background .2s;
+        transition: color .2s, background .2s;
         z-index: 3;
     }
     #properties .horizontalresizer {

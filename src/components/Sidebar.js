@@ -1,6 +1,5 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
-const classNames = require('classnames')
 
 const setting = remote.require('./setting')
 
@@ -11,7 +10,9 @@ const GameGraph = require('./GameGraph')
 const CommentBox = require('./CommentBox')
 
 let sidebarMinWidth = setting.get('view.sidebar_minwidth')
-let sidebarMinSplit = setting.get('view.properties_minheight')
+let propertiesMinHeight = setting.get('view.properties_minheight')
+let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
+let winrateGraphMaxHeight = setting.get('view.winrategraph_maxheight')
 
 class Sidebar extends Component {
     constructor(props) {
@@ -19,8 +20,7 @@ class Sidebar extends Component {
 
         this.state = {
             winrateGraphHeight: setting.get('view.winrategraph_height'),
-            sidebarSplit: setting.get('view.properties_height'),
-            sidebarSplitTransition: true
+            sidebarSplit: setting.get('view.properties_height')
         }
 
         this.handleGraphNodeClick = ({button, gameTree, treePosition, x, y}) => {
@@ -39,11 +39,6 @@ class Sidebar extends Component {
             this.verticalResizerMouseDown = true
         }
 
-        this.handleHorizontalResizerMouseDown = ({button}) => {
-            if (button !== 0) return
-            this.horizontalResizerMouseDown = true
-        }
-
         this.handleSliderChange = ({percent}) => {
             let moveNumber = Math.round((this.props.gameTree.getHeight() - 1) * percent)
             sabaki.goToMoveNumber(moveNumber)
@@ -53,9 +48,30 @@ class Sidebar extends Component {
             sabaki.goToMoveNumber(index)
         }
 
+        this.handleSidebarSplitChange = ({sideSize}) => {
+            sideSize = Math.min(Math.max(
+                propertiesMinHeight,
+                sideSize
+            ), 100 - propertiesMinHeight)
+
+            this.setState({sidebarSplit: sideSize})
+        }
+
+        this.handleSidebarSplitFinish = () => {
+            setting.set('view.properties_height', this.state.sidebarSplit)
+        }
+
         this.handleWinrateGraphSplitChange = ({sideSize}) => {
-            setting.set('view.winrategraph_height', sideSize)
+            sideSize = Math.min(
+                Math.max(winrateGraphMinHeight, sideSize),
+                winrateGraphMaxHeight
+            )
+
             this.setState({winrateGraphHeight: sideSize})
+        }
+
+        this.handleWinrateGraphSplitFinish = () => {
+            setting.set('view.winrategraph_height', this.state.winrateGraphHeight)
         }
 
         this.handleStartAutoscrolling = ({step}) => {
@@ -79,13 +95,10 @@ class Sidebar extends Component {
 
     componentDidMount() {
         document.addEventListener('mouseup', () => {
-            if (this.verticalResizerMouseDown || this.horizontalResizerMouseDown) {
+            if (this.verticalResizerMouseDown) {
                 this.verticalResizerMouseDown = false
-                this.horizontalResizerMouseDown = false
 
-                setting.set('view.properties_height', this.state.sidebarSplit)
                 setting.set('view.sidebar_width', this.props.sidebarWidth)
-                this.setState({sidebarSplitTransition: false})
                 window.dispatchEvent(new Event('resize'))
             }
         })
@@ -99,17 +112,6 @@ class Sidebar extends Component {
 
                 sidebarWidth = Math.max(sidebarMinWidth, this.oldSidebarWidth - diff[0])
                 sabaki.setSidebarWidth(sidebarWidth)
-            } else if (this.horizontalResizerMouseDown) {
-                evt.preventDefault()
-
-                let {top, height} = this.horizontalSplitContainer.getBoundingClientRect()
-
-                let sidebarSplit = Math.min(
-                    100 - sidebarMinSplit,
-                    Math.max(sidebarMinSplit, 100 - (evt.clientY - top) * 100 / height)
-                )
-
-                this.setState({sidebarSplit, sidebarSplitTransition: false})
             }
         })
     }
@@ -144,8 +146,7 @@ class Sidebar extends Component {
     }, {
         winrateData,
         winrateGraphHeight,
-        sidebarSplit,
-        sidebarSplitTransition
+        sidebarSplit
     }) {
         let node = gameTree.get(treePosition)
         let winrateGraphWidth = Math.max(Math.ceil((gameTree.getHeight() - 1) / 50) * 50, 1)
@@ -165,7 +166,6 @@ class Sidebar extends Component {
             }),
 
             h(SplitContainer, {
-                class: 'winrategraph-splitcontainer',
                 vertical: true,
                 invert: true,
                 sideSize: !showWinrateGraph ? 0 : winrateGraphHeight,
@@ -177,39 +177,44 @@ class Sidebar extends Component {
                     onCurrentIndexChange: this.handleWinrateGraphChange
                 }),
 
-                mainContent: h('div',
-                    {
-                        ref: el => this.horizontalSplitContainer = el,
-                        class: 'graphproperties'
-                    },
+                mainContent: h(SplitContainer, {
+                    vertical: true,
+                    sideSize: !showGameGraph ? 100 : !showCommentBox ? 0 : sidebarSplit,
+                    procentualSplit: true,
 
-                    h(Slider, {
-                        showSlider: showGameGraph,
-                        text: level,
-                        percent: gameTree.getHeight() <= 1 ? 0
-                            : (level / (gameTree.getHeight() - 1)) * 100,
-                        height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                    mainContent: h('div',
+                        {
+                            ref: el => this.horizontalSplitContainer = el,
+                            class: 'graphproperties'
+                        },
 
-                        onChange: this.handleSliderChange,
-                        onStartAutoscrolling: this.handleStartAutoscrolling,
-                        onStopAutoscrolling: this.handleStopAutoscrolling
-                    }),
+                        h(Slider, {
+                            showSlider: showGameGraph,
+                            text: level,
+                            percent: gameTree.getHeight() <= 1 ? 0
+                                : (level / (gameTree.getHeight() - 1)) * 100,
 
-                    h(GameGraph, {
-                        ref: component => this.gameGraph = component,
+                            onChange: this.handleSliderChange,
+                            onStartAutoscrolling: this.handleStartAutoscrolling,
+                            onStopAutoscrolling: this.handleStopAutoscrolling
+                        }),
 
-                        gameTree,
-                        gameCurrents: gameCurrents[gameIndex],
-                        treePosition,
-                        showGameGraph,
-                        height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
-                        gridSize: graphGridSize,
-                        nodeSize: graphNodeSize,
+                        h(GameGraph, {
+                            ref: component => this.gameGraph = component,
 
-                        onNodeClick: this.handleGraphNodeClick
-                    }),
+                            gameTree,
+                            gameCurrents: gameCurrents[gameIndex],
+                            treePosition,
+                            showGameGraph,
+                            height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+                            gridSize: graphGridSize,
+                            nodeSize: graphNodeSize,
 
-                    h(CommentBox, {
+                            onNodeClick: this.handleGraphNodeClick
+                        })
+                    ),
+
+                    sideContent: h(CommentBox, {
                         mode,
                         gameTree,
                         treePosition,
@@ -226,15 +231,16 @@ class Sidebar extends Component {
                             : [null, 1],
                         title: node.data.N != null ? node.data.N[0] : '',
                         comment: node.data.C != null ? node.data.C[0] : '',
-                        height: !showCommentBox ? 0 : !showGameGraph ? 100 : sidebarSplit,
-                        sidebarSplitTransition,
 
-                        onResizerMouseDown: this.handleHorizontalResizerMouseDown,
                         onCommentInput: this.handleCommentInput
-                    })
-                ),
+                    }),
 
-                onChange: this.handleWinrateGraphSplitChange
+                    onChange: this.handleSidebarSplitChange,
+                    onFinish: this.handleSidebarSplitFinish
+                }),
+
+                onChange: this.handleWinrateGraphSplitChange,
+                onFinish: this.handleWinrateGraphSplitFinish
             })
         )
     }
