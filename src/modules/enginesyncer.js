@@ -53,13 +53,13 @@ class EngineSyncer extends EventEmitter {
             ]).catch(helper.noop)
         })
 
-        this.controller.on('stopped', () => {
-            this.busy = false
-        })
+        // Sync busy property
 
-        this.controller.on('response-received', () => {
-            this.busy = this.controller.busy
-        })
+        for (let eventName of ['stopped', 'command-sent', 'response-received']) {
+            this.controller.on(eventName, () => {
+                this.busy = this.controller.busy
+            })
+        }
     }
 
     get state() {
