@@ -1442,7 +1442,6 @@ class App extends Component {
         this.setState({
             playVariation: null,
             blockedGuesses: [],
-            highlightVertices: [],
             gameTrees: gameTrees.map((t, i) => i !== gameIndex ? t : tree),
             gameIndex,
             treePosition: id
@@ -2429,7 +2428,7 @@ class App extends Component {
 
         subscribe(({line, response, end}) => {
             updateEntry({
-                response: Object.assign({}, response),
+                response,
                 waiting: !end
             })
 
