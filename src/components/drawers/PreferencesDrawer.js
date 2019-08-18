@@ -101,14 +101,6 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'board.variation_instant_replay',
                     text: t('Instantly play out analysis variations on board')
-                }),
-                h(PreferencesItem, {
-                    id: 'gtp.start_game_after_attach',
-                    text: t('Start game right after attaching engines')
-                }),
-                h(PreferencesItem, {
-                    id: 'gtp.auto_genmove',
-                    text: t('Automatically generate engine moves')
                 })
             ),
 
@@ -140,10 +132,6 @@ class GeneralTab extends Component {
                 h(PreferencesItem, {
                     id: 'edit.click_currentvertex_to_remove',
                     text: t('Click last played stone to remove')
-                }),
-                h(PreferencesItem, {
-                    id: 'app.always_show_result',
-                    text: t('Always show game result')
                 }),
                 h(PreferencesItem, {
                     id: 'view.winrategraph_invert',
@@ -614,21 +602,6 @@ class PreferencesDrawer extends Component {
             let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
             setting.set('engines.list', engines)
-
-            // Don't create an empty log file
-
-            if (sabaki.attachedEngineSyncers.some(x => x != null)) {
-                if (!gtplogger.updatePath()) {
-                    // Force the user to fix the issue
-
-                    setTimeout(() => {
-                        sabaki.setState({preferencesTab: 'engines'})
-                        sabaki.openDrawer('preferences')
-                    }, 500)
-
-                    return
-                }
-            }
 
             // Reset tab selection
 

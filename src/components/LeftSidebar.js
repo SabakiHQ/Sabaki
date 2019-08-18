@@ -7,8 +7,6 @@ class LeftSidebar extends Component {
         super()
 
         this.handleCommandSubmit = ({engineIndex, command}) => {
-            let syncer = sabaki.attachedEngineSyncers[engineIndex]
-            if (syncer != null) syncer.controller.sendCommand(command)
         }
     }
 
@@ -16,7 +14,7 @@ class LeftSidebar extends Component {
         return nextProps.showLeftSidebar != this.props.showLeftSidebar || nextProps.showLeftSidebar
     }
 
-    render({showLeftSidebar, consoleLog, attachedEngines, engineCommands}) {
+    render({showLeftSidebar, consoleLog}) {
         return h('section',
             {
                 ref: el => this.element = el,
@@ -26,8 +24,8 @@ class LeftSidebar extends Component {
             h(GtpConsole, {
                 show: showLeftSidebar,
                 consoleLog,
-                attachedEngines,
-                engineCommands,
+                attachedEngines: [],
+                engineCommands: [[], []],
 
                 onSubmit: this.handleCommandSubmit
             })

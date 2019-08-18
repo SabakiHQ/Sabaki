@@ -1,6 +1,5 @@
 const {remote} = require('electron')
 const {h, Component} = require('preact')
-const classNames = require('classnames')
 const Pikaday = require('pikaday')
 const sgf = require('@sabaki/sgf')
 
@@ -48,16 +47,8 @@ class InfoDrawer extends Component {
 
             sabaki.setGameInfo(this.props.gameTree, data)
             sabaki.closeDrawer()
-            sabaki.attachEngines(...this.state.engines)
 
             await sabaki.waitForRender()
-
-            let i = this.props.currentPlayer > 0 ? 0 : 1
-            let startGame = setting.get('gtp.start_game_after_attach')
-
-            if (startGame && sabaki.attachedEngineSyncers[i] != null) {
-                sabaki.generateMove({followUp: true})
-            }
         }
 
         this.handleCancelButtonClick = evt => {
@@ -92,8 +83,7 @@ class InfoDrawer extends Component {
         }
 
         this.handleSwapPlayers = () => {
-            this.setState(({engines, blackName, blackRank, whiteName, whiteRank}) => ({
-                engines: (engines || [null, null]).reverse(),
+            this.setState(({blackName, blackRank, whiteName, whiteRank}) => ({
                 blackName: whiteName,
                 whiteName: blackName,
                 blackRank: whiteRank,
@@ -133,70 +123,16 @@ class InfoDrawer extends Component {
 
             return acc
         }, {})
-
-        this.handleEngineMenuClick = [0, 1].map(index => evt => {
-            let engines = setting.get('engines.list')
-            let nameKey = ['blackName', 'whiteName'][index]
-            let autoName = this.state.engines[index] == null
-                ? this.state[nameKey] == null
-                : this.state[nameKey] === this.state.engines[index].name.trim()
-
-            let template = [
-                {
-                    label: t('Manual'),
-                    type: 'checkbox',
-                    checked: this.state.engines[index] == null,
-                    click: () => {
-                        let {engines} = this.state
-                        if (engines[index] == null) return
-
-                        engines[index] = null
-
-                        this.setState({
-                            engines,
-                            [nameKey]: autoName ? null : this.state[nameKey]
-                        })
-                    }
-                },
-                {type: 'separator'},
-                ...engines.map(engine => ({
-                    label: engine.name.trim() || t('(Unnamed Engine)'),
-                    type: 'checkbox',
-                    checked: engine === this.state.engines[index],
-                    click: () => {
-                        let {engines} = this.state
-                        engines[index] = engine
-
-                        this.setState({
-                            engines,
-                            [nameKey]: autoName ? engine.name.trim() : this.state[nameKey]
-                        })
-                    }
-                })),
-                engines.length > 0 && {type: 'separator'},
-                {
-                    label: t('Manage Engines…'),
-                    click: () => {
-                        sabaki.setState({preferencesTab: 'engines'})
-                        sabaki.openDrawer('preferences')
-                    }
-                }
-            ].filter(x => !!x)
-
-            let {left, bottom} = evt.currentTarget.getBoundingClientRect()
-
-            helper.popupMenu(template, left, bottom)
-        })
     }
 
-    componentWillReceiveProps({gameInfo, engines, show}) {
+    componentWillReceiveProps({gameInfo, show}) {
         if (!this.props.show && show) {
-            this.setState(Object.assign({}, gameInfo, {
-                engines: [...engines],
+            this.setState({
+                ...gameInfo,
                 showResult: !gameInfo.result
                     || gameInfo.result.trim() === ''
                     || setting.get('app.always_show_result') === true
-            }))
+            })
         }
     }
 
@@ -322,7 +258,6 @@ class InfoDrawer extends Component {
         show
     }, {
         showResult = false,
-        engines = [null, null],
         blackName = null,
         blackRank = null,
         whiteName = null,
@@ -347,15 +282,6 @@ class InfoDrawer extends Component {
             h('form', {},
                 h('section', {},
                     h('span', {},
-                        h('img', {
-                            tabIndex: 0,
-                            src: './node_modules/octicons/build/svg/chevron-down.svg',
-                            width: 16,
-                            height: 16,
-                            class: classNames({menu: true, active: engines[0] != null}),
-                            onClick: this.handleEngineMenuClick[0]
-                        }), ' ',
-
                         h('input', {
                             type: 'text',
                             name: 'rank_1',
@@ -397,15 +323,6 @@ class InfoDrawer extends Component {
                             placeholder: t('Rank'),
                             value: whiteRank,
                             onInput: this.handleInputChange.whiteRank
-                        }), ' ',
-
-                        h('img', {
-                            tabIndex: 0,
-                            src: './node_modules/octicons/build/svg/chevron-down.svg',
-                            width: 16,
-                            height: 16,
-                            class: classNames({menu: true, active: engines[1] != null}),
-                            onClick: this.handleEngineMenuClick[1]
                         })
                     )
                 ),

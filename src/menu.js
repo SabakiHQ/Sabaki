@@ -116,10 +116,7 @@ exports.build = function(props = {}) {
                 {
                     label: t('menu.play', '&Pass'),
                     accelerator: 'CmdOrCtrl+P',
-                    click: () => {
-                        const autoGenmove = setting.get('gtp.auto_genmove')
-                        sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
-                    }
+                    click: () => sabaki.makeMove([-1, -1])
                 },
                 {
                     label: t('menu.play', '&Resign'),
@@ -393,57 +390,17 @@ exports.build = function(props = {}) {
             submenu: [
                 {
                     label: t('menu.engines', 'Manage &Engines…'),
-                    click: () => (sabaki.setState({preferencesTab: 'engines'}), sabaki.openDrawer('preferences'))
-                },
-                {type: 'separator'},
-                {
-                    label: t('menu.engines', '&Attach…'),
-                    click: () => sabaki.openDrawer('info')
-                },
-                {
-                    label: t('menu.engines', '&Detach'),
-                    click: () => sabaki.detachEngines()
-                },
-                {
-                    label: t('menu.engines', '&Suspend'),
-                    neverDisable: true,
-                    click: () => sabaki.suspendEngines()
-                },
-                {type: 'separator'},
-                {
-                    label: t('menu.engines', 'S&ynchronize'),
-                    accelerator: 'F6',
-                    click: () => sabaki.syncEngines({showErrorDialog: true})
-                },
-                {
-                    label: t('menu.engines', 'Toggle A&nalysis'),
-                    accelerator: 'F4',
                     click: () => {
-                        if (sabaki.state.analysisTreePosition == null) {
-                            sabaki.closeDrawer()
-                            sabaki.setMode('play')
-                            sabaki.startAnalysis()
-                        } else {
-                            sabaki.stopAnalysis()
-                        }
+                        sabaki.setState({preferencesTab: 'engines'})
+                        sabaki.openDrawer('preferences')
                     }
-                },
-                {
-                    label: t('menu.engines', 'Start &Playing'),
-                    accelerator: 'F5',
-                    click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null, followUp: true})
-                },
-                {
-                    label: t('menu.engines', 'Generate &Move'),
-                    accelerator: 'F10',
-                    click: () => sabaki.generateMove({analyze: sabaki.state.analysis != null})
                 },
                 {type: 'separator'},
                 {
                     label: t('menu.engines', 'Toggle &GTP Console'),
                     click: () => {
                         toggleSetting('view.show_leftsidebar')
-                        sabaki.setState(({showConsole}) => ({showConsole: !showConsole}))
+                        sabaki.setState(({showLeftSidebar}) => ({showLeftSidebar: !showLeftSidebar}))
                     }
                 },
                 {

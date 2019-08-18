@@ -72,14 +72,12 @@ class DrawerManager extends Component {
         areaMap,
 
         engines,
-        attachedEngines,
         graphGridSize,
         preferencesTab
     }) {
         return h('section', {},
             h(InfoDrawer, {
                 show: openDrawer === 'info',
-                engines: attachedEngines,
                 gameTree,
                 gameInfo,
                 currentPlayer

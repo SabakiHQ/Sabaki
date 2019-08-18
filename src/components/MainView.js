@@ -76,15 +76,13 @@ class MainView extends Component {
         treePosition,
         currentPlayer,
         gameInfo,
-        attachedEngines,
-        engineBusy,
-        analysisTreePosition,
 
         deadStones,
         scoringMethod,
         scoreBoard,
         playVariation,
         analysis,
+        analysisTreePosition,
         areaMap,
         blockedGuesses,
 
@@ -172,8 +170,6 @@ class MainView extends Component {
             h('section', {id: 'bar'},
                 h(PlayBar, {
                     mode,
-                    attachedEngines,
-                    playerBusy: engineBusy,
                     playerNames: gameInfo.playerNames,
                     playerRanks: gameInfo.playerRanks,
                     playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),

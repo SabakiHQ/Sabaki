@@ -19,10 +19,7 @@ class PlayBar extends Component {
             helper.popupMenu([
                 {
                     label: t('&Pass'),
-                    click: () => {
-                        let autoGenmove = setting.get('gtp.auto_genmove')
-                        sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
-                    }
+                    click: () => sabaki.makeMove([-1, -1])
                 },
                 {
                     label: t('&Resign'),
@@ -60,8 +57,6 @@ class PlayBar extends Component {
 
     render({
         mode,
-        attachedEngines,
-        playerBusy,
         playerNames,
         playerRanks,
         playerCaptures,
@@ -71,15 +66,6 @@ class PlayBar extends Component {
         onCurrentPlayerClick = helper.noop
     }) {
         let captureStyle = index => ({opacity: playerCaptures[index] === 0 ? 0 : .7})
-        let isEngine = Array(attachedEngines.length).fill(false)
-
-        attachedEngines.forEach((engine, i) => {
-            if (engine == null) return
-
-            playerNames[i] = engine.name
-            playerRanks[i] = null
-            isEngine[i] = true
-        })
 
         return h('header',
             {
@@ -103,11 +89,8 @@ class PlayBar extends Component {
 
                 h('span',
                     {
-                        class: classNames('name', {engine: isEngine[0]}),
-                        title: isEngine[0] && t('Engine')
+                        class: 'name'
                     },
-                    isEngine[0] && playerBusy[0] && h(TextSpinner),
-                    ' ',
                     playerNames[0] || t('Black')
                 )
             ),
@@ -135,12 +118,9 @@ class PlayBar extends Component {
             h('span', {class: 'playercontent player_-1'},
                 h('span',
                     {
-                        class: classNames('name', {engine: isEngine[1]}),
-                        title: isEngine[1] && t('Engine')
+                        class: 'name'
                     },
                     playerNames[1] || t('White'),
-                    ' ',
-                    isEngine[1] && playerBusy[1] && h(TextSpinner)
                 ), ' ',
 
                 playerRanks[1] && h('span',
