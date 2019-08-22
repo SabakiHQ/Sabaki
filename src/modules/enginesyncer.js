@@ -10,8 +10,7 @@ const helper = require('./helper')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 function parseVertex(coord, size) {
-    if (coord == null || coord === 'resign') return null
-    if (coord === 'pass') return [-1, -1]
+    if (coord == null || coord === 'resign' || coord === 'pass') return [-1, -1]
 
     let x = alpha.indexOf(coord[0].toUpperCase())
     let y = size - +coord.slice(1)
@@ -93,13 +92,13 @@ class EngineSyncer extends EventEmitter {
 
         // Replay
 
+        let nodeBoard = gametree.getBoard(tree, id)
         let engineBoard = Board.fromDimensions(board.width, board.height)
         let history = []
         let boardSynced = true
         let nodes = [...tree.listNodesVertically(id, -1, {})].reverse()
 
         for (let node of nodes) {
-            let nodeBoard = gametree.getBoard(tree, node.id)
             let placedHandicapStones = false
 
             if (
@@ -146,11 +145,11 @@ class EngineSyncer extends EventEmitter {
                     engineBoard = engineBoard.makeMove(sign, vertex)
                 }
             }
+        }
 
-            if (!helper.equals(engineBoard.signMap, nodeBoard.signMap)) {
-                boardSynced = false
-                break
-            }
+        if (!helper.equals(engineBoard.signMap, nodeBoard.signMap)) {
+            boardSynced = false
+            break
         }
 
         // Incremental rearrangement
