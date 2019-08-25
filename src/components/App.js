@@ -1588,6 +1588,33 @@ class App extends Component {
         this.autoscrollId = null
     }
 
+    // Engine Management
+
+    attachEngines(engines) {
+        let attachedEngineSyncers = []
+
+        for (let engine of engines) {
+            let syncer = new EngineSyncer(engine)
+            syncer.controller.start()
+
+            attachedEngineSyncers.push(syncer)
+        }
+
+        this.setState({attachedEngineSyncers})
+    }
+
+    async detachEngines(syncerIds) {
+        let detachEngineSyncers = this.state.attachedEngineSyncers
+            .filter(syncer => syncerIds.includes(syncer.id))
+
+        await Promise.all(detachEngineSyncers.map(syncer => syncer.stop()))
+
+        this.setState({
+            attachedEngineSyncers: this.state.attachedEngineSyncers
+                .filter(syncer => !syncerIds.includes(syncer.id))
+        })
+    }
+
     // Find Methods
 
     async findPosition(step, condition) {
@@ -1637,6 +1664,20 @@ class App extends Component {
             return (!point || ['B', 'W'].some(x => cond(x, point)))
                 && (!text || cond('C', text) || cond('N', text))
         })
+    }
+
+    // View
+
+    setBoardTransformation(transformation) {
+        this.setState({
+            boardTransformation: gobantransformer.normalize(transformation)
+        })
+    }
+
+    pushBoardTransformation(transformation) {
+        this.setState(({boardTransformation}) => ({
+            boardTransformation: gobantransformer.normalize(boardTransformation + transformation)
+        }))
     }
 
     // Node Actions
@@ -1842,18 +1883,6 @@ class App extends Component {
         })
 
         this.setCurrentTreePosition(newTree, treePosition)
-    }
-
-    setBoardTransformation(transformation) {
-        this.setState({
-            boardTransformation: gobantransformer.normalize(transformation)
-        })
-    }
-
-    pushBoardTransformation(transformation) {
-        this.setState(({boardTransformation}) => ({
-            boardTransformation: gobantransformer.normalize(boardTransformation + transformation)
-        }))
     }
 
     copyVariation(tree, treePosition) {

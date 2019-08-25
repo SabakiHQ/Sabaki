@@ -1,5 +1,7 @@
+import {remote} from 'electron'
 import EventEmitter from 'events'
 import {dirname, resolve} from 'path'
+import uuid from 'uuid/v4'
 import {fromDimensions as newBoard} from '@sabaki/go-board'
 import {Controller, ControllerStateTracker, Command} from '@sabaki/gtp'
 import {parseCompressedVertices} from '@sabaki/sgf'
@@ -7,7 +9,9 @@ import argvsplit from 'argv-split'
 import {getBoard, getRootProperty} from './gametree.js'
 import {noop, equals} from './helper.js'
 
+const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const quitTimeout = setting.get('gtp.engine_quit_timeout')
 
 function parseVertex(coord, size) {
   if (coord == null || coord === 'resign') return null
@@ -28,6 +32,7 @@ export class EngineSyncer extends EventEmitter {
     this._busy = false
     this._suspended = true
 
+    this.id = uuid()
     this.engine = engine
     this.commands = []
 
@@ -90,6 +95,14 @@ export class EngineSyncer extends EventEmitter {
       this._suspended = this.suspended
       this.emit('suspended-changed')
     }
+  }
+
+  start() {
+    this.controller.start()
+  }
+
+  async stop() {
+    await this.controller.stop(quitTimeout)
   }
 
   async sync(tree, id) {
