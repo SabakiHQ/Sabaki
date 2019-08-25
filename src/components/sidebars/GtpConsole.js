@@ -2,9 +2,9 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {Command} = require('@sabaki/gtp')
 
-const ContentDisplay = require('./ContentDisplay')
-const TextSpinner = require('./TextSpinner')
-const helper = require('../modules/helper')
+const ContentDisplay = require('../ContentDisplay')
+const TextSpinner = require('../TextSpinner')
+const helper = require('../../modules/helper')
 
 class ConsoleCommandEntry extends Component {
     shouldComponentUpdate({sign, name, command}) {

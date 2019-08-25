@@ -4,11 +4,11 @@ const classNames = require('classnames')
 const boardmatcher = require('@sabaki/boardmatcher')
 const sgf = require('@sabaki/sgf')
 
-const MarkdownContentDisplay = require('./MarkdownContentDisplay')
+const MarkdownContentDisplay = require('../MarkdownContentDisplay')
 
-const t = require('../i18n').context('CommentBox')
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
+const t = require('../../i18n').context('CommentBox')
+const gametree = require('../../modules/gametree')
+const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
 let commentsCommitDelay = setting.get('comments.commit_delay')

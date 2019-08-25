@@ -305,7 +305,8 @@ header {
 }
 
 #leftsidebar {
-        position: relative;
+        display: grid;
+        grid-template: 100% / 100%;
         background: #111;
         visibility: hidden;
         z-index: 10;
@@ -314,15 +315,10 @@ header {
         visibility: visible;
 }
 
-#console {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-    }
-    #console, #console pre, #console input,
-    #console select, #console option {
+#console, #console pre, #console input,
+#console select, #console option {
+        display: grid;
+        grid-template-rows: calc(100% - 40px) 40px;
         background: inherit;
         color: #d0d0d0;
         font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
@@ -331,11 +327,6 @@ header {
         padding-right: 0;
     }
     #console .log {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 40px;
         padding: 15px;
         overflow: auto;
         list-style: none;
@@ -353,32 +344,21 @@ header {
         margin-left: 15px;
     }
     #console .input {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 40px;
+        display: flex;
         background: #181818;
         overflow: hidden;
     }
     #console .input select {
         box-sizing: border-box;
-        position: absolute;
-        left: 0;
         width: 100px;
-        top: 0;
-        bottom: 0;
     }
     #console .input select, #console .input option {
         text-align: right;
     }
     #console .input input {
         box-sizing: border-box;
-        position: absolute;
         left: 100px;
         width: calc(100% - 100px);
-        top: 0;
-        bottom: 0;
         background: transparent;
         z-index: 3;
     }
