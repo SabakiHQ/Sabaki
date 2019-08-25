@@ -411,7 +411,7 @@ header {
 #sidebar {
         position: relative;
         display: grid;
-        grid-template: 1fr / 1fr;
+        grid-template: 100% / 100%;
         background: #111;
         visibility: hidden;
         z-index: 10;
