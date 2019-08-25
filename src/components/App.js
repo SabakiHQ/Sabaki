@@ -25,7 +25,7 @@ const influence = require('@sabaki/influence')
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
 const i18n = require('../i18n')
-const EngineSyncer = require('../modules/enginesyncer')
+const {EngineSyncer} = require('../modules/enginesyncer')
 const dialog = require('../modules/dialog')
 const fileformats = require('../modules/fileformats')
 const gametree = require('../modules/gametree')

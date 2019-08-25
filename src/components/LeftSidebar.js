@@ -28,7 +28,9 @@ export class LeftSidebar extends Component {
         invert: true,
         sideSize: 200,
 
-        sideContent: h(EnginePeerList),
+        sideContent: h(EnginePeerList, {
+          attachedEngineSyncers
+        }),
 
         mainContent: h(GtpConsole, {
           show: showLeftSidebar,
