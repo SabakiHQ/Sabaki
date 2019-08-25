@@ -1,31 +1,29 @@
-const {h, Component} = require('preact')
+import {h, Component} from 'preact'
 
-class TextSpinner extends Component {
-    constructor(props) {
-        super(props)
+export class TextSpinner extends Component {
+  constructor(props) {
+    super(props)
 
-        this.state = {
-            frame: 0
-        }
+    this.state = {
+      frame: 0
     }
+  }
 
-    componentDidMount() {
-        this.animationIntervalId = setInterval(() => {
-            this.setState(({frame}) => ({
-                frame: frame + 1
-            }))
-        }, this.props.interval || 100)
-    }
+  componentDidMount() {
+    this.animationIntervalId = setInterval(() => {
+      this.setState(({frame}) => ({
+        frame: frame + 1
+      }))
+    }, this.props.interval || 100)
+  }
 
-    componentWillUnmount() {
-        clearInterval(this.animationIntervalId)
-    }
+  componentWillUnmount() {
+    clearInterval(this.animationIntervalId)
+  }
 
-    render() {
-        let {frames = '-\\|/'} = this.props
+  render() {
+    let {frames = '-\\|/'} = this.props
 
-        return h('span', {}, frames[this.state.frame % frames.length])
-    }
+    return h('span', {class: 'text-spinner'}, frames[this.state.frame % frames.length])
+  }
 }
-
-module.exports = TextSpinner

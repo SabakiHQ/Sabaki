@@ -2,11 +2,8 @@ const {h, Component} = require('preact')
 const classNames = require('classnames')
 const {remote} = require('electron')
 
-const TextSpinner = require('../TextSpinner')
-
 const t = require('../../i18n').context('PlayBar')
 const helper = require('../../modules/helper')
-const setting = remote.require('./setting')
 
 class PlayBar extends Component {
     constructor() {

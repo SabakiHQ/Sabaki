@@ -3,7 +3,7 @@ const classNames = require('classnames')
 const {Command} = require('@sabaki/gtp')
 
 const ContentDisplay = require('../ContentDisplay')
-const TextSpinner = require('../TextSpinner')
+const {TextSpinner} = require('../TextSpinner')
 const helper = require('../../modules/helper')
 
 class ConsoleCommandEntry extends Component {

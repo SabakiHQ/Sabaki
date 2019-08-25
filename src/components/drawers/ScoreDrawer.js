@@ -73,7 +73,7 @@ class ScoreDrawer extends Component {
 
             h('h2', {}, 'Score'),
 
-            h('ul', {class: 'tabs'},
+            h('ul', {class: 'tab-bar'},
                 h('li', {class: classNames({current: method === 'area'})},
                     h('a', {
                         href: '#',

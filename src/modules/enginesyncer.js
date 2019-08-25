@@ -26,6 +26,8 @@ class EngineSyncer extends EventEmitter {
         let {path, args, commands} = engine
 
         this._busy = false
+        this._suspended = true
+
         this.engine = engine
         this.commands = []
 
@@ -54,11 +56,12 @@ class EngineSyncer extends EventEmitter {
             ]).catch(helper.noop)
         })
 
-        // Sync busy property
+        // Sync properties
 
-        for (let eventName of ['stopped', 'command-sent', 'response-received']) {
+        for (let eventName of ['started', 'stopped', 'command-sent', 'response-received']) {
             this.controller.on(eventName, () => {
                 this.busy = this.controller.busy
+                this.suspended = this.controller.process == null
             })
         }
     }
@@ -75,6 +78,17 @@ class EngineSyncer extends EventEmitter {
         if (value !== this._busy) {
             this._busy = value
             this.emit('busy-changed')
+        }
+    }
+
+    get suspended() {
+        return this._suspended
+    }
+
+    set suspended(value) {
+        if (value !== this._suspended) {
+            this._suspended = this.suspended
+            this.emit('suspended-changed')
         }
     }
 

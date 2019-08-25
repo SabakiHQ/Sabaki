@@ -616,7 +616,7 @@ class PreferencesDrawer extends Component {
                 show
             },
 
-            h('ul', {class: 'tabs'},
+            h('ul', {class: 'tab-bar'},
                 h('li', {
                         class: classNames({general: true, current: tab === 'general'}),
                         onClick: this.handleTabClick

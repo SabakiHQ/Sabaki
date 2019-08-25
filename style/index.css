@@ -764,23 +764,23 @@ header {
     #score h2 {
         font-weight: normal;
     }
-    #score .tabs {
+    #score .tab-bar {
         position: absolute;
         top: 27px;
         left: 96px;
         right: 20px;
         text-align: left;
     }
-    #score .tabs li a {
+    #score .tab-bar li a {
         border-color: rgba(0, 0, 0, .2);
         color: #333;
     }
-    #score .tabs li.current a {
+    #score .tab-bar li.current a {
         border-color: transparent;
         background: rgba(0, 0, 0, .2);
     }
-    #score .tabs li:not(.current) a:hover,
-    #score .tabs li:not(.current) a:focus {
+    #score .tab-bar li:not(.current) a:hover,
+    #score .tab-bar li:not(.current) a:focus {
         border-color: transparent;
         background: rgba(0, 0, 0, .1);
     }
@@ -1100,14 +1100,14 @@ header {
     background-size: 200%;
 }
 
-.tabs {
+.tab-bar {
         list-style: none;
         text-align: center;
     }
-    .tabs li {
+    .tab-bar li {
         display: inline-block;
     }
-    .tabs li a {
+    .tab-bar li a {
         display: inline-block;
         border: 1px solid #1a1a1a;
         border-left: none;
@@ -1116,14 +1116,14 @@ header {
         text-decoration: none;
         transition: background .2s, border-color .2s;
     }
-    .tabs li:first-child a {
+    .tab-bar li:first-child a {
         border-left: 1px solid #1a1a1a;
     }
-    .tabs li.current a {
+    .tab-bar li.current a {
         border-color: transparent;
         background: #111;
     }
-    .tabs li:not(.current) a:hover, .tabs li:not(.current) a:focus {
+    .tab-bar li:not(.current) a:hover, .tab-bar li:not(.current) a:focus {
         border-color: transparent;
         background: #1a1a1a;
 }
@@ -1260,6 +1260,10 @@ header {
     }
     .properties-list td.action a.remove:active {
         background: #C60001;
+}
+
+.text-spinner {
+    font-family: Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
 }
 
 #info-overlay {
