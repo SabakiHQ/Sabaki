@@ -1,12 +1,28 @@
+import {remote} from 'electron'
 import {h, Component} from 'preact'
 
 import {SplitContainer} from './helpers/SplitContainer.js'
 import {GtpConsole} from './sidebars/GtpConsole.js'
 import {EnginePeerList} from './sidebars/PeerList.js'
 
+const setting = remote.require('./setting')
+const peerListMinHeight = setting.get('view.peerlist_minheight')
+
 export class LeftSidebar extends Component {
   constructor() {
     super()
+
+    this.state = {
+      peerListHeight: setting.get('view.peerlist_height')
+    }
+
+    this.handlePeerListHeightChange = ({sideSize}) => {
+      this.setState({peerListHeight: Math.max(sideSize, peerListMinHeight)})
+    }
+
+    this.handlePeerListHeightFinish = () => {
+      setting.set('view.peerlist_height', this.state.peerListHeight)
+    }
 
     this.handleCommandSubmit = ({engineIndex, command}) => {
     }
@@ -16,7 +32,14 @@ export class LeftSidebar extends Component {
     return nextProps.showLeftSidebar != this.props.showLeftSidebar || nextProps.showLeftSidebar
   }
 
-  render({attachedEngineSyncers, showLeftSidebar, consoleLog}) {
+  render({
+    attachedEngineSyncers,
+    analyzingEngineSyncerId,
+    showLeftSidebar,
+    consoleLog
+  }, {
+    peerListHeight
+  }) {
     return h('section',
       {
         ref: el => this.element = el,
@@ -26,10 +49,11 @@ export class LeftSidebar extends Component {
       h(SplitContainer, {
         vertical: true,
         invert: true,
-        sideSize: 200,
+        sideSize: peerListHeight,
 
         sideContent: h(EnginePeerList, {
-          attachedEngineSyncers
+          attachedEngineSyncers,
+          analyzingEngineSyncerId
         }),
 
         mainContent: h(GtpConsole, {
@@ -44,7 +68,10 @@ export class LeftSidebar extends Component {
           })),
 
           onSubmit: this.handleCommandSubmit
-        })
+        }),
+
+        onChange: this.handlePeerListHeightChange,
+        onFinish: this.handlePeerListHeightFinish
       })
     )
   }

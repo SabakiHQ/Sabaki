@@ -344,21 +344,30 @@ header {
     margin-left: 15px;
   }
   #console .input {
-    display: flex;
+    position: relative;
     background: #181818;
     overflow: hidden;
   }
   #console .input select {
     box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
     width: 100px;
   }
   #console .input select, #console .input option {
     text-align: right;
   }
+  #console .input input, #console .input .autocomplete {
+    position: absolute;
+    left: 100px;
+    top: 0;
+    bottom: 0;
+    width: calc(100% - 100px);
+  }
   #console .input input {
     box-sizing: border-box;
-    left: 100px;
-    width: calc(100% - 100px);
     background: transparent;
     z-index: 3;
   }
@@ -1297,16 +1306,33 @@ header {
     display: flex;
     flex-direction: column;
     list-style: none;
+    overflow: auto;
   }
   .engine-peer-list .item {
     display: flex;
-    padding: .2rem .5rem;
+    padding: .2rem .5rem .2rem .3rem;
+  }
+  .engine-peer-list .item .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    filter: invert(100%);
+    opacity: .3;
+  }
+  .engine-peer-list .item .text-spinner {
+    width: 1.5em;
+    text-align: center;
   }
   .engine-peer-list .item .name {
     flex: 1;
+    margin: 0 .3rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+  .engine-peer-list .item .analyzing {
+    opacity: .8;
 }
 
 /* Override Shudan styles */

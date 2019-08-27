@@ -97,6 +97,7 @@ class App extends Component {
 
       engines: null,
       attachedEngineSyncers: [],
+      analyzingEngineSyncerId: null,
       analysisTreePosition: null,
       analysis: null,
 

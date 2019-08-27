@@ -161,7 +161,7 @@ class ConsoleInput extends Component {
     let selectedEngine = attachedEngines[engineIndex]
     let selectWidth = Math.max(
       5,
-      selectedEngine ? selectedEngine.name.trim().length + 3 : 3
+      selectedEngine ? selectedEngine.name.trim().length : 3
     ) * 10 + 15
     let inputStyle = {left: selectWidth, width: `calc(100% - ${selectWidth}px)`}
 
