@@ -12,7 +12,7 @@
 #properties .inner h4,
 #properties .inner h5,
 #properties .inner h6 {
-    margin: 1em 0;
+  margin: 1em 0;
 }
 
 #properties .inner h1,
@@ -21,41 +21,41 @@
 #properties .inner h4,
 #properties .inner h5,
 #properties .inner h6 {
-    font-size: 1em;
-    font-weight: bold;
-    text-transform: none;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: none;
 }
 
 #properties .inner ul,
 #properties .inner ol {
-    margin-left: 1.5em;
+  margin-left: 1.5em;
 }
 #properties .inner ul ul,
 #properties .inner ul ol,
 #properties .inner ol ol,
 #properties .inner ol ul {
-    margin-top: 0;
-    margin-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 #properties .inner blockquote {
-    background-image: linear-gradient(to right, #393939 4px, transparent 4px);
-    padding-left: 1.2em;
-    margin-left: .3em;
+  background-image: linear-gradient(to right, #393939 4px, transparent 4px);
+  padding-left: 1.2em;
+  margin-left: .3em;
 }
 
 #properties .inner a {
-    color: white;
-    cursor: pointer;
+  color: white;
+  cursor: pointer;
 }
 
 #properties .inner h1::after,
 #properties .inner h2::after,
 #properties .inner hr {
-    content: '';
-    display: block;
-    border: 0;
-    margin: 1em 0;
-    height: 2px;
-    background: #393939;
+  content: '';
+  display: block;
+  border: 0;
+  margin: 1em 0;
+  height: 2px;
+  background: #393939;
 }

@@ -92,7 +92,7 @@ export class EngineSyncer extends EventEmitter {
 
   set suspended(value) {
     if (value !== this._suspended) {
-      this._suspended = this.suspended
+      this._suspended = value
       this.emit('suspended-changed')
     }
   }

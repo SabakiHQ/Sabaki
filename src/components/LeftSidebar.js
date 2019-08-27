@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
 
-import SplitContainer from './helpers/SplitContainer.js'
-import GtpConsole from './sidebars/GtpConsole.js'
+import {SplitContainer} from './helpers/SplitContainer.js'
+import {GtpConsole} from './sidebars/GtpConsole.js'
 import {EnginePeerList} from './sidebars/PeerList.js'
 
 export class LeftSidebar extends Component {

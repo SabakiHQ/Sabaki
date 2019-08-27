@@ -1,4 +1,17 @@
+import EventEmitter from 'events'
 import {h, Component} from 'preact'
+
+const pulse = ((frame = 0) => {
+  let pulse = new EventEmitter()
+
+  pulse.setMaxListeners(Infinity)
+  setInterval(() => {
+    pulse.emit('tick', {frame})
+    frame++
+  }, 100)
+
+  return pulse
+})()
 
 export class TextSpinner extends Component {
   constructor(props) {
@@ -7,23 +20,23 @@ export class TextSpinner extends Component {
     this.state = {
       frame: 0
     }
+
+    this.handleTick = evt => {
+      this.setState({frame: evt.frame})
+    }
   }
 
   componentDidMount() {
-    this.animationIntervalId = setInterval(() => {
-      this.setState(({frame}) => ({
-        frame: frame + 1
-      }))
-    }, this.props.interval || 100)
+    pulse.on('tick', this.handleTick)
   }
 
   componentWillUnmount() {
-    clearInterval(this.animationIntervalId)
+    pulse.removeListener('tick', this.handleTick)
   }
 
   render() {
-    let {frames = '-\\|/'} = this.props
+    let {enabled = true, frames = '-\\|/'} = this.props
 
-    return h('span', {class: 'text-spinner'}, frames[this.state.frame % frames.length])
+    return h('span', {class: 'text-spinner'}, !enabled ? '' : frames[this.state.frame % frames.length])
   }
 }

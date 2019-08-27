@@ -41,7 +41,7 @@ class EnginePeerListItem extends Component {
         })
       },
 
-      h(TextSpinner),
+      h(TextSpinner, {enabled: this.state.busy}),
       h('span', {class: 'name'}, syncer.engine.name)
     )
   }
