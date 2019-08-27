@@ -31,10 +31,10 @@ For example:
 
 Make sure you have [node.js](https://nodejs.org/) and npm installed. If you don't have `asar` installed already, run:
 
-	$ npm install asar -g
+    $ npm install asar -g
 
 To pack your userstyle into a theme, run the following command:
 
-	$ asar pack ./theme ./theme.asar
+    $ asar pack ./theme ./theme.asar
 
 `theme.asar` will be created and is ready for distribution. It can be installed in Preferences.
