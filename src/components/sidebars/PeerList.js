@@ -21,6 +21,11 @@ class EnginePeerListItem extends Component {
         suspended: this.props.syncer.suspended
       })
     }
+
+    this.handleClick = evt => {
+      let {syncer, onClick = () => {}} = this.props
+      onClick({syncer})
+    }
   }
 
   componentDidMount() {
@@ -35,14 +40,17 @@ class EnginePeerListItem extends Component {
     .removeListener('suspended-changed', this.syncState)
   }
 
-  render({syncer, analyzing}) {
+  render({syncer, analyzing, selected}) {
     return h('li',
       {
         class: classnames('item', {
           analyzing,
+          selected,
           busy: this.state.busy,
           suspended: this.state.suspended
-        })
+        }),
+
+        onClick: this.handleClick
       },
 
       !this.state.busy
@@ -77,7 +85,20 @@ class EnginePeerListItem extends Component {
 }
 
 export class EnginePeerList extends Component {
-  render({attachedEngineSyncers, analyzingEngineSyncerId}) {
+  constructor(props) {
+    super(props)
+
+    this.handleEngineClick = evt => {
+      let {onEngineSelect = () => {}} = this.props
+      onEngineSelect(evt)
+    }
+  }
+
+  render({
+    attachedEngineSyncers,
+    selectedEngineSyncerId,
+    analyzingEngineSyncerId
+  }) {
     return h('div',
       {
         class: 'engine-peer-list'
@@ -85,7 +106,10 @@ export class EnginePeerList extends Component {
       h('ul', {}, attachedEngineSyncers.map(syncer =>
         h(EnginePeerListItem, {
           syncer,
-          analyzing: syncer.id === analyzingEngineSyncerId
+          analyzing: syncer.id === analyzingEngineSyncerId,
+          selected: syncer.id === selectedEngineSyncerId,
+
+          onClick: this.handleEngineClick
         })
       ))
     )

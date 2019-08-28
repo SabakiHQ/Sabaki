@@ -19,7 +19,7 @@ class ConsoleCommandEntry extends Component {
 
     return h('li', {class: 'command'},
       h('pre', {},
-        h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`), ' ',
+        h('span', {class: 'internal'}, `${['● ', '', '○ '][sign + 1]}${name}>`), ' ',
 
         command.id != null && [h('span', {class: 'id'}, command.id), ' '],
         command.name, ' ',
@@ -82,13 +82,12 @@ class ConsoleInput extends Component {
       if (evt.key === 'Enter') {
         evt.preventDefault()
 
-        let {engineIndex, onSubmit = noop} = this.props
+        let {onSubmit = noop} = this.props
         let {commandInputText} = this.state
 
         if (commandInputText.trim() === '') return
 
         onSubmit({
-          engineIndex,
           command: Command.fromString(commandInputText)
         })
 
@@ -145,50 +144,28 @@ class ConsoleInput extends Component {
   }
 
   get autocompleteText() {
-    let {engineIndex, attachedEngines} = this.props
+    let {attachedEngine} = this.props
     let {commandInputText} = this.state
 
-    if (attachedEngines[engineIndex] && commandInputText.length > 0) {
-      return attachedEngines[engineIndex].commands
+    if (attachedEngine && commandInputText.length > 0) {
+      return attachedEngine.commands
         .find(x => x.indexOf(commandInputText) === 0) || ''
     }
 
     return ''
   }
 
-  render({engineIndex, attachedEngines}, {commandInputText}) {
-    let hasEngines = attachedEngines.length > 0
-    let selectedEngine = attachedEngines[engineIndex]
-    let selectWidth = Math.max(
-      5,
-      selectedEngine ? selectedEngine.name.trim().length : 3
-    ) * 10 + 15
-    let inputStyle = {left: selectWidth, width: `calc(100% - ${selectWidth}px)`}
+  render({attachedEngine}, {commandInputText}) {
+    let disabled = attachedEngine == null
 
     return h('form', {class: 'input'},
-      h('select',
-        {
-          disabled: !hasEngines || attachedEngines.length === 1,
-          style: {width: selectWidth},
-
-          onChange: this.props.onSelectChange
-        },
-
-        attachedEngines.map((engine, i) =>
-          h('option', {
-            value: i,
-            selected: engineIndex === i
-          }, `${engine.name.trim()}>`)
-        )
-      ),
-
       h('input', {
         ref: el => this.inputElement = el,
         class: 'command',
-        disabled: !hasEngines,
+        disabled,
         type: 'text',
         value: commandInputText,
-        style: inputStyle,
+        placeholder: attachedEngine != null && `${attachedEngine.name}>`,
 
         onInput: this.handleInputChange,
         onKeyDown: this.handleKeyDown
@@ -197,10 +174,9 @@ class ConsoleInput extends Component {
       h('input', {
         ref: el => this.inputAutocompleteElement = el,
         class: 'autocomplete',
-        disabled: !hasEngines,
+        disabled,
         type: 'text',
         value: this.autocompleteText,
-        style: inputStyle
       })
     )
   }
@@ -211,25 +187,9 @@ export class GtpConsole extends Component {
     super()
 
     this.scrollToBottom = true
-
-    this.state = {
-      engineIndex: -1
-    }
-
-    this.handleSelectChange = evt => {
-      this.setState({engineIndex: +evt.currentTarget.value})
-      this.inputElement.focus()
-    }
   }
 
-  componentWillReceiveProps({consoleLog, attachedEngines}) {
-    let {engineIndex} = this.state
-
-    if (attachedEngines[engineIndex] == null) {
-      let index = attachedEngines.findIndex(x => x != null)
-      if (engineIndex !== index) this.setState({engineIndex: index})
-    }
-
+  componentWillReceiveProps({consoleLog}) {
     this.inputPointer = consoleLog.length
   }
 
@@ -259,7 +219,7 @@ export class GtpConsole extends Component {
     return 0
   }
 
-  render({consoleLog, attachedEngines, engineCommands}, {engineIndex}) {
+  render({consoleLog, attachedEngine}) {
     return h('section', {id: 'console'},
       h('ol',
         {
@@ -287,11 +247,8 @@ export class GtpConsole extends Component {
         ref: component => this.inputElement = component.inputElement,
 
         consoleLog,
-        attachedEngines,
-        engineCommands,
-        engineIndex,
+        attachedEngine,
 
-        onSelectChange: this.handleSelectChange,
         onSubmit: this.props.onSubmit
       })
     )

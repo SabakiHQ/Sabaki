@@ -13,7 +13,8 @@ export class LeftSidebar extends Component {
     super()
 
     this.state = {
-      peerListHeight: setting.get('view.peerlist_height')
+      peerListHeight: setting.get('view.peerlist_height'),
+      selectedEngineSyncerId: null
     }
 
     this.handlePeerListHeightChange = ({sideSize}) => {
@@ -22,6 +23,10 @@ export class LeftSidebar extends Component {
 
     this.handlePeerListHeightFinish = () => {
       setting.set('view.peerlist_height', this.state.peerListHeight)
+    }
+
+    this.handleEngineSelect = ({syncer}) => {
+      this.setState({selectedEngineSyncerId: syncer.id})
     }
 
     this.handleCommandSubmit = ({engineIndex, command}) => {
@@ -38,7 +43,8 @@ export class LeftSidebar extends Component {
     showLeftSidebar,
     consoleLog
   }, {
-    peerListHeight
+    peerListHeight,
+    selectedEngineSyncerId
   }) {
     return h('section',
       {
@@ -53,19 +59,23 @@ export class LeftSidebar extends Component {
 
         sideContent: h(EnginePeerList, {
           attachedEngineSyncers,
-          analyzingEngineSyncerId
+          analyzingEngineSyncerId,
+          selectedEngineSyncerId,
+
+          onEngineSelect: this.handleEngineSelect
         }),
 
         mainContent: h(GtpConsole, {
           show: showLeftSidebar,
           consoleLog,
-          engineIndex: 0,
-          attachedEngines: attachedEngineSyncers.map(syncer => ({
-            name: syncer.engine.name,
-            get commands() {
-              return syncer.commands
+          attachedEngine: attachedEngineSyncers.map(syncer =>
+            syncer.id !== selectedEngineSyncerId ? null : {
+              name: syncer.engine.name,
+              get commands() {
+                return syncer.commands
+              }
             }
-          })),
+          ).find(x => x != null),
 
           onSubmit: this.handleCommandSubmit
         }),
@@ -74,5 +84,18 @@ export class LeftSidebar extends Component {
         onFinish: this.handlePeerListHeightFinish
       })
     )
+  }
+}
+
+LeftSidebar.getDerivedStateFromProps = (props, state) => {
+  if (
+    props.attachedEngineSyncers.length > 0
+    && props.attachedEngineSyncers.find(syncer =>
+      syncer.id === state.selectedEngineSyncerId
+    ) == null
+  ) {
+    return {selectedEngineSyncerId: props.attachedEngineSyncers[0].id}
+  } else if (props.attachedEngineSyncers.length === 0) {
+    return {selectedEngineSyncerId: null}
   }
 }

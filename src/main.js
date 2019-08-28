@@ -41,7 +41,6 @@ function newWindow(path) {
     window = null
   })
 
-  window.webContents.openDevTools()
   window.webContents.setAudioMuted(!setting.get('sound.enable'))
 
   window.webContents.on('did-finish-load', () => {

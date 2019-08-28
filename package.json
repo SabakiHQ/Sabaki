@@ -64,8 +64,8 @@
     "@mariotacke/color-thief": "^3.0.1",
     "@sabaki/boardmatcher": "^1.1.5",
     "@sabaki/deadstones": "^2.1.2",
-    "@sabaki/go-board": "^1.0.0",
-    "@sabaki/gtp": "^1.9.1",
+    "@sabaki/go-board": "^1.2.0",
+    "@sabaki/gtp": "^1.9.2",
     "@sabaki/immutable-gametree": "^1.8.1",
     "@sabaki/influence": "^1.2.1",
     "@sabaki/sgf": "^3.4.1",
@@ -78,22 +78,22 @@
     "natsort": "^2.0.2",
     "octicons": "^8.5.0",
     "pikaday": "^1.8.0",
-    "preact": "^8.5.1",
+    "preact": "^8.5.2",
     "react-markdown": "^3.6.0",
     "recursive-copy": "^2.0.10",
     "remark-breaks": "^1.0.3",
     "rimraf": "^2.7.1",
-    "uuid": "^3.3.2",
+    "uuid": "^3.3.3",
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "electron": "^6.0.1",
+    "electron": "^6.0.5",
     "electron-builder": "^21.2.0",
     "mocha": "^6.2.0",
     "react": "^16.9.0",
     "tmp": "^0.1.0",
-    "webpack": "^4.39.1",
-    "webpack-cli": "^3.3.6"
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7"
   },
   "scripts": {
     "test": "mocha",

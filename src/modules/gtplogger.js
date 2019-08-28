@@ -27,12 +27,8 @@ exports.write = function(stream) {
         : stream.type === 'meta' ? ' (meta)'
         : ''
 
-    let color = stream.sign > 0 ? 'B'
-        : stream.sign < 0 ? 'W'
-        : ''
-
     try {
-        winstonLogger.log('info', `${color} <${stream.engine}> ${typeText} : ${stream.message}`)
+        winstonLogger.log('info', `<${stream.engine}> ${typeText} : ${stream.message}`)
     } catch(err) {}
 }
 

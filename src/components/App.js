@@ -1592,11 +1592,99 @@ class App extends Component {
 
   // Engine Management
 
+  handleCommandSent({syncer, command, subscribe, getResponse}) {
+    let t = i18n.context('app.engine')
+    let entry = {name: syncer.engine.name, command, waiting: true}
+    let maxLength = setting.get('console.max_history_count')
+
+    this.setState(({consoleLog}) => {
+      let newLog = consoleLog.slice(Math.max(consoleLog.length - maxLength + 1, 0))
+      newLog.push(entry)
+
+      return {consoleLog: newLog}
+    })
+
+    let updateEntry = update => {
+      Object.assign(entry, update)
+      this.setState(({consoleLog}) => ({consoleLog}))
+    }
+
+    subscribe(({line, response, end}) => {
+      updateEntry({
+        response,
+        waiting: !end
+      })
+
+      gtplogger.write({
+        type: 'stdout',
+        message: line,
+        engine: syncer.engine.name
+      })
+    })
+
+    getResponse()
+    .catch(_ => {
+      gtplogger.write({
+        type: 'meta',
+        message: 'Connection Failed',
+        engine: syncer.engine.name
+      })
+
+      updateEntry({
+        response: {internal: true, content: t('connection failed')},
+        waiting: false
+      })
+    })
+  }
+
   attachEngines(engines) {
     let attaching = []
 
     for (let engine of engines) {
       let syncer = new EngineSyncer(engine)
+
+      syncer.controller.on('command-sent', evt => {
+        gtplogger.write({
+          type: 'stdin',
+          message: gtp.Command.toString(evt.command),
+          engine: engine.name
+        })
+
+        this.handleCommandSent({syncer, ...evt})
+      })
+
+      syncer.controller.on('stderr', ({content}) => {
+        gtplogger.write({
+          type: 'stderr',
+          message: content,
+          engine: engine.name
+        })
+
+        this.setState(({consoleLog}) => ({
+          consoleLog: [...consoleLog, {
+            name: engine.name,
+            command: null,
+            response: {content, internal: true}
+          }]
+        }))
+      })
+
+      syncer.controller.on('started', () => {
+        gtplogger.write({
+          type: 'meta',
+          message: 'Engine Started',
+          engine: engine.name
+        })
+      })
+
+      syncer.controller.on('stopped', () => {
+        gtplogger.write({
+          type: 'meta',
+          message: 'Engine Stopped',
+          engine: engine.name
+        })
+      })
+
       syncer.controller.start()
 
       attaching.push(syncer)
@@ -1611,12 +1699,14 @@ class App extends Component {
     let detachEngineSyncers = this.state.attachedEngineSyncers
       .filter(syncer => syncerIds.includes(syncer.id))
 
-    await Promise.all(detachEngineSyncers.map(syncer => syncer.stop()))
+    await Promise.all(detachEngineSyncers.map(async syncer => {
+      await syncer.stop()
 
-    this.setState({
-      attachedEngineSyncers: this.state.attachedEngineSyncers
-        .filter(syncer => !syncerIds.includes(syncer.id))
-    })
+      this.setState(({attachedEngineSyncers}) => ({
+        attachedEngineSyncers: attachedEngineSyncers
+          .filter(s => s.id !== syncer.id)
+      }))
+    }))
   }
 
   // Find Methods
