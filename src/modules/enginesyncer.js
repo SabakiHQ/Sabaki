@@ -28,7 +28,7 @@ class EngineSyncer extends EventEmitter {
         this.engine = engine
         this.commands = []
 
-        this.controller = new Controller(path, argvsplit(args), {
+        this.controller = new Controller(path, [...argvsplit(args)], {
             cwd: dirname(resolve(path))
         })
         this.stateTracker = new ControllerStateTracker(this.controller)
