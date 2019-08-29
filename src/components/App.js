@@ -1660,13 +1660,29 @@ class App extends Component {
           engine: engine.name
         })
 
-        this.setState(({consoleLog}) => ({
-          consoleLog: [...consoleLog, {
-            name: engine.name,
-            command: null,
-            response: {content, internal: true}
-          }]
-        }))
+        this.setState(({consoleLog}) => {
+          let lastIndex = consoleLog.length - 1
+
+          if (
+            consoleLog.length > 0
+            && consoleLog[lastIndex].name === engine.name
+            && consoleLog[lastIndex].command == null
+            && consoleLog[lastIndex].response != null
+            && consoleLog[lastIndex].response.internal
+          ) {
+            consoleLog[lastIndex].response.content += `\n${content}`
+
+            return {consoleLog}
+          } else {
+            return {
+              consoleLog: [...consoleLog, {
+                name: engine.name,
+                command: null,
+                response: {content, internal: true}
+              }]
+            }
+          }
+        })
       })
 
       syncer.controller.on('started', () => {
