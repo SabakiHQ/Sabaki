@@ -339,6 +339,13 @@ header {
   .gtp-console .log li {
     margin: 5px 0;
   }
+  .gtp-console .log img {
+    width: 1em;
+    height: 1em;
+    filter: invert(100%);
+    opacity: .5;
+    vertical-align: middle;
+  }
   .gtp-console .input {
     position: relative;
     background: #181818;

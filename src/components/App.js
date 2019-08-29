@@ -1631,7 +1631,15 @@ class App extends Component {
       })
 
       updateEntry({
-        response: {internal: true, content: t('connection failed')},
+        response: {
+          internal: true,
+          content: h('img', {
+            class: 'icon',
+            src: './node_modules/octicons/build/svg/alert.svg',
+            alt: t('Connection Failed'),
+            title: t('Connection Failed')
+          })
+        },
         waiting: false
       })
     })
@@ -1662,15 +1670,20 @@ class App extends Component {
 
         this.setState(({consoleLog}) => {
           let lastIndex = consoleLog.length - 1
+          let lastEntry = consoleLog[lastIndex]
 
           if (
-            consoleLog.length > 0
-            && consoleLog[lastIndex].name === engine.name
-            && consoleLog[lastIndex].command == null
-            && consoleLog[lastIndex].response != null
-            && consoleLog[lastIndex].response.internal
+            lastEntry != null
+            && lastEntry.name === engine.name
+            && lastEntry.command == null
+            && lastEntry.response != null
+            && lastEntry.response.internal
+            && typeof lastEntry.response.content === 'string'
           ) {
-            consoleLog[lastIndex].response.content += `\n${content}`
+            lastEntry.response = {
+              ...lastEntry.response,
+              content: `${lastEntry.response.content}\n${content}`
+            }
 
             return {consoleLog}
           } else {

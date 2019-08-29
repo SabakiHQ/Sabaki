@@ -52,11 +52,13 @@ class ConsoleResponseEntry extends Component {
 
         !response.internal && ' ',
 
-        h(ContentDisplay, {
+        typeof response.content === 'string'
+        ? h(ContentDisplay, {
           tag: 'span',
           class: response.internal ? 'internal' : '',
           content: response.content.replace(/(^info move.*\s*)+/gm, 'info move (…)\n')
-        }),
+        })
+        : response.content,
 
         waiting && h('div', {class: 'internal'}, h(TextSpinner))
       )
