@@ -220,7 +220,7 @@ export class GtpConsole extends Component {
   }
 
   render({consoleLog, attachedEngine}) {
-    return h('section', {id: 'console'},
+    return h('section', {class: 'gtp-console'},
       h('ol',
         {
           ref: el => this.scrollElement = el,

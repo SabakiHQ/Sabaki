@@ -315,52 +315,53 @@ header {
     visibility: visible;
 }
 
-#console {
+.gtp-console {
     display: grid;
     grid-template-rows: calc(100% - 40px) 40px;
+    z-index: 1;
   }
-  #console, #console pre, #console input {
+  .gtp-console, .gtp-console pre, .gtp-console input {
     background: inherit;
     color: #d0d0d0;
     font: 14px/1.3 Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;
   }
-  #console .log {
+  .gtp-console .log {
     padding: .3rem 10px;
     overflow: auto;
     list-style: none;
     user-select: text;
     cursor: auto;
   }
-  #console .log .internal { color: #888; }
-  #console .log .success { color: #FFCC66; }
-  #console .log .error { color: #F25C3D; }
-  #console .log .id { color: #CC99CC; }
-  #console .log li {
+  .gtp-console .log .internal { color: #888; }
+  .gtp-console .log .success { color: #FFCC66; }
+  .gtp-console .log .error { color: #F25C3D; }
+  .gtp-console .log .id { color: #CC99CC; }
+  .gtp-console .log li {
     margin: 5px 0;
   }
-  #console .input {
+  .gtp-console .input {
     position: relative;
     background: #181818;
     overflow: hidden;
   }
-  #console .input input, #console .input .autocomplete {
+  .gtp-console .input input, .gtp-console .input .autocomplete {
     position: absolute;
     left: 0;
     top: 0;
     bottom: 0;
     width: 100%;
   }
-  #console .input input {
+  .gtp-console .input input {
     box-sizing: border-box;
     background: transparent;
     z-index: 3;
   }
-  #console .input .autocomplete {
+  .gtp-console .input .autocomplete {
     display: none;
     opacity: .4;
     z-index: 2;
   }
-  #console .input .command:focus + .autocomplete {
+  .gtp-console .input .command:focus + .autocomplete {
     display: block;
 }
 
@@ -944,14 +945,14 @@ header {
   #preferences form.engines > div.engines {
     display: block;
   }
-  #preferences .gtp-console-log ul {
+  #preferences .gtpconsolelog ul {
     display: flex;
     margin: 0 0 .5rem;
   }
-  #preferences .gtp-console-log .preferences-item {
+  #preferences .gtpconsolelog .preferences-item {
     line-height: 2;
   }
-  #preferences .gtp-console-log .path-input-item {
+  #preferences .gtpconsolelog .path-input-item {
     flex-grow: 1;
     margin-left: 10px;
 }
@@ -1284,7 +1285,9 @@ header {
     display: grid;
     grid-template: 100% / 100%;
     background: #181818;
+    box-shadow: 10px 0 10px #111;
     color: #d0d0d0;
+    z-index: 2;
   }
   .engine-peer-list ul {
     display: flex;

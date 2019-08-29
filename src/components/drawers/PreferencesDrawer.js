@@ -534,7 +534,7 @@ class EnginesTab extends Component {
 
     render({engines}) {
         return h('div', {ref: el => this.element = el, class: 'engines'},
-            h('div', {class: 'gtp-console-log'},
+            h('div', {class: 'gtpconsolelog'},
                 h('ul', {},
                     h(PreferencesItem, {
                         id: 'gtp.console_log_enabled',
