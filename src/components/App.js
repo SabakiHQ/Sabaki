@@ -1647,8 +1647,24 @@ class App extends Component {
 
   attachEngines(engines) {
     let attaching = []
+    let getEngineName = name => {
+      let counter = 1
+      let getName = () => counter === 1 ? name : `${name} ${counter}`
+      let hasName = syncer => syncer.engine.name === getName()
+
+      while (
+        attaching.some(hasName)
+        || this.state.attachedEngineSyncers.some(hasName)
+      ) {
+        counter++
+      }
+
+      return getName()
+    }
 
     for (let engine of engines) {
+      engine = {...engine, name: getEngineName(engine.name)}
+
       let syncer = new EngineSyncer(engine)
 
       syncer.controller.on('command-sent', evt => {

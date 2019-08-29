@@ -61,7 +61,7 @@ class EnginePeerListItem extends Component {
         },
         h('img', {
           src: `./node_modules/octicons/build/svg/${
-            !this.state.suspended ? 'triangle-right' : 'primitive-square'
+            !this.state.suspended ? 'play' : 'primitive-square'
           }.svg`,
           alt: !this.state.suspended ? t('Running') : t('Stopped')
         })

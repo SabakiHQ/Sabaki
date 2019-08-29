@@ -339,7 +339,7 @@ header {
   .gtp-console .log li {
     margin: 5px 0;
   }
-  .gtp-console .log img {
+  .gtp-console .log .icon {
     width: 1em;
     height: 1em;
     filter: invert(100%);
