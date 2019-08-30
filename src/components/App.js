@@ -706,8 +706,6 @@ class App extends Component {
     await helper.wait(setting.get('app.loadgame_delay'))
 
     if (gameTrees.length > 0) {
-      this.clearConsole()
-
       this.setState({
         representedFilename: null,
         gameIndex: 0,
@@ -1752,6 +1750,14 @@ class App extends Component {
           .filter(s => s.id !== syncer.id)
       }))
     }))
+  }
+
+  async syncEngine(syncerId, tree, id) {
+    let syncer = this.state.attachedEngineSyncers.find(syncer => syncer.id === syncerId)
+
+    if (syncer != null) {
+      await syncer.sync(tree, id)
+    }
   }
 
   // Find Methods
