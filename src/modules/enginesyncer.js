@@ -121,7 +121,7 @@ export class EngineSyncer extends EventEmitter {
 
     // Replay
 
-    let nodeBoard = gametree.getBoard(tree, id)
+    let nodeBoard = getBoard(tree, id)
     let engineBoard = newBoard(board.width, board.height)
     let history = []
     let boardSynced = true

@@ -25,8 +25,27 @@ export class LeftSidebar extends Component {
       setting.set('view.peerlist_height', this.state.peerListHeight)
     }
 
+    this.handleCommandControlStep = ({step}) => {
+      let {attachedEngineSyncers} = this.props
+      let engineIndex = attachedEngineSyncers
+        .findIndex(syncer => syncer.id === this.state.selectedEngineSyncerId)
+
+      let stepEngineIndex = Math.min(Math.max(0, engineIndex + step), attachedEngineSyncers.length - 1)
+      let stepEngine = this.props.attachedEngineSyncers[stepEngineIndex]
+
+      if (stepEngine != null) {
+        this.setState({selectedEngineSyncerId: stepEngine.id})
+      }
+    }
+
     this.handleEngineSelect = ({syncer}) => {
-      this.setState({selectedEngineSyncerId: syncer.id})
+      this.setState({selectedEngineSyncerId: syncer.id}, () => {
+        let input = this.element.querySelector('.gtp-console .input .command')
+
+        if (input != null) {
+          input.focus()
+        }
+      })
     }
 
     this.handleCommandSubmit = ({command}) => {
@@ -83,7 +102,8 @@ export class LeftSidebar extends Component {
             }
           ).find(x => x != null),
 
-          onSubmit: this.handleCommandSubmit
+          onSubmit: this.handleCommandSubmit,
+          onControlStep: this.handleCommandControlStep
         }),
 
         onChange: this.handlePeerListHeightChange,

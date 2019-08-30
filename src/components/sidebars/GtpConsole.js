@@ -95,8 +95,9 @@ class ConsoleInput extends Component {
 
         this.inputPointer = null
         this.setState({commandInputText: ''})
-      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key) && !evt.ctrlKey) {
         evt.preventDefault()
+
         let {consoleLog} = this.props
         let sign = evt.key === 'ArrowUp' ? -1 : 1
 
@@ -121,6 +122,11 @@ class ConsoleInput extends Component {
             break
           }
         }
+      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key) && evt.ctrlKey) {
+        let {onControlStep = noop} = this.props
+        let step = evt.key === 'ArrowUp' ? -1 : 1
+
+        onControlStep({step})
       } else if (evt.key === 'Tab') {
         evt.preventDefault()
 
@@ -251,7 +257,8 @@ export class GtpConsole extends Component {
         consoleLog,
         attachedEngine,
 
-        onSubmit: this.props.onSubmit
+        onSubmit: this.props.onSubmit,
+        onControlStep: this.props.onControlStep
       })
     )
   }
