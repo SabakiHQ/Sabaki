@@ -121,13 +121,13 @@ export class EngineSyncer extends EventEmitter {
 
     // Replay
 
+    let nodeBoard = gametree.getBoard(tree, id)
     let engineBoard = newBoard(board.width, board.height)
     let history = []
     let boardSynced = true
     let nodes = [...tree.listNodesVertically(id, -1, {})].reverse()
 
     for (let node of nodes) {
-      let nodeBoard = getBoard(tree, node.id)
       let placedHandicapStones = false
 
       if (
@@ -174,11 +174,10 @@ export class EngineSyncer extends EventEmitter {
           engineBoard = engineBoard.makeMove(sign, vertex)
         }
       }
+    }
 
-      if (!equals(engineBoard.signMap, nodeBoard.signMap)) {
-        boardSynced = false
-        break
-      }
+    if (!equals(engineBoard.signMap, nodeBoard.signMap)) {
+      boardSynced = false
     }
 
     // Incremental rearrangement
