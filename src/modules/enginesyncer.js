@@ -149,7 +149,6 @@ class EngineSyncer extends EventEmitter {
 
         if (!helper.equals(engineBoard.signMap, nodeBoard.signMap)) {
             boardSynced = false
-            break
         }
 
         // Incremental rearrangement
