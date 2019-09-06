@@ -53,8 +53,8 @@ A big thank you to these lovely people:
 - John Hager
 - David Göbel
 - Dominik Olszewski
-- Dimitri Rusin
 - Philippe Fanaro
+- Dimitri Rusin
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
