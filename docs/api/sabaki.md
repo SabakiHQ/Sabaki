@@ -40,7 +40,7 @@ The `vertexClick` event is emitted when the user clicks on the board.
 
 * `evt` `<Object>`
     * `pass` `<Boolean>` - Specifies whether the move was a pass
-    * `capture` `<Boolean>` - Specifies whether the move has captured some stones
+    * `capturing` `<Boolean>` - Specifies whether the move has captured some stones
     * `suicide` `<Boolean>` - Specifies whether the move was a suicide
     * `ko` `<Boolean>` - Specifies whether the move violates the simple ko rule
 

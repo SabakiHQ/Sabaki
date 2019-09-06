@@ -29,7 +29,7 @@ import gametree from '../modules/gametree.js'
 import gobantransformer from '../modules/gobantransformer.js'
 import gtplogger from '../modules/gtplogger.js'
 import helper from '../modules/helper.js'
-import sound from '../modules/sound.js'
+import * as sound from '../modules/sound.js'
 
 const {app} = remote
 const setting = remote.require('./setting')
@@ -1114,22 +1114,18 @@ class App extends Component {
     let node = tree.get(treePosition)
     let board = gametree.getBoard(tree, treePosition)
 
-    if (typeof vertex == 'string') {
-      vertex = board.parseVertex(vertex)
-    }
+    if (!player) player = this.inferredState.currentPlayer
+    if (typeof vertex == 'string') vertex = board.parseVertex(vertex)
 
-    let pass = !board.has(vertex)
-    if (!pass && board.get(vertex) !== 0) return
+    let {pass, overwrite, capturing, suicide} = board.analyzeMove(player, vertex)
+    if (!pass && overwrite) return
 
     let prev = tree.get(node.parentId)
-    if (!player) player = this.inferredState.currentPlayer
     let color = player > 0 ? 'B' : 'W'
-    let capture = false, suicide = false, ko = false
     let newNodeData = {[color]: [sgf.stringifyVertex(vertex)]}
+    let ko = false
 
     if (!pass) {
-      // Check for ko
-
       if (prev != null && setting.get('game.show_ko_warning')) {
         let nextBoard = board.makeMove(player, vertex)
         let prevBoard = gametree.getBoard(tree, prev.id)
@@ -1145,18 +1141,6 @@ class App extends Component {
           [t('Play Anyway'), t('Don’t Play')], 1
         ) != 0) return
       }
-
-      let vertexNeighbors = board.getNeighbors(vertex)
-
-      // Check for suicide
-
-      capture = vertexNeighbors
-        .some(v => board.get(v) == -player && board.getLiberties(v).length == 1)
-
-      suicide = !capture
-      && vertexNeighbors.filter(v => board.get(v) == player)
-        .every(v => board.getLiberties(v).length == 1)
-      && vertexNeighbors.filter(v => board.get(v) == 0).length == 0
 
       if (suicide && setting.get('game.show_suicide_warning')) {
         if (dialog.showMessageBox(
@@ -1184,11 +1168,8 @@ class App extends Component {
     // Play sounds
 
     if (!pass) {
-      let delay = setting.get('sound.capture_delay_min')
-      delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
-
-      if (capture || suicide) sound.playCapture(delay)
       sound.playPachi()
+      if (capturing || suicide) sound.playCapture()
     } else {
       sound.playPass()
     }
@@ -1209,7 +1190,7 @@ class App extends Component {
 
     // Emit event
 
-    this.events.emit('moveMake', {pass, capture, suicide, ko, enterScoring})
+    this.events.emit('moveMake', {pass, capturing, suicide, ko, enterScoring})
   }
 
   makeResign({player = null} = {}) {

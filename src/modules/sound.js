@@ -1,27 +1,42 @@
-const helper = require('./helper')
+import {remote} from 'electron'
+import {wait} from './helper.js'
+
+const setting = remote.require('./setting')
 
 function prepareFunction(sounds) {
-    let lastIndex = -1
+  let lastIndex = -1
 
-    return async function(delay) {
-        let index = 0
+  return async function(delay = 0) {
+    try {
+      let index = 0
 
-        if (sounds.length === 0) return
-        if (sounds.length > 1) {
-            index = lastIndex
-            while (index === lastIndex) index = Math.floor(Math.random() * sounds.length)
-            lastIndex = index
-        }
+      if (sounds.length === 0) return
+      if (sounds.length > 1) {
+        index = lastIndex
+        while (index === lastIndex) index = Math.floor(Math.random() * sounds.length)
+        lastIndex = index
+      }
 
-        await helper.wait(delay)
-        sounds[index].play().catch(helper.noop)
+      await wait(delay)
+      await sounds[index].play()
+    } catch (err) {
+      // Do nothing
     }
+  }
 }
 
-exports.playPachi = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`)))
+export const playPachi = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`)))
 
-exports.playCapture = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`)))
+export const playCapture = async delay => {
+  if (delay == null) {
+    delay = setting.get('sound.capture_delay_min')
+    delay += Math.floor(Math.random() * (setting.get('sound.capture_delay_max') - delay))
+  }
 
-exports.playPass = prepareFunction([new Audio('./data/pass.mp3')])
+  let f = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`)))
+  await f(delay)
+}
 
-exports.playNewGame = prepareFunction([new Audio('./data/newgame.mp3')])
+export const playPass = prepareFunction([new Audio('./data/pass.mp3')])
+
+export const playNewGame = prepareFunction([new Audio('./data/newgame.mp3')])
