@@ -333,6 +333,10 @@ header {
     cursor: auto;
   }
   .gtp-console .log .internal { color: #888; }
+  .gtp-console .log .engine {
+    color: #8CDCDA;
+    font-weight: bold;
+  }
   .gtp-console .log .success { color: #FFCC66; }
   .gtp-console .log .error { color: #F25C3D; }
   .gtp-console .log .id { color: #CC99CC; }

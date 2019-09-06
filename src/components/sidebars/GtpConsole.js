@@ -19,7 +19,7 @@ class ConsoleCommandEntry extends Component {
 
     return h('li', {class: 'command'},
       h('pre', {},
-        h('span', {class: 'internal'}, `${['● ', '', '○ '][sign + 1]}${name}>`), ' ',
+        h('span', {class: 'engine'}, `${['● ', '', '○ '][sign + 1]}${name}>`), ' ',
 
         command.id != null && [h('span', {class: 'id'}, command.id), ' '],
         command.name, ' ',
