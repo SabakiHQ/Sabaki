@@ -2426,6 +2426,30 @@ class App extends Component {
     }], x, y)
   }
 
+  openEngineActionMenu(syncerId, {x, y} = {}) {
+    let t = i18n.context('menu.engineAction')
+    let syncer = this.state.attachedEngineSyncers.find(syncer => syncer.id === syncerId)
+    if (syncer == null) return
+
+    helper.popupMenu([
+      {
+        label: syncer.suspended ? t('&Start') : t('&Stop'),
+        click: () => {
+          if (syncer.suspended) syncer.start()
+          else syncer.stop()
+        }
+      },
+      {
+        label: t('&Generate Move'),
+        click: () => {}
+      },
+      {
+        label: t('&Analyze'),
+        click: () => {}
+      }
+    ], x, y)
+  }
+
   // Render
 
   render(_, state) {

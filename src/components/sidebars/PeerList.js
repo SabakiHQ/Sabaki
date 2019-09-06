@@ -26,6 +26,11 @@ class EnginePeerListItem extends Component {
       let {syncer, onClick = () => {}} = this.props
       onClick({syncer})
     }
+
+    this.handleContextMenu = evt => {
+      let {syncer, onContextMenu = () => {}} = this.props
+      onContextMenu(evt, {syncer})
+    }
   }
 
   componentDidMount() {
@@ -50,7 +55,8 @@ class EnginePeerListItem extends Component {
           suspended: this.state.suspended
         }),
 
-        onClick: this.handleClick
+        onClick: this.handleClick,
+        onContextMenu: this.handleContextMenu
       },
 
       !this.state.busy
@@ -92,6 +98,16 @@ export class EnginePeerList extends Component {
       let {onEngineSelect = () => {}} = this.props
       onEngineSelect(evt)
     }
+
+    this.handleEngineContextMenu = (evt, {syncer}) => {
+      let {onEngineSelect = () => {}} = this.props
+      onEngineSelect({syncer})
+
+      sabaki.openEngineActionMenu(syncer.id, {
+        x: evt.clientX,
+        y: evt.clientY
+      })
+    }
   }
 
   render({
@@ -109,7 +125,8 @@ export class EnginePeerList extends Component {
           analyzing: syncer.id === analyzingEngineSyncerId,
           selected: syncer.id === selectedEngineSyncerId,
 
-          onClick: this.handleEngineClick
+          onClick: this.handleEngineClick,
+          onContextMenu: this.handleEngineContextMenu
         })
       ))
     )
