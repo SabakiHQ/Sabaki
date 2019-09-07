@@ -15,6 +15,11 @@ class Goban extends Component {
     constructor(props) {
         super(props)
 
+        this.state = {
+            containerWidth: null,
+            containerHeight: null
+        }
+
         for (let handler of [
             'handleVertexMouseUp',
             'handleVertexMouseDown',
@@ -53,21 +58,16 @@ class Goban extends Component {
         // Resize board when window is resizing
 
         window.addEventListener('resize', () => {
-            this.componentDidUpdate()
-            this.setState({})
+            this.resize()
         })
 
-        this.componentDidUpdate()
+        this.resize()
     }
 
     componentDidUpdate() {
         if (!this.element || !this.element.parentElement) return
 
-        let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
-
-        if (maxWidth !== this.state.maxWidth || maxHeight !== this.state.maxHeight) {
-            this.setState({maxWidth, maxHeight})
-        }
+        let {maxWidth, maxHeight} = this.state
 
         setTimeout(() => {
             let {offsetWidth: width, offsetHeight: height} = this.element
@@ -91,6 +91,14 @@ class Goban extends Component {
             } else {
                 this.stopPlayingVariation()
             }
+        }
+    }
+
+    resize() {
+        let {offsetWidth: maxWidth, offsetHeight: maxHeight} = this.element.parentElement
+
+        if (maxWidth !== this.state.maxWidth || maxHeight !== this.state.maxHeight) {
+            this.setState({maxWidth, maxHeight})
         }
     }
 
