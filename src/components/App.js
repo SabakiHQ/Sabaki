@@ -1755,7 +1755,7 @@ class App extends Component {
   async generateMove(syncerId, tree, id) {
     let t = i18n.context('app.engine')
     let sign = this.inferredState.currentPlayer
-    let player = sign > 0 ? 'B' : 'W'
+    let color = sign > 0 ? 'B' : 'W'
     let board = gametree.getBoard(tree, id)
     let syncer = this.state.attachedEngineSyncers.find(syncer => syncer.id === syncerId)
     if (syncer == null) return
@@ -1767,7 +1767,7 @@ class App extends Component {
     try {
       response = await syncer.controller.sendCommand({
         name: 'genmove',
-        args: [player]
+        args: [color]
       })
 
       if (response.error) throw new Error(response.content)
@@ -1785,21 +1785,29 @@ class App extends Component {
       dialog.showMessageBox(t(p => `${p.engine} has resigned.`, {
         engine: syncer.engine.name
       }), 'info')
-
-      return
     }
 
-    let vertex = coord === 'pass' ? [-1, -1] : board.parseVertex(coord)
+    let vertex = ['resign', 'pass'].includes(coord) ? [-1, -1] : board.parseVertex(coord)
     let currentTree = this.state.gameTrees[this.state.gameIndex]
     let currentTreePosition = this.state.treePosition
     let positionMoved = currentTree.root.id !== tree.root.id || currentTreePosition !== id
     let {pass, capturing, suicide} = board.analyzeMove(sign, vertex)
 
     let newTreePosition
-    let newTree = currentTree.mutate(draft => {
+    let newTree = tree.mutate(draft => {
       newTreePosition = draft.appendNode(id, {
-        [player]: [sgf.stringifyVertex(vertex)]
+        [color]: [sgf.stringifyVertex(vertex)]
       })
+
+      if (coord === 'resign') {
+        draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
+
+        let id2 = id
+        while (id2 != null) {
+          draft.shiftNode(id2, 'main')
+          id2 = draft.get(id2).parentId
+        }
+      }
     })
 
     if (pass) {
