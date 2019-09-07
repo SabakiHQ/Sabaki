@@ -121,6 +121,8 @@ export class EnginePeerList extends Component {
       },
       h('ul', {}, attachedEngineSyncers.map(syncer =>
         h(EnginePeerListItem, {
+          key: syncer.id,
+
           syncer,
           analyzing: syncer.id === analyzingEngineSyncerId,
           selected: syncer.id === selectedEngineSyncerId,

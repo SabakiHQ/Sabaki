@@ -1122,7 +1122,6 @@ class App extends Component {
 
     let prev = tree.get(node.parentId)
     let color = player > 0 ? 'B' : 'W'
-    let newNodeData = {[color]: [sgf.stringifyVertex(vertex)]}
     let ko = false
 
     if (!pass) {
@@ -1158,7 +1157,9 @@ class App extends Component {
 
     let nextTreePosition
     let newTree = tree.mutate(draft => {
-      nextTreePosition = draft.appendNode(treePosition, newNodeData)
+      nextTreePosition = draft.appendNode(treePosition, {
+        [color]: [sgf.stringifyVertex(vertex)]
+      })
     })
 
     let createNode = tree.get(nextTreePosition) == null
@@ -1723,22 +1724,92 @@ class App extends Component {
     let detachEngineSyncers = this.state.attachedEngineSyncers
       .filter(syncer => syncerIds.includes(syncer.id))
 
-    await Promise.all(detachEngineSyncers.map(async syncer => {
-      await syncer.stop()
+    await Promise.all(
+      detachEngineSyncers.map(async syncer => {
+        await syncer.stop()
 
-      this.setState(({attachedEngineSyncers}) => ({
-        attachedEngineSyncers: attachedEngineSyncers
-          .filter(s => s.id !== syncer.id)
-      }))
-    }))
+        this.setState(({attachedEngineSyncers}) => ({
+          attachedEngineSyncers: attachedEngineSyncers
+            .filter(s => s.id !== syncer.id)
+        }))
+      })
+    )
   }
 
   async syncEngine(syncerId, tree, id) {
+    let t = i18n.context('app.engine')
     let syncer = this.state.attachedEngineSyncers.find(syncer => syncer.id === syncerId)
 
     if (syncer != null) {
-      await syncer.sync(tree, id)
+      try {
+        await syncer.sync(tree, id)
+        return true
+      } catch (err) {
+        dialog.showMessageBox(t(err.message), 'error')
+      }
     }
+
+    return false
+  }
+
+  async generateMove(syncerId, tree, id) {
+    let t = i18n.context('app.engine')
+    let sign = this.inferredState.currentPlayer
+    let player = sign > 0 ? 'B' : 'W'
+    let board = gametree.getBoard(tree, id)
+    let syncer = this.state.attachedEngineSyncers.find(syncer => syncer.id === syncerId)
+    if (syncer == null) return
+
+    let synced = await this.syncEngine(syncerId, tree, id)
+    if (!synced) return
+
+    let response
+    try {
+      response = await syncer.controller.sendCommand({
+        name: 'genmove',
+        args: [player]
+      })
+
+      if (response.error) throw new Error(response.content)
+    } catch (err) {
+      dialog.showMessageBox(t(p => `${p.engine} has failed to generate a move.`, {
+        engine: syncer.engine.name
+      }), 'error')
+    }
+
+    if (response == null) return
+
+    let coord = response.content.toLowerCase().trim()
+
+    if (coord === 'resign') {
+      dialog.showMessageBox(t(p => `${p.engine} has resigned.`, {
+        engine: syncer.engine.name
+      }), 'info')
+
+      return
+    }
+
+    let vertex = coord === 'pass' ? [-1, -1] : board.parseVertex(coord)
+    let currentTree = this.state.gameTrees[this.state.gameIndex]
+    let currentTreePosition = this.state.treePosition
+    let positionMoved = currentTree.root.id !== tree.root.id || currentTreePosition !== id
+    let {pass, capturing, suicide} = board.analyzeMove(sign, vertex)
+
+    let newTreePosition
+    let newTree = currentTree.mutate(draft => {
+      newTreePosition = draft.appendNode(id, {
+        [player]: [sgf.stringifyVertex(vertex)]
+      })
+    })
+
+    if (pass) {
+      sound.playPass()
+    } else {
+      sound.playPachi()
+      if (capturing || suicide) sound.playCapture()
+    }
+
+    this.setCurrentTreePosition(newTree, !positionMoved ? newTreePosition : currentTreePosition)
   }
 
   // Find Methods
@@ -2421,8 +2492,23 @@ class App extends Component {
         }
       },
       {
+        label: t('&Detach'),
+        click: () => {
+          this.detachEngines([syncerId])
+        }
+      },
+      {type: 'separator'},
+      {
+        label: t('S&ynchronize'),
+        click: () => {
+          this.syncEngine(syncerId, this.inferredState.gameTree, this.state.treePosition)
+        }
+      },
+      {
         label: t('&Generate Move'),
-        click: () => {}
+        click: async () => {
+          this.generateMove(syncerId, this.inferredState.gameTree, this.state.treePosition)
+        }
       },
       {
         label: t('&Analyze'),
