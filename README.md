@@ -2,8 +2,6 @@
 
 [![Download the latest release](https://img.shields.io/github/downloads/SabakiHQ/Sabaki/latest/total?label=download)](https://github.com/SabakiHQ/Sabaki/releases) [![Build Status](https://travis-ci.org/SabakiHQ/Sabaki.svg?branch=master)](https://travis-ci.org/SabakiHQ/Sabaki) [![Donate](https://img.shields.io/badge/donate-paypal-blue.svg)](https://www.paypal.me/yishn/5)
 
-![Screenshot](screenshot.png)
-
 ## Features
 
 - Fuzzy stone placement
@@ -23,6 +21,8 @@
 - [Board analysis for supported engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engine-analysis-integration.md)
 - Guess mode
 - Autoplay games
+
+![Screenshot](screenshot.png)
 
 ## Documentation
 
