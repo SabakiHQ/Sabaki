@@ -5,20 +5,16 @@
 ## Features
 
 - Fuzzy stone placement
-- Read and save SGF games and collections
-- Open wBaduk NGF and Tygem GIB files
-- Display formatted SGF comments using a [subset of Markdown](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/markdown.md)
+- Read and save SGF games and collections, open wBaduk NGF and Tygem GIB files
+- Display formatted SGF comments using a [subset of Markdown](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/markdown.md) and annotate board positions & moves
 - Personalize board appearance with [textures & themes](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/theme-directory.md)
-- SGF editing tools
-- Powerful undo/redo
-- Lines & arrows board markup
+- SGF editing tools, including lines & arrows board markup
 - Copy & paste variations
+- Powerful undo/redo
 - Fast game tree
 - Score estimator & scoring tool
 - Find move by move position and comment text
-- Position & move annotations
-- [GTP engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engines.md) support
-- [Board analysis for supported engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engine-analysis-integration.md)
+- [GTP engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engines.md) support with [board analysis for supported engines](https://github.com/SabakiHQ/Sabaki/blob/master/docs/guides/engine-analysis-integration.md)
 - Guess mode
 - Autoplay games
 
