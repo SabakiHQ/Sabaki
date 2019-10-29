@@ -8,7 +8,7 @@ Most of the Go engines support optional parameters to tune their capacities. Lis
 
   Arguments: `--gtp -w path/to/weightsfile` 
   
-* [**KataGo**](https://github.com/lightvector/KataGo): Download the latest appropriate version from releases page for you system  with pre-trainded models. This engine supports analysis as well.
+* [**KataGo**](https://github.com/lightvector/KataGo): Download the latest appropriate version from releases page for you system  with pretrained models. This engine supports analysis as well.
 
   Arguments: `gtp -model /path/to/model.txt.gz -config /path/to/gtp_example.cfg`
 
