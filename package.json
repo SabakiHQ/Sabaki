@@ -78,7 +78,7 @@
     "natsort": "^2.0.2",
     "octicons": "^8.5.0",
     "pikaday": "^1.8.0",
-    "preact": "^8.5.1",
+    "preact": "^8.5.3",
     "react-markdown": "^3.6.0",
     "recursive-copy": "^2.0.10",
     "remark-breaks": "^1.0.3",
