@@ -98,7 +98,7 @@
   "scripts": {
     "test": "mocha",
     "start": "electron ./",
-    "bundle": "webpack --mode production --progress",
+    "bundle": "webpack --mode production",
     "watch": "webpack --mode development --progress --watch",
     "build": "npm run bundle && electron-builder --dir",
     "dist:macos": "npm run bundle && electron-builder -m --x64",
