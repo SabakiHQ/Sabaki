@@ -55,12 +55,15 @@
     ],
     "files": [
       "**/*",
-      "bundle.js",
-      "!bundle.js.map",
-      "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
-      "!data/shapes.sgf",
-      "!src/components${/*}",
-      "!src/modules${/*}"
+      "!**/{.github,.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
+      "!ci${/*}",
+      "!src/{components,modules}${/*}",
+      "!node_modules",
+      "node_modules/@sabaki/deadstones/wasm/*",
+      "node_modules/@sabaki/shudan/css/*",
+      "node_modules/dolm/**/*",
+      "node_modules/octicons/build/svg/*",
+      "node_modules/pikaday/css/*"
     ]
   },
   "prettier": {

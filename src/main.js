@@ -11,7 +11,7 @@ let isReady = false
 function newWindow(path) {
   let window = new BrowserWindow({
     icon:
-      process.platform === 'linux' ? resolve(__dirname, './../logo.png') : null,
+      process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
     title: app.name,
     useContentSize: true,
     width: setting.get('window.width'),
@@ -48,7 +48,7 @@ function newWindow(path) {
     evt.preventDefault()
   })
 
-  window.loadURL(`file://${resolve(__dirname, './../index.html')}`)
+  window.loadURL(`file://${resolve(__dirname, '../index.html')}`)
 
   return window
 }
