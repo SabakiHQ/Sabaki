@@ -31,6 +31,6 @@ module.exports = (env, argv) => ({
 
   externals: {
     moment: 'null',
-    'iconv-lite': "require('iconv-lite')"
+    'iconv-lite': 'require("iconv-lite")'
   }
 })

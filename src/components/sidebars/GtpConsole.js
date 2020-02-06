@@ -272,8 +272,8 @@ export class GtpConsole extends Component {
           return [
             command ||
             i === 0 ||
-              consoleLog[i - 1].name !== name ||
-              (sign !== 0 && consoleLog[i - 1].sign !== sign)
+            consoleLog[i - 1].name !== name ||
+            (sign !== 0 && consoleLog[i - 1].sign !== sign)
               ? h(ConsoleCommandEntry, {sign, name, command})
               : null,
 

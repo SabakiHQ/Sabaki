@@ -14,6 +14,7 @@ jobs:
     - name: npm install, build, and test
       run: |
         npm install
+        npm run format-check
         npm run build
         npm test
       env:
