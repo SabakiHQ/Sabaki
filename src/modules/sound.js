@@ -1,26 +1,31 @@
 const helper = require('./helper')
 
 function prepareFunction(sounds) {
-    let lastIndex = -1
+  let lastIndex = -1
 
-    return async function(delay) {
-        let index = 0
+  return async function(delay) {
+    let index = 0
 
-        if (sounds.length === 0) return
-        if (sounds.length > 1) {
-            index = lastIndex
-            while (index === lastIndex) index = Math.floor(Math.random() * sounds.length)
-            lastIndex = index
-        }
-
-        await helper.wait(delay)
-        sounds[index].play().catch(helper.noop)
+    if (sounds.length === 0) return
+    if (sounds.length > 1) {
+      index = lastIndex
+      while (index === lastIndex)
+        index = Math.floor(Math.random() * sounds.length)
+      lastIndex = index
     }
+
+    await helper.wait(delay)
+    sounds[index].play().catch(helper.noop)
+  }
 }
 
-exports.playPachi = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`)))
+exports.playPachi = prepareFunction(
+  [...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`))
+)
 
-exports.playCapture = prepareFunction([...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`)))
+exports.playCapture = prepareFunction(
+  [...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`))
+)
 
 exports.playPass = prepareFunction([new Audio('./data/pass.mp3')])
 

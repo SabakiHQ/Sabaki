@@ -3,36 +3,40 @@ const {h, Component} = require('preact')
 const GtpConsole = require('./GtpConsole')
 
 class LeftSidebar extends Component {
-    constructor() {
-        super()
+  constructor() {
+    super()
 
-        this.handleCommandSubmit = ({engineIndex, command}) => {
-            let syncer = sabaki.attachedEngineSyncers[engineIndex]
-            if (syncer != null) syncer.controller.sendCommand(command)
-        }
+    this.handleCommandSubmit = ({engineIndex, command}) => {
+      let syncer = sabaki.attachedEngineSyncers[engineIndex]
+      if (syncer != null) syncer.controller.sendCommand(command)
     }
+  }
 
-    shouldComponentUpdate(nextProps) {
-        return nextProps.showLeftSidebar != this.props.showLeftSidebar || nextProps.showLeftSidebar
-    }
+  shouldComponentUpdate(nextProps) {
+    return (
+      nextProps.showLeftSidebar != this.props.showLeftSidebar ||
+      nextProps.showLeftSidebar
+    )
+  }
 
-    render({showLeftSidebar, consoleLog, attachedEngines, engineCommands}) {
-        return h('section',
-            {
-                ref: el => this.element = el,
-                id: 'leftsidebar'
-            },
+  render({showLeftSidebar, consoleLog, attachedEngines, engineCommands}) {
+    return h(
+      'section',
+      {
+        ref: el => (this.element = el),
+        id: 'leftsidebar'
+      },
 
-            h(GtpConsole, {
-                show: showLeftSidebar,
-                consoleLog,
-                attachedEngines,
-                engineCommands,
+      h(GtpConsole, {
+        show: showLeftSidebar,
+        consoleLog,
+        attachedEngines,
+        engineCommands,
 
-                onSubmit: this.handleCommandSubmit
-            })
-        )
-    }
+        onSubmit: this.handleCommandSubmit
+      })
+    )
+  }
 }
 
 module.exports = LeftSidebar
