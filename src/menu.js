@@ -6,23 +6,27 @@ const {app} = isRenderer ? remote : require('electron')
 
 const i18n = require('./i18n')
 const t = i18n.t
-const setting = isRenderer ? remote.require('./setting') : nativeRequire('./setting')
+const setting = isRenderer
+  ? remote.require('./setting')
+  : nativeRequire('./setting')
 
 const sabaki = isRenderer ? window.sabaki : null
 const dialog = isRenderer ? require('./modules/dialog') : null
 const gametree = isRenderer ? require('./modules/gametree') : null
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
-let selectTool = tool => (sabaki.setMode('edit'), sabaki.setState({selectedTool: tool}))
-let treePosition = () => [sabaki.state.gameTrees[sabaki.state.gameIndex], sabaki.state.treePosition]
+let selectTool = tool => (
+  sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
+)
+let treePosition = () => [
+  sabaki.state.gameTrees[sabaki.state.gameIndex],
+  sabaki.state.treePosition
+]
 
 let menu = null
 
 exports.build = function(props = {}) {
-  let {
-    disableAll = false,
-    disableGameNavigation = false
-  } = props
+  let {disableAll = false, disableGameNavigation = false} = props
 
   let data = [
     {
@@ -103,15 +107,23 @@ exports.build = function(props = {}) {
       submenu: [
         {
           label: t('menu.play', '&Toggle Player'),
-          click: () => sabaki.setPlayer(...treePosition(), -sabaki.getPlayer(...treePosition()))
+          click: () =>
+            sabaki.setPlayer(
+              ...treePosition(),
+              -sabaki.getPlayer(...treePosition())
+            )
         },
         {type: 'separator'},
         {
           label: t('menu.play', '&Select Point'),
           accelerator: 'CmdOrCtrl+L',
-          click: () => dialog.showInputBox('Enter a coordinate to select a point', ({value}) => {
-            sabaki.clickVertex(value)
-          })
+          click: () =>
+            dialog.showInputBox(
+              'Enter a coordinate to select a point',
+              ({value}) => {
+                sabaki.clickVertex(value)
+              }
+            )
         },
         {
           label: t('menu.play', '&Pass'),
@@ -144,14 +156,16 @@ exports.build = function(props = {}) {
         },
         {
           label: t('menu.edit', 'Re&do'),
-          accelerator: process.platform === 'win32' ? 'CmdOrCtrl+Y' : 'CmdOrCtrl+Shift+Z',
+          accelerator:
+            process.platform === 'win32' ? 'CmdOrCtrl+Y' : 'CmdOrCtrl+Shift+Z',
           click: () => sabaki.redo()
         },
         {type: 'separator'},
         {
           label: t('menu.edit', 'Toggle &Edit Mode'),
           accelerator: 'CmdOrCtrl+E',
-          click: () => sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
+          click: () =>
+            sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
         },
         {
           label: t('menu.edit', '&Select Tool'),
@@ -159,10 +173,13 @@ exports.build = function(props = {}) {
             {
               label: t('menu.edit', '&Stone Tool'),
               accelerator: 'CmdOrCtrl+1',
-              click: () => selectTool(
-                sabaki.state.mode !== 'edit' || sabaki.state.selectedTool !== 'stone_1'
-                ? 'stone_1' : 'stone_-1'
-              )
+              click: () =>
+                selectTool(
+                  sabaki.state.mode !== 'edit' ||
+                    sabaki.state.selectedTool !== 'stone_1'
+                    ? 'stone_1'
+                    : 'stone_-1'
+                )
             },
             {
               label: t('menu.edit', '&Cross Tool'),
@@ -239,7 +256,10 @@ exports.build = function(props = {}) {
         },
         {
           label: t('menu.edit', '&Remove Node'),
-          accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Backspace' : 'CmdOrCtrl+Delete',
+          accelerator:
+            process.platform === 'darwin'
+              ? 'CmdOrCtrl+Backspace'
+              : 'CmdOrCtrl+Delete',
           click: () => sabaki.removeNode(...treePosition())
         },
         {
@@ -255,7 +275,8 @@ exports.build = function(props = {}) {
         {
           label: t('menu.find', 'Toggle &Find Mode'),
           accelerator: 'CmdOrCtrl+F',
-          click: () => sabaki.setMode(sabaki.state.mode === 'find' ? 'play' : 'find'),
+          click: () =>
+            sabaki.setMode(sabaki.state.mode === 'find' ? 'play' : 'find')
         },
         {
           label: t('menu.find', 'Find &Next'),
@@ -283,19 +304,20 @@ exports.build = function(props = {}) {
         {
           label: t('menu.find', 'Toggle &Hotspot'),
           accelerator: 'CmdOrCtrl+B',
-          click: () => sabaki.setComment(...treePosition(), {
-            hotspot: treePosition()[0].get(treePosition()[1]).data.HO == null
-          })
+          click: () =>
+            sabaki.setComment(...treePosition(), {
+              hotspot: treePosition()[0].get(treePosition()[1]).data.HO == null
+            })
         },
         {
           label: t('menu.find', 'Jump to Ne&xt Hotspot'),
           accelerator: 'F2',
-          click: () => sabaki.findHotspot(1),
+          click: () => sabaki.findHotspot(1)
         },
         {
           label: t('menu.find', 'Jump to Pre&vious Hotspot'),
           accelerator: 'Shift+F2',
-          click: () => sabaki.findHotspot(-1),
+          click: () => sabaki.findHotspot(-1)
         }
       ]
     },
@@ -366,10 +388,11 @@ exports.build = function(props = {}) {
         {
           label: t('menu.navigation', 'Go to Move N&umber'),
           accelerator: 'CmdOrCtrl+G',
-          click: () => dialog.showInputBox('Enter a move number to go to', ({value}) => {
-            sabaki.closeDrawer()
-            sabaki.goToMoveNumber(value)
-          })
+          click: () =>
+            dialog.showInputBox('Enter a move number to go to', ({value}) => {
+              sabaki.closeDrawer()
+              sabaki.goToMoveNumber(value)
+            })
         },
         {type: 'separator'},
         {
@@ -400,7 +423,9 @@ exports.build = function(props = {}) {
           label: t('menu.engines', 'Toggle &GTP Console'),
           click: () => {
             toggleSetting('view.show_leftsidebar')
-            sabaki.setState(({showLeftSidebar}) => ({showLeftSidebar: !showLeftSidebar}))
+            sabaki.setState(({showLeftSidebar}) => ({
+              showLeftSidebar: !showLeftSidebar
+            }))
           }
         },
         {
@@ -415,11 +440,15 @@ exports.build = function(props = {}) {
       submenu: [
         {
           label: t('menu.tools', 'Toggle Auto&play Mode'),
-          click: () => sabaki.setMode(sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay')
+          click: () =>
+            sabaki.setMode(
+              sabaki.state.mode === 'autoplay' ? 'play' : 'autoplay'
+            )
         },
         {
           label: t('menu.tools', 'Toggle &Guess Mode'),
-          click: () => sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
+          click: () =>
+            sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
         },
         {type: 'separator'},
         {
@@ -442,8 +471,10 @@ exports.build = function(props = {}) {
         },
         {
           label: t('menu.view', 'Toggle &Full Screen'),
-          accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
-          click: () => sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
+          accelerator:
+            process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
+          click: () =>
+            sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
         },
         {type: 'separator'},
         {
@@ -485,7 +516,9 @@ exports.build = function(props = {}) {
           accelerator: 'CmdOrCtrl+T',
           click: () => {
             toggleSetting('view.show_graph')
-            sabaki.setState(({showGameGraph}) => ({showGameGraph: !showGameGraph}))
+            sabaki.setState(({showGameGraph}) => ({
+              showGameGraph: !showGameGraph
+            }))
           }
         },
         {
@@ -495,7 +528,9 @@ exports.build = function(props = {}) {
           accelerator: 'CmdOrCtrl+Shift+T',
           click: () => {
             toggleSetting('view.show_comments')
-            sabaki.setState(({showCommentBox}) => ({showCommentBox: !showCommentBox}))
+            sabaki.setState(({showCommentBox}) => ({
+              showCommentBox: !showCommentBox
+            }))
           }
         },
         {type: 'separator'},
@@ -505,16 +540,20 @@ exports.build = function(props = {}) {
             {
               label: t('menu.view', '&Increase'),
               accelerator: 'CmdOrCtrl+Plus',
-              click: () => setting.set('app.zoom_factor',
-                setting.get('app.zoom_factor') + .1
-              )
+              click: () =>
+                setting.set(
+                  'app.zoom_factor',
+                  setting.get('app.zoom_factor') + 0.1
+                )
             },
             {
               label: t('menu.view', '&Decrease'),
               accelerator: 'CmdOrCtrl+-',
-              click: () => setting.set('app.zoom_factor',
-                Math.max(0, setting.get('app.zoom_factor') - .1)
-              )
+              click: () =>
+                setting.set(
+                  'app.zoom_factor',
+                  Math.max(0, setting.get('app.zoom_factor') - 0.1)
+                )
             },
             {
               label: t('menu.view', '&Reset'),
@@ -592,11 +631,15 @@ exports.build = function(props = {}) {
         {type: 'separator'},
         {
           label: t('menu.help', 'GitHub &Repository'),
-          click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
+          click: () =>
+            shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}`)
         },
         {
           label: t('menu.help', 'Report &Issue'),
-          click: () => shell.openExternal(`https://github.com/SabakiHQ/${sabaki.appName}/issues`)
+          click: () =>
+            shell.openExternal(
+              `https://github.com/SabakiHQ/${sabaki.appName}/issues`
+            )
         }
       ]
     },
@@ -618,19 +661,22 @@ exports.build = function(props = {}) {
         {
           label: t('menu.developer', 'Load &Language File…'),
           click: () => {
-            dialog.showOpenDialog({
-              properties: ['openFile'],
-              filters: [
-                {
-                  name: t('menu.developer', 'JavaScript Files'),
-                  extensions: ['js']
-                }
-              ]
-            }, ({result}) => {
-              if (!result || result.length === 0) return
+            dialog.showOpenDialog(
+              {
+                properties: ['openFile'],
+                filters: [
+                  {
+                    name: t('menu.developer', 'JavaScript Files'),
+                    extensions: ['js']
+                  }
+                ]
+              },
+              ({result}) => {
+                if (!result || result.length === 0) return
 
-              i18n.loadFile(result[0])
-            })
+                i18n.loadFile(result[0])
+              }
+            )
           }
         },
         {
@@ -642,28 +688,38 @@ exports.build = function(props = {}) {
         {
           label: t('menu.developer', '&Save Language File…'),
           click: () => {
-            dialog.showSaveDialog({
-              filters: [
-                {
-                  name: t('menu.developer', 'JavaScript Files'),
-                  extensions: ['js']
-                }
-              ]
-            }, ({result}) => {
-              if (!result) return
+            dialog.showSaveDialog(
+              {
+                filters: [
+                  {
+                    name: t('menu.developer', 'JavaScript Files'),
+                    extensions: ['js']
+                  }
+                ]
+              },
+              ({result}) => {
+                if (!result) return
 
-              let summary = i18n.serialize(result)
+                let summary = i18n.serialize(result)
 
-              dialog.showMessageBox(t('menu.developer', p => [
-                `Translated strings: ${p.translatedCount}`,
-                `Untranslated strings: ${p.untranslatedCount}`,
-                `Completion: ${p.complete}%`
-              ].join('\n'), {
-                translatedCount: summary.translatedCount,
-                untranslatedCount: summary.untranslatedCount,
-                complete: Math.round(summary.complete * 100)
-              }))
-            })
+                dialog.showMessageBox(
+                  t(
+                    'menu.developer',
+                    p =>
+                      [
+                        `Translated strings: ${p.translatedCount}`,
+                        `Untranslated strings: ${p.untranslatedCount}`,
+                        `Completion: ${p.complete}%`
+                      ].join('\n'),
+                    {
+                      translatedCount: summary.translatedCount,
+                      untranslatedCount: summary.untranslatedCount,
+                      complete: Math.round(summary.complete * 100)
+                    }
+                  )
+                )
+              }
+            )
           }
         }
       ]
@@ -686,7 +742,10 @@ exports.build = function(props = {}) {
     // Remove original 'Preferences' menu item
 
     let fileMenu = findMenuItem('file')
-    let preferenceItem = fileMenu.submenu.splice(fileMenu.submenu.length - 2, 2)[1]
+    let preferenceItem = fileMenu.submenu.splice(
+      fileMenu.submenu.length - 2,
+      2
+    )[1]
 
     appMenu.push(
       {type: 'separator'},
@@ -730,7 +789,11 @@ exports.build = function(props = {}) {
 
       // Handle disableAll prop
 
-      if (disableAll && !item.neverDisable && !('submenu' in item || 'role' in item)) {
+      if (
+        disableAll &&
+        !item.neverDisable &&
+        !('submenu' in item || 'role' in item)
+      ) {
         item.enabled = false
       }
 

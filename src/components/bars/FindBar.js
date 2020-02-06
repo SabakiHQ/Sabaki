@@ -4,62 +4,70 @@ const helper = require('../../modules/helper')
 const t = require('../../i18n').context('FindBar')
 
 class FindBar extends Component {
-    constructor() {
-        super()
+  constructor() {
+    super()
 
-        this.handleChange = evt => {
-            sabaki.setState({findText: evt.currentTarget.value})
-        }
-
-        this.handleButtonClick = evt => {
-            evt.preventDefault()
-
-            let step = evt.currentTarget.classList.contains('next') ? 1 : -1
-            let {onButtonClick = helper.noop} = this.props
-
-            evt.step = step
-            onButtonClick(evt)
-        }
+    this.handleChange = evt => {
+      sabaki.setState({findText: evt.currentTarget.value})
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.mode !== this.props.mode) {
-            if (this.props.mode === 'find') {
-                this.inputElement.focus()
-            } else {
-                this.inputElement.blur()
-            }
-        }
+    this.handleButtonClick = evt => {
+      evt.preventDefault()
+
+      let step = evt.currentTarget.classList.contains('next') ? 1 : -1
+      let {onButtonClick = helper.noop} = this.props
+
+      evt.step = step
+      onButtonClick(evt)
     }
+  }
 
-    render({findText}) {
-        return h(Bar, Object.assign({type: 'find'}, this.props),
-            h('form', {},
-                h('input', {
-                    ref: el => this.inputElement = el,
-                    type: 'text',
-                    placeholder: t('Find'),
-                    value: findText,
-                    onInput: this.handleChange
-                }),
+  componentDidUpdate(prevProps) {
+    if (prevProps.mode !== this.props.mode) {
+      if (this.props.mode === 'find') {
+        this.inputElement.focus()
+      } else {
+        this.inputElement.blur()
+      }
+    }
+  }
 
-                h('button', {class: 'next', onClick: this.handleButtonClick},
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/chevron-down.svg',
-                        height: 20,
-                        alt: t('Next')
-                    })
-                ),
-                h('button', {class: 'prev', onClick: this.handleButtonClick},
-                    h('img', {
-                        src: './node_modules/octicons/build/svg/chevron-up.svg',
-                        height: 20,
-                        alt: t('Previous')
-                    })
-                )
-            )
+  render({findText}) {
+    return h(
+      Bar,
+      Object.assign({type: 'find'}, this.props),
+      h(
+        'form',
+        {},
+        h('input', {
+          ref: el => (this.inputElement = el),
+          type: 'text',
+          placeholder: t('Find'),
+          value: findText,
+          onInput: this.handleChange
+        }),
+
+        h(
+          'button',
+          {class: 'next', onClick: this.handleButtonClick},
+          h('img', {
+            src: './node_modules/octicons/build/svg/chevron-down.svg',
+            height: 20,
+            alt: t('Next')
+          })
+        ),
+        h(
+          'button',
+          {class: 'prev', onClick: this.handleButtonClick},
+          h('img', {
+            src: './node_modules/octicons/build/svg/chevron-up.svg',
+            height: 20,
+            alt: t('Previous')
+          })
         )
-    }
+      )
+    )
+  }
 }
 
 module.exports = FindBar

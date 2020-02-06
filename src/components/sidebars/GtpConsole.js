@@ -8,21 +8,29 @@ import {noop} from '../../modules/helper.js'
 
 class ConsoleCommandEntry extends Component {
   shouldComponentUpdate({sign, name, command}) {
-    return sign !== this.props.sign
-      || name !== this.props.name
-      || command !== this.props.command
+    return (
+      sign !== this.props.sign ||
+      name !== this.props.name ||
+      command !== this.props.command
+    )
   }
 
   render({sign, name, command}) {
     if (command == null) command = {name: ''}
     if (sign == null) sign = 0
 
-    return h('li', {class: 'command'},
-      h('pre', {},
-        h('span', {class: 'engine'}, `${['● ', '', '○ '][sign + 1]}${name}>`), ' ',
+    return h(
+      'li',
+      {class: 'command'},
+      h(
+        'pre',
+        {},
+        h('span', {class: 'engine'}, `${['● ', '', '○ '][sign + 1]}${name}>`),
+        ' ',
 
         command.id != null && [h('span', {class: 'id'}, command.id), ' '],
-        command.name, ' ',
+        command.name,
+        ' ',
 
         h(ContentDisplay, {
           tag: 'span',
@@ -35,35 +43,45 @@ class ConsoleCommandEntry extends Component {
 
 class ConsoleResponseEntry extends Component {
   shouldComponentUpdate({response, waiting}) {
-    return waiting !== this.props.waiting
-      || response !== this.props.response
+    return waiting !== this.props.waiting || response !== this.props.response
   }
 
   render({response, waiting}) {
-    return h('li', {class: classNames({response: true, waiting})},
+    return h(
+      'li',
+      {class: classNames({response: true, waiting})},
       response != null
+        ? h(
+            'pre',
+            {},
+            !response.internal && [
+              h(
+                'span',
+                {
+                  class: response.error ? 'error' : 'success'
+                },
+                response.error ? '?' : '='
+              )
+            ],
 
-      ? h('pre', {},
-        !response.internal && [h('span', {
-          class: response.error ? 'error' : 'success'
-        }, response.error ? '?' : '=')],
+            response.id != null && [h('span', {class: 'id'}, response.id)],
 
-        response.id != null && [h('span', {class: 'id'}, response.id)],
+            !response.internal && ' ',
 
-        !response.internal && ' ',
+            typeof response.content === 'string'
+              ? h(ContentDisplay, {
+                  tag: 'span',
+                  class: response.internal ? 'internal' : '',
+                  content: response.content.replace(
+                    /(^info move.*\s*)+/gm,
+                    'info move (…)\n'
+                  )
+                })
+              : response.content,
 
-        typeof response.content === 'string'
-        ? h(ContentDisplay, {
-          tag: 'span',
-          class: response.internal ? 'internal' : '',
-          content: response.content.replace(/(^info move.*\s*)+/gm, 'info move (…)\n')
-        })
-        : response.content,
-
-        waiting && h('div', {class: 'internal'}, h(TextSpinner))
-      )
-
-      : h('pre', {}, h('span', {class: 'internal'}, h(TextSpinner)))
+            waiting && h('div', {class: 'internal'}, h(TextSpinner))
+          )
+        : h('pre', {}, h('span', {class: 'internal'}, h(TextSpinner)))
     )
   }
 }
@@ -107,7 +125,10 @@ class ConsoleInput extends Component {
           this.inputPointer += sign
 
           if (this.inputPointer < 0 || this.inputPointer >= consoleLog.length) {
-            this.inputPointer = Math.max(-1, Math.min(consoleLog.length, this.inputPointer))
+            this.inputPointer = Math.max(
+              -1,
+              Math.min(consoleLog.length, this.inputPointer)
+            )
             this.setState({commandInputText: ''})
             break
           }
@@ -143,7 +164,10 @@ class ConsoleInput extends Component {
         }
 
         setTimeout(() => {
-          if (this.inputAutocompleteElement.scrollLeft !== this.inputElement.scrollLeft) {
+          if (
+            this.inputAutocompleteElement.scrollLeft !==
+            this.inputElement.scrollLeft
+          ) {
             this.inputAutocompleteElement.scrollLeft = this.inputElement.scrollLeft
           }
         }, 0)
@@ -156,8 +180,10 @@ class ConsoleInput extends Component {
     let {commandInputText} = this.state
 
     if (attachedEngine && commandInputText.length > 0) {
-      return attachedEngine.commands
-        .find(x => x.indexOf(commandInputText) === 0) || ''
+      return (
+        attachedEngine.commands.find(x => x.indexOf(commandInputText) === 0) ||
+        ''
+      )
     }
 
     return ''
@@ -166,9 +192,11 @@ class ConsoleInput extends Component {
   render({attachedEngine}, {commandInputText}) {
     let disabled = attachedEngine == null
 
-    return h('form', {class: 'input'},
+    return h(
+      'form',
+      {class: 'input'},
       h('input', {
-        ref: el => this.inputElement = el,
+        ref: el => (this.inputElement = el),
         class: 'command',
         disabled,
         type: 'text',
@@ -180,11 +208,11 @@ class ConsoleInput extends Component {
       }),
 
       h('input', {
-        ref: el => this.inputAutocompleteElement = el,
+        ref: el => (this.inputAutocompleteElement = el),
         class: 'autocomplete',
         disabled,
         type: 'text',
-        value: this.autocompleteText,
+        value: this.autocompleteText
       })
     )
   }
@@ -208,7 +236,7 @@ export class GtpConsole extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.show && this.props.show || this.scrollToBottom) {
+    if ((!prevProps.show && this.props.show) || this.scrollToBottom) {
       this.scrollElement.scrollTop = this.scrollElement.scrollHeight
     }
   }
@@ -228,10 +256,13 @@ export class GtpConsole extends Component {
   }
 
   render({consoleLog, attachedEngine}) {
-    return h('section', {class: 'gtp-console'},
-      h('ol',
+    return h(
+      'section',
+      {class: 'gtp-console'},
+      h(
+        'ol',
         {
-          ref: el => this.scrollElement = el,
+          ref: el => (this.scrollElement = el),
           class: 'log'
         },
 
@@ -239,20 +270,23 @@ export class GtpConsole extends Component {
           let sign = this.getSign(command)
 
           return [
-            command || (
-              i === 0
-              || consoleLog[i - 1].name !== name
-              || sign !== 0 && consoleLog[i - 1].sign !== sign
-            ) ? h(ConsoleCommandEntry, {sign, name, command})
-            : null,
+            command ||
+            i === 0 ||
+              consoleLog[i - 1].name !== name ||
+              (sign !== 0 && consoleLog[i - 1].sign !== sign)
+              ? h(ConsoleCommandEntry, {sign, name, command})
+              : null,
 
-            h(ConsoleResponseEntry, {response, waiting: response == null || waiting})
+            h(ConsoleResponseEntry, {
+              response,
+              waiting: response == null || waiting
+            })
           ]
         })
       ),
 
       h(ConsoleInput, {
-        ref: component => this.inputElement = component.inputElement,
+        ref: component => (this.inputElement = component.inputElement),
 
         consoleLog,
         attachedEngine,

@@ -50,20 +50,25 @@ export class EngineSyncer extends EventEmitter {
         this.controller.sendCommand({name: 'list_commands'}).then(response => {
           this.commands = response.content.split('\n')
         }),
-        ...(
-          commands != null
-          && commands.trim() !== ''
-          ? commands.split(';').filter(x => x.trim() !== '').map(command =>
-            this.controller.sendCommand(Command.fromString(command))
-          )
-          : []
-        )
+        ...(commands != null && commands.trim() !== ''
+          ? commands
+              .split(';')
+              .filter(x => x.trim() !== '')
+              .map(command =>
+                this.controller.sendCommand(Command.fromString(command))
+              )
+          : [])
       ]).catch(noop)
     })
 
     // Sync properties
 
-    for (let eventName of ['started', 'stopped', 'command-sent', 'response-received']) {
+    for (let eventName of [
+      'started',
+      'stopped',
+      'command-sent',
+      'response-received'
+    ]) {
       this.controller.on(eventName, () => {
         this.busy = this.controller.busy
         this.suspended = this.controller.process == null
@@ -113,11 +118,13 @@ export class EngineSyncer extends EventEmitter {
     } else if (!board.isValid()) {
       throw new Error('GTP engines don’t support invalid board positions.')
     } else if (board.width > alpha.length) {
-      throw new Error(`GTP engines only support board sizes that don’t exceed ${alpha.length}.`)
+      throw new Error(
+        `GTP engines only support board sizes that don’t exceed ${alpha.length}.`
+      )
     }
 
     let komi = +getRootProperty(tree, 'KM', 0)
-    let boardsize = board.width;
+    let boardsize = board.width
 
     // Replay
 
@@ -131,14 +138,16 @@ export class EngineSyncer extends EventEmitter {
       let placedHandicapStones = false
 
       if (
-        node.data.AB
-        && node.data.AB.length >= 2
-        && engineBoard.isEmpty()
-        && await this.stateTracker.knowsCommand('set_free_handicap')
+        node.data.AB &&
+        node.data.AB.length >= 2 &&
+        engineBoard.isEmpty() &&
+        (await this.stateTracker.knowsCommand('set_free_handicap'))
       ) {
         // Place handicap stones
 
-        let vertices = [].concat(...node.data.AB.map(parseCompressedVertices)).sort()
+        let vertices = []
+          .concat(...node.data.AB.map(parseCompressedVertices))
+          .sort()
         let coords = vertices
           .map(v => board.stringifyVertex(v))
           .filter(x => x != null)
@@ -158,11 +167,14 @@ export class EngineSyncer extends EventEmitter {
       }
 
       for (let prop of ['B', 'W', 'AB', 'AW']) {
-        if (node.data[prop] == null || placedHandicapStones && prop === 'AB') continue
+        if (node.data[prop] == null || (placedHandicapStones && prop === 'AB'))
+          continue
 
         let color = prop.slice(-1)
         let sign = color === 'B' ? 1 : -1
-        let vertices = [].concat(...node.data[prop].map(parseCompressedVertices))
+        let vertices = [].concat(
+          ...node.data[prop].map(parseCompressedVertices)
+        )
 
         for (let vertex of vertices) {
           if (engineBoard.has(vertex) && engineBoard.get(vertex) !== 0) continue
@@ -191,7 +203,10 @@ export class EngineSyncer extends EventEmitter {
           let [color, coord] = command.args
           let sign = color.toUpperCase() === 'B' ? 1 : -1
 
-          engineBoard = engineBoard.makeMove(sign, parseVertex(coord, boardsize))
+          engineBoard = engineBoard.makeMove(
+            sign,
+            parseVertex(coord, boardsize)
+          )
         } else if (command.name === 'set_free_handicap') {
           for (let coord of command.args) {
             engineBoard = engineBoard.makeMove(1, parseVertex(coord, boardsize))
@@ -228,7 +243,10 @@ export class EngineSyncer extends EventEmitter {
           let color = sign > 0 ? 'B' : 'W'
           if (sign === 0) continue
 
-          history.push({name: 'play', args: [color, board.stringifyVertex(vertex)]})
+          history.push({
+            name: 'play',
+            args: [color, board.stringifyVertex(vertex)]
+          })
           engineBoard = engineBoard.makeMove(sign, vertex)
         }
       }
@@ -239,7 +257,9 @@ export class EngineSyncer extends EventEmitter {
     }
 
     if (!boardSynced) {
-      throw new Error('Current board arrangement can’t be recreated on the GTP engine.')
+      throw new Error(
+        'Current board arrangement can’t be recreated on the GTP engine.'
+      )
     }
 
     try {

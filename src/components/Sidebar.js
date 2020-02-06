@@ -31,7 +31,9 @@ export class Sidebar extends Component {
     }
 
     this.handleSliderChange = ({percent}) => {
-      let moveNumber = Math.round((this.props.gameTree.getHeight() - 1) * percent)
+      let moveNumber = Math.round(
+        (this.props.gameTree.getHeight() - 1) * percent
+      )
       sabaki.goToMoveNumber(moveNumber)
     }
 
@@ -40,10 +42,10 @@ export class Sidebar extends Component {
     }
 
     this.handleSidebarSplitChange = ({sideSize}) => {
-      sideSize = Math.min(Math.max(
-        propertiesMinHeight,
-        sideSize
-      ), 100 - propertiesMinHeight)
+      sideSize = Math.min(
+        Math.max(propertiesMinHeight, sideSize),
+        100 - propertiesMinHeight
+      )
 
       this.setState({sidebarSplit: sideSize})
     }
@@ -81,7 +83,9 @@ export class Sidebar extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
+    return (
+      nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
+    )
   }
 
   componentWillReceiveProps({gameTree, gameCurrents, gameIndex} = {}) {
@@ -94,35 +98,41 @@ export class Sidebar extends Component {
   }
 
   componentDidUpdate(_, {winrateData}) {
-    if (winrateData.some(x => x != null) !== this.state.winrateData.some(x => x != null)) {
+    if (
+      winrateData.some(x => x != null) !==
+      this.state.winrateData.some(x => x != null)
+    ) {
       this.gameGraph.remeasure()
     }
   }
 
-  render({
-    mode,
-    gameIndex,
-    gameTree,
-    gameCurrents,
-    treePosition,
-    showGameGraph,
-    showCommentBox,
+  render(
+    {
+      mode,
+      gameIndex,
+      gameTree,
+      gameCurrents,
+      treePosition,
+      showGameGraph,
+      showCommentBox,
 
-    graphGridSize,
-    graphNodeSize
-  }, {
-    winrateData,
-    winrateGraphHeight,
-    sidebarSplit
-  }) {
+      graphGridSize,
+      graphNodeSize
+    },
+    {winrateData, winrateGraphHeight, sidebarSplit}
+  ) {
     let node = gameTree.get(treePosition)
-    let winrateGraphWidth = Math.max(Math.ceil((gameTree.getHeight() - 1) / 50) * 50, 1)
+    let winrateGraphWidth = Math.max(
+      Math.ceil((gameTree.getHeight() - 1) / 50) * 50,
+      1
+    )
     let level = gameTree.getLevel(treePosition)
     let showWinrateGraph = winrateData.some(x => x != null)
 
-    return h('section',
+    return h(
+      'section',
       {
-        ref: el => this.element = el,
+        ref: el => (this.element = el),
         id: 'sidebar'
       },
 
@@ -143,17 +153,20 @@ export class Sidebar extends Component {
           sideSize: !showGameGraph ? 100 : !showCommentBox ? 0 : sidebarSplit,
           procentualSplit: true,
 
-          mainContent: h('div',
+          mainContent: h(
+            'div',
             {
-              ref: el => this.horizontalSplitContainer = el,
+              ref: el => (this.horizontalSplitContainer = el),
               class: 'graphproperties'
             },
 
             h(Slider, {
               showSlider: showGameGraph,
               text: level,
-              percent: gameTree.getHeight() <= 1 ? 0
-                : (level / (gameTree.getHeight() - 1)) * 100,
+              percent:
+                gameTree.getHeight() <= 1
+                  ? 0
+                  : (level / (gameTree.getHeight() - 1)) * 100,
 
               onChange: this.handleSliderChange,
               onStartAutoscrolling: this.handleStartAutoscrolling,
@@ -161,13 +174,17 @@ export class Sidebar extends Component {
             }),
 
             h(GameGraph, {
-              ref: component => this.gameGraph = component,
+              ref: component => (this.gameGraph = component),
 
               gameTree,
               gameCurrents: gameCurrents[gameIndex],
               treePosition,
               showGameGraph,
-              height: !showGameGraph ? 0 : !showCommentBox ? 100 : 100 - sidebarSplit,
+              height: !showGameGraph
+                ? 0
+                : !showCommentBox
+                ? 100
+                : 100 - sidebarSplit,
               gridSize: graphGridSize,
               nodeSize: graphNodeSize,
 
@@ -180,16 +197,26 @@ export class Sidebar extends Component {
             gameTree,
             treePosition,
             showCommentBox,
-            moveAnnotation: node.data.BM != null ? [-1, node.data.BM[0]]
-              : node.data.DO != null ? [0, 1]
-              : node.data.IT != null ? [1, 1]
-              : node.data.TE != null ? [2, node.data.TE[0]]
-              : [null, 1],
-            positionAnnotation: node.data.UC != null ? [-2, node.data.UC[0]]
-              : node.data.GW != null ? [-1, node.data.GW[0]]
-              : node.data.DM != null ? [0, node.data.DM[0]]
-              : node.data.GB != null ? [1, node.data.GB[0]]
-              : [null, 1],
+            moveAnnotation:
+              node.data.BM != null
+                ? [-1, node.data.BM[0]]
+                : node.data.DO != null
+                ? [0, 1]
+                : node.data.IT != null
+                ? [1, 1]
+                : node.data.TE != null
+                ? [2, node.data.TE[0]]
+                : [null, 1],
+            positionAnnotation:
+              node.data.UC != null
+                ? [-2, node.data.UC[0]]
+                : node.data.GW != null
+                ? [-1, node.data.GW[0]]
+                : node.data.DM != null
+                ? [0, node.data.DM[0]]
+                : node.data.GB != null
+                ? [1, node.data.GB[0]]
+                : [null, 1],
             title: node.data.N != null ? node.data.N[0] : '',
             comment: node.data.C != null ? node.data.C[0] : '',
 

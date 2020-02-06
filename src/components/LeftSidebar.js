@@ -27,10 +27,14 @@ export class LeftSidebar extends Component {
 
     this.handleCommandControlStep = ({step}) => {
       let {attachedEngineSyncers} = this.props
-      let engineIndex = attachedEngineSyncers
-        .findIndex(syncer => syncer.id === this.state.selectedEngineSyncerId)
+      let engineIndex = attachedEngineSyncers.findIndex(
+        syncer => syncer.id === this.state.selectedEngineSyncerId
+      )
 
-      let stepEngineIndex = Math.min(Math.max(0, engineIndex + step), attachedEngineSyncers.length - 1)
+      let stepEngineIndex = Math.min(
+        Math.max(0, engineIndex + step),
+        attachedEngineSyncers.length - 1
+      )
       let stepEngine = this.props.attachedEngineSyncers[stepEngineIndex]
 
       if (stepEngine != null) {
@@ -49,8 +53,9 @@ export class LeftSidebar extends Component {
     }
 
     this.handleCommandSubmit = ({command}) => {
-      let engineSyncer = this.props.attachedEngineSyncers
-        .find(syncer => syncer.id === this.state.selectedEngineSyncerId)
+      let engineSyncer = this.props.attachedEngineSyncers.find(
+        syncer => syncer.id === this.state.selectedEngineSyncerId
+      )
 
       if (engineSyncer != null) {
         engineSyncer.controller.sendCommand(command)
@@ -59,21 +64,25 @@ export class LeftSidebar extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return nextProps.showLeftSidebar != this.props.showLeftSidebar || nextProps.showLeftSidebar
+    return (
+      nextProps.showLeftSidebar != this.props.showLeftSidebar ||
+      nextProps.showLeftSidebar
+    )
   }
 
-  render({
-    attachedEngineSyncers,
-    analyzingEngineSyncerId,
-    showLeftSidebar,
-    consoleLog
-  }, {
-    peerListHeight,
-    selectedEngineSyncerId
-  }) {
-    return h('section',
+  render(
+    {
+      attachedEngineSyncers,
+      analyzingEngineSyncerId,
+      showLeftSidebar,
+      consoleLog
+    },
+    {peerListHeight, selectedEngineSyncerId}
+  ) {
+    return h(
+      'section',
       {
-        ref: el => this.element = el,
+        ref: el => (this.element = el),
         id: 'leftsidebar'
       },
 
@@ -93,14 +102,18 @@ export class LeftSidebar extends Component {
         mainContent: h(GtpConsole, {
           show: showLeftSidebar,
           consoleLog,
-          attachedEngine: attachedEngineSyncers.map(syncer =>
-            syncer.id !== selectedEngineSyncerId ? null : {
-              name: syncer.engine.name,
-              get commands() {
-                return syncer.commands
-              }
-            }
-          ).find(x => x != null),
+          attachedEngine: attachedEngineSyncers
+            .map(syncer =>
+              syncer.id !== selectedEngineSyncerId
+                ? null
+                : {
+                    name: syncer.engine.name,
+                    get commands() {
+                      return syncer.commands
+                    }
+                  }
+            )
+            .find(x => x != null),
 
           onSubmit: this.handleCommandSubmit,
           onControlStep: this.handleCommandControlStep
@@ -115,9 +128,9 @@ export class LeftSidebar extends Component {
 
 LeftSidebar.getDerivedStateFromProps = (props, state) => {
   if (
-    props.attachedEngineSyncers.length > 0
-    && props.attachedEngineSyncers.find(syncer =>
-      syncer.id === state.selectedEngineSyncerId
+    props.attachedEngineSyncers.length > 0 &&
+    props.attachedEngineSyncers.find(
+      syncer => syncer.id === state.selectedEngineSyncerId
     ) == null
   ) {
     return {selectedEngineSyncerId: props.attachedEngineSyncers[0].id}

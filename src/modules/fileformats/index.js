@@ -13,19 +13,23 @@ let extensions = Object.keys(modules).map(key => modules[key].meta)
 let combinedExtensions = [].concat(...extensions.map(x => x.extensions))
 
 exports.meta = [
-    {name: t('Game Records'), extensions: combinedExtensions},
-    ...extensions
+  {name: t('Game Records'), extensions: combinedExtensions},
+  ...extensions
 ]
 
 exports.getModuleByExtension = function(extension) {
-    return modules[Object.keys(modules).find(key =>
+  return (
+    modules[
+      Object.keys(modules).find(key =>
         modules[key].meta.extensions.includes(extension.toLowerCase())
-    )] || sgf
+      )
+    ] || sgf
+  )
 }
 
 exports.parseFile = function(filename, onProgress) {
-    let extension = extname(filename).slice(1)
-    let m = exports.getModuleByExtension(extension)
+  let extension = extname(filename).slice(1)
+  let m = exports.getModuleByExtension(extension)
 
-    return m.parseFile(filename, onProgress)
+  return m.parseFile(filename, onProgress)
 }

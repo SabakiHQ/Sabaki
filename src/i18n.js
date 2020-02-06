@@ -7,8 +7,10 @@ const fs = require('fs')
 const dolm = require('dolm').load({})
 
 const mainI18n = isRenderer ? remote.require('./i18n') : exports
-const setting = isRenderer ? remote.require('./setting')
-  : isElectron ? nativeRequire('./setting')
+const setting = isRenderer
+  ? remote.require('./setting')
+  : isElectron
+  ? nativeRequire('./setting')
   : null
 
 exports.t = dolm.t

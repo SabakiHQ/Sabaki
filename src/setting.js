@@ -4,11 +4,13 @@ const path = require('path')
 const {app} = require('electron')
 
 for (let dir of [
-  exports.userDataDirectory = app.getPath('userData'),
-  exports.themesDirectory = path.join(exports.userDataDirectory, 'themes'),
-  exports.langDirectory = path.join(exports.userDataDirectory, 'lang')
+  (exports.userDataDirectory = app.getPath('userData')),
+  (exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')),
+  (exports.langDirectory = path.join(exports.userDataDirectory, 'lang'))
 ]) {
-  try { fs.mkdirSync(dir) } catch (err) {}
+  try {
+    fs.mkdirSync(dir)
+  } catch (err) {}
 }
 
 exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
@@ -60,14 +62,50 @@ let defaults = {
   'debug.dev_tools': false,
   'edit.click_currentvertex_to_remove': true,
   'edit.copy_variation_strip_props': [
-    'AP', 'CA', 'FF', 'GM', 'ST', 'SZ', 'KM', 'HA',
-    'AN', 'BR', 'BT', 'CP', 'DT', 'EV', 'GN', 'GC', 'ON',
-    'OT', 'PB', 'PC', 'PW', 'RE', 'RO', 'RU', 'SO', 'TM',
-    'US', 'WR', 'WT'
+    'AP',
+    'CA',
+    'FF',
+    'GM',
+    'ST',
+    'SZ',
+    'KM',
+    'HA',
+    'AN',
+    'BR',
+    'BT',
+    'CP',
+    'DT',
+    'EV',
+    'GN',
+    'GC',
+    'ON',
+    'OT',
+    'PB',
+    'PC',
+    'PW',
+    'RE',
+    'RO',
+    'RU',
+    'SO',
+    'TM',
+    'US',
+    'WR',
+    'WT'
   ],
   'edit.flatten_inherit_root_props': [
-    'BR', 'BT', 'DT', 'EV', 'GN', 'GC', 'PB',
-    'PW', 'RE', 'SO', 'SZ', 'WT', 'WR'
+    'BR',
+    'BT',
+    'DT',
+    'EV',
+    'GN',
+    'GC',
+    'PB',
+    'PW',
+    'RE',
+    'SO',
+    'SZ',
+    'WT',
+    'WR'
   ],
   'edit.history_batch_interval': 500,
   'edit.max_history_count': 1000,
@@ -100,11 +138,26 @@ let defaults = {
   'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
   'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
   'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
-  'setting.overwrite.v0.30.0-beta': ['graph.delay', 'window.minheight', 'window.minwidth'],
+  'setting.overwrite.v0.30.0-beta': [
+    'graph.delay',
+    'window.minheight',
+    'window.minwidth'
+  ],
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
-  'sgf.comment_properties': ['C', 'N', 'UC', 'GW', 'DM', 'GB', 'BM', 'TE', 'DO', 'IT'],
+  'sgf.comment_properties': [
+    'C',
+    'N',
+    'UC',
+    'GW',
+    'DM',
+    'GB',
+    'BM',
+    'TE',
+    'DO',
+    'IT'
+  ],
   'sgf.format_code': false,
   'sound.capture_delay_max': 500,
   'sound.capture_delay_min': 300,
@@ -187,26 +240,33 @@ exports.load = function() {
 }
 
 exports.loadThemes = function() {
-  let packagePath = filename => path.join(exports.themesDirectory, filename, 'package.json')
-  let friendlyName = name => name.split('-')
-    .map(x => x === '' ? x : x[0].toUpperCase() + x.slice(1).toLowerCase()).join(' ')
+  let packagePath = filename =>
+    path.join(exports.themesDirectory, filename, 'package.json')
+  let friendlyName = name =>
+    name
+      .split('-')
+      .map(x => (x === '' ? x : x[0].toUpperCase() + x.slice(1).toLowerCase()))
+      .join(' ')
 
-  themesDict = fs.readdirSync(exports.themesDirectory).map(x => {
-    try {
-      return Object.assign({}, require(packagePath(x)), {
-        id: x,
-        path: path.join(packagePath(x), '..')
-      })
-    } catch (err) {
-      return null
-    }
-  }).reduce((acc, x) => {
-    if (x == null) return acc
+  themesDict = fs
+    .readdirSync(exports.themesDirectory)
+    .map(x => {
+      try {
+        return Object.assign({}, require(packagePath(x)), {
+          id: x,
+          path: path.join(packagePath(x), '..')
+        })
+      } catch (err) {
+        return null
+      }
+    })
+    .reduce((acc, x) => {
+      if (x == null) return acc
 
-    x.name = friendlyName(x.name)
-    acc[x.id] = x
-    return acc
-  }, {})
+      x.name = friendlyName(x.name)
+      acc[x.id] = x
+      return acc
+    }, {})
 }
 
 exports.save = function() {
@@ -215,8 +275,9 @@ exports.save = function() {
   fs.writeFileSync(
     exports.settingsPath,
     JSON.stringify(
-      keys.reduce((acc, key) => (acc[key] = settings[key], acc), {}),
-      null, '  '
+      keys.reduce((acc, key) => ((acc[key] = settings[key]), acc), {}),
+      null,
+      '  '
     )
   )
 

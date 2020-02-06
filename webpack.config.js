@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = (env, argv) => ({
   entry: './src/components/App.js',
@@ -33,4 +33,4 @@ module.exports = (env, argv) => ({
     moment: 'null',
     'iconv-lite': "require('iconv-lite')"
   }
-});
+})

@@ -37,6 +37,10 @@ export class TextSpinner extends Component {
   render() {
     let {enabled = true, frames = '-\\|/'} = this.props
 
-    return h('span', {class: 'text-spinner'}, !enabled ? '' : frames[this.state.frame % frames.length])
+    return h(
+      'span',
+      {class: 'text-spinner'},
+      !enabled ? '' : frames[this.state.frame % frames.length]
+    )
   }
 }

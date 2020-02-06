@@ -35,18 +35,19 @@ class EnginePeerListItem extends Component {
 
   componentDidMount() {
     this.props.syncer
-    .on('busy-changed', this.syncState)
-    .on('suspended-changed', this.syncState)
+      .on('busy-changed', this.syncState)
+      .on('suspended-changed', this.syncState)
   }
 
   componentWillUnmount() {
     this.props.syncer
-    .removeListener('busy-changed', this.syncState)
-    .removeListener('suspended-changed', this.syncState)
+      .removeListener('busy-changed', this.syncState)
+      .removeListener('suspended-changed', this.syncState)
   }
 
   render({syncer, analyzing, selected}) {
-    return h('li',
+    return h(
+      'li',
       {
         class: classnames('item', {
           analyzing,
@@ -60,32 +61,35 @@ class EnginePeerListItem extends Component {
       },
 
       !this.state.busy
-      ? h('div',
-        {
-          class: 'icon',
-          title: !this.state.suspended ? t('Running') : t('Stopped')
-        },
-        h('img', {
-          src: `./node_modules/octicons/build/svg/${
-            !this.state.suspended ? 'play' : 'primitive-square'
-          }.svg`,
-          alt: !this.state.suspended ? t('Running') : t('Stopped')
-        })
-      )
-      : h(TextSpinner),
+        ? h(
+            'div',
+            {
+              class: 'icon',
+              title: !this.state.suspended ? t('Running') : t('Stopped')
+            },
+            h('img', {
+              src: `./node_modules/octicons/build/svg/${
+                !this.state.suspended ? 'play' : 'primitive-square'
+              }.svg`,
+              alt: !this.state.suspended ? t('Running') : t('Stopped')
+            })
+          )
+        : h(TextSpinner),
 
       h('span', {class: 'name'}, syncer.engine.name),
 
-      analyzing && h('div',
-        {
-          class: 'icon analyzing',
-          title: t('Analyzer')
-        },
-        h('img', {
-          src: './node_modules/octicons/build/svg/pulse.svg',
-          alt: t('Analyzer')
-        })
-      )
+      analyzing &&
+        h(
+          'div',
+          {
+            class: 'icon analyzing',
+            title: t('Analyzer')
+          },
+          h('img', {
+            src: './node_modules/octicons/build/svg/pulse.svg',
+            alt: t('Analyzer')
+          })
+        )
     )
   }
 }
@@ -115,22 +119,27 @@ export class EnginePeerList extends Component {
     selectedEngineSyncerId,
     analyzingEngineSyncerId
   }) {
-    return h('div',
+    return h(
+      'div',
       {
         class: 'engine-peer-list'
       },
-      h('ul', {}, attachedEngineSyncers.map(syncer =>
-        h(EnginePeerListItem, {
-          key: syncer.id,
+      h(
+        'ul',
+        {},
+        attachedEngineSyncers.map(syncer =>
+          h(EnginePeerListItem, {
+            key: syncer.id,
 
-          syncer,
-          analyzing: syncer.id === analyzingEngineSyncerId,
-          selected: syncer.id === selectedEngineSyncerId,
+            syncer,
+            analyzing: syncer.id === analyzingEngineSyncerId,
+            selected: syncer.id === selectedEngineSyncerId,
 
-          onClick: this.handleEngineClick,
-          onContextMenu: this.handleEngineContextMenu
-        })
-      ))
+            onClick: this.handleEngineClick,
+            onContextMenu: this.handleEngineContextMenu
+          })
+        )
+      )
     )
   }
 }

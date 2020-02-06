@@ -33,8 +33,10 @@ export class SplitContainer extends Component {
       )
 
       if (procentualSplit) {
-        sideSize = containerEnd === containerBegin ? 0
-          : sideSize * 100 / (containerEnd - containerBegin)
+        sideSize =
+          containerEnd === containerBegin
+            ? 0
+            : (sideSize * 100) / (containerEnd - containerBegin)
       }
 
       onChange({sideSize})
@@ -90,9 +92,10 @@ export class SplitContainer extends Component {
       onMouseDown: this.handleResizerMouseDown
     })
 
-    return h('div',
+    return h(
+      'div',
       {
-        ref: el => this.element = el,
+        ref: el => (this.element = el),
         id,
         class: `split-container ${classNames}`,
         style: {
@@ -104,7 +107,8 @@ export class SplitContainer extends Component {
 
       !invert && mainContent,
 
-      h('div',
+      h(
+        'div',
         {
           class: 'side',
           style: {
@@ -116,7 +120,7 @@ export class SplitContainer extends Component {
         [sideContent, resizer]
       ),
 
-      invert && mainContent,
+      invert && mainContent
     )
   }
 }

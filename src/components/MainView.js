@@ -11,219 +11,229 @@ const FindBar = require('./bars/FindBar')
 const gametree = require('../modules/gametree')
 
 class MainView extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props)
 
-        this.handleTogglePlayer = () => {
-            let {gameTree, treePosition, currentPlayer} = this.props
-            sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
-        }
+    this.handleTogglePlayer = () => {
+      let {gameTree, treePosition, currentPlayer} = this.props
+      sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
+    }
 
-        this.handleToolButtonClick = evt => {
-            sabaki.setState({selectedTool: evt.tool})
-        }
+    this.handleToolButtonClick = evt => {
+      sabaki.setState({selectedTool: evt.tool})
+    }
 
-        this.handleFindButtonClick = evt => sabaki.findMove(evt.step, {
-            vertex: this.props.findVertex,
-            text: this.props.findText
+    this.handleFindButtonClick = evt =>
+      sabaki.findMove(evt.step, {
+        vertex: this.props.findVertex,
+        text: this.props.findText
+      })
+
+    this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
+    this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
+  }
+
+  componentDidMount() {
+    // Pressing Ctrl/Cmd should show crosshair cursor on Goban in edit mode
+
+    document.addEventListener('keydown', evt => {
+      if (evt.key !== 'Control' || evt.key !== 'Meta') return
+
+      if (this.props.mode === 'edit') {
+        this.setState({gobanCrosshair: true})
+      }
+    })
+
+    document.addEventListener('keyup', evt => {
+      if (evt.key !== 'Control' || evt.key !== 'Meta') return
+
+      if (this.props.mode === 'edit') {
+        this.setState({gobanCrosshair: false})
+      }
+    })
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.mode !== 'edit') {
+      this.setState({gobanCrosshair: false})
+    }
+  }
+
+  handleGobanVertexClick(evt) {
+    sabaki.clickVertex(evt.vertex, evt)
+  }
+
+  handleGobanLineDraw(evt) {
+    let {v1, v2} = evt.line
+    sabaki.useTool(this.props.selectedTool, v1, v2)
+    sabaki.editVertexData = null
+  }
+
+  render(
+    {
+      mode,
+      gameIndex,
+      gameTree,
+      gameCurrents,
+      treePosition,
+      currentPlayer,
+      gameInfo,
+
+      deadStones,
+      scoringMethod,
+      scoreBoard,
+      playVariation,
+      analysis,
+      analysisTreePosition,
+      areaMap,
+      blockedGuesses,
+
+      highlightVertices,
+      showCoordinates,
+      showMoveColorization,
+      showMoveNumbers,
+      showNextMoves,
+      showSiblings,
+      fuzzyStonePlacement,
+      animateStonePlacement,
+      boardTransformation,
+
+      selectedTool,
+      findText,
+      findVertex,
+
+      showLeftSidebar,
+      showSidebar,
+      sidebarWidth,
+      leftSidebarWidth
+    },
+    {gobanCrosshair}
+  ) {
+    let node = gameTree.get(treePosition)
+    let board = gametree.getBoard(gameTree, treePosition)
+    let komi = +gametree.getRootProperty(gameTree, 'KM', 0)
+    let handicap = +gametree.getRootProperty(gameTree, 'HA', 0)
+    let paintMap
+
+    if (['scoring', 'estimator'].includes(mode)) {
+      paintMap = areaMap.map(row =>
+        row.map(x => ((Math.abs(x) * 2 + 1) / 3) * Math.sign(x))
+      )
+    } else if (mode === 'guess') {
+      paintMap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
+
+      for (let [x, y] of blockedGuesses) {
+        paintMap[y][x] = 1
+      }
+    }
+
+    return h(
+      'section',
+      {
+        id: 'main'
+      },
+
+      h(
+        'main',
+        {ref: el => (this.mainElement = el)},
+
+        h(Goban, {
+          gameTree,
+          treePosition,
+          board,
+          highlightVertices:
+            findVertex && mode === 'find' ? [findVertex] : highlightVertices,
+          analysis:
+            mode === 'play' &&
+            analysisTreePosition != null &&
+            analysisTreePosition === treePosition
+              ? analysis
+              : null,
+          paintMap,
+          dimmedStones: ['scoring', 'estimator'].includes(mode)
+            ? deadStones
+            : [],
+
+          crosshair: gobanCrosshair,
+          showCoordinates,
+          showMoveColorization,
+          showMoveNumbers: mode !== 'edit' && showMoveNumbers,
+          showNextMoves: mode !== 'guess' && showNextMoves,
+          showSiblings: mode !== 'guess' && showSiblings,
+          fuzzyStonePlacement,
+          animateStonePlacement,
+
+          playVariation,
+          drawLineMode:
+            mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
+              ? selectedTool
+              : null,
+          transformation: boardTransformation,
+
+          onVertexClick: this.handleGobanVertexClick,
+          onLineDraw: this.handleGobanLineDraw
         })
+      ),
 
-        this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
-        this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
-    }
+      h(
+        'section',
+        {id: 'bar'},
+        h(PlayBar, {
+          mode,
+          playerNames: gameInfo.playerNames,
+          playerRanks: gameInfo.playerRanks,
+          playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),
+          currentPlayer,
+          showHotspot: node.data.HO != null,
+          onCurrentPlayerClick: this.handleTogglePlayer
+        }),
 
-    componentDidMount() {
-        // Pressing Ctrl/Cmd should show crosshair cursor on Goban in edit mode
+        h(EditBar, {
+          mode,
+          selectedTool,
+          onToolButtonClick: this.handleToolButtonClick
+        }),
 
-        document.addEventListener('keydown', evt => {
-            if (evt.key !== 'Control' || evt.key !== 'Meta') return
+        h(GuessBar, {
+          mode,
+          treePosition
+        }),
 
-            if (this.props.mode === 'edit') {
-                this.setState({gobanCrosshair: true})
-            }
+        h(AutoplayBar, {
+          mode,
+          gameTree,
+          gameCurrents: gameCurrents[gameIndex],
+          treePosition
+        }),
+
+        h(ScoringBar, {
+          type: 'scoring',
+          mode,
+          method: scoringMethod,
+          scoreBoard,
+          areaMap,
+          komi,
+          handicap
+        }),
+
+        h(ScoringBar, {
+          type: 'estimator',
+          mode,
+          method: scoringMethod,
+          scoreBoard,
+          areaMap,
+          komi,
+          handicap
+        }),
+
+        h(FindBar, {
+          mode,
+          findText,
+          onButtonClick: this.handleFindButtonClick
         })
-
-        document.addEventListener('keyup', evt => {
-            if (evt.key !== 'Control' || evt.key !== 'Meta') return
-
-            if (this.props.mode === 'edit') {
-                this.setState({gobanCrosshair: false})
-            }
-        })
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.mode !== 'edit') {
-            this.setState({gobanCrosshair: false})
-        }
-    }
-
-    handleGobanVertexClick(evt) {
-        sabaki.clickVertex(evt.vertex, evt)
-    }
-
-    handleGobanLineDraw(evt) {
-        let {v1, v2} = evt.line
-        sabaki.useTool(this.props.selectedTool, v1, v2)
-        sabaki.editVertexData = null
-    }
-
-    render({
-        mode,
-        gameIndex,
-        gameTree,
-        gameCurrents,
-        treePosition,
-        currentPlayer,
-        gameInfo,
-
-        deadStones,
-        scoringMethod,
-        scoreBoard,
-        playVariation,
-        analysis,
-        analysisTreePosition,
-        areaMap,
-        blockedGuesses,
-
-        highlightVertices,
-        showCoordinates,
-        showMoveColorization,
-        showMoveNumbers,
-        showNextMoves,
-        showSiblings,
-        fuzzyStonePlacement,
-        animateStonePlacement,
-        boardTransformation,
-
-        selectedTool,
-        findText,
-        findVertex,
-
-        showLeftSidebar,
-        showSidebar,
-        sidebarWidth,
-        leftSidebarWidth
-    }, {
-        gobanCrosshair
-    }) {
-        let node = gameTree.get(treePosition)
-        let board = gametree.getBoard(gameTree, treePosition)
-        let komi = +gametree.getRootProperty(gameTree, 'KM', 0)
-        let handicap = +gametree.getRootProperty(gameTree, 'HA', 0)
-        let paintMap
-
-        if (['scoring', 'estimator'].includes(mode)) {
-            paintMap = areaMap.map(row =>
-                row.map(x => (Math.abs(x) * 2 + 1) / 3 * Math.sign(x))
-            )
-        } else if (mode === 'guess') {
-            paintMap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
-
-            for (let [x, y] of blockedGuesses) {
-                paintMap[y][x] = 1
-            }
-        }
-
-        return h('section',
-            {
-                id: 'main'
-            },
-
-            h('main',
-                {ref: el => this.mainElement = el},
-
-                h(Goban, {
-                    gameTree,
-                    treePosition,
-                    board,
-                    highlightVertices: findVertex && mode === 'find'
-                        ? [findVertex]
-                        : highlightVertices,
-                    analysis: mode === 'play'
-                        && analysisTreePosition != null
-                        && analysisTreePosition === treePosition
-                        ? analysis
-                        : null,
-                    paintMap,
-                    dimmedStones: ['scoring', 'estimator'].includes(mode) ? deadStones : [],
-
-                    crosshair: gobanCrosshair,
-                    showCoordinates,
-                    showMoveColorization,
-                    showMoveNumbers: mode !== 'edit' && showMoveNumbers,
-                    showNextMoves: mode !== 'guess' && showNextMoves,
-                    showSiblings: mode !== 'guess' && showSiblings,
-                    fuzzyStonePlacement,
-                    animateStonePlacement,
-
-                    playVariation,
-                    drawLineMode: mode === 'edit' && ['arrow', 'line'].includes(selectedTool)
-                        ? selectedTool : null,
-                    transformation: boardTransformation,
-
-                    onVertexClick: this.handleGobanVertexClick,
-                    onLineDraw: this.handleGobanLineDraw
-                })
-            ),
-
-            h('section', {id: 'bar'},
-                h(PlayBar, {
-                    mode,
-                    playerNames: gameInfo.playerNames,
-                    playerRanks: gameInfo.playerRanks,
-                    playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),
-                    currentPlayer,
-                    showHotspot: node.data.HO != null,
-                    onCurrentPlayerClick: this.handleTogglePlayer
-                }),
-
-                h(EditBar, {
-                    mode,
-                    selectedTool,
-                    onToolButtonClick: this.handleToolButtonClick
-                }),
-
-                h(GuessBar, {
-                    mode,
-                    treePosition
-                }),
-
-                h(AutoplayBar, {
-                    mode,
-                    gameTree,
-                    gameCurrents: gameCurrents[gameIndex],
-                    treePosition
-                }),
-
-                h(ScoringBar, {
-                    type: 'scoring',
-                    mode,
-                    method: scoringMethod,
-                    scoreBoard,
-                    areaMap,
-                    komi,
-                    handicap
-                }),
-
-                h(ScoringBar, {
-                    type: 'estimator',
-                    mode,
-                    method: scoringMethod,
-                    scoreBoard,
-                    areaMap,
-                    komi,
-                    handicap
-                }),
-
-                h(FindBar, {
-                    mode,
-                    findText,
-                    onButtonClick: this.handleFindButtonClick,
-                })
-            )
-        )
-    }
+      )
+    )
+  }
 }
 
 module.exports = MainView

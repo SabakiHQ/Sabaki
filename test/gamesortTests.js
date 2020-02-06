@@ -14,84 +14,120 @@ const shodan = fileformats.parseFile(`${__dirname}/sgf/shodan_game.sgf`)[0]
 const pro = fileformats.parseFile(`${__dirname}/sgf/pro_game.sgf`)[0]
 
 describe('gamesort', () => {
-    describe('byBlackRank', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byBlackRank', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games by rank of black player low to high', () => {
-            assert.deepEqual(gamesort.byBlackRank(gameTrees),
-                             [blank, beginner, shodan, pro])
-        })
+    it('sorts games by rank of black player low to high', () => {
+      assert.deepEqual(gamesort.byBlackRank(gameTrees), [
+        blank,
+        beginner,
+        shodan,
+        pro
+      ])
     })
+  })
 
-    describe('byWhiteRank', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byWhiteRank', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games by rank of white player low to high', () => {
-            assert.deepEqual(gamesort.byWhiteRank(gameTrees),
-                             [blank, beginner, shodan, pro])
-        })
+    it('sorts games by rank of white player low to high', () => {
+      assert.deepEqual(gamesort.byWhiteRank(gameTrees), [
+        blank,
+        beginner,
+        shodan,
+        pro
+      ])
     })
+  })
 
-    describe('byPlayerBlack', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byPlayerBlack', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games alphabetically by name of black player', () => {
-            assert.deepEqual(gamesort.byPlayerBlack(gameTrees),
-                             [blank, beginner, pro, shodan])
-        })
+    it('sorts games alphabetically by name of black player', () => {
+      assert.deepEqual(gamesort.byPlayerBlack(gameTrees), [
+        blank,
+        beginner,
+        pro,
+        shodan
+      ])
     })
+  })
 
-    describe('byPlayerWhite', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byPlayerWhite', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games alphabetically by name of white player', () => {
-            assert.deepEqual(gamesort.byPlayerWhite(gameTrees),
-                             [blank, pro, beginner, shodan])
-        })
+    it('sorts games alphabetically by name of white player', () => {
+      assert.deepEqual(gamesort.byPlayerWhite(gameTrees), [
+        blank,
+        pro,
+        beginner,
+        shodan
+      ])
     })
+  })
 
-    describe('byGameName', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byGameName', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games naturally by game name', () => {
-            assert.deepEqual(gamesort.byGameName(gameTrees),
-                             [blank, pro, shodan, beginner])
-        })
+    it('sorts games naturally by game name', () => {
+      assert.deepEqual(gamesort.byGameName(gameTrees), [
+        blank,
+        pro,
+        shodan,
+        beginner
+      ])
     })
+  })
 
-    describe('byEvent', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byEvent', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games naturally by event', () => {
-            assert.deepEqual(gamesort.byEvent(gameTrees),
-                             [blank, pro, beginner, shodan])
-        })
+    it('sorts games naturally by event', () => {
+      assert.deepEqual(gamesort.byEvent(gameTrees), [
+        blank,
+        pro,
+        beginner,
+        shodan
+      ])
     })
+  })
 
-    describe('byDate', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byDate', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games by date', () => {
-            assert.deepEqual(gamesort.byDate(gameTrees),
-                             [blank, pro, shodan, beginner])
-        })
+    it('sorts games by date', () => {
+      assert.deepEqual(gamesort.byDate(gameTrees), [
+        blank,
+        pro,
+        shodan,
+        beginner
+      ])
     })
+  })
 
-    describe('byNumberOfMoves', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('byNumberOfMoves', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('sorts games by height of game tree', () => {
-            assert.deepEqual(gamesort.byNumberOfMoves(gameTrees),
-                             [blank, beginner, shodan, pro])
-        })
+    it('sorts games by height of game tree', () => {
+      assert.deepEqual(gamesort.byNumberOfMoves(gameTrees), [
+        blank,
+        beginner,
+        shodan,
+        pro
+      ])
     })
+  })
 
-    describe('reverse', () => {
-        let gameTrees = [blank, pro, beginner, shodan]
+  describe('reverse', () => {
+    let gameTrees = [blank, pro, beginner, shodan]
 
-        it ('reverses the array of gametrees', () => {
-            assert.deepEqual(gamesort.reverse(gameTrees),
-                             [shodan, beginner, pro, blank])
-        })
+    it('reverses the array of gametrees', () => {
+      assert.deepEqual(gamesort.reverse(gameTrees), [
+        shodan,
+        beginner,
+        pro,
+        blank
+      ])
     })
+  })
 })

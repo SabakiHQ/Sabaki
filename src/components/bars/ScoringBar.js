@@ -5,32 +5,44 @@ const t = require('../../i18n').context('ScoringBar')
 const helper = require('../../modules/helper')
 
 class ScoringBar extends Component {
-    constructor() {
-        super()
+  constructor() {
+    super()
 
-        this.handleButtonClick = () => sabaki.openDrawer('score')
-    }
+    this.handleButtonClick = () => sabaki.openDrawer('score')
+  }
 
-    render({type, method, areaMap, scoreBoard, komi, handicap}) {
-        let score = scoreBoard && helper.getScore(scoreBoard, areaMap, {komi, handicap})
-        let result = score && (method === 'area' ? score.areaScore : score.territoryScore)
+  render({type, method, areaMap, scoreBoard, komi, handicap}) {
+    let score =
+      scoreBoard && helper.getScore(scoreBoard, areaMap, {komi, handicap})
+    let result =
+      score && (method === 'area' ? score.areaScore : score.territoryScore)
 
-        return h(Bar, Object.assign({type}, this.props),
-            h('div', {class: 'result'},
-                h('button', {onClick: this.handleButtonClick}, t('Details')),
-                h('strong', {},
-                    !result ? ''
-                    : result > 0 ? t(p => `B+${p.result}`, {result})
-                    : result < 0 ? t(p => `W+${p.result}`, {result: -result})
-                    : t('Draw')
-                ),
-            ), ' ',
-
-            type === 'scoring'
-            ? t('Please select dead stones.')
-            : t('Toggle group status.')
+    return h(
+      Bar,
+      Object.assign({type}, this.props),
+      h(
+        'div',
+        {class: 'result'},
+        h('button', {onClick: this.handleButtonClick}, t('Details')),
+        h(
+          'strong',
+          {},
+          !result
+            ? ''
+            : result > 0
+            ? t(p => `B+${p.result}`, {result})
+            : result < 0
+            ? t(p => `W+${p.result}`, {result: -result})
+            : t('Draw')
         )
-    }
+      ),
+      ' ',
+
+      type === 'scoring'
+        ? t('Please select dead stones.')
+        : t('Toggle group status.')
+    )
+  }
 }
 
 module.exports = ScoringBar
