@@ -97,6 +97,7 @@
     "electron": "^8.0.0",
     "electron-builder": "^22.3.2",
     "mocha": "^7.0.1",
+    "onchange": "^6.1.0",
     "prettier": "1.19.1",
     "react": "^16.12.0",
     "tmp": "^0.1.0",
