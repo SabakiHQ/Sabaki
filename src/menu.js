@@ -656,6 +656,7 @@ exports.build = function(props = {}) {
           neverDisable: true
         },
         {role: 'minimize'},
+        {role: 'close'},
         {type: 'separator'},
         {role: 'front'}
       ],
