@@ -153,7 +153,7 @@ header {
         top: 0;
         height: 40px;
         width: 35px;
-        background: url('../node_modules/octicons/build/svg/x.svg') center / auto 21px no-repeat;
+        background: url('../node_modules/@primer/octicons/build/svg/x.svg') center / auto 21px no-repeat;
         opacity: .5;
     }
     #bar .bar .close:active { opacity: .7; }
@@ -281,14 +281,14 @@ header {
         top: 0;
         height: 40px;
         width: 35px;
-        background: url('../node_modules/octicons/build/svg/triangle-right.svg') center / 20px 20px no-repeat;
+        background: url('../node_modules/@primer/octicons/build/svg/triangle-right.svg') center / 20px 20px no-repeat;
         transform: translateX(-50%);
         filter: invert(100%);
         transition: background-image .2s, box-shadow .5s;
     }
     #autoplay.playing .play {
         background-color: rgba(255, 255, 255, .3);
-        background-image: url('../node_modules/octicons/build/svg/primitive-square.svg');
+        background-image: url('../node_modules/@primer/octicons/build/svg/primitive-square.svg');
         box-shadow: 0 0 40px rgba(0, 0, 0, .5);
     }
     #autoplay .play:hover {

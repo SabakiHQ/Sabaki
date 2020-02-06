@@ -89,7 +89,7 @@ class PropertyItem extends Component {
               onClick: this.handleRemoveButtonClick
             },
 
-            h('img', {src: './node_modules/octicons/build/svg/x.svg'})
+            h('img', {src: './node_modules/@primer/octicons/build/svg/x.svg'})
           )
       )
     )

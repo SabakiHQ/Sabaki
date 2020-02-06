@@ -59,10 +59,10 @@
       "!ci${/*}",
       "!src/{components,modules}${/*}",
       "!node_modules",
+      "node_modules/@primer/octicons/build/svg/*",
       "node_modules/@sabaki/deadstones/wasm/*",
       "node_modules/@sabaki/shudan/css/*",
       "node_modules/dolm/**/*",
-      "node_modules/octicons/build/svg/*",
       "node_modules/pikaday/css/*"
     ]
   },
@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
+    "@primer/octicons": "^9.4.0",
     "@sabaki/boardmatcher": "^1.1.5",
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
@@ -88,7 +89,6 @@
     "iconv-lite": "^0.5.1",
     "jschardet": "^2.1.1",
     "natsort": "^2.0.2",
-    "octicons": "^8.5.0",
     "pikaday": "^1.8.0",
     "preact": "^8.5.3",
     "react-markdown": "^3.6.0",

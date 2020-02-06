@@ -418,7 +418,7 @@ class InfoDrawer extends Component {
             {},
             h('img', {
               tabIndex: 0,
-              src: './node_modules/octicons/build/svg/chevron-down.svg',
+              src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
               width: 16,
               height: 16,
               class: classNames({menu: true, active: engines[0] != null}),
@@ -474,7 +474,7 @@ class InfoDrawer extends Component {
 
             h('img', {
               tabIndex: 0,
-              src: './node_modules/octicons/build/svg/chevron-down.svg',
+              src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
               width: 16,
               height: 16,
               class: classNames({menu: true, active: engines[1] != null}),

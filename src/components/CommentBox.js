@@ -141,7 +141,7 @@ class CommentTitle extends Component {
           },
 
           h('img', {
-            src: './node_modules/octicons/build/svg/question.svg',
+            src: './node_modules/@primer/octicons/build/svg/question.svg',
             width: 16,
             height: 16
           })
@@ -207,7 +207,7 @@ class CommentTitle extends Component {
       }),
 
       h('img', {
-        src: './node_modules/octicons/build/svg/pencil.svg',
+        src: './node_modules/@primer/octicons/build/svg/pencil.svg',
         class: 'edit-button',
         title: t('Edit'),
         width: 16,
@@ -351,7 +351,7 @@ class CommentBox extends Component {
           {class: 'header'},
           h('img', {
             ref: el => (this.menuButtonElement = el),
-            src: './node_modules/octicons/build/svg/chevron-down.svg',
+            src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
             width: 16,
             height: 16,
             onClick: this.handleMenuButtonClick

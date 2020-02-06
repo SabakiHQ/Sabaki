@@ -274,7 +274,7 @@ class PathInputItem extends Component {
             onClick: this.handleBrowseButtonClick
           },
           h('img', {
-            src: './node_modules/octicons/build/svg/file-directory.svg',
+            src: './node_modules/@primer/octicons/build/svg/file-directory.svg',
             title: t('Browse…'),
             height: 14
           })
@@ -288,7 +288,7 @@ class PathInputItem extends Component {
             'a',
             {class: 'invalid'},
             h('img', {
-              src: './node_modules/octicons/build/svg/alert.svg',
+              src: './node_modules/@primer/octicons/build/svg/alert.svg',
               title: this.props.chooseDirectory
                 ? t('Directory not found')
                 : t('File not found'),
@@ -565,7 +565,7 @@ class EngineItem extends Component {
             onClick: this.handleRemoveButtonClick
           },
 
-          h('img', {src: './node_modules/octicons/build/svg/x.svg'})
+          h('img', {src: './node_modules/@primer/octicons/build/svg/x.svg'})
         ),
         h('input', {
           type: 'text',
@@ -587,7 +587,7 @@ class EngineItem extends Component {
           },
 
           h('img', {
-            src: './node_modules/octicons/build/svg/file-directory.svg'
+            src: './node_modules/@primer/octicons/build/svg/file-directory.svg'
           })
         ),
         h('input', {
