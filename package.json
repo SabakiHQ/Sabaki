@@ -16,7 +16,7 @@
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",
-    "copyright": "Copyright 2015-2019 Yichuan Shen",
+    "copyright": "Copyright © 2015-2020 Yichuan Shen",
     "compression": "normal",
     "linux": {
       "target": "AppImage",
