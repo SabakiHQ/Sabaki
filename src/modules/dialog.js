@@ -14,7 +14,7 @@ exports.showMessageBox = function(
   let result = dialog.showMessageBoxSync(remote.getCurrentWindow(), {
     type,
     buttons,
-    title: app.getName(),
+    title: app.name,
     message,
     cancelId,
     noLink: true

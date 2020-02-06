@@ -63,7 +63,7 @@ class GeneralTab extends Component {
     super()
 
     this.handleSoundEnabledChange = evt => {
-      sabaki.window.webContents.setAudioMuted(!evt.checked)
+      sabaki.window.webContents.audioMuted = !evt.checked
     }
 
     this.handleTreeStyleChange = evt => {
