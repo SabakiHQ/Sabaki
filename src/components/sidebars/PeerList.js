@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 import i18n from '../../i18n.js'
 import {TextSpinner} from '../TextSpinner.js'
+import {ToolBar, ToolBarButton} from '../ToolBar.js'
 
 const t = i18n.context('PeerList')
 
@@ -69,7 +70,7 @@ class EnginePeerListItem extends Component {
             },
             h('img', {
               src: `./node_modules/@primer/octicons/build/svg/${
-                !this.state.suspended ? 'play' : 'primitive-square'
+                !this.state.suspended ? 'triangle-right' : 'primitive-square'
               }.svg`,
               alt: !this.state.suspended ? t('Running') : t('Stopped')
             })
@@ -112,6 +113,12 @@ export class EnginePeerList extends Component {
         y: evt.clientY
       })
     }
+
+    this.handleStartEngineButtonClick = evt => {
+      let {left, bottom} = evt.currentTarget.getBoundingClientRect()
+
+      sabaki.openEnginesMenu({x: left, y: bottom})
+    }
   }
 
   render({
@@ -124,6 +131,19 @@ export class EnginePeerList extends Component {
       {
         class: 'engine-peer-list'
       },
+
+      h(
+        ToolBar,
+        {},
+
+        h(ToolBarButton, {
+          icon: './node_modules/@primer/octicons/build/svg/play.svg',
+          tooltip: t('Start Engine…'),
+          menu: true,
+          onClick: this.handleStartEngineButtonClick
+        })
+      ),
+
       h(
         'ul',
         {},

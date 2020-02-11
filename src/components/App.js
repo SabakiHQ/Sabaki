@@ -2019,7 +2019,7 @@ class App extends Component {
     let {pass, capturing, suicide} = board.analyzeMove(sign, vertex)
 
     let newTreePosition
-    let newTree = tree.mutate(draft => {
+    let newTree = currentTree.mutate(draft => {
       newTreePosition = draft.appendNode(id, {
         [color]: [sgf.stringifyVertex(vertex)]
       })
@@ -2034,6 +2034,8 @@ class App extends Component {
         }
       }
     })
+
+    if (newTreePosition == null) return
 
     if (pass) {
       sound.playPass()
@@ -2786,6 +2788,32 @@ class App extends Component {
           }
         }
       ],
+      x,
+      y
+    )
+  }
+
+  openEnginesMenu({x, y} = {}) {
+    let t = i18n.context('menu.engines')
+    let engines = setting.get('engines.list')
+
+    helper.popupMenu(
+      [
+        ...engines.map(engine => ({
+          label: engine.name,
+          click: () => {
+            sabaki.attachEngines([engine])
+          }
+        })),
+        engines.length > 0 && {type: 'separator'},
+        {
+          label: t('Manage &Engines…'),
+          click: () => {
+            sabaki.setState({preferencesTab: 'engines'})
+            sabaki.openDrawer('preferences')
+          }
+        }
+      ].filter(x => !!x),
       x,
       y
     )

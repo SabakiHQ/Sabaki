@@ -1,19 +1,45 @@
 import {h, Component} from 'preact'
+import classnames from 'classnames'
 
 export class ToolBarButton extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleClick = evt => {
+      evt.preventDefault()
+
+      let {onClick = () => {}} = this.props
+      onClick(evt)
+    }
+  }
+
   render() {
-    let {tooltip, icon} = this.props
+    let {tooltip, icon, menu} = this.props
 
     return h(
       'li',
-      {class: 'tool-bar-button'},
+      {
+        class: classnames('tool-bar-button', {menu})
+      },
+
       h(
         'a',
-        {href: '#', title: tooltip},
+        {href: '#', title: tooltip, onClick: this.handleClick},
+
         h('img', {
+          class: 'icon',
+          height: 16,
           src: icon,
           alt: tooltip
-        })
+        }),
+
+        menu &&
+          h('img', {
+            class: 'dropdown',
+            height: 8,
+            src: './node_modules/@primer/octicons/build/svg/triangle-down.svg',
+            alt: ''
+          })
       )
     )
   }

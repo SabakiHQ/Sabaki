@@ -259,6 +259,7 @@ export class GtpConsole extends Component {
     return h(
       'section',
       {class: 'gtp-console'},
+
       h(
         'ol',
         {

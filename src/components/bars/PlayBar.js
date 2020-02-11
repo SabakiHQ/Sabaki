@@ -13,6 +13,7 @@ class PlayBar extends Component {
 
     this.handleMenuClick = () => {
       let {left, top} = this.menuButtonElement.getBoundingClientRect()
+
       helper.popupMenu(
         [
           {

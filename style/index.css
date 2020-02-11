@@ -1294,7 +1294,7 @@ header {
 
 .engine-peer-list {
     display: grid;
-    grid-template: 100% / 100%;
+    grid-template: 30px calc(100% - 30px) / 100%;
     background: #181818;
     box-shadow: 10px 0 10px #111;
     color: #d0d0d0;
@@ -1336,6 +1336,45 @@ header {
   .engine-peer-list .item .analyzing {
     opacity: .8;
 }
+
+.tool-bar {
+    display: grid;
+    grid-template: 100% / 100%;
+    background: #26292C;
+    height: 30px;
+  }
+  .tool-bar ul {
+    display: flex;
+    flex-direction: row;
+  }
+  .tool-bar-button {
+    display: grid;
+    grid-template: 100% / 100%;
+    width: 40px;
+    height: 30px;
+  }
+  .tool-bar-button a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: .7;
+  }
+  .tool-bar-button a:hover {
+    background: #222;
+    opacity: 1;
+  }
+  .tool-bar-button img {
+    filter: invert(100%);
+  }
+  .tool-bar-button.menu .icon {
+    position: relative;
+    left: -2px;
+  }
+  .tool-bar-button.menu .dropdown {
+    position: relative;
+    left: 2px;
+}
+
 
 /* Override Shudan styles */
 
