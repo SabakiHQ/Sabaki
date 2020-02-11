@@ -4,7 +4,8 @@ import {Command} from '@sabaki/gtp'
 
 import ContentDisplay from '../ContentDisplay.js'
 import {TextSpinner} from '../TextSpinner.js'
-import {noop} from '../../modules/helper.js'
+import {noop, popupMenu} from '../../modules/helper.js'
+import i18n from '../../i18n.js'
 
 class ConsoleCommandEntry extends Component {
   shouldComponentUpdate({sign, name, command}) {
@@ -223,6 +224,21 @@ export class GtpConsole extends Component {
     super()
 
     this.scrollToBottom = true
+
+    this.handleContextMenu = evt => {
+      let t = i18n.context('menu.engines')
+
+      popupMenu(
+        [
+          {
+            label: t('&Clear Console'),
+            click: () => sabaki.clearConsole()
+          }
+        ],
+        evt.clientX,
+        evt.clientY
+      )
+    }
   }
 
   componentWillReceiveProps({consoleLog}) {
@@ -264,7 +280,8 @@ export class GtpConsole extends Component {
         'ol',
         {
           ref: el => (this.scrollElement = el),
-          class: 'log'
+          class: 'log',
+          onContextMenu: this.handleContextMenu
         },
 
         consoleLog.map(({name, command, response, waiting}, i) => {

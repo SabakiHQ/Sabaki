@@ -412,14 +412,6 @@ exports.build = function(props = {}) {
       label: t('menu.engines', 'Eng&ines'),
       submenu: [
         {
-          label: t('menu.engines', 'Manage &Engines…'),
-          click: () => {
-            sabaki.setState({preferencesTab: 'engines'})
-            sabaki.openDrawer('preferences')
-          }
-        },
-        {type: 'separator'},
-        {
           label: t('menu.engines', 'Toggle &GTP Console'),
           click: () => {
             toggleSetting('view.show_leftsidebar')
@@ -427,10 +419,6 @@ exports.build = function(props = {}) {
               showLeftSidebar: !showLeftSidebar
             }))
           }
-        },
-        {
-          label: t('menu.engines', '&Clear Console'),
-          click: () => sabaki.clearConsole()
         }
       ]
     },
