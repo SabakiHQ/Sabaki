@@ -638,7 +638,7 @@ class EnginesTab extends Component {
       engines.unshift({name: '', path: '', args: ''})
       setting.set('engines.list', engines)
 
-      this.setState({}, () => {
+      setImmediate(() => {
         this.element.querySelector('.engines-list li:first-child input').focus()
       })
     }
