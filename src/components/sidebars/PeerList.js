@@ -68,7 +68,7 @@ class EnginePeerListItem extends Component {
               title: !this.state.suspended ? t('Running') : t('Stopped')
             },
             h('img', {
-              src: `./node_modules/octicons/build/svg/${
+              src: `./node_modules/@primer/octicons/build/svg/${
                 !this.state.suspended ? 'play' : 'primitive-square'
               }.svg`,
               alt: !this.state.suspended ? t('Running') : t('Stopped')
@@ -86,7 +86,7 @@ class EnginePeerListItem extends Component {
             title: t('Analyzer')
           },
           h('img', {
-            src: './node_modules/octicons/build/svg/pulse.svg',
+            src: './node_modules/@primer/octicons/build/svg/pulse.svg',
             alt: t('Analyzer')
           })
         )

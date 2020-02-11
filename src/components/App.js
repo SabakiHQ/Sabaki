@@ -1822,7 +1822,7 @@ class App extends Component {
           internal: true,
           content: h('img', {
             class: 'icon',
-            src: './node_modules/octicons/build/svg/alert.svg',
+            src: './node_modules/@primer/octicons/build/svg/alert.svg',
             alt: t('Connection Failed'),
             title: t('Connection Failed')
           })
