@@ -607,6 +607,7 @@ exports.build = function(props = {}) {
           neverDisable: true
         },
         {role: 'minimize'},
+        {role: 'close'},
         {type: 'separator'},
         {role: 'front'}
       ],
@@ -618,7 +619,7 @@ exports.build = function(props = {}) {
       submenu: [
         {
           label: t('menu.help', p => `${p.appName} v${p.version}`, {
-            appName: app.getName(),
+            appName: app.name,
             version: app.getVersion()
           }),
           enabled: false
@@ -769,7 +770,7 @@ exports.build = function(props = {}) {
     )
 
     data.unshift({
-      label: app.getName(),
+      label: app.name,
       submenu: appMenu
     })
 

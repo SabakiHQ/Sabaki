@@ -119,7 +119,7 @@ class App extends Component {
     }
 
     this.events = new EventEmitter()
-    this.appName = app.getName()
+    this.appName = app.name
     this.version = app.getVersion()
     this.window = remote.getCurrentWindow()
 

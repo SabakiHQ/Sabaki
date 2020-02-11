@@ -167,7 +167,7 @@ class PlayBar extends Component {
           onClick: this.handleMenuClick
         },
         h('img', {
-          src: './node_modules/octicons/build/svg/three-bars.svg',
+          src: './node_modules/@primer/octicons/build/svg/three-bars.svg',
           height: 22
         })
       )

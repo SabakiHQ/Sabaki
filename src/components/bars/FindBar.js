@@ -51,7 +51,7 @@ class FindBar extends Component {
           'button',
           {class: 'next', onClick: this.handleButtonClick},
           h('img', {
-            src: './node_modules/octicons/build/svg/chevron-down.svg',
+            src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
             height: 20,
             alt: t('Next')
           })
@@ -60,7 +60,7 @@ class FindBar extends Component {
           'button',
           {class: 'prev', onClick: this.handleButtonClick},
           h('img', {
-            src: './node_modules/octicons/build/svg/chevron-up.svg',
+            src: './node_modules/@primer/octicons/build/svg/chevron-up.svg',
             height: 20,
             alt: t('Previous')
           })

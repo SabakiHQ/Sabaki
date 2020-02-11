@@ -138,7 +138,7 @@ form p, form ul li {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('../node_modules/octicons/build/svg/check.svg') center / auto 16px no-repeat;
+    background: url('../node_modules/@primer/octicons/build/svg/check.svg') center / auto 16px no-repeat;
     opacity: 0;
   }
   input[type="checkbox"]:checked::before {
@@ -164,7 +164,7 @@ form p, form ul li {
     right: 20px;
     top: 50%;
     margin-top: -8px;
-    background: url('../node_modules/octicons/build/svg/chevron-down.svg') center / auto 16px no-repeat;
+    background: url('../node_modules/@primer/octicons/build/svg/chevron-down.svg') center / auto 16px no-repeat;
     filter: invert(100%);
   }
   input:focus, button:focus, select:focus, textarea:focus {
@@ -229,10 +229,10 @@ form p, form ul li {
     -webkit-filter: invert(100%);
   }
   .pika-prev {
-    background-image: url('../node_modules/octicons/build/svg/chevron-left.svg');
+    background-image: url('../node_modules/@primer/octicons/build/svg/chevron-left.svg');
   }
   .pika-next {
-    background-image: url('../node_modules/octicons/build/svg/chevron-right.svg');
+    background-image: url('../node_modules/@primer/octicons/build/svg/chevron-right.svg');
 }
 
 .pika-table th {

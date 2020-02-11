@@ -1,5 +1,5 @@
 const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
-const {join} = require('path')
+const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
@@ -8,15 +8,11 @@ let windows = []
 let openfile = null
 let isReady = false
 
-if (!setting.get('app.enable_hardware_acceleration')) {
-  app.disableHardwareAcceleration()
-}
-
 function newWindow(path) {
   let window = new BrowserWindow({
     icon:
-      process.platform === 'linux' ? join(__dirname, '..', 'logo.png') : null,
-    title: app.getName(),
+      process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
+    title: app.name,
     useContentSize: true,
     width: setting.get('window.width'),
     height: setting.get('window.height'),
@@ -42,7 +38,7 @@ function newWindow(path) {
     window = null
   })
 
-  window.webContents.setAudioMuted(!setting.get('sound.enable'))
+  window.webContents.audioMuted = !setting.get('sound.enable')
 
   window.webContents.on('did-finish-load', () => {
     if (path) window.webContents.send('load-file', path)
@@ -52,7 +48,7 @@ function newWindow(path) {
     evt.preventDefault()
   })
 
-  window.loadURL(`file://${join(__dirname, '..', 'index.html')}`)
+  window.loadURL(`file://${resolve(__dirname, '../index.html')}`)
 
   return window
 }
@@ -112,16 +108,16 @@ function buildMenu(props = {}) {
 async function checkForUpdates({showFailDialogs = false} = {}) {
   try {
     let t = i18n.context('updater')
-    let info = await updater.check(`SabakiHQ/${app.getName()}`)
+    let info = await updater.check(`SabakiHQ/${app.name}`)
 
     if (info.hasUpdates) {
       dialog.showMessageBox(
         {
           type: 'info',
           buttons: [t('Download Update'), t('View Changelog'), t('Not Now')],
-          title: app.getName(),
+          title: app.name,
           message: t(p => `${p.appName} v${p.version} is available now.`, {
-            appName: app.getName(),
+            appName: app.name,
             version: info.latestVersion
           }),
           noLink: true,
@@ -153,84 +149,94 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
       dialog.showMessageBox({
         type: 'warning',
         buttons: [t('OK')],
-        title: app.getName(),
+        title: app.name,
         message: t('An error occurred while checking for updates.')
       })
     }
   }
 }
 
-ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
-ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
-ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
+function main() {
+  app.allowRendererProcessReuse = true
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  } else {
-    buildMenu({disableAll: true})
+  if (!setting.get('app.enable_hardware_acceleration')) {
+    app.disableHardwareAcceleration()
   }
-})
 
-app.on('ready', () => {
-  isReady = true
-
-  if (!openfile && process.argv.length >= 2) {
-    if (
-      !process.argv[0].endsWith('electron.exe') &&
-      !process.argv[0].endsWith('electron')
-    ) {
-      openfile = process.argv[1]
-    } else if (process.argv.length >= 3) {
-      openfile = process.argv[2]
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    } else {
+      buildMenu({disableAll: true})
     }
-  }
+  })
 
-  newWindow(openfile)
+  app.on('ready', () => {
+    isReady = true
 
-  if (setting.get('app.startup_check_updates')) {
-    setTimeout(
-      () => checkForUpdates(),
-      setting.get('app.startup_check_updates_delay')
-    )
-  }
-})
-
-app.on('activate', (evt, hasVisibleWindows) => {
-  if (!hasVisibleWindows) newWindow()
-})
-
-app.on('open-file', (evt, path) => {
-  evt.preventDefault()
-
-  if (!isReady) {
-    openfile = path
-  } else {
-    newWindow(path)
-  }
-})
-
-process.on('uncaughtException', err => {
-  let t = i18n.context('exception')
-
-  dialog.showErrorBox(
-    t(p => `${p.appName} v${p.version}`, {
-      appName: app.getName(),
-      version: app.getVersion()
-    }),
-    t(
-      p =>
-        [
-          `Something weird happened. ${p.appName} will shut itself down.`,
-          `If possible, please report this on ${p.appName}’s repository on GitHub.`
-        ].join(' '),
-      {
-        appName: app.getName()
+    if (!openfile && process.argv.length >= 2) {
+      if (
+        !process.argv[0].endsWith('electron.exe') &&
+        !process.argv[0].endsWith('electron')
+      ) {
+        openfile = process.argv[1]
+      } else if (process.argv.length >= 3) {
+        openfile = process.argv[2]
       }
-    ) +
-      '\n\n' +
-      err.stack
-  )
+    }
 
-  process.exit(1)
-})
+    newWindow(openfile)
+
+    if (setting.get('app.startup_check_updates')) {
+      setTimeout(
+        () => checkForUpdates(),
+        setting.get('app.startup_check_updates_delay')
+      )
+    }
+
+    ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
+    ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
+    ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
+  })
+
+  app.on('activate', (evt, hasVisibleWindows) => {
+    if (!hasVisibleWindows) newWindow()
+  })
+
+  app.on('open-file', (evt, path) => {
+    evt.preventDefault()
+
+    if (!isReady) {
+      openfile = path
+    } else {
+      newWindow(path)
+    }
+  })
+
+  process.on('uncaughtException', err => {
+    let t = i18n.context('exception')
+
+    dialog.showErrorBox(
+      t(p => `${p.appName} v${p.version}`, {
+        appName: app.name,
+        version: app.getVersion()
+      }),
+      t(
+        p =>
+          [
+            `Something weird happened. ${p.appName} will shut itself down.`,
+            `If possible, please report this on ${p.appName}’s repository on GitHub.`
+          ].join(' '),
+        {
+          appName: app.name
+        }
+      ) +
+        '\n\n' +
+        err.stack
+    )
+
+    process.exit(1)
+  })
+}
+
+main()

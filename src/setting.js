@@ -19,7 +19,7 @@ exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
 if (!fs.existsSync(exports.stylesPath)) {
   fs.writeFileSync(
     exports.stylesPath,
-    `/* This stylesheet is loaded when ${app.getName()} starts up. */`
+    `/* This stylesheet is loaded when ${app.name} starts up. */`
   )
 }
 

@@ -16,22 +16,25 @@
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",
-    "copyright": "Copyright © 2015-2019 Yichuan Shen",
+    "copyright": "Copyright © 2015-2020 Yichuan Shen",
     "compression": "normal",
     "linux": {
       "target": "AppImage",
-      "category": "Game"
+      "category": "Game",
+      "artifactName": "sabaki-v${version}-linux-${arch}.${ext}"
     },
     "mac": {
-      "category": "public.app-category.board-games",
       "target": [
         "7z"
-      ]
+      ],
+      "category": "public.app-category.board-games",
+      "artifactName": "sabaki-v${version}-mac-x64.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "sabaki-v${version}-win-setup.exe"
     },
     "fileAssociations": [
       {
@@ -52,12 +55,15 @@
     ],
     "files": [
       "**/*",
-      "bundle.js",
-      "!bundle.js.map",
-      "!**/{.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
-      "!data/shapes.sgf",
-      "!src/components${/*}",
-      "!src/modules${/*}"
+      "!**/{.github,.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
+      "!ci${/*}",
+      "!src/{components,modules}${/*}",
+      "!node_modules",
+      "node_modules/@primer/octicons/build/svg/*",
+      "node_modules/@sabaki/deadstones/wasm/*",
+      "node_modules/@sabaki/shudan/css/*",
+      "node_modules/dolm/**/*",
+      "node_modules/pikaday/css/*"
     ]
   },
   "prettier": {
@@ -68,6 +74,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
+    "@primer/octicons": "^9.4.0",
     "@sabaki/boardmatcher": "^1.1.5",
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
@@ -82,7 +89,6 @@
     "iconv-lite": "^0.5.1",
     "jschardet": "^2.1.1",
     "natsort": "^2.0.2",
-    "octicons": "^8.5.0",
     "pikaday": "^1.8.0",
     "preact": "^8.5.3",
     "react-markdown": "^3.6.0",
@@ -97,6 +103,7 @@
     "electron": "^8.0.0",
     "electron-builder": "^22.3.2",
     "mocha": "^7.0.1",
+    "onchange": "^6.1.0",
     "prettier": "1.19.1",
     "react": "^16.12.0",
     "tmp": "^0.1.0",
@@ -114,8 +121,9 @@
     "watch-format": "onchange \"**/*.{js,html,md}\" \"!{dist/**,bundle.js*}\" -- prettier --write {{changed}}",
     "watch": "concurrently \"webpack --mode development --watch\" \"npm run watch-format\"",
     "dist:macos": "npm run bundle && electron-builder -m --x64",
-    "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64",
-    "dist:win32": "npm run bundle && electron-builder -w --ia32",
-    "dist:win64": "npm run bundle && electron-builder -w --x64"
+    "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-i386.AppImage ./dist/sabaki-vx.x.x-linux-ia32.AppImage && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-x86_64.AppImage ./dist/sabaki-vx.x.x-linux-x64.AppImage",
+    "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",
+    "dist:win64": "npm run bundle && electron-builder -w --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
+    "dist:win": "npm run dist:win32 && npm run dist:win64"
   }
 }
