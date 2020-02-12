@@ -46,7 +46,7 @@ class EnginePeerListItem extends Component {
       .removeListener('suspended-changed', this.syncState)
   }
 
-  render({syncer, analyzing, selected}) {
+  render({syncer, analyzing, selected, blackPlayer, whitePlayer}) {
     return h(
       'li',
       {
@@ -90,6 +90,34 @@ class EnginePeerListItem extends Component {
             src: './node_modules/@primer/octicons/build/svg/pulse.svg',
             alt: t('Analyzer')
           })
+        ),
+
+      blackPlayer &&
+        h(
+          'div',
+          {
+            class: 'icon player',
+            title: t('Play as Black')
+          },
+          h('img', {
+            height: 14,
+            src: './img/ui/black.svg',
+            alt: t('Play as Black')
+          })
+        ),
+
+      whitePlayer &&
+        h(
+          'div',
+          {
+            class: 'icon player',
+            title: t('Play as White')
+          },
+          h('img', {
+            height: 14,
+            src: './img/ui/white.svg',
+            alt: t('Play as White')
+          })
         )
     )
   }
@@ -124,6 +152,8 @@ export class EnginePeerList extends Component {
   render({
     attachedEngineSyncers,
     selectedEngineSyncerId,
+    blackEngineSyncerId,
+    whiteEngineSyncerId,
     analyzingEngineSyncerId
   }) {
     return h(
@@ -154,6 +184,8 @@ export class EnginePeerList extends Component {
             syncer,
             analyzing: syncer.id === analyzingEngineSyncerId,
             selected: syncer.id === selectedEngineSyncerId,
+            blackPlayer: syncer.id === blackEngineSyncerId,
+            whitePlayer: syncer.id === whiteEngineSyncerId,
 
             onClick: this.handleEngineClick,
             onContextMenu: this.handleEngineContextMenu

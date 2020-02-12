@@ -74,6 +74,8 @@ export class LeftSidebar extends Component {
     {
       attachedEngineSyncers,
       analyzingEngineSyncerId,
+      blackEngineSyncerId,
+      whiteEngineSyncerId,
       showLeftSidebar,
       consoleLog
     },
@@ -94,6 +96,8 @@ export class LeftSidebar extends Component {
         sideContent: h(EnginePeerList, {
           attachedEngineSyncers,
           analyzingEngineSyncerId,
+          blackEngineSyncerId,
+          whiteEngineSyncerId,
           selectedEngineSyncerId,
 
           onEngineSelect: this.handleEngineSelect

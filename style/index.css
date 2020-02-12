@@ -1320,7 +1320,10 @@ header {
     justify-content: center;
     width: 1.5em;
     filter: invert(100%);
-    opacity: .5;
+    opacity: .6;
+  }
+  .engine-peer-list .item .icon.player {
+    filter: none;
   }
   .engine-peer-list .item .text-spinner {
     width: 1.5em;
@@ -1332,9 +1335,6 @@ header {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-  .engine-peer-list .item .analyzing {
-    opacity: .8;
 }
 
 .tool-bar {

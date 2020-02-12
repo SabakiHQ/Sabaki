@@ -98,6 +98,8 @@ class App extends Component {
       engines: null,
       attachedEngineSyncers: [],
       analyzingEngineSyncerId: null,
+      blackEngineSyncerId: null,
+      whiteEngineSyncerId: null,
       analysisTreePosition: null,
       analysis: null,
 
@@ -2864,19 +2866,40 @@ class App extends Component {
             )
           }
         },
-        {
-          label: t('&Analyze'),
-          accelerator: 'F4',
-          click: () => {}
-        },
         {type: 'separator'},
         {
+          label: t('Set as &Analyzer'),
+          type: 'checkbox',
+          checked: this.state.analyzingEngineSyncerId === syncerId,
+          accelerator: 'F4',
+          click: () => {
+            this.setState(state => ({
+              analyzingEngineSyncerId:
+                state.analyzingEngineSyncerId === syncerId ? null : syncerId
+            }))
+          }
+        },
+        {
           label: t('Set as &Black Player'),
-          click: () => {}
+          type: 'checkbox',
+          checked: this.state.blackEngineSyncerId === syncerId,
+          click: () => {
+            this.setState(state => ({
+              blackEngineSyncerId:
+                state.blackEngineSyncerId === syncerId ? null : syncerId
+            }))
+          }
         },
         {
           label: t('Set as &White Player'),
-          click: () => {}
+          type: 'checkbox',
+          checked: this.state.whiteEngineSyncerId === syncerId,
+          click: () => {
+            this.setState(state => ({
+              whiteEngineSyncerId:
+                state.whiteEngineSyncerId === syncerId ? null : syncerId
+            }))
+          }
         }
       ],
       x,
