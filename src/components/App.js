@@ -2871,11 +2871,11 @@ class App extends Component {
         },
         {type: 'separator'},
         {
-          label: t('Set as &Black'),
+          label: t('Set as &Black Player'),
           click: () => {}
         },
         {
-          label: t('Set as &White'),
+          label: t('Set as &White Player'),
           click: () => {}
         }
       ],
