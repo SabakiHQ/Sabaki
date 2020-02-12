@@ -357,7 +357,7 @@ class App extends Component {
       if (!this.state.showMenuBar)
         this.flashInfoOverlay(t('Press Alt to show menu bar'))
       this.window.setMenuBarVisibility(this.state.showMenuBar)
-      this.window.setAutoHideMenuBar(!this.state.showMenuBar)
+      this.window.autoHideMenuBar = !this.state.showMenuBar
     }
 
     // Handle bars & drawers
@@ -403,7 +403,7 @@ class App extends Component {
     // Handle zoom factor
 
     if (prevState.zoomFactor !== this.state.zoomFactor) {
-      this.window.webContents.setZoomFactor(this.state.zoomFactor)
+      this.window.webContents.zoomFactor = this.state.zoomFactor
     }
   }
 
@@ -2844,6 +2844,7 @@ class App extends Component {
         {type: 'separator'},
         {
           label: t('S&ynchronize'),
+          accelerator: 'F6',
           click: () => {
             this.syncEngine(
               syncerId,
@@ -2854,6 +2855,7 @@ class App extends Component {
         },
         {
           label: t('&Generate Move'),
+          accelerator: 'F10',
           click: async () => {
             this.generateMove(
               syncerId,
@@ -2864,6 +2866,16 @@ class App extends Component {
         },
         {
           label: t('&Analyze'),
+          accelerator: 'F4',
+          click: () => {}
+        },
+        {type: 'separator'},
+        {
+          label: t('Set as &Black'),
+          click: () => {}
+        },
+        {
+          label: t('Set as &White'),
           click: () => {}
         }
       ],
