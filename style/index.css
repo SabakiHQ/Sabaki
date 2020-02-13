@@ -1350,17 +1350,24 @@ header {
   .tool-bar-button {
     display: grid;
     grid-template: 100% / 100%;
-    width: 40px;
+    width: 30px;
     height: 30px;
+  }
+  .tool-bar-button.menu {
+    width: 40px;
   }
   .tool-bar-button a {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .tool-bar-button a img {
     opacity: .7;
   }
-  .tool-bar-button a:hover {
+  .tool-bar-button a:hover, .tool-bar-button.checked a {
     background: #222;
+  }
+  .tool-bar-button a:hover img {
     opacity: 1;
   }
   .tool-bar-button img {

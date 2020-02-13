@@ -76,6 +76,7 @@ export class LeftSidebar extends Component {
       analyzingEngineSyncerId,
       blackEngineSyncerId,
       whiteEngineSyncerId,
+      engineGameOngoing,
       showLeftSidebar,
       consoleLog
     },
@@ -99,6 +100,7 @@ export class LeftSidebar extends Component {
           blackEngineSyncerId,
           whiteEngineSyncerId,
           selectedEngineSyncerId,
+          engineGameOngoing,
 
           onEngineSelect: this.handleEngineSelect
         }),

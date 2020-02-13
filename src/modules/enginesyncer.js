@@ -178,9 +178,10 @@ export class EngineSyncer extends EventEmitter {
 
         for (let vertex of vertices) {
           if (engineBoard.has(vertex) && engineBoard.get(vertex) !== 0) continue
-          else if (!engineBoard.has(vertex)) vertex = [-1, -1]
 
-          let coord = board.stringifyVertex(vertex)
+          let coord = !engineBoard.has(vertex)
+            ? 'PASS'
+            : board.stringifyVertex(vertex)
 
           history.push({name: 'play', args: [color, coord]})
           engineBoard = engineBoard.makeMove(sign, vertex)

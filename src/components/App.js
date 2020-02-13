@@ -4,6 +4,7 @@ import {extname} from 'path'
 import {ipcRenderer, remote} from 'electron'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
+import uuid from 'uuid'
 
 import {TripleSplitContainer} from './helpers/TripleSplitContainer.js'
 import ThemeManager from './ThemeManager.js'
@@ -100,6 +101,7 @@ class App extends Component {
       analyzingEngineSyncerId: null,
       blackEngineSyncerId: null,
       whiteEngineSyncerId: null,
+      engineGameOngoing: null,
       analysisTreePosition: null,
       analysis: null,
 
@@ -1930,6 +1932,8 @@ class App extends Component {
     this.setState(({attachedEngineSyncers}) => ({
       attachedEngineSyncers: [...attachedEngineSyncers, ...attaching]
     }))
+
+    return attaching
   }
 
   async detachEngines(syncerIds) {
@@ -1968,9 +1972,9 @@ class App extends Component {
     return false
   }
 
-  async generateMove(syncerId, tree, id) {
+  async generateMove(syncerId, tree, id, {commit = () => true} = {}) {
     let t = i18n.context('app.engine')
-    let sign = this.inferredState.currentPlayer
+    let sign = this.getPlayer(tree, id)
     let color = sign > 0 ? 'B' : 'W'
     let board = gametree.getBoard(tree, id)
     let syncer = this.state.attachedEngineSyncers.find(
@@ -2018,6 +2022,7 @@ class App extends Component {
     let currentTreePosition = this.state.treePosition
     let positionMoved =
       currentTree.root.id !== tree.root.id || currentTreePosition !== id
+    let resign = coord === 'resign'
     let {pass, capturing, suicide} = board.analyzeMove(sign, vertex)
 
     let newTreePosition
@@ -2027,7 +2032,9 @@ class App extends Component {
       })
 
       if (coord === 'resign') {
-        draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
+        draft.updateProperty(draft.root.id, 'RE', [
+          `${sign > 0 ? 'W' : 'B'}+Resign`
+        ])
 
         let id2 = id
         while (id2 != null) {
@@ -2037,7 +2044,7 @@ class App extends Component {
       }
     })
 
-    if (newTreePosition == null) return
+    if (newTreePosition == null || !commit()) return
 
     if (pass) {
       sound.playPass()
@@ -2050,6 +2057,82 @@ class App extends Component {
       newTree,
       !positionMoved ? newTreePosition : currentTreePosition
     )
+
+    return {
+      tree: newTree,
+      treePosition: newTreePosition,
+      resign,
+      pass
+    }
+  }
+
+  async startEngineGame(tree, id) {
+    let {engineGameOngoing, attachedEngineSyncers} = this.state
+    let engineCount = attachedEngineSyncers.length
+    if (engineGameOngoing != null) return
+
+    if (engineCount === 0) {
+      dialog.showMessageBox(
+        t('Please attach one or more engines first.'),
+        'info'
+      )
+
+      return
+    } else {
+      this.setState(state => ({
+        blackEngineSyncerId:
+          state.blackEngineSyncerId == null
+            ? state.attachedEngineSyncers[0].id
+            : state.blackEngineSyncerId,
+        whiteEngineSyncerId:
+          state.whiteEngineSyncerId == null
+            ? state.attachedEngineSyncers[1 % engineCount].id
+            : state.whiteEngineSyncerId
+      }))
+    }
+
+    let gameId = uuid()
+    this.setState({engineGameOngoing: gameId})
+
+    let consecutivePasses = 0
+
+    while (this.state.engineGameOngoing === gameId) {
+      let syncerId =
+        this.getPlayer(tree, id) > 0
+          ? this.state.blackEngineSyncerId
+          : this.state.whiteEngineSyncerId
+
+      let move = await this.generateMove(syncerId, tree, id, {
+        commit: () => this.state.engineGameOngoing
+      })
+
+      if (move == null || move.resign) {
+        break
+      }
+
+      if (move.pass) {
+        consecutivePasses++
+      } else {
+        consecutivePasses = 0
+      }
+
+      if (consecutivePasses >= 2) {
+        break
+      }
+
+      ;[tree, id] = [move.tree, move.treePosition]
+    }
+
+    this.stopEngineGame(gameId)
+  }
+
+  async stopEngineGame(gameId = null) {
+    this.setState(state => ({
+      engineGameOngoing:
+        gameId == null || state.engineGameOngoing === gameId
+          ? null
+          : state.engineGameOngoing
+    }))
   }
 
   // Find Methods

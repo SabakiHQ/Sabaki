@@ -14,12 +14,12 @@ export class ToolBarButton extends Component {
   }
 
   render() {
-    let {tooltip, icon, menu} = this.props
+    let {tooltip, icon, checked, menu} = this.props
 
     return h(
       'li',
       {
-        class: classnames('tool-bar-button', {menu})
+        class: classnames('tool-bar-button', {menu, checked})
       },
 
       h(

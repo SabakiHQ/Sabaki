@@ -2,6 +2,8 @@ import {h, Component} from 'preact'
 import classnames from 'classnames'
 
 import i18n from '../../i18n.js'
+import dialog from '../../modules/dialog'
+
 import {TextSpinner} from '../TextSpinner.js'
 import {ToolBar, ToolBarButton} from '../ToolBar.js'
 
@@ -142,10 +144,21 @@ export class EnginePeerList extends Component {
       })
     }
 
-    this.handleStartEngineButtonClick = evt => {
+    this.handleAttachEngineButtonClick = evt => {
       let {left, bottom} = evt.currentTarget.getBoundingClientRect()
 
       sabaki.openEnginesMenu({x: left, y: bottom})
+    }
+
+    this.handleStartStopGameButtonClick = evt => {
+      if (this.props.engineGameOngoing != null) {
+        sabaki.stopEngineGame()
+      } else {
+        sabaki.startEngineGame(
+          sabaki.inferredState.gameTree,
+          sabaki.state.treePosition
+        )
+      }
     }
   }
 
@@ -154,7 +167,8 @@ export class EnginePeerList extends Component {
     selectedEngineSyncerId,
     blackEngineSyncerId,
     whiteEngineSyncerId,
-    analyzingEngineSyncerId
+    analyzingEngineSyncerId,
+    engineGameOngoing
   }) {
     return h(
       'div',
@@ -168,9 +182,18 @@ export class EnginePeerList extends Component {
 
         h(ToolBarButton, {
           icon: './node_modules/@primer/octicons/build/svg/play.svg',
-          tooltip: t('Start Engine…'),
+          tooltip: t('Attach Engine…'),
           menu: true,
-          onClick: this.handleStartEngineButtonClick
+          onClick: this.handleAttachEngineButtonClick
+        }),
+
+        h(ToolBarButton, {
+          icon: './node_modules/@primer/octicons/build/svg/zap.svg',
+          tooltip: !engineGameOngoing
+            ? t('Start Engine vs. Engine Game')
+            : t('Stop Game'),
+          checked: !!engineGameOngoing,
+          onClick: this.handleStartStopGameButtonClick
         })
       ),
 
