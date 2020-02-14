@@ -38,7 +38,7 @@ export class EngineSyncer extends EventEmitter {
     this.engine = engine
     this.commands = []
     this.treePosition = null
-    this.analysis = []
+    this.analysis = null
 
     this.controller = new Controller(path, [...argvsplit(args)], {
       cwd: dirname(resolve(path))
@@ -48,6 +48,7 @@ export class EngineSyncer extends EventEmitter {
 
     this.controller.on('started', () => {
       this.treePosition = null
+      this.analysis = null
 
       Promise.all([
         this.controller.sendCommand({name: 'name'}),
@@ -69,17 +70,12 @@ export class EngineSyncer extends EventEmitter {
 
     this.controller.on('stopped', () => {
       this.treePosition = null
+      this.analysis = null
     })
 
     this.controller.on(
       'command-sent',
       async ({command, subscribe, getResponse}) => {
-        if (this.treePosition == null) return
-
-        let prevHistory = JSON.parse(
-          JSON.stringify(this.stateTracker.state.history)
-        )
-
         subscribe(({line}) => {
           // Parse analysis info
 
@@ -91,8 +87,9 @@ export class EngineSyncer extends EventEmitter {
             return
 
           let board = newBoard(this.stateTracker.state.boardsize || 19)
+          let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
 
-          this.analysis = line
+          let variations = line
             .split(/\s*info\s+/)
             .slice(1)
             .map(x => x.trim())
@@ -129,18 +126,30 @@ export class EngineSyncer extends EventEmitter {
             })
             .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
             .map(({move, visits, winrate, pv}) => ({
-              sign: command.args[0].toUpperCase() === 'W' ? -1 : 1,
               vertex: board.parseVertex(move),
               visits: +visits,
               winrate: +winrate / 100,
-              variation: pv.map(x => board.parseVertex(x))
+              moves: pv.map(x => board.parseVertex(x))
             }))
+
+          this.analysis = {
+            sign,
+            variations,
+            winrate: Math.max(...variations.map(({winrate}) => winrate))
+          }
         })
+
+        if (this.treePosition == null) return
+
+        let prevHistory = JSON.parse(
+          JSON.stringify(this.stateTracker.state.history)
+        )
 
         await getResponse()
 
         if (!equals(prevHistory, this.stateTracker.state.history)) {
           this.treePosition = null
+          this.analysis = null
         }
       }
     )
@@ -356,5 +365,6 @@ export class EngineSyncer extends EventEmitter {
     }
 
     this.treePosition = id
+    this.analysis = null
   }
 }
