@@ -1992,24 +1992,22 @@ class App extends Component {
           syncer.commands.includes(x)
         ) || 'genmove'
 
-      response = await (commandName === 'genmove'
-        ? syncer.controller.sendCommand({
+      if (commandName === 'genmove') {
+        response = await syncer.controller.sendCommand({
             name: commandName,
             args: [color]
           })
-        : new Promise((resolve, reject) => {
+      } else {
             let interval = setting.get('board.analysis_interval').toString()
 
-            syncer.controller
-              .sendCommand(
+        await syncer.controller.sendCommand(
                 {name: commandName, args: [color, interval]},
                 ({line}) => {
                   if (line.indexOf('play ') !== 0) return
-                  resolve({content: line.slice('play '.length).trim()})
+            response = {content: line.slice('play '.length).trim()}
                 }
               )
-              .then(() => resolve(null))
-          }))
+      }
 
       if (response == null || response.error) throw new Error()
     } catch (err) {
@@ -2076,6 +2074,8 @@ class App extends Component {
       newTree,
       !positionMoved ? newTreePosition : currentTreePosition
     )
+
+    syncer.treePosition = newTreePosition
 
     return {
       tree: newTree,

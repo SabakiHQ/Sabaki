@@ -35,6 +35,7 @@ export class EngineSyncer extends EventEmitter {
     this.id = uuid()
     this.engine = engine
     this.commands = []
+    this.treePosition = null
 
     this.controller = new Controller(path, [...argvsplit(args)], {
       cwd: dirname(resolve(path))
@@ -43,6 +44,8 @@ export class EngineSyncer extends EventEmitter {
     this.stateTracker = new ControllerStateTracker(this.controller)
 
     this.controller.on('started', () => {
+      this.treePosition = null
+
       Promise.all([
         this.controller.sendCommand({name: 'name'}),
         this.controller.sendCommand({name: 'version'}),
@@ -60,6 +63,26 @@ export class EngineSyncer extends EventEmitter {
           : [])
       ]).catch(noop)
     })
+
+    this.controller.on('stopped', () => {
+      this.treePosition = null
+    })
+
+    this.controller.on(
+      'command-sent',
+      async ({command, subscribe, getResponse}) => {
+        if (this.treePosition == null) return
+
+        let prevHistory = JSON.parse(
+          JSON.stringify(this.stateTracker.state.history)
+        )
+        await getResponse()
+
+        if (!equals(prevHistory, this.stateTracker.state.history)) {
+          this.treePosition = null
+        }
+      }
+    )
 
     // Sync properties
 
@@ -268,5 +291,7 @@ export class EngineSyncer extends EventEmitter {
     } catch (err) {
       throw new Error('GTP engine can’t be synced to current state.')
     }
+
+    this.treePosition = id
   }
 }
