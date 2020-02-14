@@ -137,7 +137,7 @@ header {
     height: 40px;
     overflow: hidden;
     text-align: center;
-    background: #26292C;
+    background: #292A2D;
     color: #eee;
     line-height: 40px;
     transition: background .2s;
@@ -270,7 +270,7 @@ header {
   #autoplay input {
     width: 4em;
     margin-right: 5px;
-    background-color: #26292C;
+    background-color: #292A2D;
     color: white;
   }
   #autoplay input:focus { background-color: #484B4E; }
@@ -1340,7 +1340,7 @@ header {
 .tool-bar {
     display: grid;
     grid-template: 100% / 100%;
-    background: #26292C;
+    background: #292A2D;
     height: 30px;
   }
   .tool-bar ul {
