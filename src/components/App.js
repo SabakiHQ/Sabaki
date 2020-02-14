@@ -1945,10 +1945,15 @@ class App extends Component {
       detachEngineSyncers.map(async syncer => {
         await syncer.stop()
 
-        this.setState(({attachedEngineSyncers}) => ({
-          attachedEngineSyncers: attachedEngineSyncers.filter(
+        let unset = syncerId => (syncerId === syncer.id ? null : syncerId)
+
+        this.setState(state => ({
+          attachedEngineSyncers: state.attachedEngineSyncers.filter(
             s => s.id !== syncer.id
-          )
+          ),
+          blackEngineSyncerId: unset(state.blackEngineSyncerId),
+          whiteEngineSyncerId: unset(state.whiteEngineSyncerId),
+          analyzingEngineSyncerId: unset(state.analyzingEngineSyncerId)
         }))
       })
     )
