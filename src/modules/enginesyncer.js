@@ -36,6 +36,7 @@ export class EngineSyncer extends EventEmitter {
     this.engine = engine
     this.commands = []
     this.treePosition = null
+    this.analysis = []
 
     this.controller = new Controller(path, [...argvsplit(args)], {
       cwd: dirname(resolve(path))
@@ -76,6 +77,54 @@ export class EngineSyncer extends EventEmitter {
         let prevHistory = JSON.parse(
           JSON.stringify(this.stateTracker.state.history)
         )
+
+        subscribe(({line}) => {
+          // Parse analysis info
+
+          if (
+            command.name.match(/^(lz-)?(genmove_)?analyze$/) == null ||
+            !line.startsWith('info ')
+          )
+            return
+
+          this.analysis = line
+            .split(/\s*info\s+/)
+            .slice(1)
+            .map(x => x.trim())
+            .map(x => {
+              let matchPV = x.match(
+                /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*\s*$/
+              )
+              if (matchPV == null) return null
+
+              let passIndex = matchPV[0].indexOf('pass')
+              if (passIndex < 0) passIndex = Infinity
+
+              return [
+                x
+                  .slice(0, matchPV.index)
+                  .trim()
+                  .split(/\s+/)
+                  .slice(0, -1),
+                matchPV[0]
+                  .slice(0, passIndex)
+                  .split(/\s+/)
+                  .filter(x => x.length >= 2)
+              ]
+            })
+            .filter(x => x != null)
+            .map(([tokens, pv]) => {
+              let keys = tokens.filter((_, i) => i % 2 === 0)
+              let values = tokens.filter((_, i) => i % 2 === 1)
+
+              keys.push('pv')
+              values.push(pv)
+
+              return keys.reduce((acc, x, i) => ((acc[x] = values[i]), acc), {})
+            })
+            .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
+        })
+
         await getResponse()
 
         if (!equals(prevHistory, this.stateTracker.state.history)) {
