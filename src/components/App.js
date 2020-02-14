@@ -1987,12 +1987,31 @@ class App extends Component {
 
     let response
     try {
-      response = await syncer.controller.sendCommand({
-        name: 'genmove',
-        args: [color]
-      })
+      let commandName =
+        ['genmove_analyze', 'lz-genmove_analyze'].find(x =>
+          syncer.commands.includes(x)
+        ) || 'genmove'
 
-      if (response.error) throw new Error(response.content)
+      response = await (commandName === 'genmove'
+        ? syncer.controller.sendCommand({
+            name: commandName,
+            args: [color]
+          })
+        : new Promise((resolve, reject) => {
+            let interval = setting.get('board.analysis_interval').toString()
+
+            syncer.controller
+              .sendCommand(
+                {name: commandName, args: [color, interval]},
+                ({line}) => {
+                  if (line.indexOf('play ') !== 0) return
+                  resolve({content: line.slice('play '.length).trim()})
+                }
+              )
+              .then(() => resolve(null))
+          }))
+
+      if (response == null || response.error) throw new Error()
     } catch (err) {
       dialog.showMessageBox(
         t(p => `${p.engine} has failed to generate a move.`, {
