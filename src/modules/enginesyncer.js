@@ -1,11 +1,13 @@
 import {remote} from 'electron'
 import EventEmitter from 'events'
 import {dirname, resolve} from 'path'
+import argvsplit from 'argv-split'
 import uuid from 'uuid/v4'
+
 import {fromDimensions as newBoard} from '@sabaki/go-board'
 import {Controller, ControllerStateTracker, Command} from '@sabaki/gtp'
 import {parseCompressedVertices} from '@sabaki/sgf'
-import argvsplit from 'argv-split'
+
 import {getBoard, getRootProperty} from './gametree.js'
 import {noop, equals} from './helper.js'
 
@@ -193,6 +195,8 @@ export class EngineSyncer extends EventEmitter {
   }
 
   async sync(tree, id) {
+    if (this.treePosition === id) return
+
     let board = getBoard(tree, id)
 
     if (!board.isSquare()) {
