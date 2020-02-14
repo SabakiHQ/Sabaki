@@ -1943,6 +1943,7 @@ class App extends Component {
 
     await Promise.all(
       detachEngineSyncers.map(async syncer => {
+        await this.stopEngineGame()
         await syncer.stop()
 
         let unset = syncerId => (syncerId === syncer.id ? null : syncerId)
