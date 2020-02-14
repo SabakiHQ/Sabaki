@@ -1994,19 +1994,19 @@ class App extends Component {
 
       if (commandName === 'genmove') {
         response = await syncer.controller.sendCommand({
-            name: commandName,
-            args: [color]
-          })
+          name: commandName,
+          args: [color]
+        })
       } else {
-            let interval = setting.get('board.analysis_interval').toString()
+        let interval = setting.get('board.analysis_interval').toString()
 
         await syncer.controller.sendCommand(
-                {name: commandName, args: [color, interval]},
-                ({line}) => {
-                  if (line.indexOf('play ') !== 0) return
+          {name: commandName, args: [color, interval]},
+          ({line}) => {
+            if (line.indexOf('play ') !== 0) return
             response = {content: line.slice('play '.length).trim()}
-                }
-              )
+          }
+        )
       }
 
       if (response == null || response.error) throw new Error()
