@@ -83,9 +83,12 @@ export class EngineSyncer extends EventEmitter {
 
           if (
             command.name.match(/^(lz-)?(genmove_)?analyze$/) == null ||
+            command.args.length === 0 ||
             !line.startsWith('info ')
           )
             return
+
+          let board = newBoard(this.stateTracker.state.boardsize || 19)
 
           this.analysis = line
             .split(/\s*info\s+/)
@@ -93,7 +96,7 @@ export class EngineSyncer extends EventEmitter {
             .map(x => x.trim())
             .map(x => {
               let matchPV = x.match(
-                /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*\s*$/
+                /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*$/
               )
               if (matchPV == null) return null
 
@@ -123,6 +126,13 @@ export class EngineSyncer extends EventEmitter {
               return keys.reduce((acc, x, i) => ((acc[x] = values[i]), acc), {})
             })
             .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
+            .map(({move, visits, winrate, pv}) => ({
+              sign: command.args[0].toUpperCase() === 'W' ? -1 : 1,
+              vertex: board.parseVertex(move),
+              visits: +visits,
+              winrate: +winrate / 100,
+              variation: pv.map(x => board.parseVertex(x))
+            }))
         })
 
         await getResponse()
