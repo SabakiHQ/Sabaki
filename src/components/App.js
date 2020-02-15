@@ -1076,19 +1076,21 @@ class App extends Component {
           // Show annotation context menu
 
           this.openCommentMenu(tree, treePosition, {x, y})
-        } else if (this.state.analysis != null) {
+        } else if (
+          this.state.analysis != null &&
+          this.state.analysisTreePosition === this.state.treePosition
+        ) {
           // Show analysis context menu
 
-          let data = this.state.analysis.find(x =>
-            helper.vertexEquals(x.vertex, vertex)
-          )
+          let {sign, variations} = this.state.analysis
+          let data = variations.find(x => helper.vertexEquals(x.vertex, vertex))
 
           if (data != null) {
             let maxVisitsWin = Math.max(
-              ...this.state.analysis.map(x => x.visits * x.win)
+              ...variations.map(x => x.visits * x.winrate)
             )
             let strength =
-              Math.round((data.visits * data.win * 8) / maxVisitsWin) + 1
+              Math.round((data.visits * data.winrate * 8) / maxVisitsWin) + 1
             let annotationProp =
               strength >= 8
                 ? 'TE'
@@ -1099,10 +1101,10 @@ class App extends Component {
                 : 'BM'
             let annotationValues = {BM: '1', DO: '', IT: '', TE: '1'}
             let winrate =
-              Math.round((data.sign > 0 ? data.win : 100 - data.win) * 100) /
+              Math.round((sign > 0 ? data.winrate : 100 - data.winrate) * 100) /
               100
 
-            this.openVariationMenu(data.sign, data.variation, {
+            this.openVariationMenu(sign, data.variation, {
               x,
               y,
               startNodeProperties: {
@@ -2009,7 +2011,7 @@ class App extends Component {
         await syncer.controller.sendCommand(
           {name: commandName, args: [color, interval]},
           ({line}) => {
-            if (line.indexOf('play ') !== 0) return
+            if (!line.startsWith('play ')) return
             response = {content: line.slice('play '.length).trim()}
           }
         )
