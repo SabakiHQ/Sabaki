@@ -1060,7 +1060,7 @@ class App extends Component {
     if (['play', 'autoplay'].includes(this.state.mode)) {
       if (button === 0) {
         if (board.get(vertex) === 0) {
-          this.makeMove(vertex)
+          this.makeMove(vertex, {generateEngineMove: true})
         } else if (
           board.markers[vy][vx] != null &&
           board.markers[vy][vx].type === 'point' &&
@@ -1258,7 +1258,7 @@ class App extends Component {
     this.events.emit('vertexClick')
   }
 
-  makeMove(vertex, {player = null} = {}) {
+  makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
     if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
       this.closeDrawer()
       this.setMode('play')
@@ -1270,7 +1270,7 @@ class App extends Component {
     let node = tree.get(treePosition)
     let board = gametree.getBoard(tree, treePosition)
 
-    if (!player) player = this.inferredState.currentPlayer
+    if (!player) player = this.getPlayer(tree, treePosition)
     if (typeof vertex == 'string') vertex = board.parseVertex(vertex)
 
     let {pass, overwrite, capturing, suicide} = board.analyzeMove(
@@ -1365,6 +1365,18 @@ class App extends Component {
     // Emit event
 
     this.events.emit('moveMake', {pass, capturing, suicide, ko, enterScoring})
+
+    // Generate move
+
+    if (generateEngineMove && !enterScoring) {
+      this.generateMove(
+        player > 0
+          ? this.state.whiteEngineSyncerId
+          : this.state.blackEngineSyncerId,
+        newTree,
+        nextTreePosition
+      )
+    }
   }
 
   makeResign({player = null} = {}) {
