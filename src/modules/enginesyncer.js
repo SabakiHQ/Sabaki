@@ -204,8 +204,6 @@ export class EngineSyncer extends EventEmitter {
   }
 
   async sync(tree, id) {
-    if (this.treePosition === id) return
-
     let board = getBoard(tree, id)
 
     if (!board.isSquare()) {

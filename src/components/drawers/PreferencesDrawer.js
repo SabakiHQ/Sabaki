@@ -9,7 +9,6 @@ const t = require('../../i18n').context('PreferencesDrawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const gtplogger = require('../../modules/gtplogger')
 
 class PreferencesItem extends Component {
   constructor(props) {

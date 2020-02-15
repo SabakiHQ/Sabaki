@@ -1060,7 +1060,9 @@ class App extends Component {
     if (['play', 'autoplay'].includes(this.state.mode)) {
       if (button === 0) {
         if (board.get(vertex) === 0) {
-          this.makeMove(vertex, {generateEngineMove: true})
+          this.makeMove(vertex, {
+            generateEngineMove: this.state.engineGameOngoing == null
+          })
         } else if (
           board.markers[vy][vx] != null &&
           board.markers[vy][vx].type === 'point' &&
@@ -1634,6 +1636,29 @@ class App extends Component {
     this.recordHistory({prevGameIndex, prevTreePosition})
 
     this.events.emit('navigate')
+
+    // Continuous analysis
+
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === this.state.analyzingEngineSyncerId
+    )
+
+    if (
+      syncer != null &&
+      prevTreePosition !== id &&
+      this.state.analysisTreePosition !== id &&
+      (this.state.engineGameOngoing == null ||
+        ![
+          this.state.blackEngineSyncerId,
+          this.state.whiteEngineSyncerId
+        ].includes(this.state.analyzingEngineSyncerId))
+    ) {
+      clearTimeout(this.continuousAnalysisId)
+
+      this.continuousAnalysisId = setTimeout(() => {
+        this.analyzeMove(tree, id)
+      }, setting.get('game.navigation_analysis_delay'))
+    }
   }
 
   goStep(step) {
@@ -2195,12 +2220,103 @@ class App extends Component {
   }
 
   async stopEngineGame(gameId = null) {
+    if (this.state.engineGameOngoing == null) return
+
     this.setState(state => ({
       engineGameOngoing:
         gameId == null || state.engineGameOngoing === gameId
           ? null
           : state.engineGameOngoing
     }))
+
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === this.state.analyzingEngineSyncerId
+    )
+    if (syncer == null) return
+
+    let handleBusyChanged = () => {
+      if (!syncer.busy) {
+        syncer.removeListener('busy-changed', handleBusyChanged)
+
+        this.analyzeMove(
+          this.state.gameTrees[this.state.gameIndex],
+          this.state.treePosition
+        )
+      }
+    }
+
+    syncer.on('busy-changed', handleBusyChanged)
+  }
+
+  async analyzeMove(tree, id) {
+    let sign = this.getPlayer(tree, id)
+    let color = sign > 0 ? 'B' : 'W'
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === this.state.analyzingEngineSyncerId
+    )
+    if (syncer == null) return
+
+    let synced = await this.syncEngine(syncer.id, tree, id)
+    if (!synced) return
+
+    let commandName = ['analyze', 'lz-analyze'].find(x =>
+      syncer.commands.includes(x)
+    )
+    if (commandName == null) return
+
+    let interval = setting.get('board.analysis_interval').toString()
+
+    syncer.controller.sendCommand({
+      name: commandName,
+      args: [color, interval]
+    })
+  }
+
+  async startAnalysis(syncerId) {
+    if (this.state.analyzingEngineSyncerId === syncerId) return
+
+    let t = i18n.context('app.engine')
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === syncerId
+    )
+
+    if (syncer == null) return
+
+    if (
+      !syncer.commands.includes('analyze') &&
+      !syncer.commands.includes('lz-analyze')
+    ) {
+      dialog.showMessageBox(
+        t('The selected engine does not support analysis.'),
+        'warning'
+      )
+      return
+    }
+
+    this.setState({
+      analyzingEngineSyncerId: syncerId
+    })
+
+    let tree = this.state.gameTrees[this.state.gameIndex]
+    let {treePosition} = this.state
+
+    this.analyzeMove(tree, treePosition)
+  }
+
+  stopAnalysis() {
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === this.state.analyzingEngineSyncerId
+    )
+
+    if (syncer != null) {
+      syncer.controller.process.stdin.write('\n')
+    }
+
+    this.setState({
+      analysis: null,
+      analysisTreePosition: null,
+      analyzingEngineSyncerId: null
+    })
   }
 
   // Find Methods
@@ -3024,10 +3140,11 @@ class App extends Component {
           checked: this.state.analyzingEngineSyncerId === syncerId,
           accelerator: 'F4',
           click: () => {
-            this.setState(state => ({
-              analyzingEngineSyncerId:
-                state.analyzingEngineSyncerId === syncerId ? null : syncerId
-            }))
+            if (this.state.analyzingEngineSyncerId === syncerId) {
+              this.stopAnalysis()
+            } else {
+              this.startAnalysis(syncerId)
+            }
           }
         },
         {
