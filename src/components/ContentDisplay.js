@@ -6,35 +6,34 @@ const gametree = require('../modules/gametree')
 const setting = remote.require('./setting')
 
 function htmlify(input) {
-  let urlRegex = '\\b(ht|f)tps?:\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
-  let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-  let variationRegex =
-    '\\b(black\\s+?|white\\s+?|[bw]\\s*)(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
-  let coordRegex = '\\b[a-hj-z]\\d+\\b'
-  let movenumberRegex = '(\\B#|\\bmove[ ]+)(\\d+)\\b'
-  let totalRegex =
-    '(' +
-    [urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex].join(
-      '|'
-    ) +
-    ')'
+  let urlRegex = /\b(ht|f)tps?:\/\/[^\s<]+[^<.,:;"\')\]\s](\/\B|\b)/i
+  let emailRegex = /\b[^\s@<]+@[^\s@<]+\b/i
+  let variationRegex = /\b(black\s+?|white\s+?|[bw]\s*)(([a-hj-z]\d{1,2}[ ]+)+[a-hj-z]\d{1,2})\b/i
+  let coordRegex = /\b[a-hj-z]\d{1,2}\b/i
+  let movenumberRegex = /(\B#|\bmove[ ]+)(\d+)\b/i
+  let totalRegex = new RegExp(
+    `(${[urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex]
+      .map(regex => regex.source)
+      .join('|')})`,
+    'gi'
+  )
 
-  input = input.replace(new RegExp(totalRegex, 'gi'), match => {
+  input = input.replace(totalRegex, match => {
     let tokens
 
-    if (new RegExp(urlRegex, 'i').test(match))
+    if (urlRegex.test(match))
       return `<a href="${match}" class="comment-external">${match}</a>`
-    if (new RegExp(emailRegex, 'i').test(match))
+    if (emailRegex.test(match))
       return `<a href="mailto:${match}" class="comment-external">${match}</a>`
-    if ((tokens = new RegExp(variationRegex, 'i').exec(match)))
+    if ((tokens = variationRegex.exec(match)))
       return `<span
         class="comment-variation"
         data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
         data-moves="${tokens[2]}"
       >${match}</span>`
-    if (new RegExp(coordRegex, 'i').test(match))
+    if (coordRegex.test(match))
       return `<span class="comment-coord">${match}</span>`
-    if ((tokens = new RegExp(movenumberRegex, 'i').exec(match)))
+    if ((tokens = movenumberRegex.exec(match)))
       return `<a
         href="#"
         class="comment-movenumber"
@@ -120,9 +119,9 @@ class ContentDisplay extends Component {
     this.handleVariationMouseUp = evt => {
       if (evt.button !== 2) return
 
-      let {sign, variation, sibling} = getVariationInfo(evt.currentTarget)
+      let {sign, moves, sibling} = getVariationInfo(evt.currentTarget)
 
-      sabaki.openVariationMenu(sign, variation, {
+      sabaki.openVariationMenu(sign, moves, {
         x: evt.clientX,
         y: evt.clientY,
         appendSibling: sibling
