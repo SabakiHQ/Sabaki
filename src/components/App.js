@@ -1821,10 +1821,26 @@ class App extends Component {
       })
 
       if (this.state.analyzingEngineSyncerId === syncer.id) {
+        // Update analysis info
+
         this.setState({
           analysis: syncer.analysis,
           analysisTreePosition: syncer.treePosition
         })
+
+        if (syncer.analysis != null && syncer.treePosition != null) {
+          let tree = this.state.gameTrees[this.state.gameIndex]
+          let {sign, winrate} = syncer.analysis
+          if (sign < 0) winrate = 100 - winrate
+
+          let newTree = tree.mutate(draft => {
+            draft.updateProperty(syncer.treePosition, 'SBKV', [
+              (Math.round(winrate * 100) / 100).toString()
+            ])
+          })
+
+          this.setCurrentTreePosition(newTree, this.state.treePosition)
+        }
       }
     })
 
