@@ -78,7 +78,7 @@
     "@sabaki/boardmatcher": "^1.1.5",
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
-    "@sabaki/gtp": "^1.9.5",
+    "@sabaki/gtp": "^1.9.6",
     "@sabaki/immutable-gametree": "^1.8.2",
     "@sabaki/influence": "^1.2.2",
     "@sabaki/sgf": "^3.4.4",
@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "^8.0.0",
+    "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
     "mocha": "^7.0.1",
     "onchange": "^6.1.0",
