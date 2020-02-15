@@ -28,19 +28,19 @@ function htmlify(input) {
       return `<a href="mailto:${match}" class="comment-external">${match}</a>`
     if ((tokens = new RegExp(variationRegex, 'i').exec(match)))
       return `<span
-                class="comment-variation"
-                data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
-                data-variation="${tokens[2]}"
-            >${match}</span>`
+        class="comment-variation"
+        data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
+        data-moves="${tokens[2]}"
+      >${match}</span>`
     if (new RegExp(coordRegex, 'i').test(match))
       return `<span class="comment-coord">${match}</span>`
     if ((tokens = new RegExp(movenumberRegex, 'i').exec(match)))
       return `<a
-                href="#"
-                class="comment-movenumber"
-                title="${t('Jump to Move Number')}"
-                data-movenumber="${tokens[2]}"
-            >${match}</a>`
+        href="#"
+        class="comment-movenumber"
+        title="${t('Jump to Move Number')}"
+        data-movenumber="${tokens[2]}"
+      >${match}</a>`
   })
 
   return input
@@ -77,32 +77,32 @@ class ContentDisplay extends Component {
           : color === 'b'
           ? 1
           : -1
-      let variation = target.dataset.variation
+      let moves = target.dataset.moves
         .split(/\s+/)
         .map(x => board.parseVertex(x))
       let sibling = currentVertexSign === sign
 
-      return {sign, variation, sibling}
+      return {sign, moves, sibling}
     }
 
     this.handleVariationMouseEnter = evt => {
       let {currentTarget} = evt
-      let {sign, variation, sibling} = getVariationInfo(currentTarget)
+      let {sign, moves, sibling} = getVariationInfo(currentTarget)
       let counter = 1
 
-      sabaki.setState({playVariation: {sign, variation, sibling}})
+      sabaki.setState({playVariation: {sign, moves, sibling}})
 
       if (setting.get('board.variation_instant_replay')) {
         currentTarget.style.backgroundSize = '100% 100%'
       } else {
         clearInterval(this.variationIntervalId)
         this.variationIntervalId = setInterval(() => {
-          if (counter >= variation.length) {
+          if (counter >= moves.length) {
             clearInterval(this.variationIntervalId)
             return
           }
 
-          let percent = (counter * 100) / (variation.length - 1)
+          let percent = (counter * 100) / (moves.length - 1)
 
           currentTarget.style.backgroundSize = `${percent}% 100%`
           counter++

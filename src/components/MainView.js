@@ -1,16 +1,16 @@
-const {h, Component} = require('preact')
+import {h, Component} from 'preact'
 
-const Goban = require('./Goban')
-const PlayBar = require('./bars/PlayBar')
-const EditBar = require('./bars/EditBar')
-const GuessBar = require('./bars/GuessBar')
-const AutoplayBar = require('./bars/AutoplayBar')
-const ScoringBar = require('./bars/ScoringBar')
-const FindBar = require('./bars/FindBar')
+import Goban from './Goban.js'
+import PlayBar from './bars/PlayBar.js'
+import EditBar from './bars/EditBar.js'
+import GuessBar from './bars/GuessBar.js'
+import AutoplayBar from './bars/AutoplayBar.js'
+import ScoringBar from './bars/ScoringBar.js'
+import FindBar from './bars/FindBar.js'
 
-const gametree = require('../modules/gametree')
+import gametree from '../modules/gametree.js'
 
-class MainView extends Component {
+export default class MainView extends Component {
   constructor(props) {
     super(props)
 
@@ -235,5 +235,3 @@ class MainView extends Component {
     )
   }
 }
-
-module.exports = MainView

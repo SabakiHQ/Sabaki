@@ -11,7 +11,7 @@ import helper from '../modules/helper.js'
 const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
-class Goban extends Component {
+export default class Goban extends Component {
   constructor(props) {
     super(props)
 
@@ -84,10 +84,10 @@ class Goban extends Component {
   componentWillReceiveProps(nextProps = {}) {
     if (nextProps.playVariation !== this.props.playVariation) {
       if (nextProps.playVariation != null) {
-        let {sign, variationMoves, sibling} = nextProps.playVariation
+        let {sign, moves, sibling} = nextProps.playVariation
 
         this.stopPlayingVariation()
-        this.playVariation(sign, variationMoves, sibling)
+        this.playVariation(sign, moves, sibling)
       } else {
         this.stopPlayingVariation()
       }
@@ -160,33 +160,32 @@ class Goban extends Component {
     if (this.props.analysis == null) return
 
     let {sign, variations} = this.props.analysis
-    let variationMoves =
-      variations.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
-    if (variationMoves == null) return
+    let variation = variations.find(x => helper.vertexEquals(x.vertex, vertex))
+    if (variation == null) return
 
-    this.playVariation(sign, variationMoves)
+    this.playVariation(sign, variation.moves)
   }
 
   handleVertexMouseLeave(evt, vertex) {
     this.stopPlayingVariation()
   }
 
-  playVariation(sign, variationMoves, sibling = false) {
+  playVariation(sign, moves, sibling = false) {
     if (setting.get('board.variation_instant_replay')) {
       this.variationIntervalId = true
 
       this.setState({
-        variationMoves: variationMoves.pv,
+        variationMoves: moves,
         variationSign: sign,
         variationSibling: sibling,
-        variationIndex: variationMoves.pv.length
+        variationIndex: moves.length
       })
     } else {
       clearInterval(this.variationIntervalId)
 
       this.variationIntervalId = setInterval(() => {
         this.setState(({variationIndex = -1}) => ({
-          variationMoves: variationMoves.pv,
+          variationMoves: moves,
           variationSign: sign,
           variationSibling: sibling,
           variationIndex: variationIndex + 1
@@ -378,7 +377,7 @@ class Goban extends Component {
 
     if (drawHeatMap && analysis != null) {
       let maxVisitsWin = Math.max(
-        ...analysis.variations.map(x => x.visits * x.win)
+        ...analysis.variations.map(x => x.visits * x.winrate)
       )
       heatMap = board.signMap.map(row => row.map(_ => null))
 
@@ -441,5 +440,3 @@ class Goban extends Component {
     })
   }
 }
-
-module.exports = Goban

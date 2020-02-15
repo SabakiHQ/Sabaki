@@ -1083,14 +1083,18 @@ class App extends Component {
           // Show analysis context menu
 
           let {sign, variations} = this.state.analysis
-          let data = variations.find(x => helper.vertexEquals(x.vertex, vertex))
+          let variation = variations.find(x =>
+            helper.vertexEquals(x.vertex, vertex)
+          )
 
-          if (data != null) {
+          if (variation != null) {
             let maxVisitsWin = Math.max(
               ...variations.map(x => x.visits * x.winrate)
             )
             let strength =
-              Math.round((data.visits * data.winrate * 8) / maxVisitsWin) + 1
+              Math.round(
+                (variation.visits * variation.winrate * 8) / maxVisitsWin
+              ) + 1
             let annotationProp =
               strength >= 8
                 ? 'TE'
@@ -1101,10 +1105,11 @@ class App extends Component {
                 : 'BM'
             let annotationValues = {BM: '1', DO: '', IT: '', TE: '1'}
             let winrate =
-              Math.round((sign > 0 ? data.winrate : 100 - data.winrate) * 100) /
-              100
+              Math.round(
+                (sign > 0 ? variation.winrate : 100 - variation.winrate) * 100
+              ) / 100
 
-            this.openVariationMenu(sign, data.variation, {
+            this.openVariationMenu(sign, variation.moves, {
               x,
               y,
               startNodeProperties: {
@@ -1814,6 +1819,13 @@ class App extends Component {
         message: line,
         engine: syncer.engine.name
       })
+
+      if (this.state.analyzingEngineSyncerId === syncer.id) {
+        this.setState({
+          analysis: syncer.analysis,
+          analysisTreePosition: syncer.treePosition
+        })
+      }
     })
 
     getResponse().catch(_ => {
@@ -2094,6 +2106,7 @@ class App extends Component {
   }
 
   async startEngineGame(tree, id) {
+    let t = i18n.context('app.engine')
     let {engineGameOngoing, attachedEngineSyncers} = this.state
     let engineCount = attachedEngineSyncers.length
     if (engineGameOngoing != null) return
@@ -2852,7 +2865,7 @@ class App extends Component {
 
   openVariationMenu(
     sign,
-    variation,
+    moves,
     {x, y, appendSibling = false, startNodeProperties = {}} = {}
   ) {
     let t = i18n.context('menu.variation')
@@ -2880,7 +2893,7 @@ class App extends Component {
               let parentId = !appendSibling
                 ? treePosition
                 : tree.get(treePosition).parentId
-              let variationData = variation.map((vertex, i) =>
+              let variationData = moves.map((vertex, i) =>
                 Object.assign(
                   {
                     [i % 2 === 0 ? color : opponent]: [
