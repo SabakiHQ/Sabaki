@@ -146,6 +146,8 @@ class App extends Component {
       sound
     }
 
+    gtplogger.updatePath()
+
     // Bind state to settings
 
     setting.events.on('change', ({key}) => this.updateSettingState(key))
@@ -775,8 +777,6 @@ class App extends Component {
     gameTrees,
     {suppressAskForSave = false, clearHistory = true} = {}
   ) {
-    gtplogger.rotate()
-
     if (!suppressAskForSave && !this.askForSave()) return
 
     this.setBusy(true)

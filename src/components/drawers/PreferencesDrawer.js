@@ -9,6 +9,7 @@ const t = require('../../i18n').context('PreferencesDrawer')
 const dialog = require('../../modules/dialog')
 const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
+const gtplogger = require('../../modules/gtplogger')
 
 class PreferencesItem extends Component {
   constructor(props) {
@@ -720,9 +721,9 @@ class PreferencesDrawer extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.show && !this.props.show) {
-      // On closing
+    // On closing
 
+    if (prevProps.show && !this.props.show) {
       let natsort = require('natsort').default
       let cmp = natsort({insensitive: true})
 
@@ -732,9 +733,24 @@ class PreferencesDrawer extends Component {
 
       setting.set('engines.list', engines)
 
+      // Validate GTP logging path
+
+      if (sabaki.state.attachedEngineSyncers.length > 0) {
+        if (!gtplogger.updatePath()) {
+          // Force the user to fix the issue
+
+          setTimeout(() => {
+            sabaki.setState({preferencesTab: 'engines'})
+            sabaki.openDrawer('preferences')
+          }, 500)
+
+          return
+        }
+      }
+
       // Reset tab selection
 
-      setTimeout(() => sabaki.setState({preferencesTab: 'general'}), 500)
+      sabaki.setState({preferencesTab: 'general'})
     }
   }
 
