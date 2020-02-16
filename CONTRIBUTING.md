@@ -20,7 +20,8 @@ First of all, thank you for taking the time to contribute to Sabaki!
 - You can look at
   [the documentation](https://github.com/SabakiHQ/Sabaki/tree/master/docs) to
   get an overview how Sabaki's code is structured.
-- Make sure your code adheres to the code and style standards.
+- Run prettier to make sure your code adheres to the coding style standards. You
+  can use the command `npm run format` to format all the files.
 - Avoid platform-dependent code.
 - Create mocha tests if possible and applicable.
 - Document new code in the documentation if applicable.

@@ -47,6 +47,13 @@ instructions depending on the target OS:
 - `$ npm run dist:linux` for Linux 32-bit and 64-bit
 - `$ npm run dist:macos` for macOS 64-bit
 
+Before sending in a pull request, please run prettier to make sure your code
+adheres to the coding style standards:
+
+```
+$ npm run format
+```
+
 ### Web version
 
 Checkout the `web` branch and install the dependencies for the web version:
