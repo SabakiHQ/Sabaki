@@ -2266,10 +2266,12 @@ class App extends Component {
 
     let interval = setting.get('board.analysis_interval').toString()
 
-    syncer.controller.sendCommand({
-      name: commandName,
-      args: [color, interval]
-    })
+    try {
+      syncer.controller.sendCommand({
+        name: commandName,
+        args: [color, interval]
+      })
+    } catch (err) {}
   }
 
   async startAnalysis(syncerId) {
