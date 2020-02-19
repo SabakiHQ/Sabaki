@@ -76,81 +76,92 @@ export class EngineSyncer extends EventEmitter {
     this.controller.on(
       'command-sent',
       async ({command, subscribe, getResponse}) => {
-        subscribe(({line}) => {
-          // Parse analysis info
+        if (
+          command.name.match(/^(lz-)?(genmove_)?analyze$/) != null ||
+          command.args.length > 0
+        ) {
+          // Handle analysis commands
 
-          if (
-            command.name.match(/^(lz-)?(genmove_)?analyze$/) == null ||
-            command.args.length === 0 ||
-            !line.startsWith('info ')
-          )
-            return
-
-          let boardsize = this.stateTracker.state.boardsize || [19, 19]
-          let board = newBoard(...boardsize)
           let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
 
-          let variations = line
-            .split(/\s*info\s+/)
-            .slice(1)
-            .map(x => x.trim())
-            .map(x => {
-              let matchPV = x.match(
-                /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*$/
-              )
-              if (matchPV == null) return null
+          subscribe(({line}) => {
+            // Parse analysis info
 
-              let passIndex = matchPV[0].indexOf('pass')
-              if (passIndex < 0) passIndex = Infinity
+            if (line.startsWith('info ')) {
+              let boardsize = this.stateTracker.state.boardsize || [19, 19]
+              let board = newBoard(...boardsize)
 
-              return [
-                x
-                  .slice(0, matchPV.index)
-                  .trim()
-                  .split(/\s+/)
-                  .slice(0, -1),
-                matchPV[0]
-                  .slice(0, passIndex)
-                  .split(/\s+/)
-                  .filter(x => x.length >= 2)
-              ]
-            })
-            .filter(x => x != null)
-            .map(([tokens, pv]) => {
-              let keys = tokens.filter((_, i) => i % 2 === 0)
-              let values = tokens.filter((_, i) => i % 2 === 1)
+              let variations = line
+                .split(/\s*info\s+/)
+                .slice(1)
+                .map(x => x.trim())
+                .map(x => {
+                  let matchPV = x.match(
+                    /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*$/
+                  )
+                  if (matchPV == null) return null
 
-              keys.push('pv')
-              values.push(pv)
+                  let passIndex = matchPV[0].indexOf('pass')
+                  if (passIndex < 0) passIndex = Infinity
 
-              return keys.reduce((acc, x, i) => ((acc[x] = values[i]), acc), {})
-            })
-            .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
-            .map(({move, visits, winrate, pv}) => ({
-              vertex: board.parseVertex(move),
-              visits: +visits,
-              winrate: +winrate / 100,
-              moves: pv.map(x => board.parseVertex(x))
-            }))
+                  return [
+                    x
+                      .slice(0, matchPV.index)
+                      .trim()
+                      .split(/\s+/)
+                      .slice(0, -1),
+                    matchPV[0]
+                      .slice(0, passIndex)
+                      .split(/\s+/)
+                      .filter(x => x.length >= 2)
+                  ]
+                })
+                .filter(x => x != null)
+                .map(([tokens, pv]) => {
+                  let keys = tokens.filter((_, i) => i % 2 === 0)
+                  let values = tokens.filter((_, i) => i % 2 === 1)
 
-          this.analysis = {
-            sign,
-            variations,
-            winrate: Math.max(...variations.map(({winrate}) => winrate))
+                  keys.push('pv')
+                  values.push(pv)
+
+                  return keys.reduce(
+                    (acc, x, i) => ((acc[x] = values[i]), acc),
+                    {}
+                  )
+                })
+                .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
+                .map(({move, visits, winrate, pv}) => ({
+                  vertex: board.parseVertex(move),
+                  visits: +visits,
+                  winrate: +winrate / 100,
+                  moves: pv.map(x => board.parseVertex(x))
+                }))
+
+              this.analysis = {
+                sign,
+                variations,
+                winrate: Math.max(...variations.map(({winrate}) => winrate))
+              }
+            } else if (line.startsWith('play ')) {
+              sign = -sign
+
+              this.analysis = null
+              this.treePosition = null
+            }
+          })
+        } else if (this.treePosition != null) {
+          // Invalidate treePosition
+
+          let prevHistory = JSON.parse(
+            JSON.stringify(this.stateTracker.state.history)
+          )
+
+          await getResponse()
+
+          if (!equals(prevHistory, this.stateTracker.state.history)) {
+            this.treePosition = null
+            this.analysis = null
           }
-        })
-
-        if (this.treePosition == null) return
-
-        let prevHistory = JSON.parse(
-          JSON.stringify(this.stateTracker.state.history)
-        )
-
-        await getResponse()
-
-        if (!equals(prevHistory, this.stateTracker.state.history)) {
-          this.treePosition = null
-          this.analysis = null
         }
       }
     )

@@ -1648,7 +1648,6 @@ class App extends Component {
     if (
       syncer != null &&
       prevTreePosition !== id &&
-      this.state.analysisTreePosition !== id &&
       (this.state.engineGameOngoing == null ||
         ![
           this.state.blackEngineSyncerId,
