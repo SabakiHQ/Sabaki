@@ -2021,6 +2021,13 @@ class App extends Component {
           attachedEngineSyncers: state.attachedEngineSyncers.filter(
             s => s.id !== syncer.id
           ),
+          engineGameOngoing:
+            state.engineGameOngoing &&
+            [state.blackEngineSyncerId, state.whiteEngineSyncerId].includes(
+              syncer.id
+            )
+              ? false
+              : state.engineGameOngoing,
           blackEngineSyncerId: unset(state.blackEngineSyncerId),
           whiteEngineSyncerId: unset(state.whiteEngineSyncerId),
           analyzingEngineSyncerId: unset(state.analyzingEngineSyncerId)
