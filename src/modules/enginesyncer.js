@@ -33,12 +33,12 @@ export class EngineSyncer extends EventEmitter {
 
     this._busy = false
     this._suspended = true
+    this._analysis = null
 
     this.id = uuid()
     this.engine = engine
     this.commands = []
     this.treePosition = null
-    this.analysis = null
 
     this.controller = new Controller(path, [...argvsplit(args)], {
       cwd: dirname(resolve(path))
@@ -193,6 +193,17 @@ export class EngineSyncer extends EventEmitter {
     if (value !== this._suspended) {
       this._suspended = value
       this.emit('suspended-changed')
+    }
+  }
+
+  get analysis() {
+    return this._analysis
+  }
+
+  set analysis(value) {
+    if (value !== this._analysis) {
+      this._analysis = value
+      this.emit('analysis-update')
     }
   }
 

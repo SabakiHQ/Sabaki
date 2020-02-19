@@ -1858,29 +1858,6 @@ class App extends Component {
         message: line,
         engine: syncer.engine.name
       })
-
-      if (this.state.analyzingEngineSyncerId === syncer.id) {
-        // Update analysis info
-
-        this.setState({
-          analysis: syncer.analysis,
-          analysisTreePosition: syncer.treePosition
-        })
-
-        if (syncer.analysis != null && syncer.treePosition != null) {
-          let tree = this.state.gameTrees[this.state.gameIndex]
-          let {sign, winrate} = syncer.analysis
-          if (sign < 0) winrate = 100 - winrate
-
-          let newTree = tree.mutate(draft => {
-            draft.updateProperty(syncer.treePosition, 'SBKV', [
-              (Math.round(winrate * 100) / 100).toString()
-            ])
-          })
-
-          this.setCurrentTreePosition(newTree, this.state.treePosition)
-        }
-      }
     })
 
     getResponse().catch(_ => {
@@ -1926,6 +1903,31 @@ class App extends Component {
       engine = {...engine, name: getEngineName(engine.name)}
 
       let syncer = new EngineSyncer(engine)
+
+      syncer.on('analysis-update', () => {
+        if (this.state.analyzingEngineSyncerId === syncer.id) {
+          // Update analysis info
+
+          this.setState({
+            analysis: syncer.analysis,
+            analysisTreePosition: syncer.treePosition
+          })
+
+          if (syncer.analysis != null && syncer.treePosition != null) {
+            let tree = this.state.gameTrees[this.state.gameIndex]
+            let {sign, winrate} = syncer.analysis
+            if (sign < 0) winrate = 100 - winrate
+
+            let newTree = tree.mutate(draft => {
+              draft.updateProperty(syncer.treePosition, 'SBKV', [
+                (Math.round(winrate * 100) / 100).toString()
+              ])
+            })
+
+            this.setCurrentTreePosition(newTree, this.state.treePosition)
+          }
+        }
+      })
 
       syncer.controller.on('command-sent', evt => {
         gtplogger.write({
@@ -2247,19 +2249,6 @@ class App extends Component {
       syncer => syncer.id === this.state.analyzingEngineSyncerId
     )
     if (syncer == null) return
-
-    let handleBusyChanged = () => {
-      if (!syncer.busy) {
-        syncer.removeListener('busy-changed', handleBusyChanged)
-
-        this.analyzeMove(
-          this.state.gameTrees[this.state.gameIndex],
-          this.state.treePosition
-        )
-      }
-    }
-
-    syncer.on('busy-changed', handleBusyChanged)
   }
 
   async analyzeMove(tree, id) {
@@ -2268,7 +2257,7 @@ class App extends Component {
     let syncer = this.state.attachedEngineSyncers.find(
       syncer => syncer.id === this.state.analyzingEngineSyncerId
     )
-    if (syncer == null) return
+    if (syncer == null || syncer.suspended) return
 
     let synced = await this.syncEngine(syncer.id, tree, id)
     if (!synced) return
@@ -2313,10 +2302,15 @@ class App extends Component {
       analyzingEngineSyncerId: syncerId
     })
 
-    let tree = this.state.gameTrees[this.state.gameIndex]
-    let {treePosition} = this.state
+    if (
+      this.state.blackEngineSyncerId !== syncerId &&
+      this.state.whiteEngineSyncerId !== syncer
+    ) {
+      let tree = this.state.gameTrees[this.state.gameIndex]
+      let {treePosition} = this.state
 
-    this.analyzeMove(tree, treePosition)
+      this.analyzeMove(tree, treePosition)
+    }
   }
 
   stopAnalysis() {
