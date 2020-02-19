@@ -86,7 +86,8 @@ export class EngineSyncer extends EventEmitter {
           )
             return
 
-          let board = newBoard(this.stateTracker.state.boardsize || 19)
+          let boardsize = this.stateTracker.state.boardsize || [19, 19]
+          let board = newBoard(...boardsize)
           let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
 
           let variations = line
@@ -206,18 +207,16 @@ export class EngineSyncer extends EventEmitter {
   async sync(tree, id) {
     let board = getBoard(tree, id)
 
-    if (!board.isSquare()) {
-      throw new Error('GTP engines don’t support non-square boards.')
-    } else if (!board.isValid()) {
+    if (!board.isValid()) {
       throw new Error('GTP engines don’t support invalid board positions.')
-    } else if (board.width > alpha.length) {
+    } else if (Math.max(board.width, board.height) > alpha.length) {
       throw new Error(
         `GTP engines only support board sizes that don’t exceed ${alpha.length}.`
       )
     }
 
     let komi = +getRootProperty(tree, 'KM', 0)
-    let boardsize = board.width
+    let boardsize = [board.width, board.height]
 
     // Replay
 

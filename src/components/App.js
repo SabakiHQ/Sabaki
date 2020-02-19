@@ -4,7 +4,8 @@ import {extname} from 'path'
 import {ipcRenderer, remote} from 'electron'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
-import uuid from 'uuid'
+import fixPath from 'fix-path'
+import uuid from 'uuid/v4'
 
 import {TripleSplitContainer} from './helpers/TripleSplitContainer.js'
 import ThemeManager from './ThemeManager.js'
@@ -39,6 +40,7 @@ const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
 const sidebarMinWidth = setting.get('view.leftsidebar_minwidth')
 
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
+fixPath()
 
 class App extends Component {
   constructor() {
@@ -2058,7 +2060,7 @@ class App extends Component {
     let synced = await this.syncEngine(syncerId, tree, id)
     if (!synced) return
 
-    let response
+    let coord
     try {
       let commandName =
         ['genmove_analyze', 'lz-genmove_analyze'].find(x =>
@@ -2066,23 +2068,29 @@ class App extends Component {
         ) || 'genmove'
 
       if (commandName === 'genmove') {
-        response = await syncer.controller.sendCommand({
+        let response = await syncer.controller.sendCommand({
           name: commandName,
           args: [color]
         })
+
+        if (response == null || response.error) throw new Error()
+
+        coord = response.content
       } else {
         let interval = setting.get('board.analysis_interval').toString()
 
-        await syncer.controller.sendCommand(
-          {name: commandName, args: [color, interval]},
-          ({line}) => {
-            if (!line.startsWith('play ')) return
-            response = {content: line.slice('play '.length).trim()}
-          }
-        )
-      }
+        coord = await new Promise(async resolve => {
+          await syncer.controller.sendCommand(
+            {name: commandName, args: [color, interval]},
+            ({line}) => {
+              if (!line.startsWith('play ')) return
+              resolve(line.slice('play '.length))
+            }
+          )
 
-      if (response == null || response.error) throw new Error()
+          resolve()
+        })
+      }
     } catch (err) {
       dialog.showMessageBox(
         t(p => `${p.engine} has failed to generate a move.`, {
@@ -2092,9 +2100,8 @@ class App extends Component {
       )
     }
 
-    if (response == null) return
-
-    let coord = response.content.toLowerCase().trim()
+    if (coord == null) return
+    coord = coord.toLowerCase().trim()
 
     if (coord === 'resign') {
       dialog.showMessageBox(

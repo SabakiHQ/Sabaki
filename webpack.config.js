@@ -30,7 +30,8 @@ module.exports = (env, argv) => ({
   },
 
   externals: {
-    moment: 'null',
-    'iconv-lite': 'require("iconv-lite")'
+    'cross-spawn': 'null',
+    'iconv-lite': 'require("iconv-lite")',
+    moment: 'null'
   }
 })
