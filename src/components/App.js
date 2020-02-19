@@ -1608,7 +1608,10 @@ class App extends Component {
   setCurrentTreePosition(tree, id, {clearCache = false} = {}) {
     if (clearCache) gametree.clearBoardCache()
 
-    if (['scoring', 'estimator'].includes(this.state.mode)) {
+    if (
+      ['scoring', 'estimator'].includes(this.state.mode) &&
+      id !== this.state.treePosition
+    ) {
       this.setState({mode: 'play'})
     }
 
