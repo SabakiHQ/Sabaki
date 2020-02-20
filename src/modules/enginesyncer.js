@@ -83,14 +83,13 @@ export class EngineSyncer extends EventEmitter {
           // Handle analysis commands
 
           let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
+          let boardsize = this.stateTracker.state.boardsize || [19, 19]
+          let board = newBoard(...boardsize)
 
           subscribe(({line}) => {
             // Parse analysis info
 
             if (line.startsWith('info ')) {
-              let boardsize = this.stateTracker.state.boardsize || [19, 19]
-              let board = newBoard(...boardsize)
-
               let variations = line
                 .split(/\s*info\s+/)
                 .slice(1)
@@ -227,6 +226,8 @@ export class EngineSyncer extends EventEmitter {
   }
 
   async sync(tree, id) {
+    if (id === this.treePosition) return
+
     let board = getBoard(tree, id)
 
     if (!board.isValid()) {
