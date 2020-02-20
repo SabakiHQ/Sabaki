@@ -2046,6 +2046,11 @@ class App extends Component {
       syncer => syncer.id === syncerId
     )
 
+    if (syncer.controller.busy) {
+      // A hack to make Leela Zero stop analyzing
+      syncer.controller.process.stdin.write('\n')
+    }
+
     if (syncer != null) {
       try {
         await syncer.sync(tree, id)
@@ -2316,14 +2321,6 @@ class App extends Component {
   }
 
   stopAnalysis() {
-    let syncer = this.state.attachedEngineSyncers.find(
-      syncer => syncer.id === this.state.analyzingEngineSyncerId
-    )
-
-    if (syncer != null) {
-      syncer.controller.process.stdin.write('\n')
-    }
-
     this.setState({
       analysis: null,
       analysisTreePosition: null,
