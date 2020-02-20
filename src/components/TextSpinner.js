@@ -1,19 +1,26 @@
 import EventEmitter from 'events'
 import {h, Component} from 'preact'
 
-const pulse = ((frame = 0) => {
-  let pulse = new EventEmitter()
+let pulse
 
-  pulse.setMaxListeners(Infinity)
-  setInterval(() => {
-    pulse.emit('tick', {frame})
-    frame++
-  }, 100)
+function getPulse() {
+  if (pulse == null) {
+    let frame = 0
+    let m = 8 * 9 * 5 * 7 * 11
+
+    pulse = new EventEmitter()
+    pulse.setMaxListeners(Infinity)
+
+    setInterval(() => {
+      pulse.emit('tick', {frame})
+      frame = (frame + 1) % m
+    }, 100)
+  }
 
   return pulse
-})()
+}
 
-export class TextSpinner extends Component {
+export default class TextSpinner extends Component {
   constructor(props) {
     super(props)
 
@@ -27,11 +34,11 @@ export class TextSpinner extends Component {
   }
 
   componentDidMount() {
-    pulse.on('tick', this.handleTick)
+    getPulse().on('tick', this.handleTick)
   }
 
   componentWillUnmount() {
-    pulse.removeListener('tick', this.handleTick)
+    getPulse().removeListener('tick', this.handleTick)
   }
 
   render() {

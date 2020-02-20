@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import {Command} from '@sabaki/gtp'
 
 import ContentDisplay from '../ContentDisplay.js'
-import {TextSpinner} from '../TextSpinner.js'
+import TextSpinner from '../TextSpinner.js'
 import {noop, popupMenu} from '../../modules/helper.js'
 import i18n from '../../i18n.js'
 

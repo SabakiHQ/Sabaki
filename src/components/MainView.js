@@ -100,12 +100,7 @@ export default class MainView extends Component {
 
       selectedTool,
       findText,
-      findVertex,
-
-      showLeftSidebar,
-      showSidebar,
-      sidebarWidth,
-      leftSidebarWidth
+      findVertex
     },
     {gobanCrosshair}
   ) {
@@ -180,6 +175,12 @@ export default class MainView extends Component {
         {id: 'bar'},
         h(PlayBar, {
           mode,
+          engineSyncers: [
+            this.props.blackEngineSyncerId,
+            this.props.whiteEngineSyncerId
+          ].map(id =>
+            this.props.attachedEngineSyncers.find(syncer => syncer.id === id)
+          ),
           playerNames: gameInfo.playerNames,
           playerRanks: gameInfo.playerRanks,
           playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),

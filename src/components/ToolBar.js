@@ -45,7 +45,7 @@ export class ToolBarButton extends Component {
   }
 }
 
-export class ToolBar extends Component {
+export default class ToolBar extends Component {
   render() {
     return h('div', {class: 'tool-bar'}, h('ul', {}, this.props.children))
   }

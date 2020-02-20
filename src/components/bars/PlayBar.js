@@ -1,13 +1,28 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const {remote} = require('electron')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {remote} from 'electron'
 
-const t = require('../../i18n').context('PlayBar')
-const helper = require('../../modules/helper')
+import i18n from '../../i18n.js'
+import helper from '../../modules/helper.js'
+import TextSpinner from '../TextSpinner.js'
 
-class PlayBar extends Component {
-  constructor() {
-    super()
+const t = i18n.context('PlayBar')
+
+export default class PlayBar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      playerBusy: [false, false]
+    }
+
+    this.syncState = () => {
+      this.setState({
+        playerBusy: this.props.engineSyncers.map(syncer =>
+          syncer == null ? false : syncer.busy
+        )
+      })
+    }
 
     this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
 
@@ -51,22 +66,49 @@ class PlayBar extends Component {
         top
       )
     }
+
+    for (let syncer of this.props.engineSyncers) {
+      if (syncer == null) continue
+
+      syncer.on('busy-changed', this.syncState)
+    }
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.mode !== this.props.mode || nextProps.mode === 'play'
   }
 
-  render({
-    mode,
-    playerNames,
-    playerRanks,
-    playerCaptures,
-    currentPlayer,
-    showHotspot,
+  componentWillReceiveProps(nextProps) {
+    for (let i = 0; i < nextProps.engineSyncers.length; i++) {
+      if (nextProps.engineSyncers !== this.props.engineSyncers) {
+        if (this.props.engineSyncers[i] != null) {
+          this.props.engineSyncers[i].removeListener(
+            'busy-changed',
+            this.syncState
+          )
+        }
 
-    onCurrentPlayerClick = helper.noop
-  }) {
+        if (nextProps.engineSyncers[i] != null) {
+          nextProps.engineSyncers[i].on('busy-changed', this.syncState)
+        }
+      }
+    }
+  }
+
+  render(
+    {
+      mode,
+      engineSyncers,
+      playerNames,
+      playerRanks,
+      playerCaptures,
+      currentPlayer,
+      showHotspot,
+
+      onCurrentPlayerClick = helper.noop
+    },
+    {playerBusy}
+  ) {
     let captureStyle = index => ({
       opacity: playerCaptures[index] === 0 ? 0 : 0.7
     })
@@ -105,9 +147,14 @@ class PlayBar extends Component {
         h(
           'span',
           {
-            class: 'name'
+            class: classNames('name', {engine: engineSyncers[0] != null}),
+            title: engineSyncers[0] != null && t('Engine')
           },
-          playerNames[0] || t('Black')
+          engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
+          ' ',
+          engineSyncers[0] == null
+            ? playerNames[0] || t('Black')
+            : engineSyncers[0].engine.name
         )
       ),
 
@@ -137,9 +184,14 @@ class PlayBar extends Component {
         h(
           'span',
           {
-            class: 'name'
+            class: classNames('name', {engine: engineSyncers[1] != null}),
+            title: engineSyncers[1] != null && t('Engine')
           },
-          playerNames[1] || t('White')
+          engineSyncers[1] == null
+            ? playerNames[1] || t('White')
+            : engineSyncers[1].engine.name,
+          ' ',
+          engineSyncers[1] != null && playerBusy[1] && h(TextSpinner)
         ),
         ' ',
 
@@ -175,5 +227,3 @@ class PlayBar extends Component {
     )
   }
 }
-
-module.exports = PlayBar

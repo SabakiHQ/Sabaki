@@ -2,10 +2,8 @@ import {h, Component} from 'preact'
 import classnames from 'classnames'
 
 import i18n from '../../i18n.js'
-import dialog from '../../modules/dialog'
-
-import {TextSpinner} from '../TextSpinner.js'
-import {ToolBar, ToolBarButton} from '../ToolBar.js'
+import TextSpinner from '../TextSpinner.js'
+import ToolBar, {ToolBarButton} from '../ToolBar.js'
 
 const t = i18n.context('PeerList')
 
