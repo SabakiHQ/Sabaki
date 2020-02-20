@@ -53,12 +53,12 @@ export class LeftSidebar extends Component {
     }
 
     this.handleCommandSubmit = ({command}) => {
-      let engineSyncer = this.props.attachedEngineSyncers.find(
+      let syncer = this.props.attachedEngineSyncers.find(
         syncer => syncer.id === this.state.selectedEngineSyncerId
       )
 
-      if (engineSyncer != null) {
-        engineSyncer.controller.sendCommand(command)
+      if (syncer != null) {
+        syncer.stateTracker.queueCommand(command)
       }
     }
   }

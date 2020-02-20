@@ -2084,7 +2084,7 @@ class App extends Component {
         ) || 'genmove'
 
       if (commandName === 'genmove') {
-        let response = await syncer.controller.sendCommand({
+        let response = await syncer.stateTracker.queueCommand({
           name: commandName,
           args: [color]
         })
@@ -2096,7 +2096,7 @@ class App extends Component {
         let interval = setting.get('board.analysis_interval').toString()
 
         coord = await new Promise(async resolve => {
-          await syncer.controller.sendCommand(
+          await syncer.stateTracker.queueCommand(
             {name: commandName, args: [color, interval]},
             ({line}) => {
               if (!line.startsWith('play ')) return
@@ -2277,7 +2277,7 @@ class App extends Component {
     let interval = setting.get('board.analysis_interval').toString()
 
     try {
-      syncer.controller.sendCommand({
+      syncer.stateTracker.queueCommand({
         name: commandName,
         args: [color, interval]
       })
