@@ -188,8 +188,8 @@ export class EnginePeerList extends Component {
         h(ToolBarButton, {
           icon: './node_modules/@primer/octicons/build/svg/zap.svg',
           tooltip: !engineGameOngoing
-            ? t('Start Engine vs. Engine Game')
-            : t('Stop Game'),
+            ? t('Start Engine vs. Engine Game (F5)')
+            : t('Stop Game (F5)'),
           checked: !!engineGameOngoing,
           onClick: this.handleStartStopGameButtonClick
         })

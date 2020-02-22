@@ -3122,7 +3122,6 @@ class App extends Component {
         {type: 'separator'},
         {
           label: t('S&ynchronize'),
-          accelerator: 'F6',
           click: () => {
             this.syncEngine(
               syncerId,
@@ -3133,7 +3132,6 @@ class App extends Component {
         },
         {
           label: t('&Generate Move'),
-          accelerator: 'F10',
           click: async () => {
             this.generateMove(
               syncerId,
@@ -3147,7 +3145,6 @@ class App extends Component {
           label: t('Set as &Analyzer'),
           type: 'checkbox',
           checked: this.state.analyzingEngineSyncerId === syncerId,
-          accelerator: 'F4',
           click: () => {
             if (this.state.analyzingEngineSyncerId === syncerId) {
               this.stopAnalysis()

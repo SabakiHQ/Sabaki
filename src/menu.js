@@ -12,7 +12,6 @@ const setting = isRenderer
 
 const sabaki = isRenderer ? window.sabaki : null
 const dialog = isRenderer ? require('./modules/dialog') : null
-const gametree = isRenderer ? require('./modules/gametree') : null
 
 let toggleSetting = key => setting.set(key, !setting.get(key))
 let selectTool = tool => (
@@ -23,11 +22,7 @@ let treePosition = () => [
   sabaki.state.treePosition
 ]
 
-let menu = null
-
-exports.build = function(props = {}) {
-  let {disableAll = false, disableGameNavigation = false} = props
-
+exports.get = function({disableAll = false, disableGameLoading = false} = {}) {
   let data = [
     {
       id: 'file',
@@ -36,7 +31,7 @@ exports.build = function(props = {}) {
         {
           label: t('menu.file', '&New'),
           accelerator: 'CmdOrCtrl+N',
-          enabled: !disableGameNavigation,
+          enabled: !disableGameLoading,
           click: () => sabaki.newFile({playSound: true, showInfo: true})
         },
         {
@@ -49,7 +44,7 @@ exports.build = function(props = {}) {
         {
           label: t('menu.file', '&Open…'),
           accelerator: 'CmdOrCtrl+O',
-          enabled: !disableGameNavigation,
+          enabled: !disableGameLoading,
           click: () => sabaki.loadFile()
         },
         {
@@ -68,7 +63,7 @@ exports.build = function(props = {}) {
           submenu: [
             {
               label: t('menu.file', '&Load SGF'),
-              enabled: !disableGameNavigation,
+              enabled: !disableGameLoading,
               click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
             },
             {
@@ -90,7 +85,7 @@ exports.build = function(props = {}) {
         {
           label: t('menu.file', '&Manage Games…'),
           accelerator: 'CmdOrCtrl+Shift+M',
-          enabled: !disableGameNavigation,
+          enabled: !disableGameLoading,
           click: () => sabaki.openDrawer('gamechooser')
         },
         {type: 'separator'},
@@ -419,6 +414,22 @@ exports.build = function(props = {}) {
               showLeftSidebar: !showLeftSidebar
             }))
           }
+        },
+        {type: 'separator'},
+        {
+          label: t('menu.engines', 'Toggle &Analysis'),
+          accelerator: 'F4',
+          click: () => {}
+        },
+        {
+          label: t('menu.engines', 'Start Engine vs. Engine &Game'),
+          accelerator: 'F5',
+          click: () => {}
+        },
+        {
+          label: t('menu.engines', 'Generate &Move'),
+          accelerator: 'F10',
+          click: () => {}
         }
       ]
     },
@@ -794,10 +805,5 @@ exports.build = function(props = {}) {
     return menu
   }
 
-  menu = processMenu(data)
-  return menu
-}
-
-exports.get = function(props) {
-  return exports.build(props)
+  return processMenu(data)
 }
