@@ -42,7 +42,7 @@ let defaults = {
   'autoscroll.diff': 10,
   'autoscroll.max_interval': 200,
   'autoscroll.min_interval': 50,
-  'board.analysis_interval': 100,
+  'board.analysis_interval': 50,
   'board.variation_instant_replay': false,
   'board.variation_replay_interval': 500,
   'cleanmarkup.annotations': false,
@@ -147,6 +147,7 @@ let defaults = {
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
+  'setting.overwrite.v0.43.3': ['board.analysis_interval'],
   'sgf.comment_properties': [
     'C',
     'N',
