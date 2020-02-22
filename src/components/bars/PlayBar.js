@@ -134,7 +134,8 @@ export default class PlayBar extends Component {
         ),
         ' ',
 
-        playerRanks[0] &&
+        engineSyncers[0] == null &&
+          playerRanks[0] &&
           h(
             'span',
             {class: 'rank'},
@@ -144,14 +145,16 @@ export default class PlayBar extends Component {
           ),
         ' ',
 
+        engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
+        ' ',
+
         h(
           'span',
           {
             class: classNames('name', {engine: engineSyncers[0] != null}),
             title: engineSyncers[0] != null && t('Engine')
           },
-          engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
-          ' ',
+
           engineSyncers[0] == null
             ? playerNames[0] || t('Black')
             : engineSyncers[0].engine.name
@@ -189,13 +192,15 @@ export default class PlayBar extends Component {
           },
           engineSyncers[1] == null
             ? playerNames[1] || t('White')
-            : engineSyncers[1].engine.name,
-          ' ',
-          engineSyncers[1] != null && playerBusy[1] && h(TextSpinner)
+            : engineSyncers[1].engine.name
         ),
         ' ',
 
-        playerRanks[1] &&
+        engineSyncers[1] != null && playerBusy[1] && h(TextSpinner),
+        ' ',
+
+        engineSyncers[1] == null &&
+          playerRanks[1] &&
           h(
             'span',
             {class: 'rank'},

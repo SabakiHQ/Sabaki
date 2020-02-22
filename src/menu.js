@@ -34,7 +34,8 @@ exports.get = function(props = {}) {
     showSiblings,
     showGameGraph,
     showCommentBox,
-    showLeftSidebar
+    showLeftSidebar,
+    engineGameOngoing
   } = props
 
   let data = [
@@ -435,17 +436,66 @@ exports.get = function(props = {}) {
         {
           label: t('menu.engines', 'Toggle &Analysis'),
           accelerator: 'F4',
-          click: () => {}
+          click: () => {
+            let syncerId =
+              sabaki.lastAnalyzingEngineSyncerId ||
+              sabaki.state.attachedEngineSyncers
+                .filter(syncer =>
+                  syncer.commands.some(x =>
+                    setting.get('engines.analyze_commands').includes(x)
+                  )
+                )
+                .map(syncer => syncer.id)[0]
+
+            if (syncerId == null) {
+              dialog.showMessageBox(
+                t(
+                  'menu.engines',
+                  'None of the attached engines support analysis.'
+                ),
+                'info'
+              )
+              return
+            }
+
+            if (sabaki.state.analyzingEngineSyncerId == null) {
+              sabaki.startAnalysis(syncerId)
+            } else {
+              sabaki.stopAnalysis()
+            }
+          }
         },
         {
-          label: t('menu.engines', 'Start Engine vs. Engine &Game'),
+          label: !engineGameOngoing
+            ? t('menu.engines', 'Start Engine vs. Engine &Game')
+            : t('menu.engines', 'Stop Engine vs. Engine &Game'),
           accelerator: 'F5',
-          click: () => {}
+          click: () => {
+            sabaki.startStopEngineGame(...treePosition())
+          }
         },
         {
           label: t('menu.engines', 'Generate &Move'),
           accelerator: 'F10',
-          click: () => {}
+          click: () => {
+            let sign = sabaki.getPlayer(...treePosition())
+            let syncerId =
+              sign > 0
+                ? sabaki.state.blackEngineSyncerId
+                : sabaki.state.whiteEngineSyncerId
+
+            if (syncerId == null) {
+              dialog.showMessageBox(
+                t(
+                  'menu.engines',
+                  'Please assign an engine to the player first.'
+                ),
+                'info'
+              )
+            }
+
+            sabaki.generateMove(syncerId, ...treePosition())
+          }
         }
       ]
     },

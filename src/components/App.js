@@ -2227,6 +2227,14 @@ class App extends Component {
     if (syncer == null) return
   }
 
+  async startStopEngineGame(tree, id) {
+    if (this.state.engineGameOngoing != null) {
+      sabaki.stopEngineGame()
+    } else {
+      sabaki.startEngineGame(tree, id)
+    }
+  }
+
   async analyzeMove(tree, id) {
     let sign = this.getPlayer(tree, id)
     let color = sign > 0 ? 'B' : 'W'
@@ -2238,9 +2246,9 @@ class App extends Component {
     let synced = await this.syncEngine(syncer.id, tree, id)
     if (!synced) return
 
-    let commandName = ['analyze', 'lz-analyze'].find(x =>
-      syncer.commands.includes(x)
-    )
+    let commandName = setting
+      .get('engines.analyze_commands')
+      .find(x => syncer.commands.includes(x))
     if (commandName == null) return
 
     let interval = setting.get('board.analysis_interval').toString()
@@ -2264,8 +2272,9 @@ class App extends Component {
     if (syncer == null) return
 
     if (
-      !syncer.commands.includes('analyze') &&
-      !syncer.commands.includes('lz-analyze')
+      setting
+        .get('engines.analyze_commands')
+        .every(command => !syncer.commands.includes(command))
     ) {
       dialog.showMessageBox(
         t('The selected engine does not support analysis.'),
@@ -2274,13 +2283,13 @@ class App extends Component {
       return
     }
 
-    this.setState({
-      analyzingEngineSyncerId: syncerId
-    })
+    this.lastAnalyzingEngineSyncerId = syncerId
+    this.setState({analyzingEngineSyncerId: syncerId})
 
     if (
-      this.state.blackEngineSyncerId !== syncerId &&
-      this.state.whiteEngineSyncerId !== syncer
+      !this.state.engineGameOngoing ||
+      (this.state.blackEngineSyncerId !== syncerId &&
+        this.state.whiteEngineSyncerId !== syncerId)
     ) {
       let tree = this.state.gameTrees[this.state.gameIndex]
       let {treePosition} = this.state
@@ -3210,7 +3219,8 @@ class App extends Component {
         showSiblings: state.showSiblings,
         showGameGraph: state.showGameGraph,
         showCommentBox: state.showCommentBox,
-        showLeftSidebar: state.showLeftSidebar
+        showLeftSidebar: state.showLeftSidebar,
+        engineGameOngoing: state.engineGameOngoing
       }),
 
       h(TripleSplitContainer, {
