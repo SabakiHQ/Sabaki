@@ -5,24 +5,38 @@ const isRenderer = remote != null
 const {app} = isRenderer ? remote : require('electron')
 
 const i18n = require('./i18n')
-const t = i18n.t
+const dialog = isRenderer ? require('./modules/dialog') : null
 const setting = isRenderer
   ? remote.require('./setting')
   : nativeRequire('./setting')
 
-const sabaki = isRenderer ? window.sabaki : null
-const dialog = isRenderer ? require('./modules/dialog') : null
+const t = i18n.t
 
-let toggleSetting = key => setting.set(key, !setting.get(key))
-let selectTool = tool => (
-  sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
-)
-let treePosition = () => [
-  sabaki.state.gameTrees[sabaki.state.gameIndex],
-  sabaki.state.treePosition
-]
+exports.get = function(props = {}) {
+  const sabaki = isRenderer ? window.sabaki : null
 
-exports.get = function({disableAll = false, disableGameLoading = false} = {}) {
+  let toggleSetting = key => setting.set(key, !setting.get(key))
+  let selectTool = tool => (
+    sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
+  )
+  let treePosition = () => [
+    sabaki.state.gameTrees[sabaki.state.gameIndex],
+    sabaki.state.treePosition
+  ]
+
+  let {
+    disableAll,
+    disableGameLoading,
+    showCoordinates,
+    showMoveNumbers,
+    showMoveColorization,
+    showNextMoves,
+    showSiblings,
+    showGameGraph,
+    showCommentBox,
+    showLeftSidebar
+  } = props
+
   let data = [
     {
       id: 'file',
@@ -407,7 +421,9 @@ exports.get = function({disableAll = false, disableGameLoading = false} = {}) {
       label: t('menu.engines', 'Eng&ines'),
       submenu: [
         {
-          label: t('menu.engines', 'Toggle &GTP Console'),
+          label: t('menu.engines', 'Show &Engines Sidebar'),
+          type: 'checkbox',
+          checked: !!showLeftSidebar,
           click: () => {
             toggleSetting('view.show_leftsidebar')
             sabaki.setState(({showLeftSidebar}) => ({
@@ -480,38 +496,38 @@ exports.get = function({disableAll = false, disableGameLoading = false} = {}) {
           label: t('menu.view', 'Show &Coordinates'),
           accelerator: 'CmdOrCtrl+Shift+C',
           type: 'checkbox',
-          checked: setting.get('view.show_coordinates'),
+          checked: !!showCoordinates,
           click: () => toggleSetting('view.show_coordinates')
         },
         {
           label: t('menu.view', 'Show Move N&umbers'),
           type: 'checkbox',
-          checked: setting.get('view.show_move_numbers'),
+          checked: !!showMoveNumbers,
           click: () => toggleSetting('view.show_move_numbers')
         },
         {
           label: t('menu.view', 'Show Move Colori&zation'),
           type: 'checkbox',
-          checked: setting.get('view.show_move_colorization'),
+          checked: !!showMoveColorization,
           click: () => toggleSetting('view.show_move_colorization')
         },
         {
           label: t('menu.view', 'Show &Next Moves'),
           type: 'checkbox',
-          checked: setting.get('view.show_next_moves'),
+          checked: !!showNextMoves,
           click: () => toggleSetting('view.show_next_moves')
         },
         {
           label: t('menu.view', 'Show &Sibling Variations'),
           type: 'checkbox',
-          checked: setting.get('view.show_siblings'),
+          checked: !!showSiblings,
           click: () => toggleSetting('view.show_siblings')
         },
         {type: 'separator'},
         {
           label: t('menu.view', 'Show Game &Tree'),
           type: 'checkbox',
-          checked: setting.get('view.show_graph'),
+          checked: !!showGameGraph,
           accelerator: 'CmdOrCtrl+T',
           click: () => {
             toggleSetting('view.show_graph')
@@ -523,7 +539,7 @@ exports.get = function({disableAll = false, disableGameLoading = false} = {}) {
         {
           label: t('menu.view', 'Show Co&mments'),
           type: 'checkbox',
-          checked: setting.get('view.show_comments'),
+          checked: !!showCommentBox,
           accelerator: 'CmdOrCtrl+Shift+T',
           click: () => {
             toggleSetting('view.show_comments')

@@ -7,7 +7,6 @@ class BusyScreen extends Component {
   componentWillReceiveProps({show}) {
     if (show === this.props.show) return
 
-    sabaki.buildMenu()
     clearTimeout(this.busyId)
 
     if (show) {

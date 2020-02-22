@@ -9,6 +9,7 @@ import uuid from 'uuid/v4'
 
 import {TripleSplitContainer} from './helpers/TripleSplitContainer.js'
 import ThemeManager from './ThemeManager.js'
+import MainMenu from './MainMenu.js'
 import MainView from './MainView.js'
 import {LeftSidebar} from './LeftSidebar.js'
 import {Sidebar} from './Sidebar.js'
@@ -183,8 +184,6 @@ class App extends Component {
       if (setting.get('file.show_reload_warning')) {
         this.askForReload()
       }
-
-      this.buildMenu()
     })
 
     this.window.on('resize', () => {
@@ -201,28 +200,6 @@ class App extends Component {
         }
       }, 1000)
     })
-
-    // Handle main menu items
-
-    let menuData = require('../menu').get()
-
-    let handleMenuClicks = menu => {
-      for (let item of menu) {
-        if ('click' in item) {
-          ipcRenderer.on(`menu-click-${item.id}`, () => {
-            if (!this.state.showMenuBar) this.window.setMenuBarVisibility(false)
-            dialog.closeInputBox()
-            item.click()
-          })
-        }
-
-        if ('submenu' in item) {
-          handleMenuClicks(item.submenu)
-        }
-      }
-    }
-
-    handleMenuClicks(menuData)
 
     // Handle mouse wheel
 
@@ -353,7 +330,7 @@ class App extends Component {
 
     if (document.title !== title) document.title = title
 
-    // Handle full screen & menu bar
+    // Handle full screen & show menu bar
 
     if (prevState.fullScreen !== this.state.fullScreen) {
       if (this.state.fullScreen)
@@ -415,7 +392,7 @@ class App extends Component {
     }
   }
 
-  updateSettingState(key = null, {buildMenu = true} = {}) {
+  updateSettingState(key = null) {
     let data = {
       'app.zoom_factor': 'zoomFactor',
       'view.show_menubar': 'showMenuBar',
@@ -433,13 +410,11 @@ class App extends Component {
     }
 
     if (key == null) {
-      for (let k in data) this.updateSettingState(k, {buildMenu: false})
-      this.buildMenu()
+      for (let k in data) this.updateSettingState(k)
       return
     }
 
     if (key in data) {
-      if (buildMenu) this.buildMenu()
       this.setState({[data[key]]: setting.get(key)})
     }
   }
@@ -449,12 +424,6 @@ class App extends Component {
   }
 
   // User Interface
-
-  buildMenu() {
-    ipcRenderer.send('build-menu', {
-      disableAll: this.state.busy > 0
-    })
-  }
 
   handleMainLayoutSplitChange({beginSideSize, endSideSize}) {
     this.setState(
@@ -3231,6 +3200,18 @@ class App extends Component {
       },
 
       h(ThemeManager),
+      h(MainMenu, {
+        showMenuBar: state.showMenuBar,
+        disableAll: state.busy > 0,
+        showCoordinates: state.showCoordinates,
+        showMoveNumbers: state.showMoveNumbers,
+        showMoveColorization: state.showMoveColorization,
+        showNextMoves: state.showNextMoves,
+        showSiblings: state.showSiblings,
+        showGameGraph: state.showGameGraph,
+        showCommentBox: state.showCommentBox,
+        showLeftSidebar: state.showLeftSidebar
+      }),
 
       h(TripleSplitContainer, {
         id: 'mainlayout',
