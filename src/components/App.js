@@ -2015,11 +2015,6 @@ class App extends Component {
       syncer => syncer.id === syncerId
     )
 
-    if (syncer.controller.busy) {
-      // A hack to make Leela Zero stop analyzing
-      syncer.controller.process.stdin.write('\n')
-    }
-
     if (syncer != null) {
       try {
         await syncer.sync(tree, id)
@@ -2053,7 +2048,7 @@ class App extends Component {
         ) || 'genmove'
 
       if (commandName === 'genmove') {
-        let response = await syncer.stateTracker.queueCommand({
+        let response = await syncer.queueCommand({
           name: commandName,
           args: [color]
         })
@@ -2065,7 +2060,7 @@ class App extends Component {
         let interval = setting.get('board.analysis_interval').toString()
 
         coord = await new Promise(async resolve => {
-          await syncer.stateTracker.queueCommand(
+          await syncer.queueCommand(
             {name: commandName, args: [color, interval]},
             ({line}) => {
               if (!line.startsWith('play ')) return
@@ -2254,7 +2249,7 @@ class App extends Component {
     let interval = setting.get('board.analysis_interval').toString()
 
     try {
-      syncer.stateTracker.queueCommand({
+      syncer.queueCommand({
         name: commandName,
         args: [color, interval]
       })

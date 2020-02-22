@@ -225,9 +225,22 @@ export class EngineSyncer extends EventEmitter {
     await this.controller.stop(quitTimeout)
   }
 
+  abortCommand() {
+    if (this.controller.busy) {
+      // A hack to make Leela Zero stop analyzing
+      this.controller.process.stdin.write('\n')
+    }
+  }
+
+  async queueCommand(...args) {
+    this.abortCommand()
+    return await this.stateTracker.queueCommand(...args)
+  }
+
   async sync(tree, id) {
     if (id === this.treePosition) return
 
+    this.abortCommand()
     let board = getBoard(tree, id)
 
     if (!board.isValid()) {

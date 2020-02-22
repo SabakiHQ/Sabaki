@@ -58,7 +58,7 @@ export class LeftSidebar extends Component {
       )
 
       if (syncer != null) {
-        syncer.stateTracker.queueCommand(command)
+        syncer.queueCommand(command)
       }
     }
   }
