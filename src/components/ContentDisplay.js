@@ -170,23 +170,21 @@ class ContentDisplay extends Component {
 
   render({tag, content, children}) {
     return content != null
-      ? h(
-          tag,
-          Object.assign(
-            {
-              ref: el => (this.element = el),
-              dangerouslySetInnerHTML: {
-                __html: htmlify(
-                  content
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                )
-              }
-            },
-            this.props
-          )
-        )
+      ? h(tag, {
+          ref: el => (this.element = el),
+          dangerouslySetInnerHTML: {
+            __html: htmlify(
+              content
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+            )
+          },
+          ...this.props,
+          tag: undefined,
+          content: undefined,
+          children: undefined
+        })
       : h(
           tag,
           Object.assign(
