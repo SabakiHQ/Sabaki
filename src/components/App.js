@@ -3105,6 +3105,10 @@ class App extends Component {
         },
         {
           label: t('&Generate Move'),
+          enabled:
+            !this.state.engineGameOngoing ||
+            (this.state.blackEngineSyncerId !== syncerId &&
+              this.state.whiteEngineSyncerId !== syncerId),
           click: async () => {
             this.generateMove(
               syncerId,

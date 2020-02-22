@@ -477,6 +477,7 @@ exports.get = function(props = {}) {
         {
           label: t('menu.engines', 'Generate &Move'),
           accelerator: 'F10',
+          enabled: !engineGameOngoing,
           click: () => {
             let sign = sabaki.getPlayer(...treePosition())
             let syncerId =
