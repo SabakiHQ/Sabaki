@@ -1584,7 +1584,7 @@ class App extends Component {
       this.setState({mode: 'play'})
     }
 
-    let {gameTrees, gameCurrents} = this.state
+    let {gameTrees, gameCurrents, blockedGuesses} = this.state
     let gameIndex = gameTrees.findIndex(t => t.root.id === tree.root.id)
     let currents = gameCurrents[gameIndex]
 
@@ -1601,7 +1601,7 @@ class App extends Component {
 
     this.setState({
       playVariation: null,
-      blockedGuesses: [],
+      blockedGuesses: id !== this.state.treePosition ? [] : blockedGuesses,
       gameTrees: gameTrees.map((t, i) => (i !== gameIndex ? t : tree)),
       gameIndex,
       treePosition: id
