@@ -3151,6 +3151,18 @@ class App extends Component {
                 state.whiteEngineSyncerId === syncerId ? null : syncerId
             }))
           }
+        },
+        {type: 'separator'},
+        {
+          label: t('&Go to Engine'),
+          click: () => {
+            if (syncer.treePosition != null) {
+              this.setCurrentTreePosition(
+                this.state.gameTrees[this.state.gameIndex],
+                syncer.treePosition
+              )
+            }
+          }
         }
       ],
       x,
