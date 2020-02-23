@@ -58,7 +58,7 @@ class AutoplayBar extends Component {
       if (!node) return this.stopAutoplay()
 
       if (node.data.B == null && node.data.W == null) {
-        sabaki.setCurrentTreePosition(...tp)
+        sabaki.setCurrentTreePosition(gameTree, treePosition)
       } else {
         let vertex = sgf.parseVertex(
           node.data.B != null ? node.data.B[0] : node.data.W[0]

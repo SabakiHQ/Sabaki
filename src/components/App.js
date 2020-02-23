@@ -1577,10 +1577,9 @@ class App extends Component {
   setCurrentTreePosition(tree, id, {clearCache = false} = {}) {
     if (clearCache) gametree.clearBoardCache()
 
-    if (
-      ['scoring', 'estimator'].includes(this.state.mode) &&
-      id !== this.state.treePosition
-    ) {
+    let navigated = id !== this.state.treePosition
+
+    if (['scoring', 'estimator'].includes(this.state.mode) && navigated) {
       this.setState({mode: 'play'})
     }
 
@@ -1601,7 +1600,7 @@ class App extends Component {
 
     this.setState({
       playVariation: null,
-      blockedGuesses: id !== this.state.treePosition ? [] : blockedGuesses,
+      blockedGuesses: navigated ? [] : blockedGuesses,
       gameTrees: gameTrees.map((t, i) => (i !== gameIndex ? t : tree)),
       gameIndex,
       treePosition: id
@@ -1609,7 +1608,7 @@ class App extends Component {
 
     this.recordHistory({prevGameIndex, prevTreePosition})
 
-    this.events.emit('navigate')
+    if (navigated) this.events.emit('navigate')
 
     // Continuous analysis
 
