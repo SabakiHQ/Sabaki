@@ -97,12 +97,12 @@ class EnginePeerListItem extends Component {
           'div',
           {
             class: 'icon player',
-            title: t('Play as Black')
+            title: t('Plays as Black')
           },
           h('img', {
             height: 14,
             src: './img/ui/black.svg',
-            alt: t('Play as Black')
+            alt: t('Plays as Black')
           })
         ),
 
@@ -111,12 +111,12 @@ class EnginePeerListItem extends Component {
           'div',
           {
             class: 'icon player',
-            title: t('Play as White')
+            title: t('Plays as White')
           },
           h('img', {
             height: 14,
             src: './img/ui/white.svg',
-            alt: t('Play as White')
+            alt: t('Plays as White')
           })
         )
     )
