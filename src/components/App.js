@@ -164,6 +164,25 @@ class App extends Component {
     )
   }
 
+  get inferredState() {
+    let self = this
+
+    return {
+      get gameTree() {
+        return self.state.gameTrees[self.state.gameIndex]
+      },
+      get showSidebar() {
+        return self.state.showGameGraph || self.state.showCommentBox
+      },
+      get gameInfo() {
+        return self.getGameInfo(this.gameTree)
+      },
+      get currentPlayer() {
+        return self.getPlayer(this.gameTree, self.state.treePosition)
+      }
+    }
+  }
+
   componentDidMount() {
     window.addEventListener('contextmenu', evt => {
       evt.preventDefault()
@@ -3174,8 +3193,7 @@ class App extends Component {
   render(_, state) {
     // Calculate some inferred values
 
-    let {gameTrees, gameIndex, treePosition} = state
-    let tree = gameTrees[gameIndex]
+    let tree = this.inferredState.gameTree
     let scoreBoard, areaMap
 
     if (['scoring', 'estimator'].includes(state.mode)) {
@@ -3197,16 +3215,7 @@ class App extends Component {
           : influence.areaMap(scoreBoard.signMap)
     }
 
-    this.inferredState = {
-      gameTree: tree,
-      showSidebar: state.showGameGraph || state.showCommentBox,
-      gameInfo: this.getGameInfo(tree),
-      currentPlayer: this.getPlayer(tree, treePosition),
-      scoreBoard,
-      areaMap
-    }
-
-    state = Object.assign(state, this.inferredState)
+    state = {...state, ...this.inferredState, scoreBoard, areaMap}
 
     return h(
       'section',
