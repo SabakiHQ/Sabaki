@@ -14,19 +14,15 @@ function nodeMerger(node, data) {
   )
     return null
 
-  return Object.assign({}, data, node.data)
+  return {...data, ...node.data}
 }
 
 exports.new = function(options = {}) {
-  return new GameTree(
-    Object.assign(
-      {
-        getId: helper.getId,
-        merger: nodeMerger
-      },
-      options
-    )
-  )
+  return new GameTree({
+    ...options,
+    getId: helper.getId,
+    merger: nodeMerger
+  })
 }
 
 exports.getRootProperty = function(tree, property, fallback = null) {
