@@ -1,15 +1,21 @@
-const fs = require('fs')
-const {shell, remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {existsSync} from 'fs'
+import {shell, remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {join} from 'path'
+import copy from 'recursive-copy'
+import rimraf from 'rimraf'
+import {v1 as uuid} from 'uuid'
+import natsort from 'natsort'
 
-const Drawer = require('./Drawer')
+import i18n from '../../i18n.js'
+import {showOpenDialog, showMessageBox} from '../../modules/dialog.js'
+import {noop, isWritableDirectory} from '../../modules/helper.js'
+import gtplogger from '../../modules/gtplogger.js'
+import Drawer from './Drawer.js'
 
-const t = require('../../i18n').context('PreferencesDrawer')
-const dialog = require('../../modules/dialog')
-const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const gtplogger = require('../../modules/gtplogger')
+const t = i18n.context('PreferencesDrawer')
 
 class PreferencesItem extends Component {
   constructor(props) {
@@ -20,7 +26,7 @@ class PreferencesItem extends Component {
     }
 
     this.handleChange = evt => {
-      let {onChange = helper.noop} = this.props
+      let {onChange = noop} = this.props
       let {checked} = evt.currentTarget
 
       setting.set(this.props.id, checked)
@@ -216,7 +222,7 @@ class PathInputItem extends Component {
           ? ['openDirectory', 'createDirectory']
           : ['openFile']
 
-      dialog.showOpenDialog(
+      showOpenDialog(
         {
           properties: dialogProperties
         },
@@ -270,8 +276,8 @@ class PathInputItem extends Component {
 
         value &&
           !(this.props.chooseDirectory
-            ? helper.isWritableDirectory(value)
-            : fs.existsSync(value)) &&
+            ? isWritableDirectory(value)
+            : existsSync(value)) &&
           h(
             'a',
             {class: 'invalid'},
@@ -312,21 +318,18 @@ class ThemesTab extends Component {
     this.handleUninstallButton = evt => {
       evt.preventDefault()
 
-      let result = dialog.showMessageBox(
+      let result = showMessageBox(
         t('Do you really want to uninstall this theme?'),
         'warning',
         [t('Uninstall'), t('Cancel')],
         1
       )
-
       if (result === 1) return
 
-      let rimraf = require('rimraf')
       let {path} = setting.getThemes()[this.state.currentTheme]
 
       rimraf(path, err => {
-        if (err)
-          return dialog.showMessageBox(t('Uninstallation failed.'), 'error')
+        if (err) return showMessageBox(t('Uninstallation failed.'), 'error')
 
         setting.loadThemes()
         setting.set('theme.current', null)
@@ -336,7 +339,7 @@ class ThemesTab extends Component {
     this.handleInstallButton = evt => {
       evt.preventDefault()
 
-      dialog.showOpenDialog(
+      showOpenDialog(
         {
           properties: ['openFile'],
           filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
@@ -344,14 +347,10 @@ class ThemesTab extends Component {
         ({result}) => {
           if (!result || result.length === 0) return
 
-          let {join} = require('path')
-          let copy = require('recursive-copy')
-          let uuid = require('uuid/v1')
           let id = uuid()
 
           copy(result[0], join(setting.themesDirectory, id), err => {
-            if (err)
-              return dialog.showMessageBox(t('Installation failed.'), 'error')
+            if (err) return showMessageBox(t('Installation failed.'), 'error')
 
             setting.loadThemes()
             setting.set('theme.current', id)
@@ -499,7 +498,7 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {onChange = helper.noop} = this.props
+      let {onChange = noop} = this.props
       let element = evt.currentTarget
       let data = Object.assign({}, this.props, {
         [element.name]: element.value
@@ -509,7 +508,7 @@ class EngineItem extends Component {
     }
 
     this.handleBrowseButtonClick = () => {
-      dialog.showOpenDialog(
+      showOpenDialog(
         {
           properties: ['openFile'],
           filters: [{name: t('All Files'), extensions: ['*']}]
@@ -517,14 +516,14 @@ class EngineItem extends Component {
         ({result}) => {
           if (!result || result.length === 0) return
 
-          let {id, name, args, onChange = helper.noop} = this.props
+          let {id, name, args, onChange = noop} = this.props
           onChange({id, name, args, path: result[0]})
         }
       )
     }
 
     this.handleRemoveButtonClick = () => {
-      let {onRemove = helper.noop} = this.props
+      let {onRemove = noop} = this.props
       onRemove(this.props)
     }
   }
@@ -699,7 +698,7 @@ class EnginesTab extends Component {
   }
 }
 
-class PreferencesDrawer extends Component {
+export default class PreferencesDrawer extends Component {
   constructor() {
     super()
 
@@ -724,11 +723,9 @@ class PreferencesDrawer extends Component {
     // On closing
 
     if (prevProps.show && !this.props.show) {
-      let natsort = require('natsort').default
-      let cmp = natsort({insensitive: true})
-
       // Sort engines
 
+      let cmp = natsort({insensitive: true})
       let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
       setting.set('engines.list', engines)
@@ -814,5 +811,3 @@ class PreferencesDrawer extends Component {
     )
   }
 }
-
-module.exports = PreferencesDrawer

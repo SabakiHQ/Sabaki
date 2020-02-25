@@ -2,7 +2,7 @@ import {remote} from 'electron'
 import EventEmitter from 'events'
 import {dirname, resolve} from 'path'
 import argvsplit from 'argv-split'
-import uuid from 'uuid/v4'
+import {v4 as uuid} from 'uuid'
 
 import {fromDimensions as newBoard} from '@sabaki/go-board'
 import {Controller, ControllerStateTracker, Command} from '@sabaki/gtp'

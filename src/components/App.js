@@ -5,7 +5,7 @@ import {ipcRenderer, remote} from 'electron'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
 import fixPath from 'fix-path'
-import uuid from 'uuid/v4'
+import {v4 as uuid} from 'uuid'
 
 import {TripleSplitContainer} from './helpers/TripleSplitContainer.js'
 import ThemeManager from './ThemeManager.js'
