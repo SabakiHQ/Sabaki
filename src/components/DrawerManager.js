@@ -1,14 +1,14 @@
-const {h, Component} = require('preact')
-const gametree = require('../modules/gametree')
+import {h, Component} from 'preact'
+import {getRootProperty} from '../modules/gametree.js'
 
-const InfoDrawer = require('./drawers/InfoDrawer')
-const ScoreDrawer = require('./drawers/ScoreDrawer')
-const PreferencesDrawer = require('./drawers/PreferencesDrawer')
-const GameChooserDrawer = require('./drawers/GameChooserDrawer')
-const CleanMarkupDrawer = require('./drawers/CleanMarkupDrawer')
-const AdvancedPropertiesDrawer = require('./drawers/AdvancedPropertiesDrawer')
+import InfoDrawer from './drawers/InfoDrawer.js'
+import ScoreDrawer from './drawers/ScoreDrawer.js'
+import PreferencesDrawer from './drawers/PreferencesDrawer.js'
+import GameChooserDrawer from './drawers/GameChooserDrawer.js'
+import CleanMarkupDrawer from './drawers/CleanMarkupDrawer.js'
+import AdvancedPropertiesDrawer from './drawers/AdvancedPropertiesDrawer.js'
 
-class DrawerManager extends Component {
+export default class DrawerManager extends Component {
   constructor() {
     super()
 
@@ -67,6 +67,9 @@ class DrawerManager extends Component {
 
     gameInfo,
     currentPlayer,
+    attachedEngineSyncers,
+    blackEngineSyncerId,
+    whiteEngineSyncerId,
 
     scoringMethod,
     scoreBoard,
@@ -83,7 +86,10 @@ class DrawerManager extends Component {
         show: openDrawer === 'info',
         gameTree,
         gameInfo,
-        currentPlayer
+        currentPlayer,
+        attachedEngineSyncers,
+        blackEngineSyncerId,
+        whiteEngineSyncerId
       }),
 
       h(PreferencesDrawer, {
@@ -120,13 +126,11 @@ class DrawerManager extends Component {
         areaMap,
         board: scoreBoard,
         method: scoringMethod,
-        komi: +gametree.getRootProperty(gameTree, 'KM', 0),
-        handicap: +gametree.getRootProperty(gameTree, 'HA', 0),
+        komi: +getRootProperty(gameTree, 'KM', 0),
+        handicap: +getRootProperty(gameTree, 'HA', 0),
 
         onSubmitButtonClick: this.handleScoreSubmit
       })
     )
   }
 }
-
-module.exports = DrawerManager
