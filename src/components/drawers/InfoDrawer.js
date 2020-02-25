@@ -190,8 +190,7 @@ export default class InfoDrawer extends Component {
       let autoName =
         this.state.syncerEngines[index] == null
           ? this.state[nameKey] == null
-          : this.state[nameKey] ===
-            this.state.syncerEngines[index].engine.name.trim()
+          : this.state[nameKey] === this.state.syncerEngines[index].engine.name
 
       let template = [
         {
@@ -199,25 +198,27 @@ export default class InfoDrawer extends Component {
           type: 'checkbox',
           checked: this.state.syncerEngines[index] == null,
           click: () => {
-            this.setState(s => ({
-              syncerEngines: Object.assign(s.syncerEngines, {[index]: null}),
-              [nameKey]: autoName ? null : s[nameKey]
+            this.setState(state => ({
+              syncerEngines: Object.assign(state.syncerEngines, {
+                [index]: null
+              }),
+              [nameKey]: autoName ? null : state[nameKey]
             }))
           }
         },
         {type: 'separator'},
         ...attachedEngineSyncers.map(syncer => ({
-          label: syncer.engine.name.trim() || t('(Unnamed Engine)'),
+          label: syncer.engine.name || t('(Unnamed Engine)'),
           type: 'checkbox',
           checked:
             this.state.syncerEngines[index] != null &&
             this.state.syncerEngines[index].syncer === syncer,
           click: () => {
-            this.setState(s => ({
-              syncerEngines: Object.assign(s.syncerEngines, {
+            this.setState(state => ({
+              syncerEngines: Object.assign(state.syncerEngines, {
                 [index]: {syncer, engine: syncer.engine}
               }),
-              [nameKey]: autoName ? syncer.engine.name.trim() : s[nameKey]
+              [nameKey]: autoName ? syncer.engine.name : state[nameKey]
             }))
           }
         })),
@@ -225,18 +226,18 @@ export default class InfoDrawer extends Component {
         {
           label: t('Attach Engine'),
           submenu: engines.map(engine => ({
-            label: engine.name.trim() || t('(Unnamed Engine)'),
+            label: engine.name || t('(Unnamed Engine)'),
             type: 'checkbox',
             checked:
               this.state.syncerEngines[index] != null &&
               this.state.syncerEngines[index].syncer == null &&
               this.state.syncerEngines[index].engine === engine,
             click: () => {
-              this.setState(s => ({
-                syncerEngines: Object.assign(s.syncerEngines, {
+              this.setState(state => ({
+                syncerEngines: Object.assign(state.syncerEngines, {
                   [index]: {engine}
                 }),
-                [nameKey]: autoName ? engine.name.trim() : s[nameKey]
+                [nameKey]: autoName ? engine.name : state[nameKey]
               }))
             }
           }))
