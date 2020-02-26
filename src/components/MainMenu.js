@@ -1,6 +1,6 @@
 import {Component} from 'preact'
 import {ipcRenderer, remote} from 'electron'
-import dialog from '../modules/dialog.js'
+import * as dialog from '../modules/dialog.js'
 import menu from '../menu.js'
 
 export default class MainMenu extends Component {

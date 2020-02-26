@@ -6,7 +6,7 @@ import {BoundedGoban} from '@sabaki/shudan'
 
 import gametree from '../modules/gametree.js'
 import gobantransformer from '../modules/gobantransformer.js'
-import helper from '../modules/helper.js'
+import * as helper from '../modules/helper.js'
 
 const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'

@@ -1,26 +1,29 @@
-const {h, Component} = require('preact')
-const dialog = require('../../modules/dialog')
-const helper = require('../../modules/helper')
+import {h, Component} from 'preact'
 
-const Drawer = require('./Drawer')
-const t = require('../../i18n').context('AdvancedPropertiesDrawer')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {showInputBox, showMessageBox} from '../../modules/dialog.js'
+import {noop} from '../../modules/helper.js'
 
+import Drawer from './Drawer.js'
+
+const t = i18n.context('AdvancedPropertiesDrawer')
 const blockedProperties = ['AP', 'CA']
 const clearCacheProperties = ['AE', 'AW', 'AB', 'SZ', 'W', 'B']
 
-class PropertyItem extends Component {
+export default class PropertyItem extends Component {
   constructor(props) {
     super(props)
 
     this.handleRemoveButtonClick = evt => {
       evt.preventDefault()
 
-      let {property, index, onRemove = helper.noop} = this.props
+      let {property, index, onRemove = noop} = this.props
       onRemove({property, index})
     }
 
     this.handleChange = evt => {
-      let {property, index, onChange = helper.noop} = this.props
+      let {property, index, onChange = noop} = this.props
       onChange({property, index, value: evt.currentTarget.value})
     }
 
@@ -29,7 +32,7 @@ class PropertyItem extends Component {
         if (!evt.shiftKey) {
           evt.preventDefault()
 
-          let {onSubmit = helper.noop} = this.props
+          let {onSubmit = noop} = this.props
           onSubmit()
         }
       }
@@ -109,16 +112,14 @@ class AdvancedPropertiesDrawer extends Component {
       evt.preventDefault()
 
       let {value} = await new Promise(resolve =>
-        dialog.showInputBox(t('Enter property name'), resolve, () =>
-          resolve({})
-        )
+        showInputBox(t('Enter property name'), resolve, () => resolve({}))
       )
 
       if (value == null) return
       let property = value.toUpperCase()
 
       if (blockedProperties.includes(property)) {
-        dialog.showMessageBox(t('This property has been blocked.'), 'warning')
+        showMessageBox(t('This property has been blocked.'), 'warning')
         return
       }
 
@@ -235,5 +236,3 @@ class AdvancedPropertiesDrawer extends Component {
     )
   }
 }
-
-module.exports = AdvancedPropertiesDrawer

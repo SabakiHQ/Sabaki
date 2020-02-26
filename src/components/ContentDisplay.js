@@ -1,8 +1,10 @@
-const {remote, shell} = require('electron')
-const {h, Component} = require('preact')
+import {remote, shell} from 'electron'
+import {h, Component} from 'preact'
 
-const t = require('../i18n').context('ContentDisplay')
-const gametree = require('../modules/gametree')
+import i18n from '../i18n.js'
+import sabaki from '../modules/sabaki.js'
+
+const t = i18n.context('ContentDisplay')
 const setting = remote.require('./setting')
 
 function htmlify(input) {
@@ -45,7 +47,7 @@ function htmlify(input) {
   return input
 }
 
-class ContentDisplay extends Component {
+export default class ContentDisplay extends Component {
   constructor(props) {
     super(props)
 
@@ -65,17 +67,11 @@ class ContentDisplay extends Component {
     }
 
     let getVariationInfo = target => {
-      let {gameTrees, gameIndex, treePosition} = sabaki.state
-      let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
+      let {board, currentPlayer} = sabaki.inferredState
       let currentVertex = board.currentVertex
       let currentVertexSign = currentVertex && board.get(currentVertex)
       let {color} = target.dataset
-      let sign =
-        color === ''
-          ? sabaki.getPlayer(...treePosition)
-          : color === 'b'
-          ? 1
-          : -1
+      let sign = color === '' ? currentPlayer : color === 'b' ? 1 : -1
       let moves = target.dataset.moves
         .split(/\s+/)
         .map(x => board.parseVertex(x))
@@ -129,8 +125,7 @@ class ContentDisplay extends Component {
     }
 
     this.handleCoordMouseEnter = evt => {
-      let {gameTrees, gameIndex, treePosition} = sabaki.state
-      let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
+      let {board} = sabaki.inferredState
       let vertex = board.parseVertex(evt.currentTarget.innerText)
 
       sabaki.setState({highlightVertices: [vertex]})
@@ -197,5 +192,3 @@ class ContentDisplay extends Component {
         )
   }
 }
-
-module.exports = ContentDisplay

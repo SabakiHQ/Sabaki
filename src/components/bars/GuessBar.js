@@ -1,5 +1,5 @@
 const {h, Component} = require('preact')
-const Bar = require('./Bar')
+const Bar = require('./Bar').default
 const t = require('../../i18n').context('GuessBar')
 
 class GuessBar extends Component {

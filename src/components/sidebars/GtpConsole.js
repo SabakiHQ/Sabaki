@@ -2,6 +2,7 @@ import {h, Component} from 'preact'
 import classNames from 'classnames'
 import {Command} from '@sabaki/gtp'
 
+import sabaki from '../../modules/sabaki.js'
 import ContentDisplay from '../ContentDisplay.js'
 import TextSpinner from '../TextSpinner.js'
 import {noop, popupMenu} from '../../modules/helper.js'

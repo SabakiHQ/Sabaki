@@ -1,6 +1,7 @@
 import {h, Component} from 'preact'
 import classnames from 'classnames'
 
+import sabaki from '../../modules/sabaki.js'
 import i18n from '../../i18n.js'
 import TextSpinner from '../TextSpinner.js'
 import ToolBar, {ToolBarButton} from '../ToolBar.js'
@@ -149,10 +150,7 @@ export class EnginePeerList extends Component {
     }
 
     this.handleStartStopGameButtonClick = evt => {
-      sabaki.startStopEngineGame(
-        sabaki.inferredState.gameTree,
-        sabaki.state.treePosition
-      )
+      sabaki.startStopEngineGame(sabaki.state.treePosition)
     }
   }
 
@@ -184,8 +182,8 @@ export class EnginePeerList extends Component {
         h(ToolBarButton, {
           icon: './node_modules/@primer/octicons/build/svg/zap.svg',
           tooltip: !engineGameOngoing
-            ? t('Start Engine vs. Engine Game (F5)')
-            : t('Stop Engine vs. Engine Game (F5)'),
+            ? t('Start Engine vs. Engine Game')
+            : t('Stop Engine vs. Engine Game'),
           checked: !!engineGameOngoing,
           onClick: this.handleStartStopGameButtonClick
         })

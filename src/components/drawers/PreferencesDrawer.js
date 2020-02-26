@@ -5,13 +5,14 @@ import classNames from 'classnames'
 import {join} from 'path'
 import copy from 'recursive-copy'
 import rimraf from 'rimraf'
-import {v1 as uuid} from 'uuid'
+import {v4 as uuid} from 'uuid'
 import natsort from 'natsort'
 
 import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
 import {showOpenDialog, showMessageBox} from '../../modules/dialog.js'
 import {noop, isWritableDirectory} from '../../modules/helper.js'
-import gtplogger from '../../modules/gtplogger.js'
+import * as gtplogger from '../../modules/gtplogger.js'
 import Drawer from './Drawer.js'
 
 const setting = remote.require('./setting')

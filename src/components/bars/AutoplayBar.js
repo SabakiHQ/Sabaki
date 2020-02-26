@@ -1,15 +1,19 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const sgf = require('@sabaki/sgf')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {parseVertex} from '@sabaki/sgf'
 
-const t = require('../../i18n').context('AutoplayBar')
-const Bar = require('./Bar')
+import sabaki from '../../modules/sabaki.js'
+import i18n from '../../i18n.js'
+
+import Bar from './Bar.js'
+
+const t = i18n.context('AutoplayBar')
 const setting = remote.require('./setting')
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 
-class AutoplayBar extends Component {
+export default class AutoplayBar extends Component {
   constructor() {
     super()
 
@@ -60,7 +64,7 @@ class AutoplayBar extends Component {
       if (node.data.B == null && node.data.W == null) {
         sabaki.setCurrentTreePosition(gameTree, treePosition)
       } else {
-        let vertex = sgf.parseVertex(
+        let vertex = parseVertex(
           node.data.B != null ? node.data.B[0] : node.data.W[0]
         )
         sabaki.makeMove(vertex, {player: node.data.B ? 1 : -1})
@@ -112,5 +116,3 @@ class AutoplayBar extends Component {
     )
   }
 }
-
-module.exports = AutoplayBar

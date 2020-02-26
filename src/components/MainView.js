@@ -8,6 +8,7 @@ import AutoplayBar from './bars/AutoplayBar.js'
 import ScoringBar from './bars/ScoringBar.js'
 import FindBar from './bars/FindBar.js'
 
+import sabaki from '../modules/sabaki.js'
 import gametree from '../modules/gametree.js'
 
 export default class MainView extends Component {
@@ -16,7 +17,7 @@ export default class MainView extends Component {
 
     this.handleTogglePlayer = () => {
       let {gameTree, treePosition, currentPlayer} = this.props
-      sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
+      sabaki.setPlayer(treePosition, -currentPlayer)
     }
 
     this.handleToolButtonClick = evt => {

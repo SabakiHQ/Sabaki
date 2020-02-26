@@ -1,9 +1,12 @@
-const {h, Component} = require('preact')
-const Bar = require('./Bar')
-const helper = require('../../modules/helper')
-const t = require('../../i18n').context('FindBar')
+import {h, Component} from 'preact'
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {noop} from '../../modules/helper.js'
+import Bar from './Bar.js'
 
-class FindBar extends Component {
+const t = i18n.context('FindBar')
+
+export default class FindBar extends Component {
   constructor() {
     super()
 
@@ -15,7 +18,7 @@ class FindBar extends Component {
       evt.preventDefault()
 
       let step = evt.currentTarget.classList.contains('next') ? 1 : -1
-      let {onButtonClick = helper.noop} = this.props
+      let {onButtonClick = noop} = this.props
 
       evt.step = step
       onButtonClick(evt)
@@ -69,5 +72,3 @@ class FindBar extends Component {
     )
   }
 }
-
-module.exports = FindBar

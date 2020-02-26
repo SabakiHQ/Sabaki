@@ -1,9 +1,9 @@
 import {h, Component} from 'preact'
 import classNames from 'classnames'
-import {remote} from 'electron'
 
 import i18n from '../../i18n.js'
-import helper from '../../modules/helper.js'
+import sabaki from '../../modules/sabaki.js'
+import * as helper from '../../modules/helper.js'
 import TextSpinner from '../TextSpinner.js'
 
 const t = i18n.context('PlayBar')

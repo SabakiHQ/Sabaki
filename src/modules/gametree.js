@@ -32,6 +32,118 @@ exports.getRootProperty = function(tree, property, fallback = null) {
   return result === '' ? fallback : result
 }
 
+exports.getGameInfo = function(tree) {
+  let komi = exports.getRootProperty(tree, 'KM')
+  if (komi != null && !isNaN(komi)) komi = +komi
+  else komi = null
+
+  let size = exports.getRootProperty(tree, 'SZ')
+  if (size == null) {
+    size = [19, 19]
+  } else {
+    let s = size.toString().split(':')
+    size = [+s[0], +s[s.length - 1]]
+  }
+
+  let handicap = exports.getRootProperty(tree, 'HA', 0)
+  handicap = Math.max(1, Math.min(9, Math.round(handicap)))
+  if (handicap === 1) handicap = 0
+
+  let playerNames = ['B', 'W'].map(
+    x =>
+      exports.getRootProperty(tree, `P${x}`) ||
+      exports.getRootProperty(tree, `${x}T`)
+  )
+
+  let playerRanks = ['BR', 'WR'].map(x => exports.getRootProperty(tree, x))
+
+  return {
+    playerNames,
+    playerRanks,
+    blackName: playerNames[0],
+    blackRank: playerRanks[0],
+    whiteName: playerNames[1],
+    whiteRank: playerRanks[1],
+    gameName: exports.getRootProperty(tree, 'GN'),
+    eventName: exports.getRootProperty(tree, 'EV'),
+    gameComment: exports.getRootProperty(tree, 'GC'),
+    date: exports.getRootProperty(tree, 'DT'),
+    result: exports.getRootProperty(tree, 'RE'),
+    komi,
+    handicap,
+    size
+  }
+}
+
+exports.setGameInfo = function(tree, data) {
+  let newTree = tree.mutate(draft => {
+    if ('size' in data) {
+      // Update board size
+
+      if (data.size) {
+        let value = data.size
+        value = value.map(x =>
+          isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x))
+        )
+
+        if (value[0] === value[1]) value = value[0].toString()
+        else value = value.join(':')
+
+        draft.updateProperty(draft.root.id, 'SZ', [value])
+      } else {
+        draft.removeProperty(draft.root.id, 'SZ')
+      }
+    }
+  })
+
+  return newTree.mutate(draft => {
+    let props = {
+      blackName: 'PB',
+      blackRank: 'BR',
+      whiteName: 'PW',
+      whiteRank: 'WR',
+      gameName: 'GN',
+      eventName: 'EV',
+      gameComment: 'GC',
+      date: 'DT',
+      result: 'RE',
+      komi: 'KM',
+      handicap: 'HA'
+    }
+
+    for (let key in props) {
+      if (!(key in data)) continue
+      let value = data[key]
+
+      if (value && value.toString() !== '') {
+        if (key === 'komi') {
+          if (isNaN(value)) value = 0
+        } else if (key === 'handicap') {
+          let board = gametree.getBoard(newTree, newTree.root.id)
+          let stones = board.getHandicapPlacement(+value)
+
+          value = stones.length
+          if (value <= 1) {
+            draft.removeProperty(draft.root.id, props[key])
+            draft.removeProperty(draft.root.id, 'AB')
+            continue
+          }
+
+          draft.updateProperty(
+            draft.root.id,
+            'AB',
+            stones.map(sgf.stringifyVertex)
+          )
+        }
+
+        draft.updateProperty(draft.root.id, props[key], [value.toString()])
+      } else {
+        draft.removeProperty(draft.root.id, props[key])
+      }
+    }
+  })
+}
+
 exports.getMatrixDict = function(tree) {
   let matrix = [...Array(tree.getHeight() + 1)].map(_ => [])
   let dict = {}

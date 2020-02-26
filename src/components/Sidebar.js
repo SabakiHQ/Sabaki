@@ -1,5 +1,6 @@
 import {remote} from 'electron'
 import {h, Component} from 'preact'
+import sabaki from '../modules/sabaki.js'
 
 import {SplitContainer} from './helpers/SplitContainer.js'
 import WinrateGraph from './sidebars/WinrateGraph.js'
@@ -26,7 +27,7 @@ export class Sidebar extends Component {
       if (button === 0) {
         sabaki.setCurrentTreePosition(gameTree, treePosition)
       } else {
-        sabaki.openNodeMenu(gameTree, treePosition, {x, y})
+        sabaki.openNodeMenu(treePosition, {x, y})
       }
     }
 
@@ -76,7 +77,7 @@ export class Sidebar extends Component {
     }
 
     this.handleCommentInput = evt => {
-      sabaki.setComment(this.props.gameTree, this.props.treePosition, evt)
+      sabaki.setComment(this.props.treePosition, evt)
     }
 
     this.componentWillReceiveProps(props)

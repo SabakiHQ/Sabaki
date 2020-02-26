@@ -1,10 +1,13 @@
-const {remote} = require('electron')
-const winston = require('winston')
-const path = require('path')
+import {remote} from 'electron'
+import winston from 'winston'
+import {resolve, join} from 'path'
+
+import i18n from '../i18n.js'
+import {showMessageBox} from './dialog.js'
+import * as helper from './helper.js'
+
+const t = i18n.context('gtplogger')
 const setting = remote.require('./setting')
-const dialog = require('./dialog')
-const helper = require('./helper')
-const t = require('../i18n').context('gtplogger')
 
 let filename = null
 
@@ -17,20 +20,17 @@ let winstonLogger = winston.createLogger({
   exitOnError: false
 })
 
-exports.write = function(stream) {
+export function write(stream) {
   let enabled = setting.get('gtp.console_log_enabled')
   if (!enabled) return
 
   let typeText =
-    stream.type === 'stderr'
-      ? '  (err)'
-      : stream.type === 'stdin'
-      ? '   (in)'
-      : stream.type === 'stdout'
-      ? '  (out)'
-      : stream.type === 'meta'
-      ? ' (meta)'
-      : ''
+    {
+      stderr: '  (err)',
+      stdin: '   (in)',
+      stdout: '  (out)',
+      meta: ' (meta)'
+    }[stream.type] || ''
 
   try {
     winstonLogger.log(
@@ -60,7 +60,7 @@ let timestamp = function() {
 
 let validate = function() {
   if (!helper.isWritableDirectory(setting.get('gtp.console_log_path'))) {
-    dialog.showMessageBox(
+    showMessageBox(
       t(
         [
           'You have an invalid log folder for GTP console logging in your settings.',
@@ -76,7 +76,7 @@ let validate = function() {
   return true
 }
 
-exports.updatePath = function() {
+export function updatePath() {
   // Return false when we did not update the log path but wanted to
 
   let enabled = setting.get('gtp.console_log_enabled')
@@ -88,21 +88,20 @@ exports.updatePath = function() {
   let logPath = setting.get('gtp.console_log_path')
   if (logPath == null) return false
 
-  let newDir = path.resolve(logPath)
+  let newDir = resolve(logPath)
 
   if (filename == null) {
     // Generate a new log file name
 
-    let pid = sabaki.window.webContents.getOSProcessId()
+    let pid = remote.getCurrentWebContents().getOSProcessId()
     filename = `sabaki_${timestamp()}_${pid}.log`
   }
 
   try {
-    let newPath = path.join(newDir, filename)
+    let newPath = join(newDir, filename)
     let matching = winstonLogger.transports.find(
       transport =>
-        transport.filename === filename &&
-        path.resolve(transport.dirname) === newDir
+        transport.filename === filename && resolve(transport.dirname) === newDir
     )
 
     if (matching != null) {
@@ -112,8 +111,7 @@ exports.updatePath = function() {
 
     let notMatching = winstonLogger.transports.find(
       transport =>
-        transport.filename !== filename ||
-        path.resolve(transport.dirname) !== newDir
+        transport.filename !== filename || resolve(transport.dirname) !== newDir
     )
 
     winstonLogger.add(new winston.transports.File({filename: newPath}))
@@ -128,12 +126,12 @@ exports.updatePath = function() {
   }
 }
 
-exports.rotate = function() {
+export function rotate() {
   // On next engine attach, we will use a new log file
   filename = null
 }
 
-exports.close = function() {
+export function close() {
   try {
     winstonLogger.close()
   } catch (err) {}

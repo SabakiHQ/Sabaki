@@ -1,4 +1,5 @@
 import {h, Component} from 'preact'
+import sabaki from '../modules/sabaki.js'
 import {getRootProperty} from '../modules/gametree.js'
 
 import InfoDrawer from './drawers/InfoDrawer.js'

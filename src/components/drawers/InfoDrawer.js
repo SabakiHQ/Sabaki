@@ -3,6 +3,8 @@ import classNames from 'classnames'
 import {h, Component} from 'preact'
 import Pikaday from 'pikaday'
 import {parseDates, stringifyDates} from '@sabaki/sgf'
+
+import sabaki from '../../modules/sabaki.js'
 import {
   popupMenu,
   shallowEquals,
@@ -79,7 +81,7 @@ export default class InfoDrawer extends Component {
         data.size = this.state.size
       }
 
-      sabaki.setGameInfo(this.props.gameTree, data)
+      sabaki.setGameInfo(data)
       sabaki.closeDrawer()
 
       this.state.syncerEngines.forEach((syncerEngine, i) => {

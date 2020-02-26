@@ -5,6 +5,7 @@ const isRenderer = remote != null
 const {app} = isRenderer ? remote : require('electron')
 
 const i18n = require('./i18n')
+const sabaki = isRenderer ? require('./modules/sabaki').default : null
 const dialog = isRenderer ? require('./modules/dialog') : null
 const setting = isRenderer
   ? remote.require('./setting')
@@ -13,16 +14,10 @@ const setting = isRenderer
 const t = i18n.t
 
 exports.get = function(props = {}) {
-  const sabaki = isRenderer ? window.sabaki : null
-
   let toggleSetting = key => setting.set(key, !setting.get(key))
   let selectTool = tool => (
     sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
   )
-  let treePosition = () => [
-    sabaki.state.gameTrees[sabaki.state.gameIndex],
-    sabaki.state.treePosition
-  ]
 
   let {
     disableAll,
@@ -119,8 +114,8 @@ exports.get = function(props = {}) {
           label: t('menu.play', '&Toggle Player'),
           click: () =>
             sabaki.setPlayer(
-              ...treePosition(),
-              -sabaki.getPlayer(...treePosition())
+              sabaki.state.treePosition,
+              -sabaki.getPlayer(sabaki.state.treePosition)
             )
         },
         {type: 'separator'},
@@ -236,33 +231,33 @@ exports.get = function(props = {}) {
         {type: 'separator'},
         {
           label: t('menu.edit', '&Copy Variation'),
-          click: () => sabaki.copyVariation(...treePosition())
+          click: () => sabaki.copyVariation(sabaki.state.treePosition)
         },
         {
           label: t('menu.edit', 'Cu&t Variation'),
-          click: () => sabaki.cutVariation(...treePosition())
+          click: () => sabaki.cutVariation(sabaki.state.treePosition)
         },
         {
           label: t('menu.edit', '&Paste Variation'),
-          click: () => sabaki.pasteVariation(...treePosition())
+          click: () => sabaki.pasteVariation(sabaki.state.treePosition)
         },
         {type: 'separator'},
         {
           label: t('menu.edit', 'Make Main &Variation'),
-          click: () => sabaki.makeMainVariation(...treePosition())
+          click: () => sabaki.makeMainVariation(sabaki.state.treePosition)
         },
         {
           label: t('menu.edit', 'Shift &Left'),
-          click: () => sabaki.shiftVariation(...treePosition(), -1)
+          click: () => sabaki.shiftVariation(sabaki.state.treePosition, -1)
         },
         {
           label: t('menu.edit', 'Shift Ri&ght'),
-          click: () => sabaki.shiftVariation(...treePosition(), 1)
+          click: () => sabaki.shiftVariation(sabaki.state.treePosition, 1)
         },
         {type: 'separator'},
         {
           label: t('menu.edit', '&Flatten'),
-          click: () => sabaki.flattenVariation(...treePosition())
+          click: () => sabaki.flattenVariation(sabaki.state.treePosition)
         },
         {
           label: t('menu.edit', '&Remove Node'),
@@ -270,11 +265,11 @@ exports.get = function(props = {}) {
             process.platform === 'darwin'
               ? 'CmdOrCtrl+Backspace'
               : 'CmdOrCtrl+Delete',
-          click: () => sabaki.removeNode(...treePosition())
+          click: () => sabaki.removeNode(sabaki.state.treePosition)
         },
         {
           label: t('menu.edit', 'Remove &Other Variations'),
-          click: () => sabaki.removeOtherVariations(...treePosition())
+          click: () => sabaki.removeOtherVariations(sabaki.state.treePosition)
         }
       ]
     },
@@ -315,8 +310,10 @@ exports.get = function(props = {}) {
           label: t('menu.find', 'Toggle &Hotspot'),
           accelerator: 'CmdOrCtrl+B',
           click: () =>
-            sabaki.setComment(...treePosition(), {
-              hotspot: treePosition()[0].get(treePosition()[1]).data.HO == null
+            sabaki.setComment(sabaki.state.treePosition, {
+              hotspot:
+                sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
+                  .data.HO == null
             })
         },
         {
@@ -471,7 +468,7 @@ exports.get = function(props = {}) {
             : t('menu.engines', 'Stop Engine vs. Engine &Game'),
           accelerator: 'F5',
           click: () => {
-            sabaki.startStopEngineGame(...treePosition())
+            sabaki.startStopEngineGame(sabaki.state.treePosition)
           }
         },
         {
@@ -479,7 +476,7 @@ exports.get = function(props = {}) {
           accelerator: 'F10',
           enabled: !engineGameOngoing,
           click: () => {
-            let sign = sabaki.getPlayer(...treePosition())
+            let sign = sabaki.getPlayer(sabaki.state.treePosition)
             let syncerId =
               sign > 0
                 ? sabaki.state.blackEngineSyncerId
@@ -495,7 +492,7 @@ exports.get = function(props = {}) {
               )
             }
 
-            sabaki.generateMove(syncerId, ...treePosition())
+            sabaki.generateMove(syncerId, sabaki.state.treePosition)
           }
         }
       ]
@@ -721,7 +718,7 @@ exports.get = function(props = {}) {
         },
         {
           label: t('menu.developer', 'Toggle &Developer Tools'),
-          click: () => remote.getCurrentWindow().webContents.toggleDevTools(),
+          click: () => sabaki.window.webContents.toggleDevTools(),
           neverDisable: true
         },
         {type: 'separator'},

@@ -1,7 +1,7 @@
 const {h, Component} = require('preact')
 const classNames = require('classnames')
 
-const Bar = require('./Bar')
+const Bar = require('./Bar').default
 const helper = require('../../modules/helper')
 const t = require('../../i18n').context('EditBar')
 

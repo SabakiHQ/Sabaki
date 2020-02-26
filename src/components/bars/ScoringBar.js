@@ -1,10 +1,13 @@
-const {h, Component} = require('preact')
-const Bar = require('./Bar')
+import {h, Component} from 'preact'
+import Bar from './Bar'
 
-const t = require('../../i18n').context('ScoringBar')
-const helper = require('../../modules/helper')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {getScore} from '../../modules/helper.js'
 
-class ScoringBar extends Component {
+const t = i18n.context('ScoringBar')
+
+export default class ScoringBar extends Component {
   constructor() {
     super()
 
@@ -12,8 +15,7 @@ class ScoringBar extends Component {
   }
 
   render({type, method, areaMap, scoreBoard, komi, handicap}) {
-    let score =
-      scoreBoard && helper.getScore(scoreBoard, areaMap, {komi, handicap})
+    let score = scoreBoard && getScore(scoreBoard, areaMap, {komi, handicap})
     let result =
       score && (method === 'area' ? score.areaScore : score.territoryScore)
 
@@ -44,5 +46,3 @@ class ScoringBar extends Component {
     )
   }
 }
-
-module.exports = ScoringBar

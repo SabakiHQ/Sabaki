@@ -1,16 +1,19 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const MiniGoban = require('../MiniGoban')
-const Drawer = require('./Drawer')
+import MiniGoban from '../MiniGoban.js'
+import Drawer from './Drawer.js'
 
-const t = require('../../i18n').context('GameChooserDrawer')
-const dialog = require('../../modules/dialog')
-const fileformats = require('../../modules/fileformats')
-const gametree = require('../../modules/gametree')
-const gamesort = require('../../modules/gamesort')
-const helper = require('../../modules/helper')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import * as dialog from '../../modules/dialog.js'
+import * as fileformats from '../../modules/fileformats/index.js'
+import * as gametree from '../../modules/gametree.js'
+import * as gamesort from '../../modules/gamesort.js'
+import * as helper from '../../modules/helper.js'
+
+const t = i18n.context('GameChooserDrawer')
 const setting = remote.require('./setting')
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')
@@ -55,7 +58,7 @@ class GameListItem extends Component {
     insertBefore,
     insertAfter
   }) {
-    let gameInfo = sabaki.getGameInfo(tree)
+    let gameInfo = gametree.getGameInfo(tree)
     let {
       gameName,
       eventName,
@@ -102,7 +105,7 @@ class GameListItem extends Component {
   }
 }
 
-class GameChooserDrawer extends Component {
+export default class GameChooserDrawer extends Component {
   constructor() {
     super()
 
@@ -429,7 +432,7 @@ class GameChooserDrawer extends Component {
         return [tree, index]
       })
       .filter(([tree]) => {
-        let gameInfo = sabaki.getGameInfo(tree)
+        let gameInfo = gametree.getGameInfo(tree)
         let data = Object.keys(gameInfo).map(x => gameInfo[x])
 
         return data
@@ -608,5 +611,3 @@ class GameChooserDrawer extends Component {
     )
   }
 }
-
-module.exports = GameChooserDrawer

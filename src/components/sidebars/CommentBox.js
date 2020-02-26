@@ -1,14 +1,17 @@
-const {remote, shell} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const boardmatcher = require('@sabaki/boardmatcher')
-const sgf = require('@sabaki/sgf')
+import {remote, shell} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import boardmatcher from '@sabaki/boardmatcher'
+import sgf from '@sabaki/sgf'
 
-const MarkdownContentDisplay = require('../MarkdownContentDisplay')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import gametree from '../../modules/gametree.js'
+import {vertexEquals, typographer, noop} from '../../modules/helper.js'
 
-const t = require('../../i18n').context('CommentBox')
-const gametree = require('../../modules/gametree')
-const helper = require('../../modules/helper')
+import MarkdownContentDisplay from '../MarkdownContentDisplay.js'
+
+const t = i18n.context('CommentBox')
 const setting = remote.require('./setting')
 
 let commentsCommitDelay = setting.get('comments.commit_delay')
@@ -46,8 +49,8 @@ class CommentTitle extends Component {
       title !== this.props.title ||
       gameTree !== this.props.gameTree ||
       treePosition !== this.props.treePosition ||
-      !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation) ||
-      !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
+      !vertexEquals(moveAnnotation, this.props.moveAnnotation) ||
+      !vertexEquals(positionAnnotation, this.props.positionAnnotation)
     )
   }
 
@@ -64,7 +67,7 @@ class CommentTitle extends Component {
       if (node.data.GN != null) result.push(node.data.GN[0])
 
       result = result.filter(x => x.trim() !== '').join(' — ')
-      if (result !== '') return helper.typographer(result)
+      if (result !== '') return typographer(result)
 
       let today = new Date()
       if (today.getDate() === 25 && today.getMonth() === 3)
@@ -219,7 +222,7 @@ class CommentTitle extends Component {
         'span',
         {},
         title !== ''
-          ? helper.typographer(title)
+          ? typographer(title)
           : showMoveInterpretation
           ? this.getCurrentMoveInterpretation()
           : ''
@@ -246,7 +249,7 @@ class CommentText extends Component {
   }
 }
 
-class CommentBox extends Component {
+export default class CommentBox extends Component {
   constructor(props) {
     super(props)
 
@@ -256,7 +259,7 @@ class CommentBox extends Component {
     }
 
     this.handleCommentInput = () => {
-      let {onCommentInput = helper.noop} = this.props
+      let {onCommentInput = noop} = this.props
 
       this.setState({
         title: this.titleInputElement.value,
@@ -274,9 +277,9 @@ class CommentBox extends Component {
 
     this.handleMenuButtonClick = () => {
       let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
-      let {gameTree, treePosition} = this.props
+      let {treePosition} = this.props
 
-      sabaki.openCommentMenu(gameTree, treePosition, {x: left, y: bottom})
+      sabaki.openCommentMenu(treePosition, {x: left, y: bottom})
     }
   }
 
@@ -315,7 +318,7 @@ class CommentBox extends Component {
       moveAnnotation,
       positionAnnotation,
 
-      onLinkClick = helper.noop
+      onLinkClick = noop
     },
     {title, comment}
   ) {
@@ -381,5 +384,3 @@ class CommentBox extends Component {
     )
   }
 }
-
-module.exports = CommentBox

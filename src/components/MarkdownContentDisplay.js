@@ -3,7 +3,7 @@ const breaks = require('remark-breaks')
 const helper = require('../modules/helper')
 
 const ReactMarkdown = require('react-markdown')
-const ContentDisplay = require('./ContentDisplay')
+const ContentDisplay = require('./ContentDisplay').default
 
 function typographer(children) {
   if (!Array.isArray(children)) {
