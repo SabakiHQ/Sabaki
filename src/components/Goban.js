@@ -42,8 +42,6 @@ export default class Goban extends Component {
         oldHandler(evt, originalVertex)
       }
     }
-
-    this.componentWillReceiveProps()
   }
 
   componentDidMount() {
@@ -62,6 +60,7 @@ export default class Goban extends Component {
     })
 
     this.resize()
+    this.componentWillReceiveProps()
   }
 
   componentDidUpdate() {

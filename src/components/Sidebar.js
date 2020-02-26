@@ -79,23 +79,12 @@ export class Sidebar extends Component {
     this.handleCommentInput = evt => {
       sabaki.setComment(this.props.treePosition, evt)
     }
-
-    this.componentWillReceiveProps(props)
   }
 
   shouldComponentUpdate(nextProps) {
     return (
       nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
     )
-  }
-
-  componentWillReceiveProps({gameTree, gameCurrents, gameIndex} = {}) {
-    // Get winrate data
-
-    let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
-    let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
-
-    this.setState({winrateData})
   }
 
   componentDidUpdate(_, {winrateData}) {
@@ -233,4 +222,17 @@ export class Sidebar extends Component {
       })
     )
   }
+}
+
+Sidebar.getDerivedStateFromProps = function({
+  gameTree,
+  gameCurrents,
+  gameIndex
+}) {
+  // Get winrate data
+
+  let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
+  let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
+
+  return {winrateData}
 }

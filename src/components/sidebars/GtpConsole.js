@@ -305,7 +305,9 @@ export class GtpConsole extends Component {
       ),
 
       h(ConsoleInput, {
-        ref: component => (this.inputElement = component.inputElement),
+        ref: component =>
+          (this.inputElement =
+            component == null ? null : component.inputElement),
 
         consoleLog,
         attachedEngine,

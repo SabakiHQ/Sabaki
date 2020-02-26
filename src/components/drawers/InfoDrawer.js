@@ -1,6 +1,6 @@
 import {remote} from 'electron'
 import classNames from 'classnames'
-import {h, Component} from 'preact'
+import {h, Component, toChildArray} from 'preact'
 import Pikaday from 'pikaday'
 import {parseDates, stringifyDates} from '@sabaki/sgf'
 
@@ -20,6 +20,8 @@ const setting = remote.require('./setting')
 
 class InfoDrawerItem extends Component {
   render({title, children}) {
+    children = toChildArray(children)
+
     return h(
       'li',
       {},

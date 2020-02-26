@@ -78,12 +78,13 @@ class EnginePeerListItem extends Component {
           )
         : h(TextSpinner),
 
-      h('span', {class: 'name'}, syncer.engine.name),
+      h('span', {key: 'name', class: 'name'}, syncer.engine.name),
 
       analyzing &&
         h(
           'div',
           {
+            key: 'analyzing',
             class: 'icon analyzing',
             title: t('Analyzer')
           },
@@ -97,6 +98,7 @@ class EnginePeerListItem extends Component {
         h(
           'div',
           {
+            key: 'player_1',
             class: 'icon player',
             title: t('Plays as Black')
           },
@@ -111,6 +113,7 @@ class EnginePeerListItem extends Component {
         h(
           'div',
           {
+            key: 'player_-1',
             class: 'icon player',
             title: t('Plays as White')
           },

@@ -195,7 +195,6 @@ class GameGraph extends Component {
     })
 
     this.remeasure()
-    this.componentWillReceiveProps()
   }
 
   shouldComponentUpdate({showGameGraph, height}) {

@@ -8,8 +8,6 @@ class Drawer extends Component {
     this.state = {
       hidecontent: props.show
     }
-
-    this.componentWillReceiveProps(props)
   }
 
   componentWillReceiveProps(nextProps) {
