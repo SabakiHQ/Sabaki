@@ -103,6 +103,7 @@
     "concurrently": "^5.1.0",
     "electron": "^8.0.1",
     "electron-builder": "^22.3.2",
+    "esm": "^3.2.25",
     "mocha": "^7.0.1",
     "onchange": "^6.1.0",
     "prettier": "1.19.1",
@@ -112,7 +113,7 @@
     "webpack-cli": "^3.3.11"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --require esm",
     "start": "electron ./",
     "bundle": "webpack --mode production",
     "build": "npm run bundle && electron-builder --dir",

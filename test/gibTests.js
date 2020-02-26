@@ -1,5 +1,5 @@
-const assert = require('assert')
-const {gib} = require('../src/modules/fileformats')
+import assert from 'assert'
+import {gib} from '../src/modules/fileformats/index.js'
 
 describe('gib', () => {
   describe('parse', () => {
