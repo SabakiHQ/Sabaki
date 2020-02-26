@@ -1,9 +1,11 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const Bar = require('./Bar').default
-const helper = require('../../modules/helper')
-const t = require('../../i18n').context('EditBar')
+import i18n from '../../i18n.js'
+import {noop} from '../../modules/helper.js'
+import Bar from './Bar.js'
+
+const t = i18n.context('fileformats')
 
 class EditBar extends Component {
   constructor() {
@@ -29,7 +31,7 @@ class EditBar extends Component {
   }
 
   handleToolButtonClick(evt) {
-    let {selectedTool, onToolButtonClick = helper.noop} = this.props
+    let {selectedTool, onToolButtonClick = noop} = this.props
 
     evt.tool = evt.currentTarget.dataset.id
 
@@ -88,4 +90,4 @@ class EditBar extends Component {
   }
 }
 
-module.exports = EditBar
+export default EditBar

@@ -2,8 +2,10 @@ const fs = require('fs')
 const Board = require('@sabaki/go-board')
 const sgf = require('@sabaki/sgf')
 
-const t = require('../../i18n').context('fileformats')
+const i18n = require('../../i18n')
 const gametree = require('../gametree')
+
+const t = i18n.context('fileformats')
 
 exports.meta = {
   name: t('wBaduk NGF'),

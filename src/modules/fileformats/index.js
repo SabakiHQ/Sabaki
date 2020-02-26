@@ -1,5 +1,7 @@
 const {extname} = require('path')
-const t = require('../../i18n').context('fileformats')
+const i18n = require('../../i18n')
+
+const t = i18n.context('fileformats')
 
 let sgf = require('./sgf')
 let ngf = require('./ngf')
