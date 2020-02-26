@@ -173,10 +173,8 @@ export default class PlayBar extends Component {
           height: 21,
           alt: t(
             p =>
-              `${
-                p.player < 0 ? 'White' : p.player > 0 ? 'Black' : p.player
-              } to play`,
-            {player: currentPlayer}
+              `${p.sign < 0 ? 'White' : p.sign > 0 ? 'Black' : p.sign} to play`,
+            {sign: currentPlayer}
           )
         })
       ),

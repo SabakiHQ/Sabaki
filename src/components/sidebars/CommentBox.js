@@ -69,10 +69,6 @@ class CommentTitle extends Component {
       result = result.filter(x => x.trim() !== '').join(' — ')
       if (result !== '') return typographer(result)
 
-      let today = new Date()
-      if (today.getDate() === 25 && today.getMonth() === 3)
-        return t('Happy Birthday, Sabaki!')
-
       return ''
     }
 
@@ -154,29 +150,21 @@ class CommentTitle extends Component {
 
   render({moveAnnotation: [ma, mv], positionAnnotation: [pa, pv], title}) {
     let moveData = {
-      '-1': [t('Bad move'), 'badmove'],
-      '0': [t('Doubtful move'), 'doubtfulmove'],
-      '1': [t('Interesting move'), 'interestingmove'],
-      '2': [t('Good move'), 'goodmove']
-    }
-
-    if (mv > 1) {
-      for (let s in moveData) {
-        moveData[s][0] = t('Very ' + moveData[s][0].toLowerCase())
-      }
+      '-1': [t('Bad move'), t('Very bad move'), 'badmove'],
+      '0': [t('Doubtful move'), t('Very doubtful move'), 'doubtfulmove'],
+      '1': [
+        t('Interesting move'),
+        t('Very interesting move'),
+        'interestingmove'
+      ],
+      '2': [t('Good move'), t('Very good move'), 'goodmove']
     }
 
     let positionData = {
-      '-1': [t('Good for white'), 'white'],
-      '0': [t('Even position'), 'balance'],
-      '1': [t('Good for black'), 'black'],
-      '-2': [t('Unclear position'), 'unclear']
-    }
-
-    if (pv > 1) {
-      for (let s in positionData) {
-        positionData[s][0] = t('Very ' + positionData[s][0].toLowerCase())
-      }
+      '-1': [t('Good for White'), t('Very good for White'), 'white'],
+      '0': [t('Even position'), t('Very even position'), 'balance'],
+      '1': [t('Good for Black'), t('Very good for Black'), 'black'],
+      '-2': [t('Unclear position'), t('Very unclear position'), 'unclear']
     }
 
     let showMoveInterpretation = setting.get(
@@ -197,16 +185,16 @@ class CommentTitle extends Component {
         width: 16,
         height: 16,
         class: 'positionstatus',
-        title: pa in positionData ? positionData[pa][0] : '',
-        src: pa in positionData ? `./img/ui/${positionData[pa][1]}.svg` : ''
+        title: pa in positionData ? positionData[pa][pv > 1 ? 1 : 0] : '',
+        src: pa in positionData ? `./img/ui/${positionData[pa][2]}.svg` : ''
       }),
 
       h('img', {
         width: 16,
         height: 16,
         class: 'movestatus',
-        title: ma in moveData ? moveData[ma][0] : '',
-        src: ma in moveData ? `./img/ui/${moveData[ma][1]}.svg` : ''
+        title: ma in moveData ? moveData[ma][mv > 1 ? 1 : 0] : '',
+        src: ma in moveData ? `./img/ui/${moveData[ma][2]}.svg` : ''
       }),
 
       h('img', {

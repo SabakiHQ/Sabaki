@@ -1122,7 +1122,7 @@ class Sabaki extends EventEmitter {
       draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
     })
 
-    this.makeMainVariation(newTree, treePosition)
+    this.makeMainVariation(treePosition)
     this.makeMove([-1, -1], {player})
 
     this.events.emit('resign', {player})
@@ -2138,17 +2138,17 @@ class Sabaki extends EventEmitter {
     let newTree = gametree.setGameInfo(this.inferredState.gameTree, data)
 
     if (data.size) {
-      setting.set('game.default_board_size', value)
+      setting.set('game.default_board_size', data.size.join(':'))
     }
 
     if (data.komi && data.komi.toString() !== '') {
-      setting.set('game.default_komi', isNaN(data.komi) ? 0 : data.komi)
+      setting.set('game.default_komi', isNaN(data.komi) ? 0 : +data.komi)
     }
 
     if (data.handicap && data.handicap.toString() !== '') {
       setting.set(
         'game.default_handicap',
-        isNaN(data.handicap) ? 0 : data.handicap
+        isNaN(data.handicap) ? 0 : +data.handicap
       )
     }
 

@@ -90,11 +90,7 @@ export default class ScoreDrawer extends Component {
       score && (method === 'area' ? score.areaScore : score.territoryScore)
 
     this.resultString =
-      result > 0
-        ? t(p => `B+${p.result}`, {result})
-        : result < 0
-        ? t(p => `W+${p.result}`, {result: -result})
-        : t('Draw')
+      result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : t('Draw')
 
     return h(
       Drawer,

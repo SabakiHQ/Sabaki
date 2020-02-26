@@ -32,9 +32,9 @@ export default class ScoringBar extends Component {
           !result
             ? ''
             : result > 0
-            ? t(p => `B+${p.result}`, {result})
+            ? `B+${result}`
             : result < 0
-            ? t(p => `W+${p.result}`, {result: -result})
+            ? `W+${-result}`
             : t('Draw')
         )
       ),

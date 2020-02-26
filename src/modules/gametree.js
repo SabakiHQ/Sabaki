@@ -119,7 +119,7 @@ exports.setGameInfo = function(tree, data) {
         if (key === 'komi') {
           if (isNaN(value)) value = 0
         } else if (key === 'handicap') {
-          let board = gametree.getBoard(newTree, newTree.root.id)
+          let board = exports.getBoard(newTree, newTree.root.id)
           let stones = board.getHandicapPlacement(+value)
 
           value = stones.length
