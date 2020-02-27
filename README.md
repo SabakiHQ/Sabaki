@@ -35,16 +35,6 @@ You're welcome to
 [contribute](https://github.com/SabakiHQ/Sabaki/blob/master/CONTRIBUTING.md) to
 this project.
 
-## Web Version
-
-Sabaki has a [`web`](https://github.com/SabakiHQ/Sabaki/tree/web) branch. It's a
-trimmed-down version of Sabaki that runs in any modern browser. You can try a
-[working demo here](https://sabaki.yichuanshen.de/web/).
-
-If you're looking for the code of the [website](http://sabaki.yichuanshen.de/),
-you can find it in
-[this repository](https://github.com/SabakiHQ/sabaki-website).
-
 ## Building & Tests
 
 See
