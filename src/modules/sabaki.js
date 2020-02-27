@@ -131,13 +131,13 @@ class Sabaki extends EventEmitter {
     this.emit('change', {change, callback})
   }
 
-  get inferredState() {
+  getInferredState(state) {
     let self = this
 
     return {
       get title() {
         let title = self.appName
-        let {representedFilename, gameIndex, gameTrees} = self.state
+        let {representedFilename, gameIndex, gameTrees} = state
         let t = i18n.context('app')
 
         if (representedFilename) title = basename(representedFilename)
@@ -157,21 +157,25 @@ class Sabaki extends EventEmitter {
         return title
       },
       get gameTree() {
-        return self.state.gameTrees[self.state.gameIndex]
+        return state.gameTrees[state.gameIndex]
       },
       get showSidebar() {
-        return self.state.showGameGraph || self.state.showCommentBox
+        return state.showGameGraph || state.showCommentBox
       },
       get gameInfo() {
         return self.getGameInfo()
       },
       get currentPlayer() {
-        return self.getPlayer(self.state.treePosition)
+        return self.getPlayer(state.treePosition)
       },
       get board() {
-        return gametree.getBoard(this.gameTree, self.state.treePosition)
+        return gametree.getBoard(this.gameTree, state.treePosition)
       }
     }
+  }
+
+  get inferredState() {
+    return this.getInferredState(this.state)
   }
 
   updateSettingState(key = null) {

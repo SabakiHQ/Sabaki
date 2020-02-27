@@ -203,7 +203,7 @@ class ConsoleInput extends Component {
         disabled,
         type: 'text',
         value: commandInputText,
-        placeholder: attachedEngine != null && `${attachedEngine.name}>`,
+        placeholder: attachedEngine != null ? `${attachedEngine.name}>` : '',
 
         onInput: this.handleInputChange,
         onKeyDown: this.handleKeyDown

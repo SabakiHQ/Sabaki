@@ -165,8 +165,6 @@ class App extends Component {
     })
 
     document.addEventListener('keyup', evt => {
-      if (this.autoscrollId == null) return
-
       if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
         sabaki.stopAutoscrolling()
       }
@@ -225,16 +223,19 @@ class App extends Component {
 
     // Handle sidebar showing/hiding
 
+    let {showSidebar: prevShowSidebar} = sabaki.getInferredState(prevState)
+
     if (
       prevState.showLeftSidebar !== sabaki.state.showLeftSidebar ||
-      prevState.showSidebar !== sabaki.state.showSidebar
+      prevShowSidebar !== sabaki.inferredState.showSidebar
     ) {
       let [width, height] = sabaki.window.getContentSize()
       let widthDiff = 0
 
-      if (prevState.showSidebar !== sabaki.state.showSidebar) {
+      if (prevShowSidebar !== sabaki.inferredState.showSidebar) {
         widthDiff +=
-          sabaki.state.sidebarWidth * (sabaki.state.showSidebar ? 1 : -1)
+          sabaki.state.sidebarWidth *
+          (sabaki.inferredState.showSidebar ? 1 : -1)
       }
 
       if (prevState.showLeftSidebar !== sabaki.state.showLeftSidebar) {

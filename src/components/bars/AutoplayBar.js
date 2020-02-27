@@ -74,8 +74,7 @@ export default class AutoplayBar extends Component {
       this.autoplayId = setTimeout(autoplay, this.state.secondsPerMove * 1000)
     }
 
-    this.setState({playing: true})
-    autoplay()
+    this.setState({playing: true}, autoplay)
   }
 
   stopAutoplay() {
