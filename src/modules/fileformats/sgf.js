@@ -1,12 +1,11 @@
-const sgf = require('@sabaki/sgf')
-
-const i18n = require('../../i18n')
-const {getId} = require('../helper')
-const gametree = require('../gametree')
+import * as sgf from '@sabaki/sgf'
+import i18n from '../../i18n.js'
+import {getId} from '../helper.js'
+import * as gametree from '../gametree.js'
 
 const t = i18n.context('fileformats')
 
-exports.meta = {
+export const meta = {
   name: t('Smart Game Format'),
   extensions: ['sgf', 'rsgf']
 }
@@ -14,12 +13,12 @@ exports.meta = {
 let toGameTrees = rootNodes =>
   rootNodes.map(root => gametree.new({getId, root}))
 
-exports.parse = function(content, onProgress = () => {}) {
+export function parse(content, onProgress = () => {}) {
   let rootNodes = sgf.parse(content, {getId, onProgress})
   return toGameTrees(rootNodes)
 }
 
-exports.parseFile = function(filename, onProgress = () => {}) {
+export function parseFile(filename, onProgress = () => {}) {
   let rootNodes = sgf.parseFile(filename, {getId, onProgress})
   return toGameTrees(rootNodes)
 }

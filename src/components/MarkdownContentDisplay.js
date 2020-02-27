@@ -1,14 +1,12 @@
-const {h, Component} = require('preact')
-const breaks = require('remark-breaks')
-const helper = require('../modules/helper')
+import {h, Component, toChildArray} from 'preact'
+import breaks from 'remark-breaks'
+import * as helper from '../modules/helper.js'
 
-const ReactMarkdown = require('react-markdown')
-const ContentDisplay = require('./ContentDisplay').default
+import ReactMarkdown from 'react-markdown'
+import ContentDisplay from './ContentDisplay.js'
 
 function typographer(children) {
-  if (!Array.isArray(children)) {
-    return typographer([children])[0]
-  }
+  children = toChildArray(children)
 
   return children.map(child => {
     if (typeof child !== 'string') return child
@@ -86,4 +84,4 @@ class MarkdownContentDisplay extends Component {
   }
 }
 
-module.exports = MarkdownContentDisplay
+export default MarkdownContentDisplay

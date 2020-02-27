@@ -1,4 +1,5 @@
 import fs from 'fs'
+import {remote} from 'electron'
 
 let id = 0
 
@@ -102,7 +103,6 @@ export function isTextLikeElement(element) {
 }
 
 export function popupMenu(template, x, y) {
-  let {remote} = require('electron')
   let setting = remote.require('./setting')
   let zoomFactor = +setting.get('app.zoom_factor')
 

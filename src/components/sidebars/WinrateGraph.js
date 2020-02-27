@@ -1,14 +1,12 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const helper = require('../../modules/helper')
-const i18n = require('../../i18n')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import i18n from '../../i18n.js'
+import {noop} from '../../modules/helper.js'
 
 const t = i18n.context('fileformats')
 const setting = remote.require('./setting')
 
-let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
-
-class WinrateGraph extends Component {
+export default class WinrateGraph extends Component {
   constructor() {
     super()
 
@@ -37,7 +35,7 @@ class WinrateGraph extends Component {
 
       let rect = this.element.getBoundingClientRect()
       let percent = (evt.clientX - rect.left) / rect.width
-      let {width, data, onCurrentIndexChange = helper.noop} = this.props
+      let {width, data, onCurrentIndexChange = noop} = this.props
       let index = Math.max(
         Math.min(Math.round(width * percent), data.length - 1),
         0
@@ -267,5 +265,3 @@ class WinrateGraph extends Component {
     )
   }
 }
-
-module.exports = WinrateGraph

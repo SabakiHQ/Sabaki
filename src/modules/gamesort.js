@@ -1,6 +1,6 @@
-const natsort = require('natsort').default
-const sgf = require('@sabaki/sgf')
-const helper = require('./helper')
+import natsort from 'natsort'
+import {parseDates, stringifyDates} from '@sabaki/sgf'
+import {lexicalCompare} from './helper'
 
 function extractProperty(tree, property) {
   return property in tree.root.data ? tree.root.data[property][0] : ''
@@ -40,45 +40,45 @@ function compareResult(item1, item2) {
   return item1 < item2 ? -1 : +(item1 !== item2)
 }
 
-exports.reverse = function(trees) {
+export function reverse(trees) {
   return trees.slice().reverse()
 }
 
-exports.byBlackRank = function(trees) {
+export function byBlackRank(trees) {
   return sortRank(trees, 'BR')
 }
 
-exports.byWhiteRank = function(trees) {
+export function byWhiteRank(trees) {
   return sortRank(trees, 'WR')
 }
 
-exports.byPlayerBlack = function(trees) {
+export function byPlayerBlack(trees) {
   return sortName(trees, 'PB')
 }
 
-exports.byPlayerWhite = function(trees) {
+export function byPlayerWhite(trees) {
   return sortName(trees, 'PW')
 }
 
-exports.byGameName = function(trees) {
+export function byGameName(trees) {
   return sortName(trees, 'GN')
 }
 
-exports.byEvent = function(trees) {
+export function byEvent(trees) {
   return sortName(trees, 'EV')
 }
 
-exports.byDate = function(trees) {
+export function byDate(trees) {
   return [...trees].sort((tr1, tr2) => {
     let [date1, date2] = [tr1, tr2]
       .map(tree => extractProperty(tree, 'DT'))
-      .map(x => sgf.parseDates(x))
-      .map(x => (x ? sgf.stringifyDates(x.sort(helper.lexicalCompare)) : ''))
+      .map(x => parseDates(x))
+      .map(x => (x ? stringifyDates(x.sort(lexicalCompare)) : ''))
     return compareResult(date1, date2)
   })
 }
 
-exports.byNumberOfMoves = function(trees) {
+export function byNumberOfMoves(trees) {
   return [...trees].sort((tr1, tr2) => {
     return compareResult(tr1.getHeight(), tr2.getHeight())
   })

@@ -9,7 +9,7 @@ import ScoringBar from './bars/ScoringBar.js'
 import FindBar from './bars/FindBar.js'
 
 import sabaki from '../modules/sabaki.js'
-import gametree from '../modules/gametree.js'
+import * as gametree from '../modules/gametree.js'
 
 export default class MainView extends Component {
   constructor(props) {

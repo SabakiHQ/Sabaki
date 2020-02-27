@@ -1,7 +1,11 @@
-const Board = require('@sabaki/go-board')
-const GameTree = require('@sabaki/immutable-gametree')
-const sgf = require('@sabaki/sgf')
-const helper = require('./helper')
+import {fromDimensions} from '@sabaki/go-board'
+import GameTree from '@sabaki/immutable-gametree'
+import {
+  stringifyVertex,
+  parseVertex,
+  parseCompressedVertices
+} from '@sabaki/sgf'
+import * as helper from './helper.js'
 
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -17,27 +21,28 @@ function nodeMerger(node, data) {
   return {...data, ...node.data}
 }
 
-exports.new = function(options = {}) {
+const _new = function(options = {}) {
   return new GameTree({
     ...options,
     getId: helper.getId,
     merger: nodeMerger
   })
 }
+export {_new as new}
 
-exports.getRootProperty = function(tree, property, fallback = null) {
+export function getRootProperty(tree, property, fallback = null) {
   let result = ''
   if (property in tree.root.data) result = tree.root.data[property][0]
 
   return result === '' ? fallback : result
 }
 
-exports.getGameInfo = function(tree) {
-  let komi = exports.getRootProperty(tree, 'KM')
+export function getGameInfo(tree) {
+  let komi = getRootProperty(tree, 'KM')
   if (komi != null && !isNaN(komi)) komi = +komi
   else komi = null
 
-  let size = exports.getRootProperty(tree, 'SZ')
+  let size = getRootProperty(tree, 'SZ')
   if (size == null) {
     size = [19, 19]
   } else {
@@ -45,17 +50,15 @@ exports.getGameInfo = function(tree) {
     size = [+s[0], +s[s.length - 1]]
   }
 
-  let handicap = exports.getRootProperty(tree, 'HA', 0)
+  let handicap = getRootProperty(tree, 'HA', 0)
   handicap = Math.max(1, Math.min(9, Math.round(handicap)))
   if (handicap === 1) handicap = 0
 
   let playerNames = ['B', 'W'].map(
-    x =>
-      exports.getRootProperty(tree, `P${x}`) ||
-      exports.getRootProperty(tree, `${x}T`)
+    x => getRootProperty(tree, `P${x}`) || getRootProperty(tree, `${x}T`)
   )
 
-  let playerRanks = ['BR', 'WR'].map(x => exports.getRootProperty(tree, x))
+  let playerRanks = ['BR', 'WR'].map(x => getRootProperty(tree, x))
 
   return {
     playerNames,
@@ -64,18 +67,18 @@ exports.getGameInfo = function(tree) {
     blackRank: playerRanks[0],
     whiteName: playerNames[1],
     whiteRank: playerRanks[1],
-    gameName: exports.getRootProperty(tree, 'GN'),
-    eventName: exports.getRootProperty(tree, 'EV'),
-    gameComment: exports.getRootProperty(tree, 'GC'),
-    date: exports.getRootProperty(tree, 'DT'),
-    result: exports.getRootProperty(tree, 'RE'),
+    gameName: getRootProperty(tree, 'GN'),
+    eventName: getRootProperty(tree, 'EV'),
+    gameComment: getRootProperty(tree, 'GC'),
+    date: getRootProperty(tree, 'DT'),
+    result: getRootProperty(tree, 'RE'),
     komi,
     handicap,
     size
   }
 }
 
-exports.setGameInfo = function(tree, data) {
+export function setGameInfo(tree, data) {
   let newTree = tree.mutate(draft => {
     if ('size' in data) {
       // Update board size
@@ -119,7 +122,7 @@ exports.setGameInfo = function(tree, data) {
         if (key === 'komi') {
           if (isNaN(value)) value = 0
         } else if (key === 'handicap') {
-          let board = exports.getBoard(newTree, newTree.root.id)
+          let board = getBoard(newTree, newTree.root.id)
           let stones = board.getHandicapPlacement(+value)
 
           value = stones.length
@@ -129,11 +132,7 @@ exports.setGameInfo = function(tree, data) {
             continue
           }
 
-          draft.updateProperty(
-            draft.root.id,
-            'AB',
-            stones.map(sgf.stringifyVertex)
-          )
+          draft.updateProperty(draft.root.id, 'AB', stones.map(stringifyVertex))
         }
 
         draft.updateProperty(draft.root.id, props[key], [value.toString()])
@@ -144,7 +143,7 @@ exports.setGameInfo = function(tree, data) {
   })
 }
 
-exports.getMatrixDict = function(tree) {
+export function getMatrixDict(tree) {
   let matrix = [...Array(tree.getHeight() + 1)].map(_ => [])
   let dict = {}
 
@@ -183,7 +182,7 @@ exports.getMatrixDict = function(tree) {
   return inner(tree.root, matrix, dict, 0, 0)
 }
 
-exports.getMatrixWidth = function(y, matrix) {
+export function getMatrixWidth(y, matrix) {
   let keys = [...Array(10)]
     .map((_, i) => i + y - 4)
     .filter(i => i >= 0 && i < matrix.length)
@@ -201,7 +200,7 @@ exports.getMatrixWidth = function(y, matrix) {
   return [width, padding]
 }
 
-exports.getBoard = function(tree, id) {
+export function getBoard(tree, id) {
   let treePositions = []
   let board = null
 
@@ -226,7 +225,7 @@ exports.getBoard = function(tree, id) {
       size = size.map(x => (isNaN(x) ? 19 : +x))
     }
 
-    board = Board.fromDimensions(...size)
+    board = fromDimensions(...size)
   }
 
   let inner = (tree, id, baseboard) => {
@@ -244,7 +243,7 @@ exports.getBoard = function(tree, id) {
     for (let prop in propData) {
       if (node.data[prop] == null) continue
 
-      vertex = sgf.parseVertex(node.data[prop][0])
+      vertex = parseVertex(node.data[prop][0])
       board = baseboard.makeMove(propData[prop], vertex)
       board.currentVertex = vertex
 
@@ -261,7 +260,7 @@ exports.getBoard = function(tree, id) {
       if (node.data[prop] == null) continue
 
       for (let value of node.data[prop]) {
-        for (let vertex of sgf.parseCompressedVertices(value)) {
+        for (let vertex of parseCompressedVertices(value)) {
           if (!board.has(vertex)) continue
           board.set(vertex, propData[prop])
         }
@@ -286,7 +285,7 @@ exports.getBoard = function(tree, id) {
       if (node.data[prop] == null) continue
 
       for (let value of node.data[prop]) {
-        for (let [x, y] of sgf.parseCompressedVertices(value)) {
+        for (let [x, y] of parseCompressedVertices(value)) {
           if (board.markers[y] == null) continue
           board.markers[y][x] = {type: propData[prop]}
         }
@@ -298,7 +297,7 @@ exports.getBoard = function(tree, id) {
         let sep = composed.indexOf(':')
         let point = composed.slice(0, sep)
         let label = composed.slice(sep + 1)
-        let [x, y] = sgf.parseVertex(point)
+        let [x, y] = parseVertex(point)
 
         if (board.markers[y] == null) continue
         board.markers[y][x] = {type: 'label', label}
@@ -310,7 +309,7 @@ exports.getBoard = function(tree, id) {
         let point = node.data.L[i]
         let label = alpha[i]
         if (label == null) return
-        let [x, y] = sgf.parseVertex(point)
+        let [x, y] = parseVertex(point)
 
         if (board.markers[y] == null) continue
         board.markers[y][x] = {type: 'label', label}
@@ -323,7 +322,7 @@ exports.getBoard = function(tree, id) {
       for (let composed of node.data[type]) {
         let sep = composed.indexOf(':')
         let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(
-          sgf.parseVertex
+          parseVertex
         )
 
         board.lines.push({v1, v2, type: type === 'AR' ? 'arrow' : 'line'})
@@ -336,10 +335,10 @@ exports.getBoard = function(tree, id) {
       let v, sign
 
       if (node.data.B != null) {
-        v = sgf.parseVertex(node.data.B[0])
+        v = parseVertex(node.data.B[0])
         sign = 1
       } else if (node.data.W != null) {
-        v = sgf.parseVertex(node.data.W[0])
+        v = parseVertex(node.data.W[0])
         sign = -1
       } else {
         return
@@ -383,10 +382,10 @@ exports.getBoard = function(tree, id) {
   return board
 }
 
-exports.clearBoardCache = function() {
+export function clearBoardCache() {
   boardCache = {}
 }
 
-exports.getHash = function(tree) {
+export function getHash(tree) {
   return helper.hash(JSON.stringify(tree))
 }

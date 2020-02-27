@@ -1,7 +1,7 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-class Drawer extends Component {
+export default class Drawer extends Component {
   constructor(props) {
     super(props)
 
@@ -39,5 +39,3 @@ class Drawer extends Component {
     )
   }
 }
-
-module.exports = Drawer

@@ -1,14 +1,14 @@
 import {remote} from 'electron'
 import {h, Component} from 'preact'
 
-import {SplitContainer} from './helpers/SplitContainer.js'
-import {GtpConsole} from './sidebars/GtpConsole.js'
+import SplitContainer from './helpers/SplitContainer.js'
+import GtpConsole from './sidebars/GtpConsole.js'
 import {EnginePeerList} from './sidebars/PeerList.js'
 
 const setting = remote.require('./setting')
 const peerListMinHeight = setting.get('view.peerlist_minheight')
 
-export class LeftSidebar extends Component {
+export default class LeftSidebar extends Component {
   constructor() {
     super()
 

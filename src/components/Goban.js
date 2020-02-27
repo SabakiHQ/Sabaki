@@ -4,8 +4,8 @@ import {remote} from 'electron'
 import sgf from '@sabaki/sgf'
 import {BoundedGoban} from '@sabaki/shudan'
 
-import gametree from '../modules/gametree.js'
-import gobantransformer from '../modules/gobantransformer.js'
+import * as gametree from '../modules/gametree.js'
+import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
 
 const setting = remote.require('./setting')

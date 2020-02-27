@@ -25,7 +25,7 @@ function parseVertex(coord, size) {
   return [x, y]
 }
 
-export class EngineSyncer extends EventEmitter {
+export default class EngineSyncer extends EventEmitter {
   constructor(engine) {
     super()
 

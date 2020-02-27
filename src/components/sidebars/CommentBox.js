@@ -6,7 +6,7 @@ import sgf from '@sabaki/sgf'
 
 import i18n from '../../i18n.js'
 import sabaki from '../../modules/sabaki.js'
-import gametree from '../../modules/gametree.js'
+import * as gametree from '../../modules/gametree.js'
 import {vertexEquals, typographer, noop} from '../../modules/helper.js'
 
 import MarkdownContentDisplay from '../MarkdownContentDisplay.js'

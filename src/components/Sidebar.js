@@ -2,7 +2,7 @@ import {remote} from 'electron'
 import {h, Component} from 'preact'
 import sabaki from '../modules/sabaki.js'
 
-import {SplitContainer} from './helpers/SplitContainer.js'
+import SplitContainer from './helpers/SplitContainer.js'
 import WinrateGraph from './sidebars/WinrateGraph.js'
 import Slider from './sidebars/Slider.js'
 import GameGraph from './sidebars/GameGraph.js'
@@ -14,7 +14,7 @@ const propertiesMinHeight = setting.get('view.properties_minheight')
 const winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
 const winrateGraphMaxHeight = setting.get('view.winrategraph_maxheight')
 
-export class Sidebar extends Component {
+export default class Sidebar extends Component {
   constructor(props) {
     super(props)
 

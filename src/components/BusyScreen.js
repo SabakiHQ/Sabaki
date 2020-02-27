@@ -1,9 +1,9 @@
-const {remote, ipcRenderer} = require('electron')
-const {h, Component} = require('preact')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
 
 const setting = remote.require('./setting')
 
-class BusyScreen extends Component {
+export default class BusyScreen extends Component {
   componentWillReceiveProps({show}) {
     if (show === this.props.show) return
 
@@ -25,5 +25,3 @@ class BusyScreen extends Component {
     })
   }
 }
-
-module.exports = BusyScreen

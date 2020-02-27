@@ -11,7 +11,7 @@ import gtp from '@sabaki/gtp'
 import sgf from '@sabaki/sgf'
 
 import i18n from '../i18n.js'
-import {EngineSyncer} from './enginesyncer.js'
+import EngineSyncer from './enginesyncer.js'
 import * as dialog from './dialog.js'
 import * as fileformats from './fileformats/index.js'
 import * as gametree from './gametree.js'

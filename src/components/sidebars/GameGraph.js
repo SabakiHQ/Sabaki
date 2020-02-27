@@ -1,9 +1,9 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import * as gametree from '../../modules/gametree.js'
+import {vertexEquals, noop} from '../../modules/helper.js'
 
-const gametree = require('../../modules/gametree')
-const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
 
 let delay = setting.get('graph.delay')
@@ -111,8 +111,8 @@ class GameGraphEdge extends Component {
       length !== this.props.length ||
       current !== this.props.current ||
       gridSize !== this.props.gridSize ||
-      !helper.vertexEquals(positionAbove, this.props.positionAbove) ||
-      !helper.vertexEquals(positionBelow, this.props.positionBelow)
+      !vertexEquals(positionAbove, this.props.positionAbove) ||
+      !vertexEquals(positionBelow, this.props.positionBelow)
     )
   }
 
@@ -278,7 +278,7 @@ class GameGraph extends Component {
       return
     }
 
-    let {onNodeClick = helper.noop, gameTree, gridSize} = this.props
+    let {onNodeClick = noop, gameTree, gridSize} = this.props
     let {
       matrixDict: [matrix],
       cameraPosition: [cx, cy]
@@ -484,4 +484,4 @@ class GameGraph extends Component {
   }
 }
 
-module.exports = GameGraph
+export default GameGraph

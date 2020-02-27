@@ -1,7 +1,7 @@
 import {h, Component} from 'preact'
-import {SplitContainer} from './SplitContainer.js'
+import SplitContainer from './SplitContainer.js'
 
-export class TripleSplitContainer extends Component {
+export default class TripleSplitContainer extends Component {
   constructor(props) {
     super(props)
 

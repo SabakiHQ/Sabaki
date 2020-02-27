@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 
-export class SplitContainer extends Component {
+export default class SplitContainer extends Component {
   constructor(props) {
     super(props)
 

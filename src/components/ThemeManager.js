@@ -1,7 +1,7 @@
-const {join} = require('path')
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const ColorThief = require('@mariotacke/color-thief')
+import {join} from 'path'
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import ColorThief from '@mariotacke/color-thief'
 
 const setting = remote.require('./setting')
 const colorThief = new ColorThief()
@@ -20,7 +20,7 @@ function getForeground([r, g, b]) {
   return Math.max(r, g, b) < 255 / 2 ? 'white' : 'black'
 }
 
-class ThemeManager extends Component {
+export default class ThemeManager extends Component {
   constructor() {
     super()
 
@@ -185,5 +185,3 @@ class ThemeManager extends Component {
     )
   }
 }
-
-module.exports = ThemeManager

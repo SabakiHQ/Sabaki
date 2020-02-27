@@ -1,18 +1,19 @@
-const fs = require('fs')
-const Board = require('@sabaki/go-board')
-const sgf = require('@sabaki/sgf')
-
-const i18n = require('../../i18n')
-const gametree = require('../gametree')
+import {readFileSync} from 'fs'
+import {decode} from 'iconv-lite'
+import {detect} from 'jschardet'
+import {fromDimensions} from '@sabaki/go-board'
+import {stringifyVertex} from '@sabaki/sgf'
+import i18n from '../../i18n.js'
+import * as gametree from '../gametree.js'
 
 const t = i18n.context('fileformats')
 
-exports.meta = {
+export const meta = {
   name: t('wBaduk NGF'),
   extensions: ['ngf']
 }
 
-exports.parse = function(content) {
+export function parse(content) {
   return [
     gametree.new().mutate(draft => {
       let lines = content.split('\n')
@@ -96,13 +97,13 @@ exports.parse = function(content) {
       if (handicap >= 2) {
         draft.updateProperty(rootId, 'HA', [handicap.toString()])
 
-        let points = Board.fromDimensions(
+        let points = fromDimensions(
           boardsize,
           boardsize
         ).getHandicapPlacement(handicap, {tygem: true})
 
         for (let [x, y] of points) {
-          let s = sgf.stringifyVertex([x, y])
+          let s = stringifyVertex([x, y])
           draft.addToProperty(rootId, 'AB', s)
         }
       }
@@ -153,7 +154,7 @@ exports.parse = function(content) {
 
               let x = line.charCodeAt(5) - 66
               let y = line.charCodeAt(6) - 66
-              let val = sgf.stringifyVertex([x, y])
+              let val = stringifyVertex([x, y])
 
               lastNodeId = draft.appendNode(lastNodeId, {[key]: [val]})
             }
@@ -164,19 +165,16 @@ exports.parse = function(content) {
   ]
 }
 
-exports.parseFile = function(filename) {
-  let iconv = require('iconv-lite')
-  let jschardet = require('jschardet')
-
+export function parseFile(filename) {
   // NGF files have a huge amount of ASCII-looking text. To help
   // the detector, we just send it the first few lines.
 
-  let buffer = fs.readFileSync(filename)
+  let buffer = readFileSync(filename)
   let encoding = 'utf8'
-  let detected = jschardet.detect(buffer.slice(0, 200))
+  let detected = detect(buffer.slice(0, 200))
   if (detected.confidence > 0.2) encoding = detected.encoding
 
-  content = iconv.decode(buffer, encoding)
+  content = decode(buffer, encoding)
 
-  return exports.parse(content)
+  return parse(content)
 }

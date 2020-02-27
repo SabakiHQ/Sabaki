@@ -220,7 +220,7 @@ class ConsoleInput extends Component {
   }
 }
 
-export class GtpConsole extends Component {
+export default class GtpConsole extends Component {
   constructor() {
     super()
 
