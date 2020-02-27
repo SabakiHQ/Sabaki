@@ -194,7 +194,6 @@ export function parseFile(filename) {
   let detected = detect(buffer)
   if (detected.confidence > 0.2) encoding = detected.encoding
 
-  content = decode(buffer, encoding)
-
+  let content = decode(buffer, encoding)
   return parse(content)
 }
