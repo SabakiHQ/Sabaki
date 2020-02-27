@@ -10,7 +10,7 @@ import Drawer from './Drawer.js'
 const t = i18n.context('CleanMarkupDrawer')
 const setting = remote.require('./setting')
 
-export default class CleanMarkupItem extends Component {
+class CleanMarkupItem extends Component {
   constructor() {
     super()
 
@@ -43,7 +43,7 @@ export default class CleanMarkupItem extends Component {
   }
 }
 
-class CleanMarkupDrawer extends Component {
+export default class CleanMarkupDrawer extends Component {
   constructor() {
     super()
 

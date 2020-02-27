@@ -11,7 +11,7 @@ const t = i18n.context('AdvancedPropertiesDrawer')
 const blockedProperties = ['AP', 'CA']
 const clearCacheProperties = ['AE', 'AW', 'AB', 'SZ', 'W', 'B']
 
-export default class PropertyItem extends Component {
+class PropertyItem extends Component {
   constructor(props) {
     super(props)
 
@@ -99,7 +99,7 @@ export default class PropertyItem extends Component {
   }
 }
 
-class AdvancedPropertiesDrawer extends Component {
+export default class AdvancedPropertiesDrawer extends Component {
   constructor(props) {
     super(props)
 

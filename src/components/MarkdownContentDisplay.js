@@ -6,7 +6,9 @@ import ReactMarkdown from 'react-markdown'
 import ContentDisplay from './ContentDisplay.js'
 
 function typographer(children) {
-  children = toChildArray(children)
+  if (!Array.isArray(children)) {
+    return typographer([children])[0]
+  }
 
   return children.map(child => {
     if (typeof child !== 'string') return child

@@ -1,4 +1,4 @@
-import {ipcRenderer, remote} from 'electron'
+import {ipcRenderer, remote, app} from 'electron'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
 import fixPath from 'fix-path'
@@ -17,6 +17,7 @@ import InputBox from './InputBox.js'
 import BusyScreen from './BusyScreen.js'
 import InfoOverlay from './InfoOverlay.js'
 
+import i18n from '../i18n.js'
 import sabaki from '../modules/sabaki.js'
 import * as gametree from '../modules/gametree.js'
 import * as gtplogger from '../modules/gtplogger.js'
@@ -190,6 +191,8 @@ class App extends Component {
   }
 
   componentDidUpdate(_, prevState = {}) {
+    const t = i18n.context('app.window')
+
     // Update title
 
     let {title} = sabaki.inferredState

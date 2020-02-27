@@ -443,45 +443,41 @@ export default class GameChooserDrawer extends Component {
       h(
         'style',
         {},
-        `
-                #gamechooser .games-list .placeholder {
-                    height: ${(this.getRowFromIndex(
-                      this.shownGameTrees.length - 1
-                    ) +
-                      1) *
-                      itemHeight +
-                      20}px;
-                }
+        `#gamechooser .games-list .placeholder {
+          height: ${(this.getRowFromIndex(this.shownGameTrees.length - 1) + 1) *
+            itemHeight +
+            20}px;
+        }
 
-                #gamechooser .games-list li {
-                    width: ${itemWidth - 20}px;
-                }
-            `,
+        #gamechooser .games-list li {
+          width: ${itemWidth - 20}px;
+        }`,
         animation &&
-          `
-                #gamechooser-animation {
-                    animation: gamechooser-animation .5s ${
-                      animation[2]
-                    } forwards;
-                }
+          `#gamechooser-animation {
+            animation: gamechooser-animation .5s ${animation[2]} forwards;
+          }
 
-                @keyframes gamechooser-animation {
-                    from {
-                        transform: translate(${animation[0].left}px, ${
-            animation[0].top
-          }px);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translate(${animation[1].left}px, ${
-            animation[1].top
-          }px)
-                            scale(${animation[1].width / animation[0].width},
-                            ${animation[1].height / animation[0].height});
-                        opacity: 0;
-                    }
-                }
-            `
+          @keyframes gamechooser-animation {
+            from {
+              transform: translate(
+                ${animation[0].left}px,
+                ${animation[0].top}px
+              );
+              opacity: 1;
+            }
+            to {
+              transform:
+                translate(
+                  ${animation[1].left}px,
+                  ${animation[1].top}px
+                )
+                scale(
+                  ${animation[1].width / animation[0].width},
+                  ${animation[1].height / animation[0].height}
+                );
+              opacity: 0;
+            }
+          }`
       ),
 
       h(
@@ -529,9 +525,9 @@ export default class GameChooserDrawer extends Component {
                 return
 
               return h(GameListItem, {
-                ref: item => {
-                  if (item != null) this.itemElements[index] = item.element
-                },
+                ref: item =>
+                  (this.itemElements[index] =
+                    item == null ? null : item.element),
                 key: tree.id,
                 tree,
                 top: itemTop,

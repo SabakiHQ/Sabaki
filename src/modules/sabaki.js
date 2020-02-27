@@ -138,7 +138,7 @@ class Sabaki extends EventEmitter {
       get title() {
         let title = self.appName
         let {representedFilename, gameIndex, gameTrees} = state
-        let t = i18n.context('app')
+        let t = i18n.context('app.window')
 
         if (representedFilename) title = basename(representedFilename)
 
