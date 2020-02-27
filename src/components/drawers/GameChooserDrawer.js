@@ -242,38 +242,34 @@ export default class GameChooserDrawer extends Component {
         {
           label: t('Add &Existing Files…'),
           click: () => {
-            dialog.showOpenDialog(
-              {
-                properties: ['openFile', 'multiSelections'],
-                filters: [
-                  ...fileformats.meta,
-                  {name: t('All Files'), extensions: ['*']}
-                ]
-              },
-              ({result}) => {
-                let {gameTrees, onChange = helper.noop} = this.props
-                let newTrees = []
+            let result = dialog.showOpenDialog({
+              properties: ['openFile', 'multiSelections'],
+              filters: [
+                ...fileformats.meta,
+                {name: t('All Files'), extensions: ['*']}
+              ]
+            })
+            let {gameTrees, onChange = helper.noop} = this.props
+            let newTrees = []
 
-                sabaki.setBusy(true)
+            sabaki.setBusy(true)
 
-                if (result) {
-                  try {
-                    for (let filename of result) {
-                      let trees = fileformats.parseFile(filename)
-                      newTrees.push(...trees)
-                    }
-                  } catch (err) {
-                    dialog.showMessageBox(
-                      t('Some files are unreadable.'),
-                      'warning'
-                    )
-                  }
+            if (result) {
+              try {
+                for (let filename of result) {
+                  let trees = fileformats.parseFile(filename)
+                  newTrees.push(...trees)
                 }
-
-                onChange({gameTrees: [...gameTrees, ...newTrees]})
-                sabaki.setBusy(false)
+              } catch (err) {
+                dialog.showMessageBox(
+                  t('Some files are unreadable.'),
+                  'warning'
+                )
               }
-            )
+            }
+
+            onChange({gameTrees: [...gameTrees, ...newTrees]})
+            sabaki.setBusy(false)
           }
         }
       ]

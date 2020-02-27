@@ -111,11 +111,9 @@ class AdvancedPropertiesDrawer extends Component {
     this.handleAddButtonClick = async evt => {
       evt.preventDefault()
 
-      let {value} = await new Promise(resolve =>
-        showInputBox(t('Enter property name'), resolve, () => resolve({}))
-      )
-
+      let value = await showInputBox(t('Enter property name'))
       if (value == null) return
+
       let property = value.toUpperCase()
 
       if (blockedProperties.includes(property)) {

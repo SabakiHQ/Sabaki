@@ -120,13 +120,14 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.play', '&Select Point'),
           accelerator: 'CmdOrCtrl+L',
-          click: () =>
-            dialog.showInputBox(
-              'Enter a coordinate to select a point',
-              ({value}) => {
-                sabaki.clickVertex(value)
-              }
+          click: async () => {
+            let value = await dialog.showInputBox(
+              i18n.t('menu.play', 'Enter a coordinate to select a point')
             )
+            if (value == null) return
+
+            sabaki.clickVertex(value)
+          }
         },
         {
           label: i18n.t('menu.play', '&Pass'),
@@ -393,11 +394,15 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.navigation', 'Go to Move N&umber'),
           accelerator: 'CmdOrCtrl+G',
-          click: () =>
-            dialog.showInputBox('Enter a move number to go to', ({value}) => {
-              sabaki.closeDrawer()
-              sabaki.goToMoveNumber(value)
-            })
+          click: async () => {
+            let value = await dialog.showInputBox(
+              i18n.t('menu.navigation', 'Enter a move number to go to')
+            )
+            if (value == null) return
+
+            sabaki.closeDrawer()
+            sabaki.goToMoveNumber(value)
+          }
         },
         {type: 'separator'},
         {
@@ -723,22 +728,18 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.developer', 'Load &Language File…'),
           click: () => {
-            dialog.showOpenDialog(
-              {
-                properties: ['openFile'],
-                filters: [
-                  {
-                    name: i18n.t('menu.developer', 'JavaScript Files'),
-                    extensions: ['js']
-                  }
-                ]
-              },
-              ({result}) => {
-                if (!result || result.length === 0) return
+            let result = dialog.showOpenDialog({
+              properties: ['openFile'],
+              filters: [
+                {
+                  name: i18n.t('menu.developer', 'JavaScript Files'),
+                  extensions: ['js']
+                }
+              ]
+            })
+            if (!result || result.length === 0) return
 
-                i18n.loadFile(result[0])
-              }
-            )
+            i18n.loadFile(result[0])
           }
         },
         {
@@ -750,37 +751,33 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.developer', '&Save Language File…'),
           click: () => {
-            dialog.showSaveDialog(
-              {
-                filters: [
-                  {
-                    name: i18n.t('menu.developer', 'JavaScript Files'),
-                    extensions: ['js']
-                  }
-                ]
-              },
-              ({result}) => {
-                if (!result) return
+            let result = dialog.showSaveDialog({
+              filters: [
+                {
+                  name: i18n.t('menu.developer', 'JavaScript Files'),
+                  extensions: ['js']
+                }
+              ]
+            })
+            if (!result) return
 
-                let summary = i18n.serialize(result)
+            let summary = i18n.serialize(result)
 
-                dialog.showMessageBox(
-                  i18n.t(
-                    'menu.developer',
-                    p =>
-                      [
-                        `Translated strings: ${p.translatedCount}`,
-                        `Untranslated strings: ${p.untranslatedCount}`,
-                        `Completion: ${p.complete}%`
-                      ].join('\n'),
-                    {
-                      translatedCount: summary.translatedCount,
-                      untranslatedCount: summary.untranslatedCount,
-                      complete: Math.round(summary.complete * 100)
-                    }
-                  )
-                )
-              }
+            dialog.showMessageBox(
+              i18n.t(
+                'menu.developer',
+                p =>
+                  [
+                    `Translated strings: ${p.translatedCount}`,
+                    `Untranslated strings: ${p.untranslatedCount}`,
+                    `Completion: ${p.complete}%`
+                  ].join('\n'),
+                {
+                  translatedCount: summary.translatedCount,
+                  untranslatedCount: summary.untranslatedCount,
+                  complete: Math.round(summary.complete * 100)
+                }
+              )
             )
           }
         }

@@ -421,20 +421,17 @@ class Sabaki extends EventEmitter {
     let t = i18n.context('app.file')
 
     if (!filename) {
-      dialog.showOpenDialog(
-        {
-          properties: ['openFile'],
-          filters: [
-            ...fileformats.meta,
-            {name: t('All Files'), extensions: ['*']}
-          ]
-        },
-        ({result}) => {
-          if (result) filename = result[0]
-          if (filename)
-            this.loadFile(filename, {suppressAskForSave: true, clearHistory})
-        }
-      )
+      let result = dialog.showOpenDialog({
+        properties: ['openFile'],
+        filters: [
+          ...fileformats.meta,
+          {name: t('All Files'), extensions: ['*']}
+        ]
+      })
+
+      if (result) filename = result[0]
+      if (filename)
+        this.loadFile(filename, {suppressAskForSave: true, clearHistory})
 
       return
     }
@@ -555,19 +552,15 @@ class Sabaki extends EventEmitter {
 
     if (!filename || (confirmExtension && extname(filename) !== '.sgf')) {
       let cancel = false
+      let result = dialog.showSaveDialog({
+        filters: [
+          fileformats.sgf.meta,
+          {name: t('All Files'), extensions: ['*']}
+        ]
+      })
 
-      dialog.showSaveDialog(
-        {
-          filters: [
-            fileformats.sgf.meta,
-            {name: t('All Files'), extensions: ['*']}
-          ]
-        },
-        ({result}) => {
-          if (result) this.saveFile(result, false)
-          cancel = !result
-        }
-      )
+      if (result) this.saveFile(result, false)
+      cancel = !result
 
       return !cancel
     }
@@ -888,13 +881,21 @@ class Sabaki extends EventEmitter {
         } else if (['number', 'label'].includes(tool)) {
           // Show label editing context menu
 
-          let click = () =>
-            dialog.showInputBox(t('Enter label text'), ({value}) => {
-              this.useTool('label', vertex, value)
-            })
+          helper.popupMenu(
+            [
+              {
+                label: t('&Edit Label'),
+                click: async () => {
+                  let value = await dialog.showInputBox(t('Enter label text'))
+                  if (value == null) return
 
-          let template = [{label: t('&Edit Label'), click}]
-          helper.popupMenu(template, x, y)
+                  this.useTool('label', vertex, value)
+                }
+              }
+            ],
+            x,
+            y
+          )
 
           return
         }

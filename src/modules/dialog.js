@@ -27,7 +27,7 @@ export function showMessageBox(
   return result
 }
 
-export function showFileDialog(type, options, callback = noop) {
+export function showFileDialog(type, options) {
   sabaki.setBusy(true)
 
   let [t, ...ype] = [...type]
@@ -39,23 +39,25 @@ export function showFileDialog(type, options, callback = noop) {
   )
 
   sabaki.setBusy(false)
-  callback({result})
+  return result
 }
 
-export function showOpenDialog(options, callback) {
-  return showFileDialog('open', options, callback)
+export function showOpenDialog(options) {
+  return showFileDialog('open', options)
 }
 
-export function showSaveDialog(options, callback) {
-  return showFileDialog('save', options, callback)
+export function showSaveDialog(options) {
+  return showFileDialog('save', options)
 }
 
-export function showInputBox(message, onSubmit = noop, onCancel = noop) {
-  sabaki.setState({
-    inputBoxText: message,
-    showInputBox: true,
-    onInputBoxSubmit: onSubmit,
-    onInputBoxCancel: onCancel
+export async function showInputBox(message) {
+  return new Promise(resolve => {
+    sabaki.setState({
+      inputBoxText: message,
+      showInputBox: true,
+      onInputBoxSubmit: evt => resolve(evt.value),
+      onInputBoxCancel: () => resolve(null)
+    })
   })
 }
 

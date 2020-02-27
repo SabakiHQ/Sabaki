@@ -218,21 +218,15 @@ class PathInputItem extends Component {
     }
 
     this.handleBrowseButtonClick = evt => {
-      let dialogProperties =
-        this.props.chooseDirectory != null
-          ? ['openDirectory', 'createDirectory']
-          : ['openFile']
+      let result = showOpenDialog({
+        properties:
+          this.props.chooseDirectory != null
+            ? ['openDirectory', 'createDirectory']
+            : ['openFile']
+      })
+      if (!result || result.length === 0) return
 
-      showOpenDialog(
-        {
-          properties: dialogProperties
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
-
-          this.handlePathChange({currentTarget: {value: result[0]}})
-        }
-      )
+      this.handlePathChange({currentTarget: {value: result[0]}})
     }
 
     setting.events.on('change', ({key, value}) => {
@@ -340,24 +334,20 @@ class ThemesTab extends Component {
     this.handleInstallButton = evt => {
       evt.preventDefault()
 
-      showOpenDialog(
-        {
-          properties: ['openFile'],
-          filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
+      let result = showOpenDialog({
+        properties: ['openFile'],
+        filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
+      })
+      if (!result || result.length === 0) return
 
-          let id = uuid()
+      let id = uuid()
 
-          copy(result[0], join(setting.themesDirectory, id), err => {
-            if (err) return showMessageBox(t('Installation failed.'), 'error')
+      copy(result[0], join(setting.themesDirectory, id), err => {
+        if (err) return showMessageBox(t('Installation failed.'), 'error')
 
-            setting.loadThemes()
-            setting.set('theme.current', id)
-          })
-        }
-      )
+        setting.loadThemes()
+        setting.set('theme.current', id)
+      })
     }
 
     setting.events.on('change', ({key, value}) => {
@@ -509,18 +499,14 @@ class EngineItem extends Component {
     }
 
     this.handleBrowseButtonClick = () => {
-      showOpenDialog(
-        {
-          properties: ['openFile'],
-          filters: [{name: t('All Files'), extensions: ['*']}]
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
+      let result = showOpenDialog({
+        properties: ['openFile'],
+        filters: [{name: t('All Files'), extensions: ['*']}]
+      })
+      if (!result || result.length === 0) return
 
-          let {id, name, args, onChange = noop} = this.props
-          onChange({id, name, args, path: result[0]})
-        }
-      )
+      let {id, name, args, onChange = noop} = this.props
+      onChange({id, name, args, path: result[0]})
     }
 
     this.handleRemoveButtonClick = () => {
