@@ -1,6 +1,7 @@
 import {join} from 'path'
 import {remote} from 'electron'
 import {h, Component} from 'preact'
+import sabaki from '../modules/sabaki.js'
 import ColorThief from '@mariotacke/color-thief'
 
 const setting = remote.require('./setting')
@@ -26,7 +27,9 @@ export default class ThemeManager extends Component {
 
     this.updateSettingState()
 
-    setting.events.on('change', ({key}) => this.updateSettingState(key))
+    setting.events.on(sabaki.window.id, 'change', ({key}) =>
+      this.updateSettingState(key)
+    )
   }
 
   shouldComponentUpdate(_, state) {

@@ -1,7 +1,7 @@
 const EventEmitter = require('events')
 const fs = require('fs')
 const path = require('path')
-const {app} = require('electron')
+const {app, BrowserWindow} = require('electron')
 
 for (let dir of [
   (exports.userDataDirectory = app.getPath('userData')),
@@ -199,8 +199,29 @@ let defaults = {
   'window.width': 564
 }
 
-exports.events = new EventEmitter()
-exports.events.setMaxListeners(100)
+let eventEmitters = {}
+
+exports.events = {
+  on: (id, event, f) => {
+    if (eventEmitters[id] == null) {
+      eventEmitters[id] = new EventEmitter()
+      eventEmitters[id].setMaxListeners(30)
+    }
+
+    eventEmitters[id].on(event, f)
+  },
+  emit: (event, evt) => {
+    let windows = BrowserWindow.getAllWindows()
+
+    for (let id in eventEmitters) {
+      if (!windows.some(window => window.id.toString() === id)) {
+        delete eventEmitters[id]
+      } else {
+        eventEmitters[id].emit(event, evt)
+      }
+    }
+  }
+}
 
 exports.load = function() {
   try {
