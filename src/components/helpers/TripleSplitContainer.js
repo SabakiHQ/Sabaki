@@ -1,7 +1,7 @@
-const {h, Component} = require('preact')
-const SplitContainer = require('./SplitContainer')
+import {h, Component} from 'preact'
+import SplitContainer from './SplitContainer.js'
 
-class TripleSplitContainer extends Component {
+export default class TripleSplitContainer extends Component {
   constructor(props) {
     super(props)
 
@@ -67,5 +67,3 @@ class TripleSplitContainer extends Component {
     })
   }
 }
-
-module.exports = TripleSplitContainer

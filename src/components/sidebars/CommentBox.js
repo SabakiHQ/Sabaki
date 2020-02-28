@@ -1,14 +1,17 @@
-const {remote, shell} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const boardmatcher = require('@sabaki/boardmatcher')
-const sgf = require('@sabaki/sgf')
+import {remote, shell} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import boardmatcher from '@sabaki/boardmatcher'
+import sgf from '@sabaki/sgf'
 
-const MarkdownContentDisplay = require('./MarkdownContentDisplay')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import * as gametree from '../../modules/gametree.js'
+import {vertexEquals, typographer, noop} from '../../modules/helper.js'
 
-const t = require('../i18n').context('CommentBox')
-const gametree = require('../modules/gametree')
-const helper = require('../modules/helper')
+import MarkdownContentDisplay from '../MarkdownContentDisplay.js'
+
+const t = i18n.context('CommentBox')
 const setting = remote.require('./setting')
 
 let commentsCommitDelay = setting.get('comments.commit_delay')
@@ -46,8 +49,8 @@ class CommentTitle extends Component {
       title !== this.props.title ||
       gameTree !== this.props.gameTree ||
       treePosition !== this.props.treePosition ||
-      !helper.vertexEquals(moveAnnotation, this.props.moveAnnotation) ||
-      !helper.vertexEquals(positionAnnotation, this.props.positionAnnotation)
+      !vertexEquals(moveAnnotation, this.props.moveAnnotation) ||
+      !vertexEquals(positionAnnotation, this.props.positionAnnotation)
     )
   }
 
@@ -64,11 +67,7 @@ class CommentTitle extends Component {
       if (node.data.GN != null) result.push(node.data.GN[0])
 
       result = result.filter(x => x.trim() !== '').join(' — ')
-      if (result !== '') return helper.typographer(result)
-
-      let today = new Date()
-      if (today.getDate() === 25 && today.getMonth() === 3)
-        return t('Happy Birthday, Sabaki!')
+      if (result !== '') return typographer(result)
 
       return ''
     }
@@ -151,29 +150,21 @@ class CommentTitle extends Component {
 
   render({moveAnnotation: [ma, mv], positionAnnotation: [pa, pv], title}) {
     let moveData = {
-      '-1': [t('Bad move'), 'badmove'],
-      '0': [t('Doubtful move'), 'doubtfulmove'],
-      '1': [t('Interesting move'), 'interestingmove'],
-      '2': [t('Good move'), 'goodmove']
-    }
-
-    if (mv > 1) {
-      for (let s in moveData) {
-        moveData[s][0] = t('Very ' + moveData[s][0].toLowerCase())
-      }
+      '-1': [t('Bad move'), t('Very bad move'), 'badmove'],
+      '0': [t('Doubtful move'), t('Very doubtful move'), 'doubtfulmove'],
+      '1': [
+        t('Interesting move'),
+        t('Very interesting move'),
+        'interestingmove'
+      ],
+      '2': [t('Good move'), t('Very good move'), 'goodmove']
     }
 
     let positionData = {
-      '-1': [t('Good for white'), 'white'],
-      '0': [t('Even position'), 'balance'],
-      '1': [t('Good for black'), 'black'],
-      '-2': [t('Unclear position'), 'unclear']
-    }
-
-    if (pv > 1) {
-      for (let s in positionData) {
-        positionData[s][0] = t('Very ' + positionData[s][0].toLowerCase())
-      }
+      '-1': [t('Good for White'), t('Very good for White'), 'white'],
+      '0': [t('Even position'), t('Very even position'), 'balance'],
+      '1': [t('Good for Black'), t('Very good for Black'), 'black'],
+      '-2': [t('Unclear position'), t('Very unclear position'), 'unclear']
     }
 
     let showMoveInterpretation = setting.get(
@@ -194,16 +185,16 @@ class CommentTitle extends Component {
         width: 16,
         height: 16,
         class: 'positionstatus',
-        title: pa in positionData ? positionData[pa][0] : '',
-        src: pa in positionData ? `./img/ui/${positionData[pa][1]}.svg` : ''
+        title: pa in positionData ? positionData[pa][pv > 1 ? 1 : 0] : '',
+        src: pa in positionData ? `./img/ui/${positionData[pa][2]}.svg` : ''
       }),
 
       h('img', {
         width: 16,
         height: 16,
         class: 'movestatus',
-        title: ma in moveData ? moveData[ma][0] : '',
-        src: ma in moveData ? `./img/ui/${moveData[ma][1]}.svg` : ''
+        title: ma in moveData ? moveData[ma][mv > 1 ? 1 : 0] : '',
+        src: ma in moveData ? `./img/ui/${moveData[ma][2]}.svg` : ''
       }),
 
       h('img', {
@@ -219,7 +210,7 @@ class CommentTitle extends Component {
         'span',
         {},
         title !== ''
-          ? helper.typographer(title)
+          ? typographer(title)
           : showMoveInterpretation
           ? this.getCurrentMoveInterpretation()
           : ''
@@ -246,7 +237,7 @@ class CommentText extends Component {
   }
 }
 
-class CommentBox extends Component {
+export default class CommentBox extends Component {
   constructor(props) {
     super(props)
 
@@ -256,7 +247,7 @@ class CommentBox extends Component {
     }
 
     this.handleCommentInput = () => {
-      let {onCommentInput = helper.noop} = this.props
+      let {onCommentInput = noop} = this.props
 
       this.setState({
         title: this.titleInputElement.value,
@@ -274,9 +265,9 @@ class CommentBox extends Component {
 
     this.handleMenuButtonClick = () => {
       let {left, bottom} = this.menuButtonElement.getBoundingClientRect()
-      let {gameTree, treePosition} = this.props
+      let {treePosition} = this.props
 
-      sabaki.openCommentMenu(gameTree, treePosition, {x: left, y: bottom})
+      sabaki.openCommentMenu(treePosition, {x: left, y: bottom})
     }
   }
 
@@ -315,7 +306,7 @@ class CommentBox extends Component {
       moveAnnotation,
       positionAnnotation,
 
-      onLinkClick = helper.noop
+      onLinkClick = noop
     },
     {title, comment}
   ) {
@@ -381,5 +372,3 @@ class CommentBox extends Component {
     )
   }
 }
-
-module.exports = CommentBox

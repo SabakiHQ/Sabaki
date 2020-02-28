@@ -1,52 +1,53 @@
-const {remote, shell} = require('electron')
-const {h, Component} = require('preact')
+import {remote, shell} from 'electron'
+import {h, Component} from 'preact'
 
-const t = require('../i18n').context('ContentDisplay')
-const gametree = require('../modules/gametree')
+import i18n from '../i18n.js'
+import sabaki from '../modules/sabaki.js'
+
+const t = i18n.context('ContentDisplay')
 const setting = remote.require('./setting')
 
 function htmlify(input) {
-  let urlRegex = '\\b(ht|f)tps?:\\/\\/[^\\s<]+[^<.,:;"\')\\]\\s](\\/\\B|\\b)'
-  let emailRegex = '\\b[^\\s@<]+@[^\\s@<]+\\b'
-  let variationRegex =
-    '\\b(black\\s+?|white\\s+?|[bw]\\s*)(([a-hj-z]\\d+[ ]+)+[a-hj-z]\\d+)\\b'
-  let coordRegex = '\\b[a-hj-z]\\d+\\b'
-  let movenumberRegex = '(\\B#|\\bmove[ ]+)(\\d+)\\b'
-  let totalRegex =
-    '(' +
-    [urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex].join(
-      '|'
-    ) +
-    ')'
+  let urlRegex = /\b(ht|f)tps?:\/\/[^\s<]+[^<.,:;"\')\]\s](\/\B|\b)/i
+  let emailRegex = /\b[^\s@<]+@[^\s@<]+\b/i
+  let variationRegex = /\b(black\s+?|white\s+?|[bw]\s*)(([a-hj-z]\d{1,2}[ ]+)+[a-hj-z]\d{1,2})\b/i
+  let coordRegex = /\b[a-hj-z]\d{1,2}\b/i
+  let movenumberRegex = /(\B#|\bmove[ ]+)(\d+)\b/i
+  let totalRegex = new RegExp(
+    `(${[urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex]
+      .map(regex => regex.source)
+      .join('|')})`,
+    'gi'
+  )
 
-  input = input.replace(new RegExp(totalRegex, 'gi'), match => {
+  input = input.replace(totalRegex, match => {
     let tokens
 
-    if (new RegExp(urlRegex, 'i').test(match))
+    if (urlRegex.test(match))
       return `<a href="${match}" class="comment-external">${match}</a>`
-    if (new RegExp(emailRegex, 'i').test(match))
+    if (emailRegex.test(match))
       return `<a href="mailto:${match}" class="comment-external">${match}</a>`
-    if ((tokens = new RegExp(variationRegex, 'i').exec(match)))
+    if ((tokens = variationRegex.exec(match)))
       return `<span
-                class="comment-variation"
-                data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
-                data-variation="${tokens[2]}"
-            >${match}</span>`
-    if (new RegExp(coordRegex, 'i').test(match))
+        class="comment-variation"
+        data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
+        data-moves="${tokens[2]}"
+      >${match}</span>`
+    if (coordRegex.test(match))
       return `<span class="comment-coord">${match}</span>`
-    if ((tokens = new RegExp(movenumberRegex, 'i').exec(match)))
+    if ((tokens = movenumberRegex.exec(match)))
       return `<a
-                href="#"
-                class="comment-movenumber"
-                title="${t('Jump to Move Number')}"
-                data-movenumber="${tokens[2]}"
-            >${match}</a>`
+        href="#"
+        class="comment-movenumber"
+        title="${t('Jump to Move Number')}"
+        data-movenumber="${tokens[2]}"
+      >${match}</a>`
   })
 
   return input
 }
 
-class ContentDisplay extends Component {
+export default class ContentDisplay extends Component {
   constructor(props) {
     super(props)
 
@@ -66,43 +67,37 @@ class ContentDisplay extends Component {
     }
 
     let getVariationInfo = target => {
-      let {gameTrees, gameIndex, treePosition} = sabaki.state
-      let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
+      let {board, currentPlayer} = sabaki.inferredState
       let currentVertex = board.currentVertex
       let currentVertexSign = currentVertex && board.get(currentVertex)
       let {color} = target.dataset
-      let sign =
-        color === ''
-          ? sabaki.getPlayer(...treePosition)
-          : color === 'b'
-          ? 1
-          : -1
-      let variation = target.dataset.variation
+      let sign = color === '' ? currentPlayer : color === 'b' ? 1 : -1
+      let moves = target.dataset.moves
         .split(/\s+/)
         .map(x => board.parseVertex(x))
       let sibling = currentVertexSign === sign
 
-      return {sign, variation, sibling}
+      return {sign, moves, sibling}
     }
 
     this.handleVariationMouseEnter = evt => {
       let {currentTarget} = evt
-      let {sign, variation, sibling} = getVariationInfo(currentTarget)
+      let {sign, moves, sibling} = getVariationInfo(currentTarget)
       let counter = 1
 
-      sabaki.setState({playVariation: {sign, variation, sibling}})
+      sabaki.setState({playVariation: {sign, moves, sibling}})
 
       if (setting.get('board.variation_instant_replay')) {
         currentTarget.style.backgroundSize = '100% 100%'
       } else {
         clearInterval(this.variationIntervalId)
         this.variationIntervalId = setInterval(() => {
-          if (counter >= variation.length) {
+          if (counter >= moves.length) {
             clearInterval(this.variationIntervalId)
             return
           }
 
-          let percent = (counter * 100) / (variation.length - 1)
+          let percent = (counter * 100) / (moves.length - 1)
 
           currentTarget.style.backgroundSize = `${percent}% 100%`
           counter++
@@ -120,9 +115,9 @@ class ContentDisplay extends Component {
     this.handleVariationMouseUp = evt => {
       if (evt.button !== 2) return
 
-      let {sign, variation, sibling} = getVariationInfo(evt.currentTarget)
+      let {sign, moves, sibling} = getVariationInfo(evt.currentTarget)
 
-      sabaki.openVariationMenu(sign, variation, {
+      sabaki.openVariationMenu(sign, moves, {
         x: evt.clientX,
         y: evt.clientY,
         appendSibling: sibling
@@ -130,8 +125,7 @@ class ContentDisplay extends Component {
     }
 
     this.handleCoordMouseEnter = evt => {
-      let {gameTrees, gameIndex, treePosition} = sabaki.state
-      let board = gametree.getBoard(gameTrees[gameIndex], treePosition)
+      let {board} = sabaki.inferredState
       let vertex = board.parseVertex(evt.currentTarget.innerText)
 
       sabaki.setState({highlightVertices: [vertex]})
@@ -171,23 +165,21 @@ class ContentDisplay extends Component {
 
   render({tag, content, children}) {
     return content != null
-      ? h(
-          tag,
-          Object.assign(
-            {
-              ref: el => (this.element = el),
-              dangerouslySetInnerHTML: {
-                __html: htmlify(
-                  content
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                )
-              }
-            },
-            this.props
-          )
-        )
+      ? h(tag, {
+          ref: el => (this.element = el),
+          dangerouslySetInnerHTML: {
+            __html: htmlify(
+              content
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+            )
+          },
+          ...this.props,
+          tag: undefined,
+          content: undefined,
+          children: undefined
+        })
       : h(
           tag,
           Object.assign(
@@ -200,5 +192,3 @@ class ContentDisplay extends Component {
         )
   }
 }
-
-module.exports = ContentDisplay

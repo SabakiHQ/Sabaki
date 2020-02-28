@@ -1,9 +1,12 @@
-const {remote} = require('electron')
-const {app, dialog} = remote
-const helper = require('./helper')
-const t = require('../i18n').context('dialog')
+import {remote} from 'electron'
+import i18n from '../i18n.js'
+import sabaki from './sabaki.js'
+import {noop} from './helper.js'
 
-exports.showMessageBox = function(
+const t = i18n.context('dialog')
+const {app, dialog} = remote
+
+export function showMessageBox(
   message,
   type = 'info',
   buttons = [t('OK')],
@@ -24,7 +27,7 @@ exports.showMessageBox = function(
   return result
 }
 
-exports.showFileDialog = function(type, options, callback = helper.noop) {
+export function showFileDialog(type, options) {
   sabaki.setBusy(true)
 
   let [t, ...ype] = [...type]
@@ -36,32 +39,30 @@ exports.showFileDialog = function(type, options, callback = helper.noop) {
   )
 
   sabaki.setBusy(false)
-  callback({result})
+  return result
 }
 
-exports.showOpenDialog = function(options, callback) {
-  return exports.showFileDialog('open', options, callback)
+export function showOpenDialog(options) {
+  return showFileDialog('open', options)
 }
 
-exports.showSaveDialog = function(options, callback) {
-  return exports.showFileDialog('save', options, callback)
+export function showSaveDialog(options) {
+  return showFileDialog('save', options)
 }
 
-exports.showInputBox = function(
-  message,
-  onSubmit = helper.noop,
-  onCancel = helper.noop
-) {
-  sabaki.setState({
-    inputBoxText: message,
-    showInputBox: true,
-    onInputBoxSubmit: onSubmit,
-    onInputBoxCancel: onCancel
+export async function showInputBox(message) {
+  return new Promise(resolve => {
+    sabaki.setState({
+      inputBoxText: message,
+      showInputBox: true,
+      onInputBoxSubmit: evt => resolve(evt.value),
+      onInputBoxCancel: () => resolve(null)
+    })
   })
 }
 
-exports.closeInputBox = function() {
-  let {onInputBoxCancel = helper.noop} = sabaki.state
+export function closeInputBox() {
+  let {onInputBoxCancel = noop} = sabaki.state
   sabaki.setState({showInputBox: false})
   onInputBoxCancel()
 }

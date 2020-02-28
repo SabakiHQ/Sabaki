@@ -1,8 +1,8 @@
-const {h, Component} = require('preact')
+import {h, Component} from 'preact'
 
 const range = n => [...Array(n)].map((_, i) => i)
 
-class MiniGoban extends Component {
+export default class MiniGoban extends Component {
   shouldComponentUpdate({board, maxSize, visible}) {
     return (
       visible !== this.props.visible ||
@@ -68,5 +68,3 @@ class MiniGoban extends Component {
     )
   }
 }
-
-module.exports = MiniGoban

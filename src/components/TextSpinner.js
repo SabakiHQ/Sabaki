@@ -1,31 +1,53 @@
-const {h, Component} = require('preact')
+import EventEmitter from 'events'
+import {h, Component} from 'preact'
 
-class TextSpinner extends Component {
+let pulse
+
+function getPulse() {
+  if (pulse == null) {
+    let frame = 0
+    let m = 8 * 9 * 5 * 7 * 11
+
+    pulse = new EventEmitter()
+    pulse.setMaxListeners(Infinity)
+
+    setInterval(() => {
+      pulse.emit('tick', {frame})
+      frame = (frame + 1) % m
+    }, 100)
+  }
+
+  return pulse
+}
+
+export default class TextSpinner extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
       frame: 0
     }
+
+    this.handleTick = evt => {
+      this.setState({frame: evt.frame})
+    }
   }
 
   componentDidMount() {
-    this.animationIntervalId = setInterval(() => {
-      this.setState(({frame}) => ({
-        frame: frame + 1
-      }))
-    }, this.props.interval || 100)
+    getPulse().on('tick', this.handleTick)
   }
 
   componentWillUnmount() {
-    clearInterval(this.animationIntervalId)
+    getPulse().removeListener('tick', this.handleTick)
   }
 
   render() {
-    let {frames = '-\\|/'} = this.props
+    let {enabled = true, frames = '-\\|/'} = this.props
 
-    return h('span', {}, frames[this.state.frame % frames.length])
+    return h(
+      'span',
+      {class: 'text-spinner'},
+      !enabled ? '' : frames[this.state.frame % frames.length]
+    )
   }
 }
-
-module.exports = TextSpinner

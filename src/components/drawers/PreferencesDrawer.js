@@ -1,15 +1,22 @@
-const fs = require('fs')
-const {shell, remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {existsSync} from 'fs'
+import {shell, remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {join} from 'path'
+import copy from 'recursive-copy'
+import rimraf from 'rimraf'
+import {v4 as uuid} from 'uuid'
+import natsort from 'natsort'
 
-const Drawer = require('./Drawer')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {showOpenDialog, showMessageBox} from '../../modules/dialog.js'
+import {noop, isWritableDirectory} from '../../modules/helper.js'
+import * as gtplogger from '../../modules/gtplogger.js'
+import Drawer from './Drawer.js'
 
-const t = require('../../i18n').context('PreferencesDrawer')
-const dialog = require('../../modules/dialog')
-const helper = require('../../modules/helper')
 const setting = remote.require('./setting')
-const gtplogger = require('../../modules/gtplogger')
+const t = i18n.context('PreferencesDrawer')
 
 class PreferencesItem extends Component {
   constructor(props) {
@@ -20,7 +27,7 @@ class PreferencesItem extends Component {
     }
 
     this.handleChange = evt => {
-      let {onChange = helper.noop} = this.props
+      let {onChange = noop} = this.props
       let {checked} = evt.currentTarget
 
       setting.set(this.props.id, checked)
@@ -110,14 +117,6 @@ class GeneralTab extends Component {
         h(PreferencesItem, {
           id: 'board.variation_instant_replay',
           text: t('Instantly play out analysis variations on board')
-        }),
-        h(PreferencesItem, {
-          id: 'gtp.start_game_after_attach',
-          text: t('Start game right after attaching engines')
-        }),
-        h(PreferencesItem, {
-          id: 'gtp.auto_genmove',
-          text: t('Automatically generate engine moves')
         })
       ),
 
@@ -151,10 +150,6 @@ class GeneralTab extends Component {
         h(PreferencesItem, {
           id: 'edit.click_currentvertex_to_remove',
           text: t('Click last played stone to remove')
-        }),
-        h(PreferencesItem, {
-          id: 'app.always_show_result',
-          text: t('Always show game result')
         }),
         h(PreferencesItem, {
           id: 'view.winrategraph_invert',
@@ -223,21 +218,15 @@ class PathInputItem extends Component {
     }
 
     this.handleBrowseButtonClick = evt => {
-      let dialogProperties =
-        this.props.chooseDirectory != null
-          ? ['openDirectory', 'createDirectory']
-          : ['openFile']
+      let result = showOpenDialog({
+        properties:
+          this.props.chooseDirectory != null
+            ? ['openDirectory', 'createDirectory']
+            : ['openFile']
+      })
+      if (!result || result.length === 0) return
 
-      dialog.showOpenDialog(
-        {
-          properties: dialogProperties
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
-
-          this.handlePathChange({currentTarget: {value: result[0]}})
-        }
-      )
+      this.handlePathChange({currentTarget: {value: result[0]}})
     }
 
     setting.events.on('change', ({key, value}) => {
@@ -282,8 +271,8 @@ class PathInputItem extends Component {
 
         value &&
           !(this.props.chooseDirectory
-            ? helper.isWritableDirectory(value)
-            : fs.existsSync(value)) &&
+            ? isWritableDirectory(value)
+            : existsSync(value)) &&
           h(
             'a',
             {class: 'invalid'},
@@ -324,21 +313,18 @@ class ThemesTab extends Component {
     this.handleUninstallButton = evt => {
       evt.preventDefault()
 
-      let result = dialog.showMessageBox(
+      let result = showMessageBox(
         t('Do you really want to uninstall this theme?'),
         'warning',
         [t('Uninstall'), t('Cancel')],
         1
       )
-
       if (result === 1) return
 
-      let rimraf = require('rimraf')
       let {path} = setting.getThemes()[this.state.currentTheme]
 
       rimraf(path, err => {
-        if (err)
-          return dialog.showMessageBox(t('Uninstallation failed.'), 'error')
+        if (err) return showMessageBox(t('Uninstallation failed.'), 'error')
 
         setting.loadThemes()
         setting.set('theme.current', null)
@@ -348,28 +334,20 @@ class ThemesTab extends Component {
     this.handleInstallButton = evt => {
       evt.preventDefault()
 
-      dialog.showOpenDialog(
-        {
-          properties: ['openFile'],
-          filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
+      let result = showOpenDialog({
+        properties: ['openFile'],
+        filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
+      })
+      if (!result || result.length === 0) return
 
-          let {join} = require('path')
-          let copy = require('recursive-copy')
-          let uuid = require('uuid/v1')
-          let id = uuid()
+      let id = uuid()
 
-          copy(result[0], join(setting.themesDirectory, id), err => {
-            if (err)
-              return dialog.showMessageBox(t('Installation failed.'), 'error')
+      copy(result[0], join(setting.themesDirectory, id), err => {
+        if (err) return showMessageBox(t('Installation failed.'), 'error')
 
-            setting.loadThemes()
-            setting.set('theme.current', id)
-          })
-        }
-      )
+        setting.loadThemes()
+        setting.set('theme.current', id)
+      })
     }
 
     setting.events.on('change', ({key, value}) => {
@@ -511,7 +489,7 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {onChange = helper.noop} = this.props
+      let {onChange = noop} = this.props
       let element = evt.currentTarget
       let data = Object.assign({}, this.props, {
         [element.name]: element.value
@@ -521,22 +499,18 @@ class EngineItem extends Component {
     }
 
     this.handleBrowseButtonClick = () => {
-      dialog.showOpenDialog(
-        {
-          properties: ['openFile'],
-          filters: [{name: t('All Files'), extensions: ['*']}]
-        },
-        ({result}) => {
-          if (!result || result.length === 0) return
+      let result = showOpenDialog({
+        properties: ['openFile'],
+        filters: [{name: t('All Files'), extensions: ['*']}]
+      })
+      if (!result || result.length === 0) return
 
-          let {id, name, args, onChange = helper.noop} = this.props
-          onChange({id, name, args, path: result[0]})
-        }
-      )
+      let {id, name, args, onChange = noop} = this.props
+      onChange({id, name, args, path: result[0]})
     }
 
     this.handleRemoveButtonClick = () => {
-      let {onRemove = helper.noop} = this.props
+      let {onRemove = noop} = this.props
       onRemove(this.props)
     }
   }
@@ -650,7 +624,7 @@ class EnginesTab extends Component {
       engines.unshift({name: '', path: '', args: ''})
       setting.set('engines.list', engines)
 
-      this.setState({}, () => {
+      setImmediate(() => {
         this.element.querySelector('.engines-list li:first-child input').focus()
       })
     }
@@ -662,7 +636,7 @@ class EnginesTab extends Component {
       {ref: el => (this.element = el), class: 'engines'},
       h(
         'div',
-        {class: 'gtp-console-log'},
+        {class: 'gtpconsolelog'},
         h(
           'ul',
           {},
@@ -711,7 +685,7 @@ class EnginesTab extends Component {
   }
 }
 
-class PreferencesDrawer extends Component {
+export default class PreferencesDrawer extends Component {
   constructor() {
     super()
 
@@ -733,21 +707,19 @@ class PreferencesDrawer extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    // On closing
+
     if (prevProps.show && !this.props.show) {
-      // On closing
-
-      let natsort = require('natsort').default
-      let cmp = natsort({insensitive: true})
-
       // Sort engines
 
+      let cmp = natsort({insensitive: true})
       let engines = [...this.props.engines].sort((x, y) => cmp(x.name, y.name))
 
       setting.set('engines.list', engines)
 
-      // Don't create an empty log file
+      // Validate GTP logging path
 
-      if (sabaki.attachedEngineSyncers.some(x => x != null)) {
+      if (sabaki.state.attachedEngineSyncers.length > 0) {
         if (!gtplogger.updatePath()) {
           // Force the user to fix the issue
 
@@ -762,7 +734,7 @@ class PreferencesDrawer extends Component {
 
       // Reset tab selection
 
-      setTimeout(() => sabaki.setState({preferencesTab: 'general'}), 500)
+      sabaki.setState({preferencesTab: 'general'})
     }
   }
 
@@ -776,7 +748,7 @@ class PreferencesDrawer extends Component {
 
       h(
         'ul',
-        {class: 'tabs'},
+        {class: 'tab-bar'},
         h(
           'li',
           {
@@ -826,5 +798,3 @@ class PreferencesDrawer extends Component {
     )
   }
 }
-
-module.exports = PreferencesDrawer

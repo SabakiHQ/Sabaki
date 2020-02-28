@@ -1,19 +1,20 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import sabaki from '../modules/sabaki.js'
+
+import SplitContainer from './helpers/SplitContainer.js'
+import WinrateGraph from './sidebars/WinrateGraph.js'
+import Slider from './sidebars/Slider.js'
+import GameGraph from './sidebars/GameGraph.js'
+import CommentBox from './sidebars/CommentBox.js'
 
 const setting = remote.require('./setting')
 
-const SplitContainer = require('./helpers/SplitContainer')
-const WinrateGraph = require('./WinrateGraph')
-const Slider = require('./Slider')
-const GameGraph = require('./GameGraph')
-const CommentBox = require('./CommentBox')
+const propertiesMinHeight = setting.get('view.properties_minheight')
+const winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
+const winrateGraphMaxHeight = setting.get('view.winrategraph_maxheight')
 
-let propertiesMinHeight = setting.get('view.properties_minheight')
-let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
-let winrateGraphMaxHeight = setting.get('view.winrategraph_maxheight')
-
-class Sidebar extends Component {
+export default class Sidebar extends Component {
   constructor(props) {
     super(props)
 
@@ -26,7 +27,7 @@ class Sidebar extends Component {
       if (button === 0) {
         sabaki.setCurrentTreePosition(gameTree, treePosition)
       } else {
-        sabaki.openNodeMenu(gameTree, treePosition, {x, y})
+        sabaki.openNodeMenu(treePosition, {x, y})
       }
     }
 
@@ -76,25 +77,14 @@ class Sidebar extends Component {
     }
 
     this.handleCommentInput = evt => {
-      sabaki.setComment(this.props.gameTree, this.props.treePosition, evt)
+      sabaki.setComment(this.props.treePosition, evt)
     }
-
-    this.componentWillReceiveProps(props)
   }
 
   shouldComponentUpdate(nextProps) {
     return (
       nextProps.showSidebar != this.props.showSidebar || nextProps.showSidebar
     )
-  }
-
-  componentWillReceiveProps({gameTree, gameCurrents, gameIndex} = {}) {
-    // Get winrate data
-
-    let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
-    let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
-
-    this.setState({winrateData})
   }
 
   componentDidUpdate(_, {winrateData}) {
@@ -234,4 +224,15 @@ class Sidebar extends Component {
   }
 }
 
-module.exports = Sidebar
+Sidebar.getDerivedStateFromProps = function({
+  gameTree,
+  gameCurrents,
+  gameIndex
+}) {
+  // Get winrate data
+
+  let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
+  let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
+
+  return {winrateData}
+}

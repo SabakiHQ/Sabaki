@@ -78,18 +78,20 @@ exports.transformCoords = function(
   }
 }
 
-exports.transformVertex = function(vertex, transformation, width, height) {
+exports.transformVertex = function([x, y], transformation, width, height) {
+  if (x < 0 || y < 0 || x >= width || y >= height) return [-1, -1]
+
   let {width: newWidth, height: newHeight} = exports.transformSize(
     width,
     height,
     transformation
   )
-  let [x, y] = [...transformation].reduce(
+  let [nx, ny] = [...transformation].reduce(
     ([x, y], c) => (c === 'f' ? [-x - 1, y] : c === 'r' ? [-y - 1, x] : [x, y]),
-    vertex
+    [x, y]
   )
 
-  return [(x + newWidth) % newWidth, (y + newHeight) % newHeight]
+  return [(nx + newWidth) % newWidth, (ny + newHeight) % newHeight]
 }
 
 exports.transformLine = function(line, transformation, width, height) {

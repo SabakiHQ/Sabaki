@@ -1,11 +1,14 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const Drawer = require('./Drawer')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {noop, getScore} from '../../modules/helper.js'
 
-const t = require('../../i18n').context('ScoreDrawer')
-const helper = require('../../modules/helper')
+import Drawer from './Drawer.js'
+
+const t = i18n.context('ScoreDrawer')
 const setting = remote.require('./setting')
 
 class ScoreRow extends Component {
@@ -60,7 +63,7 @@ class ScoreRow extends Component {
   }
 }
 
-class ScoreDrawer extends Component {
+export default class ScoreDrawer extends Component {
   constructor() {
     super()
 
@@ -72,7 +75,7 @@ class ScoreDrawer extends Component {
     this.handleSubmitButtonClick = evt => {
       evt.preventDefault()
 
-      let {onSubmitButtonClick = helper.noop} = this.props
+      let {onSubmitButtonClick = noop} = this.props
       evt.resultString = this.resultString
       onSubmitButtonClick(evt)
     }
@@ -82,17 +85,12 @@ class ScoreDrawer extends Component {
     if (isNaN(komi)) komi = 0
     if (isNaN(handicap)) handicap = 0
 
-    let score =
-      areaMap && board && helper.getScore(board, areaMap, {handicap, komi})
+    let score = areaMap && board && getScore(board, areaMap, {handicap, komi})
     let result =
       score && (method === 'area' ? score.areaScore : score.territoryScore)
 
     this.resultString =
-      result > 0
-        ? t(p => `B+${p.result}`, {result})
-        : result < 0
-        ? t(p => `W+${p.result}`, {result: -result})
-        : t('Draw')
+      result > 0 ? `B+${result}` : result < 0 ? `W+${-result}` : t('Draw')
 
     return h(
       Drawer,
@@ -105,7 +103,7 @@ class ScoreDrawer extends Component {
 
       h(
         'ul',
-        {class: 'tabs'},
+        {class: 'tab-bar'},
         h(
           'li',
           {class: classNames({current: method === 'area'})},
@@ -193,5 +191,3 @@ class ScoreDrawer extends Component {
     )
   }
 }
-
-module.exports = ScoreDrawer

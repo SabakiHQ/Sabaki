@@ -1,17 +1,27 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const Pikaday = require('pikaday')
-const sgf = require('@sabaki/sgf')
+import {remote} from 'electron'
+import classNames from 'classnames'
+import {h, Component, toChildArray} from 'preact'
+import Pikaday from 'pikaday'
+import {parseDates, stringifyDates} from '@sabaki/sgf'
 
-const Drawer = require('./Drawer')
+import sabaki from '../../modules/sabaki.js'
+import {
+  popupMenu,
+  shallowEquals,
+  lexicalCompare,
+  noop
+} from '../../modules/helper.js'
+import i18n from '../../i18n.js'
 
-const t = require('../../i18n').context('InfoDrawer')
-const helper = require('../../modules/helper')
+import Drawer from './Drawer.js'
+
+const t = i18n.context('InfoDrawer')
 const setting = remote.require('./setting')
 
 class InfoDrawerItem extends Component {
   render({title, children}) {
+    children = toChildArray(children)
+
     return h(
       'li',
       {},
@@ -21,9 +31,26 @@ class InfoDrawerItem extends Component {
   }
 }
 
-class InfoDrawer extends Component {
-  constructor() {
-    super()
+export default class InfoDrawer extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      showResult: false,
+      blackName: null,
+      blackRank: null,
+      whiteName: null,
+      whiteRank: null,
+      syncerEngines: [null, null],
+      gameName: null,
+      eventName: null,
+      gameComment: null,
+      date: null,
+      result: null,
+      komi: null,
+      handicap: 0,
+      size: [null, null]
+    }
 
     this.handleSubmitButtonClick = async evt => {
       evt.preventDefault()
@@ -56,18 +83,28 @@ class InfoDrawer extends Component {
         data.size = this.state.size
       }
 
-      sabaki.setGameInfo(this.props.gameTree, data)
+      sabaki.setGameInfo(data)
       sabaki.closeDrawer()
-      sabaki.attachEngines(...this.state.engines)
 
-      await sabaki.waitForRender()
+      this.state.syncerEngines.forEach((syncerEngine, i) => {
+        let playerSyncerId = null
 
-      let i = this.props.currentPlayer > 0 ? 0 : 1
-      let startGame = setting.get('gtp.start_game_after_attach')
+        if (syncerEngine != null) {
+          let {syncer, engine} = syncerEngine
 
-      if (startGame && sabaki.attachedEngineSyncers[i] != null) {
-        sabaki.generateMove({followUp: true})
-      }
+          if (syncer == null) {
+            syncer = sabaki.attachEngines([engine])[0]
+          }
+
+          playerSyncerId = syncer.id
+        }
+
+        sabaki.setState({
+          [i === 0
+            ? 'blackEngineSyncerId'
+            : 'whiteEngineSyncerId']: playerSyncerId
+        })
+      })
     }
 
     this.handleCancelButtonClick = evt => {
@@ -102,15 +139,12 @@ class InfoDrawer extends Component {
     }
 
     this.handleSwapPlayers = () => {
-      this.setState(
-        ({engines, blackName, blackRank, whiteName, whiteRank}) => ({
-          engines: (engines || [null, null]).reverse(),
-          blackName: whiteName,
-          whiteName: blackName,
-          blackRank: whiteRank,
-          whiteRank: blackRank
-        })
-      )
+      this.setState(({blackName, blackRank, whiteName, whiteRank}) => ({
+        blackName: whiteName,
+        whiteName: blackName,
+        blackRank: whiteRank,
+        whiteRank: blackRank
+      }))
     }
 
     this.handleDateInputChange = evt => {
@@ -155,45 +189,63 @@ class InfoDrawer extends Component {
 
     this.handleEngineMenuClick = [0, 1].map(index => evt => {
       let engines = setting.get('engines.list')
+      let {attachedEngineSyncers} = this.props
       let nameKey = ['blackName', 'whiteName'][index]
       let autoName =
-        this.state.engines[index] == null
+        this.state.syncerEngines[index] == null
           ? this.state[nameKey] == null
-          : this.state[nameKey] === this.state.engines[index].name.trim()
+          : this.state[nameKey] === this.state.syncerEngines[index].engine.name
 
       let template = [
         {
           label: t('Manual'),
           type: 'checkbox',
-          checked: this.state.engines[index] == null,
+          checked: this.state.syncerEngines[index] == null,
           click: () => {
-            let {engines} = this.state
-            if (engines[index] == null) return
-
-            engines[index] = null
-
-            this.setState({
-              engines,
-              [nameKey]: autoName ? null : this.state[nameKey]
-            })
+            this.setState(state => ({
+              syncerEngines: Object.assign(state.syncerEngines, {
+                [index]: null
+              }),
+              [nameKey]: autoName ? null : state[nameKey]
+            }))
           }
         },
         {type: 'separator'},
-        ...engines.map(engine => ({
-          label: engine.name.trim() || t('(Unnamed Engine)'),
+        ...attachedEngineSyncers.map(syncer => ({
+          label: syncer.engine.name || t('(Unnamed Engine)'),
           type: 'checkbox',
-          checked: engine === this.state.engines[index],
+          checked:
+            this.state.syncerEngines[index] != null &&
+            this.state.syncerEngines[index].syncer === syncer,
           click: () => {
-            let {engines} = this.state
-            engines[index] = engine
-
-            this.setState({
-              engines,
-              [nameKey]: autoName ? engine.name.trim() : this.state[nameKey]
-            })
+            this.setState(state => ({
+              syncerEngines: Object.assign(state.syncerEngines, {
+                [index]: {syncer, engine: syncer.engine}
+              }),
+              [nameKey]: autoName ? syncer.engine.name : state[nameKey]
+            }))
           }
         })),
-        engines.length > 0 && {type: 'separator'},
+        attachedEngineSyncers.length > 0 && {type: 'separator'},
+        {
+          label: t('Attach Engine'),
+          submenu: engines.map(engine => ({
+            label: engine.name || t('(Unnamed Engine)'),
+            type: 'checkbox',
+            checked:
+              this.state.syncerEngines[index] != null &&
+              this.state.syncerEngines[index].syncer == null &&
+              this.state.syncerEngines[index].engine === engine,
+            click: () => {
+              this.setState(state => ({
+                syncerEngines: Object.assign(state.syncerEngines, {
+                  [index]: {engine}
+                }),
+                [nameKey]: autoName ? engine.name : state[nameKey]
+              }))
+            }
+          }))
+        },
         {
           label: t('Manage Engines…'),
           click: () => {
@@ -204,22 +256,29 @@ class InfoDrawer extends Component {
       ].filter(x => !!x)
 
       let {left, bottom} = evt.currentTarget.getBoundingClientRect()
-
-      helper.popupMenu(template, left, bottom)
+      popupMenu(template, left, bottom)
     })
   }
 
-  componentWillReceiveProps({gameInfo, engines, show}) {
+  componentWillReceiveProps({
+    gameInfo,
+    show,
+    attachedEngineSyncers,
+    blackEngineSyncerId,
+    whiteEngineSyncerId
+  }) {
     if (!this.props.show && show) {
-      this.setState(
-        Object.assign({}, gameInfo, {
-          engines: [...engines],
-          showResult:
-            !gameInfo.result ||
-            gameInfo.result.trim() === '' ||
-            setting.get('app.always_show_result') === true
-        })
-      )
+      this.setState({
+        ...gameInfo,
+        syncerEngines: [blackEngineSyncerId, whiteEngineSyncerId].map(id => {
+          let syncer = attachedEngineSyncers.find(syncer => syncer.id === id)
+          return syncer == null ? null : {syncer, engine: syncer.engine}
+        }),
+        showResult:
+          !gameInfo.result ||
+          gameInfo.result.trim() === '' ||
+          setting.get('app.always_show_result') === true
+      })
     }
   }
 
@@ -238,7 +297,7 @@ class InfoDrawer extends Component {
   }
 
   markDates() {
-    let dates = (sgf.parseDates(this.state.date || '') || []).filter(
+    let dates = (parseDates(this.state.date || '') || []).filter(
       x => x.length === 3
     )
 
@@ -250,7 +309,7 @@ class InfoDrawer extends Component {
       el.parentElement.classList.toggle(
         'is-multi-selected',
         dates.some(d => {
-          return helper.shallowEquals(d, [year, month + 1, day])
+          return shallowEquals(d, [year, month + 1, day])
         })
       )
     }
@@ -321,7 +380,7 @@ class InfoDrawer extends Component {
       onOpen: () => {
         if (!this.pikaday) return
 
-        let dates = (sgf.parseDates(this.state.date || '') || []).filter(
+        let dates = (parseDates(this.state.date || '') || []).filter(
           x => x.length === 3
         )
 
@@ -344,17 +403,17 @@ class InfoDrawer extends Component {
       onSelect: date => {
         if (!this.pikaday) return
 
-        let dates = sgf.parseDates(this.state.date || '') || []
+        let dates = parseDates(this.state.date || '') || []
         date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
-        if (!dates.some(x => helper.shallowEquals(x, date))) {
+        if (!dates.some(x => shallowEquals(x, date))) {
           dates.push(date)
         } else {
-          dates = dates.filter(x => !helper.shallowEquals(x, date))
+          dates = dates.filter(x => !shallowEquals(x, date))
         }
 
         this.setState({
-          date: sgf.stringifyDates(dates.sort(helper.lexicalCompare))
+          date: stringifyDates(dates.sort(lexicalCompare))
         })
         this.markDates()
       }
@@ -382,20 +441,20 @@ class InfoDrawer extends Component {
   render(
     {gameTree, currentPlayer, show},
     {
-      showResult = false,
-      engines = [null, null],
-      blackName = null,
-      blackRank = null,
-      whiteName = null,
-      whiteRank = null,
-      gameName = null,
-      eventName = null,
-      gameComment = null,
-      date = null,
-      result = null,
-      komi = null,
-      handicap = 0,
-      size = [null, null]
+      showResult,
+      blackName,
+      blackRank,
+      whiteName,
+      whiteRank,
+      syncerEngines,
+      gameName,
+      eventName,
+      gameComment,
+      date,
+      result,
+      komi,
+      handicap,
+      size
     }
   ) {
     let emptyTree = gameTree.root.children.length === 0
@@ -416,12 +475,13 @@ class InfoDrawer extends Component {
           h(
             'span',
             {},
+
             h('img', {
               tabIndex: 0,
               src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
               width: 16,
               height: 16,
-              class: classNames({menu: true, active: engines[0] != null}),
+              class: classNames({menu: true, active: syncerEngines[0] != null}),
               onClick: this.handleEngineMenuClick[0]
             }),
             ' ',
@@ -469,18 +529,18 @@ class InfoDrawer extends Component {
               placeholder: t('Rank'),
               value: whiteRank,
               onInput: this.handleInputChange.whiteRank
-            }),
-            ' ',
-
-            h('img', {
-              tabIndex: 0,
-              src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
-              width: 16,
-              height: 16,
-              class: classNames({menu: true, active: engines[1] != null}),
-              onClick: this.handleEngineMenuClick[1]
             })
-          )
+          ),
+          ' ',
+
+          h('img', {
+            tabIndex: 0,
+            src: './node_modules/@primer/octicons/build/svg/chevron-down.svg',
+            width: 16,
+            height: 16,
+            class: classNames({menu: true, active: syncerEngines[1] != null}),
+            onClick: this.handleEngineMenuClick[1]
+          })
         ),
 
         h(
@@ -605,9 +665,7 @@ class InfoDrawer extends Component {
               {
                 title: t('Swap'),
                 style: {cursor: emptyTree ? 'pointer' : 'default'},
-                onClick: !emptyTree
-                  ? helper.noop
-                  : this.handleSizeSwapButtonClick
+                onClick: !emptyTree ? noop : this.handleSizeSwapButtonClick
               },
               '×'
             ),
@@ -645,5 +703,3 @@ class InfoDrawer extends Component {
     )
   }
 }
-
-module.exports = InfoDrawer

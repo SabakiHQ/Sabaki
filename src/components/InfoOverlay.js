@@ -1,7 +1,7 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-class InfoOverlay extends Component {
+export default class InfoOverlay extends Component {
   shouldComponentUpdate({text, show}) {
     return text !== this.props.text || show !== this.props.show
   }
@@ -17,5 +17,3 @@ class InfoOverlay extends Component {
     )
   }
 }
-
-module.exports = InfoOverlay

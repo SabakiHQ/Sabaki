@@ -1,10 +1,12 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const gtp = require('@sabaki/gtp')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {Command} from '@sabaki/gtp'
 
-const ContentDisplay = require('./ContentDisplay')
-const TextSpinner = require('./TextSpinner')
-const helper = require('../modules/helper')
+import sabaki from '../../modules/sabaki.js'
+import ContentDisplay from '../ContentDisplay.js'
+import TextSpinner from '../TextSpinner.js'
+import {noop, popupMenu} from '../../modules/helper.js'
+import i18n from '../../i18n.js'
 
 class ConsoleCommandEntry extends Component {
   shouldComponentUpdate({sign, name, command}) {
@@ -17,6 +19,7 @@ class ConsoleCommandEntry extends Component {
 
   render({sign, name, command}) {
     if (command == null) command = {name: ''}
+    if (sign == null) sign = 0
 
     return h(
       'li',
@@ -24,7 +27,7 @@ class ConsoleCommandEntry extends Component {
       h(
         'pre',
         {},
-        h('span', {class: 'internal'}, `${['●', '', '○'][sign + 1]} ${name}>`),
+        h('span', {class: 'engine'}, `${['● ', '', '○ '][sign + 1]}${name}>`),
         ' ',
 
         command.id != null && [h('span', {class: 'id'}, command.id), ' '],
@@ -67,14 +70,16 @@ class ConsoleResponseEntry extends Component {
 
             !response.internal && ' ',
 
-            h(ContentDisplay, {
-              tag: 'span',
-              class: response.internal ? 'internal' : '',
-              content: response.content.replace(
-                /(^info move.*\s*)+/gm,
-                'info move (…)\n'
-              )
-            }),
+            typeof response.content === 'string'
+              ? h(ContentDisplay, {
+                  tag: 'span',
+                  class: response.internal ? 'internal' : '',
+                  content: response.content.replace(
+                    /(^info move.*\s*)+/gm,
+                    'info move (…)\n'
+                  )
+                })
+              : response.content,
 
             waiting && h('div', {class: 'internal'}, h(TextSpinner))
           )
@@ -99,20 +104,20 @@ class ConsoleInput extends Component {
       if (evt.key === 'Enter') {
         evt.preventDefault()
 
-        let {engineIndex, onSubmit = helper.noop} = this.props
+        let {onSubmit = noop} = this.props
         let {commandInputText} = this.state
 
         if (commandInputText.trim() === '') return
 
         onSubmit({
-          engineIndex,
-          command: gtp.Command.fromString(commandInputText)
+          command: Command.fromString(commandInputText)
         })
 
         this.inputPointer = null
         this.setState({commandInputText: ''})
-      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
+      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key) && !evt.ctrlKey) {
         evt.preventDefault()
+
         let {consoleLog} = this.props
         let sign = evt.key === 'ArrowUp' ? -1 : 1
 
@@ -133,19 +138,23 @@ class ConsoleInput extends Component {
           let {command} = consoleLog[this.inputPointer]
 
           if (command != null) {
-            let text = gtp.Command.toString(command)
+            let text = Command.toString(command)
 
             this.setState({commandInputText: text})
 
             break
           }
         }
+      } else if (['ArrowUp', 'ArrowDown'].includes(evt.key) && evt.ctrlKey) {
+        let {onControlStep = noop} = this.props
+        let step = evt.key === 'ArrowUp' ? -1 : 1
+
+        onControlStep({step})
       } else if (evt.key === 'Tab') {
         evt.preventDefault()
-        let autocompleteText = this.getAutocompleteText()
 
-        if (autocompleteText !== '') {
-          this.setState({commandInputText: autocompleteText})
+        if (this.autocompleteText !== '') {
+          this.setState({commandInputText: this.autocompleteText})
         }
       }
 
@@ -168,65 +177,33 @@ class ConsoleInput extends Component {
     }
   }
 
-  getAutocompleteText() {
-    let {engineIndex, engineCommands} = this.props
+  get autocompleteText() {
+    let {attachedEngine} = this.props
     let {commandInputText} = this.state
 
-    if (engineCommands[engineIndex] && commandInputText.length > 0) {
+    if (attachedEngine && commandInputText.length > 0) {
       return (
-        engineCommands[engineIndex].find(
-          x => x.indexOf(commandInputText) === 0
-        ) || ''
+        attachedEngine.commands.find(x => x.indexOf(commandInputText) === 0) ||
+        ''
       )
     }
 
     return ''
   }
 
-  render({engineIndex, attachedEngines}, {commandInputText}) {
-    let selectedEngine = attachedEngines[engineIndex]
-    let selectWidth =
-      Math.max(5, selectedEngine ? selectedEngine.name.trim().length + 3 : 3) *
-        10 +
-      15
-    let inputStyle = {left: selectWidth, width: `calc(100% - ${selectWidth}px)`}
-    let autocompleteText = this.getAutocompleteText()
-    let hasEngines = attachedEngines.some(x => x != null)
+  render({attachedEngine}, {commandInputText}) {
+    let disabled = attachedEngine == null
 
     return h(
       'form',
       {class: 'input'},
-      h(
-        'select',
-        {
-          disabled:
-            !hasEngines || attachedEngines.filter(x => x != null).length === 1,
-          style: {width: selectWidth},
-
-          onChange: this.props.onSelectChange
-        },
-
-        attachedEngines.map(
-          (engine, i) =>
-            engine &&
-            h(
-              'option',
-              {
-                value: i,
-                selected: engineIndex === i
-              },
-              `${['○', '●'][i]} ${engine.name.trim()}>`
-            )
-        )
-      ),
-
       h('input', {
         ref: el => (this.inputElement = el),
         class: 'command',
-        disabled: !hasEngines,
+        disabled,
         type: 'text',
         value: commandInputText,
-        style: inputStyle,
+        placeholder: attachedEngine != null ? `${attachedEngine.name}>` : '',
 
         onInput: this.handleInputChange,
         onKeyDown: this.handleKeyDown
@@ -235,39 +212,37 @@ class ConsoleInput extends Component {
       h('input', {
         ref: el => (this.inputAutocompleteElement = el),
         class: 'autocomplete',
-        disabled: !hasEngines,
+        disabled,
         type: 'text',
-        value: autocompleteText,
-        style: inputStyle
+        value: this.autocompleteText
       })
     )
   }
 }
 
-class GtpConsole extends Component {
+export default class GtpConsole extends Component {
   constructor() {
     super()
 
     this.scrollToBottom = true
 
-    this.state = {
-      engineIndex: -1
-    }
+    this.handleContextMenu = evt => {
+      let t = i18n.context('menu.engines')
 
-    this.handleSelectChange = evt => {
-      this.setState({engineIndex: +evt.currentTarget.value})
-      this.inputElement.focus()
+      popupMenu(
+        [
+          {
+            label: t('&Clear Console'),
+            click: () => sabaki.clearConsole()
+          }
+        ],
+        evt.clientX,
+        evt.clientY
+      )
     }
   }
 
-  componentWillReceiveProps({consoleLog, attachedEngines}) {
-    let {engineIndex} = this.state
-
-    if (attachedEngines[engineIndex] == null) {
-      let index = attachedEngines.findIndex(x => x != null)
-      if (engineIndex !== index) this.setState({engineIndex: index})
-    }
-
+  componentWillReceiveProps({consoleLog}) {
     this.inputPointer = consoleLog.length
   }
 
@@ -283,52 +258,63 @@ class GtpConsole extends Component {
     }
   }
 
-  render({consoleLog, attachedEngines, engineCommands}, {engineIndex}) {
+  getSign(command) {
+    if (!command) return 0
+
+    for (let arg of command.args) {
+      if (['b', 'black'].includes(arg.toLowerCase())) {
+        return 1
+      } else if (['w', 'white'].includes(arg.toLowerCase())) {
+        return -1
+      }
+    }
+
+    return 0
+  }
+
+  render({consoleLog, attachedEngine}) {
     return h(
       'section',
-      {id: 'console'},
+      {class: 'gtp-console'},
+
       h(
         'ol',
         {
           ref: el => (this.scrollElement = el),
-          class: 'log'
+          class: 'log',
+          onContextMenu: this.handleContextMenu
         },
 
-        consoleLog.map(({sign, name, command, response, waiting}, i) => [
-          command
-            ? h(ConsoleCommandEntry, {
-                key: command.internalId,
-                sign,
-                name,
-                command
-              })
-            : !command &&
-              (i === 0 ||
-                consoleLog[i - 1].sign !== sign ||
-                consoleLog[i - 1].name !== name)
-            ? h(ConsoleCommandEntry, {sign, name, command})
-            : null,
+        consoleLog.map(({name, command, response, waiting}, i) => {
+          let sign = this.getSign(command)
 
-          h(ConsoleResponseEntry, {
-            response,
-            waiting: response == null || waiting
-          })
-        ])
+          return [
+            command ||
+            i === 0 ||
+            consoleLog[i - 1].name !== name ||
+            (sign !== 0 && consoleLog[i - 1].sign !== sign)
+              ? h(ConsoleCommandEntry, {sign, name, command})
+              : null,
+
+            h(ConsoleResponseEntry, {
+              response,
+              waiting: response == null || waiting
+            })
+          ]
+        })
       ),
 
       h(ConsoleInput, {
-        ref: component => (this.inputElement = component.inputElement),
+        ref: component =>
+          (this.inputElement =
+            component == null ? null : component.inputElement),
 
         consoleLog,
-        attachedEngines,
-        engineCommands,
-        engineIndex,
+        attachedEngine,
 
-        onSelectChange: this.handleSelectChange,
-        onSubmit: this.props.onSubmit
+        onSubmit: this.props.onSubmit,
+        onControlStep: this.props.onControlStep
       })
     )
   }
 }
-
-module.exports = GtpConsole

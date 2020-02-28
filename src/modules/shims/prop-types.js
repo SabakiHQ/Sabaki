@@ -1,7 +1,5 @@
-const {noop} = require('../helper')
+import {noop} from '../helper.js'
 
-module.exports = {
-  arrayOf: noop,
-  oneOf: noop,
-  oneOfType: noop
-}
+export const arrayOf = noop
+export const oneOf = noop
+export const oneOfType = noop

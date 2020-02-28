@@ -1,6 +1,6 @@
-const {h, Component} = require('preact')
+import {h, Component} from 'preact'
 
-class SplitContainer extends Component {
+export default class SplitContainer extends Component {
   constructor(props) {
     super(props)
 
@@ -69,11 +69,11 @@ class SplitContainer extends Component {
 
     let gridTemplate = procentualSplit
       ? [`${100 - sideSize}%`, `${sideSize}%`]
-      : ['1fr', `${sideSize}px`]
+      : [`calc(100% - ${sideSize}px)`, `${sideSize}px`]
     if (invert) gridTemplate.reverse()
 
-    let gridTemplateRows = !vertical ? '1fr' : gridTemplate.join(' ')
-    let gridTemplateColumns = vertical ? '1fr' : gridTemplate.join(' ')
+    let gridTemplateRows = !vertical ? '100%' : gridTemplate.join(' ')
+    let gridTemplateColumns = vertical ? '100%' : gridTemplate.join(' ')
 
     let resizer = h('div', {
       class: 'resizer',
@@ -114,7 +114,7 @@ class SplitContainer extends Component {
           style: {
             position: 'relative',
             display: 'grid',
-            gridTemplate: '1fr / 1fr'
+            gridTemplate: '100% / 100%'
           }
         },
         [sideContent, resizer]
@@ -124,5 +124,3 @@ class SplitContainer extends Component {
     )
   }
 }
-
-module.exports = SplitContainer

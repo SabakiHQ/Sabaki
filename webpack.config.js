@@ -17,14 +17,21 @@ module.exports = (env, argv) => ({
 
   resolve: {
     alias: {
-      react: path.join(__dirname, 'node_modules/preact/dist/preact.min.js'),
-      preact: path.join(__dirname, 'node_modules/preact/dist/preact.min.js'),
+      react:
+        argv.mode === 'production'
+          ? path.join(__dirname, 'node_modules/preact/dist/preact.min.js')
+          : 'preact',
+      preact:
+        argv.mode === 'production'
+          ? path.join(__dirname, 'node_modules/preact/dist/preact.min.js')
+          : 'preact',
       'prop-types': path.join(__dirname, 'src/modules/shims/prop-types.js')
     }
   },
 
   externals: {
-    moment: 'null',
-    'iconv-lite': 'require("iconv-lite")'
+    'cross-spawn': 'null',
+    'iconv-lite': 'require("iconv-lite")',
+    moment: 'null'
   }
 })

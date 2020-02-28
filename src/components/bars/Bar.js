@@ -1,7 +1,8 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import sabaki from '../../modules/sabaki.js'
 
-class Bar extends Component {
+export default class Bar extends Component {
   constructor(props) {
     super(props)
 
@@ -9,7 +10,6 @@ class Bar extends Component {
       hidecontent: props.type !== props.mode
     }
 
-    this.componentWillReceiveProps(props)
     this.onCloseButtonClick = () => sabaki.setMode('play')
   }
 
@@ -50,5 +50,3 @@ class Bar extends Component {
     )
   }
 }
-
-module.exports = Bar

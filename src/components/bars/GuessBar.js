@@ -1,6 +1,8 @@
-const {h, Component} = require('preact')
-const Bar = require('./Bar')
-const t = require('../../i18n').context('GuessBar')
+import {h, Component} from 'preact'
+import Bar from './Bar.js'
+import i18n from '../../i18n.js'
+
+const t = i18n.context('fileformats')
 
 class GuessBar extends Component {
   render(props) {
@@ -12,4 +14,4 @@ class GuessBar extends Component {
   }
 }
 
-module.exports = GuessBar
+export default GuessBar

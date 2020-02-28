@@ -1,7 +1,7 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import * as helper from '../../modules/helper.js'
 
-const helper = require('../modules/helper')
 const setting = remote.require('./setting')
 
 class Slider extends Component {
@@ -107,4 +107,4 @@ class Slider extends Component {
   }
 }
 
-module.exports = Slider
+export default Slider

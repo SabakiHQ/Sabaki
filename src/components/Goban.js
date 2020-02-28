@@ -1,17 +1,17 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const sgf = require('@sabaki/sgf')
-const {BoundedGoban} = require('@sabaki/shudan')
-const {remote} = require('electron')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
+import {remote} from 'electron'
+import sgf from '@sabaki/sgf'
+import {BoundedGoban} from '@sabaki/shudan'
 
-const gametree = require('../modules/gametree')
-const gobantransformer = require('../modules/gobantransformer')
-const helper = require('../modules/helper')
+import * as gametree from '../modules/gametree.js'
+import * as gobantransformer from '../modules/gobantransformer.js'
+import * as helper from '../modules/helper.js'
+
 const setting = remote.require('./setting')
-
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
-class Goban extends Component {
+export default class Goban extends Component {
   constructor(props) {
     super(props)
 
@@ -42,8 +42,6 @@ class Goban extends Component {
         oldHandler(evt, originalVertex)
       }
     }
-
-    this.componentWillReceiveProps()
   }
 
   componentDidMount() {
@@ -58,27 +56,17 @@ class Goban extends Component {
     // Resize board when window is resizing
 
     window.addEventListener('resize', () => {
-      this.componentDidUpdate()
-      this.setState({})
+      this.resize()
     })
 
-    this.componentDidUpdate()
+    this.resize()
+    this.componentWillReceiveProps()
   }
 
   componentDidUpdate() {
     if (!this.element || !this.element.parentElement) return
 
-    let {
-      offsetWidth: maxWidth,
-      offsetHeight: maxHeight
-    } = this.element.parentElement
-
-    if (
-      maxWidth !== this.state.maxWidth ||
-      maxHeight !== this.state.maxHeight
-    ) {
-      this.setState({maxWidth, maxHeight})
-    }
+    let {maxWidth, maxHeight} = this.state
 
     setTimeout(() => {
       let {offsetWidth: width, offsetHeight: height} = this.element
@@ -95,13 +83,27 @@ class Goban extends Component {
   componentWillReceiveProps(nextProps = {}) {
     if (nextProps.playVariation !== this.props.playVariation) {
       if (nextProps.playVariation != null) {
-        let {sign, variation, sibling} = nextProps.playVariation
+        let {sign, moves, sibling} = nextProps.playVariation
 
         this.stopPlayingVariation()
-        this.playVariation(sign, variation, sibling)
+        this.playVariation(sign, moves, sibling)
       } else {
         this.stopPlayingVariation()
       }
+    }
+  }
+
+  resize() {
+    let {
+      offsetWidth: maxWidth,
+      offsetHeight: maxHeight
+    } = this.element.parentElement
+
+    if (
+      maxWidth !== this.state.maxWidth ||
+      maxHeight !== this.state.maxHeight
+    ) {
+      this.setState({maxWidth, maxHeight})
     }
   }
 
@@ -156,33 +158,33 @@ class Goban extends Component {
   handleVertexMouseEnter(evt, vertex) {
     if (this.props.analysis == null) return
 
-    let {sign, variation} =
-      this.props.analysis.find(x => helper.vertexEquals(x.vertex, vertex)) || {}
+    let {sign, variations} = this.props.analysis
+    let variation = variations.find(x => helper.vertexEquals(x.vertex, vertex))
     if (variation == null) return
 
-    this.playVariation(sign, variation)
+    this.playVariation(sign, variation.moves)
   }
 
   handleVertexMouseLeave(evt, vertex) {
     this.stopPlayingVariation()
   }
 
-  playVariation(sign, variation, sibling = false) {
+  playVariation(sign, moves, sibling = false) {
     if (setting.get('board.variation_instant_replay')) {
       this.variationIntervalId = true
 
       this.setState({
-        variation,
+        variationMoves: moves,
         variationSign: sign,
         variationSibling: sibling,
-        variationIndex: variation.length
+        variationIndex: moves.length
       })
     } else {
       clearInterval(this.variationIntervalId)
 
       this.variationIntervalId = setInterval(() => {
         this.setState(({variationIndex = -1}) => ({
-          variation,
+          variationMoves: moves,
           variationSign: sign,
           variationSibling: sibling,
           variationIndex: variationIndex + 1
@@ -198,7 +200,7 @@ class Goban extends Component {
     this.variationIntervalId = null
 
     this.setState({
-      variation: null,
+      variationMoves: null,
       variationIndex: -1
     })
   }
@@ -233,7 +235,7 @@ class Goban extends Component {
       clicked = false,
       temporaryLine = null,
 
-      variation = null,
+      variationMoves = null,
       variationSign = 1,
       variationSibling = false,
       variationIndex = -1
@@ -339,11 +341,11 @@ class Goban extends Component {
       }
     }
 
-    // Draw variation
+    // Draw variationMoves
 
     let drawHeatMap = true
 
-    if (variation != null) {
+    if (variationMoves != null) {
       markerMap = board.markers.map(x => [...x])
 
       if (variationSibling) {
@@ -355,14 +357,13 @@ class Goban extends Component {
         }
       }
 
-      let variationBoard = variation
+      let variationBoard = variationMoves
         .slice(0, variationIndex + 1)
         .reduce((board, [x, y], i) => {
+          let sign = i % 2 === 0 ? variationSign : -variationSign
           markerMap[y][x] = {type: 'label', label: (i + 1).toString()}
-          return board.makeMove(i % 2 === 0 ? variationSign : -variationSign, [
-            x,
-            y
-          ])
+
+          return board.makeMove(sign, [x, y])
         }, board)
 
       drawHeatMap = false
@@ -374,16 +375,19 @@ class Goban extends Component {
     let heatMap = []
 
     if (drawHeatMap && analysis != null) {
-      let maxVisitsWin = Math.max(...analysis.map(x => x.visits * x.win))
+      let maxVisitsWin = Math.max(
+        ...analysis.variations.map(x => x.visits * x.winrate)
+      )
       heatMap = board.signMap.map(row => row.map(_ => null))
 
       for (let {
         vertex: [x, y],
         visits,
-        win
-      } of analysis) {
-        let strength = Math.round((visits * win * 8) / maxVisitsWin) + 1
-        win = strength <= 3 ? Math.round(win) : Math.round(win * 10) / 10
+        winrate
+      } of analysis.variations) {
+        let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
+        winrate =
+          strength <= 3 ? Math.round(winrate) : Math.round(winrate * 10) / 10
 
         heatMap[y][x] = {
           strength,
@@ -391,7 +395,7 @@ class Goban extends Component {
             visits < 10
               ? ''
               : [
-                  win + (Math.floor(win) === win ? '%' : ''),
+                  winrate + (Math.floor(winrate) === winrate ? '%' : ''),
                   visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
                 ].join('\n')
         }
@@ -435,5 +439,3 @@ class Goban extends Component {
     })
   }
 }
-
-module.exports = Goban

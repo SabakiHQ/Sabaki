@@ -1,16 +1,23 @@
-const EventEmitter = require('events')
-const {dirname, resolve} = require('path')
-const Board = require('@sabaki/go-board')
-const {Controller, ControllerStateTracker, Command} = require('@sabaki/gtp')
-const sgf = require('@sabaki/sgf')
-const argvsplit = require('argv-split')
-const gametree = require('./gametree')
-const helper = require('./helper')
+import {remote} from 'electron'
+import EventEmitter from 'events'
+import {dirname, resolve} from 'path'
+import argvsplit from 'argv-split'
+import {v4 as uuid} from 'uuid'
 
+import {fromDimensions as newBoard} from '@sabaki/go-board'
+import {Controller, ControllerStateTracker, Command} from '@sabaki/gtp'
+import {parseCompressedVertices} from '@sabaki/sgf'
+
+import {getBoard, getRootProperty} from './gametree.js'
+import {noop, equals} from './helper.js'
+
+const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const quitTimeout = setting.get('gtp.engine_quit_timeout')
 
 function parseVertex(coord, size) {
-  if (coord == null || coord === 'resign' || coord === 'pass') return [-1, -1]
+  if (coord == null || coord === 'resign') return null
+  if (coord === 'pass') return [-1, -1]
 
   let x = alpha.indexOf(coord[0].toUpperCase())
   let y = size - +coord.slice(1)
@@ -18,22 +25,31 @@ function parseVertex(coord, size) {
   return [x, y]
 }
 
-class EngineSyncer extends EventEmitter {
+export default class EngineSyncer extends EventEmitter {
   constructor(engine) {
     super()
 
     let {path, args, commands} = engine
 
     this._busy = false
+    this._suspended = true
+    this._analysis = null
+
+    this.id = uuid()
     this.engine = engine
     this.commands = []
+    this.treePosition = null
 
     this.controller = new Controller(path, [...argvsplit(args)], {
       cwd: dirname(resolve(path))
     })
+
     this.stateTracker = new ControllerStateTracker(this.controller)
 
     this.controller.on('started', () => {
+      this.treePosition = null
+      this.analysis = null
+
       Promise.all([
         this.controller.sendCommand({name: 'name'}),
         this.controller.sendCommand({name: 'version'}),
@@ -49,14 +65,117 @@ class EngineSyncer extends EventEmitter {
                 this.controller.sendCommand(Command.fromString(command))
               )
           : [])
-      ]).catch(helper.noop)
+      ]).catch(noop)
     })
 
-    // Sync busy property
+    this.controller.on('stopped', () => {
+      this.treePosition = null
+      this.analysis = null
+    })
 
-    for (let eventName of ['stopped', 'command-sent', 'response-received']) {
+    this.controller.on(
+      'command-sent',
+      async ({command, subscribe, getResponse}) => {
+        if (
+          command.name.match(/^(lz-)?(genmove_)?analyze$/) != null ||
+          command.args.length > 0
+        ) {
+          // Handle analysis commands
+
+          let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
+          let boardsize = this.stateTracker.state.boardsize || [19, 19]
+          let board = newBoard(...boardsize)
+
+          subscribe(({line}) => {
+            // Parse analysis info
+
+            if (line.startsWith('info ')) {
+              let variations = line
+                .split(/\s*info\s+/)
+                .slice(1)
+                .map(x => x.trim())
+                .map(x => {
+                  let matchPV = x.match(
+                    /(pass|[A-Za-z]\d+)(\s+(pass|[A-Za-z]\d+))*$/
+                  )
+                  if (matchPV == null) return null
+
+                  let passIndex = matchPV[0].indexOf('pass')
+                  if (passIndex < 0) passIndex = Infinity
+
+                  return [
+                    x
+                      .slice(0, matchPV.index)
+                      .trim()
+                      .split(/\s+/)
+                      .slice(0, -1),
+                    matchPV[0]
+                      .slice(0, passIndex)
+                      .split(/\s+/)
+                      .filter(x => x.length >= 2)
+                  ]
+                })
+                .filter(x => x != null)
+                .map(([tokens, pv]) => {
+                  let keys = tokens.filter((_, i) => i % 2 === 0)
+                  let values = tokens.filter((_, i) => i % 2 === 1)
+
+                  keys.push('pv')
+                  values.push(pv)
+
+                  return keys.reduce(
+                    (acc, x, i) => ((acc[x] = values[i]), acc),
+                    {}
+                  )
+                })
+                .filter(({move}) => move.match(/^[A-Za-z]\d+$/))
+                .map(({move, visits, winrate, pv}) => ({
+                  vertex: board.parseVertex(move),
+                  visits: +visits,
+                  winrate: +winrate / 100,
+                  moves: pv.map(x => board.parseVertex(x))
+                }))
+
+              this.analysis = {
+                sign,
+                variations,
+                winrate: Math.max(...variations.map(({winrate}) => winrate))
+              }
+            } else if (line.startsWith('play ')) {
+              sign = -sign
+
+              this.analysis = null
+              this.treePosition = null
+            }
+          })
+        } else if (this.treePosition != null) {
+          // Invalidate treePosition
+
+          let prevHistory = JSON.parse(
+            JSON.stringify(this.stateTracker.state.history)
+          )
+
+          await getResponse()
+
+          if (!equals(prevHistory, this.stateTracker.state.history)) {
+            this.treePosition = null
+            this.analysis = null
+          }
+        }
+      }
+    )
+
+    // Sync properties
+
+    for (let eventName of [
+      'started',
+      'stopped',
+      'command-sent',
+      'response-received'
+    ]) {
       this.controller.on(eventName, () => {
         this.busy = this.controller.busy
+        this.suspended = this.controller.process == null
       })
     }
   }
@@ -76,26 +195,69 @@ class EngineSyncer extends EventEmitter {
     }
   }
 
-  async sync(tree, id) {
-    let board = gametree.getBoard(tree, id)
+  get suspended() {
+    return this._suspended
+  }
 
-    if (!board.isSquare()) {
-      throw new Error('GTP engines don’t support non-square boards.')
-    } else if (!board.isValid()) {
+  set suspended(value) {
+    if (value !== this._suspended) {
+      this._suspended = value
+      this.emit('suspended-changed')
+    }
+  }
+
+  get analysis() {
+    return this._analysis
+  }
+
+  set analysis(value) {
+    if (value !== this._analysis) {
+      this._analysis = value
+      this.emit('analysis-update')
+    }
+  }
+
+  start() {
+    this.controller.start()
+  }
+
+  async stop() {
+    await this.controller.stop(quitTimeout)
+  }
+
+  abortCommand() {
+    if (this.controller.busy) {
+      // A hack to make Leela Zero stop analyzing
+      this.controller.process.stdin.write('\n')
+    }
+  }
+
+  async queueCommand(...args) {
+    this.abortCommand()
+    return await this.stateTracker.queueCommand(...args)
+  }
+
+  async sync(tree, id) {
+    if (id === this.treePosition) return
+
+    this.abortCommand()
+    let board = getBoard(tree, id)
+
+    if (!board.isValid()) {
       throw new Error('GTP engines don’t support invalid board positions.')
-    } else if (board.width > alpha.length) {
+    } else if (Math.max(board.width, board.height) > alpha.length) {
       throw new Error(
         `GTP engines only support board sizes that don’t exceed ${alpha.length}.`
       )
     }
 
-    let komi = +gametree.getRootProperty(tree, 'KM', 0)
-    let boardsize = board.width
+    let komi = +getRootProperty(tree, 'KM', 0)
+    let boardsize = [board.width, board.height]
 
     // Replay
 
-    let nodeBoard = gametree.getBoard(tree, id)
-    let engineBoard = Board.fromDimensions(board.width, board.height)
+    let nodeBoard = getBoard(tree, id)
+    let engineBoard = newBoard(board.width, board.height)
     let history = []
     let boardSynced = true
     let nodes = [...tree.listNodesVertically(id, -1, {})].reverse()
@@ -112,7 +274,7 @@ class EngineSyncer extends EventEmitter {
         // Place handicap stones
 
         let vertices = []
-          .concat(...node.data.AB.map(sgf.parseCompressedVertices))
+          .concat(...node.data.AB.map(parseCompressedVertices))
           .sort()
         let coords = vertices
           .map(v => board.stringifyVertex(v))
@@ -139,14 +301,15 @@ class EngineSyncer extends EventEmitter {
         let color = prop.slice(-1)
         let sign = color === 'B' ? 1 : -1
         let vertices = [].concat(
-          ...node.data[prop].map(sgf.parseCompressedVertices)
+          ...node.data[prop].map(parseCompressedVertices)
         )
 
         for (let vertex of vertices) {
           if (engineBoard.has(vertex) && engineBoard.get(vertex) !== 0) continue
-          else if (!engineBoard.has(vertex)) vertex = [-1, -1]
 
-          let coord = board.stringifyVertex(vertex)
+          let coord = !engineBoard.has(vertex)
+            ? 'pass'
+            : board.stringifyVertex(vertex)
 
           history.push({name: 'play', args: [color, coord]})
           engineBoard = engineBoard.makeMove(sign, vertex)
@@ -154,7 +317,7 @@ class EngineSyncer extends EventEmitter {
       }
     }
 
-    if (!helper.equals(engineBoard.signMap, nodeBoard.signMap)) {
+    if (!equals(engineBoard.signMap, nodeBoard.signMap)) {
       boardSynced = false
     }
 
@@ -162,7 +325,7 @@ class EngineSyncer extends EventEmitter {
 
     if (!boardSynced) {
       history = [...this.state.history]
-      engineBoard = Board.fromDimensions(board.width, board.height)
+      engineBoard = newBoard(board.width, board.height)
 
       for (let command of this.state.history) {
         if (command.name === 'play') {
@@ -191,7 +354,7 @@ class EngineSyncer extends EventEmitter {
         engineBoard = engineBoard.makeMove(sign, vertex)
       }
 
-      if (helper.equals(engineBoard.signMap, board.signMap)) {
+      if (equals(engineBoard.signMap, board.signMap)) {
         boardSynced = true
       }
     }
@@ -200,7 +363,7 @@ class EngineSyncer extends EventEmitter {
 
     if (!boardSynced) {
       history = []
-      engineBoard = Board.fromDimensions(board.width, board.height)
+      engineBoard = newBoard(board.width, board.height)
 
       for (let x = 0; x < board.width; x++) {
         for (let y = 0; y < board.height; y++) {
@@ -217,7 +380,7 @@ class EngineSyncer extends EventEmitter {
         }
       }
 
-      if (helper.equals(engineBoard.signMap, board.signMap)) {
+      if (equals(engineBoard.signMap, board.signMap)) {
         boardSynced = true
       }
     }
@@ -233,7 +396,8 @@ class EngineSyncer extends EventEmitter {
     } catch (err) {
       throw new Error('GTP engine can’t be synced to current state.')
     }
+
+    this.treePosition = id
+    this.analysis = null
   }
 }
-
-module.exports = EngineSyncer

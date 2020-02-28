@@ -1,22 +1,23 @@
-const {h, Component} = require('preact')
+import {h, Component} from 'preact'
 
-const Goban = require('./Goban')
-const PlayBar = require('./bars/PlayBar')
-const EditBar = require('./bars/EditBar')
-const GuessBar = require('./bars/GuessBar')
-const AutoplayBar = require('./bars/AutoplayBar')
-const ScoringBar = require('./bars/ScoringBar')
-const FindBar = require('./bars/FindBar')
+import Goban from './Goban.js'
+import PlayBar from './bars/PlayBar.js'
+import EditBar from './bars/EditBar.js'
+import GuessBar from './bars/GuessBar.js'
+import AutoplayBar from './bars/AutoplayBar.js'
+import ScoringBar from './bars/ScoringBar.js'
+import FindBar from './bars/FindBar.js'
 
-const gametree = require('../modules/gametree')
+import sabaki from '../modules/sabaki.js'
+import * as gametree from '../modules/gametree.js'
 
-class MainView extends Component {
+export default class MainView extends Component {
   constructor(props) {
     super(props)
 
     this.handleTogglePlayer = () => {
       let {gameTree, treePosition, currentPlayer} = this.props
-      sabaki.setPlayer(gameTree, treePosition, -currentPlayer)
+      sabaki.setPlayer(treePosition, -currentPlayer)
     }
 
     this.handleToolButtonClick = evt => {
@@ -78,15 +79,13 @@ class MainView extends Component {
       treePosition,
       currentPlayer,
       gameInfo,
-      attachedEngines,
-      engineBusy,
-      analysisTreePosition,
 
       deadStones,
       scoringMethod,
       scoreBoard,
       playVariation,
       analysis,
+      analysisTreePosition,
       areaMap,
       blockedGuesses,
 
@@ -102,12 +101,7 @@ class MainView extends Component {
 
       selectedTool,
       findText,
-      findVertex,
-
-      showLeftSidebar,
-      showSidebar,
-      sidebarWidth,
-      leftSidebarWidth
+      findVertex
     },
     {gobanCrosshair}
   ) {
@@ -131,9 +125,7 @@ class MainView extends Component {
 
     return h(
       'section',
-      {
-        id: 'main'
-      },
+      {id: 'main'},
 
       h(
         'main',
@@ -182,8 +174,12 @@ class MainView extends Component {
         {id: 'bar'},
         h(PlayBar, {
           mode,
-          attachedEngines,
-          playerBusy: engineBusy,
+          engineSyncers: [
+            this.props.blackEngineSyncerId,
+            this.props.whiteEngineSyncerId
+          ].map(id =>
+            this.props.attachedEngineSyncers.find(syncer => syncer.id === id)
+          ),
           playerNames: gameInfo.playerNames,
           playerRanks: gameInfo.playerRanks,
           playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),
@@ -239,5 +235,3 @@ class MainView extends Component {
     )
   }
 }
-
-module.exports = MainView

@@ -1,12 +1,12 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const helper = require('../modules/helper')
-const t = require('../i18n').context('WinrateGraph')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import i18n from '../../i18n.js'
+import {noop} from '../../modules/helper.js'
+
+const t = i18n.context('fileformats')
 const setting = remote.require('./setting')
 
-let winrateGraphMinHeight = setting.get('view.winrategraph_minheight')
-
-class WinrateGraph extends Component {
+export default class WinrateGraph extends Component {
   constructor() {
     super()
 
@@ -35,7 +35,7 @@ class WinrateGraph extends Component {
 
       let rect = this.element.getBoundingClientRect()
       let percent = (evt.clientX - rect.left) / rect.width
-      let {width, data, onCurrentIndexChange = helper.noop} = this.props
+      let {width, data, onCurrentIndexChange = noop} = this.props
       let index = Math.max(
         Math.min(Math.round(width * percent), data.length - 1),
         0
@@ -62,6 +62,31 @@ class WinrateGraph extends Component {
     )
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
+    let round2 = x => Math.round(x * 100) / 100
+    let whiteWinrate =
+      data[currentIndex] == null ? null : round2(100 - data[currentIndex])
+    let whiteWinrateDiff =
+      dataDiff[currentIndex] == null ? null : -round2(dataDiff[currentIndex])
+    let blackWinrate = whiteWinrate == null ? null : round2(100 - whiteWinrate)
+    let blackWinrateDiff =
+      whiteWinrateDiff == null ? null : round2(-whiteWinrateDiff)
+
+    let tooltip =
+      data[currentIndex] == null
+        ? ''
+        : [
+            `${t('Black winrate:')} ${blackWinrate}%${
+              blackWinrateDiff == null
+                ? ''
+                : ` (${blackWinrateDiff >= 0 ? '+' : ''}${blackWinrateDiff})`
+            }`,
+            `${t('White winrate:')} ${whiteWinrate}%${
+              whiteWinrateDiff == null
+                ? ''
+                : ` (${whiteWinrateDiff >= 0 ? '+' : ''}${whiteWinrateDiff})`
+            }`
+          ].join('\n')
+
     return h(
       'section',
 
@@ -71,6 +96,7 @@ class WinrateGraph extends Component {
         style: {
           height: this.state.height + 'px'
         },
+        title: tooltip,
         onMouseDown: this.handleMouseDown
       },
 
@@ -247,23 +273,8 @@ class WinrateGraph extends Component {
           style: {
             left: `${(currentIndex * 100) / width}%`,
             top: `${data[currentIndex]}%`
-          },
-          title: t(
-            p =>
-              `White winrate: ${p.whiteWinrate}%${
-                p.diff == null ? '' : ` (${p.diff >= 0 ? '+' : ''}${p.diff})`
-              }`,
-            {
-              whiteWinrate: Math.round((100 - data[currentIndex]) * 100) / 100,
-              diff:
-                dataDiff[currentIndex] == null
-                  ? null
-                  : -Math.round(dataDiff[currentIndex] * 100) / 100
-            }
-          )
+          }
         })
     )
   }
 }
-
-module.exports = WinrateGraph

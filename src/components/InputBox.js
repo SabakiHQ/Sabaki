@@ -1,9 +1,10 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const helper = require('../modules/helper')
+import sabaki from '../modules/sabaki.js'
+import {noop} from '../modules/helper.js'
 
-class InputBox extends Component {
+export default class InputBox extends Component {
   constructor() {
     super()
 
@@ -22,7 +23,7 @@ class InputBox extends Component {
         evt.stopPropagation()
         sabaki.setState({showInputBox: false})
 
-        let {onSubmit = helper.noop} = this.props
+        let {onSubmit = noop} = this.props
         onSubmit(this.state)
 
         if (document.activeElement === this.inputElement)
@@ -59,7 +60,7 @@ class InputBox extends Component {
 
     if (document.activeElement === this.inputElement) this.inputElement.blur()
 
-    let {onCancel = helper.noop} = this.props
+    let {onCancel = noop} = this.props
     sabaki.setState({showInputBox: false})
     onCancel()
   }
@@ -92,5 +93,3 @@ class InputBox extends Component {
     )
   }
 }
-
-module.exports = InputBox

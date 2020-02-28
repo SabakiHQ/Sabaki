@@ -1,29 +1,39 @@
-const {h, Component} = require('preact')
-const classNames = require('classnames')
-const {remote} = require('electron')
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const TextSpinner = require('../TextSpinner')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import * as helper from '../../modules/helper.js'
+import TextSpinner from '../TextSpinner.js'
 
-const t = require('../../i18n').context('PlayBar')
-const helper = require('../../modules/helper')
-const setting = remote.require('./setting')
+const t = i18n.context('PlayBar')
 
-class PlayBar extends Component {
-  constructor() {
-    super()
+export default class PlayBar extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      playerBusy: [false, false]
+    }
+
+    this.syncState = () => {
+      this.setState({
+        playerBusy: this.props.engineSyncers.map(syncer =>
+          syncer == null ? false : syncer.busy
+        )
+      })
+    }
 
     this.handleCurrentPlayerClick = () => this.props.onCurrentPlayerClick
 
     this.handleMenuClick = () => {
       let {left, top} = this.menuButtonElement.getBoundingClientRect()
+
       helper.popupMenu(
         [
           {
             label: t('&Pass'),
-            click: () => {
-              let autoGenmove = setting.get('gtp.auto_genmove')
-              sabaki.makeMove([-1, -1], {sendToEngine: autoGenmove})
-            }
+            click: () => sabaki.makeMove([-1, -1])
           },
           {
             label: t('&Resign'),
@@ -56,35 +66,51 @@ class PlayBar extends Component {
         top
       )
     }
+
+    for (let syncer of this.props.engineSyncers) {
+      if (syncer == null) continue
+
+      syncer.on('busy-changed', this.syncState)
+    }
   }
 
   shouldComponentUpdate(nextProps) {
     return nextProps.mode !== this.props.mode || nextProps.mode === 'play'
   }
 
-  render({
-    mode,
-    attachedEngines,
-    playerBusy,
-    playerNames,
-    playerRanks,
-    playerCaptures,
-    currentPlayer,
-    showHotspot,
+  componentWillReceiveProps(nextProps) {
+    for (let i = 0; i < nextProps.engineSyncers.length; i++) {
+      if (nextProps.engineSyncers !== this.props.engineSyncers) {
+        if (this.props.engineSyncers[i] != null) {
+          this.props.engineSyncers[i].removeListener(
+            'busy-changed',
+            this.syncState
+          )
+        }
 
-    onCurrentPlayerClick = helper.noop
-  }) {
+        if (nextProps.engineSyncers[i] != null) {
+          nextProps.engineSyncers[i].on('busy-changed', this.syncState)
+        }
+      }
+    }
+  }
+
+  render(
+    {
+      mode,
+      engineSyncers,
+      playerNames,
+      playerRanks,
+      playerCaptures,
+      currentPlayer,
+      showHotspot,
+
+      onCurrentPlayerClick = helper.noop
+    },
+    {playerBusy}
+  ) {
     let captureStyle = index => ({
       opacity: playerCaptures[index] === 0 ? 0 : 0.7
-    })
-    let isEngine = Array(attachedEngines.length).fill(false)
-
-    attachedEngines.forEach((engine, i) => {
-      if (engine == null) return
-
-      playerNames[i] = engine.name
-      playerRanks[i] = null
-      isEngine[i] = true
     })
 
     return h(
@@ -108,7 +134,8 @@ class PlayBar extends Component {
         ),
         ' ',
 
-        playerRanks[0] &&
+        engineSyncers[0] == null &&
+          playerRanks[0] &&
           h(
             'span',
             {class: 'rank'},
@@ -118,15 +145,19 @@ class PlayBar extends Component {
           ),
         ' ',
 
+        engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
+        ' ',
+
         h(
           'span',
           {
-            class: classNames('name', {engine: isEngine[0]}),
-            title: isEngine[0] && t('Engine')
+            class: classNames('name', {engine: engineSyncers[0] != null}),
+            title: engineSyncers[0] != null && t('Engine')
           },
-          isEngine[0] && playerBusy[0] && h(TextSpinner),
-          ' ',
-          playerNames[0] || t('Black')
+
+          engineSyncers[0] == null
+            ? playerNames[0] || t('Black')
+            : engineSyncers[0].engine.name
         )
       ),
 
@@ -140,13 +171,7 @@ class PlayBar extends Component {
         h('img', {
           src: `./img/ui/player_${currentPlayer}.svg`,
           height: 21,
-          alt: t(
-            p =>
-              `${
-                p.player < 0 ? 'White' : p.player > 0 ? 'Black' : p.player
-              } to play`,
-            {player: currentPlayer}
-          )
+          alt: currentPlayer < 0 ? t('White to play') : t('Black to play')
         })
       ),
 
@@ -156,16 +181,20 @@ class PlayBar extends Component {
         h(
           'span',
           {
-            class: classNames('name', {engine: isEngine[1]}),
-            title: isEngine[1] && t('Engine')
+            class: classNames('name', {engine: engineSyncers[1] != null}),
+            title: engineSyncers[1] != null && t('Engine')
           },
-          playerNames[1] || t('White'),
-          ' ',
-          isEngine[1] && playerBusy[1] && h(TextSpinner)
+          engineSyncers[1] == null
+            ? playerNames[1] || t('White')
+            : engineSyncers[1].engine.name
         ),
         ' ',
 
-        playerRanks[1] &&
+        engineSyncers[1] != null && playerBusy[1] && h(TextSpinner),
+        ' ',
+
+        engineSyncers[1] == null &&
+          playerRanks[1] &&
           h(
             'span',
             {class: 'rank'},
@@ -197,5 +226,3 @@ class PlayBar extends Component {
     )
   }
 }
-
-module.exports = PlayBar

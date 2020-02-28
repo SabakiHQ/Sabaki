@@ -1,10 +1,13 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
 
-const Drawer = require('./Drawer')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import {wait, popupMenu} from '../../modules/helper.js'
 
-const t = require('../../i18n').context('CleanMarkupDrawer')
-const helper = require('../../modules/helper')
+import Drawer from './Drawer.js'
+
+const t = i18n.context('CleanMarkupDrawer')
 const setting = remote.require('./setting')
 
 class CleanMarkupItem extends Component {
@@ -40,7 +43,7 @@ class CleanMarkupItem extends Component {
   }
 }
 
-class CleanMarkupDrawer extends Component {
+export default class CleanMarkupDrawer extends Component {
   constructor() {
     super()
 
@@ -74,7 +77,7 @@ class CleanMarkupDrawer extends Component {
           .map(id => data[id])
           .reduce((acc, x) => [...acc, ...x], [])
 
-        await helper.wait(100)
+        await wait(100)
 
         let newTree = work(properties)
 
@@ -113,7 +116,7 @@ class CleanMarkupDrawer extends Component {
       let element = evt.currentTarget
       let {left, bottom} = element.getBoundingClientRect()
 
-      helper.popupMenu(template, left, bottom)
+      popupMenu(template, left, bottom)
     }
   }
 
@@ -211,5 +214,3 @@ class CleanMarkupDrawer extends Component {
     )
   }
 }
-
-module.exports = CleanMarkupDrawer

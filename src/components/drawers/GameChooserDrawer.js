@@ -1,16 +1,19 @@
-const {remote} = require('electron')
-const {h, Component} = require('preact')
-const classNames = require('classnames')
+import {remote} from 'electron'
+import {h, Component} from 'preact'
+import classNames from 'classnames'
 
-const MiniGoban = require('../MiniGoban')
-const Drawer = require('./Drawer')
+import MiniGoban from '../MiniGoban.js'
+import Drawer from './Drawer.js'
 
-const t = require('../../i18n').context('GameChooserDrawer')
-const dialog = require('../../modules/dialog')
-const fileformats = require('../../modules/fileformats')
-const gametree = require('../../modules/gametree')
-const gamesort = require('../../modules/gamesort')
-const helper = require('../../modules/helper')
+import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
+import * as dialog from '../../modules/dialog.js'
+import * as fileformats from '../../modules/fileformats/index.js'
+import * as gametree from '../../modules/gametree.js'
+import * as gamesort from '../../modules/gamesort.js'
+import * as helper from '../../modules/helper.js'
+
+const t = i18n.context('GameChooserDrawer')
 const setting = remote.require('./setting')
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')
@@ -55,7 +58,7 @@ class GameListItem extends Component {
     insertBefore,
     insertAfter
   }) {
-    let gameInfo = sabaki.getGameInfo(tree)
+    let gameInfo = gametree.getGameInfo(tree)
     let {
       gameName,
       eventName,
@@ -102,7 +105,7 @@ class GameListItem extends Component {
   }
 }
 
-class GameChooserDrawer extends Component {
+export default class GameChooserDrawer extends Component {
   constructor() {
     super()
 
@@ -239,38 +242,34 @@ class GameChooserDrawer extends Component {
         {
           label: t('Add &Existing Files…'),
           click: () => {
-            dialog.showOpenDialog(
-              {
-                properties: ['openFile', 'multiSelections'],
-                filters: [
-                  ...fileformats.meta,
-                  {name: t('All Files'), extensions: ['*']}
-                ]
-              },
-              ({result}) => {
-                let {gameTrees, onChange = helper.noop} = this.props
-                let newTrees = []
+            let result = dialog.showOpenDialog({
+              properties: ['openFile', 'multiSelections'],
+              filters: [
+                ...fileformats.meta,
+                {name: t('All Files'), extensions: ['*']}
+              ]
+            })
+            let {gameTrees, onChange = helper.noop} = this.props
+            let newTrees = []
 
-                sabaki.setBusy(true)
+            sabaki.setBusy(true)
 
-                if (result) {
-                  try {
-                    for (let filename of result) {
-                      let trees = fileformats.parseFile(filename)
-                      newTrees.push(...trees)
-                    }
-                  } catch (err) {
-                    dialog.showMessageBox(
-                      t('Some files are unreadable.'),
-                      'warning'
-                    )
-                  }
+            if (result) {
+              try {
+                for (let filename of result) {
+                  let trees = fileformats.parseFile(filename)
+                  newTrees.push(...trees)
                 }
-
-                onChange({gameTrees: [...gameTrees, ...newTrees]})
-                sabaki.setBusy(false)
+              } catch (err) {
+                dialog.showMessageBox(
+                  t('Some files are unreadable.'),
+                  'warning'
+                )
               }
-            )
+            }
+
+            onChange({gameTrees: [...gameTrees, ...newTrees]})
+            sabaki.setBusy(false)
           }
         }
       ]
@@ -429,7 +428,7 @@ class GameChooserDrawer extends Component {
         return [tree, index]
       })
       .filter(([tree]) => {
-        let gameInfo = sabaki.getGameInfo(tree)
+        let gameInfo = gametree.getGameInfo(tree)
         let data = Object.keys(gameInfo).map(x => gameInfo[x])
 
         return data
@@ -444,45 +443,41 @@ class GameChooserDrawer extends Component {
       h(
         'style',
         {},
-        `
-                #gamechooser .games-list .placeholder {
-                    height: ${(this.getRowFromIndex(
-                      this.shownGameTrees.length - 1
-                    ) +
-                      1) *
-                      itemHeight +
-                      20}px;
-                }
+        `#gamechooser .games-list .placeholder {
+          height: ${(this.getRowFromIndex(this.shownGameTrees.length - 1) + 1) *
+            itemHeight +
+            20}px;
+        }
 
-                #gamechooser .games-list li {
-                    width: ${itemWidth - 20}px;
-                }
-            `,
+        #gamechooser .games-list li {
+          width: ${itemWidth - 20}px;
+        }`,
         animation &&
-          `
-                #gamechooser-animation {
-                    animation: gamechooser-animation .5s ${
-                      animation[2]
-                    } forwards;
-                }
+          `#gamechooser-animation {
+            animation: gamechooser-animation .5s ${animation[2]} forwards;
+          }
 
-                @keyframes gamechooser-animation {
-                    from {
-                        transform: translate(${animation[0].left}px, ${
-            animation[0].top
-          }px);
-                        opacity: 1;
-                    }
-                    to {
-                        transform: translate(${animation[1].left}px, ${
-            animation[1].top
-          }px)
-                            scale(${animation[1].width / animation[0].width},
-                            ${animation[1].height / animation[0].height});
-                        opacity: 0;
-                    }
-                }
-            `
+          @keyframes gamechooser-animation {
+            from {
+              transform: translate(
+                ${animation[0].left}px,
+                ${animation[0].top}px
+              );
+              opacity: 1;
+            }
+            to {
+              transform:
+                translate(
+                  ${animation[1].left}px,
+                  ${animation[1].top}px
+                )
+                scale(
+                  ${animation[1].width / animation[0].width},
+                  ${animation[1].height / animation[0].height}
+                );
+              opacity: 0;
+            }
+          }`
       ),
 
       h(
@@ -530,9 +525,9 @@ class GameChooserDrawer extends Component {
                 return
 
               return h(GameListItem, {
-                ref: item => {
-                  if (item != null) this.itemElements[index] = item.element
-                },
+                ref: item =>
+                  (this.itemElements[index] =
+                    item == null ? null : item.element),
                 key: tree.id,
                 tree,
                 top: itemTop,
@@ -608,5 +603,3 @@ class GameChooserDrawer extends Component {
     )
   }
 }
-
-module.exports = GameChooserDrawer

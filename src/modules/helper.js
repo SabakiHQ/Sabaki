@@ -1,17 +1,18 @@
-const fs = require('fs')
+import fs from 'fs'
 
 let id = 0
 
-exports.linebreak = process.platform === 'win32' ? '\r\n' : '\n'
-exports.noop = () => {}
+export const linebreak = process.platform === 'win32' ? '\r\n' : '\n'
 
-exports.getId = function() {
+export function noop() {}
+
+export function getId() {
   return ++id
 }
 
-exports.hash = function(str) {
-  let hash = 0,
-    chr
+export function hash(str) {
+  let chr
+  let hash = 0
   if (str.length == 0) return hash
 
   for (let i = 0; i < str.length; i++) {
@@ -23,7 +24,7 @@ exports.hash = function(str) {
   return hash
 }
 
-exports.equals = function(a, b) {
+export function equals(a, b) {
   if (a === b) return true
   if (a == null || b == null) return a == b
 
@@ -35,8 +36,7 @@ exports.equals = function(a, b) {
 
   if (aa) {
     if (a.length !== b.length) return false
-    for (let i = 0; i < a.length; i++)
-      if (!exports.equals(a[i], b[i])) return false
+    for (let i = 0; i < a.length; i++) if (!equals(a[i], b[i])) return false
     return true
   } else if (ao) {
     let kk = Object.keys(a)
@@ -44,7 +44,7 @@ exports.equals = function(a, b) {
     for (let i = 0; i < kk.length; i++) {
       let k = kk[i]
       if (!(k in b)) return false
-      if (!exports.equals(a[k], b[k])) return false
+      if (!equals(a[k], b[k])) return false
     }
     return true
   }
@@ -52,26 +52,26 @@ exports.equals = function(a, b) {
   return false
 }
 
-exports.shallowEquals = function(a, b) {
+export function shallowEquals(a, b) {
   return a == null || b == null
     ? a === b
     : a === b || (a.length === b.length && a.every((x, i) => x == b[i]))
 }
 
-exports.vertexEquals = function([a, b], [c, d]) {
+export function vertexEquals([a, b], [c, d]) {
   return a === c && b === d
 }
 
-exports.lexicalCompare = function(a, b) {
+export function lexicalCompare(a, b) {
   if (!a.length || !b.length) return a.length - b.length
   return a[0] < b[0]
     ? -1
     : a[0] > b[0]
     ? 1
-    : exports.lexicalCompare(a.slice(1), b.slice(1))
+    : lexicalCompare(a.slice(1), b.slice(1))
 }
 
-exports.typographer = function(input) {
+export function typographer(input) {
   return input
     .replace(/\.{3}/g, '…')
     .replace(/(\S)'/g, '$1’')
@@ -81,11 +81,11 @@ exports.typographer = function(input) {
     .replace(/(\s)-(\s)/g, '$1–$2')
 }
 
-exports.normalizeEndings = function(input) {
-  return input.replace(/\r\n|\n\r|\r/g, '\n')
+export function normalizeEndings(input) {
+  return input.replace(/\r/g, '')
 }
 
-exports.isTextLikeElement = function(element) {
+export function isTextLikeElement(element) {
   return (
     ['textarea', 'select'].includes(element.tagName.toLowerCase()) ||
     (element.tagName.toLowerCase() === 'input' &&
@@ -101,8 +101,9 @@ exports.isTextLikeElement = function(element) {
   )
 }
 
-exports.popupMenu = function(template, x, y) {
-  let {remote} = require('electron')
+export function popupMenu(template, x, y) {
+  const {remote} = require('electron')
+
   let setting = remote.require('./setting')
   let zoomFactor = +setting.get('app.zoom_factor')
 
@@ -112,11 +113,11 @@ exports.popupMenu = function(template, x, y) {
   })
 }
 
-exports.wait = function(ms) {
+export function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-exports.isWritableDirectory = function(path) {
+export function isWritableDirectory(path) {
   if (path == null) return false
 
   let fileStats = null
@@ -141,7 +142,7 @@ exports.isWritableDirectory = function(path) {
   }
 }
 
-exports.getScore = function(board, areaMap, {komi = 0, handicap = 0} = {}) {
+export function getScore(board, areaMap, {komi = 0, handicap = 0} = {}) {
   let score = {
     area: [0, 0],
     territory: [0, 0],
