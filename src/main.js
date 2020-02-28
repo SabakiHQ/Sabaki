@@ -200,7 +200,7 @@ function main() {
   })
 
   app.on('activate', (evt, hasVisibleWindows) => {
-    if (!hasVisibleWindows) newWindow()
+    if (isReady && !hasVisibleWindows) newWindow()
   })
 
   app.on('open-file', (evt, path) => {
