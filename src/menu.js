@@ -118,7 +118,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
-          label: i18n.t('menu.play', '&Select Point'),
+          label: i18n.t('menu.play', 'Se&lect Point'),
           accelerator: 'CmdOrCtrl+L',
           click: async () => {
             let value = await dialog.showInputBox(
@@ -135,17 +135,23 @@ exports.get = function(props = {}) {
           click: () => sabaki.makeMove([-1, -1])
         },
         {
-          label: i18n.t('menu.play', '&Resign'),
+          label: i18n.t('menu.play', 'Resig&n'),
           click: () => sabaki.makeResign()
         },
         {type: 'separator'},
         {
           label: i18n.t('menu.play', '&Estimate'),
-          click: () => sabaki.setMode('estimator')
+          accelerator: 'CmdOrCtrl+Shift+E',
+          click: () =>
+            sabaki.setMode(
+              sabaki.state.mode === 'estimator' ? 'play' : 'estimator'
+            )
         },
         {
-          label: i18n.t('menu.play', 'Sc&ore'),
-          click: () => sabaki.setMode('scoring')
+          label: i18n.t('menu.play', 'Sco&re'),
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () =>
+            sabaki.setMode(sabaki.state.mode === 'scoring' ? 'play' : 'scoring')
         }
       ]
     },

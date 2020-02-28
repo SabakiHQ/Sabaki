@@ -1,9 +1,8 @@
-import {ipcRenderer, remote, app} from 'electron'
+import {ipcRenderer, remote} from 'electron'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
 import fixPath from 'fix-path'
 
-import deadstones from '@sabaki/deadstones'
 import influence from '@sabaki/influence'
 
 import TripleSplitContainer from './helpers/TripleSplitContainer.js'
@@ -28,7 +27,6 @@ const setting = remote.require('./setting')
 const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
 const sidebarMinWidth = setting.get('view.leftsidebar_minwidth')
 
-deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 fixPath()
 
 class App extends Component {
@@ -311,7 +309,7 @@ class App extends Component {
 
       areaMap =
         state.mode === 'estimator'
-          ? influence.map(scoreBoard.signMap)
+          ? influence.map(scoreBoard.signMap, {discrete: true})
           : influence.areaMap(scoreBoard.signMap)
     }
 

@@ -19,6 +19,8 @@ import * as gtplogger from './gtplogger.js'
 import * as helper from './helper.js'
 import * as sound from './sound.js'
 
+deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
+
 const {app} = remote
 const setting = remote.require('./setting')
 
@@ -212,6 +214,8 @@ class Sabaki extends EventEmitter {
   // User Interface
 
   setMode(mode) {
+    if (this.state.mode === mode) return
+
     let stateChange = {mode}
 
     if (['scoring', 'estimator'].includes(mode)) {
