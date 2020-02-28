@@ -1,5 +1,5 @@
 import {h, Component} from 'preact'
-import Bar from './Bar'
+import Bar from './Bar.js'
 
 import i18n from '../../i18n.js'
 import sabaki from '../../modules/sabaki.js'
