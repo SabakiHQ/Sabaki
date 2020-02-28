@@ -734,6 +734,19 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.developer', 'Load &Language File…'),
           click: () => {
+            let t = i18n.context('menu.developer')
+
+            dialog.showMessageBox(
+              t(
+                [
+                  'A language file is basically a JavaScript file and can be used to execute arbitrary code on your computer.',
+                  'It can be extremely dangerous and it is recommended to only load language files from authors you trust.'
+                ].join('\n\n')
+              ),
+              'warning',
+              [t('I understand')]
+            )
+
             let result = dialog.showOpenDialog({
               properties: ['openFile'],
               filters: [
@@ -752,39 +765,6 @@ exports.get = function(props = {}) {
           label: i18n.t('menu.developer', '&Unload Language File'),
           click: () => {
             i18n.loadStrings({})
-          }
-        },
-        {
-          label: i18n.t('menu.developer', '&Save Language File…'),
-          click: () => {
-            let result = dialog.showSaveDialog({
-              filters: [
-                {
-                  name: i18n.t('menu.developer', 'JavaScript Files'),
-                  extensions: ['js']
-                }
-              ]
-            })
-            if (!result) return
-
-            let summary = i18n.serialize(result)
-
-            dialog.showMessageBox(
-              i18n.t(
-                'menu.developer',
-                p =>
-                  [
-                    `Translated strings: ${p.translatedCount}`,
-                    `Untranslated strings: ${p.untranslatedCount}`,
-                    `Completion: ${p.complete}%`
-                  ].join('\n'),
-                {
-                  translatedCount: summary.translatedCount,
-                  untranslatedCount: summary.untranslatedCount,
-                  complete: Math.round(summary.complete * 100)
-                }
-              )
-            )
           }
         }
       ]

@@ -3,7 +3,6 @@ const nativeRequire = eval('require')
 const {remote} = require('electron')
 const isElectron = process.versions.electron != null
 const isRenderer = isElectron && remote != null
-const fs = require('fs')
 const dolm = require('dolm').load({})
 
 const mainI18n = isRenderer ? remote.require('./i18n') : exports
@@ -33,30 +32,6 @@ exports.loadFile = function(filename) {
 
 exports.loadLang = function(lang) {
   exports.loadFile(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
-}
-
-exports.serialize = function(filename) {
-  if (isRenderer) {
-    // Merge with dolm serialization result in main process
-
-    let mainStrings = mainI18n.strings
-    let mainUsedStrings = mainI18n.usedStrings
-
-    for (context in mainStrings) {
-      exports.strings[context] = mainStrings[context]
-    }
-
-    for (context in mainUsedStrings) {
-      exports.usedStrings[context] = mainUsedStrings[context]
-    }
-  }
-
-  let result = dolm.serialize()
-  let js = `module.exports = ${result.js}`
-
-  fs.writeFileSync(filename, js)
-
-  return result
 }
 
 try {

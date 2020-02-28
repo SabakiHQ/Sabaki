@@ -51,7 +51,7 @@ export default class MainMenu extends Component {
     }
   }
 
-  componentWillUpdate(nextProps) {
+  shouldComponentUpdate(nextProps) {
     for (let key in nextProps) {
       if (nextProps[key] !== this.props[key]) return true
     }
