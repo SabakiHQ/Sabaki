@@ -171,11 +171,7 @@ export default class PlayBar extends Component {
         h('img', {
           src: `./img/ui/player_${currentPlayer}.svg`,
           height: 21,
-          alt: t(
-            p =>
-              `${p.sign < 0 ? 'White' : p.sign > 0 ? 'Black' : p.sign} to play`,
-            {sign: currentPlayer}
-          )
+          alt: currentPlayer < 0 ? t('White to play') : t('Black to play')
         })
       ),
 

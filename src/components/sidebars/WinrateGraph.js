@@ -62,6 +62,33 @@ export default class WinrateGraph extends Component {
     )
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
+    let whiteWinrate =
+      data[currentIndex] == null
+        ? null
+        : Math.round((100 - data[currentIndex]) * 100) / 100
+    let whiteWinrateDiff =
+      dataDiff[currentIndex] == null
+        ? null
+        : -Math.round(dataDiff[currentIndex] * 100) / 100
+    let blackWinrate = whiteWinrate == null ? null : 100 - whiteWinrate
+    let blackWinrateDiff = whiteWinrateDiff == null ? null : -whiteWinrateDiff
+
+    let tooltip =
+      data[currentIndex] == null
+        ? ''
+        : [
+            `${t('Black winrate:')} ${blackWinrate}%${
+              blackWinrateDiff == null
+                ? ''
+                : ` (${blackWinrateDiff >= 0 ? '+' : ''}${blackWinrateDiff})`
+            }`,
+            `${t('White winrate:')} ${whiteWinrate}%${
+              whiteWinrateDiff == null
+                ? ''
+                : ` (${whiteWinrateDiff >= 0 ? '+' : ''}${whiteWinrateDiff})`
+            }`
+          ].join('\n')
+
     return h(
       'section',
 
@@ -71,6 +98,7 @@ export default class WinrateGraph extends Component {
         style: {
           height: this.state.height + 'px'
         },
+        title: tooltip,
         onMouseDown: this.handleMouseDown
       },
 
@@ -247,20 +275,7 @@ export default class WinrateGraph extends Component {
           style: {
             left: `${(currentIndex * 100) / width}%`,
             top: `${data[currentIndex]}%`
-          },
-          title: t(
-            p =>
-              `White winrate: ${p.whiteWinrate}%${
-                p.diff == null ? '' : ` (${p.diff >= 0 ? '+' : ''}${p.diff})`
-              }`,
-            {
-              whiteWinrate: Math.round((100 - data[currentIndex]) * 100) / 100,
-              diff:
-                dataDiff[currentIndex] == null
-                  ? null
-                  : -Math.round(dataDiff[currentIndex] * 100) / 100
-            }
-          )
+          }
         })
     )
   }
