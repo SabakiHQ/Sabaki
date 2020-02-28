@@ -2,7 +2,7 @@ import {h, Component} from 'preact'
 import Bar from './Bar.js'
 import i18n from '../../i18n.js'
 
-const t = i18n.context('fileformats')
+const t = i18n.context('GuessBar')
 
 class GuessBar extends Component {
   render(props) {

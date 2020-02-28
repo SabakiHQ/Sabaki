@@ -3,7 +3,7 @@ import {h, Component} from 'preact'
 import i18n from '../../i18n.js'
 import {noop} from '../../modules/helper.js'
 
-const t = i18n.context('fileformats')
+const t = i18n.context('WinrateGraph')
 const setting = remote.require('./setting')
 
 export default class WinrateGraph extends Component {

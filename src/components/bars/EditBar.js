@@ -5,7 +5,7 @@ import i18n from '../../i18n.js'
 import {noop} from '../../modules/helper.js'
 import Bar from './Bar.js'
 
-const t = i18n.context('fileformats')
+const t = i18n.context('EditBar')
 
 class EditBar extends Component {
   constructor() {
