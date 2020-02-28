@@ -62,16 +62,14 @@ export default class WinrateGraph extends Component {
     )
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
+    let round2 = x => Math.round(x * 100) / 100
     let whiteWinrate =
-      data[currentIndex] == null
-        ? null
-        : Math.round((100 - data[currentIndex]) * 100) / 100
+      data[currentIndex] == null ? null : round2(100 - data[currentIndex])
     let whiteWinrateDiff =
-      dataDiff[currentIndex] == null
-        ? null
-        : -Math.round(dataDiff[currentIndex] * 100) / 100
-    let blackWinrate = whiteWinrate == null ? null : 100 - whiteWinrate
-    let blackWinrateDiff = whiteWinrateDiff == null ? null : -whiteWinrateDiff
+      dataDiff[currentIndex] == null ? null : -round2(dataDiff[currentIndex])
+    let blackWinrate = whiteWinrate == null ? null : round2(100 - whiteWinrate)
+    let blackWinrateDiff =
+      whiteWinrateDiff == null ? null : round2(-whiteWinrateDiff)
 
     let tooltip =
       data[currentIndex] == null
