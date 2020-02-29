@@ -249,18 +249,27 @@ export default class CommentBox extends Component {
     this.handleCommentInput = () => {
       let {onCommentInput = noop} = this.props
 
-      this.setState({
+      let data = {
         title: this.titleInputElement.value,
         comment: this.textareaElement.value
-      })
+      }
+
+      this.setState(data)
 
       clearTimeout(this.commentInputTimeout)
       this.commentInputTimeout = setTimeout(() => {
-        onCommentInput({
-          title: this.titleInputElement.value,
-          comment: this.textareaElement.value
-        })
+        onCommentInput(data)
       }, commentsCommitDelay)
+    }
+
+    this.handleCommentBlur = () => {
+      let {onCommentInput = noop} = this.props
+
+      clearTimeout(this.commentInputTimeout)
+      onCommentInput({
+        title: this.titleInputElement.value,
+        comment: this.textareaElement.value
+      })
     }
 
     this.handleMenuButtonClick = () => {
@@ -357,7 +366,8 @@ export default class CommentBox extends Component {
               name: 'title',
               value: title,
               placeholder: t('Title'),
-              onInput: this.handleCommentInput
+              onInput: this.handleCommentInput,
+              onBlur: this.handleCommentBlur
             })
           )
         ),
@@ -366,7 +376,8 @@ export default class CommentBox extends Component {
           ref: el => (this.textareaElement = el),
           placeholder: t('Comment'),
           value: comment,
-          onInput: this.handleCommentInput
+          onInput: this.handleCommentInput,
+          onBlur: this.handleCommentBlur
         })
       )
     )
