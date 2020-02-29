@@ -125,7 +125,7 @@ let defaults = {
   'game.show_suicide_warning': true,
   'gamechooser.show_delay': 100,
   'gamechooser.thumbnail_size': 153,
-  'graph.delay': 200,
+  'graph.delay': 100,
   'graph.grid_size': 22,
   'graph.node_size': 4,
   'gtp.console_log_enabled': false,
@@ -147,7 +147,7 @@ let defaults = {
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
-  'setting.overwrite.v0.43.3': ['board.analysis_interval'],
+  'setting.overwrite.v0.43.3': ['board.analysis_interval', 'graph.delay'],
   'sgf.comment_properties': [
     'C',
     'N',
