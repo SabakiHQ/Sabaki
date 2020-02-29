@@ -8,10 +8,13 @@ import {fromDimensions as newBoard} from '@sabaki/go-board'
 import {Controller, ControllerStateTracker, Command} from '@sabaki/gtp'
 import {parseCompressedVertices} from '@sabaki/sgf'
 
+import i18n from '../i18n.js'
 import {getBoard, getRootProperty} from './gametree.js'
 import {noop, equals} from './helper.js'
 
+const t = i18n.context('EngineSyncer')
 const setting = remote.require('./setting')
+
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 const quitTimeout = setting.get('gtp.engine_quit_timeout')
 
@@ -244,10 +247,16 @@ export default class EngineSyncer extends EventEmitter {
     let board = getBoard(tree, id)
 
     if (!board.isValid()) {
-      throw new Error('GTP engines don’t support invalid board positions.')
+      throw new Error(t('GTP engines don’t support invalid board positions.'))
     } else if (Math.max(board.width, board.height) > alpha.length) {
       throw new Error(
-        `GTP engines only support board sizes that don’t exceed ${alpha.length}.`
+        t(
+          p =>
+            `GTP engines only support board sizes that don’t exceed ${p.length}.`,
+          {
+            length: alpha.length
+          }
+        )
       )
     }
 
@@ -387,14 +396,14 @@ export default class EngineSyncer extends EventEmitter {
 
     if (!boardSynced) {
       throw new Error(
-        'Current board arrangement can’t be recreated on the GTP engine.'
+        t('Current board arrangement can’t be recreated on the GTP engine.')
       )
     }
 
     try {
       await this.stateTracker.sync({komi, boardsize, history})
     } catch (err) {
-      throw new Error('GTP engine can’t be synced to current state.')
+      throw new Error(t('GTP engine can’t be synced to current state.'))
     }
 
     this.treePosition = id

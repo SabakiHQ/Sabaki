@@ -1805,7 +1805,7 @@ class Sabaki extends EventEmitter {
         await syncer.sync(this.inferredState.gameTree, treePosition)
         return true
       } catch (err) {
-        dialog.showMessageBox(t(err.message), 'error')
+        dialog.showMessageBox(err.message, 'error')
       }
     }
 
