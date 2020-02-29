@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased][unreleased]
 
+**Added**
+
+- Add macOS specific standard keyboard shortcut to close window with
+  <kbd>Command+W</kbd> (#625)
+- Add keyboard shortcuts for scoring/estimation (#345)
+
 **Changed**
 
 - Board transformations (rotation/flip/inversion) are now temporary and faster,
@@ -12,7 +18,8 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
-- Fix 'Update Result' not working in the score drawer
+- Fix 'Update Result' not working in the score drawer (#580)
+- Fix comment not updating when exiting edit mode too fast (#584)
 
 ## [Sabaki v0.43.3][v0.43.3] (2019-05-13)
 
