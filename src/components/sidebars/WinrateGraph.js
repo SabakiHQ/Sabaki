@@ -75,12 +75,12 @@ export default class WinrateGraph extends Component {
       data[currentIndex] == null
         ? ''
         : [
-            `${t('Black winrate:')} ${blackWinrate}%${
+            `${t('Black Winrate:')} ${blackWinrate}%${
               blackWinrateDiff == null
                 ? ''
                 : ` (${blackWinrateDiff >= 0 ? '+' : ''}${blackWinrateDiff})`
             }`,
-            `${t('White winrate:')} ${whiteWinrate}%${
+            `${t('White Winrate:')} ${whiteWinrate}%${
               whiteWinrateDiff == null
                 ? ''
                 : ` (${whiteWinrateDiff >= 0 ? '+' : ''}${whiteWinrateDiff})`

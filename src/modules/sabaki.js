@@ -146,7 +146,7 @@ class Sabaki extends EventEmitter {
       get title() {
         let title = self.appName
         let {representedFilename, gameIndex, gameTrees} = state
-        let t = i18n.context('app.window')
+        let t = i18n.context('sabaki.window')
 
         if (representedFilename) title = basename(representedFilename)
 
@@ -428,7 +428,7 @@ class Sabaki extends EventEmitter {
   ) {
     if (!suppressAskForSave && !this.askForSave()) return
 
-    let t = i18n.context('app.file')
+    let t = i18n.context('sabaki.file')
 
     if (!filename) {
       let result = dialog.showOpenDialog({
@@ -488,7 +488,7 @@ class Sabaki extends EventEmitter {
   async loadContent(content, extension, options = {}) {
     this.setBusy(true)
 
-    let t = i18n.context('app.file')
+    let t = i18n.context('sabaki.file')
     let gameTrees = []
     let success = true
     let lastProgress = -1
@@ -558,7 +558,7 @@ class Sabaki extends EventEmitter {
   }
 
   saveFile(filename = null, confirmExtension = true) {
-    let t = i18n.context('app.file')
+    let t = i18n.context('sabaki.file')
 
     if (!filename || (confirmExtension && extname(filename) !== '.sgf')) {
       let cancel = false
@@ -728,7 +728,7 @@ class Sabaki extends EventEmitter {
   }
 
   askForSave() {
-    let t = i18n.context('app.file')
+    let t = i18n.context('sabaki.file')
     let hash = this.generateTreeHash()
 
     if (hash !== this.treeHash) {
@@ -747,7 +747,7 @@ class Sabaki extends EventEmitter {
   }
 
   askForReload() {
-    let t = i18n.context('app.file')
+    let t = i18n.context('sabaki.file')
     let hash = this.generateFileHash()
 
     if (hash != null && hash !== this.fileHash) {
@@ -783,7 +783,7 @@ class Sabaki extends EventEmitter {
   clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
     this.closeDrawer()
 
-    let t = i18n.context('app.play')
+    let t = i18n.context('sabaki.play')
     let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
     let tree = gameTrees[gameIndex]
     let board = gametree.getBoard(tree, treePosition)
@@ -1012,7 +1012,7 @@ class Sabaki extends EventEmitter {
       this.setMode('play')
     }
 
-    let t = i18n.context('app.play')
+    let t = i18n.context('sabaki.play')
     let {gameTrees, gameIndex, treePosition} = this.state
     let tree = gameTrees[gameIndex]
     let node = tree.get(treePosition)
@@ -1573,7 +1573,7 @@ class Sabaki extends EventEmitter {
   // Engine Management
 
   handleCommandSent({syncer, command, subscribe, getResponse}) {
-    let t = i18n.context('app.engine')
+    let t = i18n.context('sabaki.engine')
     let entry = {name: syncer.engine.name, command, waiting: true}
     let maxLength = setting.get('console.max_history_count')
 
@@ -1783,7 +1783,7 @@ class Sabaki extends EventEmitter {
   }
 
   async syncEngine(syncerId, treePosition) {
-    let t = i18n.context('app.engine')
+    let t = i18n.context('sabaki.engine')
     let syncer = this.state.attachedEngineSyncers.find(
       syncer => syncer.id === syncerId
     )
@@ -1801,7 +1801,7 @@ class Sabaki extends EventEmitter {
   }
 
   async generateMove(syncerId, treePosition, {commit = () => true} = {}) {
-    let t = i18n.context('app.engine')
+    let t = i18n.context('sabaki.engine')
     let sign = this.getPlayer(treePosition)
     let color = sign > 0 ? 'B' : 'W'
     let syncer = this.state.attachedEngineSyncers.find(
@@ -1920,7 +1920,7 @@ class Sabaki extends EventEmitter {
   }
 
   async startEngineGame(treePosition) {
-    let t = i18n.context('app.engine')
+    let t = i18n.context('sabaki.engine')
     let {engineGameOngoing, attachedEngineSyncers} = this.state
     let engineCount = attachedEngineSyncers.length
     if (engineGameOngoing != null) return
@@ -2033,7 +2033,7 @@ class Sabaki extends EventEmitter {
   async startAnalysis(syncerId) {
     if (this.state.analyzingEngineSyncerId === syncerId) return
 
-    let t = i18n.context('app.engine')
+    let t = i18n.context('sabaki.engine')
     let syncer = this.state.attachedEngineSyncers.find(
       syncer => syncer.id === syncerId
     )
@@ -2427,7 +2427,7 @@ class Sabaki extends EventEmitter {
   }
 
   removeNode(treePosition, {suppressConfirmation = false} = {}) {
-    let t = i18n.context('app.node')
+    let t = i18n.context('sabaki.node')
     let {gameTree: tree} = this.inferredState
     let node = tree.get(treePosition)
 
@@ -2469,7 +2469,7 @@ class Sabaki extends EventEmitter {
   }
 
   removeOtherVariations(treePosition, {suppressConfirmation = false} = {}) {
-    let t = i18n.context('app.node')
+    let t = i18n.context('sabaki.node')
 
     if (
       suppressConfirmation !== true &&

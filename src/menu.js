@@ -740,7 +740,7 @@ exports.get = function(props = {}) {
               t(
                 [
                   'A language file is basically a JavaScript file and can be used to execute arbitrary code on your computer.',
-                  'It can be extremely dangerous and it is recommended to only load language files from authors you trust.'
+                  'It can be extremely dangerous, so it is recommended to only load language files from authors you trust.'
                 ].join('\n\n')
               ),
               'warning',

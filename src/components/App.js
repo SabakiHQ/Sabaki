@@ -23,6 +23,7 @@ import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
 
 const setting = remote.require('./setting')
+const t = i18n.context('App')
 
 const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
 const sidebarMinWidth = setting.get('view.leftsidebar_minwidth')
@@ -189,8 +190,6 @@ class App extends Component {
   }
 
   componentDidUpdate(_, prevState = {}) {
-    const t = i18n.context('app.window')
-
     // Update title
 
     let {title} = sabaki.inferredState
