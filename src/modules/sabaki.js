@@ -2795,11 +2795,7 @@ class Sabaki extends EventEmitter {
         {
           label: t('S&ynchronize'),
           click: () => {
-            this.syncEngine(
-              syncerId,
-              this.inferredState.gameTree,
-              this.state.treePosition
-            )
+            this.syncEngine(syncerId, this.state.treePosition)
           }
         },
         {
