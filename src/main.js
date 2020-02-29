@@ -137,7 +137,8 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
           type: 'info',
           buttons: [t('OK')],
           title: t('No updates available'),
-          message: t(p => `Sabaki v${p.version} is the latest version.`, {
+          message: t(p => `${p.appName} v${p.version} is the latest version.`, {
+            appName: app.name,
             version: app.getVersion()
           })
         },
