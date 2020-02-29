@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Board transformations (rotation/flip/inversion) are now temporary and faster,
   transforms coordinates as well, located in the 'View' main menu, and have
   dedicated keyboard shortcuts
+- Removing root node will now delete all other nodes and clear the board
 
 **Fixed**
 

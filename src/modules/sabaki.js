@@ -2442,11 +2442,7 @@ class Sabaki extends EventEmitter {
     let t = i18n.context('sabaki.node')
     let {gameTree: tree} = this.inferredState
     let node = tree.get(treePosition)
-
-    if (node.parentId == null) {
-      dialog.showMessageBox(t('The root node cannot be removed.'), 'warning')
-      return
-    }
+    let noParent = node.parentId == null
 
     if (
       suppressConfirmation !== true &&
@@ -2466,18 +2462,32 @@ class Sabaki extends EventEmitter {
     // Remove node
 
     let newTree = tree.mutate(draft => {
-      draft.removeNode(treePosition)
+      if (!noParent) {
+        draft.removeNode(treePosition)
+      } else {
+        for (let child of node.children) {
+          draft.removeNode(child.id)
+        }
+
+        for (let prop of ['AB', 'AW', 'AE', 'B', 'W']) {
+          draft.removeProperty(node.id, prop)
+        }
+      }
     })
 
     this.setState(({gameCurrents, gameIndex}) => {
-      if (gameCurrents[gameIndex][node.parentId] === node.id) {
-        delete gameCurrents[gameIndex][node.parentId]
+      if (!noParent) {
+        if (gameCurrents[gameIndex][node.parentId] === node.id) {
+          delete gameCurrents[gameIndex][node.parentId]
+        }
+      } else {
+        delete gameCurrents[gameIndex][node.id]
       }
 
       return {gameCurrents}
     })
 
-    this.setCurrentTreePosition(newTree, node.parentId)
+    this.setCurrentTreePosition(newTree, noParent ? node.id : node.parentId)
   }
 
   removeOtherVariations(treePosition, {suppressConfirmation = false} = {}) {
