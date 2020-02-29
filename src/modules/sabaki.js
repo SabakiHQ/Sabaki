@@ -414,7 +414,19 @@ class Sabaki extends EventEmitter {
   } = {}) {
     if (!suppressAskForSave && !this.askForSave()) return
 
-    let emptyTree = this.getEmptyGameTree()
+    let [blackName, whiteName] = [
+      this.state.blackEngineSyncerId,
+      this.state.whiteEngineSyncerId
+    ]
+      .map(id =>
+        this.state.attachedEngineSyncers.find(syncer => syncer.id === id)
+      )
+      .map(syncer => (syncer == null ? null : syncer.engine.name))
+
+    let emptyTree = gametree.setGameInfo(this.getEmptyGameTree(), {
+      blackName,
+      whiteName
+    })
 
     await this.loadGameTrees([emptyTree], {suppressAskForSave: true})
 
