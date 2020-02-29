@@ -266,11 +266,11 @@ class App extends Component {
 
   handleMainLayoutSplitChange({beginSideSize, endSideSize}) {
     sabaki.setState(
-      ({leftSidebarWidth, sidebarWidth, showLeftSidebar, showSidebar}) => ({
+      ({leftSidebarWidth, sidebarWidth, showLeftSidebar}) => ({
         leftSidebarWidth: showLeftSidebar
           ? Math.max(beginSideSize, leftSidebarMinWidth)
           : leftSidebarWidth,
-        sidebarWidth: showSidebar
+        sidebarWidth: sabaki.inferredState.showSidebar
           ? Math.max(endSideSize, sidebarMinWidth)
           : sidebarWidth
       }),
