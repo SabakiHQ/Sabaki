@@ -136,7 +136,6 @@ export default class MainView extends Component {
           highlightVertices:
             findVertex && mode === 'find' ? [findVertex] : highlightVertices,
           analysis:
-            mode === 'play' &&
             analysisTreePosition != null &&
             analysisTreePosition === treePosition
               ? analysis
