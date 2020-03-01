@@ -410,11 +410,46 @@ header {
 }
 
 #winrategraph {
+    display: grid;
+    grid-template: auto 1fr / 100%;
     position: relative;
     background: #181818;
     box-shadow: 10px 0 10px #111;
+    color: #d0d0d0;
     overflow: hidden;
     z-index: 2;
+  }
+  #winrategraph .winrate-strip {
+    display: flex;
+    align-items: center;
+    padding: .3rem .6rem;
+    border-bottom: 1px solid #555;
+  }
+  #winrategraph .winrate-strip .main {
+    flex: 1;
+    text-align: right;
+    margin: 0 1rem;
+  }
+  #winrategraph .winrate-strip .change {
+    display: grid;
+    grid-template: 100% / auto 1fr;
+    border-radius: 3px;
+    min-width: 2.5rem;
+    padding: 0rem .5rem;
+    background: #393939;
+    text-align: right;
+    transition: background .2s;
+  }
+  #winrategraph .winrate-strip .change.positive {
+    background: #4CD964;
+    color: white;
+  }
+  #winrategraph .winrate-strip .change.negative {
+    background: #FF3B30;
+    color: white;
+  }
+  #winrategraph .graph {
+    position: relative;
   }
   #winrategraph svg {
     position: absolute;

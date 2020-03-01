@@ -148,7 +148,13 @@ let defaults = {
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
-  'setting.overwrite.v0.43.3': ['board.analysis_interval', 'graph.delay'],
+  'setting.overwrite.v0.43.3_2': [
+    'board.analysis_interval',
+    'graph.delay',
+    'view.winrategraph_minheight',
+    'view.winrategraph_blunderthreshold',
+    'view.winrategraph_height'
+  ],
   'sgf.comment_properties': [
     'C',
     'N',
@@ -190,8 +196,9 @@ let defaults = {
   'view.show_winrategraph': true,
   'view.sidebar_width': 200,
   'view.sidebar_minwidth': 100,
-  'view.winrategraph_height': 60,
-  'view.winrategraph_minheight': 25,
+  'view.winrategraph_blunderthreshold': 5,
+  'view.winrategraph_height': 90,
+  'view.winrategraph_minheight': 50,
   'view.winrategraph_maxheight': 250,
   'view.winrategraph_invert': false,
   'infooverlay.duration': 2000,

@@ -99,6 +99,7 @@ export default class Sidebar extends Component {
   render(
     {
       mode,
+      lastPlayer,
       gameIndex,
       gameTree,
       gameCurrents,
@@ -136,6 +137,7 @@ export default class Sidebar extends Component {
         sideSize: !showWinrateGraph ? 0 : winrateGraphHeight,
 
         sideContent: h(WinrateGraph, {
+          lastPlayer,
           width: winrateGraphWidth,
           data: winrateData,
           currentIndex: level,

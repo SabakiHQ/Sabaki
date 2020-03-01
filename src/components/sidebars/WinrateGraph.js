@@ -1,10 +1,46 @@
 import {remote} from 'electron'
 import {h, Component} from 'preact'
+import classNames from 'classnames'
 import i18n from '../../i18n.js'
 import {noop} from '../../modules/helper.js'
 
 const t = i18n.context('WinrateGraph')
 const setting = remote.require('./setting')
+const blunderThreshold = setting.get('view.winrategraph_blunderthreshold')
+
+class WinrateStrip extends Component {
+  render() {
+    let {player, winrate, change} = this.props
+
+    return h(
+      'section',
+      {class: 'winrate-strip'},
+
+      h('img', {
+        class: 'player',
+        src: `./img/ui/${player > 0 ? 'black' : 'white'}.svg`,
+        height: 14,
+        alt: player > 0 ? t('Black') : t('White'),
+        title: player > 0 ? t('Black') : t('White')
+      }),
+
+      h('span', {class: 'main'}, winrate == null ? '-' : `${winrate}%`),
+
+      h(
+        'span',
+        {
+          class: classNames('change', {
+            positive: change != null && change > blunderThreshold,
+            negative: change != null && change < -blunderThreshold
+          })
+        },
+
+        h('span', {}, change == null ? '' : change >= 0 ? '+' : '-'),
+        h('span', {}, change == null ? '-' : Math.abs(change))
+      )
+    )
+  }
+}
 
 export default class WinrateGraph extends Component {
   constructor() {
@@ -20,8 +56,9 @@ export default class WinrateGraph extends Component {
     }
   }
 
-  shouldComponentUpdate({width, currentIndex, data}, {invert}) {
+  shouldComponentUpdate({lastPlayer, width, currentIndex, data}, {invert}) {
     return (
+      lastPlayer !== this.props.lastPlayer ||
       width !== this.props.width ||
       currentIndex !== this.props.currentIndex ||
       data[currentIndex] !== this.props.data[currentIndex] ||
@@ -50,7 +87,7 @@ export default class WinrateGraph extends Component {
   }
 
   render() {
-    let {width, currentIndex, data} = this.props
+    let {lastPlayer, width, currentIndex, data} = this.props
     let {invert} = this.state
 
     if (invert) {
@@ -63,13 +100,14 @@ export default class WinrateGraph extends Component {
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
     let round2 = x => Math.round(x * 100) / 100
+    let blackWinrate =
+      data[currentIndex] == null ? null : round2(data[currentIndex])
+    let blackWinrateDiff =
+      dataDiff[currentIndex] == null ? null : round2(dataDiff[currentIndex])
     let whiteWinrate =
       data[currentIndex] == null ? null : round2(100 - data[currentIndex])
     let whiteWinrateDiff =
       dataDiff[currentIndex] == null ? null : -round2(dataDiff[currentIndex])
-    let blackWinrate = whiteWinrate == null ? null : round2(100 - whiteWinrate)
-    let blackWinrateDiff =
-      whiteWinrateDiff == null ? null : round2(-whiteWinrateDiff)
 
     let tooltip =
       data[currentIndex] == null
@@ -94,186 +132,199 @@ export default class WinrateGraph extends Component {
         id: 'winrategraph',
         style: {
           height: this.state.height + 'px'
-        },
-        title: tooltip,
-        onMouseDown: this.handleMouseDown
+        }
       },
 
+      h(WinrateStrip, {
+        player: lastPlayer,
+        winrate: lastPlayer > 0 ? blackWinrate : whiteWinrate,
+        change: lastPlayer > 0 ? blackWinrateDiff : whiteWinrateDiff
+      }),
+
       h(
-        'svg',
+        'section',
         {
-          viewBox: `0 0 ${width} 100`,
-          preserveAspectRatio: 'none',
-          style: {height: '100%', width: '100%'}
+          class: 'graph',
+          title: tooltip,
+          onMouseDown: this.handleMouseDown
         },
 
-        // Draw background
-
         h(
-          'defs',
-          {},
+          'svg',
+          {
+            viewBox: `0 0 ${width} 100`,
+            preserveAspectRatio: 'none',
+            style: {height: '100%', width: '100%'}
+          },
+
+          // Draw background
+
           h(
-            'linearGradient',
-            {
-              id: 'bgGradient',
-              x1: 0,
-              y1: invert ? 1 : 0,
-              x2: 0,
-              y2: invert ? 0 : 1
-            },
-            h('stop', {
-              offset: '0%',
-              'stop-color': 'white',
-              'stop-opacity': 0.7
-            }),
-            h('stop', {
-              offset: '100%',
-              'stop-color': 'white',
-              'stop-opacity': 0.1
-            })
+            'defs',
+            {},
+            h(
+              'linearGradient',
+              {
+                id: 'bgGradient',
+                x1: 0,
+                y1: invert ? 1 : 0,
+                x2: 0,
+                y2: invert ? 0 : 1
+              },
+              h('stop', {
+                offset: '0%',
+                'stop-color': 'white',
+                'stop-opacity': 0.7
+              }),
+              h('stop', {
+                offset: '100%',
+                'stop-color': 'white',
+                'stop-opacity': 0.1
+              })
+            ),
+
+            h(
+              'clipPath',
+              {id: 'clipGradient'},
+              h('path', {
+                fill: 'black',
+                'stroke-width': 0,
+                d: (() => {
+                  let instructions = data
+                    .map((x, i) => {
+                      if (x == null) return i === 0 ? [i, 50] : null
+                      return [i, x]
+                    })
+                    .filter(x => x != null)
+
+                  if (instructions.length === 0) return ''
+
+                  return (
+                    `M ${instructions[0][0]},${invert ? 0 : 100} ` +
+                    instructions.map(x => `L ${x.join(',')}`).join(' ') +
+                    ` L ${instructions.slice(-1)[0][0]},${invert ? 0 : 100} Z`
+                  )
+                })()
+              })
+            )
           ),
 
-          h(
-            'clipPath',
-            {id: 'clipGradient'},
-            h('path', {
-              fill: 'black',
-              'stroke-width': 0,
-              d: (() => {
-                let instructions = data
-                  .map((x, i) => {
-                    if (x == null) return i === 0 ? [i, 50] : null
-                    return [i, x]
-                  })
-                  .filter(x => x != null)
+          h('rect', {
+            x: 0,
+            y: 0,
+            width,
+            height: 100,
+            fill: 'url(#bgGradient)',
+            'clip-path': 'url(#clipGradient)'
+          }),
 
-                if (instructions.length === 0) return ''
+          // Draw guiding lines
 
-                return (
-                  `M ${instructions[0][0]},${invert ? 0 : 100} ` +
-                  instructions.map(x => `L ${x.join(',')}`).join(' ') +
-                  ` L ${instructions.slice(-1)[0][0]},${invert ? 0 : 100} Z`
-                )
-              })()
-            })
-          )
-        ),
-
-        h('rect', {
-          x: 0,
-          y: 0,
-          width,
-          height: 100,
-          fill: 'url(#bgGradient)',
-          'clip-path': 'url(#clipGradient)'
-        }),
-
-        // Draw guiding lines
-
-        h('line', {
-          x1: 0,
-          y1: 50,
-          x2: width,
-          y2: 50,
-          stroke: '#aaa',
-          'stroke-width': 1,
-          'stroke-dasharray': 2,
-          'vector-effect': 'non-scaling-stroke'
-        }),
-
-        [...Array(width)].map((_, i) => {
-          if (i === 0 || i % 50 !== 0) return
-
-          return h('line', {
-            x1: i,
-            y1: 0,
-            x2: i,
-            y2: 100,
+          h('line', {
+            x1: 0,
+            y1: 50,
+            x2: width,
+            y2: 50,
             stroke: '#aaa',
             'stroke-width': 1,
             'stroke-dasharray': 2,
             'vector-effect': 'non-scaling-stroke'
+          }),
+
+          [...Array(width)].map((_, i) => {
+            if (i === 0 || i % 50 !== 0) return
+
+            return h('line', {
+              x1: i,
+              y1: 0,
+              x2: i,
+              y2: 100,
+              stroke: '#aaa',
+              'stroke-width': 1,
+              'stroke-dasharray': 2,
+              'vector-effect': 'non-scaling-stroke'
+            })
+          }),
+
+          // Current position marker
+
+          h('line', {
+            x1: currentIndex,
+            y1: 0,
+            x2: currentIndex,
+            y2: 100,
+            stroke: '#0082F0',
+            'stroke-width': 2,
+            'vector-effect': 'non-scaling-stroke'
+          }),
+
+          // Draw differential bar graph
+
+          h('path', {
+            fill: 'none',
+            stroke: '#FF3B30',
+            'stroke-width': 1,
+
+            d: dataDiff
+              .map((x, i) => {
+                if (x == null || Math.abs(x) <= blunderThreshold) return ''
+
+                return `M ${i},50 l 0,${(x * 50) / dataDiffMax}`
+              })
+              .join(' ')
+          }),
+
+          // Draw data lines
+
+          h('path', {
+            fill: 'none',
+            stroke: '#eee',
+            'stroke-width': 2,
+            'vector-effect': 'non-scaling-stroke',
+
+            d: data
+              .map((x, i) => {
+                if (x == null) return ''
+
+                let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
+                return `${command} ${i},${x}`
+              })
+              .join(' ')
+          }),
+
+          h('path', {
+            fill: 'none',
+            stroke: '#ccc',
+            'stroke-width': 2,
+            'stroke-dasharray': 2,
+            'vector-effect': 'non-scaling-stroke',
+
+            d: data
+              .map((x, i) => {
+                if (i === 0) return 'M 0,50'
+
+                if (x == null && data[i - 1] != null)
+                  return `M ${i - 1},${data[i - 1]}`
+
+                if (x != null && data[i - 1] == null) return `L ${i},${x}`
+
+                return ''
+              })
+              .join(' ')
           })
-        }),
+        ),
 
-        // Current position marker
+        // Draw marker
 
-        h('line', {
-          x1: currentIndex,
-          y1: 0,
-          x2: currentIndex,
-          y2: 100,
-          stroke: '#0082F0',
-          'stroke-width': 2,
-          'vector-effect': 'non-scaling-stroke'
-        }),
-
-        // Draw differential bar graph
-
-        h('path', {
-          fill: 'none',
-          stroke: '#F76047',
-          'stroke-width': 1,
-
-          d: dataDiff
-            .map((x, i) => {
-              if (x == null || Math.abs(x) <= 3) return ''
-
-              return `M ${i},50 l 0,${(x * 50) / dataDiffMax}`
-            })
-            .join(' ')
-        }),
-
-        // Draw data lines
-
-        h('path', {
-          fill: 'none',
-          stroke: '#eee',
-          'stroke-width': 2,
-          'vector-effect': 'non-scaling-stroke',
-
-          d: data
-            .map((x, i) => {
-              if (x == null) return ''
-
-              let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
-              return `${command} ${i},${x}`
-            })
-            .join(' ')
-        }),
-
-        h('path', {
-          fill: 'none',
-          stroke: '#ccc',
-          'stroke-width': 2,
-          'stroke-dasharray': 2,
-          'vector-effect': 'non-scaling-stroke',
-
-          d: data
-            .map((x, i) => {
-              if (i === 0) return 'M 0,50'
-
-              if (x == null && data[i - 1] != null)
-                return `M ${i - 1},${data[i - 1]}`
-
-              if (x != null && data[i - 1] == null) return `L ${i},${x}`
-
-              return ''
-            })
-            .join(' ')
-        })
-      ),
-
-      // Draw marker
-
-      data[currentIndex] &&
-        h('div', {
-          class: 'marker',
-          style: {
-            left: `${(currentIndex * 100) / width}%`,
-            top: `${data[currentIndex]}%`
-          }
-        })
+        data[currentIndex] &&
+          h('div', {
+            class: 'marker',
+            style: {
+              left: `${(currentIndex * 100) / width}%`,
+              top: `${data[currentIndex]}%`
+            }
+          })
+      )
     )
   }
 }

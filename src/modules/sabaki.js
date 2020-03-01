@@ -177,6 +177,15 @@ class Sabaki extends EventEmitter {
       get currentPlayer() {
         return self.getPlayer(state.treePosition)
       },
+      get lastPlayer() {
+        let node = this.gameTree.get(state.treePosition)
+
+        return 'B' in node.data
+          ? 1
+          : 'W' in node.data
+          ? -1
+          : -this.currentPlayer
+      },
       get board() {
         return gametree.getBoard(this.gameTree, state.treePosition)
       },
