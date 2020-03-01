@@ -178,6 +178,11 @@ class Sabaki extends EventEmitter {
       },
       get board() {
         return gametree.getBoard(this.gameTree, state.treePosition)
+      },
+      get analyzingEngineSyncer() {
+        return self.state.attachedEngineSyncers.find(
+          syncer => syncer.id === self.state.analyzingEngineSyncerId
+        )
       }
     }
   }
@@ -1398,9 +1403,7 @@ class Sabaki extends EventEmitter {
 
     // Continuous analysis
 
-    let syncer = this.state.attachedEngineSyncers.find(
-      syncer => syncer.id === this.state.analyzingEngineSyncerId
-    )
+    let syncer = this.inferredState.analyzingEngineSyncer
 
     if (
       syncer != null &&
@@ -1795,7 +1798,6 @@ class Sabaki extends EventEmitter {
   }
 
   async syncEngine(syncerId, treePosition) {
-    let t = i18n.context('sabaki.engine')
     let syncer = this.state.attachedEngineSyncers.find(
       syncer => syncer.id === syncerId
     )
@@ -2002,9 +2004,7 @@ class Sabaki extends EventEmitter {
           : state.engineGameOngoing
     }))
 
-    let syncer = this.state.attachedEngineSyncers.find(
-      syncer => syncer.id === this.state.analyzingEngineSyncerId
-    )
+    let syncer = this.inferredState.analyzingEngineSyncer
     if (syncer == null) return
   }
 
@@ -2019,9 +2019,7 @@ class Sabaki extends EventEmitter {
   async analyzeMove(treePosition) {
     let sign = this.getPlayer(treePosition)
     let color = sign > 0 ? 'B' : 'W'
-    let syncer = this.state.attachedEngineSyncers.find(
-      syncer => syncer.id === this.state.analyzingEngineSyncerId
-    )
+    let syncer = this.inferredState.analyzingEngineSyncer
     if (syncer == null || syncer.suspended) return
 
     let synced = await this.syncEngine(syncer.id, treePosition)
@@ -2077,6 +2075,12 @@ class Sabaki extends EventEmitter {
   }
 
   stopAnalysis() {
+    let syncer = this.inferredState.analyzingEngineSyncer
+
+    if (syncer != null) {
+      syncer.abortCommand()
+    }
+
     this.setState({
       analysis: null,
       analysisTreePosition: null,

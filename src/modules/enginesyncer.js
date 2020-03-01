@@ -241,8 +241,6 @@ export default class EngineSyncer extends EventEmitter {
   }
 
   async sync(tree, id) {
-    if (id === this.treePosition) return
-
     this.abortCommand()
     let board = getBoard(tree, id)
 
