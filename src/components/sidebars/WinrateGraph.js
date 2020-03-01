@@ -58,6 +58,16 @@ export default class WinrateGraph extends Component {
       invert: setting.get('view.winrategraph_invert')
     }
 
+    setting.events.on(
+      remote.getCurrentWindow().id,
+      'change',
+      ({key, value}) => {
+        if (key === 'view.winrategraph_invert') {
+          this.setState({invert: value})
+        }
+      }
+    )
+
     this.handleMouseDown = evt => {
       this.mouseDown = true
       document.dispatchEvent(new MouseEvent('mousemove', evt))
@@ -97,10 +107,6 @@ export default class WinrateGraph extends Component {
   render() {
     let {lastPlayer, width, currentIndex, data} = this.props
     let {invert} = this.state
-
-    if (invert) {
-      data = data.map(x => (x == null ? null : 100 - x))
-    }
 
     let dataDiff = data.map((x, i) =>
       i === 0 || x == null || data[i - 1] == null ? null : x - data[i - 1]
@@ -206,7 +212,7 @@ export default class WinrateGraph extends Component {
                   let instructions = data
                     .map((x, i) => {
                       if (x == null) return i === 0 ? [i, 50] : null
-                      return [i, x]
+                      return [i, !invert ? x : 100 - x]
                     })
                     .filter(x => x != null)
 
@@ -282,7 +288,8 @@ export default class WinrateGraph extends Component {
               .map((x, i) => {
                 if (x == null || Math.abs(x) <= blunderThreshold) return ''
 
-                return `M ${i},50 l 0,${(x * 50) / dataDiffMax}`
+                let sign = !invert ? 1 : -1
+                return `M ${i},50 l 0,${(sign * 50 * x) / dataDiffMax}`
               })
               .join(' ')
           }),
@@ -300,7 +307,7 @@ export default class WinrateGraph extends Component {
                 if (x == null) return ''
 
                 let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
-                return `${command} ${i},${x}`
+                return `${command} ${i},${!invert ? x : 100 - x}`
               })
               .join(' ')
           }),
@@ -317,9 +324,12 @@ export default class WinrateGraph extends Component {
                 if (i === 0) return 'M 0,50'
 
                 if (x == null && data[i - 1] != null)
-                  return `M ${i - 1},${data[i - 1]}`
+                  return `M ${i - 1},${
+                    !invert ? data[i - 1] : 100 - data[i - 1]
+                  }`
 
-                if (x != null && data[i - 1] == null) return `L ${i},${x}`
+                if (x != null && data[i - 1] == null)
+                  return `L ${i},${!invert ? x : 100 - x}`
 
                 return ''
               })
@@ -334,7 +344,7 @@ export default class WinrateGraph extends Component {
             class: 'marker',
             style: {
               left: `${(currentIndex * 100) / width}%`,
-              top: `${data[currentIndex]}%`
+              top: `${!invert ? data[currentIndex] : 100 - data[currentIndex]}%`
             }
           })
       )
