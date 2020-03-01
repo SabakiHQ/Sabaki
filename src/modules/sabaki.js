@@ -181,9 +181,14 @@ class Sabaki extends EventEmitter {
         return gametree.getBoard(this.gameTree, state.treePosition)
       },
       get analyzingEngineSyncer() {
-        return self.state.attachedEngineSyncers.find(
-          syncer => syncer.id === self.state.analyzingEngineSyncerId
+        return state.attachedEngineSyncers.find(
+          syncer => syncer.id === state.analyzingEngineSyncerId
         )
+      },
+      get winrateData() {
+        return [
+          ...this.gameTree.listCurrentNodes(state.gameCurrents[state.gameIndex])
+        ].map(x => x.data.SBKV && x.data.SBKV[0])
       }
     }
   }

@@ -103,14 +103,17 @@ export default class Sidebar extends Component {
       gameTree,
       gameCurrents,
       treePosition,
+
       showWinrateGraph,
       showGameGraph,
       showCommentBox,
 
       graphGridSize,
-      graphNodeSize
+      graphNodeSize,
+
+      winrateData
     },
-    {winrateData, winrateGraphHeight, sidebarSplit}
+    {winrateGraphHeight, sidebarSplit}
   ) {
     let node = gameTree.get(treePosition)
     let winrateGraphWidth = Math.max(
@@ -225,19 +228,8 @@ export default class Sidebar extends Component {
   }
 }
 
-Sidebar.getDerivedStateFromProps = function({
-  gameTree,
-  gameCurrents,
-  gameIndex,
-  showWinrateGraph
-}) {
-  // Get winrate data
-
-  let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
-  let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
-
+Sidebar.getDerivedStateFromProps = function({showWinrateGraph, winrateData}) {
   return {
-    winrateData,
     showWinrateGraph: showWinrateGraph && winrateData.some(x => x != null)
   }
 }
