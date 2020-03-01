@@ -12,8 +12,14 @@ const setting = isRenderer
   ? nativeRequire('./setting')
   : null
 
+let appLang = setting == null ? undefined : setting.get('app.lang')
+
 exports.t = dolm.t
 exports.context = dolm.context
+
+exports.formatNumber = function(num) {
+  return new Intl.NumberFormat(appLang).format(num)
+}
 
 exports.loadStrings = function(strings) {
   if (isRenderer) {
@@ -31,11 +37,12 @@ exports.loadFile = function(filename) {
 }
 
 exports.loadLang = function(lang) {
+  appLang = lang
   exports.loadFile(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
 }
 
 try {
-  exports.loadLang(setting.get('app.lang'))
+  exports.loadLang(appLang)
 } catch (err) {
   exports.loadStrings({})
 }

@@ -24,7 +24,11 @@ class WinrateStrip extends Component {
         title: player > 0 ? t('Black') : t('White')
       }),
 
-      h('span', {class: 'main'}, winrate == null ? '–' : `${winrate}%`),
+      h(
+        'span',
+        {class: 'main'},
+        winrate == null ? '–' : `${i18n.formatNumber(winrate)}%`
+      ),
 
       h(
         'span',
@@ -36,7 +40,11 @@ class WinrateStrip extends Component {
         },
 
         h('span', {}, change == null ? '' : change >= 0 ? '+' : '-'),
-        h('span', {}, change == null ? '–' : Math.abs(change))
+        h(
+          'span',
+          {},
+          change == null ? '–' : i18n.formatNumber(Math.abs(change))
+        )
       )
     )
   }
@@ -113,17 +121,22 @@ export default class WinrateGraph extends Component {
       data[currentIndex] == null
         ? ''
         : [
-            `${t('Black Winrate:')} ${blackWinrate}%${
-              blackWinrateDiff == null
-                ? ''
-                : ` (${blackWinrateDiff >= 0 ? '+' : ''}${blackWinrateDiff})`
-            }`,
-            `${t('White Winrate:')} ${whiteWinrate}%${
-              whiteWinrateDiff == null
-                ? ''
-                : ` (${whiteWinrateDiff >= 0 ? '+' : ''}${whiteWinrateDiff})`
-            }`
-          ].join('\n')
+            [blackWinrate, blackWinrateDiff],
+            [whiteWinrate, whiteWinrateDiff]
+          ]
+            .map(
+              ([winrate, diff], i) =>
+                `${
+                  i === 0 ? t('Black Winrate:') : t('White Winrate:')
+                } ${i18n.formatNumber(winrate)}%${
+                  diff == null
+                    ? ''
+                    : ` (${diff >= 0 ? '+' : '-'}${i18n.formatNumber(
+                        Math.abs(diff)
+                      )})`
+                }`
+            )
+            .join('\n')
 
     return h(
       'section',

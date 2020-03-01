@@ -422,7 +422,7 @@ header {
   #winrategraph .winrate-strip {
     display: flex;
     align-items: center;
-    padding: .3rem .6rem;
+    padding: .3rem .7rem;
     border-bottom: 1px solid #555;
   }
   #winrategraph .winrate-strip .main {

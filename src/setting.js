@@ -31,7 +31,7 @@ let defaults = {
   'app.always_show_result': false,
   'app.enable_hardware_acceleration': true,
   'app.hide_busy_delay': 200,
-  'app.lang': 'default',
+  'app.lang': 'en',
   'app.loadgame_delay': 100,
   'app.startup_check_updates': true,
   'app.startup_check_updates_delay': 3000,
@@ -148,12 +148,13 @@ let defaults = {
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
-  'setting.overwrite.v0.43.3_2': [
+  'setting.overwrite.v0.43.3_3': [
     'board.analysis_interval',
     'graph.delay',
     'view.winrategraph_minheight',
     'view.winrategraph_blunderthreshold',
-    'view.winrategraph_height'
+    'view.winrategraph_height',
+    'app.lang'
   ],
   'sgf.comment_properties': [
     'C',
