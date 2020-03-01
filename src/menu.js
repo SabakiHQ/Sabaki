@@ -25,6 +25,7 @@ exports.get = function(props = {}) {
     showMoveColorization,
     showNextMoves,
     showSiblings,
+    showWinrateGraph,
     showGameGraph,
     showCommentBox,
     showLeftSidebar,
@@ -581,6 +582,17 @@ exports.get = function(props = {}) {
           click: () => toggleSetting('view.show_siblings')
         },
         {type: 'separator'},
+        {
+          label: i18n.t('menu.view', 'Show &Winrate Graph'),
+          type: 'checkbox',
+          checked: !!showWinrateGraph,
+          click: () => {
+            toggleSetting('view.show_winrategraph')
+            sabaki.setState(({showWinrateGraph}) => ({
+              showWinrateGraph: !showWinrateGraph
+            }))
+          }
+        },
         {
           label: i18n.t('menu.view', 'Show Game &Tree'),
           type: 'checkbox',

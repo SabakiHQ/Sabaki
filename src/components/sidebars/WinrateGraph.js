@@ -89,7 +89,6 @@ export default class WinrateGraph extends Component {
 
     return h(
       'section',
-
       {
         ref: el => (this.element = el),
         id: 'winrategraph',

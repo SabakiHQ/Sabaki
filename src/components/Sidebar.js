@@ -87,10 +87,10 @@ export default class Sidebar extends Component {
     )
   }
 
-  componentDidUpdate(_, {winrateData}) {
+  componentDidUpdate(_, {winrateGraphHeight, showWinrateGraph}) {
     if (
-      winrateData.some(x => x != null) !==
-      this.state.winrateData.some(x => x != null)
+      winrateGraphHeight !== this.state.winrateGraphHeight ||
+      showWinrateGraph !== this.state.showWinrateGraph
     ) {
       this.gameGraph.remeasure()
     }
@@ -103,6 +103,7 @@ export default class Sidebar extends Component {
       gameTree,
       gameCurrents,
       treePosition,
+      showWinrateGraph,
       showGameGraph,
       showCommentBox,
 
@@ -117,7 +118,7 @@ export default class Sidebar extends Component {
       1
     )
     let level = gameTree.getLevel(treePosition)
-    let showWinrateGraph = winrateData.some(x => x != null)
+    showWinrateGraph = showWinrateGraph && winrateData.some(x => x != null)
 
     return h(
       'section',
@@ -227,12 +228,16 @@ export default class Sidebar extends Component {
 Sidebar.getDerivedStateFromProps = function({
   gameTree,
   gameCurrents,
-  gameIndex
+  gameIndex,
+  showWinrateGraph
 }) {
   // Get winrate data
 
   let currentTrack = [...gameTree.listCurrentNodes(gameCurrents[gameIndex])]
   let winrateData = currentTrack.map(x => x.data.SBKV && x.data.SBKV[0])
 
-  return {winrateData}
+  return {
+    winrateData,
+    showWinrateGraph: showWinrateGraph && winrateData.some(x => x != null)
+  }
 }
