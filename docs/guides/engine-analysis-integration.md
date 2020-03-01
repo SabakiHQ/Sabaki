@@ -38,8 +38,6 @@ Necessary key value pairs are:
 - `visits` - The number of visits invested in `move` so far.
 - `winrate` - The win rate percentage times 100 of `move`, e.g. `9543` for
   `95.43%`.
-- `order` - An integer representing how good `move` is. The smaller the number,
-  the better the move.
 
 The response will terminate when any input is written to `stdin`.
 
