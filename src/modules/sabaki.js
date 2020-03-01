@@ -1784,6 +1784,10 @@ class Sabaki extends EventEmitter {
 
         let unset = syncerId => (syncerId === syncer.id ? null : syncerId)
 
+        if (this.lastAnalyzingEngineSyncerId === syncer.id) {
+          this.lastAnalyzingEngineSyncerId = null
+        }
+
         this.setState(state => ({
           attachedEngineSyncers: state.attachedEngineSyncers.filter(
             s => s.id !== syncer.id
