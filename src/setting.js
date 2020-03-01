@@ -113,6 +113,7 @@ let defaults = {
   'edit.show_removeothervariations_warning': true,
   'engines.list': [],
   'engines.analyze_commands': ['analyze', 'lz-analyze'],
+  'engines.gemove_analyze_commands': ['genmove_analyze', 'lz-genmove_analyze'],
   'file.show_reload_warning': true,
   'find.delay': 100,
   'game.default_board_size': 19,

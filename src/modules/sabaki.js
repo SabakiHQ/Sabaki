@@ -1831,9 +1831,9 @@ class Sabaki extends EventEmitter {
     let coord
     try {
       let commandName =
-        ['genmove_analyze', 'lz-genmove_analyze'].find(x =>
-          syncer.commands.includes(x)
-        ) || 'genmove'
+        setting
+          .get('engines.gemove_analyze_commands')
+          .find(x => syncer.commands.includes(x)) || 'genmove'
 
       if (commandName === 'genmove') {
         let response = await syncer.queueCommand({
