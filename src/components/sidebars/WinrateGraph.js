@@ -2,6 +2,7 @@ import {remote} from 'electron'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import i18n from '../../i18n.js'
+import sabaki from '../../modules/sabaki.js'
 import {noop} from '../../modules/helper.js'
 
 const t = i18n.context('WinrateGraph')
@@ -58,15 +59,11 @@ export default class WinrateGraph extends Component {
       invert: setting.get('view.winrategraph_invert')
     }
 
-    setting.events.on(
-      remote.getCurrentWindow().id,
-      'change',
-      ({key, value}) => {
-        if (key === 'view.winrategraph_invert') {
-          this.setState({invert: value})
-        }
+    setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
+      if (key === 'view.winrategraph_invert') {
+        this.setState({invert: value})
       }
-    )
+    })
 
     this.handleMouseDown = evt => {
       this.mouseDown = true
@@ -173,7 +170,11 @@ export default class WinrateGraph extends Component {
           {
             viewBox: `0 0 ${width} 100`,
             preserveAspectRatio: 'none',
-            style: {height: '100%', width: '100%'}
+            style: {
+              height: '100%',
+              width: '100%',
+              transform: !invert ? 'none' : 'scaleY(-1)'
+            }
           },
 
           // Draw background
@@ -186,9 +187,9 @@ export default class WinrateGraph extends Component {
               {
                 id: 'bgGradient',
                 x1: 0,
-                y1: invert ? 1 : 0,
+                y1: 0,
                 x2: 0,
-                y2: invert ? 0 : 1
+                y2: 1
               },
               h('stop', {
                 offset: '0%',
@@ -212,16 +213,16 @@ export default class WinrateGraph extends Component {
                   let instructions = data
                     .map((x, i) => {
                       if (x == null) return i === 0 ? [i, 50] : null
-                      return [i, !invert ? x : 100 - x]
+                      return [i, x]
                     })
                     .filter(x => x != null)
 
                   if (instructions.length === 0) return ''
 
                   return (
-                    `M ${instructions[0][0]},${invert ? 0 : 100} ` +
+                    `M ${instructions[0][0]},100 ` +
                     instructions.map(x => `L ${x.join(',')}`).join(' ') +
-                    ` L ${instructions.slice(-1)[0][0]},${invert ? 0 : 100} Z`
+                    ` L ${instructions.slice(-1)[0][0]},100 Z`
                   )
                 })()
               })
@@ -288,8 +289,7 @@ export default class WinrateGraph extends Component {
               .map((x, i) => {
                 if (x == null || Math.abs(x) <= blunderThreshold) return ''
 
-                let sign = !invert ? 1 : -1
-                return `M ${i},50 l 0,${(sign * 50 * x) / dataDiffMax}`
+                return `M ${i},50 l 0,${(50 * x) / dataDiffMax}`
               })
               .join(' ')
           }),
@@ -307,7 +307,7 @@ export default class WinrateGraph extends Component {
                 if (x == null) return ''
 
                 let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
-                return `${command} ${i},${!invert ? x : 100 - x}`
+                return `${command} ${i},${x}`
               })
               .join(' ')
           }),
@@ -324,12 +324,9 @@ export default class WinrateGraph extends Component {
                 if (i === 0) return 'M 0,50'
 
                 if (x == null && data[i - 1] != null)
-                  return `M ${i - 1},${
-                    !invert ? data[i - 1] : 100 - data[i - 1]
-                  }`
+                  return `M ${i - 1},${data[i - 1]}`
 
-                if (x != null && data[i - 1] == null)
-                  return `L ${i},${!invert ? x : 100 - x}`
+                if (x != null && data[i - 1] == null) return `L ${i},${x}`
 
                 return ''
               })
