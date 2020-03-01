@@ -24,7 +24,7 @@ class WinrateStrip extends Component {
         title: player > 0 ? t('Black') : t('White')
       }),
 
-      h('span', {class: 'main'}, winrate == null ? '-' : `${winrate}%`),
+      h('span', {class: 'main'}, winrate == null ? '–' : `${winrate}%`),
 
       h(
         'span',
@@ -36,7 +36,7 @@ class WinrateStrip extends Component {
         },
 
         h('span', {}, change == null ? '' : change >= 0 ? '+' : '-'),
-        h('span', {}, change == null ? '-' : Math.abs(change))
+        h('span', {}, change == null ? '–' : Math.abs(change))
       )
     )
   }
