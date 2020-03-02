@@ -29,7 +29,7 @@ export default class ScoringBar extends Component {
         h(
           'strong',
           {},
-          !result
+          result == null
             ? ''
             : result > 0
             ? `B+${result}`
