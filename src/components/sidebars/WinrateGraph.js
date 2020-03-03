@@ -106,7 +106,9 @@ export default class WinrateGraph extends Component {
     let {invert} = this.state
 
     let dataDiff = data.map((x, i) =>
-      i === 0 || x == null || data[i - 1] == null ? null : x - data[i - 1]
+      i === 0 || x == null || (data[i - 1] == null && data[i - 2] == null)
+        ? null
+        : x - data[data[i - 1] != null ? i - 1 : i - 2]
     )
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
