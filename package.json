@@ -78,7 +78,7 @@
     "@sabaki/boardmatcher": "^1.1.5",
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
-    "@sabaki/gtp": "^2.3.0",
+    "@sabaki/gtp": "^2.3.1",
     "@sabaki/immutable-gametree": "^1.8.2",
     "@sabaki/influence": "^1.2.2",
     "@sabaki/sgf": "^3.4.4",
