@@ -450,6 +450,7 @@ header {
   }
   #winrategraph .graph {
     position: relative;
+    overflow: hidden;
   }
   #winrategraph svg {
     position: absolute;

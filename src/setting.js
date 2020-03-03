@@ -148,7 +148,7 @@ let defaults = {
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
-  'setting.overwrite.v0.43.3_3': [
+  'setting.overwrite.v0.43.3_4': [
     'board.analysis_interval',
     'graph.delay',
     'view.winrategraph_minheight',
@@ -199,7 +199,7 @@ let defaults = {
   'view.sidebar_minwidth': 100,
   'view.winrategraph_blunderthreshold': 5,
   'view.winrategraph_height': 90,
-  'view.winrategraph_minheight': 50,
+  'view.winrategraph_minheight': 30,
   'view.winrategraph_maxheight': 250,
   'view.winrategraph_invert': false,
   'infooverlay.duration': 2000,
