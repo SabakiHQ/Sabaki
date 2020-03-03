@@ -489,11 +489,10 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {id, name, args, commands, onChange = noop} = this.props
+      let {id, name, path, args, commands, onChange = noop} = this.props
       let element = evt.currentTarget
-      let data = {id, name, args, commands, [element.name]: element.value}
 
-      onChange(data)
+      onChange({id, name, path, args, commands, [element.name]: element.value})
     }
 
     this.handleBrowseButtonClick = () => {
