@@ -489,11 +489,9 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {onChange = noop} = this.props
+      let {id, name, args, commands, onChange = noop} = this.props
       let element = evt.currentTarget
-      let data = Object.assign({}, this.props, {
-        [element.name]: element.value
-      })
+      let data = {id, name, args, commands, [element.name]: element.value}
 
       onChange(data)
     }
@@ -505,8 +503,8 @@ class EngineItem extends Component {
       })
       if (!result || result.length === 0) return
 
-      let {id, name, args, onChange = noop} = this.props
-      onChange({id, name, args, path: result[0]})
+      let {id, name, args, commands, onChange = noop} = this.props
+      onChange({id, name, args, commands, path: result[0]})
     }
 
     this.handleRemoveButtonClick = () => {
