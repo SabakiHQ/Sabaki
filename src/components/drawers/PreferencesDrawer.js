@@ -564,7 +564,7 @@ class EngineItem extends Component {
         h('input', {
           type: 'text',
           placeholder: t('Path'),
-          value: path,
+          value: path || '',
           name: 'path',
           onChange: this.handleChange
         })
@@ -575,7 +575,7 @@ class EngineItem extends Component {
         h('input', {
           type: 'text',
           placeholder: t('No arguments'),
-          value: args,
+          value: args || '',
           name: 'args',
           onChange: this.handleChange
         })
@@ -586,7 +586,7 @@ class EngineItem extends Component {
         h('input', {
           type: 'text',
           placeholder: t('Initial commands (;-separated)'),
-          value: commands,
+          value: commands || '',
           name: 'commands',
           onChange: this.handleChange
         })
@@ -616,9 +616,7 @@ class EnginesTab extends Component {
     this.handleAddButtonClick = evt => {
       evt.preventDefault()
 
-      let engines = this.props.engines.slice()
-
-      engines.unshift({name: '', path: '', args: ''})
+      let engines = [{name: '', path: '', args: ''}, ...this.props.engines]
       setting.set('engines.list', engines)
 
       setImmediate(() => {
