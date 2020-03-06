@@ -399,9 +399,9 @@ export default class Goban extends Component {
               : [
                   i18n.formatNumber(winrate) +
                     (Math.floor(winrate) === winrate ? '%' : ''),
-                  i18n.formatNumber(
-                    visits < 1000 ? visits : Math.round(visits / 100) / 10
-                  ) + 'k'
+                  visits < 1000
+                    ? i18n.formatNumber(visits)
+                    : i18n.formatNumber(Math.round(visits / 100) / 10) + 'k'
                 ].join('\n')
         }
       }
