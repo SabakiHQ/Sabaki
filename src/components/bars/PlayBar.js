@@ -136,13 +136,7 @@ export default class PlayBar extends Component {
 
         engineSyncers[0] == null &&
           playerRanks[0] &&
-          h(
-            'span',
-            {class: 'rank'},
-            t(p => p.playerRank, {
-              playerRank: playerRanks[0]
-            })
-          ),
+          h('span', {class: 'rank'}, playerRanks[0]),
         ' ',
 
         engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
@@ -195,13 +189,7 @@ export default class PlayBar extends Component {
 
         engineSyncers[1] == null &&
           playerRanks[1] &&
-          h(
-            'span',
-            {class: 'rank'},
-            t(p => p.playerRank, {
-              playerRank: playerRanks[1]
-            })
-          ),
+          h('span', {class: 'rank'}, playerRanks[1]),
         ' ',
 
         h(
