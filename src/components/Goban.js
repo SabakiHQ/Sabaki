@@ -4,10 +4,12 @@ import {remote} from 'electron'
 import sgf from '@sabaki/sgf'
 import {BoundedGoban} from '@sabaki/shudan'
 
+import i18n from '../i18n.js'
 import * as gametree from '../modules/gametree.js'
 import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
 
+const t = i18n.context('Goban')
 const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
@@ -395,8 +397,11 @@ export default class Goban extends Component {
             visits < 10
               ? ''
               : [
-                  winrate + (Math.floor(winrate) === winrate ? '%' : ''),
-                  visits < 1000 ? visits : Math.round(visits / 100) / 10 + 'k'
+                  i18n.formatNumber(winrate) +
+                    (Math.floor(winrate) === winrate ? '%' : ''),
+                  i18n.formatNumber(
+                    visits < 1000 ? visits : Math.round(visits / 100) / 10
+                  ) + 'k'
                 ].join('\n')
         }
       }
