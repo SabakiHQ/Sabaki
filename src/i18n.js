@@ -3,9 +3,10 @@ const nativeRequire = eval('require')
 const {remote} = require('electron')
 const isElectron = process.versions.electron != null
 const isRenderer = isElectron && remote != null
-const dolm = require('dolm').load({})
+const {load: dolmLoad, getKey} = require('dolm')
 
-const mainI18n = isRenderer ? remote.require('./i18n') : exports
+const dolm = dolmLoad({}, exports.getKey)
+const mainI18n = isRenderer ? remote.require('./i18n') : null
 const setting = isRenderer
   ? remote.require('./setting')
   : isElectron
@@ -19,6 +20,11 @@ exports.context = dolm.context
 
 exports.formatNumber = function(num) {
   return new Intl.NumberFormat(appLang).format(num)
+}
+
+exports.getKey = function(input, params = {}) {
+  let key = getKey(input, params)
+  return key.replace(/&(?=\w)/g, '')
 }
 
 exports.loadStrings = function(strings) {
