@@ -70,7 +70,16 @@
     "semi": false,
     "singleQuote": true,
     "bracketSpacing": false,
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "overrides": [
+      {
+        "files": "*.i18n.js",
+        "options": {
+          "quoteProps": "preserve",
+          "trailingComma": "es5"
+        }
+      }
+    ]
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
@@ -85,7 +94,7 @@
     "@sabaki/shudan": "^1.5.4",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
-    "dolm": "^0.5.3-beta",
+    "dolm": "^0.6.0-beta",
     "fix-path": "^3.0.0",
     "iconv-lite": "^0.5.1",
     "jschardet": "^2.1.1",
@@ -126,6 +135,7 @@
     "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-i386.AppImage ./dist/sabaki-vx.x.x-linux-ia32.AppImage && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-x86_64.AppImage ./dist/sabaki-vx.x.x-linux-x64.AppImage",
     "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",
     "dist:win64": "npm run bundle && electron-builder -w --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
-    "dist:win": "npm run dist:win32 && npm run dist:win64"
+    "dist:win": "npm run dist:win32 && npm run dist:win64",
+    "i18n": "dolm gen --dolm-identifier i18n --get-key ./ci/dolmGetKey.js -o ./i18n/en.i18n.js \"./src/**/*.js\" && dolm gen --dolm-identifier i18n --get-key ./ci/dolmGetKey.js -t -o ./i18n/template.i18n.js \"./src/**/*.js\""
   }
 }

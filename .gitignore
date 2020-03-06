@@ -1,5 +1,5 @@
 dist/
-lang/
+i18n/
 engines/
 node_modules/
 
