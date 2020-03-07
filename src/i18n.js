@@ -1,11 +1,14 @@
 const nativeRequire = eval('require')
 
-const {remote} = require('electron')
+const {ipcMain, remote} = require('electron')
+const {readFileSync} = require('fs')
+const path = require('path')
+const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')
+const {safeModuleEval} = nativeRequire('dolm/tools')
+
 const isElectron = process.versions.electron != null
 const isRenderer = isElectron && remote != null
-const {load: dolmLoad, getKey} = require('dolm')
 
-const dolm = dolmLoad({}, exports.getKey)
 const mainI18n = isRenderer ? remote.require('./i18n') : null
 const setting = isRenderer
   ? remote.require('./setting')
@@ -13,8 +16,16 @@ const setting = isRenderer
   ? nativeRequire('./setting')
   : null
 
+function getKey(input, params = {}) {
+  let key = dolmGetKey(input, params)
+  return key.replace(/&(?=\w)/g, '')
+}
+
+const dolm = dolmLoad({}, getKey)
+
 let appLang = setting == null ? undefined : setting.get('app.lang')
 
+exports.getKey = getKey
 exports.t = dolm.t
 exports.context = dolm.context
 
@@ -22,30 +33,35 @@ exports.formatNumber = function(num) {
   return new Intl.NumberFormat(appLang).format(num)
 }
 
-exports.getKey = function(input, params = {}) {
-  let key = getKey(input, params)
-  return key.replace(/&(?=\w)/g, '')
-}
-
-exports.loadStrings = function(strings) {
-  if (isRenderer) {
-    mainI18n.loadStrings(strings)
-  }
-
+function loadStrings(strings) {
   dolm.load(strings)
+
+  if (isElectron && !isRenderer) {
+    ipcMain.emit('build-menu')
+  }
 }
 
 exports.loadFile = function(filename) {
-  exports.loadStrings(nativeRequire(filename))
+  if (isRenderer) {
+    mainI18n.loadFile(filename)
+  }
+
+  try {
+    loadStrings(safeModuleEval(readFileSync(filename, 'utf8')))
+  } catch (err) {
+    loadStrings({})
+  }
 }
 
 exports.loadLang = function(lang) {
   appLang = lang
-  exports.loadFile(`${isRenderer ? '.' : '..'}/i18n/${lang}.i18n.js`)
+
+  let filename = path.resolve(
+    __dirname,
+    `${isRenderer ? '.' : '..'}/i18n/${lang}.i18n.js`
+  )
+
+  exports.loadFile(filename)
 }
 
-try {
-  exports.loadLang(appLang)
-} catch (err) {
-  exports.loadStrings({})
-}
+exports.loadLang(appLang)

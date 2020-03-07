@@ -777,7 +777,7 @@ exports.get = function(props = {}) {
         {
           label: i18n.t('menu.developer', '&Unload Language File'),
           click: () => {
-            i18n.loadStrings({})
+            i18n.loadFile(null)
           }
         }
       ]
