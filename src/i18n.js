@@ -33,9 +33,6 @@ exports.loadStrings = function(strings) {
   }
 
   dolm.load(strings)
-
-  exports.strings = strings
-  exports.usedStrings = dolm.usedStrings
 }
 
 exports.loadFile = function(filename) {
@@ -44,7 +41,7 @@ exports.loadFile = function(filename) {
 
 exports.loadLang = function(lang) {
   appLang = lang
-  exports.loadFile(`${isRenderer ? '.' : '..'}/lang/${lang}.js`)
+  exports.loadFile(`${isRenderer ? '.' : '..'}/i18n/${lang}.i18n.js`)
 }
 
 try {

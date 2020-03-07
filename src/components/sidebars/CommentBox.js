@@ -122,7 +122,7 @@ class CommentTitle extends Component {
     ].filter(v => board.get(v) !== 0)
 
     return [
-      t(patternMatch.pattern.name),
+      i18n.t('boardmatcher', patternMatch.pattern.name),
       ' ',
 
       patternMatch.pattern.url &&
