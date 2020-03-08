@@ -11,7 +11,7 @@ let templatePath = path.resolve(__dirname, '../i18n/template.i18n.js')
 
 let spawnDolmGen = args =>
   spawnSync(
-    'npx',
+    process.platform === 'win32' ? 'npx.cmd' : 'npx',
     [
       'dolm',
       'gen',
@@ -22,8 +22,7 @@ let spawnDolmGen = args =>
       ...args
     ],
     {
-      stdio: 'inherit',
-      shell: true
+      stdio: 'inherit'
     }
   )
 
