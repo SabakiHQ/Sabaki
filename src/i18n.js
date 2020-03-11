@@ -4,7 +4,6 @@ const {ipcMain, remote} = require('electron')
 const {readFileSync} = require('fs')
 const path = require('path')
 const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')
-const {safeModuleEval} = nativeRequire('dolm/tools')
 
 const isElectron = process.versions.electron != null
 const isRenderer = isElectron && remote != null
@@ -47,7 +46,18 @@ exports.loadFile = function(filename) {
   }
 
   try {
-    loadStrings(safeModuleEval(readFileSync(filename, 'utf8')))
+    loadStrings(
+      Function(`
+        "use strict"
+
+        let exports = {}
+        let module = {exports}
+
+        ;(() => (${readFileSync(filename, 'utf8')}))()
+
+        return exports
+      `)()
+    )
   } catch (err) {
     loadStrings({})
   }
