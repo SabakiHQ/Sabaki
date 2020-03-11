@@ -58,6 +58,7 @@
       "!**/{.github,.c9,scss,docs,test,tests,devtools,plugins,examples}${/*}",
       "!ci${/*}",
       "!src/{components,modules}${/*}",
+      "!engines",
       "!node_modules",
       "node_modules/@primer/octicons/build/svg/*",
       "node_modules/@sabaki/deadstones/wasm/*",
@@ -101,7 +102,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "^8.1.0",
+    "electron": "^8.1.1",
     "electron-builder": "^22.4.0",
     "esm": "^3.2.25",
     "mocha": "^7.1.0",
