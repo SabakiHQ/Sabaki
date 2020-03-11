@@ -12,6 +12,7 @@ const t = i18n.context('AutoplayBar')
 const setting = remote.require('./setting')
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
+let secondsPerMove = setting.get('autoplay.sec_per_move')
 
 export default class AutoplayBar extends Component {
   constructor() {
@@ -19,11 +20,16 @@ export default class AutoplayBar extends Component {
 
     this.state = {
       playing: false,
-      secondsPerMove: setting.get('autoplay.sec_per_move')
+      secondsPerMove,
+      secondsPerMoveInput: secondsPerMove
     }
 
     this.handleFormSubmit = evt => {
       evt.preventDefault()
+    }
+
+    this.handleValueInput = evt => {
+      this.setState({secondsPerMoveInput: evt.currentTarget.value})
     }
 
     this.handleValueChange = evt => {
@@ -31,8 +37,14 @@ export default class AutoplayBar extends Component {
         Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value))
       )
 
-      this.setState({secondsPerMove: value})
-      setting.set('autoplay.sec_per_move', value)
+      if (!isNaN(value)) {
+        this.setState({
+          secondsPerMove: value,
+          secondsPerMoveInput: value
+        })
+      }
+
+      setting.set('autoplay.sec_per_move', this.state.secondsPerMove)
     }
 
     this.handlePlayButtonClick = () => {
@@ -84,7 +96,7 @@ export default class AutoplayBar extends Component {
     this.setState({playing: false})
   }
 
-  render(_, {secondsPerMove, playing}) {
+  render(_, {secondsPerMoveInput, playing}) {
     return h(
       Bar,
       Object.assign(
@@ -99,11 +111,12 @@ export default class AutoplayBar extends Component {
           {},
           h('input', {
             type: 'number',
-            value: secondsPerMove,
+            value: secondsPerMoveInput,
             min: 1,
             max: maxSecPerMove,
             step: 1,
 
+            onInput: this.handleValueInput,
             onChange: this.handleValueChange
           }),
           ' ',
