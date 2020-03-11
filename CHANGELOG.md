@@ -2,10 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.50.0][v0.50.0] (2020-03-11)
 
 **Added**
 
+- Complete overhaul of the engine handling system, more than two engines can be
+  attached and given player/analyzer roles, also not blocking the user from
+  editing while generating moves
+- Support for KataGo's non-square boards
+- Ability to hide the winrate graph (#608)
+- Display winrate and winrate change above the winrate graph (#620)
 - Add macOS specific standard keyboard shortcut to close window with
   <kbd>Command+W</kbd> (#625)
 - Add keyboard shortcuts for scoring/estimation (#345)
@@ -21,6 +27,7 @@ All notable changes to this project will be documented in this file.
 
 - Fix 'Update Result' not working in the score drawer (#580)
 - Fix comment not updating when exiting edit mode too fast (#584)
+- Fix comment text getting erased while in engine analysis mode (#637)
 
 ## [Sabaki v0.43.3][v0.43.3] (2019-05-13)
 
@@ -944,7 +951,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...master
+[v0.50.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...v0.50.0
 [v0.43.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...v0.43.3
 [v0.43.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.1...v0.43.2
 [v0.43.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.0...v0.43.1
