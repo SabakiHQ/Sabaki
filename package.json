@@ -82,7 +82,7 @@
     "@sabaki/gtp": "^2.3.1",
     "@sabaki/immutable-gametree": "^1.8.2",
     "@sabaki/influence": "^1.2.2",
-    "@sabaki/sgf": "^3.4.4",
+    "@sabaki/sgf": "^3.4.5",
     "@sabaki/shudan": "^1.5.4",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
