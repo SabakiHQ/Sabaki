@@ -11,8 +11,6 @@ $ git clone https://github.com/SabakiHQ/Sabaki
 $ cd Sabaki
 ```
 
-### Desktop version
-
 Install the dependencies of Sabaki using npm:
 
 ```
@@ -53,23 +51,6 @@ adheres to the coding style standards:
 ```
 $ npm run format
 ```
-
-### Web version
-
-Checkout the `web` branch and install the dependencies for the web version:
-
-```
-$ git checkout web
-$ npm install
-```
-
-To build Sabaki, use one of the following build instructions:
-
-- `$ npm run watch` creates a human-readable build and watches code for changes
-- `$ npm run build` creates a minified version
-
-This creates a `bundle.js` file. To run Sabaki, simply open `Sabaki/index.html`
-in a modern web browser, preferably Chrome.
 
 ## Tests
 
