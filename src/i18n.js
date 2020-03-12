@@ -55,7 +55,7 @@ exports.loadFile = function(filename) {
 
         ;(() => (${readFileSync(filename, 'utf8')}))()
 
-        return exports
+        return module.exports
       `)()
     )
   } catch (err) {
