@@ -75,7 +75,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
-    "@primer/octicons": "^9.5.0",
+    "@primer/octicons": "^9.6.0",
     "@sabaki/boardmatcher": "^1.2.0",
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
@@ -92,7 +92,7 @@
     "jschardet": "^2.1.1",
     "natsort": "^2.0.2",
     "pikaday": "^1.8.0",
-    "preact": "^10.3.3",
+    "preact": "^10.3.4",
     "react-markdown": "^3.6.0",
     "recursive-copy": "^2.0.10",
     "remark-breaks": "^1.0.3",
@@ -103,7 +103,7 @@
   "devDependencies": {
     "concurrently": "^5.1.0",
     "electron": "^8.1.1",
-    "electron-builder": "^22.4.0",
+    "electron-builder": "^22.4.1",
     "esm": "^3.2.25",
     "mocha": "^7.1.0",
     "onchange": "^6.1.0",
