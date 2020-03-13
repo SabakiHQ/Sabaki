@@ -64,6 +64,7 @@
       "node_modules/@sabaki/deadstones/wasm/*",
       "node_modules/@sabaki/shudan/css/*",
       "node_modules/dolm/**/*",
+      "node_modules/{iconv-lite,safer-buffer}/**/*",
       "node_modules/pikaday/css/*"
     ]
   },
