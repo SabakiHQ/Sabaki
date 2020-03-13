@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Fix a regression where SGF decoding didn't work (SabakiHQ/sgf#7)
 - Fix board transformation not working (#644)
+- Fix loading language files not working
 
 ## [Sabaki v0.50.0][v0.50.0] (2020-03-11)
 
