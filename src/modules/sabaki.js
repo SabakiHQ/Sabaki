@@ -2098,7 +2098,7 @@ class Sabaki extends EventEmitter {
     let syncer = this.inferredState.analyzingEngineSyncer
 
     if (syncer != null) {
-      syncer.controller.sendAbort()
+      syncer.sendAbort()
     }
 
     this.setState({

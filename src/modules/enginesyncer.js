@@ -228,13 +228,19 @@ export default class EngineSyncer extends EventEmitter {
     await this.controller.stop(quitTimeout)
   }
 
+  async sendAbort() {
+    if (this.controller.busy) {
+      await this.controller.sendCommand({name: 'protocol_version'})
+    }
+  }
+
   async queueCommand(...args) {
-    this.controller.sendAbort()
+    this.sendAbort()
     return await this.stateTracker.queueCommand(...args)
   }
 
   async sync(tree, id) {
-    this.controller.sendAbort()
+    this.sendAbort()
     let board = getBoard(tree, id)
 
     if (!board.isValid()) {
