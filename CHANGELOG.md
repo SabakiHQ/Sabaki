@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.50.1][unreleased] (Unreleased)
+## [Sabaki v0.50.1][v0.50.1] (2020-03-13)
 
 **Fixed**
 
 - Fix a regression where SGF decoding didn't work (SabakiHQ/sgf#7)
+- Fix Zen engine not working (#643)
 - Fix board transformation not working (#644)
 - Fix loading language files not working
 
@@ -959,7 +960,8 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...master
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...master
+[v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v.50.1
 [v0.50.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...v0.50.0
 [v0.43.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...v0.43.3
 [v0.43.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.1...v0.43.2
