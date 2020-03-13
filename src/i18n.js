@@ -32,6 +32,22 @@ exports.formatNumber = function(num) {
   return new Intl.NumberFormat(appLang).format(num)
 }
 
+exports.formatMonth = function(month) {
+  let date = new Date()
+  date.setMonth(month)
+  return date.toLocaleString(appLang, {month: 'long'})
+}
+
+exports.formatWeekday = function(weekday) {
+  let date = new Date(2020, 2, 1 + (weekday % 7))
+  return date.toLocaleString(appLang, {weekday: 'long'})
+}
+
+exports.formatWeekdayShort = function(weekday) {
+  let date = new Date(2020, 2, 1 + (weekday % 7))
+  return date.toLocaleString(appLang, {weekday: 'short'})
+}
+
 function loadStrings(strings) {
   dolm.load(strings)
 
