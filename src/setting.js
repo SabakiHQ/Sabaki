@@ -112,8 +112,12 @@ let defaults = {
   'edit.show_removenode_warning': true,
   'edit.show_removeothervariations_warning': true,
   'engines.list': [],
-  'engines.analyze_commands': ['analyze', 'lz-analyze'],
-  'engines.gemove_analyze_commands': ['genmove_analyze', 'lz-genmove_analyze'],
+  'engines.analyze_commands': ['analyze', 'kata-analyze', 'lz-analyze'],
+  'engines.gemove_analyze_commands': [
+    'genmove_analyze',
+    'kata-genmove_analyze',
+    'lz-genmove_analyze'
+  ],
   'file.show_reload_warning': true,
   'find.delay': 100,
   'game.default_board_size': 19,
@@ -135,16 +139,9 @@ let defaults = {
   'gtp.move_delay': 300,
   'score.estimator_iterations': 100,
   'scoring.method': 'territory',
-  'setting.overwrite.v0.16.0': ['window.minheight'],
-  'setting.overwrite.v0.17.1': ['graph.collapse_tokens_count'],
-  'setting.overwrite.v0.19.0_1': ['window.minheight', 'graph.delay'],
   'setting.overwrite.v0.19.1': ['app.startup_check_updates_delay'],
   'setting.overwrite.v0.19.3': ['graph.grid_size', 'graph.node_size'],
-  'setting.overwrite.v0.30.0-beta': [
-    'graph.delay',
-    'window.minheight',
-    'window.minwidth'
-  ],
+  'setting.overwrite.v0.30.0-beta': ['window.minheight', 'window.minwidth'],
   'setting.overwrite.v0.33.0': ['console.max_history_count'],
   'setting.overwrite.v0.33.4': ['score.estimator_iterations'],
   'setting.overwrite.v0.41.0': ['autoscroll.max_interval'],
@@ -155,6 +152,10 @@ let defaults = {
     'view.winrategraph_blunderthreshold',
     'view.winrategraph_height',
     'app.lang'
+  ],
+  'setting.overwrite.v0.50.1': [
+    'engines.analyze_commands',
+    'engines.gemove_analyze_commands'
   ],
   'sgf.comment_properties': [
     'C',
