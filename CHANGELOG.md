@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased][unreleased]
+
+**Added**
+
+- Ability to hide heat map in analysis mode
+- Ability to show score lead on board in analysis mode
+
 ## [Sabaki v0.50.1][v0.50.1] (2020-03-13)
 
 **Fixed**
