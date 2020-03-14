@@ -46,6 +46,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    gtplogger.updatePath()
+
     window.addEventListener('contextmenu', evt => {
       evt.preventDefault()
     })

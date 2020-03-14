@@ -117,8 +117,6 @@ class Sabaki extends EventEmitter {
     this.history = []
     this.recordHistory()
 
-    gtplogger.updatePath()
-
     // Bind state to settings
 
     setting.events.on(this.window.id, 'change', ({key, value}) => {
@@ -128,6 +126,7 @@ class Sabaki extends EventEmitter {
         i18n.loadLang(value)
       }
     })
+
     this.updateSettingState()
   }
 
