@@ -1409,7 +1409,7 @@ class Sabaki extends EventEmitter {
       blockedGuesses: navigated ? [] : blockedGuesses,
       gameTrees: gameTrees.map((t, i) => (i !== gameIndex ? t : tree)),
       gameIndex,
-      treePosition: treePosition
+      treePosition
     })
 
     this.recordHistory({prevGameIndex, prevTreePosition})
@@ -1422,7 +1422,7 @@ class Sabaki extends EventEmitter {
 
     if (
       syncer != null &&
-      prevTreePosition !== treePosition &&
+      navigated &&
       (this.state.engineGameOngoing == null ||
         ![
           this.state.blackEngineSyncerId,

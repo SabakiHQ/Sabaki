@@ -55,11 +55,13 @@ A big thank you to these lovely people:
 - John Hager
 - David Göbel
 - Dominik Olszewski
+- Brian Weaver
 - Philippe Fanaro
 - Dimitri Rusin
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
+- Petr Ruzicka
 - Sergio Villegas
 - Jake Pivnik
 
