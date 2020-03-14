@@ -27,15 +27,11 @@ First of all, thank you for taking the time to contribute to Sabaki!
 - Document new code in the documentation if applicable.
 - Note the issue number in your pull request.
 
-## Documentation
+## Translation
 
-The documentation is incomplete and I'll be thankful for anyone contributing to
-it. You can submit pull requests to:
-
-- Fix typos.
-- Add descriptions for things that need one.
-- Add missing documentation.
-- Add tutorials.
+If you speak multiple languages, you can help us translate Sabaki. Head over to
+[Sabaki I18n](https://github.com/SabakiHQ/sabaki-i18n) for progress and
+instructions.
 
 ## Donate
 
