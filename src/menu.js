@@ -20,6 +20,8 @@ exports.get = function(props = {}) {
   let {
     disableAll,
     disableGameLoading,
+    analysisType,
+    showAnalysis,
     showCoordinates,
     showMoveNumbers,
     showMoveColorization,
@@ -580,6 +582,35 @@ exports.get = function(props = {}) {
           type: 'checkbox',
           checked: !!showSiblings,
           click: () => toggleSetting('view.show_siblings')
+        },
+        {
+          label: i18n.t('menu.view', 'Show &Heatmap'),
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Don’t Show'),
+              type: 'checkbox',
+              checked: !showAnalysis,
+              click: () => setting.set('board.show_analysis', false)
+            },
+            {
+              label: i18n.t('menu.view', 'Show &Win Rate'),
+              type: 'checkbox',
+              checked: !!showAnalysis && analysisType === 'winrate',
+              click: () => {
+                setting.set('board.show_analysis', true)
+                setting.set('board.analysis_type', 'winrate')
+              }
+            },
+            {
+              label: i18n.t('menu.view', 'Show &Score Lead'),
+              type: 'checkbox',
+              checked: !!showAnalysis && analysisType === 'scoreLead',
+              click: () => {
+                setting.set('board.show_analysis', true)
+                setting.set('board.analysis_type', 'scoreLead')
+              }
+            }
+          ]
         },
         {type: 'separator'},
         {

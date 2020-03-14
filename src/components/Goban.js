@@ -214,6 +214,7 @@ export default class Goban extends Component {
       board,
       paintMap = [],
       analysis,
+      analysisType,
       highlightVertices = [],
       dimmedStones = [],
 
@@ -385,11 +386,16 @@ export default class Goban extends Component {
       for (let {
         vertex: [x, y],
         visits,
-        winrate
+        winrate,
+        scoreLead
       } of analysis.variations) {
         let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
+
         winrate =
-          strength <= 3 ? Math.round(winrate) : Math.round(winrate * 10) / 10
+          strength <= 3 || winrate < 10
+            ? Math.floor(winrate)
+            : Math.floor(winrate * 10) / 10
+        scoreLead = scoreLead == null ? null : Math.round(scoreLead * 10) / 10
 
         heatMap[y][x] = {
           strength,
@@ -397,8 +403,12 @@ export default class Goban extends Component {
             visits < 10
               ? ''
               : [
-                  i18n.formatNumber(winrate) +
-                    (Math.floor(winrate) === winrate ? '%' : ''),
+                  analysisType === 'winrate'
+                    ? i18n.formatNumber(winrate) +
+                      (Math.floor(winrate) === winrate ? '%' : '')
+                    : analysisType === 'scoreLead' && scoreLead != null
+                    ? (scoreLead >= 0 ? '+' : '') + i18n.formatNumber(scoreLead)
+                    : '–',
                   visits < 1000
                     ? i18n.formatNumber(visits)
                     : i18n.formatNumber(Math.round(visits / 100) / 10) + 'k'

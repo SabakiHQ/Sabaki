@@ -330,6 +330,8 @@ class App extends Component {
       h(MainMenu, {
         showMenuBar: state.showMenuBar,
         disableAll: state.busy > 0,
+        analysisType: state.analysisType,
+        showAnalysis: state.showAnalysis,
         showCoordinates: state.showCoordinates,
         showMoveNumbers: state.showMoveNumbers,
         showMoveColorization: state.showMoveColorization,

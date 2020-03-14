@@ -90,6 +90,8 @@ export default class MainView extends Component {
       blockedGuesses,
 
       highlightVertices,
+      analysisType,
+      showAnalysis,
       showCoordinates,
       showMoveColorization,
       showMoveNumbers,
@@ -135,7 +137,9 @@ export default class MainView extends Component {
           board,
           highlightVertices:
             findVertex && mode === 'find' ? [findVertex] : highlightVertices,
+          analysisType,
           analysis:
+            showAnalysis &&
             analysisTreePosition != null &&
             analysisTreePosition === treePosition
               ? analysis

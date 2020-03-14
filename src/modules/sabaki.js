@@ -58,6 +58,8 @@ class Sabaki extends EventEmitter {
 
       highlightVertices: [],
       playVariation: null,
+      analysisType: null,
+      showAnalysis: null,
       showCoordinates: null,
       showMoveColorization: null,
       showMoveNumbers: null,
@@ -209,6 +211,8 @@ class Sabaki extends EventEmitter {
   updateSettingState(key = null) {
     let data = {
       'app.zoom_factor': 'zoomFactor',
+      'board.analysis_type': 'analysisType',
+      'board.show_analysis': 'showAnalysis',
       'view.show_menubar': 'showMenuBar',
       'view.show_coordinates': 'showCoordinates',
       'view.show_move_colorization': 'showMoveColorization',
