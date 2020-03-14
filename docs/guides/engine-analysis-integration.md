@@ -36,8 +36,15 @@ Necessary key value pairs are:
   [GTP vertex](https://www.lysator.liu.se/~gunnar/gtp/gtp2-spec-draft2/gtp2-spec.html#SECTION00042000000000000000)
   of the move being analyzed.
 - `visits` - The number of visits invested in `move` so far.
-- `winrate` - The win rate percentage times 100 of `move`, e.g. `9543` for
-  `95.43%`.
+- `winrate` - If specified as an integer, it represents the win rate percentage
+  times 100 of `move`, e.g. `9543` for `95.43%`. If specified as a float, i.e.
+  includes a `.`, it represents the win rate percentage given between `0.0` and
+  `1.0`.
+
+Optional key value pairs:
+
+- `scoreLead` - The predicted average number of points that the current side is
+  leading by when playing `move`.
 
 The response will terminate when any input is written to `stdin`.
 
