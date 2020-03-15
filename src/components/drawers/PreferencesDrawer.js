@@ -41,10 +41,6 @@ class PreferencesItem extends Component {
     })
   }
 
-  shouldComponentUpdate(_, {checked}) {
-    return checked !== this.state.checked
-  }
-
   render({text}, {checked}) {
     return h(
       'li',
@@ -510,15 +506,6 @@ class EngineItem extends Component {
       let {onRemove = noop} = this.props
       onRemove(this.props)
     }
-  }
-
-  shouldComponentUpdate({name, path, args, commands}) {
-    return (
-      name !== this.props.name ||
-      path !== this.props.path ||
-      args !== this.props.args ||
-      commands !== this.props.commands
-    )
   }
 
   render({name, path, args, commands}) {
