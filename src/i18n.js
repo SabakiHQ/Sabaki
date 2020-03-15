@@ -4,6 +4,7 @@ const {ipcMain, remote} = require('electron')
 const {readFileSync} = require('fs')
 const path = require('path')
 const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')
+const languages = require('@sabaki/i18n')
 
 const isElectron = process.versions.electron != null
 const isRenderer = isElectron && remote != null
@@ -82,12 +83,11 @@ exports.loadFile = function(filename) {
 exports.loadLang = function(lang) {
   appLang = lang
 
-  let filename = path.resolve(
-    __dirname,
-    `${isRenderer ? '.' : '..'}/i18n/${lang}.i18n.js`
-  )
+  exports.loadFile(languages[lang].filename)
+}
 
-  exports.loadFile(filename)
+exports.getLanguages = function() {
+  return languages
 }
 
 exports.loadLang(appLang)

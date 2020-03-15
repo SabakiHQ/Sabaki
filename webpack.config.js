@@ -30,6 +30,7 @@ module.exports = (env, argv) => ({
   },
 
   externals: {
+    '@sabaki/i18n': 'require("@sabaki/i18n")',
     'cross-spawn': 'null',
     'iconv-lite': 'require("iconv-lite")',
     moment: 'null'

@@ -918,14 +918,16 @@ header {
   }
   #preferences form > div.general ul li label {
     display: block;
-    height: 1.5em;
     width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  #preferences form > div.general > p {
-    clear: both;
+  #preferences form > div.general ul li label select {
+    margin-right: .5rem;
+  }
+  #preferences form > div.general ul li.select label {
+    text-overflow: clip;
   }
   #preferences form > div.themes .userpaths {
     display: grid;

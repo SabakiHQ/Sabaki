@@ -62,8 +62,12 @@ class PreferencesItem extends Component {
 }
 
 class GeneralTab extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      appLang: setting.get('app.lang')
+    }
 
     this.handleSoundEnabledChange = evt => {
       sabaki.window.webContents.audioMuted = !evt.checked
@@ -76,6 +80,16 @@ class GeneralTab extends Component {
       setting.set('graph.grid_size', graphGridSize)
       setting.set('graph.node_size', graphNodeSize)
     }
+
+    this.handleLanguageChange = evt => {
+      setting.set('app.lang', evt.currentTarget.value)
+    }
+
+    setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
+      if (key === 'app.lang') {
+        this.setState({appLang: value})
+      }
+    })
   }
 
   render({graphGridSize}) {
@@ -113,7 +127,93 @@ class GeneralTab extends Component {
         h(PreferencesItem, {
           id: 'board.variation_instant_replay',
           text: t('Instantly play out analysis variations on board')
-        })
+        }),
+
+        h(
+          'li',
+          {class: 'select'},
+          h(
+            'label',
+            {},
+            t('Language:'),
+            ' ',
+
+            h(
+              'select',
+              {onChange: this.handleLanguageChange},
+
+              Object.entries(i18n.getLanguages())
+                .filter(
+                  ([, entry]) =>
+                    entry.stats != null &&
+                    entry.stats.translatedStringsCount > 0
+                )
+                .map(([locale, entry]) =>
+                  h(
+                    'option',
+                    {
+                      value: locale,
+                      selected: this.state.appLang === locale
+                    },
+                    `${entry.nativeName} (${entry.name})`
+                  )
+                )
+            ),
+            ' ',
+            h(
+              'span',
+              {},
+              i18n.formatNumber(
+                Math.floor(
+                  i18n.getLanguages()[this.state.appLang].stats.progress * 100
+                )
+              ) + '%'
+            )
+          )
+        ),
+
+        h(
+          'li',
+          {class: 'select'},
+          h(
+            'label',
+            {},
+            t('Game Tree Style:'),
+            ' ',
+
+            h(
+              'select',
+              {onChange: this.handleTreeStyleChange},
+
+              h(
+                'option',
+                {
+                  value: 'compact',
+                  selected: graphGridSize < 22
+                },
+                t('Compact')
+              ),
+
+              h(
+                'option',
+                {
+                  value: 'spacious',
+                  selected: graphGridSize === 22
+                },
+                t('Spacious')
+              ),
+
+              h(
+                'option',
+                {
+                  value: 'big',
+                  selected: graphGridSize > 22
+                },
+                t('Big')
+              )
+            )
+          )
+        )
       ),
 
       h(
@@ -151,48 +251,6 @@ class GeneralTab extends Component {
           id: 'view.winrategraph_invert',
           text: t('Invert winrate graph')
         })
-      ),
-
-      h(
-        'p',
-        {},
-        h(
-          'label',
-          {},
-          t('Game Tree Style:'),
-          ' ',
-
-          h(
-            'select',
-            {onChange: this.handleTreeStyleChange},
-            h(
-              'option',
-              {
-                value: 'compact',
-                selected: graphGridSize < 22
-              },
-              t('Compact')
-            ),
-
-            h(
-              'option',
-              {
-                value: 'spacious',
-                selected: graphGridSize === 22
-              },
-              t('Spacious')
-            ),
-
-            h(
-              'option',
-              {
-                value: 'big',
-                selected: graphGridSize > 22
-              },
-              t('Big')
-            )
-          )
-        )
       )
     )
   }
@@ -382,7 +440,7 @@ class ThemesTab extends Component {
         })
       ),
 
-      h('h3', {}, 'Current Theme'),
+      h('h3', {}, t('Current Theme')),
 
       h(
         'p',
