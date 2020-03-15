@@ -146,7 +146,7 @@ export default class PlayBar extends Component {
           'span',
           {
             class: classNames('name', {engine: engineSyncers[0] != null}),
-            title: engineSyncers[0] != null && t('Engine')
+            title: engineSyncers[0] != null ? t('Engine') : null
           },
 
           engineSyncers[0] == null
@@ -176,7 +176,7 @@ export default class PlayBar extends Component {
           'span',
           {
             class: classNames('name', {engine: engineSyncers[1] != null}),
-            title: engineSyncers[1] != null && t('Engine')
+            title: engineSyncers[1] != null ? t('Engine') : null
           },
           engineSyncers[1] == null
             ? playerNames[1] || t('White')
