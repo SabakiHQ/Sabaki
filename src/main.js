@@ -6,7 +6,6 @@ const updater = require('./updater')
 
 let windows = []
 let openfile = null
-let isReady = false
 
 function newWindow(path) {
   let window = new BrowserWindow({
@@ -157,7 +156,7 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
   }
 }
 
-function main() {
+async function main() {
   app.allowRendererProcessReuse = true
 
   if (!setting.get('app.enable_hardware_acceleration')) {
@@ -172,42 +171,14 @@ function main() {
     }
   })
 
-  app.on('ready', () => {
-    isReady = true
-
-    if (!openfile && process.argv.length >= 2) {
-      if (
-        !process.argv[0].endsWith('electron.exe') &&
-        !process.argv[0].endsWith('electron')
-      ) {
-        openfile = process.argv[1]
-      } else if (process.argv.length >= 3) {
-        openfile = process.argv[2]
-      }
-    }
-
-    newWindow(openfile)
-
-    if (setting.get('app.startup_check_updates')) {
-      setTimeout(
-        () => checkForUpdates(),
-        setting.get('app.startup_check_updates_delay')
-      )
-    }
-
-    ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
-    ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
-    ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
-  })
-
   app.on('activate', (evt, hasVisibleWindows) => {
-    if (isReady && !hasVisibleWindows) newWindow()
+    if (app.isReady() && !hasVisibleWindows) newWindow()
   })
 
   app.on('open-file', (evt, path) => {
     evt.preventDefault()
 
-    if (!isReady) {
+    if (!app.isReady()) {
       openfile = path
     } else {
       newWindow(path)
@@ -238,6 +209,29 @@ function main() {
 
     process.exit(1)
   })
+
+  await app.whenReady()
+
+  if (!openfile && process.argv.length >= 2) {
+    if (!['electron.exe', 'electron'].some(x => process.argv[0].endsWith(x))) {
+      openfile = process.argv[1]
+    } else if (process.argv.length >= 3) {
+      openfile = process.argv[2]
+    }
+  }
+
+  newWindow(openfile)
+
+  if (setting.get('app.startup_check_updates')) {
+    setTimeout(
+      () => checkForUpdates(),
+      setting.get('app.startup_check_updates_delay')
+    )
+  }
+
+  ipcMain.on('new-window', (evt, ...args) => newWindow(...args))
+  ipcMain.on('build-menu', (evt, ...args) => buildMenu(...args))
+  ipcMain.on('check-for-updates', (evt, ...args) => checkForUpdates(...args))
 }
 
 main()
