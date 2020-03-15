@@ -19,10 +19,6 @@ class CleanMarkupItem extends Component {
     }
   }
 
-  shouldComponentUpdate() {
-    return false
-  }
-
   render({id, text}) {
     return h(
       'li',
