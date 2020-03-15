@@ -99,7 +99,7 @@ export default class ScoreDrawer extends Component {
         show
       },
 
-      h('h2', {}, 'Score'),
+      h('h2', {}, t('Score')),
 
       h(
         'ul',
