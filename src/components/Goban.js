@@ -392,10 +392,9 @@ export default class Goban extends Component {
         let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
 
         winrate =
-          strength <= 3 || winrate < 10
-            ? Math.floor(winrate)
-            : Math.floor(winrate * 10) / 10
+          strength <= 3 ? Math.floor(winrate) : Math.floor(winrate * 10) / 10
         scoreLead = scoreLead == null ? null : Math.round(scoreLead * 10) / 10
+        if (scoreLead === 0) scoreLead = 0 // Avoid -0
 
         heatMap[y][x] = {
           strength,
