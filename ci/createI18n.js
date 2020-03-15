@@ -26,21 +26,29 @@ let spawnDolmGen = args =>
     }
   )
 
+let boardmatcherStringsArr = [
+  ...boardmatcherLibrary.map(pattern => pattern.name),
+  'Pass',
+  'Take',
+  'Atari',
+  'Suicide',
+  'Fill',
+  'Connect',
+  'Tengen',
+  'Hoshi'
+]
+
 let boardmatcherStrings = {
   boardmatcher: Object.assign(
     {},
-    ...boardmatcherLibrary.map(pattern => ({
-      [pattern.name]: pattern.name
-    }))
+    ...boardmatcherStringsArr.map(str => ({[str]: str}))
   )
 }
 
 let boardmatcherStringsTemplate = {
   boardmatcher: Object.assign(
     {},
-    ...boardmatcherLibrary.map(pattern => ({
-      [pattern.name]: null
-    }))
+    ...boardmatcherStringsArr.map(str => ({[str]: null}))
   )
 }
 

@@ -90,4 +90,6 @@ exports.getLanguages = function() {
   return languages
 }
 
-exports.loadLang(appLang)
+if (appLang != null) {
+  exports.loadLang(appLang)
+}
