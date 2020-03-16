@@ -304,7 +304,7 @@ class App extends Component {
         let sign = scoreBoard.get(vertex)
         if (sign === 0) continue
 
-        scoreBoard.setCaptures(sign, x => x + 1)
+        scoreBoard.setCaptures(-sign, x => x + 1)
         scoreBoard.set(vertex, 0)
       }
 

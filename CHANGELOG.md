@@ -6,8 +6,12 @@ All notable changes to this project will be documented in this file.
 
 **Added**
 
-- Ability to hide heat map in analysis mode
-- Ability to show score lead on board in analysis mode
+- Ability to hide heat map in analysis mode (#649)
+- Ability to show score lead on board in analysis mode (#589)
+
+**Fixed**
+
+- Fix a bug where captured stones are counted towards the wrong player (#658)
 
 ## [Sabaki v0.50.1][v0.50.1] (2020-03-13)
 
