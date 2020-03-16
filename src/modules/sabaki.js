@@ -2777,7 +2777,7 @@ class Sabaki extends EventEmitter {
     helper.popupMenu(
       [
         ...engines.map(engine => ({
-          label: engine.name,
+          label: engine.name || t('(Unnamed Engine)'),
           click: () => {
             this.attachEngines([engine])
           }
