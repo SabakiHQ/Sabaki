@@ -8,3 +8,4 @@ bundle.js.map
 package-lock.json
 
 *.pdn
+*.vbs

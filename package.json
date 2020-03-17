@@ -30,11 +30,13 @@
       "category": "public.app-category.board-games",
       "artifactName": "sabaki-v${version}-mac-x64.${ext}"
     },
+    "win": {
+      "artifactName": "sabaki-v${version}-win.exe"
+    },
     "nsis": {
       "oneClick": false,
       "perMachine": true,
-      "allowToChangeInstallationDirectory": true,
-      "artifactName": "sabaki-v${version}-win-setup.exe"
+      "allowToChangeInstallationDirectory": true
     },
     "fileAssociations": [
       {
@@ -128,9 +130,11 @@
     "watch": "concurrently \"webpack --mode development --watch\" \"npm run watch-format\"",
     "dist:macos": "npm run bundle && electron-builder -m --x64",
     "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-i386.AppImage ./dist/sabaki-vx.x.x-linux-ia32.AppImage && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-x86_64.AppImage ./dist/sabaki-vx.x.x-linux-x64.AppImage",
-    "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",
-    "dist:win64": "npm run bundle && electron-builder -w --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
-    "dist:win": "npm run dist:win32 && npm run dist:win64",
+    "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",
+    "dist:win64": "npm run bundle && electron-builder -w --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
+    "dist:win32-portable": "npm run bundle && electron-builder -w portable --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-ia32-portable.exe",
+    "dist:win64-portable": "npm run bundle && electron-builder -w portable --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-portable.exe",
+    "dist:win": "npm run dist:win32 && npm run dist:win64 && npm run dist:win32-portable && npm run dist:win64-portable",
     "i18n": "node ./ci/createI18n.js"
   }
 }
