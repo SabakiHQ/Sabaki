@@ -42,6 +42,8 @@ instructions depending on the target OS:
 
 - `$ npm run dist:win32` for Windows 32-bit
 - `$ npm run dist:win64` for Windows 64-bit
+- `$ npm run dist:win32-portable` for Windows 32-bit portable
+- `$ npm run dist:win64-portable` for Windows 64-bit portable
 - `$ npm run dist:linux` for Linux 32-bit and 64-bit
 - `$ npm run dist:macos` for macOS 64-bit
 
