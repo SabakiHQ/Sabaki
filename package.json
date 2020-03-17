@@ -36,6 +36,10 @@
       "allowToChangeInstallationDirectory": true,
       "artifactName": "sabaki-v${version}-win-setup.exe"
     },
+    "win": {
+      "target": "portable",
+      "artifactName": "sabaki-v${version}-win-portable.exe"
+    },
     "fileAssociations": [
       {
         "ext": "sgf",
@@ -131,6 +135,8 @@
     "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",
     "dist:win64": "npm run bundle && electron-builder -w --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-setup.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
     "dist:win": "npm run dist:win32 && npm run dist:win64",
+    "dist:portable32": "npm run bundle && electron-builder --win --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-portable.exe ./dist/sabaki-vx.x.x-win-ia32-portable.exe",
+    "dist:portable64": "npm run bundle && electron-builder --win --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win-portable.exe ./dist/sabaki-vx.x.x-win-x64-portable.exe",
     "i18n": "node ./ci/createI18n.js"
   }
 }
