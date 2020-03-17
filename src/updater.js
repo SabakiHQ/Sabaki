@@ -48,18 +48,21 @@ exports.check = async function(repo) {
   let downloadUrls = data.assets.map(x => x.browser_download_url)
 
   let arch = os.arch()
-  let platform = {
-    linux: 'linux',
-    win32: 'win',
-    darwin: 'mac'
+  let needles = {
+    linux: ['linux'],
+    win32: ['win', 'setup'],
+    darwin: ['mac']
   }[os.platform()]
 
   return {
     url: `https://github.com/${repo}/releases/latest`,
     downloadUrl:
       arch &&
-      platform &&
-      downloadUrls.find(x => x.includes(arch) && x.includes(platform)),
+      needles &&
+      downloadUrls.find(
+        url =>
+          url.includes(arch) && needles.every(needle => url.includes(needle))
+      ),
     latestVersion: latestVersion.join('.'),
     hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
   }
