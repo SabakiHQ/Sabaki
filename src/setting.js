@@ -47,6 +47,7 @@ let defaults = {
   'board.show_analysis': true,
   'board.variation_instant_replay': false,
   'board.variation_replay_interval': 500,
+  'board.coordinate_type': 'global',
   'cleanmarkup.annotations': false,
   'cleanmarkup.arrow': true,
   'cleanmarkup.circle': true,

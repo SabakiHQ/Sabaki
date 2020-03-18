@@ -12,6 +12,7 @@ import * as helper from '../modules/helper.js'
 const t = i18n.context('Goban')
 const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+const alphaChinese = 'ABCDEFGHIJKLMNOPQRSTUVWXY'
 
 export default class Goban extends Component {
   constructor(props) {
@@ -262,9 +263,21 @@ export default class Goban extends Component {
         board.height
       )
 
+    let getCoordTransformer = coordinateType => {
+      if (coordinateType === 'japanese') {
+        return [x => x + 1, y => y + 1]
+      } else if (coordinateType === 'chinese') {
+        return [x => alphaChinese[x], y => y + 1]
+      } else {
+        return [x => alpha[x], y => board.height - y] // global
+      }
+    }
+
+    let coordinateType = setting.get('board.coordinate_type')
+    let coordTransformer = getCoordTransformer(coordinateType)
     let {coordX, coordY} = gobantransformer.transformCoords(
-      x => alpha[x],
-      y => board.height - y,
+      coordTransformer[0],
+      coordTransformer[1],
       transformation,
       board.width,
       board.height
