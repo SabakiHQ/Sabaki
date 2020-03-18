@@ -23,6 +23,7 @@ exports.get = function(props = {}) {
     analysisType,
     showAnalysis,
     showCoordinates,
+    coordinatesType,
     showMoveNumbers,
     showMoveColorization,
     showNextMoves,
@@ -554,10 +555,41 @@ exports.get = function(props = {}) {
         {type: 'separator'},
         {
           label: i18n.t('menu.view', 'Show &Coordinates'),
-          accelerator: 'CmdOrCtrl+Shift+C',
-          type: 'checkbox',
-          checked: !!showCoordinates,
-          click: () => toggleSetting('view.show_coordinates')
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Don’t Show'),
+              type: 'checkbox',
+              checked: !showCoordinates,
+              click: () => setting.set('view.show_coordinates', false)
+            },
+            {
+              label: i18n.t('menu.view', '&Global Coordinates'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'global',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'global')
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&Japanese Coordinates'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'japanese',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'japanese')
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&Chinese Coordinates'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'chinese',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'chinese')
+              }
+            }
+          ]
         },
         {
           label: i18n.t('menu.view', 'Show Move N&umbers'),

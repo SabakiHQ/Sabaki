@@ -263,18 +263,18 @@ export default class Goban extends Component {
         board.height
       )
 
-    let getCoordTransformer = coordinateType => {
-      if (coordinateType === 'japanese') {
+    let getCoordTransformer = coordinatesType => {
+      if (coordinatesType === 'japanese') {
         return [x => x + 1, y => y + 1]
-      } else if (coordinateType === 'chinese') {
+      } else if (coordinatesType === 'chinese') {
         return [x => alphaChinese[x], y => y + 1]
       } else {
         return [x => alpha[x], y => board.height - y] // global
       }
     }
 
-    let coordinateType = setting.get('board.coordinate_type')
-    let coordTransformer = getCoordTransformer(coordinateType)
+    let coordinatesType = setting.get('view.coordinates_type')
+    let coordTransformer = getCoordTransformer(coordinatesType)
     let {coordX, coordY} = gobantransformer.transformCoords(
       coordTransformer[0],
       coordTransformer[1],

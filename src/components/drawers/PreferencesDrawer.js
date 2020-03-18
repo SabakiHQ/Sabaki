@@ -66,8 +66,7 @@ class GeneralTab extends Component {
     super(props)
 
     this.state = {
-      appLang: setting.get('app.lang'),
-      coordinateType: setting.get('board.coordinate_type')
+      appLang: setting.get('app.lang')
     }
 
     this.handleSoundEnabledChange = evt => {
@@ -86,15 +85,9 @@ class GeneralTab extends Component {
       setting.set('app.lang', evt.currentTarget.value)
     }
 
-    this.handleCoordinateTypeChange = evt => {
-      setting.set('board.coordinate_type', evt.currentTarget.value)
-    }
-
     setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
       if (key === 'app.lang') {
         this.setState({appLang: value})
-      } else if (key === 'board.coordinate_type') {
-        this.setState({coordinateType: value})
       }
     })
   }
@@ -257,49 +250,7 @@ class GeneralTab extends Component {
         h(PreferencesItem, {
           id: 'view.winrategraph_invert',
           text: t('Invert winrate graph')
-        }),
-        h(
-          'li',
-          {class: 'select'},
-          h(
-            'label',
-            {},
-            t('Coordinate Type:'),
-            ' ',
-
-            h(
-              'select',
-              {onChange: this.handleCoordinateTypeChange},
-
-              h(
-                'option',
-                {
-                  value: 'global',
-                  selected: this.state.coordinateType === 'global'
-                },
-                t('Global Type')
-              ),
-
-              h(
-                'option',
-                {
-                  value: 'japanese',
-                  selected: this.state.coordinateType === 'japanese'
-                },
-                t('Japanese Type')
-              ),
-
-              h(
-                'option',
-                {
-                  value: 'chinese',
-                  selected: this.state.coordinateType === 'chinese'
-                },
-                t('Chinese Type')
-              )
-            )
-          )
-        )
+        })
       )
     )
   }
