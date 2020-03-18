@@ -17,7 +17,7 @@ function typographer(children) {
 }
 
 function htmlify(children) {
-  return children.map(child => {
+  return toChildArray(children).map(child => {
     if (typeof child !== 'string') return child
 
     return h(ContentDisplay, {
