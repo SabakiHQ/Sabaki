@@ -385,7 +385,3 @@ export function getBoard(tree, id) {
 export function clearBoardCache() {
   boardCache = {}
 }
-
-export function getHash(tree) {
-  return helper.hash(JSON.stringify(tree))
-}

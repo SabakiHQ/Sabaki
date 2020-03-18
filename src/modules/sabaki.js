@@ -748,7 +748,7 @@ class Sabaki extends EventEmitter {
   }
 
   generateTreeHash() {
-    return this.state.gameTrees.map(tree => gametree.getHash(tree)).join('-')
+    return this.state.gameTrees.map(tree => tree.getHash()).join('-')
   }
 
   generateFileHash() {
