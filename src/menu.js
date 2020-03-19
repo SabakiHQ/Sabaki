@@ -589,6 +589,15 @@ exports.get = function(props = {}) {
                 setting.set('view.show_coordinates', true)
                 setting.set('view.coordinates_type', 'chinese')
               }
+            },
+            {
+              label: i18n.t('menu.view', '&Descriptive Coordinates'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'descriptive',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'descriptive')
+              }
             }
           ]
         },

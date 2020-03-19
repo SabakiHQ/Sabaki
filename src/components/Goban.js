@@ -263,11 +263,26 @@ export default class Goban extends Component {
         board.height
       )
 
+    // Calculate coordinates
+
+    let descriptiveCoord = (x, size) => {
+      let halfSize = Math.ceil(size / 2)
+      let ix = size - x + 1
+      if (x <= halfSize && x < 10) return x.toString()
+      else if (ix < halfSize && ix < 10) return `${ix}*`
+      else return 'X'
+    }
+
     let getCoordTransformer = coordinatesType => {
       if (coordinatesType === 'japanese') {
         return [x => x + 1, y => y + 1]
       } else if (coordinatesType === 'chinese') {
         return [x => alphaChinese[x], y => y + 1]
+      } else if (coordinatesType === 'descriptive') {
+        return [
+          x => descriptiveCoord(x + 1, board.width),
+          y => descriptiveCoord(board.height - y, board.height)
+        ]
       } else {
         return [x => alpha[x], y => board.height - y] // global
       }
