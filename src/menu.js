@@ -558,9 +558,10 @@ exports.get = function(props = {}) {
           submenu: [
             {
               label: i18n.t('menu.view', '&Don’t Show'),
+              accelerator: 'CmdOrCtrl+Shift+C',
               type: 'checkbox',
               checked: !showCoordinates,
-              click: () => setting.set('view.show_coordinates', false)
+              click: () => toggleSetting('view.show_coordinates')
             },
             {
               label: i18n.t('menu.view', '&Global Coordinates'),
