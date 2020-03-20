@@ -573,7 +573,7 @@ exports.get = function(props = {}) {
               }
             },
             {
-              label: i18n.t('menu.view', '1-1'),
+              label: i18n.t('menu.view', '&1-1'),
               type: 'checkbox',
               checked: !!showCoordinates && coordinatesType === '1-1',
               click: () => {

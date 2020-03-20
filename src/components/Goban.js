@@ -264,18 +264,17 @@ export default class Goban extends Component {
 
     // Calculate coordinates
 
-    let relativeCoord = (x, size) => {
-      let halfSize = Math.ceil(size / 2)
-      let ix = size - x + 1
-      if (x <= halfSize && x < 10) return x.toString()
-      else if (ix < halfSize && ix < 10) return `${ix}*`
-      else return 'X'
-    }
-
-    let getCoordTransformer = coordinatesType => {
+    let getCoordFunctions = coordinatesType => {
       if (coordinatesType === '1-1') {
         return [x => x + 1, y => y + 1]
       } else if (coordinatesType === 'relative') {
+        let relativeCoord = (x, size) => {
+          let halfSize = Math.ceil(size / 2)
+          let ix = size - x + 1
+          if (x <= halfSize && x < 10) return x.toString()
+          else if (ix < halfSize && ix < 10) return `${ix}*`
+          else return 'X'
+        }
         return [
           x => relativeCoord(x + 1, board.width),
           y => relativeCoord(board.height - y, board.height)
@@ -286,7 +285,7 @@ export default class Goban extends Component {
     }
 
     let coordinatesType = setting.get('view.coordinates_type')
-    let coordTransformer = getCoordTransformer(coordinatesType)
+    let coordTransformer = getCoordFunctions(coordinatesType)
     let {coordX, coordY} = gobantransformer.transformCoords(
       coordTransformer[0],
       coordTransformer[1],
