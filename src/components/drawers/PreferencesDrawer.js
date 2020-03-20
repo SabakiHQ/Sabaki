@@ -83,6 +83,12 @@ class GeneralTab extends Component {
 
     this.handleLanguageChange = evt => {
       setting.set('app.lang', evt.currentTarget.value)
+
+      showMessageBox(
+        t(p => `Please restart ${p.appName} to apply your language setting.`, {
+          appName: sabaki.appName
+        })
+      )
     }
 
     setting.events.on(sabaki.window.id, 'change', ({key, value}) => {

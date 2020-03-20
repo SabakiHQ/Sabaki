@@ -124,10 +124,6 @@ class Sabaki extends EventEmitter {
 
     setting.events.on(this.window.id, 'change', ({key, value}) => {
       this.updateSettingState(key)
-
-      if (key === 'app.lang') {
-        i18n.loadLang(value)
-      }
     })
 
     this.updateSettingState()
