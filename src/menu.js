@@ -563,6 +563,7 @@ exports.get = function(props = {}) {
               checked: !showCoordinates,
               click: () => toggleSetting('view.show_coordinates')
             },
+            {type: 'separator'},
             {
               label: i18n.t('menu.view', '&A1 (Default)'),
               type: 'checkbox',
@@ -625,6 +626,7 @@ exports.get = function(props = {}) {
               checked: !showAnalysis,
               click: () => setting.set('board.show_analysis', false)
             },
+            {type: 'separator'},
             {
               label: i18n.t('menu.view', 'Show &Win Rate'),
               type: 'checkbox',
