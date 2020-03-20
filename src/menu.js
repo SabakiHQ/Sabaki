@@ -564,39 +564,30 @@ exports.get = function(props = {}) {
               click: () => toggleSetting('view.show_coordinates')
             },
             {
-              label: i18n.t('menu.view', '&Global Coordinates'),
+              label: i18n.t('menu.view', '&A1 (Default)'),
               type: 'checkbox',
-              checked: !!showCoordinates && coordinatesType === 'global',
+              checked: !!showCoordinates && coordinatesType === 'A1',
               click: () => {
                 setting.set('view.show_coordinates', true)
-                setting.set('view.coordinates_type', 'global')
+                setting.set('view.coordinates_type', 'A1')
               }
             },
             {
-              label: i18n.t('menu.view', '&Japanese Coordinates'),
+              label: i18n.t('menu.view', '1-1'),
               type: 'checkbox',
-              checked: !!showCoordinates && coordinatesType === 'japanese',
+              checked: !!showCoordinates && coordinatesType === '1-1',
               click: () => {
                 setting.set('view.show_coordinates', true)
-                setting.set('view.coordinates_type', 'japanese')
+                setting.set('view.coordinates_type', '1-1')
               }
             },
             {
-              label: i18n.t('menu.view', '&Chinese Coordinates'),
+              label: i18n.t('menu.view', '&Relative'),
               type: 'checkbox',
-              checked: !!showCoordinates && coordinatesType === 'chinese',
+              checked: !!showCoordinates && coordinatesType === 'relative',
               click: () => {
                 setting.set('view.show_coordinates', true)
-                setting.set('view.coordinates_type', 'chinese')
-              }
-            },
-            {
-              label: i18n.t('menu.view', '&Descriptive Coordinates'),
-              type: 'checkbox',
-              checked: !!showCoordinates && coordinatesType === 'descriptive',
-              click: () => {
-                setting.set('view.show_coordinates', true)
-                setting.set('view.coordinates_type', 'descriptive')
+                setting.set('view.coordinates_type', 'relative')
               }
             }
           ]

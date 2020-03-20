@@ -12,7 +12,6 @@ import * as helper from '../modules/helper.js'
 const t = i18n.context('Goban')
 const setting = remote.require('./setting')
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
-const alphaChinese = 'ABCDEFGHIJKLMNOPQRSTUVWXY'
 
 export default class Goban extends Component {
   constructor(props) {
@@ -265,7 +264,7 @@ export default class Goban extends Component {
 
     // Calculate coordinates
 
-    let descriptiveCoord = (x, size) => {
+    let relativeCoord = (x, size) => {
       let halfSize = Math.ceil(size / 2)
       let ix = size - x + 1
       if (x <= halfSize && x < 10) return x.toString()
@@ -274,17 +273,15 @@ export default class Goban extends Component {
     }
 
     let getCoordTransformer = coordinatesType => {
-      if (coordinatesType === 'japanese') {
+      if (coordinatesType === '1-1') {
         return [x => x + 1, y => y + 1]
-      } else if (coordinatesType === 'chinese') {
-        return [x => alphaChinese[x], y => y + 1]
-      } else if (coordinatesType === 'descriptive') {
+      } else if (coordinatesType === 'relative') {
         return [
-          x => descriptiveCoord(x + 1, board.width),
-          y => descriptiveCoord(board.height - y, board.height)
+          x => relativeCoord(x + 1, board.width),
+          y => relativeCoord(board.height - y, board.height)
         ]
       } else {
-        return [x => alpha[x], y => board.height - y] // global
+        return [x => alpha[x], y => board.height - y] // A1
       }
     }
 
