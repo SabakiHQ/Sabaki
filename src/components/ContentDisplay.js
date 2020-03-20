@@ -87,9 +87,7 @@ export default class ContentDisplay extends Component {
 
       sabaki.setState({playVariation: {sign, moves, sibling}})
 
-      if (setting.get('board.variation_instant_replay')) {
-        currentTarget.style.backgroundSize = '100% 100%'
-      } else {
+      if (setting.get('board.variation_replay_mode') === 'move_by_move') {
         clearInterval(this.variationIntervalId)
         this.variationIntervalId = setInterval(() => {
           if (counter >= moves.length) {
@@ -102,6 +100,8 @@ export default class ContentDisplay extends Component {
           currentTarget.style.backgroundSize = `${percent}% 100%`
           counter++
         }, setting.get('board.variation_replay_interval'))
+      } else {
+        currentTarget.style.backgroundSize = '100% 100%'
       }
     }
 

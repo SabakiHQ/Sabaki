@@ -172,7 +172,8 @@ export default class Goban extends Component {
   }
 
   playVariation(sign, moves, sibling = false) {
-    if (setting.get('board.variation_instant_replay')) {
+    let replayMode = setting.get('board.variation_replay_mode')
+    if (replayMode === 'instantly') {
       this.variationIntervalId = true
 
       this.setState({
@@ -181,7 +182,7 @@ export default class Goban extends Component {
         variationSibling: sibling,
         variationIndex: moves.length
       })
-    } else {
+    } else if (replayMode === 'move_by_move') {
       clearInterval(this.variationIntervalId)
 
       this.variationIntervalId = setInterval(() => {
@@ -192,6 +193,8 @@ export default class Goban extends Component {
           variationIndex: variationIndex + 1
         }))
       }, setting.get('board.variation_replay_interval'))
+    } else {
+      this.stopPlayingVariation()
     }
   }
 
