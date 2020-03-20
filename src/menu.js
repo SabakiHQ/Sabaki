@@ -23,6 +23,7 @@ exports.get = function(props = {}) {
     analysisType,
     showAnalysis,
     showCoordinates,
+    coordinatesType,
     showMoveNumbers,
     showMoveColorization,
     showNextMoves,
@@ -554,10 +555,42 @@ exports.get = function(props = {}) {
         {type: 'separator'},
         {
           label: i18n.t('menu.view', 'Show &Coordinates'),
-          accelerator: 'CmdOrCtrl+Shift+C',
-          type: 'checkbox',
-          checked: !!showCoordinates,
-          click: () => toggleSetting('view.show_coordinates')
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Don’t Show'),
+              accelerator: 'CmdOrCtrl+Shift+C',
+              type: 'checkbox',
+              checked: !showCoordinates,
+              click: () => toggleSetting('view.show_coordinates')
+            },
+            {
+              label: i18n.t('menu.view', '&A1 (Default)'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'A1',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'A1')
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&1-1'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === '1-1',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', '1-1')
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&Relative'),
+              type: 'checkbox',
+              checked: !!showCoordinates && coordinatesType === 'relative',
+              click: () => {
+                setting.set('view.show_coordinates', true)
+                setting.set('view.coordinates_type', 'relative')
+              }
+            }
+          ]
         },
         {
           label: i18n.t('menu.view', 'Show Move N&umbers'),

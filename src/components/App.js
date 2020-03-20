@@ -333,6 +333,7 @@ class App extends Component {
         analysisType: state.analysisType,
         showAnalysis: state.showAnalysis,
         showCoordinates: state.showCoordinates,
+        coordinatesType: state.coordinatesType,
         showMoveNumbers: state.showMoveNumbers,
         showMoveColorization: state.showMoveColorization,
         showNextMoves: state.showNextMoves,

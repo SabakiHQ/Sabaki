@@ -262,9 +262,33 @@ export default class Goban extends Component {
         board.height
       )
 
+    // Calculate coordinates
+
+    let getCoordFunctions = coordinatesType => {
+      if (coordinatesType === '1-1') {
+        return [x => x + 1, y => y + 1]
+      } else if (coordinatesType === 'relative') {
+        let relativeCoord = (x, size) => {
+          let halfSize = Math.ceil(size / 2)
+          let ix = size - x + 1
+          if (x <= halfSize && x < 10) return x.toString()
+          else if (ix < halfSize && ix < 10) return `${ix}*`
+          else return 'X'
+        }
+        return [
+          x => relativeCoord(x + 1, board.width),
+          y => relativeCoord(board.height - y, board.height)
+        ]
+      } else {
+        return [x => alpha[x], y => board.height - y] // A1
+      }
+    }
+
+    let coordinatesType = setting.get('view.coordinates_type')
+    let coordTransformer = getCoordFunctions(coordinatesType)
     let {coordX, coordY} = gobantransformer.transformCoords(
-      x => alpha[x],
-      y => board.height - y,
+      coordTransformer[0],
+      coordTransformer[1],
       transformation,
       board.width,
       board.height
