@@ -4,6 +4,14 @@ const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
 
+const Store = require('electron-store')
+const store = new Store()
+
+// get the previous size
+let preWidth = store.get('preWidth')
+let preHeight = store.get('preHeight')
+let maxWindow = store.get('maxWindow')
+
 let windows = []
 let openfile = null
 
@@ -13,8 +21,8 @@ function newWindow(path) {
       process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
     title: app.name,
     useContentSize: true,
-    width: setting.get('window.width'),
-    height: setting.get('window.height'),
+    width: preWidth ? preWidth : setting.get('window.width'),
+    height: preHeight ? preHeight : setting.get('window.height'),
     minWidth: setting.get('window.minwidth'),
     minHeight: setting.get('window.minheight'),
     autoHideMenuBar: !setting.get('view.show_menubar'),
@@ -31,6 +39,24 @@ function newWindow(path) {
 
   window.once('ready-to-show', () => {
     window.show()
+  })
+
+  if (maxWindow === 'true') {
+    window.maximize()
+  }
+
+  // store the window size
+  window.on('maximize', () => {
+    store.set('maxWindow', 'true')
+  })
+  window.on('unmaximize', () => {
+    store.set('maxWindow', 'false')
+  })
+  window.on('resize', () => {
+    const [nowWidth, nowHeight] = window.getSize()
+    store.set('preWidth', nowWidth)
+    store.set('preHeight', nowHeight)
+    //console.log(`Width: ${preWidth}, Height: ${preHeight}`);
   })
 
   window.on('closed', () => {
