@@ -92,6 +92,7 @@
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
     "dolm": "^0.7.3-beta",
+    "electron-store": "^5.1.1",
     "fix-path": "^3.0.0",
     "iconv-lite": "^0.5.1",
     "jschardet": "^2.1.1",
