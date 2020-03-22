@@ -144,7 +144,7 @@ class GeneralTab extends Component {
           h(
             'label',
             {},
-            t('Replay mode of analysis variations:'),
+            t('Variation Replay Mode:'),
             ' ',
 
             h(
@@ -154,19 +154,10 @@ class GeneralTab extends Component {
               h(
                 'option',
                 {
-                  value: 'dont_play',
-                  selected: this.state.variationReplayMode === 'dont_play'
+                  value: 'disabled',
+                  selected: this.state.variationReplayMode === 'disabled'
                 },
-                t("Don't Play")
-              ),
-
-              h(
-                'option',
-                {
-                  value: 'instantly',
-                  selected: this.state.variationReplayMode === 'instantly'
-                },
-                t('Instantly')
+                t('Disabled')
               ),
 
               h(
@@ -176,6 +167,15 @@ class GeneralTab extends Component {
                   selected: this.state.variationReplayMode === 'move_by_move'
                 },
                 t('Move by Move')
+              ),
+
+              h(
+                'option',
+                {
+                  value: 'instantly',
+                  selected: this.state.variationReplayMode === 'instantly'
+                },
+                t('Instantly')
               )
             )
           )
