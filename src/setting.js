@@ -3,15 +3,9 @@ const fs = require('fs')
 const path = require('path')
 const {app, BrowserWindow} = require('electron')
 
-const portableDir = process.env.PORTABLE_EXECUTABLE_DIR
-if (portableDir) {
-  confirmPath = portableDir
-} else {
-  confirmPath = app.getPath('userData')
-}
-
 for (let dir of [
-  (exports.userDataDirectory = confirmPath),
+  (exports.userDataDirectory =
+    process.env.PORTABLE_EXECUTABLE_DIR || app.getPath('userData')),
   (exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')),
   (exports.langDirectory = path.join(exports.userDataDirectory, 'lang'))
 ]) {
