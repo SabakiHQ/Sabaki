@@ -33,6 +33,19 @@ function newWindow(path) {
     window.show()
   })
 
+  if (setting.get('window.maximized') === true) {
+    window.maximize()
+  }
+
+  // store the window size
+  window.on('maximize', () => {
+    setting.set('window.maximized', true)
+  })
+
+  window.on('unmaximize', () => {
+    setting.set('window.maximized', false)
+  })
+
   window.on('closed', () => {
     window = null
   })
