@@ -211,9 +211,7 @@ let defaults = {
   'window.minheight': 440,
   'window.minwidth': 526,
   'window.width': 564,
-  'window.max': false,
-  'window.preWidth': undefined,
-  'window.preHeight': undefined
+  'window.maximized': false
 }
 
 let eventEmitters = {}
