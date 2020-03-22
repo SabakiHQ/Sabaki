@@ -1243,6 +1243,18 @@ header {
   }
   .engines-list li a.browse:active {
     opacity: 1;
+  }
+  .engines-list input[type="checkbox"] {
+    -webkit-appearance: checkbox;
+    -moz-appearance: checkbox;
+    -ms-appearance: checkbox;
+    width: 1.5em;
+    margin-right: 4px;
+    vertical-align: -3px;
+    font-size: 0.8em;
+  }
+  .engines-list input[type="checkbox"]::before {
+    background: none;
 }
 
 .properties-list table {

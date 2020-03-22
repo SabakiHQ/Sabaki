@@ -595,10 +595,27 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {id, name, path, args, commands, onChange = noop} = this.props
+      let {
+        id,
+        name,
+        path,
+        args,
+        commands,
+        analysis,
+        onChange = noop
+      } = this.props
       let element = evt.currentTarget
+      let value = element.type === 'checkbox' ? element.checked : element.value
 
-      onChange({id, name, path, args, commands, [element.name]: element.value})
+      onChange({
+        id,
+        name,
+        path,
+        args,
+        commands,
+        analysis,
+        [element.name]: value
+      })
     }
 
     this.handleBrowseButtonClick = () => {
@@ -608,8 +625,8 @@ class EngineItem extends Component {
       })
       if (!result || result.length === 0) return
 
-      let {id, name, args, commands, onChange = noop} = this.props
-      onChange({id, name, args, commands, path: result[0]})
+      let {id, name, args, commands, analysis, onChange = noop} = this.props
+      onChange({id, name, args, commands, analysis, path: result[0]})
     }
 
     this.handleRemoveButtonClick = () => {
@@ -618,7 +635,7 @@ class EngineItem extends Component {
     }
   }
 
-  render({name, path, args, commands}) {
+  render({name, path, args, commands, analysis}) {
     return h(
       'li',
       {},
@@ -687,6 +704,17 @@ class EngineItem extends Component {
           name: 'commands',
           onChange: this.handleChange
         })
+      ),
+      h(
+        'label',
+        {},
+        h('input', {
+          type: 'checkbox',
+          name: 'analysis',
+          defaultChecked: analysis,
+          onChange: this.handleChange
+        }),
+        t('Use as the default analysis engine')
       )
     )
   }
@@ -696,10 +724,10 @@ class EnginesTab extends Component {
   constructor() {
     super()
 
-    this.handleItemChange = ({id, name, path, args, commands}) => {
+    this.handleItemChange = ({id, name, path, args, commands, analysis}) => {
       let engines = this.props.engines.slice()
 
-      engines[id] = {name, path, args, commands}
+      engines[id] = {name, path, args, commands, analysis}
       setting.set('engines.list', engines)
     }
 
@@ -713,7 +741,10 @@ class EnginesTab extends Component {
     this.handleAddButtonClick = evt => {
       evt.preventDefault()
 
-      let engines = [{name: '', path: '', args: ''}, ...this.props.engines]
+      let engines = [
+        {name: '', path: '', args: '', analysis: false},
+        ...this.props.engines
+      ]
       setting.set('engines.list', engines)
 
       setImmediate(() => {
@@ -749,13 +780,14 @@ class EnginesTab extends Component {
         h(
           'ul',
           {},
-          engines.map(({name, path, args, commands}, id) =>
+          engines.map(({name, path, args, commands, analysis}, id) =>
             h(EngineItem, {
               id,
               name,
               path,
               args,
               commands,
+              analysis,
 
               onChange: this.handleItemChange,
               onRemove: this.handleItemRemove
