@@ -46,11 +46,6 @@ function newWindow(path) {
     setting.set('window.maximized', false)
   })
 
-  window.on('resize', () => {
-    setting.set('window.width', window.getSize()[0])
-    setting.set('window.height', window.getSize()[1])
-  })
-
   window.on('closed', () => {
     window = null
   })
