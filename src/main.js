@@ -13,12 +13,6 @@ function newWindow(path) {
       process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
     title: app.name,
     useContentSize: true,
-    width: setting.get('window.preWidth')
-      ? setting.get('window.preWidth')
-      : setting.get('window.width'),
-    height: setting.get('window.preHeight')
-      ? setting.get('window.preHeight')
-      : setting.get('window.height'),
     width: setting.get('window.width'),
     height: setting.get('window.height'),
     minWidth: setting.get('window.minwidth'),
@@ -39,22 +33,22 @@ function newWindow(path) {
     window.show()
   })
 
-  if (setting.get('window.max') === true) {
+  if (setting.get('window.maximized') === true) {
     window.maximize()
   }
 
   // store the window size
   window.on('maximize', () => {
-    setting.set('window.max', true)
+    setting.set('window.maximized', true)
   })
 
   window.on('unmaximize', () => {
-    setting.set('window.max', false)
+    setting.set('window.maximized', false)
   })
 
   window.on('resize', () => {
-    setting.set('window.preWidth', window.getSize()[0])
-    setting.set('window.preHeight', window.getSize()[1])
+    setting.set('window.width', window.getSize()[0])
+    setting.set('window.height', window.getSize()[1])
   })
 
   window.on('closed', () => {
