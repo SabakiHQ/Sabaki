@@ -5,7 +5,8 @@ const {app, BrowserWindow} = require('electron')
 
 for (let dir of [
   (exports.userDataDirectory =
-    process.env.PORTABLE_EXECUTABLE_DIR || app.getPath('userData')),
+    path.join(process.env.PORTABLE_EXECUTABLE_DIR, 'Sabaki') ||
+    app.getPath('userData')),
   (exports.themesDirectory = path.join(exports.userDataDirectory, 'themes')),
   (exports.langDirectory = path.join(exports.userDataDirectory, 'lang'))
 ]) {
