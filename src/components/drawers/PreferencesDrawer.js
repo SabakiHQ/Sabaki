@@ -66,7 +66,8 @@ class GeneralTab extends Component {
     super(props)
 
     this.state = {
-      appLang: setting.get('app.lang')
+      appLang: setting.get('app.lang'),
+      variationReplayMode: setting.get('board.variation_replay_mode')
     }
 
     this.handleSoundEnabledChange = evt => {
@@ -91,9 +92,15 @@ class GeneralTab extends Component {
       )
     }
 
+    this.handleVariationReplayModeChange = evt => {
+      setting.set('board.variation_replay_mode', evt.currentTarget.value)
+    }
+
     setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
       if (key === 'app.lang') {
         this.setState({appLang: value})
+      } else if (key === 'board.variation_replay_mode') {
+        this.setState({variationReplayMode: value})
       }
     })
   }
@@ -130,10 +137,49 @@ class GeneralTab extends Component {
           id: 'view.animated_stone_placement',
           text: t('Animate fuzzy placement')
         }),
-        h(PreferencesItem, {
-          id: 'board.variation_instant_replay',
-          text: t('Instantly play out analysis variations on board')
-        }),
+
+        h(
+          'li',
+          {class: 'select'},
+          h(
+            'label',
+            {},
+            t('Replay mode of analysis variations:'),
+            ' ',
+
+            h(
+              'select',
+              {onChange: this.handleVariationReplayModeChange},
+
+              h(
+                'option',
+                {
+                  value: 'dont_play',
+                  selected: this.state.variationReplayMode === 'dont_play'
+                },
+                t("Don't Play")
+              ),
+
+              h(
+                'option',
+                {
+                  value: 'instantly',
+                  selected: this.state.variationReplayMode === 'instantly'
+                },
+                t('Instantly')
+              ),
+
+              h(
+                'option',
+                {
+                  value: 'move_by_move',
+                  selected: this.state.variationReplayMode === 'move_by_move'
+                },
+                t('Move by Move')
+              )
+            )
+          )
+        ),
 
         h(
           'li',
