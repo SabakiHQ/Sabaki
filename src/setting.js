@@ -210,7 +210,10 @@ let defaults = {
   'window.height': 604,
   'window.minheight': 440,
   'window.minwidth': 526,
-  'window.width': 564
+  'window.width': 564,
+  'window.max': false,
+  'window.preWidth': undefined,
+  'window.preHeight': undefined
 }
 
 let eventEmitters = {}
