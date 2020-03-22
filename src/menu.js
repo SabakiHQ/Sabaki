@@ -16,6 +16,7 @@ exports.get = function(props = {}) {
   let selectTool = tool => (
     sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
   )
+  let analyzeEngineInitializing = false
 
   let {
     disableAll,
@@ -458,13 +459,32 @@ exports.get = function(props = {}) {
                 .map(syncer => syncer.id)[0]
 
             if (syncerId == null) {
-              dialog.showMessageBox(
-                i18n.t(
-                  'menu.engines',
-                  'None of the attached engines support analysis.'
-                ),
-                'info'
-              )
+              let defaultEngine = setting
+                .get('engines.list')
+                .filter(engine => engine.analysis)[0]
+
+              if (defaultEngine != null) {
+                if (!analyzeEngineInitializing) {
+                  analyzeEngineInitializing = true
+
+                  sabaki.attachEngines([defaultEngine], ({syncer, error}) => {
+                    if (error != null) {
+                      dialog.showMessageBox(error.message, 'error')
+                    } else {
+                      sabaki.startAnalysis(syncer.id)
+                    }
+                    analyzeEngineInitializing = false
+                  })
+                }
+              } else {
+                dialog.showMessageBox(
+                  i18n.t(
+                    'menu.engines',
+                    'None of the default engines for analysis.'
+                  ),
+                  'info'
+                )
+              }
               return
             }
 
