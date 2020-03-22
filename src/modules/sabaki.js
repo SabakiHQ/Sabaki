@@ -1658,7 +1658,7 @@ class Sabaki extends EventEmitter {
     })
   }
 
-  attachEngines(engines) {
+  attachEngines(engines, onInitialized = helper.noop) {
     let attaching = []
     let getEngineName = name => {
       let counter = 1
@@ -1761,6 +1761,16 @@ class Sabaki extends EventEmitter {
           message: 'Engine Started',
           engine: engine.name
         })
+      })
+
+      syncer.controller.on('initialized', evt => {
+        gtplogger.write({
+          type: 'meta',
+          message: 'Engine Initialized',
+          engine: engine.name
+        })
+
+        onInitialized({syncer, ...evt})
       })
 
       syncer.controller.on('stopped', () => {
