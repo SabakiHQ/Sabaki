@@ -1658,7 +1658,7 @@ class Sabaki extends EventEmitter {
     })
   }
 
-  attachEngines(engines, onInitialized = helper.noop) {
+  attachEngines(engines, {autoStart = true} = {}) {
     let attaching = []
     let getEngineName = name => {
       let counter = 1
@@ -1779,7 +1779,9 @@ class Sabaki extends EventEmitter {
         })
       })
 
-      syncer.controller.start()
+      if (autoStart) {
+        syncer.controller.start()
+      }
 
       attaching.push(syncer)
     }
