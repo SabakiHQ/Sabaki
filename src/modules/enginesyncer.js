@@ -116,8 +116,8 @@ export default class EngineSyncer extends EventEmitter {
               )
           : [])
       ])
-        .then(() => this.controller.emit('initialized', {}))
-        .catch(error => this.controller.emit('initialized', {error}))
+        .then(() => this.emit('initialized', {}))
+        .catch(error => this.emit('initialized', {error}))
     })
 
     this.controller.on('stopped', () => {
@@ -177,7 +177,6 @@ export default class EngineSyncer extends EventEmitter {
 
     for (let eventName of [
       'started',
-      'initialized',
       'stopped',
       'command-sent',
       'response-received'

@@ -1680,6 +1680,14 @@ class Sabaki extends EventEmitter {
 
       let syncer = new EngineSyncer(engine)
 
+      syncer.on('initialized', () => {
+        gtplogger.write({
+          type: 'meta',
+          message: 'Engine Initialized',
+          engine: engine.name
+        })
+      })
+
       syncer.on('analysis-update', () => {
         if (this.state.analyzingEngineSyncerId === syncer.id) {
           // Update analysis info
@@ -1761,16 +1769,6 @@ class Sabaki extends EventEmitter {
           message: 'Engine Started',
           engine: engine.name
         })
-      })
-
-      syncer.controller.on('initialized', evt => {
-        gtplogger.write({
-          type: 'meta',
-          message: 'Engine Initialized',
-          engine: engine.name
-        })
-
-        onInitialized({syncer, ...evt})
       })
 
       syncer.controller.on('stopped', () => {
