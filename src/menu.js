@@ -16,7 +16,6 @@ exports.get = function(props = {}) {
   let selectTool = tool => (
     sabaki.setMode('edit'), sabaki.setState({selectedTool: tool})
   )
-  let analyzeEngineInitializing = false
 
   let {
     disableAll,
@@ -448,40 +447,64 @@ exports.get = function(props = {}) {
           label: i18n.t('menu.engines', 'Toggle &Analysis'),
           accelerator: 'F4',
           click: () => {
-            let syncerId =
-              sabaki.lastAnalyzingEngineSyncerId ||
-              sabaki.state.attachedEngineSyncers
+            let getAnalysisEngineSyncerId = hasDefaultEngine => {
+              let preferredEngineSyncerId =
+                sabaki.lastAnalyzingEngineSyncerId ||
+                sabaki.state.attachedEngineSyncers
+                  .filter(syncer => syncer.engine.analysis)
+                  .map(syncer => syncer.id)[0]
+              if (preferredEngineSyncerId != null) {
+                return preferredEngineSyncerId
+              }
+
+              if (hasDefaultEngine) {
+                return null
+              }
+
+              return sabaki.state.attachedEngineSyncers
                 .filter(syncer =>
                   syncer.commands.some(x =>
                     setting.get('engines.analyze_commands').includes(x)
                   )
                 )
                 .map(syncer => syncer.id)[0]
+            }
+
+            let defaultEngine = setting
+              .get('engines.list')
+              .find(engine => engine.analysis)
+            let syncerId = getAnalysisEngineSyncerId(defaultEngine != null)
 
             if (syncerId == null) {
-              let defaultEngine = setting
-                .get('engines.list')
-                .filter(engine => engine.analysis)[0]
-
               if (defaultEngine != null) {
-                if (!analyzeEngineInitializing) {
-                  analyzeEngineInitializing = true
+                if (!sabaki.state.busy) {
+                  sabaki.setBusy(true)
 
-                  sabaki.attachEngines([defaultEngine], ({syncer, error}) => {
+                  let [defaultEngineSyncer] = sabaki.attachEngines(
+                    [defaultEngine],
+                    {autoStart: false}
+                  )
+
+                  defaultEngineSyncer.on('initialized', ({error}) => {
                     if (error != null) {
-                      dialog.showMessageBox(error.message, 'error')
+                      dialog.showMessageBox(
+                        i18n.t(
+                          'menu.engines',
+                          'The analysis engine initialization failed.'
+                        ),
+                        'error'
+                      )
                     } else {
-                      sabaki.startAnalysis(syncer.id)
+                      sabaki.startAnalysis(defaultEngineSyncer.id)
                     }
-                    analyzeEngineInitializing = false
+                    sabaki.setBusy(false)
                   })
+
+                  defaultEngineSyncer.controller.start()
                 }
               } else {
                 dialog.showMessageBox(
-                  i18n.t(
-                    'menu.engines',
-                    'None of the default engines for analysis.'
-                  ),
+                  i18n.t('menu.engines', 'No engine available for analysis.'),
                   'info'
                 )
               }
