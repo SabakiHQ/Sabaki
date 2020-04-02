@@ -7,8 +7,11 @@ All notable changes to this project will be documented in this file.
 **Added**
 
 - Ability to hide heat map in analysis mode (#649)
+- Ability to disable heat map variation replay (thanks to @ebifrier, #668)
 - Ability to show score lead on board in analysis mode for engines that support
   it, e.g. KataGo (#589)
+- Ability to show alternate coordinate labels (thanks to @ebifrier, #665)
+- Ability to preserve window state (thanks to @ivysrono, #670)
 - Multilanguage support thanks to
   [our translators](https://github.com/SabakiHQ/sabaki-i18n/graphs/contributors)
   (#647)
