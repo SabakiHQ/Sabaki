@@ -975,8 +975,9 @@ All notable changes to this project will be documented in this file.
 
 First release
 
-[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...master
-[v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v.50.1
+[unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.51.0...master
+[v0.51.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...v0.51.0
+[v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v0.50.1
 [v0.50.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...v0.50.0
 [v0.43.3]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.2...v0.43.3
 [v0.43.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.1...v0.43.2
