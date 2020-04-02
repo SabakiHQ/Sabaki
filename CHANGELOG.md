@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased][unreleased]
+## [Sabaki v0.51.0][v0.51.0] (2020-04-02)
 
 **Added**
 
 - Ability to hide heat map in analysis mode (#649)
-- Ability to show score lead on board in analysis mode (#589)
+- Ability to show score lead on board in analysis mode for engines that support it, e.g. KataGo (#589)
+- Multilanguage support thanks to [our translators](https://github.com/SabakiHQ/sabaki-i18n/graphs/contributors) (#647)
 
 **Fixed**
 
