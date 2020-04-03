@@ -273,14 +273,17 @@ export default class Goban extends Component {
       } else if (coordinatesType === 'relative') {
         let relativeCoord = (x, size) => {
           let halfSize = Math.ceil(size / 2)
+          if (size === 19 && x === 10) return 'X'
+
           let ix = size - x + 1
           if (ix < halfSize) return `${ix}*`
+
           return x.toString()
         }
 
         return [
           x => relativeCoord(x + 1, board.width),
-          y => relativeCoord(y + 1, board.height)
+          y => relativeCoord(board.height - y, board.height)
         ]
       } else {
         return [x => alpha[x], y => board.height - y] // Default
