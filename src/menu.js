@@ -624,7 +624,7 @@ exports.get = function(props = {}) {
               label: i18n.t('menu.view', '&Don’t Show'),
               type: 'checkbox',
               checked: !showAnalysis,
-              click: () => setting.set('board.show_analysis', false)
+              click: () => toggleSetting('board.show_analysis')
             },
             {type: 'separator'},
             {
