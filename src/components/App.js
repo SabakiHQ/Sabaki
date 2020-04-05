@@ -22,6 +22,8 @@ import * as gametree from '../modules/gametree.js'
 import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
 
+const process = require('process')
+
 const setting = remote.require('./setting')
 const t = i18n.context('App')
 
@@ -29,6 +31,11 @@ const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
 const sidebarMinWidth = setting.get('view.leftsidebar_minwidth')
 
 fixPath()
+
+const portableDir = process.env.PORTABLE_EXECUTABLE_DIR
+if (portableDir) {
+  process.chdir(portableDir)
+}
 
 class App extends Component {
   constructor(props) {
