@@ -87,7 +87,7 @@ export default class EngineSyncer extends EventEmitter {
     this.commands = []
     this.treePosition = null
 
-    this.controller = new Controller(path, [...argvsplit(args)], {
+    this.controller = new Controller(resolve(path), [...argvsplit(args)], {
       cwd: dirname(resolve(path))
     })
 
