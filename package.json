@@ -84,7 +84,7 @@
     "@sabaki/deadstones": "^2.1.2",
     "@sabaki/go-board": "^1.4.1",
     "@sabaki/gtp": "^3.0.0",
-    "@sabaki/i18n": "0.51.1-0",
+    "@sabaki/i18n": "0.51.1-1",
     "@sabaki/immutable-gametree": "^1.9.2",
     "@sabaki/influence": "^1.2.2",
     "@sabaki/sgf": "^3.4.7",
