@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.51.1][v0.51.1] (2020-04-12)
+
+**Added**
+
+- Portable version for Windows (thanks to @ivysrono)
+- French language support (thanks to @romton843)
+
+**Fixed**
+
+- Fix relative coordinates representation
+
 ## [Sabaki v0.51.0][v0.51.0] (2020-04-02)
 
 **Added**
