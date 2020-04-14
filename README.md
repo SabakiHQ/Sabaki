@@ -53,6 +53,7 @@ A big thank you to these lovely people:
 - Eric Wainwright
 - Michael Noll
 - John Hager
+- Hans Christian Poerschke
 - David Göbel
 - Dominik Olszewski
 - Brian Weaver
@@ -61,7 +62,7 @@ A big thank you to these lovely people:
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
-- Petr Ruzicka
+- Petr Růžička
 - Sergio Villegas
 - Jake Pivnik
 
