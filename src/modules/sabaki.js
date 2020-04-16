@@ -2047,6 +2047,47 @@ class Sabaki extends EventEmitter {
     }
   }
 
+  getAnalysisEngineSyncerId(hasDefaultEngine = true) {
+    let preferredEngineSyncerId =
+      this.lastAnalyzingEngineSyncerId ||
+      this.state.attachedEngineSyncers
+        .filter(syncer => syncer.engine.analysis)
+        .map(syncer => syncer.id)[0]
+    if (preferredEngineSyncerId != null) {
+      return preferredEngineSyncerId
+    }
+
+    if (hasDefaultEngine) {
+      return null
+    }
+
+    return this.state.attachedEngineSyncers
+      .filter(syncer =>
+        syncer.commands.some(x =>
+          setting.get('engines.analyze_commands').includes(x)
+        )
+      )
+      .map(syncer => syncer.id)[0]
+  }
+
+  async attachAndStartAnalysis(engine) {
+    return new Promise((resolve, reject) => {
+      let [syncer] = this.attachEngines([engine], {autoStart: false})
+
+      syncer.on('initialized', ({error}) => {
+        if (error != null) {
+          reject(error)
+        } else {
+          this.startAnalysis(syncer.id)
+            .then(() => resolve(syncer))
+            .catch(err => reject(err))
+        }
+      })
+
+      syncer.controller.start()
+    })
+  }
+
   async analyzeMove(treePosition) {
     let sign = this.getPlayer(treePosition)
     let color = sign > 0 ? 'B' : 'W'
