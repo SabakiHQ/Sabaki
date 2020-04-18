@@ -1,5 +1,6 @@
 import {remote} from 'electron'
 import EventEmitter from 'events'
+import {existsSync} from 'fs'
 import {dirname, resolve} from 'path'
 import argvsplit from 'argv-split'
 import {v4 as uuid} from 'uuid'
@@ -87,8 +88,10 @@ export default class EngineSyncer extends EventEmitter {
     this.commands = []
     this.treePosition = null
 
-    this.controller = new Controller(resolve(path), [...argvsplit(args)], {
-      cwd: dirname(resolve(path))
+    let absolutePath = resolve(path)
+    let executePath = existsSync(absolutePath) ? absolutePath : path
+    this.controller = new Controller(executePath, [...argvsplit(args)], {
+      cwd: dirname(absolutePath)
     })
 
     this.stateTracker = new ControllerStateTracker(this.controller)
