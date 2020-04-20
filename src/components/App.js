@@ -181,11 +181,16 @@ class App extends Component {
 
       evt.returnValue = ' '
 
-      setTimeout(() => {
+      setTimeout(async () => {
         if (sabaki.askForSave()) {
+          let promise = sabaki.detachEngines(
+            this.state.attachedEngineSyncers.map(syncer => syncer.id)
+          )
+
           gtplogger.close()
           this.closeWindow = true
           sabaki.window.close()
+          await promise
         }
       })
     })
