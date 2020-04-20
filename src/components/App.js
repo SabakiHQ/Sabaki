@@ -183,6 +183,10 @@ class App extends Component {
 
       setTimeout(() => {
         if (sabaki.askForSave()) {
+          sabaki.detachEngines(
+            this.state.attachedEngineSyncers.map(syncer => syncer.id)
+          )
+
           gtplogger.close()
           this.closeWindow = true
           sabaki.window.close()
