@@ -289,7 +289,10 @@ export default class CommentBox extends Component {
 
     if (mode === 'edit') {
       this.element.scrollTop = 0
-      if (treePositionChanged) this.textareaElement.scrollTop = 0
+      if (treePositionChanged) {
+        this.textareaElement.scrollTop = 0
+        this.setState({title, comment})
+      }
 
       return
     }
