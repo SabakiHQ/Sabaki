@@ -76,16 +76,17 @@ export default class ContentDisplay extends Component {
         .split(/\s+/)
         .map(x => board.parseVertex(x))
       let sibling = currentVertexSign === sign
+      let {treePosition} = sabaki.state
 
-      return {sign, moves, sibling}
+      return {treePosition, sign, moves, sibling}
     }
 
     this.handleVariationMouseEnter = evt => {
       let {currentTarget} = evt
-      let {sign, moves, sibling} = getVariationInfo(currentTarget)
+      let {treePosition, sign, moves, sibling} = getVariationInfo(currentTarget)
       let counter = 1
 
-      sabaki.setState({playVariation: {sign, moves, sibling}})
+      sabaki.setState({playVariation: {treePosition, sign, moves, sibling}})
 
       if (setting.get('board.variation_replay_mode') === 'move_by_move') {
         clearInterval(this.variationIntervalId)

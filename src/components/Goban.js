@@ -85,13 +85,18 @@ export default class Goban extends Component {
   componentWillReceiveProps(nextProps = {}) {
     if (nextProps.playVariation !== this.props.playVariation) {
       if (nextProps.playVariation != null) {
-        let {sign, moves, sibling} = nextProps.playVariation
+        let {treePosition, sign, moves, sibling} = nextProps.playVariation
 
         this.stopPlayingVariation()
-        this.playVariation(sign, moves, sibling)
+        this.playVariation(treePosition, sign, moves, sibling)
       } else {
         this.stopPlayingVariation()
       }
+    } else if (
+      this.state.variationTreePosition != null &&
+      nextProps.treePosition !== this.state.variationTreePosition
+    ) {
+      this.stopPlayingVariation()
     }
   }
 
@@ -164,19 +169,21 @@ export default class Goban extends Component {
     let variation = variations.find(x => helper.vertexEquals(x.vertex, vertex))
     if (variation == null) return
 
-    this.playVariation(sign, variation.moves)
+    let {treePosition} = this.props
+    this.playVariation(treePosition, sign, variation.moves)
   }
 
   handleVertexMouseLeave(evt, vertex) {
     this.stopPlayingVariation()
   }
 
-  playVariation(sign, moves, sibling = false) {
+  playVariation(treePosition, sign, moves, sibling = false) {
     let replayMode = setting.get('board.variation_replay_mode')
     if (replayMode === 'instantly') {
       this.variationIntervalId = true
 
       this.setState({
+        variationTreePosition: treePosition,
         variationMoves: moves,
         variationSign: sign,
         variationSibling: sibling,
@@ -187,6 +194,7 @@ export default class Goban extends Component {
 
       this.variationIntervalId = setInterval(() => {
         this.setState(({variationIndex = -1}) => ({
+          variationTreePosition: treePosition,
           variationMoves: moves,
           variationSign: sign,
           variationSibling: sibling,
@@ -205,6 +213,7 @@ export default class Goban extends Component {
     this.variationIntervalId = null
 
     this.setState({
+      variationTreePosition: null,
       variationMoves: null,
       variationIndex: -1
     })
