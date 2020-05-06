@@ -92,6 +92,8 @@ export default class Goban extends Component {
       } else {
         this.stopPlayingVariation()
       }
+    } else if (this.props.treePosition !== nextProps.treePosition) {
+      this.stopPlayingVariation()
     }
   }
 
