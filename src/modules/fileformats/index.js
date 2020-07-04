@@ -3,14 +3,15 @@ import i18n from '../../i18n.js'
 import * as sgf from './sgf.js'
 import * as ngf from './ngf.js'
 import * as gib from './gib.js'
+import * as ugf from './ugf.js'
 
 const t = i18n.context('fileformats')
 
-let modules = {sgf, ngf, gib}
+let modules = {sgf, ngf, gib, ugf}
 let extensions = Object.keys(modules).map(key => modules[key].meta)
 let combinedExtensions = [].concat(...extensions.map(x => x.extensions))
 
-export {sgf, ngf, gib}
+export {sgf, ngf, gib, ugf}
 
 export const meta = [
   {name: t('Game Records'), extensions: combinedExtensions},
