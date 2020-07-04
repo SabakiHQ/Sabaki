@@ -58,7 +58,9 @@ export function parse(content) {
                 draft.updateProperty(rootId, 'SZ', [value])
                 break
               case 'Hdcp':
-                draft.updateProperty(rootId, 'HA', [value.split(',')[0]])
+                if (value.split(',')[0] != '0') {
+                  draft.updateProperty(rootId, 'HA', [value.split(',')[0]])
+                }
                 draft.updateProperty(rootId, 'KM', [value.split(',')[1]])
                 break
               case 'Rules':
