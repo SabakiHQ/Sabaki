@@ -25,6 +25,7 @@ export function parse(content) {
       let lines = content.split('\n')
       let rootId = draft.root.id
       let lastNodeId = rootId
+      let nodeMap = {}
 
       draft.updateProperty(rootId, 'CA', ['UTF-8'])
       draft.updateProperty(rootId, 'FF', ['4'])
@@ -89,6 +90,7 @@ export function parse(content) {
                   convertVertex(coords, parseInt(draft.root.data.SZ))
                 ]
               })
+              nodeMap[nodeNum] = lastNodeId
             } else {
               // UGF assigns all handicap placements to node number 0
               draft.addToProperty(
@@ -101,6 +103,17 @@ export function parse(content) {
           case 'ReviewNode':
             break
           case 'ReviewComment':
+            if (line.startsWith('.Comment')) {
+              let commentNodeId = line.split(',')[1]
+              while (n < lines.length && !lines[n + 1].startsWith('.Comment')) {
+                n += 1
+                draft.updateProperty(
+                  nodeMap[commentNodeId],
+                  'C',
+                  draft.get(nodeMap[commentId]) + lines[n].trim()
+                )
+              }
+            }
             break
           default:
             break
