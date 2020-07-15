@@ -83,9 +83,20 @@ export function parse(content) {
             break
           case 'Data':
             let [coords, color, nodeNum, _] = line.split(',')
-            lastNodeId = draft.appendNode(lastNodeId, {
-              [color[0]]: [convertVertex(coords, parseInt(draft.root.data.SZ))]
-            })
+            if (nodeNum > 0) {
+              lastNodeId = draft.appendNode(lastNodeId, {
+                [color[0]]: [
+                  convertVertex(coords, parseInt(draft.root.data.SZ))
+                ]
+              })
+            } else {
+              // UGF assigns all handicap placements to node number 0
+              draft.addToProperty(
+                rootId,
+                'AB',
+                convertVertex(coords, parseInt(draft.root.data.SZ))
+              )
+            }
             break
           case 'ReviewNode':
             break
