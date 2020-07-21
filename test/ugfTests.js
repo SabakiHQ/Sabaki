@@ -26,5 +26,16 @@ describe('ugf', () => {
         [{B: ['qd']}, {W: ['dd']}, {B: ['pq']}, {W: ['dq']}]
       )
     })
+
+    it('should parse reviews with comments and variations', () => {
+      let tree = ugf.parseFile(`${__dirname}/ugf/review.ugi`)[0]
+
+      assert.equal(
+        tree.root.data.C,
+        `apetresc 2k?: Let's begin and enjoy a great game.
+ken03110 2k : Hi!
+`
+      )
+    })
   })
 })
