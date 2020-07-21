@@ -1,7 +1,6 @@
 import {readFileSync} from 'fs'
 import {decode} from 'iconv-lite'
 import {detect} from 'jschardet'
-import {fromDimensions} from '@sabaki/go-board'
 import i18n from '../../i18n.js'
 import * as gametree from '../gametree.js'
 
@@ -25,7 +24,7 @@ export function parse(content) {
       let lines = content.split('\n')
       let rootId = draft.root.id
       let lastNodeId = rootId
-      let nodeMap = {}
+      let nodeMap = {'0': rootId}
 
       draft.updateProperty(rootId, 'CA', ['UTF-8'])
       draft.updateProperty(rootId, 'FF', ['4'])
@@ -104,14 +103,19 @@ export function parse(content) {
             break
           case 'ReviewComment':
             if (line.startsWith('.Comment')) {
-              let commentNodeId = line.split(',')[1]
-              while (n < lines.length && !lines[n + 1].startsWith('.Comment')) {
+              let commentNodeId = (parseInt(line.split(',')[1]) - 1).toString()
+              while (
+                n + 1 < lines.length &&
+                !lines[n + 1].startsWith('.Comment')
+              ) {
                 n += 1
-                draft.updateProperty(
-                  nodeMap[commentNodeId],
-                  'C',
-                  draft.get(nodeMap[commentId]) + lines[n].trim()
-                )
+                if (commentNodeId in nodeMap) {
+                  draft.updateProperty(nodeMap[commentNodeId], 'C', [
+                    (draft.get(nodeMap[commentNodeId]).data.C || '') +
+                      lines[n].trim() +
+                      '\n'
+                  ])
+                }
               }
             }
             break
