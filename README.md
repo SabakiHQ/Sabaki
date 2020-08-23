@@ -53,12 +53,15 @@ A big thank you to these lovely people:
 - Eric Wainwright
 - Michael Noll
 - John Hager
+- Azim Palmer
 - Hans Christian Poerschke
 - David Göbel
 - Dominik Olszewski
 - Brian Weaver
 - Philippe Fanaro
 - Dimitri Rusin
+- Frank Orben
+- Dekun Song
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
