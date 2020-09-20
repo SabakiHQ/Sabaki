@@ -105,6 +105,12 @@ exports.get = function(props = {}) {
           label: i18n.t('menu.file', '&Preferences…'),
           accelerator: 'CmdOrCtrl+,',
           click: () => sabaki.openDrawer('preferences')
+        },
+        {type: 'separator'},
+        {
+          label: i18n.t('menu.file', '&Quit'),
+          accelerator: 'Alt+F4',
+          click: () => app.quit()
         }
       ]
     },
