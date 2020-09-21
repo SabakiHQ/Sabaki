@@ -109,7 +109,7 @@ exports.get = function(props = {}) {
         {type: 'separator'},
         {
           label: i18n.t('menu.file', '&Quit'),
-          accelerator: 'Alt+F4',
+          accelerator: 'CmdOrCtrl+Q',
           click: () => app.quit()
         }
       ]
