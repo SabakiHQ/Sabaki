@@ -105,6 +105,12 @@ exports.get = function(props = {}) {
           label: i18n.t('menu.file', '&Preferences…'),
           accelerator: 'CmdOrCtrl+,',
           click: () => sabaki.openDrawer('preferences')
+        },
+        {type: 'separator'},
+        {
+          label: i18n.t('menu.file', '&Quit'),
+          accelerator: 'CmdOrCtrl+Q',
+          click: () => app.quit()
         }
       ]
     },
@@ -863,12 +869,12 @@ exports.get = function(props = {}) {
 
     appMenu.push(...items.slice(0, 2))
 
-    // Remove original 'Preferences' menu item
+    // Remove original 'Preferences' and 'Quit' menu items
 
     let fileMenu = findMenuItem('file')
     let preferenceItem = fileMenu.submenu.splice(
-      fileMenu.submenu.length - 2,
-      2
+      fileMenu.submenu.length - 4,
+      4
     )[1]
 
     appMenu.push(
