@@ -874,10 +874,8 @@ exports.get = function(props = {}) {
     let fileMenu = findMenuItem('file')
     let preferenceItem = fileMenu.submenu.splice(
       fileMenu.submenu.length - 4,
-      2
+      4
     )[1]
-
-    fileMenu.submenu.splice(fileMenu.length - 2, 2)[1]
 
     appMenu.push(
       {type: 'separator'},
