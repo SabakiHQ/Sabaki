@@ -8,13 +8,13 @@ const t = i18n.context('fileformats')
 
 export const meta = {
   name: t('PandaNET UGF'),
-  extensions: ['ugf', 'ugi']
+  extensions: ['ugf']
 }
 
-function convertVertex(ugiVertex, boardSize) {
+function convertVertex(ugfVertex, boardSize) {
   return (
-    ugiVertex[0] +
-    String.fromCharCode(boardSize - ugiVertex.charCodeAt(1) + 129)
+    ugfVertex[0] +
+    String.fromCharCode(boardSize - ugfVertex.charCodeAt(1) + 129)
   ).toLowerCase()
 }
 
