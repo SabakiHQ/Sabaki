@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki develop](2020-10-31)
+
+**Added**
+
+- A shortcut for game move by best point from analysis.
+
 ## [Sabaki v0.51.1][v0.51.1] (2020-04-12)
 
 **Added**

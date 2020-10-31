@@ -2885,6 +2885,18 @@ class Sabaki extends EventEmitter {
       y
     )
   }
+
+  moveByAnalysis() {
+    if (this.state.analysis) {
+      const best = this.state.analysis.variations.reduce(
+        (best, variation) =>
+          !best || variation.winrate > best.winrate ? variation : best,
+        null
+      )
+
+      if (best) this.clickVertex(best.vertex)
+    }
+  }
 }
 
 export default new Sabaki()
