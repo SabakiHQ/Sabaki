@@ -46,7 +46,7 @@ function Link({href, title, children}) {
   return h(
     ContentDisplay,
     {},
-    h('a', {class: 'external', href, title}, typographer(children))
+    h('a', {class: 'comment-external', href, title}, typographer(children))
   )
 }
 
