@@ -54,6 +54,7 @@ A big thank you to these lovely people:
 - Michael Noll
 - John Hager
 - Azim Palmer
+- Nicolas Puyaubreau
 - Hans Christian Poerschke
 - David Göbel
 - Dominik Olszewski
