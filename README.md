@@ -60,9 +60,10 @@ A big thank you to these lovely people:
 - Dominik Olszewski
 - Brian Weaver
 - Philippe Fanaro
-- Dimitri Rusin
+- James Tudor
 - Frank Orben
 - Dekun Song
+- Dimitri Rusin
 - Andrew Thieman
 - Adrian Petrescu
 - Karlheinz Agsteiner
