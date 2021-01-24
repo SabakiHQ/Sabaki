@@ -257,7 +257,7 @@ class App extends Component {
         !sabaki.window.isMinimized() &&
         !sabaki.window.isFullScreen()
       ) {
-        sabaki.window.setContentSize(width + widthDiff, height)
+        sabaki.window.setContentSize(Math.floor(width + widthDiff), height)
       }
 
       window.dispatchEvent(new Event('resize'))
