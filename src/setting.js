@@ -18,6 +18,10 @@ for (let dir of [
 
 exports.settingsPath = path.join(exports.userDataDirectory, 'settings.json')
 exports.stylesPath = path.join(exports.userDataDirectory, 'styles.css')
+exports.keybindingsPath = path.join(
+  exports.userDataDirectory,
+  'keybindings.json'
+)
 
 if (!fs.existsSync(exports.stylesPath)) {
   fs.writeFileSync(
@@ -27,6 +31,7 @@ if (!fs.existsSync(exports.stylesPath)) {
 }
 
 let settings = {}
+let keybindings = {}
 
 let themesDict = null
 
@@ -277,6 +282,14 @@ exports.load = function() {
     settings[overwriteKey] = []
   }
 
+  // Also read the optional keybindings
+
+  try {
+    keybindings = JSON.parse(fs.readFileSync(exports.keybindingsPath, 'utf8'))
+  } catch (err) {
+    keybindings = {}
+  }
+
   return exports.save()
 }
 
@@ -341,6 +354,11 @@ exports.set = function(key, value) {
 exports.getThemes = function() {
   if (themesDict == null) exports.loadThemes()
   return themesDict
+}
+
+exports.getKeybinding = function(key) {
+  if (key in keybindings) return keybindings[key]
+  return // return undefined because 'null' is a meaningful value here
 }
 
 exports.load()

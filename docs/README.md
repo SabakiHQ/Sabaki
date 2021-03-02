@@ -13,6 +13,7 @@ view older versions of the documentation, you can browse by tag on GitHub.
 - [Engines](guides/engines.md)
 - [Markdown in Sabaki](guides/markdown.md)
 - [Textures & Theme Directory](guides/theme-directory.md)
+- [Keybindings](guides/keybindings.md)
 
 ## Tutorials
 
