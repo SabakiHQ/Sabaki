@@ -1,4 +1,4 @@
-const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
+const {app, shell, dialog, ipcMain, nativeImage, BrowserWindow, Menu} = require('electron')
 const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
@@ -9,8 +9,9 @@ let openfile = null
 
 function newWindow(path) {
   let window = new BrowserWindow({
-    icon:
-      process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
+    icon: process.platform === 'linux' ?
+      nativeImage.createFromPath(resolve(__dirname, '../logo.png')) :
+      null,
     title: app.name,
     useContentSize: true,
     width: setting.get('window.width'),

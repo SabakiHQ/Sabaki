@@ -107,7 +107,7 @@
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "^8.2.1",
+    "electron": "^9.4.4",
     "electron-builder": "^22.4.1",
     "esm": "^3.2.25",
     "mocha": "^7.1.1",
