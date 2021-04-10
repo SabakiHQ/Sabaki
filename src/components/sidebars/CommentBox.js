@@ -281,8 +281,8 @@ export default class CommentBox extends Component {
     }
   }
 
-  shouldComponentUpdate({showCommentBox}) {
-    return showCommentBox && !this.dirty
+  shouldComponentUpdate() {
+    return !this.dirty
   }
 
   componentWillReceiveProps({treePosition, mode, title, comment}) {
@@ -317,6 +317,7 @@ export default class CommentBox extends Component {
       treePosition,
       moveAnnotation,
       positionAnnotation,
+      showCommentBox,
 
       onLinkClick = noop
     },
@@ -326,7 +327,8 @@ export default class CommentBox extends Component {
       'section',
       {
         ref: el => (this.element = el),
-        id: 'properties'
+        id: 'properties',
+        class: showCommentBox ? 'commentBoxShown' : ''
       },
 
       h(

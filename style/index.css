@@ -629,8 +629,8 @@ header {
     color: #222;
     overflow: hidden;
   }
-  .edit #properties .edit,
-  .edit #properties .edit textarea {
+  .edit #properties.commentBoxShown .edit,
+  .edit #properties.commentBoxShown .edit textarea {
     display: block;
     color: #222;
   }
