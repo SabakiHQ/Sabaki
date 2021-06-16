@@ -9,9 +9,7 @@ let openfile = null
 
 function newWindow(path) {
   let window = new BrowserWindow({
-    icon: process.platform === 'linux' ?
-      nativeImage.createFromPath(resolve(__dirname, '../logo.png')) :
-      null,
+    icon: nativeImage.createFromPath(resolve(__dirname, '../logo.png')),
     title: app.name,
     useContentSize: true,
     width: setting.get('window.width'),
@@ -23,6 +21,7 @@ function newWindow(path) {
     show: false,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
       zoomFactor: setting.get('app.zoom_factor')
     }
   })
