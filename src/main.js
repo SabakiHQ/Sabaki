@@ -1,4 +1,12 @@
-const {app, shell, dialog, ipcMain, nativeImage, BrowserWindow, Menu} = require('electron')
+const {
+  app,
+  shell,
+  dialog,
+  ipcMain,
+  nativeImage,
+  BrowserWindow,
+  Menu
+} = require('electron')
 const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
