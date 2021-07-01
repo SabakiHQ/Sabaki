@@ -11,6 +11,7 @@ const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
+require('@electron/remote/main').initialize()
 
 let windows = []
 let openfile = null

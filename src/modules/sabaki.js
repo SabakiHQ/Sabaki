@@ -1,7 +1,7 @@
 import fs from 'fs'
 import EventEmitter from 'events'
 import {basename, extname} from 'path'
-import {remote} from 'electron'
+import * as remote from '@electron/remote'
 import {h} from 'preact'
 import {v4 as uuid} from 'uuid'
 

@@ -1,6 +1,10 @@
 const nativeRequire = eval('require')
 
-const {shell, clipboard, remote} = require('electron')
+const {shell, clipboard} = require('electron')
+var remote = null
+try {
+  remote = require('@electron/remote')
+} catch (e) {}
 const isRenderer = remote != null
 const {app} = isRenderer ? remote : require('electron')
 

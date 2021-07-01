@@ -1,4 +1,5 @@
-import {remote, shell} from 'electron'
+import {shell} from 'electron'
+import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 
 import i18n from '../i18n.js'

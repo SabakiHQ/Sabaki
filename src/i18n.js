@@ -1,6 +1,10 @@
 const nativeRequire = eval('require')
 
-const {ipcMain, remote} = require('electron')
+const {ipcMain} = require('electron')
+var remote = null
+try {
+  remote = require('@electron/remote')
+} catch (e) {}
 const {readFileSync} = require('fs')
 const path = require('path')
 const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')

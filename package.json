@@ -78,6 +78,7 @@
     "proseWrap": "always"
   },
   "dependencies": {
+    "@electron/remote": "^1.2.0",
     "@mariotacke/color-thief": "^3.0.1",
     "@primer/octicons": "^9.6.0",
     "@sabaki/boardmatcher": "^1.2.0",

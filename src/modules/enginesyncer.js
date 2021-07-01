@@ -1,4 +1,4 @@
-import {remote} from 'electron'
+import * as remote from '@electron/remote'
 import EventEmitter from 'events'
 import {existsSync} from 'fs'
 import {dirname, resolve} from 'path'

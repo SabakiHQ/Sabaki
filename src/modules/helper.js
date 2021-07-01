@@ -102,7 +102,7 @@ export function isTextLikeElement(element) {
 }
 
 export function popupMenu(template, x, y) {
-  const {remote} = require('electron')
+  const remote = require('@electron/remote')
 
   let setting = remote.require('./setting')
   let zoomFactor = +setting.get('app.zoom_factor')

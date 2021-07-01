@@ -1,4 +1,4 @@
-import {remote} from 'electron'
+import * as remote from '@electron/remote'
 import winston from 'winston'
 import {resolve, join} from 'path'
 
