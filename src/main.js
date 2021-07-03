@@ -30,6 +30,7 @@ function newWindow(path) {
     show: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
       enableRemoteModule: true,
       zoomFactor: setting.get('app.zoom_factor')
     }
@@ -65,8 +66,8 @@ function newWindow(path) {
     if (path) window.webContents.send('load-file', path)
   })
 
-  window.webContents.on('new-window', evt => {
-    evt.preventDefault()
+  window.webContents.setWindowOpenHandler(({url, frameName}) => {
+    return {action: 'deny'}
   })
 
   window.loadURL(`file://${resolve(__dirname, '../index.html')}`)
