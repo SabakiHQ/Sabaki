@@ -15,6 +15,8 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+- Comment box was still in edit mode layout, even if disabled (thanks to
+  @FanJeldmann, #784)
 - Markdown tables would hang edit mode, now tables are correctly rendered (#788)
 - Detach all engines when the window is closed (thanks to @ebifrier, #700)
 - Analysis variation replay was not removed when navigating to a different node
