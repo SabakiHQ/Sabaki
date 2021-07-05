@@ -53,6 +53,11 @@
         "ext": "gib",
         "name": "GIB",
         "description": "Tygem GIB"
+      },
+      {
+        "ext": "ugf",
+        "name": "UGF",
+        "description": "PandaNET UGF"
       }
     ],
     "files": [
