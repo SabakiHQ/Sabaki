@@ -28,7 +28,7 @@
         "7z"
       ],
       "category": "public.app-category.board-games",
-      "artifactName": "sabaki-v${version}-mac-x64.${ext}"
+      "artifactName": "sabaki-v${version}-mac-${arch}.${ext}"
     },
     "win": {
       "artifactName": "sabaki-v${version}-win.exe"
