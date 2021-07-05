@@ -25,6 +25,12 @@ All notable changes to this project will be documented in this file.
   (thanks to @ebifrier, #711)
 - Failed to load external links in comments (thanks to @baldor-f, #754)
 
+**Changed**
+
+- <kbd>Ctrl+H</kbd> toggles the visibility of the analysis heatmap, and
+  <kbd>Ctrl+Shift+H</kbd> cycles through the different types of heatmap labels
+  (#752)
+
 ## [Sabaki v0.51.1][v0.51.1] (2020-04-12)
 
 **Added**

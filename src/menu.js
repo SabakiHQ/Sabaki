@@ -634,6 +634,7 @@ exports.get = function(props = {}) {
               label: i18n.t('menu.view', '&Don’t Show'),
               type: 'checkbox',
               checked: !showAnalysis,
+              accelerator: 'CmdOrCtrl+H',
               click: () => toggleSetting('board.show_analysis')
             },
             {type: 'separator'},
@@ -641,18 +642,30 @@ exports.get = function(props = {}) {
               label: i18n.t('menu.view', 'Show &Win Rate'),
               type: 'checkbox',
               checked: !!showAnalysis && analysisType === 'winrate',
+              accelerator: 'CmdOrCtrl+Shift+H',
               click: () => {
                 setting.set('board.show_analysis', true)
-                setting.set('board.analysis_type', 'winrate')
+                setting.set(
+                  'board.analysis_type',
+                  setting.get('board.analysis_type') === 'winrate'
+                    ? 'scoreLead'
+                    : 'winrate'
+                )
               }
             },
             {
               label: i18n.t('menu.view', 'Show &Score Lead'),
               type: 'checkbox',
               checked: !!showAnalysis && analysisType === 'scoreLead',
+              accelerator: 'CmdOrCtrl+Shift+H',
               click: () => {
                 setting.set('board.show_analysis', true)
-                setting.set('board.analysis_type', 'scoreLead')
+                setting.set(
+                  'board.analysis_type',
+                  setting.get('board.analysis_type') === 'scoreLead'
+                    ? 'winrate'
+                    : 'scoreLead'
+                )
               }
             }
           ]
