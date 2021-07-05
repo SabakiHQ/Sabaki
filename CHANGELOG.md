@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.52.0][v0.52.0]
+
+**Added**
+
+- Leapfrogged from Electron 8 to Electron 13, which among other performance and
+  stability improvements, brings native Apple Silicon (M1) support to Mac builds
+- Added support for PandaNet UGF format files
+- Added 'Quit' option to File menu (thanks to @HiggsTardigradeTau, #746)
+- Add Linux ARM64 build (thanks to @borongyuan #735)
+- Support relative paths to engines (thanks to @ebifrier, #698)
+
+**Fixed**
+
+- Detach all engines when the window is closed (thanks to @ebifrier, #700)
+- Analysis variation replay was not removed when navigating to a different node
+  (thanks to @ebifrier, #712)
+- Comment display was incorrect when navigating while Edit mode is active
+  (thanks to @ebifrier, #711)
+- Failed to load external links in comments (thanks to @baldor-f, #754)
+
 ## [Sabaki v0.51.1][v0.51.1] (2020-04-12)
 
 **Added**
