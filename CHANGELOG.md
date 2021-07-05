@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 
 **Fixed**
 
+- Markdown tables would hang edit mode, now tables are correctly rendered (#788)
 - Detach all engines when the window is closed (thanks to @ebifrier, #700)
 - Analysis variation replay was not removed when navigating to a different node
   (thanks to @ebifrier, #712)

@@ -34,6 +34,7 @@ const Emphasis = generateBasicComponent('em')
 const Strong = generateBasicComponent('strong')
 const Delete = generateBasicComponent('del')
 const ListItem = generateBasicComponent('li')
+const Table = generateBasicComponent('table')
 
 function Paragraph({children}) {
   return h('p', {}, htmlify(children))
@@ -76,7 +77,7 @@ class MarkdownContentDisplay extends Component {
         image: Image,
         linkReference: Link,
         imageReference: Image,
-        table: null,
+        table: Table,
         listItem: ListItem,
         heading: Heading,
         code: Paragraph,
