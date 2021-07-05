@@ -1,5 +1,6 @@
 import {Component} from 'preact'
-import {ipcRenderer, remote} from 'electron'
+import {ipcRenderer} from 'electron'
+import * as remote from '@electron/remote'
 import * as dialog from '../modules/dialog.js'
 import * as menu from '../menu.js'
 

@@ -78,6 +78,7 @@
     "proseWrap": "always"
   },
   "dependencies": {
+    "@electron/remote": "^1.2.0",
     "@mariotacke/color-thief": "^3.0.1",
     "@primer/octicons": "^9.6.0",
     "@sabaki/boardmatcher": "^1.2.0",
@@ -107,8 +108,8 @@
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "electron": "^8.2.1",
-    "electron-builder": "^22.4.1",
+    "electron": "^13.1.4",
+    "electron-builder": "^22.11.7",
     "esm": "^3.2.25",
     "mocha": "^7.1.1",
     "onchange": "^6.1.0",
@@ -128,7 +129,7 @@
     "format": "npm run format-base -- --write",
     "watch-format": "onchange \"**/*.{js,html,md}\" \"!{{dist,i18n}/**,bundle.js*}\" -- prettier --write {{changed}}",
     "watch": "concurrently \"webpack --mode development --watch\" \"npm run watch-format\"",
-    "dist:macos": "npm run bundle && electron-builder -m --x64",
+    "dist:macos": "npm run bundle && electron-builder -m --x64 --arm64",
     "dist:linux": "npm run bundle && electron-builder -l --ia32 --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-i386.AppImage ./dist/sabaki-vx.x.x-linux-ia32.AppImage && node ./ci/mv.js ./dist/sabaki-vx.x.x-linux-x86_64.AppImage ./dist/sabaki-vx.x.x-linux-x64.AppImage",
     "dist:arm64": "npm run bundle && electron-builder -l --arm64",
     "dist:win32": "npm run bundle && electron-builder -w --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-ia32-setup.exe",

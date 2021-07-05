@@ -1,4 +1,4 @@
-import {remote} from 'electron'
+import * as remote from '@electron/remote'
 import classNames from 'classnames'
 import {h, Component, toChildArray} from 'preact'
 import Pikaday from 'pikaday'

@@ -1,16 +1,24 @@
-const {app, shell, dialog, ipcMain, BrowserWindow, Menu} = require('electron')
+const {
+  app,
+  shell,
+  dialog,
+  ipcMain,
+  nativeImage,
+  BrowserWindow,
+  Menu
+} = require('electron')
 const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
+require('@electron/remote/main').initialize()
 
 let windows = []
 let openfile = null
 
 function newWindow(path) {
   let window = new BrowserWindow({
-    icon:
-      process.platform === 'linux' ? resolve(__dirname, '../logo.png') : null,
+    icon: nativeImage.createFromPath(resolve(__dirname, '../logo.png')),
     title: app.name,
     useContentSize: true,
     width: setting.get('window.width'),
@@ -22,6 +30,8 @@ function newWindow(path) {
     show: false,
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
       zoomFactor: setting.get('app.zoom_factor')
     }
   })
@@ -56,8 +66,8 @@ function newWindow(path) {
     if (path) window.webContents.send('load-file', path)
   })
 
-  window.webContents.on('new-window', evt => {
-    evt.preventDefault()
+  window.webContents.setWindowOpenHandler(({url, frameName}) => {
+    return {action: 'deny'}
   })
 
   window.loadURL(`file://${resolve(__dirname, '../index.html')}`)

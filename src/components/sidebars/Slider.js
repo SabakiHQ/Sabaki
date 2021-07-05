@@ -1,4 +1,4 @@
-import {remote} from 'electron'
+import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import * as helper from '../../modules/helper.js'
 

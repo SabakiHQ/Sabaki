@@ -1,4 +1,5 @@
-import {ipcRenderer, remote} from 'electron'
+import {ipcRenderer} from 'electron'
+import * as remote from '@electron/remote'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
 import fixPath from 'fix-path'

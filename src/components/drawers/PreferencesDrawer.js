@@ -1,5 +1,6 @@
 import {existsSync} from 'fs'
-import {shell, remote} from 'electron'
+import {shell} from 'electron'
+import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import {join} from 'path'

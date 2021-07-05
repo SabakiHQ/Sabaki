@@ -1,6 +1,6 @@
+import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
-import {remote} from 'electron'
 import sgf from '@sabaki/sgf'
 import {BoundedGoban} from '@sabaki/shudan'
 
