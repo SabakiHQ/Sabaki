@@ -2,7 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.52.0][v0.52.0]
+## [Sabaki v0.52.1][v0.52.1]
+
+**Fixed**
+
+- "Navigate>Go to Main Variation" now works again
+  ([#801](https://github.com/SabakiHQ/Sabaki/issues/801))
+
+## [Sabaki v0.52.0][v0.52.0] (2021-07-05)
 
 **Added**
 
