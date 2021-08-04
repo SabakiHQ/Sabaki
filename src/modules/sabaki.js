@@ -196,7 +196,11 @@ class Sabaki extends EventEmitter {
       get winrateData() {
         return [
           ...this.gameTree.listCurrentNodes(state.gameCurrents[state.gameIndex])
-        ].map(x => x.data.SBKV && x.data.SBKV[0])
+        ].map(
+          x =>
+            (x.data.SBKV && x.data.SBKV[0]) ||
+            (x.data.WINRATE && Math.round(x.data.WINRATE[0] * 10000) / 100)
+        )
       }
     }
   }
