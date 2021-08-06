@@ -358,7 +358,20 @@ export function getBoard(tree, id) {
         type = 'good'
       }
 
-      list[v] = {sign, type}
+      let visits = null
+      let winrate = null
+      let scoreLead = null
+      if (isFinite(node.data.VISITS)) {
+        visits = +node.data.VISITS
+      }
+      if (isFinite(node.data.WINRATE)) {
+        winrate = (0.5 + sign * (node.data.WINRATE - 0.5)) * 100
+      }
+      if (isFinite(node.data.SCORELEAD)) {
+        scoreLead = node.data.SCORELEAD * sign
+      }
+
+      list[v] = {sign, type, visits, winrate, scoreLead}
     }
 
     for (let child of node.children) {
