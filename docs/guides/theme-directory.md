@@ -18,6 +18,7 @@ under Sabaki v0.30.x may not work in Sabaki v0.40.0 or newer.
 | [Subdued Theme](https://github.com/fohristiwhirl/sabaki_subdued_theme_40)                          | ![Screenshot](https://user-images.githubusercontent.com/16438795/47953994-c773e480-df7c-11e8-87d9-002d833cca18.png) |
 | [Real Stones](https://github.com/ParmuzinAlexander/go-themes/raw/master/non-free/real-stones.asar) | ![Screenshot](https://github.com/ParmuzinAlexander/go-themes/raw/master/non-free/real-stones.png)                   |
 | [BattsGo Theme](https://github.com/JJscott/BattsGo)                                                | ![Screenshot](https://github.com/JJscott/BattsGo/raw/master/board_example.png)                                      |
+| [Yunzi Theme](https://github.com/billhails/SabakiThemes/tree/main/yunzi)                           | ![Screenshot](https://github.com/billhails/SabakiThemes/blob/main/yunzi/YunziScreenshot.png)   |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn
 [how to package a userstyle into a theme](create-themes.md) and feel free to
