@@ -202,6 +202,7 @@ let defaults = {
   'view.show_next_moves': true,
   'view.show_siblings': true,
   'view.show_winrategraph': true,
+  'view.show_scoreleadgraph': true,
   'view.sidebar_width': 200,
   'view.sidebar_minwidth': 100,
   'view.winrategraph_blunderthreshold': 5,

@@ -71,13 +71,18 @@ export default class WinrateGraph extends Component {
     }
   }
 
-  shouldComponentUpdate({lastPlayer, width, currentIndex, data}, {invert}) {
+  shouldComponentUpdate(
+    {lastPlayer, width, currentIndex, data, scoreLeadData, showScoreLeadGraph},
+    {invert}
+  ) {
     return (
       lastPlayer !== this.props.lastPlayer ||
       width !== this.props.width ||
       currentIndex !== this.props.currentIndex ||
       data[currentIndex] !== this.props.data[currentIndex] ||
-      invert !== this.state.invert
+      scoreLeadData[currentIndex] !== this.props.scoreLeadData[currentIndex] ||
+      invert !== this.state.invert ||
+      showScoreLeadGraph !== this.state.showScoreLeadGraph
     )
   }
 
@@ -102,7 +107,14 @@ export default class WinrateGraph extends Component {
   }
 
   render() {
-    let {lastPlayer, width, currentIndex, data} = this.props
+    let {
+      lastPlayer,
+      width,
+      currentIndex,
+      data,
+      scoreLeadData,
+      showScoreLeadGraph
+    } = this.props
     let {invert} = this.state
 
     let dataDiff = data.map((x, i) =>
@@ -113,6 +125,7 @@ export default class WinrateGraph extends Component {
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
     let round2 = x => Math.round(x * 100) / 100
+
     let blackWinrate =
       data[currentIndex] == null ? null : round2(data[currentIndex])
     let blackWinrateDiff =
@@ -122,26 +135,54 @@ export default class WinrateGraph extends Component {
     let whiteWinrateDiff =
       dataDiff[currentIndex] == null ? null : -round2(dataDiff[currentIndex])
 
+    let blackScoreLead =
+      scoreLeadData[currentIndex] == null
+        ? null
+        : round2(scoreLeadData[currentIndex])
+    let whiteScoreLead =
+      scoreLeadData[currentIndex] == null
+        ? null
+        : -round2(scoreLeadData[currentIndex])
+
+    let absScoreLeadMax = Math.max(
+      ...scoreLeadData.map((x, i) =>
+        i === 0 || x === null || x === undefined ? null : Math.abs(x)
+      ),
+      12
+    )
+
+    let normScoreLeadData = scoreLeadData.map((x, i) =>
+      i === 0 || x === null || x === undefined
+        ? null
+        : 50 + (50 * x) / absScoreLeadMax
+    )
+
+    let winrates = [
+      [blackWinrate, blackWinrateDiff],
+      [whiteWinrate, whiteWinrateDiff]
+    ].map(
+      ([winrate, diff], i) =>
+        `${
+          i === 0 ? t('Black Winrate:') : t('White Winrate:')
+        } ${i18n.formatNumber(winrate)}%${
+          diff == null
+            ? ''
+            : ` (${diff >= 0 ? '+' : '-'}${i18n.formatNumber(Math.abs(diff))})`
+        }`
+    )
+
+    let scoreleads = (showScoreLeadGraph
+      ? [blackScoreLead, whiteScoreLead]
+      : []
+    ).map(
+      (scorelead, i) =>
+        `${
+          i === 0 ? t('Black ScoreLead:') : t('White ScoreLead:')
+        } ${i18n.formatNumber(scorelead)}`
+    )
+
     let tooltip =
-      data[currentIndex] == null
-        ? ''
-        : [
-            [blackWinrate, blackWinrateDiff],
-            [whiteWinrate, whiteWinrateDiff]
-          ]
-            .map(
-              ([winrate, diff], i) =>
-                `${
-                  i === 0 ? t('Black Winrate:') : t('White Winrate:')
-                } ${i18n.formatNumber(winrate)}%${
-                  diff == null
-                    ? ''
-                    : ` (${diff >= 0 ? '+' : '-'}${i18n.formatNumber(
-                        Math.abs(diff)
-                      )})`
-                }`
-            )
-            .join('\n')
+      data[currentIndex] == null ? '' : [...winrates, ...scoreleads].join('\n')
 
     return h(
       'section',
@@ -296,7 +337,7 @@ export default class WinrateGraph extends Component {
               .join(' ')
           }),
 
-          // Draw data lines
+          // Draw winrate data lines
 
           h('path', {
             fill: 'none',
@@ -333,7 +374,52 @@ export default class WinrateGraph extends Component {
                 return ''
               })
               .join(' ')
-          })
+          }),
+
+          // Draw score lead data lines
+
+          ...(!showScoreLeadGraph
+            ? []
+            : [
+                h('path', {
+                  fill: 'none',
+                  stroke: '#03e',
+                  'stroke-width': 2,
+                  'vector-effect': 'non-scaling-stroke',
+
+                  d: normScoreLeadData
+                    .map((x, i) => {
+                      if (x == null) return ''
+
+                      let command =
+                        i === 0 || normScoreLeadData[i - 1] == null ? 'M' : 'L'
+                      return `${command} ${i},${x}`
+                    })
+                    .join(' ')
+                }),
+
+                h('path', {
+                  fill: 'none',
+                  stroke: '#03c',
+                  'stroke-width': 2,
+                  'stroke-dasharray': 2,
+                  'vector-effect': 'non-scaling-stroke',
+
+                  d: normScoreLeadData
+                    .map((x, i) => {
+                      if (i === 0) return 'M 0,50'
+
+                      if (x == null && normScoreLeadData[i - 1] != null)
+                        return `M ${i - 1},${normScoreLeadData[i - 1]}`
+
+                      if (x != null && normScoreLeadData[i - 1] == null)
+                        return `L ${i},${x}`
+
+                      return ''
+                    })
+                    .join(' ')
+                })
+              ])
         ),
 
         // Draw marker
