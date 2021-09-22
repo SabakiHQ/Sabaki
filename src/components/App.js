@@ -342,6 +342,7 @@ class App extends Component {
         showCoordinates: state.showCoordinates,
         coordinatesType: state.coordinatesType,
         showMoveNumbers: state.showMoveNumbers,
+        moveNumbersType: state.moveNumbersType,
         showMoveColorization: state.showMoveColorization,
         showNextMoves: state.showNextMoves,
         showSiblings: state.showSiblings,

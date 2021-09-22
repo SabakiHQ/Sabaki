@@ -29,6 +29,7 @@ exports.get = function(props = {}) {
     showCoordinates,
     coordinatesType,
     showMoveNumbers,
+    moveNumbersType,
     showMoveColorization,
     showNextMoves,
     showSiblings,
@@ -605,9 +606,42 @@ exports.get = function(props = {}) {
         },
         {
           label: i18n.t('menu.view', 'Show Move N&umbers'),
-          type: 'checkbox',
-          checked: !!showMoveNumbers,
-          click: () => toggleSetting('view.show_move_numbers')
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Don’t Show'),
+              type: 'checkbox',
+              checked: !showMoveNumbers,
+              click: () => toggleSetting('view.show_move_numbers')
+            },
+            {type: 'separator'},
+            {
+              label: i18n.t('menu.view', 'From Game Start'),
+              type: 'checkbox',
+              checked: !!showMoveNumbers && moveNumbersType === 'start',
+              click: () => {
+                setting.set('view.show_move_numbers', true)
+                setting.set('view.move_numbers_type', 'start')
+              }
+            },
+            {
+              label: i18n.t('menu.view', 'From Variation Start'),
+              type: 'checkbox',
+              checked: !!showMoveNumbers && moveNumbersType === 'variation',
+              click: () => {
+                setting.set('view.show_move_numbers', true)
+                setting.set('view.move_numbers_type', 'variation')
+              }
+            },
+            {
+              label: i18n.t('menu.view', 'From Hotspot'),
+              type: 'checkbox',
+              checked: !!showMoveNumbers && moveNumbersType === 'hotspot',
+              click: () => {
+                setting.set('view.show_move_numbers', true)
+                setting.set('view.move_numbers_type', 'hotspot')
+              }
+            }
+          ]
         },
         {
           label: i18n.t('menu.view', 'Show Move Colori&zation'),
