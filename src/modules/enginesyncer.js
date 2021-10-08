@@ -114,6 +114,11 @@ export default class EngineSyncer extends EventEmitter {
                 sign,
                 variations,
                 winrate: Math.max(...variations.map(({winrate}) => winrate)),
+                scoreLead: Math.max(
+                  ...variations.map(({scoreLead}) =>
+                    scoreLead == null ? NaN : scoreLead,
+                  ),
+                ),
               }
             } else if (line.startsWith('play ')) {
               sign = -sign

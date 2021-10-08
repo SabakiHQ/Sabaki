@@ -206,6 +206,7 @@ let defaults = {
   'view.sidebar_width': 200,
   'view.sidebar_minwidth': 100,
   'view.winrategraph_blunderthreshold': 5,
+  'view.winrategraph_blunderthreshold_scorelead': 2,
   'view.winrategraph_height': 90,
   'view.winrategraph_minheight': 30,
   'view.winrategraph_maxheight': 250,
