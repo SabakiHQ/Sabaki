@@ -105,6 +105,7 @@ export default class Sidebar extends Component {
       gameCurrents,
       treePosition,
 
+      analysisType,
       showWinrateGraph,
       showGameGraph,
       showCommentBox,
@@ -112,7 +113,8 @@ export default class Sidebar extends Component {
       graphGridSize,
       graphNodeSize,
 
-      winrateData
+      winrateData,
+      scoreLeadData
     },
     {winrateGraphHeight, sidebarSplit}
   ) {
@@ -139,7 +141,8 @@ export default class Sidebar extends Component {
         sideContent: h(WinrateGraph, {
           lastPlayer,
           width: winrateGraphWidth,
-          data: winrateData,
+          data: analysisType === 'winrate' ? winrateData : scoreLeadData,
+          analysisType,
           currentIndex: level,
           onCurrentIndexChange: this.handleWinrateGraphChange
         }),
