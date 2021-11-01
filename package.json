@@ -107,7 +107,7 @@
     "preact": "^10.4.0",
     "react-markdown": "^3.6.0",
     "recursive-copy": "^2.0.10",
-    "remark-breaks": "^1.0.5",
+    "remark-breaks": "^3.0.2",
     "rimraf": "^3.0.2",
     "uuid": "^7.0.3",
     "winston": "^3.2.1"
