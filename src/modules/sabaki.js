@@ -1564,26 +1564,19 @@ class Sabaki extends EventEmitter {
       if (next == null) return
       let lowestFork = node
       while (next != null) { //not at a leaf
-          // console.log('node ID: %d; next ID: %d',node.id,next.id)
-          // for (let kk=0; kk < node.children.length ; kk++) {
-          //     console.log('child[%d].id: %d',kk,node.children[kk].id)
-          // }
           if (next.id != node.children.slice(chIdx[0])[0].id) {
-          //    console.log('found a fork at %d', node.id)
               lowestFork = node;
           }
           sequence = [...tree.getSequence(next.id)];
           node = sequence.slice(-1)[0]
           next = tree.navigate(node.id, 1, currents)
       }
-      // console.log('Lowest fork id: %d',lowestFork.id)
+
       // increment the currents for the lowest fork node
       next = tree.navigate(lowestFork.id, 1, currents)
       let idx = lowestFork.children.findIndex(ch => ch.id == next.id)
-      //console.log('Current child index: %d',idx)
       let ch_len = lowestFork.children.length
       idx = (((idx + step) % ch_len) + ch_len) % ch_len // force idx >= 0 :eyeroll:
-      // console.log('idx = %d',idx)
       currents[lowestFork.id] = lowestFork.children[idx].id
 
       next = tree.navigate(lowestFork.id, 1, currents) //using new currents
