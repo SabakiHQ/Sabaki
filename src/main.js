@@ -43,6 +43,12 @@ function newWindow(path) {
     window.show()
   })
 
+  if (setting.get('comments.langs')) {
+    window.webContents.session.setSpellCheckerLanguages(
+      setting.get('comments.langs')
+    )
+  }
+
   if (setting.get('window.maximized') === true) {
     window.maximize()
   }

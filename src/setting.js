@@ -61,6 +61,7 @@ let defaults = {
   'cleanmarkup.square': true,
   'cleanmarkup.triangle': true,
   'cleanmarkup.winrate': false,
+  'comments.langs': ['en-US', 'fr-FR'],
   'comments.show_move_interpretation': true,
   'comments.commit_delay': 500,
   'console.max_history_count': 1000,
