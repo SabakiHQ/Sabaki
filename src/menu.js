@@ -266,10 +266,12 @@ exports.get = function(props = {}) {
           click: () => sabaki.makeMainVariation(sabaki.state.treePosition)
         },
         {
+          shortcut: 'variation-shift-left',
           label: i18n.t('menu.edit', 'Shift &Left'),
           click: () => sabaki.shiftVariation(sabaki.state.treePosition, -1)
         },
         {
+          shortcut: 'variation-shift-right',
           label: i18n.t('menu.edit', 'Shift Ri&ght'),
           click: () => sabaki.shiftVariation(sabaki.state.treePosition, 1)
         },
@@ -363,22 +365,26 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'previous-fork',
           label: i18n.t('menu.navigation', 'Go to &Previous Fork'),
           accelerator: 'CmdOrCtrl+Up',
           click: () => sabaki.goToPreviousFork()
         },
         {
+          shortcut: 'next-fork',
           label: i18n.t('menu.navigation', 'Go to &Next Fork'),
           accelerator: 'CmdOrCtrl+Down',
           click: () => sabaki.goToNextFork()
         },
         {type: 'separator'},
         {
+          shortcut: 'previous-comment',
           label: i18n.t('menu.navigation', 'Go to Previous Commen&t'),
           accelerator: 'CmdOrCtrl+Shift+Up',
           click: () => sabaki.goToComment(-1)
         },
         {
+          shortcut: 'next-comment',
           label: i18n.t('menu.navigation', 'Go to Next &Comment'),
           accelerator: 'CmdOrCtrl+Shift+Down',
           click: () => sabaki.goToComment(1)
@@ -396,6 +402,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'main-variation',
           label: i18n.t('menu.navigation', 'Go to &Main Variation'),
           accelerator: 'CmdOrCtrl+Left',
           click: () => sabaki.goToMainVariation()
@@ -737,29 +744,35 @@ exports.get = function(props = {}) {
           ]
         },
         {
+          id: 'board',
           label: i18n.t('menu.view', 'T&ransform Board'),
           submenu: [
             {
+              shortcut: 'rotate-anticlockwise',
               label: i18n.t('menu.tools', 'Rotate &Anticlockwise'),
               accelerator: 'CmdOrCtrl+Alt+Left',
               click: () => sabaki.pushBoardTransformation('rrr')
             },
             {
+              shortcut: 'rotate-clockwise',
               label: i18n.t('menu.tools', 'Rotate &Clockwise'),
               accelerator: 'CmdOrCtrl+Alt+Right',
               click: () => sabaki.pushBoardTransformation('r')
             },
             {
+              shortcut: 'flip-horizontally',
               label: i18n.t('menu.tools', '&Flip Horizontally'),
               accelerator: 'CmdOrCtrl+Alt+Down',
               click: () => sabaki.pushBoardTransformation('f')
             },
             {
+              shortcut: 'flip-vertically',
               label: i18n.t('menu.tools', 'Flip &Vertically'),
               accelerator: 'CmdOrCtrl+Alt+Shift+Down',
               click: () => sabaki.pushBoardTransformation('rrf')
             },
             {
+              shortcut: 'invert-colors',
               label: i18n.t('menu.tools', '&Invert Colors'),
               accelerator: 'CmdOrCtrl+Alt+Up',
               click: () => sabaki.pushBoardTransformation('i')
@@ -934,6 +947,22 @@ exports.get = function(props = {}) {
         item.id = idPrefix + i
       }
 
+      // Advertize or get accelerator in settings
+
+      let shortcut = item.shortcut
+      if (shortcut) {
+        shortcut = idPrefix + shortcut
+
+        if (shortcut in shortcuts) {
+          if (shortcuts[shortcut]) item.accelerator = shortcuts[shortcut]
+          else {
+            delete item.accelerator
+          }
+        }
+
+        shortcuts[shortcut] = item.accelerator ? item.accelerator : ''
+      }
+
       // Handle disableAll prop
 
       if (
@@ -952,5 +981,9 @@ exports.get = function(props = {}) {
     return menu
   }
 
-  return processMenu(data)
+  let shortcuts = setting.get('app.shortcuts')
+  let menu = processMenu(data)
+  setting.set('app.shortcuts', shortcuts)
+
+  return menu
 }
