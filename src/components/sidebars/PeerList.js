@@ -24,6 +24,13 @@ class EnginePeerListItem extends Component {
       })
     }
 
+    this.isClickable = evt => {
+      let cursor = window
+        .getComputedStyle(evt.target, null)
+        .getPropertyValue('cursor')
+      return cursor == 'pointer'
+    }
+
     this.handleClick = evt => {
       let {syncer, onClick = () => {}} = this.props
       onClick({syncer})
@@ -32,6 +39,20 @@ class EnginePeerListItem extends Component {
     this.handleContextMenu = evt => {
       let {syncer, onContextMenu = () => {}} = this.props
       onContextMenu(evt, {syncer})
+    }
+
+    this.handleBlackPlayerButtonClick = evt => {
+      if (this.isClickable(evt)) {
+        let {syncer, onPlayerClick = () => {}} = this.props
+        onPlayerClick({syncer}, 'black')
+      }
+    }
+
+    this.handleWhitePlayerButtonClick = evt => {
+      if (this.isClickable(evt)) {
+        let {syncer, onPlayerClick = () => {}} = this.props
+        onPlayerClick({syncer}, 'white')
+      }
     }
   }
 
@@ -94,35 +115,35 @@ class EnginePeerListItem extends Component {
           })
         ),
 
-      blackPlayer &&
-        h(
-          'div',
-          {
-            key: 'player_1',
-            class: 'icon player',
-            title: t('Plays as Black')
-          },
-          h('img', {
-            height: 14,
-            src: './img/ui/black.svg',
-            alt: t('Plays as Black')
-          })
-        ),
+      h(
+        'div',
+        {
+          key: 'player_1',
+          class: 'icon player' + (blackPlayer ? '' : ' inactive'),
+          title: t('Plays as Black'),
+          onClick: this.handleBlackPlayerButtonClick
+        },
+        h('img', {
+          height: 14,
+          src: './img/ui/black.svg',
+          alt: t('Plays as Black')
+        })
+      ),
 
-      whitePlayer &&
-        h(
-          'div',
-          {
-            key: 'player_-1',
-            class: 'icon player',
-            title: t('Plays as White')
-          },
-          h('img', {
-            height: 14,
-            src: './img/ui/white.svg',
-            alt: t('Plays as White')
-          })
-        )
+      h(
+        'div',
+        {
+          key: 'player_-1',
+          class: 'icon player' + (whitePlayer ? '' : ' inactive'),
+          title: t('Plays as White'),
+          onClick: this.handleWhitePlayerButtonClick
+        },
+        h('img', {
+          height: 14,
+          src: './img/ui/white.svg',
+          alt: t('Plays as White')
+        })
+      )
     )
   }
 }
@@ -144,6 +165,13 @@ export class EnginePeerList extends Component {
         x: evt.clientX,
         y: evt.clientY
       })
+    }
+
+    this.handleEnginePlayerClick = ({syncer}, player) => {
+      let {onEngineSelect = () => {}} = this.props
+      onEngineSelect({syncer})
+
+      sabaki.toggleEnginePlayer(syncer.id, player)
     }
 
     this.handleAttachEngineButtonClick = evt => {
@@ -206,7 +234,8 @@ export class EnginePeerList extends Component {
             whitePlayer: syncer.id === whiteEngineSyncerId,
 
             onClick: this.handleEngineClick,
-            onContextMenu: this.handleEngineContextMenu
+            onContextMenu: this.handleEngineContextMenu,
+            onPlayerClick: this.handleEnginePlayerClick
           })
         )
       )

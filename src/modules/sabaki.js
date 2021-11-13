@@ -2794,6 +2794,29 @@ class Sabaki extends EventEmitter {
     )
   }
 
+  toggleEnginePlayer(syncerId, player) {
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === syncerId
+    )
+    if (syncer == null) return
+    switch (player) {
+      case 'black':
+      case 'player_1':
+        this.setState(state => ({
+          blackEngineSyncerId:
+            state.blackEngineSyncerId === syncerId ? null : syncerId
+        }))
+        break
+      case 'white':
+      case 'player_-1':
+        this.setState(state => ({
+          whiteEngineSyncerId:
+            state.whiteEngineSyncerId === syncerId ? null : syncerId
+        }))
+        break
+    }
+  }
+
   openEngineActionMenu(syncerId, {x, y} = {}) {
     let t = i18n.context('menu.engineAction')
     let syncer = this.state.attachedEngineSyncers.find(
