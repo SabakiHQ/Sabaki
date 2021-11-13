@@ -1535,61 +1535,61 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(tree, node.id)
   }
 
-  // goToSiblingVariation(step) {
-  //   let {gameTrees, gameIndex, treePosition} = this.state
-  //   let tree = gameTrees[gameIndex]
-  //   let section = [...tree.getSection(tree.getLevel(treePosition))]
-  //   let index = section.findIndex(node => node.id === treePosition)
-  //   let newIndex =
-  //     (((step + index) % section.length) + section.length) % section.length
-
-  //   this.setCurrentTreePosition(tree, section[newIndex].id)
-  // }
-
   goToSiblingVariation(step) {
-      // redirects gameCurrents[gameIndex] to a new stream
-      let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
-      let tree = gameTrees[gameIndex]
-      let currents = gameCurrents[gameIndex]
+    let {gameTrees, gameIndex, treePosition} = this.state
+    let tree = gameTrees[gameIndex]
+    let section = [...tree.getSection(tree.getLevel(treePosition))]
+    let index = section.findIndex(node => node.id === treePosition)
+    let newIndex =
+      (((step + index) % section.length) + section.length) % section.length
 
-      let chIdx = [-1, 0] // for + changes
-      if (step < 0) {
-          chIdx = [0, -1] // for - changes
+    this.setCurrentTreePosition(tree, section[newIndex].id)
+  }
+
+  changeDownstreamVariation(step) {
+    // redirects gameCurrents[gameIndex] to a new stream
+    let {gameTrees, gameIndex, gameCurrents, treePosition} = this.state
+    let tree = gameTrees[gameIndex]
+    let currents = gameCurrents[gameIndex]
+
+    let chIdx = [-1, 0] // for + changes
+    if (step < 0) {
+      chIdx = [0, -1] // for - changes
+    }
+
+    // find the lowest fork node which does not point to the last child
+    let sequence = [...tree.getSequence(treePosition)]
+    let node = sequence.slice(-1)[0]
+    let next = tree.navigate(node.id, 1, currents)
+    if (next == null) return
+    let lowestFork = node
+    while (next != null) { //not at a leaf
+      if (next.id != node.children.slice(chIdx[0])[0].id) {
+        lowestFork = node;
       }
+      sequence = [...tree.getSequence(next.id)];
+      node = sequence.slice(-1)[0]
+      next = tree.navigate(node.id, 1, currents)
+    }
 
-      // find the lowest fork node which does not point to the last child
-      let sequence = [...tree.getSequence(treePosition)]
-      let node = sequence.slice(-1)[0]
-      let next = tree.navigate(node.id, 1, currents)
-      if (next == null) return
-      let lowestFork = node
-      while (next != null) { //not at a leaf
-          if (next.id != node.children.slice(chIdx[0])[0].id) {
-              lowestFork = node;
-          }
-          sequence = [...tree.getSequence(next.id)];
-          node = sequence.slice(-1)[0]
-          next = tree.navigate(node.id, 1, currents)
-      }
+    // increment the currents for the lowest fork node
+    next = tree.navigate(lowestFork.id, 1, currents)
+    let idx = lowestFork.children.findIndex(ch => ch.id == next.id)
+    let ch_len = lowestFork.children.length
+    idx = (((idx + step) % ch_len) + ch_len) % ch_len // force idx >= 0 :eyeroll:
+    currents[lowestFork.id] = lowestFork.children[idx].id
 
-      // increment the currents for the lowest fork node
-      next = tree.navigate(lowestFork.id, 1, currents)
-      let idx = lowestFork.children.findIndex(ch => ch.id == next.id)
-      let ch_len = lowestFork.children.length
-      idx = (((idx + step) % ch_len) + ch_len) % ch_len // force idx >= 0 :eyeroll:
-      currents[lowestFork.id] = lowestFork.children[idx].id
+    next = tree.navigate(lowestFork.id, 1, currents) //using new currents
 
-      next = tree.navigate(lowestFork.id, 1, currents) //using new currents
-
-      // then zero the downstream currents.
-      while (next.id != null) { //not at a leaf
-          sequence = [...tree.getSequence(next.id)];
-          node = sequence.slice(-1)[0]
-          if (node.children.length > 0) {
-              currents[node.id] = node.children.slice(chIdx[1])[0].id
-              next = tree.navigate(node.id, 1, currents)
-          } else { break }
-      }
+    // then zero the downstream currents.
+    while (next.id != null) { //not at a leaf
+      sequence = [...tree.getSequence(next.id)];
+      node = sequence.slice(-1)[0]
+      if (node.children.length > 0) {
+        currents[node.id] = node.children.slice(chIdx[1])[0].id
+        next = tree.navigate(node.id, 1, currents)
+      } else { break }
+    }
   }
 
   goToMainVariation() {

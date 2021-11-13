@@ -402,13 +402,23 @@ exports.get = function(props = {}) {
         },
         {
           label: i18n.t('menu.navigation', 'Go to Previous &Variation'),
-          accelerator: 'Left',
+          accelerator: 'Shift+Left',
           click: () => sabaki.goToSiblingVariation(-1)
         },
         {
           label: i18n.t('menu.navigation', 'Go to Next Va&riation'),
-          accelerator: 'Right',
+          accelerator: 'Shift+Right',
           click: () => sabaki.goToSiblingVariation(1)
+        },
+        {
+          label: i18n.t('menu.navigation', 'Decrement Downstream &Variation'),
+          accelerator: 'Left',
+          click: () => sabaki.changeDownstreamVariation(-1)
+        },
+        {
+          label: i18n.t('menu.navigation', 'Increment Downstream Va&riation'),
+          accelerator: 'Right',
+          click: () => sabaki.changeDownstreamVariation(1)
         },
         {type: 'separator'},
         {
