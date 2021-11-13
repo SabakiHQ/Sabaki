@@ -1362,6 +1362,12 @@ header {
   }
   .engine-peer-list .item .icon.player {
     filter: none;
+    cursor: pointer; /* enables onclick */
+/*  cursor: default; */ /* 0.52.0 onclick (nothing) behavior */
+  }
+  .engine-peer-list .item .icon.inactive {
+      opacity: .3;
+/*       display: none; */ /* 0.52.0 layout */
   }
   .engine-peer-list .item .text-spinner {
     width: 1.5em;
