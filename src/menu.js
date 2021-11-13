@@ -411,12 +411,12 @@ exports.get = function(props = {}) {
           click: () => sabaki.goToSiblingVariation(1)
         },
         {
-          label: i18n.t('menu.navigation', 'Decrement Downstream &Variation'),
+          label: i18n.t('menu.navigation', '&Decrement Downstream Variation'),
           accelerator: 'Left',
           click: () => sabaki.changeDownstreamVariation(-1)
         },
         {
-          label: i18n.t('menu.navigation', 'Increment Downstream Va&riation'),
+          label: i18n.t('menu.navigation', '&Increment Downstream Variation'),
           accelerator: 'Right',
           click: () => sabaki.changeDownstreamVariation(1)
         },
