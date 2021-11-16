@@ -1563,11 +1563,11 @@ class Sabaki extends EventEmitter {
     let next = tree.navigate(node.id, 1, currents)
     if (next == null) return
     let lowestFork = node
-    while (next != null) { //not at a leaf
+    while (next != null) {
       if (next.id != node.children.slice(chIdx[0])[0].id) {
-        lowestFork = node;
+        lowestFork = node
       }
-      sequence = [...tree.getSequence(next.id)];
+      sequence = [...tree.getSequence(next.id)]
       node = sequence.slice(-1)[0]
       next = tree.navigate(node.id, 1, currents)
     }
@@ -1582,13 +1582,15 @@ class Sabaki extends EventEmitter {
     next = tree.navigate(lowestFork.id, 1, currents) //using new currents
 
     // then zero the downstream currents.
-    while (next.id != null) { //not at a leaf
-      sequence = [...tree.getSequence(next.id)];
+    while (next.id != null) {
+      sequence = [...tree.getSequence(next.id)]
       node = sequence.slice(-1)[0]
       if (node.children.length > 0) {
         currents[node.id] = node.children.slice(chIdx[1])[0].id
         next = tree.navigate(node.id, 1, currents)
-      } else { break }
+      } else {
+        break
+      }
     }
   }
 
