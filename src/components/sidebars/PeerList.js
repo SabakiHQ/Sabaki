@@ -189,7 +189,18 @@ export class EnginePeerList extends Component {
             : t('Stop Engine vs. Engine Game'),
           checked: !!engineGameOngoing,
           onClick: this.handleStartStopGameButtonClick
+        }),
+
+// P2P Button
+        h(ToolBarButton, {
+          icon: './img/ui/peer.svg',
+          tooltip: !engineGameOngoing
+            ? t('Start P2P Game')
+            : t('Stop P2P Game'),
+          checked: !!engineGameOngoing,
+          onClick: this.handleStartStopGameButtonClick
         })
+
       ),
 
       h(
