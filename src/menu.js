@@ -30,6 +30,7 @@ exports.get = function (props = {}) {
     disableAll,
     disableGameLoading,
     analysisType,
+    scoreLeadType,
     showAnalysis,
     showCoordinates,
     coordinatesType,
@@ -613,6 +614,38 @@ exports.get = function (props = {}) {
             },
           ],
         },
+        {
+          label: i18n.t('menu.view', 'Score Lead Display'),
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Absolute'),
+              type: 'checkbox',
+              checked: scoreLeadType === 'absolute',
+              click: () => {
+                setting.set(
+                  'board.scorelead_type',
+                  setting.get('board.scorelead_type') === 'absolute'
+                    ? 'change'
+                    : 'absolute'
+                )
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&Change'),
+              type: 'checkbox',
+              checked: scoreLeadType === 'change',
+              click: () => {
+                setting.set(
+                  'board.scorelead_type',
+                  setting.get('board.scorelead_type') === 'change'
+                    ? 'absolute'
+                    : 'change'
+                )
+              }
+            }
+          ]
+        },
+
         {type: 'separator'},
         {
           label: i18n.t('menu.view', 'Show &Coordinates'),

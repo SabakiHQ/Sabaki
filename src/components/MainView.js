@@ -91,6 +91,7 @@ export default class MainView extends Component {
 
       highlightVertices,
       analysisType,
+      scoreLeadType,
       showAnalysis,
       showCoordinates,
       showMoveColorization,
@@ -139,6 +140,7 @@ export default class MainView extends Component {
           highlightVertices:
             findVertex && mode === 'find' ? [findVertex] : highlightVertices,
           analysisType,
+          scoreLeadType,
           analysis:
             showAnalysis &&
             analysisTreePosition != null &&
