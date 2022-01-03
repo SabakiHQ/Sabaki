@@ -113,7 +113,7 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "concurrently": "^5.1.0",
+    "concurrently": "^7.0.0",
     "electron": "^13.1.4",
     "electron-builder": "^22.11.7",
     "esm": "^3.2.25",
