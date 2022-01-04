@@ -106,6 +106,7 @@ export default class EngineSyncer extends EventEmitter {
         this.controller.sendCommand({name: 'protocol_version'}),
         this.controller.sendCommand({name: 'list_commands'}).then(response => {
           this.commands = response.content.split('\n')
+          this.emit('commands')
         }),
         ...(commands != null && commands.trim() !== ''
           ? commands

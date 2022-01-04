@@ -596,10 +596,19 @@ class EngineItem extends Component {
     super()
 
     this.handleChange = evt => {
-      let {id, name, path, args, commands, onChange = noop} = this.props
+      let {id, name, path, args, commands, boot, onChange = noop} = this.props
       let element = evt.currentTarget
+      let value = element.value
+      if (element.name == 'boot') value = value.split(' ')
 
-      onChange({id, name, path, args, commands, [element.name]: element.value})
+      onChange({
+        id,
+        name,
+        path,
+        args,
+        boot,
+        [element.name]: value
+      })
     }
 
     this.handleBrowseButtonClick = () => {
@@ -609,8 +618,15 @@ class EngineItem extends Component {
       })
       if (!result || result.length === 0) return
 
-      let {id, name, args, commands, onChange = noop} = this.props
-      onChange({id, name, args, commands, path: result[0]})
+      let {id, name, args, commands, boot, onChange = noop} = this.props
+      onChange({
+        id,
+        name,
+        args,
+        commands,
+        boot,
+        path: result[0]
+      })
     }
 
     this.handleRemoveButtonClick = () => {
@@ -619,7 +635,7 @@ class EngineItem extends Component {
     }
   }
 
-  render({name, path, args, commands}) {
+  render({name, path, args, boot, commands}) {
     return h(
       'li',
       {},
@@ -688,6 +704,19 @@ class EngineItem extends Component {
           name: 'commands',
           onChange: this.handleChange
         })
+      ),
+      h(
+        'p',
+        {},
+        h('input', {
+          type: 'text',
+          placeholder: t(
+            'Autoload at startup and default role (space-separated list of "autoload" and one of "white", "black", "analyze")'
+          ),
+          value: (boot && boot.join(' ')) || '',
+          name: 'boot',
+          onChange: this.handleChange
+        })
       )
     )
   }
@@ -697,10 +726,16 @@ class EnginesTab extends Component {
   constructor() {
     super()
 
-    this.handleItemChange = ({id, name, path, args, commands}) => {
+    this.handleItemChange = ({id, name, path, args, boot, commands}) => {
       let engines = this.props.engines.slice()
 
-      engines[id] = {name, path, args, commands}
+      engines[id] = {
+        name,
+        path,
+        args,
+        boot,
+        commands
+      }
       setting.set('engines.list', engines)
     }
 
@@ -750,12 +785,13 @@ class EnginesTab extends Component {
         h(
           'ul',
           {},
-          engines.map(({name, path, args, commands}, id) =>
+          engines.map(({name, path, args, boot, commands}, id) =>
             h(EngineItem, {
               id,
               name,
               path,
               args,
+              boot,
               commands,
 
               onChange: this.handleItemChange,
