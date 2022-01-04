@@ -24,13 +24,6 @@ class EnginePeerListItem extends Component {
       })
     }
 
-    this.isClickable = evt => {
-      let cursor = window
-        .getComputedStyle(evt.target, null)
-        .getPropertyValue('cursor')
-      return cursor == 'pointer'
-    }
-
     this.handleClick = evt => {
       let {syncer, onClick = () => {}} = this.props
       onClick({syncer})
@@ -42,17 +35,13 @@ class EnginePeerListItem extends Component {
     }
 
     this.handleBlackPlayerButtonClick = evt => {
-      if (this.isClickable(evt)) {
-        let {syncer, onPlayerClick = () => {}} = this.props
-        onPlayerClick({syncer}, 'black')
-      }
+      let {syncer, onPlayerClick = () => {}} = this.props
+      onPlayerClick({syncer}, 'black')
     }
 
     this.handleWhitePlayerButtonClick = evt => {
-      if (this.isClickable(evt)) {
-        let {syncer, onPlayerClick = () => {}} = this.props
-        onPlayerClick({syncer}, 'white')
-      }
+      let {syncer, onPlayerClick = () => {}} = this.props
+      onPlayerClick({syncer}, 'white')
     }
   }
 
