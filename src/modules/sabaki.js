@@ -127,6 +127,7 @@ class Sabaki extends EventEmitter {
     })
 
     this.updateSettingState()
+    this.attachEngines(setting.get('engines.list'), 'autoload')
   }
 
   setState(change, callback = null) {
@@ -1658,8 +1659,10 @@ class Sabaki extends EventEmitter {
     })
   }
 
-  attachEngines(engines) {
+  attachEngines(engines, autoload = false) {
     let attaching = []
+    if (autoload)
+      engines = engines.filter(({boot}) => boot.includes('autoload'))
     let getEngineName = name => {
       let counter = 1
       let getName = () => (counter === 1 ? name : `${name} ${counter}`)
@@ -1770,6 +1773,18 @@ class Sabaki extends EventEmitter {
           engine: engine.name
         })
       })
+
+      syncer.on('commands', () =>
+        engine.boot
+          .filter(x => (x.match(/^(analyze|black|white)$/) ? x : null))
+          .map(role => {
+            if (role == 'analyze') {
+              this.startAnalysis(syncer.id)
+            } else if (role == 'white' || role == 'black') {
+              this.toggleEnginePlayer(syncer.id, role)
+            }
+          })
+      )
 
       syncer.controller.start()
 
@@ -2792,6 +2807,29 @@ class Sabaki extends EventEmitter {
       x,
       y
     )
+  }
+
+  toggleEnginePlayer(syncerId, player) {
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === syncerId
+    )
+    if (syncer == null) return
+    switch (player) {
+      case 'black':
+      case 'player_1':
+        this.setState(state => ({
+          blackEngineSyncerId:
+            state.blackEngineSyncerId === syncerId ? null : syncerId
+        }))
+        break
+      case 'white':
+      case 'player_-1':
+        this.setState(state => ({
+          whiteEngineSyncerId:
+            state.whiteEngineSyncerId === syncerId ? null : syncerId
+        }))
+        break
+    }
   }
 
   openEngineActionMenu(syncerId, {x, y} = {}) {
