@@ -21,7 +21,7 @@ export default class MainView extends Component {
     }
 
     this.handleToolButtonClick = evt => {
-      sabaki.setState({selectedTool: evt.tool})
+      sabaki.clickToolButton(evt)
     }
 
     this.handleFindButtonClick = evt =>

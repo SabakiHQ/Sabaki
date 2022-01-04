@@ -1032,6 +1032,23 @@ class Sabaki extends EventEmitter {
     this.events.emit('vertexClick')
   }
 
+  clickToolButton(evt) {
+    if (evt.ctrlKey) {
+      let symbol = {
+        triangle: '△',
+        square: '▢',
+        cross: '╳',
+        circle: '◯'
+      }
+      let contents = this.window.webContents
+      let tool = symbol[evt.tool]
+      if (!tool) tool = evt.tool
+      contents.insertText(tool)
+    } else {
+      this.setState({selectedTool: evt.tool})
+    }
+  }
+
   makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
     if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
       this.closeDrawer()
