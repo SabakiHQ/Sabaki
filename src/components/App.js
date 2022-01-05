@@ -357,7 +357,8 @@ class App extends Component {
         showGameGraph: state.showGameGraph,
         showCommentBox: state.showCommentBox,
         showLeftSidebar: state.showLeftSidebar,
-        engineGameOngoing: state.engineGameOngoing
+        engineGameOngoing: state.engineGameOngoing,
+        analysisEngineStatus: inferredState.analysisEngineStatus
       }),
 
       h(

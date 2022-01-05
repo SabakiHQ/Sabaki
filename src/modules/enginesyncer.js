@@ -87,6 +87,8 @@ export default class EngineSyncer extends EventEmitter {
     this.engine = engine
     this.commands = []
     this.treePosition = null
+    this.probes = [] // [treePosition] keep number of probes at position...
+    this.syncing = false // ... but do not count probes while syncing
 
     let absolutePath = resolve(path)
     let executePath = existsSync(absolutePath) ? absolutePath : path
@@ -142,11 +144,19 @@ export default class EngineSyncer extends EventEmitter {
 
             if (line.startsWith('info ')) {
               let variations = parseAnalysis(line, board)
+              let probes = this.probes[this.treePosition] || 0
+              let syncing = this.syncing
+              if (!syncing) probes++
+
+              this.syncing = false
+              this.probes[this.treePosition] = probes
 
               this.analysis = {
                 sign,
                 variations,
-                winrate: Math.max(...variations.map(({winrate}) => winrate))
+                winrate: Math.max(...variations.map(({winrate}) => winrate)),
+                probes: probes,
+                syncing: syncing
               }
             } else if (line.startsWith('play ')) {
               sign = -sign
@@ -407,7 +417,10 @@ export default class EngineSyncer extends EventEmitter {
       throw new Error(t('GTP engine can’t be synced to current state.'))
     }
 
-    this.treePosition = id
-    this.analysis = null
+    if (this.treePosition != id) {
+      this.treePosition = id
+      // this.analysis = null
+      this.syncing = true
+    }
   }
 }
