@@ -463,7 +463,6 @@ exports.get = function(props = {}) {
               ? 'Deepen &Analysis'
               : 'Start &Analysis'
           ),
-          enabled: !!analysisEngineStatus,
           accelerator: 'F4',
           click: () => {
             let syncerId =
