@@ -1778,7 +1778,7 @@ class Sabaki extends EventEmitter {
         })
       })
 
-      syncer.on('commands', () =>
+      syncer.on('engine-ready', id => {
         engine.boot
           .filter(x => (x.match(/^(analyze|black|white)$/) ? x : null))
           .map(role => {
@@ -1788,7 +1788,8 @@ class Sabaki extends EventEmitter {
               this.toggleEnginePlayer(syncer.id, role)
             }
           })
-      )
+        this.setState({lastEngineReadyId: id})
+      })
 
       syncer.controller.start()
 
