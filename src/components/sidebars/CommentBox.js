@@ -247,6 +247,10 @@ export default class CommentBox extends Component {
       comment: ''
     }
 
+    this.handleCommentContextMenu = evt => {
+      evt.stopPropagation()
+    }
+
     this.handleCommentInput = () => {
       let {onCommentInput = noop} = this.props
 
@@ -381,6 +385,7 @@ export default class CommentBox extends Component {
           ref: el => (this.textareaElement = el),
           placeholder: t('Comment'),
           value: comment,
+          onContextMenu: this.handleCommentContextMenu, // <TAG:context/>
           onInput: this.handleCommentInput,
           onBlur: this.handleCommentBlur
         })

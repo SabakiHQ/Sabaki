@@ -2882,6 +2882,56 @@ class Sabaki extends EventEmitter {
       y
     )
   }
+  openPlayMenu({left, top} = {}) {
+    let t = i18n.context('PlayBar')
+
+    helper.popupMenu(
+      [
+        {
+          label: t('&Pass'),
+          click: () => this.makeMove([-1, -1])
+        },
+        {
+          label: t('&Resign'),
+          click: () => this.makeResign()
+        },
+        {type: 'separator'},
+        {
+          label: t('Es&timate'),
+          click: () => this.setMode('estimator')
+        },
+        {
+          label: t('&Score'),
+          click: () => this.setMode('scoring')
+        },
+        {
+          label: t('&Edit'),
+          click: () => this.setMode('edit')
+        },
+        {
+          label: t('&Find'),
+          click: () => this.setMode('find')
+        },
+        {type: 'separator'},
+        {
+          label: t('&Info'),
+          click: () => this.openDrawer('info')
+        }
+      ],
+      left,
+      top
+    )
+  }
+  openContextMenu(evt, props) {
+    if (this.state.mode == 'edit') {
+      let {treePosition} = this.state
+      this.openCommentMenu(treePosition)
+
+      return
+    }
+
+    this.openPlayMenu()
+  }
 }
 
 export default new Sabaki()
