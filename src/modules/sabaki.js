@@ -61,6 +61,7 @@ class Sabaki extends EventEmitter {
       analysisType: null,
       coordinatesType: null,
       showAnalysis: null,
+      showInfluence: null,
       showCoordinates: null,
       showMoveColorization: null,
       showMoveNumbers: null,
@@ -210,6 +211,7 @@ class Sabaki extends EventEmitter {
       'app.zoom_factor': 'zoomFactor',
       'board.analysis_type': 'analysisType',
       'board.show_analysis': 'showAnalysis',
+      'board.show_influence': 'showInfluence',
       'view.show_menubar': 'showMenuBar',
       'view.show_coordinates': 'showCoordinates',
       'view.show_move_colorization': 'showMoveColorization',
@@ -2052,11 +2054,14 @@ class Sabaki extends EventEmitter {
     if (commandName == null) return
 
     let interval = setting.get('board.analysis_interval').toString()
+    let args = [color, interval]
+
+    if (commandName == 'kata-analyze') args = [...args, 'ownership', 'true']
 
     try {
       syncer.queueCommand({
         name: commandName,
-        args: [color, interval]
+        args: args
       })
     } catch (err) {}
   }

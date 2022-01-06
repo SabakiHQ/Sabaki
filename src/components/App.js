@@ -302,6 +302,20 @@ class App extends Component {
     let tree = inferredState.gameTree
     let scoreBoard, areaMap
 
+    if (state.showInfluence && state.analysis && state.analysis.ownership) {
+      let influenceMap = state.analysis.ownership
+      state.deadStones = []
+      areaMap = influenceMap
+      scoreBoard = gametree.getBoard(tree, state.treePosition)
+      for (let y = 0; y < scoreBoard.height; y++)
+        for (let x = 0; x < scoreBoard.width; x++) {
+          let value = influenceMap[y][x]
+          let vertex = [x, y]
+          let sign = scoreBoard.get(vertex)
+          if (sign * value < 0) state.deadStones.push(vertex)
+        }
+    }
+
     if (['scoring', 'estimator'].includes(state.mode)) {
       // Calculate area map
 
@@ -339,6 +353,7 @@ class App extends Component {
         disableAll: state.busy > 0,
         analysisType: state.analysisType,
         showAnalysis: state.showAnalysis,
+        showInfluence: state.showInfluence,
         showCoordinates: state.showCoordinates,
         coordinatesType: state.coordinatesType,
         showMoveNumbers: state.showMoveNumbers,
