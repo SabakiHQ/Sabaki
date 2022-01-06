@@ -66,6 +66,10 @@ class App extends Component {
       )
     })
 
+    sabaki.window.webContents.on('context-menu', (evt, props) => {
+      sabaki.openContextMenu(evt, props)
+    })
+
     sabaki.window.on('focus', () => {
       if (setting.get('file.show_reload_warning')) {
         sabaki.askForReload()
@@ -293,6 +297,10 @@ class App extends Component {
       .set('view.leftsidebar_width', this.state.leftSidebarWidth)
   }
 
+  handleContextMenu(evt) {
+    evt.stopPropagation()
+  }
+
   // Render
 
   render(_, state) {
@@ -351,6 +359,26 @@ class App extends Component {
         showLeftSidebar: state.showLeftSidebar,
         engineGameOngoing: state.engineGameOngoing
       }),
+
+      h(
+        'a',
+        {
+          style: {
+            width: '1.25px',
+            height: '1.25px',
+            zIndex: 100,
+            position: 'absolute'
+          },
+          id: 'default-context',
+          onContextMenu: this.handleContextMenu,
+          class: 'menu'
+        },
+        h('img', {
+          src: './img/ui/void.svg',
+          height: 10,
+          width: 10
+        })
+      ),
 
       h(TripleSplitContainer, {
         id: 'mainlayout',

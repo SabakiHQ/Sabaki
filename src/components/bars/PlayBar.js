@@ -28,43 +28,7 @@ export default class PlayBar extends Component {
 
     this.handleMenuClick = () => {
       let {left, top} = this.menuButtonElement.getBoundingClientRect()
-
-      helper.popupMenu(
-        [
-          {
-            label: t('&Pass'),
-            click: () => sabaki.makeMove([-1, -1])
-          },
-          {
-            label: t('&Resign'),
-            click: () => sabaki.makeResign()
-          },
-          {type: 'separator'},
-          {
-            label: t('Es&timate'),
-            click: () => sabaki.setMode('estimator')
-          },
-          {
-            label: t('&Score'),
-            click: () => sabaki.setMode('scoring')
-          },
-          {
-            label: t('&Edit'),
-            click: () => sabaki.setMode('edit')
-          },
-          {
-            label: t('&Find'),
-            click: () => sabaki.setMode('find')
-          },
-          {type: 'separator'},
-          {
-            label: t('&Info'),
-            click: () => sabaki.openDrawer('info')
-          }
-        ],
-        left,
-        top
-      )
+      sabaki.openPlayMenu({left, top})
     }
 
     for (let syncer of this.props.engineSyncers) {
