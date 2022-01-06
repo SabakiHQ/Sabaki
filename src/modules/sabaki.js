@@ -899,17 +899,10 @@ class Sabaki extends EventEmitter {
         // Add coordinates to comment
 
         let coord = board.stringifyVertex(vertex)
-        let commentText = node.data.C ? node.data.C[0] : ''
+        let contents = this.window.webContents
+        // https://www.electronjs.org/docs/latest/api/web-contents
+        contents.insertText(coord)
 
-        let newTree = tree.mutate(draft => {
-          draft.updateProperty(
-            node.id,
-            'C',
-            commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
-          )
-        })
-
-        this.setCurrentTreePosition(newTree, node.id)
         return
       }
 
@@ -1038,6 +1031,10 @@ class Sabaki extends EventEmitter {
     }
 
     this.events.emit('vertexClick')
+  }
+
+  openVertexContextMenu(vertex, evt) {
+    this.clickVertex(vertex, evt)
   }
 
   makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
@@ -2884,6 +2881,100 @@ class Sabaki extends EventEmitter {
       x,
       y
     )
+  }
+  openSpellingMenu(evt, props) {
+    let word = props.misspelledWord
+    let t = i18n.context('menu.spelling')
+
+    if (word) {
+      let contents = this.window.webContents
+      let entry = suggestion => ({
+        label: suggestion,
+        click(item) {
+          contents.replaceMisspelling(item.label)
+        }
+      })
+
+      let suggestions = props.dictionarySuggestions.map(suggestion =>
+        entry(suggestion)
+      )
+
+      if (!suggestions.length)
+        suggestions = [
+          {
+            label: word,
+            enabled: false
+          }
+        ]
+      let data = [
+        ...suggestions,
+        {type: 'separator'},
+        {
+          label: '&Add to dictionary',
+          click() {
+            contents.session.addWordToSpellCheckerDictionary(word)
+          }
+        }
+      ]
+      helper.popupMenu(data, props.x, props.y)
+    }
+  }
+  openPlayMenu({left, top} = {}) {
+    let t = i18n.context('PlayBar')
+
+    helper.popupMenu(
+      [
+        {
+          label: t('&Pass'),
+          click: () => this.makeMove([-1, -1])
+        },
+        {
+          label: t('&Resign'),
+          click: () => this.makeResign()
+        },
+        {type: 'separator'},
+        {
+          label: t('Es&timate'),
+          click: () => this.setMode('estimator')
+        },
+        {
+          label: t('&Score'),
+          click: () => this.setMode('scoring')
+        },
+        {
+          label: t('&Edit'),
+          click: () => this.setMode('edit')
+        },
+        {
+          label: t('&Find'),
+          click: () => this.setMode('find')
+        },
+        {type: 'separator'},
+        {
+          label: t('&Info'),
+          click: () => this.openDrawer('info')
+        }
+      ],
+      left,
+      top
+    )
+  }
+  openContextMenu(evt, props) {
+    if (this.state.mode == 'edit') {
+      let word = props.misspelledWord
+
+      if (word) {
+        this.openSpellingMenu(evt, props)
+        return
+      }
+
+      let {treePosition} = this.state
+      this.openCommentMenu(treePosition)
+
+      return
+    }
+
+    this.openPlayMenu()
   }
 }
 
