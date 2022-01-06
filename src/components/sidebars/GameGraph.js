@@ -157,6 +157,7 @@ class GameGraph extends Component {
     this.matrixDictCache = {}
 
     this.handleNodeClick = this.handleNodeClick.bind(this)
+    this.handleNodeContextMenu = this.handleNodeContextMenu.bind(this)
     this.handleGraphMouseDown = this.handleGraphMouseDown.bind(this)
   }
 
@@ -272,13 +273,8 @@ class GameGraph extends Component {
     this.mouseDown = evt.button
   }
 
-  handleNodeClick(evt) {
-    if (this.drag) {
-      this.drag = false
-      return
-    }
-
-    let {onNodeClick = noop, gameTree, gridSize} = this.props
+  getTreePosition(evt) {
+    let {gameTree, gridSize} = this.props
     let {
       matrixDict: [matrix],
       cameraPosition: [cx, cy]
@@ -290,12 +286,28 @@ class GameGraph extends Component {
 
     if (!matrix[nearestY] || !matrix[nearestY][nearestX]) return
 
-    onNodeClick(
-      Object.assign(evt, {
-        gameTree,
-        treePosition: matrix[nearestY][nearestX]
-      })
-    )
+    return matrix[nearestY][nearestX]
+  }
+
+  handleNodeClick(evt) {
+    if (this.drag) {
+      this.drag = false
+      return
+    }
+
+    let treePosition = this.getTreePosition(evt)
+    if (!treePosition) return
+
+    let {onNodeClick = noop, gameTree} = this.props
+    onNodeClick(Object.assign({evt, gameTree, treePosition}))
+  }
+
+  handleNodeContextMenu(evt) {
+    let treePosition = this.getTreePosition(evt)
+    if (!treePosition) return
+
+    let {onNodeContextMenu = noop, gameTree} = this.props
+    onNodeContextMenu(Object.assign({evt, gameTree, treePosition}))
   }
 
   renderNodes(
@@ -473,7 +485,7 @@ class GameGraph extends Component {
             height: viewportSize[1],
 
             onClick: this.handleNodeClick,
-            onContextMenu: this.handleNodeClick,
+            onContextMenu: this.handleNodeContextMenu,
             onMouseDown: this.handleGraphMouseDown,
             onMouseUp: this.handleGraphMouseUp
           },
