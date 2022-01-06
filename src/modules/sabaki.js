@@ -913,17 +913,9 @@ class Sabaki extends EventEmitter {
         // Add coordinates to comment
 
         let coord = board.stringifyVertex(vertex)
-        let commentText = node.data.C ? node.data.C[0] : ''
+        let contents = this.window.webContents
+        contents.insertText(coord)
 
-        let newTree = tree.mutate(draft => {
-          draft.updateProperty(
-            node.id,
-            'C',
-            commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
-          )
-        })
-
-        this.setCurrentTreePosition(newTree, node.id)
         return
       }
 
@@ -1052,6 +1044,23 @@ class Sabaki extends EventEmitter {
     }
 
     this.events.emit('vertexClick')
+  }
+
+  clickToolButton(evt) {
+    if (evt.ctrlKey) {
+      let symbol = {
+        triangle: '△',
+        square: '▢',
+        cross: '╳',
+        circle: '◯'
+      }
+      let contents = this.window.webContents
+      let tool = symbol[evt.tool]
+      if (!tool) tool = evt.tool
+      contents.insertText(tool)
+    } else {
+      this.setState({selectedTool: evt.tool})
+    }
   }
 
   openVertexContextMenu(vertex, evt) {
