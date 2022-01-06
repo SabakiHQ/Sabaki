@@ -2882,6 +2882,43 @@ class Sabaki extends EventEmitter {
       y
     )
   }
+  openSpellingMenu(evt, props) {
+    let word = props.misspelledWord
+    let t = i18n.context('menu.spelling')
+
+    if (word) {
+      let contents = this.window.webContents
+      let entry = suggestion => ({
+        label: suggestion,
+        click(item) {
+          contents.replaceMisspelling(item.label)
+        }
+      })
+
+      let suggestions = props.dictionarySuggestions.map(suggestion =>
+        entry(suggestion)
+      )
+
+      if (!suggestions.length)
+        suggestions = [
+          {
+            label: word,
+            enabled: false
+          }
+        ]
+      let data = [
+        ...suggestions,
+        {type: 'separator'},
+        {
+          label: '&Add to dictionary',
+          click() {
+            contents.session.addWordToSpellCheckerDictionary(word)
+          }
+        }
+      ]
+      helper.popupMenu(data, props.x, props.y)
+    }
+  }
   openPlayMenu({left, top} = {}) {
     let t = i18n.context('PlayBar')
 
@@ -2924,6 +2961,13 @@ class Sabaki extends EventEmitter {
   }
   openContextMenu(evt, props) {
     if (this.state.mode == 'edit') {
+      let word = props.misspelledWord
+
+      if (word) {
+        this.openSpellingMenu(evt, props)
+        return
+      }
+
       let {treePosition} = this.state
       this.openCommentMenu(treePosition)
 
