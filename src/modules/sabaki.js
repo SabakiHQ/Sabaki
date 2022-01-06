@@ -899,10 +899,17 @@ class Sabaki extends EventEmitter {
         // Add coordinates to comment
 
         let coord = board.stringifyVertex(vertex)
-        let contents = this.window.webContents
-        // https://www.electronjs.org/docs/latest/api/web-contents
-        contents.insertText(coord)
+        let commentText = node.data.C ? node.data.C[0] : ''
 
+        let newTree = tree.mutate(draft => {
+          draft.updateProperty(
+            node.id,
+            'C',
+            commentText !== '' ? [commentText.trim() + ' ' + coord] : [coord]
+          )
+        })
+
+        this.setCurrentTreePosition(newTree, node.id)
         return
       }
 
