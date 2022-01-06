@@ -1033,6 +1033,10 @@ class Sabaki extends EventEmitter {
     this.events.emit('vertexClick')
   }
 
+  openVertexContextMenu(vertex, evt) {
+    this.clickVertex(vertex, evt)
+  }
+
   makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
     if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
       this.closeDrawer()

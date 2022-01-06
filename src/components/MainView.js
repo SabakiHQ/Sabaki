@@ -31,6 +31,9 @@ export default class MainView extends Component {
       })
 
     this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
+    this.handleGobanVertexContextMenu = this.handleGobanVertexContextMenu.bind(
+      this
+    )
     this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
   }
 
@@ -62,6 +65,9 @@ export default class MainView extends Component {
 
   handleGobanVertexClick(evt) {
     sabaki.clickVertex(evt.vertex, evt)
+  }
+  handleGobanVertexContextMenu(vertex, evt) {
+    sabaki.openVertexContextMenu(vertex, evt)
   }
 
   handleGobanLineDraw(evt) {
@@ -166,6 +172,7 @@ export default class MainView extends Component {
           transformation: boardTransformation,
 
           onVertexClick: this.handleGobanVertexClick,
+          onVertexContextMenu: this.handleGobanVertexContextMenu,
           onLineDraw: this.handleGobanLineDraw
         })
       ),
