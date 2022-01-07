@@ -2887,6 +2887,15 @@ class Sabaki extends EventEmitter {
     )
   }
 
+  toggleEngineShowHide(syncerId) {
+    let syncer = this.state.attachedEngineSyncers.find(
+      syncer => syncer.id === syncerId
+    )
+    if (syncer == null) return
+    this.setState(state => ({
+      showAnalysis: !state.showAnalysis
+    }))
+  }
   toggleEnginePlayer(syncerId, player) {
     let syncer = this.state.attachedEngineSyncers.find(
       syncer => syncer.id === syncerId
