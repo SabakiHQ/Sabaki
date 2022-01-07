@@ -1002,24 +1002,26 @@ class Sabaki extends EventEmitter {
     }
     let filter = string =>
       string.replace(/{Alt}/, color[alt]).replace(/{Tool}/, color[tool])
+
     let template = [
       {
-        label: filter(t('Toggle {Alt} (Shift+Click)')),
+        label: filter(t('Toggle {Alt}')),
+        tooltip: 'Shift+Click',
         click: () => (
           this.useAlternateTool(tool, vertex), (this.editVertexData = null)
         )
       },
       {
-        label: filter(t('Toggle {Tool} (Click)')),
+        label: filter(t('Toggle {Tool}')),
+        tooltip: 'Click',
         click: () => (this.useTool(tool, vertex), (this.editVertexData = null))
       },
       {
         type: 'separator'
       },
       {
-        label: filter(
-          t('Toggle {Alt} and Update Stone Tool (Ctrl+Shift+Click)')
-        ),
+        label: filter(t('Toggle {Alt} and Update Stone Tool')),
+        tooltip: 'Ctrl+Shift+Click',
         click: () => (
           this.useAlternateTool(tool, vertex, 'toggle'),
           (this.editVertexData = null)
