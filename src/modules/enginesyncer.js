@@ -183,7 +183,6 @@ export default class EngineSyncer extends EventEmitter {
             } else if (line.startsWith('play ')) {
               sign = -sign
 
-              this.analysis = null
               this.treePosition = null
             }
           })
@@ -198,7 +197,6 @@ export default class EngineSyncer extends EventEmitter {
 
           if (!equals(prevHistory, this.stateTracker.state.history)) {
             this.treePosition = null
-            this.analysis = null
           }
         }
       }
