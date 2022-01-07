@@ -527,6 +527,7 @@ exports.get = function(props = {}) {
               ? 'Deepen &Analysis'
               : 'Start &Analysis'
           ),
+          enabled: !!analysisEngineStatus,
           accelerator: 'F4',
           click: () => {
             let syncerId =
@@ -758,6 +759,14 @@ exports.get = function(props = {}) {
               }
             }
           ]
+        },
+        {
+          shortcut: 'influence',
+          label: i18n.t('menu.view', 'Show &Influence Map'),
+          type: 'checkbox',
+          checked: !!showInfluence,
+          accelerator: 'CmdOrCtrl+.',
+          click: () => toggleSetting('board.show_influence')
         },
         {type: 'separator'},
         {
