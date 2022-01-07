@@ -1093,6 +1093,16 @@ class Sabaki extends EventEmitter {
     vertex = v
 
     let template = []
+    if (
+      this.state.analysis != null &&
+      this.state.analysisTreePosition === this.state.treePosition
+    ) {
+      // Show analysis context menu
+      let sub = this.getAnalysisMenu(vertex)
+      if (sub && sub.length) {
+        template = [...template, {type: 'separator'}, ...sub]
+      }
+    }
 
     if (
       board.markers[vy][vx] != null &&
@@ -1106,18 +1116,7 @@ class Sabaki extends EventEmitter {
       ]
     }
 
-    if (['play', 'autoplay'].includes(this.state.mode)) {
-      if (
-        this.state.analysis != null &&
-        this.state.analysisTreePosition === this.state.treePosition
-      ) {
-        // Show analysis context menu
-        let sub = this.getAnalysisMenu(vertex)
-        if (sub) {
-          template = [...template, {type: 'separator'}, ...sub]
-        }
-      }
-    } else if (this.state.mode === 'edit') {
+    if (this.state.mode === 'edit') {
       let tool = this.state.selectedTool
 
       if (['stone_1', 'stone_-1'].includes(tool)) {
@@ -2819,8 +2818,8 @@ class Sabaki extends EventEmitter {
 
   getVariationMenu(
     sign,
-    move,
-    {appendSibling = false, startNodeProperties = {}}
+    moves,
+    {x, y, appendSibling = false, startNodeProperties = {}} = {}
   ) {
     let t = i18n.context('menu.variation')
     let {treePosition} = this.state
