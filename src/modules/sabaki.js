@@ -1118,7 +1118,7 @@ class Sabaki extends EventEmitter {
     ) {
       // Show analysis context menu
       let sub = this.getAnalysisMenu(vertex)
-      if (sub) {
+      if (sub && sub.length) {
         template = [...template, {type: 'separator'}, ...sub]
       }
     }
