@@ -45,12 +45,14 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.file', '&File'),
       submenu: [
         {
+          shortcut: 'new',
           label: i18n.t('menu.file', '&New'),
           accelerator: 'CmdOrCtrl+N',
           enabled: !disableGameLoading,
           click: () => sabaki.newFile({playSound: true, showInfo: true})
         },
         {
+          shortcut: 'new-window',
           label: i18n.t('menu.file', 'New &Window'),
           accelerator: 'CmdOrCtrl+Shift+N',
           clickMain: 'newWindow',
@@ -58,35 +60,42 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'open',
           label: i18n.t('menu.file', '&Open…'),
           accelerator: 'CmdOrCtrl+O',
           enabled: !disableGameLoading,
           click: () => sabaki.loadFile()
         },
         {
+          shortcut: 'save',
           label: i18n.t('menu.file', '&Save'),
           accelerator: 'CmdOrCtrl+S',
           click: () => sabaki.saveFile(sabaki.state.representedFilename)
         },
         {
+          shortcut: 'save-as',
           label: i18n.t('menu.file', 'Sa&ve As…'),
           accelerator: 'CmdOrCtrl+Shift+S',
           click: () => sabaki.saveFile()
         },
         {type: 'separator'},
         {
+          id: 'clip',
           label: i18n.t('menu.file', '&Clipboard'),
           submenu: [
             {
+              shortcut: 'load-sgf',
               label: i18n.t('menu.file', '&Load SGF'),
               enabled: !disableGameLoading,
               click: () => sabaki.loadContent(clipboard.readText(), 'sgf')
             },
             {
+              shortcut: 'copy-sgf',
               label: i18n.t('menu.file', '&Copy SGF'),
               click: () => clipboard.writeText(sabaki.getSGF())
             },
             {
+              shortcut: 'copy-ascii',
               label: i18n.t('menu.file', 'Copy &ASCII Diagram'),
               click: () => clipboard.writeText(sabaki.getBoardAscii())
             }
@@ -94,11 +103,13 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'game-info',
           label: i18n.t('menu.file', 'Game &Info'),
           accelerator: 'CmdOrCtrl+I',
           click: () => sabaki.openDrawer('info')
         },
         {
+          shortcut: 'game-manager',
           label: i18n.t('menu.file', '&Manage Games…'),
           accelerator: 'CmdOrCtrl+Shift+M',
           enabled: !disableGameLoading,
@@ -106,12 +117,14 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'preferences',
           label: i18n.t('menu.file', '&Preferences…'),
           accelerator: 'CmdOrCtrl+,',
           click: () => sabaki.openDrawer('preferences')
         },
         {type: 'separator'},
         {
+          shortcut: 'quit',
           label: i18n.t('menu.file', '&Quit'),
           accelerator: 'CmdOrCtrl+Q',
           click: () => app.quit()
@@ -123,6 +136,7 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.play', '&Play'),
       submenu: [
         {
+          shortcut: 'toggle-player',
           label: i18n.t('menu.play', '&Toggle Player'),
           click: () =>
             sabaki.setPlayer(
@@ -132,6 +146,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'select-point',
           label: i18n.t('menu.play', 'Se&lect Point'),
           accelerator: 'CmdOrCtrl+L',
           click: async () => {
@@ -144,16 +159,19 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'pass',
           label: i18n.t('menu.play', '&Pass'),
           accelerator: 'CmdOrCtrl+P',
           click: () => sabaki.makeMove([-1, -1])
         },
         {
+          shortcut: 'resign',
           label: i18n.t('menu.play', 'Resig&n'),
           click: () => sabaki.makeResign()
         },
         {type: 'separator'},
         {
+          shortcut: 'estimate',
           label: i18n.t('menu.play', '&Estimate'),
           accelerator: 'CmdOrCtrl+Shift+E',
           click: () =>
@@ -162,6 +180,7 @@ exports.get = function(props = {}) {
             )
         },
         {
+          shortcut: 'score',
           label: i18n.t('menu.play', 'Sco&re'),
           accelerator: 'CmdOrCtrl+Shift+R',
           click: () =>
@@ -174,11 +193,13 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.edit', '&Edit'),
       submenu: [
         {
+          shortcut: 'undo',
           label: i18n.t('menu.edit', '&Undo'),
           accelerator: 'CmdOrCtrl+Z',
           click: () => sabaki.undo()
         },
         {
+          shortcut: 'redo',
           label: i18n.t('menu.edit', 'Re&do'),
           accelerator:
             process.platform === 'win32' ? 'CmdOrCtrl+Y' : 'CmdOrCtrl+Shift+Z',
@@ -186,15 +207,18 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'mode',
           label: i18n.t('menu.edit', 'Toggle &Edit Mode'),
           accelerator: 'CmdOrCtrl+E',
           click: () =>
             sabaki.setMode(sabaki.state.mode === 'edit' ? 'play' : 'edit')
         },
         {
+          id: 'tool',
           label: i18n.t('menu.edit', '&Select Tool'),
           submenu: [
             {
+              shortcut: 'stone',
               label: i18n.t('menu.edit', '&Stone Tool'),
               accelerator: 'CmdOrCtrl+1',
               click: () =>
@@ -206,41 +230,49 @@ exports.get = function(props = {}) {
                 )
             },
             {
+              shortcut: 'cross',
               label: i18n.t('menu.edit', '&Cross Tool'),
               accelerator: 'CmdOrCtrl+2',
               click: () => selectTool('cross')
             },
             {
+              shortcut: 'triangle',
               label: i18n.t('menu.edit', '&Triangle Tool'),
               accelerator: 'CmdOrCtrl+3',
               click: () => selectTool('triangle')
             },
             {
+              shortcut: 'square',
               label: i18n.t('menu.edit', 'S&quare Tool'),
               accelerator: 'CmdOrCtrl+4',
               click: () => selectTool('square')
             },
             {
+              shortcut: 'circle',
               label: i18n.t('menu.edit', 'C&ircle Tool'),
               accelerator: 'CmdOrCtrl+5',
               click: () => selectTool('circle')
             },
             {
+              shortcut: 'line',
               label: i18n.t('menu.edit', '&Line Tool'),
               accelerator: 'CmdOrCtrl+6',
               click: () => selectTool('line')
             },
             {
+              shortcut: 'arrow',
               label: i18n.t('menu.edit', '&Arrow Tool'),
               accelerator: 'CmdOrCtrl+7',
               click: () => selectTool('arrow')
             },
             {
+              shortcut: 'label',
               label: i18n.t('menu.edit', 'La&bel Tool'),
               accelerator: 'CmdOrCtrl+8',
               click: () => selectTool('label')
             },
             {
+              shortcut: 'number',
               label: i18n.t('menu.edit', '&Number Tool'),
               accelerator: 'CmdOrCtrl+9',
               click: () => selectTool('number')
@@ -249,19 +281,23 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'variation-copy',
           label: i18n.t('menu.edit', '&Copy Variation'),
           click: () => sabaki.copyVariation(sabaki.state.treePosition)
         },
         {
+          shortcut: 'variation-cut',
           label: i18n.t('menu.edit', 'Cu&t Variation'),
           click: () => sabaki.cutVariation(sabaki.state.treePosition)
         },
         {
+          shortcut: 'variation-paste',
           label: i18n.t('menu.edit', '&Paste Variation'),
           click: () => sabaki.pasteVariation(sabaki.state.treePosition)
         },
         {type: 'separator'},
         {
+          shortcut: 'variation-make-main',
           label: i18n.t('menu.edit', 'Make Main &Variation'),
           click: () => sabaki.makeMainVariation(sabaki.state.treePosition)
         },
@@ -277,10 +313,12 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'variation-flatten',
           label: i18n.t('menu.edit', '&Flatten'),
           click: () => sabaki.flattenVariation(sabaki.state.treePosition)
         },
         {
+          shortcut: 'node-remove',
           label: i18n.t('menu.edit', '&Remove Node'),
           accelerator:
             process.platform === 'darwin'
@@ -289,6 +327,7 @@ exports.get = function(props = {}) {
           click: () => sabaki.removeNode(sabaki.state.treePosition)
         },
         {
+          shortcut: 'variation-remove-others',
           label: i18n.t('menu.edit', 'Remove &Other Variations'),
           click: () => sabaki.removeOtherVariations(sabaki.state.treePosition)
         }
@@ -299,12 +338,14 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.find', 'Fin&d'),
       submenu: [
         {
+          shortcut: 'mode',
           label: i18n.t('menu.find', 'Toggle &Find Mode'),
           accelerator: 'CmdOrCtrl+F',
           click: () =>
             sabaki.setMode(sabaki.state.mode === 'find' ? 'play' : 'find')
         },
         {
+          shortcut: 'next',
           label: i18n.t('menu.find', 'Find &Next'),
           accelerator: 'F3',
           click: () => {
@@ -316,6 +357,7 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'previous',
           label: i18n.t('menu.find', 'Find &Previous'),
           accelerator: 'Shift+F3',
           click: () => {
@@ -328,6 +370,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'hotspot-toggle',
           label: i18n.t('menu.find', 'Toggle &Hotspot'),
           accelerator: 'CmdOrCtrl+B',
           click: () =>
@@ -338,11 +381,13 @@ exports.get = function(props = {}) {
             })
         },
         {
+          shortcut: 'hotspot-next',
           label: i18n.t('menu.find', 'Jump to Ne&xt Hotspot'),
           accelerator: 'F2',
           click: () => sabaki.findHotspot(1)
         },
         {
+          shortcut: 'hotspot-previous',
           label: i18n.t('menu.find', 'Jump to Pre&vious Hotspot'),
           accelerator: 'Shift+F2',
           click: () => sabaki.findHotspot(-1)
@@ -354,71 +399,78 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.navigation', '&Navigation'),
       submenu: [
         {
+          shortcut: 'back',
           label: i18n.t('menu.navigation', '&Back'),
           accelerator: 'Up',
           click: () => sabaki.goStep(-1)
         },
         {
+          shortcut: 'forward',
           label: i18n.t('menu.navigation', '&Forward'),
           accelerator: 'Down',
           click: () => sabaki.goStep(1)
         },
         {type: 'separator'},
         {
-          shortcut: 'previous-fork',
+          shortcut: 'fork-previous',
           label: i18n.t('menu.navigation', 'Go to &Previous Fork'),
           accelerator: 'CmdOrCtrl+Up',
           click: () => sabaki.goToPreviousFork()
         },
         {
-          shortcut: 'next-fork',
+          shortcut: 'fork-next',
           label: i18n.t('menu.navigation', 'Go to &Next Fork'),
           accelerator: 'CmdOrCtrl+Down',
           click: () => sabaki.goToNextFork()
         },
         {type: 'separator'},
         {
-          shortcut: 'previous-comment',
+          shortcut: 'comment-previous',
           label: i18n.t('menu.navigation', 'Go to Previous Commen&t'),
           accelerator: 'CmdOrCtrl+Shift+Up',
           click: () => sabaki.goToComment(-1)
         },
         {
-          shortcut: 'next-comment',
+          shortcut: 'comment-next',
           label: i18n.t('menu.navigation', 'Go to Next &Comment'),
           accelerator: 'CmdOrCtrl+Shift+Down',
           click: () => sabaki.goToComment(1)
         },
         {type: 'separator'},
         {
+          shortcut: 'beginning',
           label: i18n.t('menu.navigation', 'Go to Be&ginning'),
           accelerator: 'Home',
           click: () => sabaki.goToBeginning()
         },
         {
+          shortcut: 'end',
           label: i18n.t('menu.navigation', 'Go to &End'),
           accelerator: 'End',
           click: () => sabaki.goToEnd()
         },
         {type: 'separator'},
         {
-          shortcut: 'main-variation',
+          shortcut: 'variation-main',
           label: i18n.t('menu.navigation', 'Go to &Main Variation'),
           accelerator: 'CmdOrCtrl+Left',
           click: () => sabaki.goToMainVariation()
         },
         {
+          shortcut: 'variation-previous',
           label: i18n.t('menu.navigation', 'Go to Previous &Variation'),
           accelerator: 'Left',
           click: () => sabaki.goToSiblingVariation(-1)
         },
         {
+          shortcut: 'variation-next',
           label: i18n.t('menu.navigation', 'Go to Next Va&riation'),
           accelerator: 'Right',
           click: () => sabaki.goToSiblingVariation(1)
         },
         {type: 'separator'},
         {
+          shortcut: 'move',
           label: i18n.t('menu.navigation', 'Go to Move N&umber'),
           accelerator: 'CmdOrCtrl+G',
           click: async () => {
@@ -433,11 +485,13 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'game-next',
           label: i18n.t('menu.navigation', 'Go to Ne&xt Game'),
           accelerator: 'CmdOrCtrl+PageDown',
           click: () => sabaki.goToSiblingGame(1)
         },
         {
+          shortcut: 'game-previous',
           label: i18n.t('menu.navigation', 'Go to Previou&s Game'),
           accelerator: 'CmdOrCtrl+PageUp',
           click: () => sabaki.goToSiblingGame(-1)
@@ -449,6 +503,7 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.engines', 'Eng&ines'),
       submenu: [
         {
+          shortcut: 'sidebar',
           label: i18n.t('menu.engines', 'Show &Engines Sidebar'),
           type: 'checkbox',
           checked: !!showLeftSidebar,
@@ -461,6 +516,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'analysis',
           label: i18n.t('menu.engines', 'Toggle &Analysis'),
           accelerator: 'F4',
           click: () => {
@@ -493,6 +549,7 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'game',
           label: !engineGameOngoing
             ? i18n.t('menu.engines', 'Start Engine vs. Engine &Game')
             : i18n.t('menu.engines', 'Stop Engine vs. Engine &Game'),
@@ -502,6 +559,7 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'move',
           label: i18n.t('menu.engines', 'Generate &Move'),
           accelerator: 'F10',
           enabled: !engineGameOngoing,
@@ -532,6 +590,7 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.tools', '&Tools'),
       submenu: [
         {
+          shortcut: 'autoplay',
           label: i18n.t('menu.tools', 'Toggle Auto&play Mode'),
           click: () =>
             sabaki.setMode(
@@ -539,16 +598,19 @@ exports.get = function(props = {}) {
             )
         },
         {
+          shortcut: 'guess',
           label: i18n.t('menu.tools', 'Toggle &Guess Mode'),
           click: () =>
             sabaki.setMode(sabaki.state.mode === 'guess' ? 'play' : 'guess')
         },
         {type: 'separator'},
         {
+          shortcut: 'clean-markup',
           label: i18n.t('menu.tools', 'Clean &Markup…'),
           click: () => sabaki.openDrawer('cleanmarkup')
         },
         {
+          shortcut: 'edit-sgf',
           label: i18n.t('menu.tools', '&Edit SGF Properties…'),
           click: () => sabaki.openDrawer('advancedproperties')
         }
@@ -559,10 +621,12 @@ exports.get = function(props = {}) {
       label: i18n.t('menu.view', '&View'),
       submenu: [
         {
+          shortcut: 'menubar',
           label: i18n.t('menu.view', 'Toggle Menu &Bar'),
           click: () => toggleSetting('view.show_menubar')
         },
         {
+          shortcut: 'full-screen',
           label: i18n.t('menu.view', 'Toggle &Full Screen'),
           accelerator:
             process.platform === 'darwin' ? 'CmdOrCtrl+Shift+F' : 'F11',
@@ -571,9 +635,11 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          id: 'coordinates',
           label: i18n.t('menu.view', 'Show &Coordinates'),
           submenu: [
             {
+              shortcut: 'show',
               label: i18n.t('menu.view', '&Don’t Show'),
               accelerator: 'CmdOrCtrl+Shift+C',
               type: 'checkbox',
@@ -582,6 +648,7 @@ exports.get = function(props = {}) {
             },
             {type: 'separator'},
             {
+              shortcut: 'A1',
               label: i18n.t('menu.view', '&A1 (Default)'),
               type: 'checkbox',
               checked: !!showCoordinates && coordinatesType === 'A1',
@@ -591,6 +658,7 @@ exports.get = function(props = {}) {
               }
             },
             {
+              shortcut: '1-1',
               label: i18n.t('menu.view', '&1-1'),
               type: 'checkbox',
               checked: !!showCoordinates && coordinatesType === '1-1',
@@ -600,6 +668,7 @@ exports.get = function(props = {}) {
               }
             },
             {
+              shortcut: 'relative',
               label: i18n.t('menu.view', '&Relative'),
               type: 'checkbox',
               checked: !!showCoordinates && coordinatesType === 'relative',
@@ -611,33 +680,39 @@ exports.get = function(props = {}) {
           ]
         },
         {
+          shortcut: 'move-numbers',
           label: i18n.t('menu.view', 'Show Move N&umbers'),
           type: 'checkbox',
           checked: !!showMoveNumbers,
           click: () => toggleSetting('view.show_move_numbers')
         },
         {
+          shortcut: 'move-colorize',
           label: i18n.t('menu.view', 'Show Move Colori&zation'),
           type: 'checkbox',
           checked: !!showMoveColorization,
           click: () => toggleSetting('view.show_move_colorization')
         },
         {
+          shortcut: 'move-next',
           label: i18n.t('menu.view', 'Show &Next Moves'),
           type: 'checkbox',
           checked: !!showNextMoves,
           click: () => toggleSetting('view.show_next_moves')
         },
         {
+          shortcut: 'variation-sibling',
           label: i18n.t('menu.view', 'Show &Sibling Variations'),
           type: 'checkbox',
           checked: !!showSiblings,
           click: () => toggleSetting('view.show_siblings')
         },
         {
+          id: 'heatmap',
           label: i18n.t('menu.view', 'Show &Heatmap'),
           submenu: [
             {
+              shortcut: 'show',
               label: i18n.t('menu.view', '&Don’t Show'),
               type: 'checkbox',
               checked: !showAnalysis,
@@ -646,6 +721,7 @@ exports.get = function(props = {}) {
             },
             {type: 'separator'},
             {
+              shortcut: 'winrate',
               label: i18n.t('menu.view', 'Show &Win Rate'),
               type: 'checkbox',
               checked: !!showAnalysis && analysisType === 'winrate',
@@ -661,6 +737,7 @@ exports.get = function(props = {}) {
               }
             },
             {
+              shortcut: 'score',
               label: i18n.t('menu.view', 'Show &Score Lead'),
               type: 'checkbox',
               checked: !!showAnalysis && analysisType === 'scoreLead',
@@ -679,6 +756,7 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          shortcut: 'graph',
           label: i18n.t('menu.view', 'Show &Winrate Graph'),
           type: 'checkbox',
           checked: !!showWinrateGraph,
@@ -691,6 +769,7 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'tree',
           label: i18n.t('menu.view', 'Show Game &Tree'),
           type: 'checkbox',
           checked: !!showGameGraph,
@@ -703,6 +782,7 @@ exports.get = function(props = {}) {
           }
         },
         {
+          shortcut: 'comments',
           label: i18n.t('menu.view', 'Show Co&mments'),
           type: 'checkbox',
           checked: !!showCommentBox,
@@ -716,9 +796,11 @@ exports.get = function(props = {}) {
         },
         {type: 'separator'},
         {
+          id: 'zoom',
           label: i18n.t('menu.view', 'Z&oom'),
           submenu: [
             {
+              shortcut: 'increase',
               label: i18n.t('menu.view', '&Increase'),
               accelerator: 'CmdOrCtrl+Plus',
               click: () =>
@@ -728,6 +810,7 @@ exports.get = function(props = {}) {
                 )
             },
             {
+              shortcut: 'decrease',
               label: i18n.t('menu.view', '&Decrease'),
               accelerator: 'CmdOrCtrl+-',
               click: () =>
@@ -737,6 +820,7 @@ exports.get = function(props = {}) {
                 )
             },
             {
+              shortcut: 'reset',
               label: i18n.t('menu.view', '&Reset'),
               accelerator: 'CmdOrCtrl+0',
               click: () => setting.set('app.zoom_factor', 1)
@@ -778,6 +862,7 @@ exports.get = function(props = {}) {
               click: () => sabaki.pushBoardTransformation('i')
             },
             {
+              shortcut: 'reset',
               label: i18n.t('menu.tools', '&Reset'),
               accelerator: 'CmdOrCtrl+Alt+0',
               click: () => sabaki.setBoardTransformation('')
