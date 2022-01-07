@@ -238,7 +238,8 @@ class Sabaki extends EventEmitter {
       'graph.grid_size': 'graphGridSize',
       'graph.node_size': 'graphNodeSize',
       'engines.list': 'engines',
-      'scoring.method': 'scoringMethod'
+      'scoring.method': 'scoringMethod',
+      'edit.tool': 'selectedTool'
     }
 
     if (key == null) {
