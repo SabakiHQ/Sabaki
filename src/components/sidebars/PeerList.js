@@ -43,6 +43,11 @@ class EnginePeerListItem extends Component {
       let {syncer, onPlayerClick = () => {}} = this.props
       onPlayerClick({syncer}, 'white')
     }
+
+    this.handleAnalyzerButtonClick = evt => {
+      let {syncer, onAnalyzerClick = () => {}} = this.props
+      onAnalyzerClick({syncer})
+    }
   }
 
   componentDidMount() {
@@ -95,8 +100,10 @@ class EnginePeerListItem extends Component {
           'div',
           {
             key: 'analyzing',
-            class: 'icon analyzing',
-            title: t('Analyzer')
+            class:
+              'icon analyzing' + (sabaki.state.showAnalysis ? '' : ' inactive'),
+            title: t('Analyzer'),
+            onClick: this.handleAnalyzerButtonClick
           },
           h('img', {
             src: './node_modules/@primer/octicons/build/svg/pulse.svg',
@@ -163,6 +170,13 @@ export class EnginePeerList extends Component {
       sabaki.toggleEnginePlayer(syncer.id, player)
     }
 
+    this.handleEngineAnalyzerClick = ({syncer}) => {
+      let {onEngineSelect = () => {}} = this.props
+      onEngineSelect({syncer})
+
+      sabaki.toggleEngineShowHide(syncer.id)
+    }
+
     this.handleAttachEngineButtonClick = evt => {
       let {left, bottom} = evt.currentTarget.getBoundingClientRect()
 
@@ -224,7 +238,8 @@ export class EnginePeerList extends Component {
 
             onClick: this.handleEngineClick,
             onContextMenu: this.handleEngineContextMenu,
-            onPlayerClick: this.handleEnginePlayerClick
+            onPlayerClick: this.handleEnginePlayerClick,
+            onAnalyzerClick: this.handleEngineAnalyzerClick
           })
         )
       )
