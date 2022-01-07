@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+## Local changes to v0.52.0 (reference if associated to a pull request)
+
+**Fixed**
+
+- Fix vertex coordinates insertion in edit (`Ctrl+Click`)
+  ([#838](https://github.com/SabakiHQ/Sabaki/issues/838))
+
+- Keep focus in textarea when using edit tools
+
+**Added**
+
+- Configure (most) shortcuts via settings
+
+- Edit mode
+
+  - Minimal language support via settings
+    ([#832](https://github.com/SabakiHQ/Sabaki/issues/832))
+  - Spelling context menu with addition to Custom Dictionary
+
+  - Configure default edit tool via settings
+  - `Ctrl+Click` on tool icon inserts tool symbol in comment
+
+- Low-Carbon Engine
+  - Pause engine analysis at position after a configurable number of probes
+  - When probes are limited, also limit to a single one when navigating to an
+    already analyzed node
+  - Consequently, revise `F4` behavior according to a `Start/Pause/Deepen`
+    paradigm; `Stop Analysis` is not available anymore via `F4` (use engine
+    context menu for the purpose)
+- Can configure engine:
+  - to load at application startup
+  - to have a default role when loaded
+- Engine icons:
+
+  - player icon is clickable and its layout is available via CSS
+  - analyzer icon is clickable and toggles `Show Analysis`
+
+- Provide the territory map if analysis is `kata-analyze`
+- Expose an extra setting to open devtools at startup
+
 ## [Sabaki v0.52.1][v0.52.1]
 
 **Fixed**
