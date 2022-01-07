@@ -273,6 +273,17 @@ class Sabaki extends EventEmitter {
     this.events.emit('modeChange')
   }
 
+  dispatchFocus() {
+    let mode = this.state.mode
+    if (mode === 'edit') {
+      this.waitForRender().then(() => {
+        let textarea = document.querySelector('#properties .edit textarea')
+
+        textarea.focus()
+      })
+    }
+  }
+
   openDrawer(drawer) {
     this.setState({openDrawer: drawer})
   }
@@ -1046,6 +1057,7 @@ class Sabaki extends EventEmitter {
     } else {
       this.setState({selectedTool: evt.tool})
     }
+    this.dispatchFocus()
   }
 
   makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
@@ -1386,6 +1398,7 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, node.id)
 
     this.events.emit('toolUse', {tool, vertex, argument})
+    this.dispatchFocus()
   }
 
   // Navigation
