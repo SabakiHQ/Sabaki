@@ -282,13 +282,23 @@ class Sabaki extends EventEmitter {
       this.waitForRender().then(() => {
         let textarea = document.querySelector('#properties .edit textarea')
 
-        textarea.selectionStart = textarea.selectionEnd = 0
         textarea.focus()
       })
     }
 
     this.setState(stateChange)
     this.events.emit('modeChange')
+  }
+
+  dispatchFocus() {
+    let mode = this.state.mode
+    if (mode === 'edit') {
+      this.waitForRender().then(() => {
+        let textarea = document.querySelector('#properties .edit textarea')
+
+        textarea.focus()
+      })
+    }
   }
 
   openDrawer(drawer) {
@@ -1064,6 +1074,7 @@ class Sabaki extends EventEmitter {
     } else {
       this.setState({selectedTool: evt.tool})
     }
+    this.dispatchFocus()
   }
 
   openVertexContextMenu(vertex, evt) {
@@ -1408,6 +1419,7 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, node.id)
 
     this.events.emit('toolUse', {tool, vertex, argument})
+    this.dispatchFocus()
   }
 
   // Navigation
