@@ -119,6 +119,8 @@ export default class Goban extends Component {
       return
     }
 
+    if (evt.button != 0) return
+
     this.mouseDown = true
     this.startVertex = vertex
   }
