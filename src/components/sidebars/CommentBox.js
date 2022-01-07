@@ -255,7 +255,6 @@ export default class CommentBox extends Component {
         comment: this.textareaElement.value
       }
 
-      //       console.log('input')
       this.setState(data)
 
       clearTimeout(this.commentInputTimeout)
@@ -273,7 +272,6 @@ export default class CommentBox extends Component {
         }
       }
 
-      console.log(data)
       this.setState(data)
 
       let {onCommentInput = noop} = this.props
@@ -288,7 +286,6 @@ export default class CommentBox extends Component {
     this.handleCommentFocus = () => {
       let textarea = this.textareaElement
       let position = this.state.position
-      console.log(position)
       if (position) {
         textarea.selectionStart = position.start
         textarea.selectionEnd = position.end
