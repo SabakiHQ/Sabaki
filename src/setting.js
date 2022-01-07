@@ -116,6 +116,7 @@ let defaults = {
   'edit.max_history_count': 1000,
   'edit.show_removenode_warning': true,
   'edit.show_removeothervariations_warning': true,
+  'edit.tool': 'stone_1',
   'engines.list': [],
   'engines.analyze_commands': ['analyze', 'kata-analyze', 'lz-analyze'],
   'engines.gemove_analyze_commands': [
