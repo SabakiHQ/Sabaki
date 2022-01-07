@@ -1112,6 +1112,16 @@ class Sabaki extends EventEmitter {
     vertex = v
 
     let template = []
+    if (
+      this.state.analysis != null &&
+      this.state.analysisTreePosition === this.state.treePosition
+    ) {
+      // Show analysis context menu
+      let sub = this.getAnalysisMenu(vertex)
+      if (sub) {
+        template = [...template, {type: 'separator'}, ...sub]
+      }
+    }
 
     if (
       board.markers[vy][vx] != null &&
@@ -1125,18 +1135,7 @@ class Sabaki extends EventEmitter {
       ]
     }
 
-    if (['play', 'autoplay'].includes(this.state.mode)) {
-      if (
-        this.state.analysis != null &&
-        this.state.analysisTreePosition === this.state.treePosition
-      ) {
-        // Show analysis context menu
-        let sub = this.getAnalysisMenu(vertex)
-        if (sub) {
-          template = [...template, {type: 'separator'}, ...sub]
-        }
-      }
-    } else if (this.state.mode === 'edit') {
+    if (this.state.mode === 'edit') {
       let tool = this.state.selectedTool
 
       if (['stone_1', 'stone_-1'].includes(tool)) {
@@ -2914,9 +2913,8 @@ class Sabaki extends EventEmitter {
     let t = i18n.context('menu.variation')
     let {treePosition} = this.state
     let tree = this.inferredState.gameTree
-
-    helper.popupMenu(
-      [
+    {
+      let template = [
         {
           label: t('&Add Variation'),
           click: () => {
