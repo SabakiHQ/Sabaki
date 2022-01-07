@@ -49,6 +49,10 @@ All notable changes to this project will be documented in this file.
 - "Navigate>Go to Main Variation" now works again
   ([#801](https://github.com/SabakiHQ/Sabaki/issues/801))
 
+**Changed**
+
+- Revise vertex context menu (reference needed)
+
 ## [Sabaki v0.52.0][v0.52.0] (2021-07-05)
 
 **Added**
