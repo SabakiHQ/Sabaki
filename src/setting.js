@@ -69,6 +69,7 @@ let defaults = {
   'comments.commit_delay': 500,
   'console.max_history_count': 1000,
   'debug.dev_tools': false,
+  'debug.dev_tools_open': true,
   'edit.click_currentvertex_to_remove': true,
   'edit.copy_variation_strip_props': [
     'AP',
