@@ -265,7 +265,6 @@ class Sabaki extends EventEmitter {
       this.waitForRender().then(() => {
         let textarea = document.querySelector('#properties .edit textarea')
 
-        textarea.selectionStart = textarea.selectionEnd = 0
         textarea.focus()
       })
     }
