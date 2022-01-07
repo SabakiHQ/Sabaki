@@ -50,6 +50,7 @@ let defaults = {
   'board.analysis_probes': 5,
   'board.analysis_type': 'winrate',
   'board.show_analysis': true,
+  'board.show_influence': true,
   'board.variation_replay_mode': 'move_by_move',
   'board.variation_replay_interval': 500,
   'cleanmarkup.annotations': false,

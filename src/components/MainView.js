@@ -98,6 +98,7 @@ export default class MainView extends Component {
       highlightVertices,
       analysisType,
       showAnalysis,
+      showInfluence,
       showCoordinates,
       showMoveColorization,
       showMoveNumbers,
@@ -127,6 +128,8 @@ export default class MainView extends Component {
       for (let [x, y] of blockedGuesses) {
         paintMap[y][x] = 1
       }
+    } else if (showInfluence) {
+      paintMap = areaMap
     }
 
     return h(
@@ -144,6 +147,7 @@ export default class MainView extends Component {
           highlightVertices:
             findVertex && mode === 'find' ? [findVertex] : highlightVertices,
           analysisType,
+          showInfluence,
           analysis:
             showAnalysis &&
             analysisTreePosition != null &&
