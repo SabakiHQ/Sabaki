@@ -814,7 +814,7 @@ class Sabaki extends EventEmitter {
 
   // Playing
 
-  clickVertex(vertex, {button = 0, ctrlKey = false, x = 0, y = 0} = {}) {
+  onVertex(vertex) {
     this.closeDrawer()
 
     let t = i18n.context('sabaki.play')
@@ -828,74 +828,38 @@ class Sabaki extends EventEmitter {
     }
 
     let [vx, vy] = vertex
+    let v = vertex
+
+    return {
+      v,
+      vx,
+      vy,
+      t,
+      tree,
+      board,
+      node,
+      treePosition
+    }
+  }
+
+  clickVertex(vertex, {ctrlKey = false, shiftKey = false, x = 0, y = 0} = {}) {
+    let {v, vx, vy, t, tree, board, node, treePosition} = this.onVertex(vertex)
+    vertex = v
 
     if (['play', 'autoplay'].includes(this.state.mode)) {
-      if (button === 0) {
-        if (board.get(vertex) === 0) {
-          this.makeMove(vertex, {
-            generateEngineMove: this.state.engineGameOngoing == null
-          })
-        } else if (
-          board.markers[vy][vx] != null &&
-          board.markers[vy][vx].type === 'point' &&
-          setting.get('edit.click_currentvertex_to_remove')
-        ) {
-          this.removeNode(treePosition)
-        }
-      } else if (button === 2) {
-        if (
-          board.markers[vy][vx] != null &&
-          board.markers[vy][vx].type === 'point'
-        ) {
-          // Show annotation context menu
-
-          this.openCommentMenu(treePosition, {x, y})
-        } else if (
-          this.state.analysis != null &&
-          this.state.analysisTreePosition === this.state.treePosition
-        ) {
-          // Show analysis context menu
-
-          let {sign, variations} = this.state.analysis
-          let variation = variations.find(x =>
-            helper.vertexEquals(x.vertex, vertex)
-          )
-
-          if (variation != null) {
-            let maxVisitsWin = Math.max(
-              ...variations.map(x => x.visits * x.winrate)
-            )
-            let strength =
-              Math.round(
-                (variation.visits * variation.winrate * 8) / maxVisitsWin
-              ) + 1
-            let annotationProp =
-              strength >= 8
-                ? 'TE'
-                : strength >= 5
-                ? 'IT'
-                : strength >= 3
-                ? 'DO'
-                : 'BM'
-            let annotationValues = {BM: '1', DO: '', IT: '', TE: '1'}
-            let winrate =
-              Math.round(
-                (sign > 0 ? variation.winrate : 100 - variation.winrate) * 100
-              ) / 100
-
-            this.openVariationMenu(sign, variation.moves, {
-              x,
-              y,
-              startNodeProperties: {
-                [annotationProp]: [annotationValues[annotationProp]],
-                SBKV: [winrate.toString()]
-              }
-            })
-          }
-        }
+      if (board.get(vertex) === 0) {
+        this.makeMove(vertex, {
+          generateEngineMove: this.state.engineGameOngoing == null
+        })
+      } else if (
+        board.markers[vy][vx] != null &&
+        board.markers[vy][vx].type === 'point' &&
+        setting.get('edit.click_currentvertex_to_remove')
+      ) {
+        this.removeNode(treePosition)
       }
     } else if (this.state.mode === 'edit') {
-      if (ctrlKey) {
+      if (ctrlKey && !shiftKey) {
         // Add coordinates to comment
 
         let coord = board.stringifyVertex(vertex)
@@ -915,36 +879,6 @@ class Sabaki extends EventEmitter {
 
       let tool = this.state.selectedTool
 
-      if (button === 2) {
-        // Right mouse click
-
-        if (['stone_1', 'stone_-1'].includes(tool)) {
-          // Switch stone tool
-
-          tool = tool === 'stone_1' ? 'stone_-1' : 'stone_1'
-        } else if (['number', 'label'].includes(tool)) {
-          // Show label editing context menu
-
-          helper.popupMenu(
-            [
-              {
-                label: t('&Edit Label'),
-                click: async () => {
-                  let value = await dialog.showInputBox(t('Enter label text'))
-                  if (value == null) return
-
-                  this.useTool('label', vertex, value)
-                }
-              }
-            ],
-            x,
-            y
-          )
-
-          return
-        }
-      }
-
       if (['line', 'arrow'].includes(tool)) {
         // Remember clicked vertex and pass as an argument the second time
 
@@ -956,7 +890,8 @@ class Sabaki extends EventEmitter {
           this.editVertexData = null
         }
       } else {
-        this.useTool(tool, vertex)
+        if (shiftKey) this.useAlternateTool(tool, vertex, ctrlKey)
+        else this.useTool(tool, vertex)
         this.editVertexData = null
       }
     } else if (['scoring', 'estimator'].includes(this.state.mode)) {
@@ -1038,6 +973,168 @@ class Sabaki extends EventEmitter {
     }
 
     this.events.emit('vertexClick')
+  }
+
+  useAlternateTool(tool, vertex, toggle) {
+    // Switch if stone tool
+
+    if (tool === 'stone_1') tool = 'stone_-1'
+    else if (tool === 'stone_-1') tool = 'stone_1'
+
+    this.useTool(tool, vertex)
+
+    if (toggle) this.setState({selectedTool: tool})
+  }
+
+  getStoneToolMenu(vertex) {
+    let tool = this.state.selectedTool
+    let alt
+    let t = i18n.context('menu.edit')
+
+    if (tool === 'stone_1') alt = 'stone_-1'
+    else if (tool === 'stone_-1') alt = 'stone_1'
+
+    if (!alt) return
+
+    let color = {
+      'stone_-1': t('White'),
+      stone_1: t('Black')
+    }
+    let filter = string =>
+      string.replace(/{Alt}/, color[alt]).replace(/{Tool}/, color[tool])
+    let template = [
+      {
+        label: filter(t('Toggle {Alt} (Shift+Click)')),
+        click: () => (
+          this.useAlternateTool(tool, vertex), (this.editVertexData = null)
+        )
+      },
+      {
+        label: filter(t('Toggle {Tool} (Click)')),
+        click: () => (this.useTool(tool, vertex), (this.editVertexData = null))
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: filter(
+          t('Toggle {Alt} and Update Stone Tool (Ctrl+Shift+Click)')
+        ),
+        click: () => (
+          this.useAlternateTool(tool, vertex, 'toggle'),
+          (this.editVertexData = null)
+        )
+      }
+    ]
+
+    return template
+  }
+
+  openStoneToolMenu(vertex, {x, y} = {}) {
+    let template = this.getStoneToolMenu(vertex)
+    helper.popupMenu(template, x, y)
+  }
+
+  getLabelToolMenu(vertex) {
+    let template = [
+      {
+        label: t('&Edit Label'),
+        click: async () => {
+          let value = await dialog.showInputBox(t('Enter label text'))
+          if (value == null) return
+
+          this.useTool('label', vertex, value)
+        }
+      }
+    ]
+    return template
+  }
+
+  getAnalysisMenu(vertex) {
+    let template = []
+
+    let {sign, variations} = this.state.analysis
+    let variation = variations.find(x => helper.vertexEquals(x.vertex, vertex))
+
+    if (variation != null) {
+      let maxVisitsWin = Math.max(...variations.map(x => x.visits * x.winrate))
+      let strength =
+        Math.round((variation.visits * variation.winrate * 8) / maxVisitsWin) +
+        1
+      let annotationProp =
+        strength >= 8
+          ? 'TE'
+          : strength >= 5
+          ? 'IT'
+          : strength >= 3
+          ? 'DO'
+          : 'BM'
+      let annotationValues = {BM: '1', DO: '', IT: '', TE: '1'}
+      let winrate =
+        Math.round(
+          (sign > 0 ? variation.winrate : 100 - variation.winrate) * 100
+        ) / 100
+
+      let props = {
+        // TODO: this is unused
+        [annotationProp]: [annotationValues[annotationProp]],
+        SBKV: [winrate.toString()]
+      }
+      template = this.getVariationMenu(sign, variation.moves, props)
+    }
+
+    return template
+  }
+
+  openVertexContextMenu(vertex, {x, y} = {}) {
+    let {v, vx, vy, t, tree, board, node, treePosition} = this.onVertex(vertex)
+    vertex = v
+
+    let template = []
+
+    if (
+      board.markers[vy][vx] != null &&
+      board.markers[vy][vx].type === 'point'
+    ) {
+      // Get annotation context menu
+      template = [
+        ...template,
+        {type: 'separator'},
+        ...this.getCommentMenu(treePosition)
+      ]
+    }
+
+    if (['play', 'autoplay'].includes(this.state.mode)) {
+      if (
+        this.state.analysis != null &&
+        this.state.analysisTreePosition === this.state.treePosition
+      ) {
+        // Show analysis context menu
+        let sub = this.getAnalysisMenu(vertex)
+        if (sub) {
+          template = [...template, {type: 'separator'}, ...sub]
+        }
+      }
+    } else if (this.state.mode === 'edit') {
+      let tool = this.state.selectedTool
+
+      if (['stone_1', 'stone_-1'].includes(tool)) {
+        template = [
+          ...template,
+          {type: 'separator'},
+          ...this.getStoneToolMenu(vertex, {x, y})
+        ]
+      } else if (['number', 'label'].includes(tool)) {
+        // Add label editing context menu
+        template = [
+          ...template,
+          {type: 'separator'},
+          ...this.getLabelToolMenu(vertex)
+        ]
+      }
+    }
+
+    if (template.length) helper.popupMenu(template, x, y)
   }
 
   makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
@@ -2626,7 +2723,7 @@ class Sabaki extends EventEmitter {
     helper.popupMenu(template, x, y)
   }
 
-  openCommentMenu(treePosition, {x, y} = {}) {
+  getCommentMenu(treePosition) {
     let t = i18n.context('menu.comment')
     let node = this.inferredState.gameTree.get(treePosition)
 
@@ -2710,20 +2807,27 @@ class Sabaki extends EventEmitter {
       item.click = () => this.setComment(treePosition, item.data)
     }
 
+    return template
+  }
+  openCommentMenu(treePosition, {x, y} = {}) {
+    let template = this.getCommentMenu(treePosition)
+
     helper.popupMenu(template, x, y)
   }
 
-  openVariationMenu(
+  getVariationMenu(
     sign,
-    moves,
-    {x, y, appendSibling = false, startNodeProperties = {}} = {}
+    move,
+    {appendSibling = false, startNodeProperties = {}}
   ) {
     let t = i18n.context('menu.variation')
     let {treePosition} = this.state
     let tree = this.inferredState.gameTree
 
-    helper.popupMenu(
-      [
+    {
+      // keep identation for commit
+
+      let template = [
         {
           label: t('&Add Variation'),
           click: () => {
@@ -2762,10 +2866,23 @@ class Sabaki extends EventEmitter {
             this.setCurrentTreePosition(newTree, treePosition)
           }
         }
-      ],
-      x,
-      y
-    )
+      ]
+
+      return template
+    }
+  }
+
+  openVariationMenu(
+    sign,
+    moves,
+    {x, y, appendSibling = false, startNodeProperties = {}} = {}
+  ) {
+    let template = this.getVariationMenu(sign, move, {
+      appendSibling,
+      startNodeProperties
+    })
+
+    helper.popupMenu(template, x, y)
   }
 
   openEnginesMenu({x, y} = {}) {
