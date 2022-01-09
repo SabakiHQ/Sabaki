@@ -920,7 +920,7 @@ class Sabaki extends EventEmitter {
         this.editVertexData = null
       }
     } else if (['scoring', 'estimator'].includes(this.state.mode)) {
-      if (button !== 0 || board.get(vertex) === 0) return
+      if (board.get(vertex) === 0) return
 
       let {mode, deadStones} = this.state
       let dead = deadStones.some(v => helper.vertexEquals(v, vertex))
