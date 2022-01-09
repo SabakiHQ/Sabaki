@@ -167,7 +167,8 @@ export default class EngineSyncer extends EventEmitter {
               this.analysis = {
                 sign,
                 variations,
-                winrate: Math.max(...variations.map(({winrate}) => winrate))
+                winrate: Math.max(...variations.map(({winrate}) => winrate)),
+                ownership: ownership
               }
             } else if (line.startsWith('play ')) {
               sign = -sign
