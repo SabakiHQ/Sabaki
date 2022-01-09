@@ -459,6 +459,8 @@ exports.get = function(props = {}) {
             'menu.engines',
             analysisEngineStatus == 'busy'
               ? 'Pause &Analysis'
+              : analysisEngineStatus == 'started'
+              ? 'Stop &Analysis'
               : analysisEngineStatus == 'waiting'
               ? 'Deepen &Analysis'
               : 'Start &Analysis'

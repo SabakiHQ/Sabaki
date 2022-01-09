@@ -5,12 +5,22 @@ All notable changes to this project will be documented in this file.
 ## Request changes
 
 - Low-Carbon Engine ([#851](https://github.com/SabakiHQ/Sabaki/issues/851))
-  - Pause engine analysis at position after a configurable number of probes
-  - When probes are limited, also limit to a quick single analysis when
-    navigating to an already analyzed node
-  - Consequently, revise `F4` behavior according to a `Start/Pause/Deepen`
-    paradigm; `Stop Analysis` is not available anymore via `F4` (stop engine via
-    context menu for a similar pupose)
+  - In settings, `board.analysis_probes` defines a number of probes
+  - If 0, the behavior is the same as of v0.52.0
+  - Otherwise, the engine obeys a Start/Pause/Deepen paradigm (through `F4`), on
+    a per-position basis:
+    - Once started, analysis can be paused, but not stopped as of v0.52.0.
+    - If paused, the engine does not analyze anymore, but the result of its
+      analysis is still available, in particular the heatmap
+    - The user can ask for more analysis via `F4`, or pause via `F4`
+    - If `board.analysis_probes` is positive, engine pauses automatically after
+      that many probes at position; if negavite, user only can pause the engine
+    - When nagivating to a position where analysis was paused, engine performs a
+      quick single analysis, then pauses again
+  - To permit this behavior, `F4` does not expose `Stop Analysis` anymore,
+    unless `board.analysis_probes` is 0; user can achieve a purpose that is
+    somehow similar to `Stop Analysis` by stopping the engine via its context
+    menu.
 
 ## [Sabaki v0.52.1][v0.52.1]
 

@@ -201,7 +201,12 @@ class Sabaki extends EventEmitter {
         syncer = state.attachedEngineSyncers.find(syncer =>
           syncer.id === state.analyzingEngineSyncerId ? syncer : null
         )
-        if (syncer) return syncer.busy ? 'busy' : 'waiting'
+
+        let maxprobes = setting.get('board.analysis_probes')
+        if (syncer) {
+          return !maxprobes ? 'started' : syncer.busy ? 'busy' : 'waiting'
+        }
+
         syncer = state.attachedEngineSyncers.find(syncer =>
           commands.find(x => syncer.commands.includes(x))
         )
@@ -1449,7 +1454,7 @@ class Sabaki extends EventEmitter {
       let undef
 
       clearTimeout(this.continuousAnalysisId)
-      if (this.analysisProbes[treePosition] !== undef) {
+      if (this.analysisProbes[treePosition] === 0) {
         this.analyzeMove(treePosition, 10)
       } else
         this.continuousAnalysisId = setTimeout(() => {
@@ -1722,7 +1727,7 @@ class Sabaki extends EventEmitter {
               ])
             })
 
-            if (this.analysisProbes[treePosition] === undef && maxprobes)
+            if (this.analysisProbes[treePosition] === undef && maxprobes > 0)
               this.analysisProbes[treePosition] = maxprobes
 
             if (this.analysisProbes[treePosition]) {
@@ -2145,11 +2150,18 @@ class Sabaki extends EventEmitter {
     let syncer = this.inferredState.analyzingEngineSyncer
     if (!syncer) return
 
+    let maxprobes = setting.get('board.analysis_probes')
+
     if (syncer.busy) {
-      syncer.sendAbort()
+      if (maxprobes) {
+        this.analysisProbes[this.state.treePosition] = 0
+        syncer.sendAbort()
+      } else this.stopAnalysis()
     } else {
-      this.analysisProbes[this.state.treePosition] = -1
-      this.analyzeMove(this.state.treePosition)
+      if (maxprobes) {
+        this.analysisProbes[this.state.treePosition] = -1
+        this.analyzeMove(this.state.treePosition)
+      } else this.startAnalysis(syncerId)
     }
   }
 
