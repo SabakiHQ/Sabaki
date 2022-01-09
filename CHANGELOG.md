@@ -24,13 +24,23 @@ All notable changes to this project will be documented in this file.
   - Configure default edit tool via settings
   - `Ctrl+Click` on tool icon inserts tool symbol in comment
 
-- Low-Carbon Engine
-  - Pause engine analysis at position after a configurable number of probes
-  - When probes are limited, also limit to a single one when navigating to an
-    already analyzed node
-  - Consequently, revise `F4` behavior according to a `Start/Pause/Deepen`
-    paradigm; `Stop Analysis` is not available anymore via `F4` (use engine
-    context menu for the purpose)
+- Low-Carbon Engine ([#851](https://github.com/SabakiHQ/Sabaki/issues/851))
+  - In settings, `board.analysis_probes` defines a number of probes
+  - If 0, the behavior is the same as of v0.52.0
+  - Otherwise, the engine obeys a Start/Pause/Deepen paradigm (through `F4`), on
+    a per-position basis:
+    - Once started, analysis can be paused, but not stopped as of v0.52.0.
+    - If paused, the engine does not analyze anymore, but the result of its
+      analysis is still available, in particular the heatmap
+    - The user can ask for more analysis via `F4`, or pause via `F4`
+    - If `board.analysis_probes` is positive, engine pauses automatically after
+      that many probes at position; if negavite, user only can pause the engine
+    - When nagivating to a position where analysis was paused, engine performs a
+      quick single analysis, then pauses again
+  - To permit this behavior, `F4` does not expose `Stop Analysis` anymore,
+    unless `board.analysis_probes` is 0; user can achieve a purpose that is
+    somehow similar to `Stop Analysis` by stopping the engine via its context
+    menu.
 - Can configure engine:
   - to load at application startup
   - to have a default role when loaded
@@ -48,10 +58,6 @@ All notable changes to this project will be documented in this file.
 
 - "Navigate>Go to Main Variation" now works again
   ([#801](https://github.com/SabakiHQ/Sabaki/issues/801))
-
-**Changed**
-
-- Revise vertex context menu (reference needed)
 
 ## [Sabaki v0.52.0][v0.52.0] (2021-07-05)
 

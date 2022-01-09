@@ -120,6 +120,7 @@ class Sabaki extends EventEmitter {
     this.historyPointer = 0
     this.history = []
     this.recordHistory()
+    this.analysisProbes = {}
 
     // Bind state to settings
 
@@ -202,7 +203,12 @@ class Sabaki extends EventEmitter {
         syncer = state.attachedEngineSyncers.find(syncer =>
           syncer.id === state.analyzingEngineSyncerId ? syncer : null
         )
-        if (syncer) return syncer.busy ? 'busy' : 'waiting'
+
+        let maxprobes = setting.get('board.analysis_probes')
+        if (syncer) {
+          return !maxprobes ? 'started' : syncer.busy ? 'busy' : 'waiting'
+        }
+
         syncer = state.attachedEngineSyncers.find(syncer =>
           commands.find(x => syncer.commands.includes(x))
         )
@@ -1567,11 +1573,16 @@ class Sabaki extends EventEmitter {
           this.state.whiteEngineSyncerId
         ].includes(this.state.analyzingEngineSyncerId))
     ) {
-      clearTimeout(this.continuousAnalysisId)
+      let timeout = setting.get('game.navigation_analysis_delay')
+      let undef
 
-      this.continuousAnalysisId = setTimeout(() => {
-        this.analyzeMove(treePosition)
-      }, setting.get('game.navigation_analysis_delay'))
+      clearTimeout(this.continuousAnalysisId)
+      if (this.analysisProbes[treePosition] === 0) {
+        this.analyzeMove(treePosition, 10)
+      } else
+        this.continuousAnalysisId = setTimeout(() => {
+          this.analyzeMove(treePosition)
+        }, timeout)
     }
   }
 
@@ -1832,22 +1843,23 @@ class Sabaki extends EventEmitter {
             let {sign, winrate} = syncer.analysis
             let maxprobes = setting.get('board.analysis_probes')
             if (sign < 0) winrate = 100 - winrate
+            let treePosition = syncer.treePosition
+            let undef
 
             let newTree = tree.mutate(draft => {
-              draft.updateProperty(syncer.treePosition, 'SBKV', [
+              draft.updateProperty(treePosition, 'SBKV', [
                 (Math.round(winrate * 100) / 100).toString()
               ])
             })
 
-            if (maxprobes && maxprobes > 0) {
-              if (
-                (syncer.analysis.probes &&
-                  maxprobes == syncer.analysis.probes) ||
-                (syncer.analysis.syncing && maxprobes < syncer.analysis.probes)
-              ) {
-                syncer.sendAbort()
-              }
+            if (this.analysisProbes[treePosition] === undef && maxprobes > 0)
+              this.analysisProbes[treePosition] = maxprobes
+
+            if (this.analysisProbes[treePosition]) {
+              this.analysisProbes[treePosition]--
             }
+
+            if (this.analysisProbes[treePosition] === 0) syncer.sendAbort()
 
             this.setCurrentTreePosition(newTree, this.state.treePosition)
           }
@@ -2199,7 +2211,7 @@ class Sabaki extends EventEmitter {
     }
   }
 
-  async analyzeMove(treePosition) {
+  async analyzeMove(treePosition, shallow) {
     let sign = this.getPlayer(treePosition)
     let color = sign > 0 ? 'B' : 'W'
     let syncer = this.inferredState.analyzingEngineSyncer
@@ -2214,6 +2226,11 @@ class Sabaki extends EventEmitter {
     if (commandName == null) return
 
     let interval = setting.get('board.analysis_interval').toString()
+    if (shallow) {
+      interval = shallow.toString()
+      this.analysisProbes[treePosition] = 1
+    }
+
     let args = [color, interval]
 
     if (commandName == 'kata-analyze') args = [...args, 'ownership', 'true']
@@ -2275,10 +2292,18 @@ class Sabaki extends EventEmitter {
     let syncer = this.inferredState.analyzingEngineSyncer
     if (!syncer) return
 
+    let maxprobes = setting.get('board.analysis_probes')
+
     if (syncer.busy) {
-      syncer.sendAbort()
+      if (maxprobes) {
+        this.analysisProbes[this.state.treePosition] = 0
+        syncer.sendAbort()
+      } else this.stopAnalysis()
     } else {
-      this.analyzeMove(this.state.treePosition)
+      if (maxprobes) {
+        this.analysisProbes[this.state.treePosition] = -1
+        this.analyzeMove(this.state.treePosition)
+      } else this.startAnalysis(syncerId)
     }
   }
 
