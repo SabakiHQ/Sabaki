@@ -219,7 +219,7 @@ export default class Goban extends Component {
       paintMap = [],
       analysis,
       analysisType,
-      scoreLeadType,
+      analysisValueType,
       highlightVertices = [],
       dimmedStones = [],
 
@@ -453,9 +453,13 @@ export default class Goban extends Component {
       } of analysis.variations) {
         let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
 
+        if (winrate !== null && analysisValueType === 'change') {
+          winrate -= analysis.winrate
+        }
         winrate =
           strength <= 3 ? Math.floor(winrate) : Math.floor(winrate * 10) / 10
-        if (scoreLead !== null && scoreLeadType === 'change') {
+        if (winrate === 0) winrate = 0 // Avoid -0
+        if (scoreLead !== null && analysisValueType === 'change') {
           scoreLead -= analysis.scoreLead
         }
         scoreLead = scoreLead == null ? null : Math.round(scoreLead * 10) / 10
