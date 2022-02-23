@@ -47,7 +47,7 @@ let defaults = {
   'autoscroll.min_interval': 50,
   'board.analysis_interval': 50,
   'board.analysis_type': 'winrate',
-  'board.scorelead_type': 'absolute',
+  'board.analysis_value_type': 'absolute',
   'board.show_analysis': true,
   'board.variation_replay_mode': 'move_by_move',
   'board.variation_replay_interval': 500,

@@ -359,7 +359,7 @@ class App extends Component {
         showMenuBar: state.showMenuBar,
         disableAll: state.busy > 0,
         analysisType: state.analysisType,
-        scoreLeadType: state.scoreLeadType,
+        analysisValueType: state.analysisValueType,
         showAnalysis: state.showAnalysis,
         showCoordinates: state.showCoordinates,
         coordinatesType: state.coordinatesType,
