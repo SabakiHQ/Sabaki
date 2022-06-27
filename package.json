@@ -109,7 +109,7 @@
     "recursive-copy": "^2.0.10",
     "remark-breaks": "^1.0.5",
     "rimraf": "^3.0.2",
-    "uuid": "^7.0.3",
+    "uuid": "^8.0.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
