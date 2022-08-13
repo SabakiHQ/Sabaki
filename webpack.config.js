@@ -8,7 +8,7 @@ module.exports = (env, argv) => ({
     path: __dirname
   },
 
-  devtool: argv.mode === 'production' ? false : 'cheap-module-eval-source-map',
+  devtool: argv.mode === 'production' ? false : 'eval-cheap-module-source-map',
   target: 'electron-renderer',
 
   node: {
