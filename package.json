@@ -95,7 +95,7 @@
     "@sabaki/immutable-gametree": "^1.9.4",
     "@sabaki/influence": "^1.2.2",
     "@sabaki/sgf": "^3.4.7",
-    "@sabaki/shudan": "^1.5.4",
+    "@sabaki/shudan": "^1.7.1",
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
     "dolm": "^0.7.3-beta",
@@ -122,8 +122,8 @@
     "prettier": "1.19.1",
     "react": "^16.13.1",
     "tmp": "^0.1.0",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
   },
   "scripts": {
     "test": "mocha --require esm",
