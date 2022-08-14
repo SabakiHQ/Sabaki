@@ -21,10 +21,6 @@ module.exports = (env, argv) => ({
         argv.mode === 'production'
           ? path.join(__dirname, 'node_modules/preact/dist/preact.min.js')
           : 'preact',
-      preact:
-        argv.mode === 'production'
-          ? path.join(__dirname, 'node_modules/preact/dist/preact.min.js')
-          : 'preact',
       'prop-types': path.join(__dirname, 'src/modules/shims/prop-types.js')
     }
   },
