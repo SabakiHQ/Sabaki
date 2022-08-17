@@ -17,11 +17,10 @@ module.exports = (env, argv) => ({
 
   resolve: {
     alias: {
-      react:
-        argv.mode === 'production'
-          ? path.join(__dirname, 'node_modules/preact/dist/preact.min.js')
-          : 'preact',
-      'prop-types': path.join(__dirname, 'src/modules/shims/prop-types.js')
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
+      'react/jsx-runtime': 'preact/jsx-runtime'
     }
   },
 
