@@ -99,7 +99,7 @@
     "argv-split": "^2.0.1",
     "classnames": "^2.2.6",
     "dolm": "^0.7.3-beta",
-    "fix-path": "^4.0.0",
+    "fix-path": "<4.0.0",
     "iconv-lite": "^0.5.1",
     "jschardet": "^3.0.0",
     "natsort": "^2.0.2",
