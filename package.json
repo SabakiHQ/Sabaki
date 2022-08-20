@@ -115,7 +115,7 @@
   "devDependencies": {
     "concurrently": "^7.3.0",
     "electron": "<14.0.0",
-    "electron-builder": "^22.11.7",
+    "electron-builder": "^23.3.3",
     "esm": "^3.2.25",
     "mocha": "<9.0",
     "onchange": "^6.1.0",
