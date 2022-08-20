@@ -1,7 +1,7 @@
 {
   "name": "sabaki",
   "productName": "Sabaki",
-  "version": "0.52.0",
+  "version": "0.52.1",
   "description": "An elegant Go/Baduk/Weiqi board and SGF editor for a more civilized age.",
   "author": "Yichuan Shen <shen.yichuan@gmail.com>",
   "homepage": "http://sabaki.yichuanshen.de",
@@ -16,7 +16,7 @@
   },
   "build": {
     "appId": "de.yichuanshen.sabaki",
-    "copyright": "Copyright © 2015-2020 Yichuan Shen",
+    "copyright": "Copyright © 2015-2022 Yichuan Shen",
     "compression": "normal",
     "linux": {
       "target": "AppImage",
