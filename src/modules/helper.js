@@ -1,4 +1,5 @@
 import fs from 'fs'
+import {join} from 'path'
 
 let id = 0
 
@@ -140,6 +141,17 @@ export function isWritableDirectory(path) {
     // Path doesn't exist
     return false
   }
+}
+
+export function copyFolderSync(from, to) {
+  fs.mkdirSync(to)
+  fs.readdirSync(from).forEach(element => {
+    if (fs.lstatSync(join(from, element)).isFile()) {
+      fs.copyFileSync(join(from, element), join(to, element))
+    } else {
+      copyFolderSync(join(from, element), join(to, element))
+    }
+  })
 }
 
 export function getScore(board, areaMap, {komi = 0, handicap = 0} = {}) {
