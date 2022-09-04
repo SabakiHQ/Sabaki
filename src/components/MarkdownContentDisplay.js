@@ -18,11 +18,13 @@ function typographer(children) {
 
 function htmlify(children) {
   return toChildArray(children).map(child => {
-    if (typeof child !== 'string') return child
+    let text = child.props.children
+
+    if (typeof text !== 'string') return child
 
     return h(ContentDisplay, {
       tag: 'span',
-      content: typographer(child)
+      content: typographer(text)
     })
   })
 }
