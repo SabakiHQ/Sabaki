@@ -66,9 +66,9 @@ function Html({isBlock, value}) {
 class MarkdownContentDisplay extends Component {
   render({source}) {
     return h(ReactMarkdown, {
-      children: source,
-      remarkPlugins: [breaks],
-      components: {
+      source,
+      plugins: [breaks],
+      renderers: {
         paragraph: Paragraph,
         emphasis: Emphasis,
         strong: Strong,
