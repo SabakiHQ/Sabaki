@@ -18,13 +18,11 @@ function typographer(children) {
 
 function htmlify(children) {
   return toChildArray(children).map(child => {
-    let text = child.props.children
-
-    if (typeof text !== 'string') return child
+    if (typeof child !== 'string') return child
 
     return h(ContentDisplay, {
       tag: 'span',
-      content: typographer(text)
+      content: typographer(child)
     })
   })
 }
@@ -68,20 +66,23 @@ function Html({isBlock, value}) {
 class MarkdownContentDisplay extends Component {
   render({source}) {
     return h(ReactMarkdown, {
-      source,
-      plugins: [breaks],
-      renderers: {
-        paragraph: Paragraph,
-        emphasis: Emphasis,
+      children: source,
+      remarkPlugins: [breaks],
+      components: {
+        p: Paragraph,
+        em: Emphasis,
         strong: Strong,
-        delete: Delete,
-        link: Link,
-        image: Image,
-        linkReference: Link,
-        imageReference: Image,
+        del: Delete,
+        a: Link,
+        img: Image,
         table: Table,
-        listItem: ListItem,
-        heading: Heading,
+        li: ListItem,
+        h1: Heading,
+        h2: Heading,
+        h3: Heading,
+        h4: Heading,
+        h5: Heading,
+        h6: Heading,
         code: Paragraph,
         html: Html
       }

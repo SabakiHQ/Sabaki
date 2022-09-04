@@ -105,7 +105,7 @@
     "natsort": "^2.0.2",
     "pikaday": "^1.8.0",
     "preact": "^10.4.0",
-    "react-markdown": "4.0.0",
+    "react-markdown": "^8.0.3",
     "recursive-copy": "^2.0.10",
     "remark-breaks": "^3.0.2",
     "rimraf": "^3.0.2",
