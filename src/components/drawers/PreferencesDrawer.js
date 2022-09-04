@@ -4,7 +4,6 @@ import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import {join} from 'path'
-import copy from 'recursive-copy'
 import rimraf from 'rimraf'
 import {v4 as uuid} from 'uuid'
 import natsort from 'natsort'
@@ -12,7 +11,11 @@ import natsort from 'natsort'
 import i18n from '../../i18n.js'
 import sabaki from '../../modules/sabaki.js'
 import {showOpenDialog, showMessageBox} from '../../modules/dialog.js'
-import {noop, isWritableDirectory} from '../../modules/helper.js'
+import {
+  copyFolderSync,
+  noop,
+  isWritableDirectory
+} from '../../modules/helper.js'
 import * as gtplogger from '../../modules/gtplogger.js'
 import Drawer from './Drawer.js'
 
@@ -449,12 +452,14 @@ class ThemesTab extends Component {
 
       let id = uuid()
 
-      copy(result[0], join(setting.themesDirectory, id), err => {
-        if (err) return showMessageBox(t('Installation failed.'), 'error')
+      try {
+        copyFolderSync(result[0], join(setting.themesDirectory, id))
 
         setting.loadThemes()
         setting.set('theme.current', id)
-      })
+      } catch (err) {
+        return showMessageBox(t('Installation failed.'), 'error')
+      }
     }
 
     setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
