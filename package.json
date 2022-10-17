@@ -116,7 +116,7 @@
     "electron": "<14.0.0",
     "electron-builder": "^23.3.3",
     "esm": "^3.2.25",
-    "mocha": "<9.0",
+    "mocha": "<11.0",
     "onchange": "^6.1.0",
     "prettier": "1.19.1",
     "tmp": "^0.2.1",
