@@ -53,6 +53,7 @@ class Sabaki extends EventEmitter {
       findVertex: null,
       deadStones: [],
       blockedGuesses: [],
+      estimateOverrides: {},
 
       // Goban
 
@@ -243,6 +244,8 @@ class Sabaki extends EventEmitter {
 
   setMode(mode) {
     if (this.state.mode === mode) return
+
+    this.setState({estimateOverrides: {}})
 
     let stateChange = {mode}
 
@@ -960,7 +963,19 @@ class Sabaki extends EventEmitter {
         this.editVertexData = null
       }
     } else if (['scoring', 'estimator'].includes(this.state.mode)) {
-      if (button !== 0 || board.get(vertex) === 0) return
+      if (button !== 0) return
+
+      if (board.get(vertex) === 0) {
+        let {estimateOverrides} = this.state
+
+        let clickCount = estimateOverrides[vertex[1] + 'x' + vertex[0]]
+        clickCount = !clickCount ? 1 : clickCount + 1
+
+        estimateOverrides[vertex[1] + 'x' + vertex[0]] = clickCount
+
+        this.setState({estimateOverrides})
+        return
+      }
 
       let {mode, deadStones} = this.state
       let dead = deadStones.some(v => helper.vertexEquals(v, vertex))

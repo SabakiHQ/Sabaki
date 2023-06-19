@@ -319,6 +319,13 @@ class App extends Component {
         state.mode === 'estimator'
           ? influence.map(scoreBoard.signMap, {discrete: true})
           : influence.areaMap(scoreBoard.signMap)
+
+      for (let vertex in state.estimateOverrides) {
+        let clickCount = state.estimateOverrides[vertex]
+        let coord = vertex.split('x')
+        let val = areaMap[coord[0]][coord[1]] + 1 + clickCount
+        areaMap[coord[0]][coord[1]] = (val % 3) - 1
+      }
     }
 
     state = {...state, ...inferredState, scoreBoard, areaMap}
