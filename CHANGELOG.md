@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
+## Local changes to v0.52.0 (reference if associated to a pull request)
+
+**Fixed**
+
+- Fix vertex coordinates insertion in edit (`Ctrl+Click`)
+  ([#838](https://github.com/SabakiHQ/Sabaki/issues/838))
+
+- Keep focus in textarea when using edit tools
+
+**Added**
+
+- Configure (most) shortcuts via settings
+
+- Edit mode
+
+  - Minimal language support via settings
+    ([#832](https://github.com/SabakiHQ/Sabaki/issues/832))
+  - Spelling context menu with addition to Custom Dictionary
+
+  - Configure default edit tool via settings
+  - `Ctrl+Click` on tool icon inserts tool symbol in comment
+
+- Low-Carbon Engine ([#851](https://github.com/SabakiHQ/Sabaki/issues/851))
+  - In settings, `board.analysis_probes` defines a number of probes
+  - If 0, the behavior is the same as of v0.52.0
+  - Otherwise, the engine obeys a Start/Pause/Deepen paradigm (through `F4`), on
+    a per-position basis:
+    - Once started, analysis can be paused, but not stopped as of v0.52.0.
+    - If paused, the engine does not analyze anymore, but the result of its
+      analysis is still available, in particular the heatmap
+    - The user can ask for more analysis via `F4`, or pause via `F4`
+    - If `board.analysis_probes` is positive, engine pauses automatically after
+      that many probes at position; if negavite, user only can pause the engine
+    - When nagivating to a position where analysis was paused, engine performs a
+      quick single analysis, then pauses again
+  - To permit this behavior, `F4` does not expose `Stop Analysis` anymore,
+    unless `board.analysis_probes` is 0; user can achieve a purpose that is
+    somehow similar to `Stop Analysis` by stopping the engine via its context
+    menu.
+- Can configure engine:
+  - to load at application startup
+  - to have a default role when loaded
+- Engine icons:
+
+  - player icon is clickable and its layout is available via CSS
+  - analyzer icon is clickable and toggles `Show Analysis`
+
+- Provide the territory map if analysis is `kata-analyze`
+- Expose an extra setting to open devtools at startup
+
 ## [Sabaki v0.52.1][v0.52.1]
 
 **Fixed**

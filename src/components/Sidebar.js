@@ -23,12 +23,11 @@ export default class Sidebar extends Component {
       sidebarSplit: setting.get('view.properties_height')
     }
 
-    this.handleGraphNodeClick = ({button, gameTree, treePosition, x, y}) => {
-      if (button === 0) {
-        sabaki.setCurrentTreePosition(gameTree, treePosition)
-      } else {
-        sabaki.openNodeMenu(treePosition, {x, y})
-      }
+    this.handleGraphNodeClick = ({gameTree, treePosition}) => {
+      sabaki.setCurrentTreePosition(gameTree, treePosition)
+    }
+    this.handleGraphNodeContextMenu = ({treePosition, x, y}) => {
+      sabaki.openNodeMenu(treePosition, {x, y})
     }
 
     this.handleSliderChange = ({percent}) => {
@@ -184,7 +183,8 @@ export default class Sidebar extends Component {
               gridSize: graphGridSize,
               nodeSize: graphNodeSize,
 
-              onNodeClick: this.handleGraphNodeClick
+              onNodeClick: this.handleGraphNodeClick,
+              onNodeContextMenu: this.handleGraphNodeContextMenu
             })
           ),
 

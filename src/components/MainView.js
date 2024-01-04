@@ -21,7 +21,7 @@ export default class MainView extends Component {
     }
 
     this.handleToolButtonClick = evt => {
-      sabaki.setState({selectedTool: evt.tool})
+      sabaki.clickToolButton(evt)
     }
 
     this.handleFindButtonClick = evt =>
@@ -31,6 +31,9 @@ export default class MainView extends Component {
       })
 
     this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
+    this.handleGobanVertexContextMenu = this.handleGobanVertexContextMenu.bind(
+      this
+    )
     this.handleGobanLineDraw = this.handleGobanLineDraw.bind(this)
   }
 
@@ -63,6 +66,9 @@ export default class MainView extends Component {
   handleGobanVertexClick(evt) {
     sabaki.clickVertex(evt.vertex, evt)
   }
+  handleGobanVertexContextMenu(vertex, evt) {
+    sabaki.openVertexContextMenu(vertex, evt)
+  }
 
   handleGobanLineDraw(evt) {
     let {v1, v2} = evt.line
@@ -92,6 +98,7 @@ export default class MainView extends Component {
       highlightVertices,
       analysisType,
       showAnalysis,
+      showInfluence,
       showCoordinates,
       showMoveColorization,
       showMoveNumbers,
@@ -121,6 +128,8 @@ export default class MainView extends Component {
       for (let [x, y] of blockedGuesses) {
         paintMap[y][x] = 1
       }
+    } else if (showInfluence) {
+      paintMap = areaMap
     }
 
     return h(
@@ -138,6 +147,7 @@ export default class MainView extends Component {
           highlightVertices:
             findVertex && mode === 'find' ? [findVertex] : highlightVertices,
           analysisType,
+          showInfluence,
           analysis:
             showAnalysis &&
             analysisTreePosition != null &&
@@ -166,6 +176,7 @@ export default class MainView extends Component {
           transformation: boardTransformation,
 
           onVertexClick: this.handleGobanVertexClick,
+          onVertexContextMenu: this.handleGobanVertexContextMenu,
           onLineDraw: this.handleGobanLineDraw
         })
       ),

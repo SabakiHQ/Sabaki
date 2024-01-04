@@ -66,6 +66,10 @@ class App extends Component {
       )
     })
 
+    sabaki.window.webContents.on('context-menu', (evt, props) => {
+      sabaki.openContextMenu(evt, props)
+    })
+
     sabaki.window.on('focus', () => {
       if (setting.get('file.show_reload_warning')) {
         sabaki.askForReload()
@@ -293,6 +297,10 @@ class App extends Component {
       .set('view.leftsidebar_width', this.state.leftSidebarWidth)
   }
 
+  handleContextMenu(evt) {
+    evt.stopPropagation()
+  }
+
   // Render
 
   render(_, state) {
@@ -301,6 +309,20 @@ class App extends Component {
     let inferredState = sabaki.inferredState
     let tree = inferredState.gameTree
     let scoreBoard, areaMap
+
+    if (state.showInfluence && state.analysis && state.analysis.ownership) {
+      let influenceMap = state.analysis.ownership
+      state.deadStones = []
+      areaMap = influenceMap
+      scoreBoard = gametree.getBoard(tree, state.treePosition)
+      for (let y = 0; y < scoreBoard.height; y++)
+        for (let x = 0; x < scoreBoard.width; x++) {
+          let value = influenceMap[y][x]
+          let vertex = [x, y]
+          let sign = scoreBoard.get(vertex)
+          if (sign * value < 0) state.deadStones.push(vertex)
+        }
+    }
 
     if (['scoring', 'estimator'].includes(state.mode)) {
       // Calculate area map
@@ -339,6 +361,7 @@ class App extends Component {
         disableAll: state.busy > 0,
         analysisType: state.analysisType,
         showAnalysis: state.showAnalysis,
+        showInfluence: state.showInfluence,
         showCoordinates: state.showCoordinates,
         coordinatesType: state.coordinatesType,
         showMoveNumbers: state.showMoveNumbers,
@@ -349,8 +372,29 @@ class App extends Component {
         showGameGraph: state.showGameGraph,
         showCommentBox: state.showCommentBox,
         showLeftSidebar: state.showLeftSidebar,
-        engineGameOngoing: state.engineGameOngoing
+        engineGameOngoing: state.engineGameOngoing,
+        analysisEngineStatus: inferredState.analysisEngineStatus
       }),
+
+      h(
+        'a',
+        {
+          style: {
+            width: '1.25px',
+            height: '1.25px',
+            zIndex: 100,
+            position: 'absolute'
+          },
+          id: 'default-context',
+          onContextMenu: this.handleContextMenu,
+          class: 'menu'
+        },
+        h('img', {
+          src: './img/ui/void.svg',
+          height: 10,
+          width: 10
+        })
+      ),
 
       h(TripleSplitContainer, {
         id: 'mainlayout',

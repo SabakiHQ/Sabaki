@@ -1362,6 +1362,10 @@ header {
   }
   .engine-peer-list .item .icon.player {
     filter: none;
+    cursor: pointer;
+  }
+  .engine-peer-list .item .icon.inactive {
+      opacity: .3;
   }
   .engine-peer-list .item .text-spinner {
     width: 1.5em;

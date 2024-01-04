@@ -29,8 +29,24 @@ function parseVertex(coord, size) {
   return [x, y]
 }
 
-function parseAnalysis(line, board) {
-  return line
+function parseAnalysis(line, board, sign) {
+  let matchOwner = line.match(/ownership\s+(.+)/) // [-0-9. ]
+  let ownership
+
+  if (matchOwner) {
+    let raw = matchOwner[1].split(/\s+/).map(x => sign * parseFloat(x))
+    line = line.slice(0, matchOwner.index)
+    if (raw.length == board.height * board.width)
+      ownership = Array(board.height)
+        .fill(0)
+        .map((_, y) =>
+          Array(board.width)
+            .fill(0)
+            .map((_, x) => raw[x + y * board.width])
+        )
+  }
+
+  let variations = line
     .split(/\s*info\s+/)
     .slice(1)
     .map(x => x.trim())
@@ -71,6 +87,11 @@ function parseAnalysis(line, board) {
       scoreLead: scoreLead != null ? +scoreLead : null,
       moves: pv.map(x => board.parseVertex(x))
     }))
+
+  return {
+    variations: variations,
+    ownership: ownership
+  }
 }
 
 export default class EngineSyncer extends EventEmitter {
@@ -106,6 +127,7 @@ export default class EngineSyncer extends EventEmitter {
         this.controller.sendCommand({name: 'protocol_version'}),
         this.controller.sendCommand({name: 'list_commands'}).then(response => {
           this.commands = response.content.split('\n')
+          this.emit('engine-ready', this.id)
         }),
         ...(commands != null && commands.trim() !== ''
           ? commands
@@ -140,17 +162,17 @@ export default class EngineSyncer extends EventEmitter {
             // Parse analysis info
 
             if (line.startsWith('info ')) {
-              let variations = parseAnalysis(line, board)
+              let {variations, ownership} = parseAnalysis(line, board, sign)
 
               this.analysis = {
                 sign,
                 variations,
-                winrate: Math.max(...variations.map(({winrate}) => winrate))
+                winrate: Math.max(...variations.map(({winrate}) => winrate)),
+                ownership: ownership
               }
             } else if (line.startsWith('play ')) {
               sign = -sign
 
-              this.analysis = null
               this.treePosition = null
             }
           })
@@ -165,7 +187,6 @@ export default class EngineSyncer extends EventEmitter {
 
           if (!equals(prevHistory, this.stateTracker.state.history)) {
             this.treePosition = null
-            this.analysis = null
           }
         }
       }
@@ -407,6 +428,5 @@ export default class EngineSyncer extends EventEmitter {
     }
 
     this.treePosition = id
-    this.analysis = null
   }
 }
