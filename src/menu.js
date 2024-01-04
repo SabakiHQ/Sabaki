@@ -572,6 +572,39 @@ exports.get = function(props = {}) {
           click: () =>
             sabaki.setState(({fullScreen}) => ({fullScreen: !fullScreen}))
         },
+        {
+          label: i18n.t('menu.view', 'Analysis Metric'),
+          submenu: [
+            {
+              label: i18n.t('menu.view', '&Win Rate'),
+              type: 'checkbox',
+              checked: analysisType === 'winrate',
+              accelerator: 'CmdOrCtrl+Shift+H',
+              click: () => {
+                setting.set(
+                  'board.analysis_type',
+                  setting.get('board.analysis_type') === 'winrate'
+                    ? 'scoreLead'
+                    : 'winrate'
+                )
+              }
+            },
+            {
+              label: i18n.t('menu.view', '&Score Lead'),
+              type: 'checkbox',
+              checked: analysisType === 'scoreLead',
+              accelerator: 'CmdOrCtrl+Shift+H',
+              click: () => {
+                setting.set(
+                  'board.analysis_type',
+                  setting.get('board.analysis_type') === 'scoreLead'
+                    ? 'winrate'
+                    : 'scoreLead'
+                )
+              }
+            }
+          ]
+        },
         {type: 'separator'},
         {
           label: i18n.t('menu.view', 'Show &Coordinates'),
@@ -639,50 +672,14 @@ exports.get = function(props = {}) {
         },
         {
           label: i18n.t('menu.view', 'Show &Heatmap'),
-          submenu: [
-            {
-              label: i18n.t('menu.view', '&Don’t Show'),
-              type: 'checkbox',
-              checked: !showAnalysis,
-              accelerator: 'CmdOrCtrl+H',
-              click: () => toggleSetting('board.show_analysis')
-            },
-            {type: 'separator'},
-            {
-              label: i18n.t('menu.view', 'Show &Win Rate'),
-              type: 'checkbox',
-              checked: !!showAnalysis && analysisType === 'winrate',
-              accelerator: 'CmdOrCtrl+Shift+H',
-              click: () => {
-                setting.set('board.show_analysis', true)
-                setting.set(
-                  'board.analysis_type',
-                  setting.get('board.analysis_type') === 'winrate'
-                    ? 'scoreLead'
-                    : 'winrate'
-                )
-              }
-            },
-            {
-              label: i18n.t('menu.view', 'Show &Score Lead'),
-              type: 'checkbox',
-              checked: !!showAnalysis && analysisType === 'scoreLead',
-              accelerator: 'CmdOrCtrl+Shift+H',
-              click: () => {
-                setting.set('board.show_analysis', true)
-                setting.set(
-                  'board.analysis_type',
-                  setting.get('board.analysis_type') === 'scoreLead'
-                    ? 'winrate'
-                    : 'scoreLead'
-                )
-              }
-            }
-          ]
+          type: 'checkbox',
+          checked: !!showAnalysis,
+          accelerator: 'CmdOrCtrl+H',
+          click: () => toggleSetting('board.show_analysis')
         },
         {type: 'separator'},
         {
-          label: i18n.t('menu.view', 'Show &Winrate Graph'),
+          label: i18n.t('menu.view', 'Show &Analysis Graph'),
           type: 'checkbox',
           checked: !!showWinrateGraph,
           enabled: !!showGameGraph || !!showCommentBox,
