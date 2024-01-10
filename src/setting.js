@@ -188,6 +188,7 @@ let defaults = {
   'view.fuzzy_stone_placement': true,
   'view.leftsidebar_width': 250,
   'view.leftsidebar_minwidth': 100,
+  'view.move_numbers_type': 'start',
   'view.peerlist_height': 130,
   'view.peerlist_minheight': 58,
   'view.properties_height': 50,
