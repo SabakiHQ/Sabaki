@@ -76,6 +76,7 @@ class Sabaki extends EventEmitter {
       showLeftSidebar: setting.get('view.show_leftsidebar'),
       leftSidebarWidth: setting.get('view.leftsidebar_width'),
       showWinrateGraph: setting.get('view.show_winrategraph'),
+      showScoreLeadGraph: setting.get('view.show_scoreleadgraph'),
       showGameGraph: setting.get('view.show_graph'),
       showCommentBox: setting.get('view.show_comments'),
       sidebarWidth: setting.get('view.sidebar_width'),
@@ -197,6 +198,11 @@ class Sabaki extends EventEmitter {
         return [
           ...this.gameTree.listCurrentNodes(state.gameCurrents[state.gameIndex])
         ].map(x => x.data.SBKV && x.data.SBKV[0])
+      },
+      get scoreLeadData() {
+        return [
+          ...this.gameTree.listCurrentNodes(state.gameCurrents[state.gameIndex])
+        ].map(x => x.data.SBKS && x.data.SBKS[0])
       }
     }
   }
@@ -1739,12 +1745,16 @@ class Sabaki extends EventEmitter {
 
           if (syncer.analysis != null && syncer.treePosition != null) {
             let tree = this.state.gameTrees[this.state.gameIndex]
-            let {sign, winrate} = syncer.analysis
+            let {sign, winrate, scoreLead} = syncer.analysis
             if (sign < 0) winrate = 100 - winrate
+            if (sign < 0) scoreLead = 0 - scoreLead
 
             let newTree = tree.mutate(draft => {
               draft.updateProperty(syncer.treePosition, 'SBKV', [
                 (Math.round(winrate * 100) / 100).toString()
+              ])
+              draft.updateProperty(syncer.treePosition, 'SBKS', [
+                (Math.round(scoreLead * 100) / 100).toString()
               ])
             })
 

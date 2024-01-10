@@ -106,13 +106,15 @@ export default class Sidebar extends Component {
       treePosition,
 
       showWinrateGraph,
+      showScoreLeadGraph,
       showGameGraph,
       showCommentBox,
 
       graphGridSize,
       graphNodeSize,
 
-      winrateData
+      winrateData,
+      scoreLeadData
     },
     {winrateGraphHeight, sidebarSplit}
   ) {
@@ -140,6 +142,8 @@ export default class Sidebar extends Component {
           lastPlayer,
           width: winrateGraphWidth,
           data: winrateData,
+          scoreLeadData: scoreLeadData,
+          showScoreLeadGraph: showScoreLeadGraph,
           currentIndex: level,
           onCurrentIndexChange: this.handleWinrateGraphChange
         }),
@@ -230,8 +234,14 @@ export default class Sidebar extends Component {
   }
 }
 
-Sidebar.getDerivedStateFromProps = function({showWinrateGraph, winrateData}) {
+Sidebar.getDerivedStateFromProps = function({
+  showWinrateGraph,
+  winrateData,
+  showScoreLeadGraph,
+  scoreLeadData
+}) {
   return {
-    showWinrateGraph: showWinrateGraph && winrateData.some(x => x != null)
+    showWinrateGraph: showWinrateGraph && winrateData.some(x => x != null),
+    showScoreLeadGraph: showScoreLeadGraph && scoreLeadData.some(x => x != null)
   }
 }

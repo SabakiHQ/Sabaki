@@ -346,6 +346,7 @@ class App extends Component {
         showNextMoves: state.showNextMoves,
         showSiblings: state.showSiblings,
         showWinrateGraph: state.showWinrateGraph,
+        showScoreLeadGraph: state.showScoreLeadGraph,
         showGameGraph: state.showGameGraph,
         showCommentBox: state.showCommentBox,
         showLeftSidebar: state.showLeftSidebar,

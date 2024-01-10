@@ -33,6 +33,7 @@ exports.get = function(props = {}) {
     showNextMoves,
     showSiblings,
     showWinrateGraph,
+    showScoreLeadGraph,
     showGameGraph,
     showCommentBox,
     showLeftSidebar,
@@ -690,6 +691,18 @@ exports.get = function(props = {}) {
             toggleSetting('view.show_winrategraph')
             sabaki.setState(({showWinrateGraph}) => ({
               showWinrateGraph: !showWinrateGraph
+            }))
+          }
+        },
+        {
+          label: i18n.t('menu.view', 'Show &Score Lead Graph'),
+          type: 'checkbox',
+          checked: !!showScoreLeadGraph,
+          enabled: !!showGameGraph || !!showCommentBox,
+          click: () => {
+            toggleSetting('view.show_scoreleadgraph')
+            sabaki.setState(({showScoreLeadGraph}) => ({
+              showScoreLeadGraph: !showScoreLeadGraph
             }))
           }
         },
