@@ -27,6 +27,9 @@ under Sabaki v0.30.x may not work in Sabaki v0.40.0 or newer.
 | [Yunzi](https://github.com/billhails/SabakiThemes/tree/main/yunzi)                                 | ![Screenshot](https://github.com/billhails/SabakiThemes/blob/main/yunzi/YunziScreenshot.png)                        |
 | [Antique](https://github.com/billhails/SabakiThemes/tree/main/antique)                             | ![Screenshot](https://github.com/billhails/SabakiThemes/blob/main/antique/AntiqueScreenshot.png)                    |
 | [Jade](https://github.com/billhails/SabakiThemes/tree/main/jade)                                   | ![Screenshot](https://github.com/billhails/SabakiThemes/blob/main/jade/JadeScreenshot.png)                          |
+| [Subtle - Paper](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                             | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_paper/Screenshot.png)        |
+| [Subtle - Kaya](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                              | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_kaya/Screenshot.png)         |
+| [Subtle - Dark](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                              | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_dark/Screenshot.png)         |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn
 [how to package a userstyle into a theme](create-themes.md) and feel free to
