@@ -514,6 +514,13 @@ class Sabaki extends EventEmitter {
       if (setting.get('game.goto_end_after_loading')) {
         this.goToEnd()
       }
+
+      //This is the rotation setting that Jiaying put in
+      if (setting.get('file.loadrandomizedboard')) {
+        const rotations = ['', 'r', 'rr', 'rrr']
+        let random = Math.floor(Math.random() * rotations.length)
+        this.pushBoardTransformation(rotations[random])
+      }
     }
 
     this.setBusy(false)

@@ -306,6 +306,10 @@ class GeneralTab extends Component {
         h(PreferencesItem, {
           id: 'view.winrategraph_invert',
           text: t('Invert winrate graph')
+        }),
+        h(PreferencesItem, {
+          id: 'file.loadrandomizedboard',
+          text: t('Randomized board rotation on load')
         })
       )
     )
