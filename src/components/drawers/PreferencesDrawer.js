@@ -666,7 +666,9 @@ class EngineItem extends Component {
         ),
         h('input', {
           type: 'text',
-          placeholder: t('Path'),
+          placeholder: t(
+            'Path (e.g., /path/to/engine or C:\\path\\to\\engine.exe)'
+          ),
           value: path || '',
           name: 'path',
           onChange: this.handleChange
@@ -677,7 +679,9 @@ class EngineItem extends Component {
         {},
         h('input', {
           type: 'text',
-          placeholder: t('No arguments'),
+          placeholder: t(
+            'Optional arguments (e.g., -param1 value1 -param2 value2)'
+          ),
           value: args || '',
           name: 'args',
           onChange: this.handleChange
