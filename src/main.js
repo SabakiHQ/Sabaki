@@ -11,6 +11,8 @@ const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
+const parseArgs = require('minimist')
+const argv = parseArgs(process.argv, {boolean: true})
 require('@electron/remote/main').initialize()
 
 let windows = []
@@ -235,11 +237,11 @@ async function main() {
 
   await app.whenReady()
 
-  if (!openfile && process.argv.length >= 2) {
-    if (!['electron.exe', 'electron'].some(x => process.argv[0].endsWith(x))) {
-      openfile = process.argv[1]
-    } else if (process.argv.length >= 3) {
-      openfile = process.argv[2]
+  if (!openfile) {
+    if (argv._[0].endsWith('sabaki')) {
+      openfile = argv._[1]
+    } else {
+      openfile = argv._[2]
     }
   }
 
