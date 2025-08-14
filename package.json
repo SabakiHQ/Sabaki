@@ -84,7 +84,7 @@
     "proseWrap": "always"
   },
   "dependencies": {
-    "@electron/remote": "^1.2.0",
+    "@electron/remote": "^2.0.8",
     "@mariotacke/color-thief": "^3.0.1",
     "@primer/octicons": "^9.6.0",
     "@sabaki/boardmatcher": "^1.2.0",
@@ -113,7 +113,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
-    "electron": "<14.0.0",
+    "electron": "^14.2.9",
     "electron-builder": "^23.3.3",
     "esm": "^3.2.25",
     "mocha": "<9.0",
