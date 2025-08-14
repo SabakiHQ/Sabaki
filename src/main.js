@@ -31,12 +31,12 @@ function newWindow(path) {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true,
       zoomFactor: setting.get('app.zoom_factor')
     }
   })
 
   windows.push(window)
+  require('@electron/remote/main').enable(window.webContents)
   buildMenu()
 
   window.once('ready-to-show', () => {
@@ -180,8 +180,6 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
 }
 
 async function main() {
-  app.allowRendererProcessReuse = true
-
   if (!setting.get('app.enable_hardware_acceleration')) {
     app.disableHardwareAcceleration()
   }
