@@ -31,6 +31,7 @@ function newWindow(path) {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      sandbox: false,
       zoomFactor: setting.get('app.zoom_factor')
     }
   })

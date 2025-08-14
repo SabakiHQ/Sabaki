@@ -113,7 +113,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.3.0",
-    "electron": "^19.1.9",
+    "electron": "^20.3.12",
     "electron-builder": "^23.3.3",
     "esm": "^3.2.25",
     "mocha": "<9.0",
