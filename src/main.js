@@ -263,15 +263,16 @@ function setupIpcHandlers() {
     const win = BrowserWindow.fromWebContents(e.sender)
     const zoomFactor = setting.get('app.zoom_factor')
 
-    // Build menu from template - need to handle click functions
+    // Build menu from template
+    // Click handlers are stored in renderer with IDs - we just send the ID back
     const buildMenuFromTemplate = items => {
       return items.map(item => {
+        if (!item) return item
         const newItem = {...item}
-        if (item.click) {
-          // Menu items with click handlers need special handling
-          // The click function string needs to be sent back to renderer
+        // Items with IDs have click handlers stored in the renderer
+        if (item.id && item.id.startsWith('popup-menu-')) {
           newItem.click = () => {
-            win.webContents.send('menu-click', item.id || item.label)
+            win.webContents.send('menu-click', item.id)
           }
         }
         if (item.submenu) {

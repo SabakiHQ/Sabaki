@@ -1,5 +1,6 @@
 import fs from 'fs'
 import {join} from 'path'
+import {ipcRenderer} from 'electron'
 
 let id = 0
 
@@ -102,8 +103,46 @@ export function isTextLikeElement(element) {
   )
 }
 
+// Store click handlers for popup menus
+const menuClickHandlers = new Map()
+let menuIdCounter = 0
+
+// Listen for menu click events from main process
+ipcRenderer.on('menu-click', (event, menuItemId) => {
+  const handler = menuClickHandlers.get(menuItemId)
+  if (handler) {
+    handler()
+  }
+})
+
 export function popupMenu(template, x, y) {
-  window.sabaki.menu.popup(template, x, y)
+  // Clear old handlers
+  menuClickHandlers.clear()
+
+  // Process template to extract click handlers and assign IDs
+  const processTemplate = items => {
+    return items.map(item => {
+      if (!item) return item
+
+      const newItem = {...item}
+
+      if (typeof item.click === 'function') {
+        const menuItemId = `popup-menu-${++menuIdCounter}`
+        menuClickHandlers.set(menuItemId, item.click)
+        newItem.id = menuItemId
+        delete newItem.click // Remove function, main process will use the id
+      }
+
+      if (item.submenu) {
+        newItem.submenu = processTemplate(item.submenu)
+      }
+
+      return newItem
+    })
+  }
+
+  const processedTemplate = processTemplate(template)
+  window.sabaki.menu.popup(processedTemplate, x, y)
 }
 
 export function wait(ms) {
