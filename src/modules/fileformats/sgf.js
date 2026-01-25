@@ -1,6 +1,6 @@
 import * as sgf from '@sabaki/sgf'
 import i18n from '../../i18n.js'
-import {getId} from '../helper.js'
+import {getId} from '../utils.js'
 import * as gametree from '../gametree.js'
 
 const t = i18n.context('fileformats')
