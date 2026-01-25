@@ -133,14 +133,14 @@ export default class GameChooserDrawer extends Component {
         [
           {
             label: t('&Remove Game'),
-            click: () => {
+            click: async () => {
               if (
-                dialog.showMessageBox(
+                (await dialog.showMessageBox(
                   t('Do you really want to remove this game permanently?'),
                   'warning',
                   [t('Remove Game'), t('Cancel')],
                   1
-                ) === 1
+                )) === 1
               )
                 return
 
@@ -152,16 +152,16 @@ export default class GameChooserDrawer extends Component {
           },
           {
             label: t('Remove &Other Games'),
-            click: () => {
+            click: async () => {
               if (
-                dialog.showMessageBox(
+                (await dialog.showMessageBox(
                   t(
                     'Do you really want to remove all other games permanently?'
                   ),
                   'warning',
                   [t('Remove Games'), t('Cancel')],
                   1
-                ) === 1
+                )) === 1
               )
                 return
 
@@ -240,8 +240,8 @@ export default class GameChooserDrawer extends Component {
         },
         {
           label: t('Add &Existing Files…'),
-          click: () => {
-            let result = dialog.showOpenDialog({
+          click: async () => {
+            let result = await dialog.showOpenDialog({
               properties: ['openFile', 'multiSelections'],
               filters: [
                 ...fileformats.meta,
@@ -260,7 +260,7 @@ export default class GameChooserDrawer extends Component {
                   newTrees.push(...trees)
                 }
               } catch (err) {
-                dialog.showMessageBox(
+                await dialog.showMessageBox(
                   t('Some files are unreadable.'),
                   'warning'
                 )
