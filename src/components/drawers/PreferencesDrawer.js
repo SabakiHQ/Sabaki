@@ -336,8 +336,8 @@ class PathInputItem extends Component {
       setting.set(this.props.id, value)
     }
 
-    this.handleBrowseButtonClick = evt => {
-      let result = showOpenDialog({
+    this.handleBrowseButtonClick = async evt => {
+      let result = await showOpenDialog({
         properties:
           this.props.chooseDirectory != null
             ? ['openDirectory', 'createDirectory']
@@ -429,10 +429,10 @@ class ThemesTab extends Component {
       shell.openExternal(evt.currentTarget.href)
     }
 
-    this.handleUninstallButton = evt => {
+    this.handleUninstallButton = async evt => {
       evt.preventDefault()
 
-      let result = showMessageBox(
+      let result = await showMessageBox(
         t('Do you really want to uninstall this theme?'),
         'warning',
         [t('Uninstall'), t('Cancel')],
@@ -450,10 +450,10 @@ class ThemesTab extends Component {
       })
     }
 
-    this.handleInstallButton = evt => {
+    this.handleInstallButton = async evt => {
       evt.preventDefault()
 
-      let result = showOpenDialog({
+      let result = await showOpenDialog({
         properties: ['openFile'],
         filters: [{name: t('Sabaki Themes'), extensions: ['asar']}]
       })
@@ -616,8 +616,8 @@ class EngineItem extends Component {
       onChange({id, name, path, args, commands, [element.name]: element.value})
     }
 
-    this.handleBrowseButtonClick = () => {
-      let result = showOpenDialog({
+    this.handleBrowseButtonClick = async () => {
+      let result = await showOpenDialog({
         properties: ['openFile'],
         filters: [{name: t('All Files'), extensions: ['*']}]
       })

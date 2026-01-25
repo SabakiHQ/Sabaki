@@ -849,10 +849,10 @@ exports.get = function(props = {}) {
         {type: 'separator'},
         {
           label: i18n.t('menu.developer', 'Load &Language File…'),
-          click: () => {
+          click: async () => {
             let t = i18n.context('menu.developer')
 
-            dialog.showMessageBox(
+            await dialog.showMessageBox(
               t(
                 [
                   'A language file is basically a JavaScript file and can be used to execute arbitrary code on your computer.',
@@ -863,7 +863,7 @@ exports.get = function(props = {}) {
               [t('I understand')]
             )
 
-            let result = dialog.showOpenDialog({
+            let result = await dialog.showOpenDialog({
               properties: ['openFile'],
               filters: [
                 {
