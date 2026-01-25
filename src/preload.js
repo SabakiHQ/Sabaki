@@ -17,6 +17,15 @@ try {
   settingsCache = {}
 }
 
+// Single listener for setting changes, dispatches to multiple callbacks
+const settingChangeCallbacks = new Set()
+ipcRenderer.on('setting:change', (_, data) => {
+  settingsCache[data.key] = data.value
+  for (const callback of settingChangeCallbacks) {
+    callback(data)
+  }
+})
+
 window.sabaki = {
   // Settings - sync get with cache, async set
   setting: {
@@ -32,12 +41,8 @@ window.sabaki = {
     getUserDataDirectory: () => ipcRenderer.invoke('setting:getUserDataDirectory'),
     getThemesDirectory: () => ipcRenderer.invoke('setting:getThemesDirectory'),
     onDidChange: callback => {
-      const handler = (_, data) => {
-        settingsCache[data.key] = data.value
-        callback(data)
-      }
-      ipcRenderer.on('setting:change', handler)
-      return () => ipcRenderer.removeListener('setting:change', handler)
+      settingChangeCallbacks.add(callback)
+      return () => settingChangeCallbacks.delete(callback)
     }
   },
 
