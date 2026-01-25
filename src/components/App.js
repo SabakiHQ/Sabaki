@@ -1,5 +1,4 @@
 import {ipcRenderer} from 'electron'
-import * as remote from '@electron/remote'
 import {h, render, Component} from 'preact'
 import classNames from 'classnames'
 import fixPath from 'fix-path'
@@ -23,7 +22,13 @@ import * as gametree from '../modules/gametree.js'
 import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
 
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  set: (key, value) => {
+    window.sabaki.setting.set(key, value)
+    return setting
+  }
+}
 const t = i18n.context('App')
 
 const leftSidebarMinWidth = setting.get('view.sidebar_minwidth')
@@ -115,7 +120,8 @@ class App extends Component {
       evt.preventDefault()
 
       if (evt.dataTransfer.files.length === 0) return
-      sabaki.loadFile(evt.dataTransfer.files[0].path)
+      const filePath = window.sabaki.getPathForFile(evt.dataTransfer.files[0])
+      sabaki.loadFile(filePath)
     })
 
     // Handle keys

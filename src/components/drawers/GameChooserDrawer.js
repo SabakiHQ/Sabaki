@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 
@@ -14,7 +13,7 @@ import * as gamesort from '../../modules/gamesort.js'
 import * as helper from '../../modules/helper.js'
 
 const t = i18n.context('GameChooserDrawer')
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')
 let itemMinWidth = thumbnailSize + 12 + 20

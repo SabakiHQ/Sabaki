@@ -67,7 +67,6 @@
       "!src/{components,modules}${/*}",
       "!engines",
       "!node_modules",
-      "node_modules/@electron/remote",
       "node_modules/@primer/octicons/build/svg/*",
       "node_modules/@sabaki/deadstones/wasm/*",
       "node_modules/@sabaki/shudan/css/*",
@@ -84,7 +83,6 @@
     "proseWrap": "always"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
     "@mariotacke/color-thief": "^3.0.1",
     "@primer/octicons": "^9.6.0",
     "@sabaki/boardmatcher": "^1.2.0",

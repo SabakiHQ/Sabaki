@@ -1,7 +1,6 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 export default class BusyScreen extends Component {
   componentWillReceiveProps({show}) {

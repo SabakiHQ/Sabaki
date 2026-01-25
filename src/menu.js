@@ -1,18 +1,20 @@
 const nativeRequire = eval('require')
 
 const {shell, clipboard} = require('electron')
-var remote = null
-try {
-  remote = require('@electron/remote')
-} catch (e) {}
-const isRenderer = remote != null
-const {app} = isRenderer ? remote : require('electron')
+const isRenderer = typeof window !== 'undefined' && window.sabaki != null
+const {app} = isRenderer ? {app: {name: 'Sabaki', getVersion: () => ''}} : require('electron')
 
 const i18n = require('./i18n')
 const sabaki = isRenderer ? require('./modules/sabaki').default : null
 const dialog = isRenderer ? require('./modules/dialog') : null
 const setting = isRenderer
-  ? remote.require('./setting')
+  ? {
+      get: key => window.sabaki.setting.get(key),
+      set: (key, value) => {
+        window.sabaki.setting.set(key, value)
+        return setting
+      }
+    }
   : nativeRequire('./setting')
 
 exports.get = function(props = {}) {

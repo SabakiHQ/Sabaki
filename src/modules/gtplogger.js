@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import winston from 'winston'
 import {resolve, join} from 'path'
 
@@ -7,7 +6,9 @@ import {showMessageBox} from './dialog.js'
 import * as helper from './helper.js'
 
 const t = i18n.context('gtplogger')
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key)
+}
 
 let filename = null
 
@@ -93,7 +94,7 @@ export function updatePath() {
   if (filename == null) {
     // Generate a new log file name
 
-    let pid = remote.getCurrentWebContents().getOSProcessId()
+    let pid = process.pid
     filename = `sabaki_${timestamp()}_${pid}.log`
   }
 

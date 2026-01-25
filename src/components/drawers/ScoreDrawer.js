@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 
@@ -9,7 +8,7 @@ import {noop, getScore} from '../../modules/helper.js'
 import Drawer from './Drawer.js'
 
 const t = i18n.context('ScoreDrawer')
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 class ScoreRow extends Component {
   render({method, score, komi, handicap, sign}) {

@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import sabaki from '../modules/sabaki.js'
 
@@ -8,7 +7,10 @@ import Slider from './sidebars/Slider.js'
 import GameGraph from './sidebars/GameGraph.js'
 import CommentBox from './sidebars/CommentBox.js'
 
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  set: (key, value) => window.sabaki.setting.set(key, value)
+}
 
 const propertiesMinHeight = setting.get('view.properties_minheight')
 const winrateGraphMinHeight = setting.get('view.winrategraph_minheight')

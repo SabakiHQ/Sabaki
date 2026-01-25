@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import classNames from 'classnames'
 import {h, Component, toChildArray} from 'preact'
 import Pikaday from 'pikaday'
@@ -16,7 +15,7 @@ import i18n from '../../i18n.js'
 import Drawer from './Drawer.js'
 
 const t = i18n.context('InfoDrawer')
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 class InfoDrawerItem extends Component {
   render({title, children}) {

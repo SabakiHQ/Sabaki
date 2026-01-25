@@ -1,8 +1,7 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import * as helper from '../../modules/helper.js'
 
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 class Slider extends Component {
   constructor() {
