@@ -1,6 +1,5 @@
 import {Component} from 'preact'
 import {ipcRenderer} from 'electron'
-import * as remote from '@electron/remote'
 import * as dialog from '../modules/dialog.js'
 import * as menu from '../menu.js'
 
@@ -9,8 +8,8 @@ export default class MainMenu extends Component {
     super(props)
 
     this.menuData = menu.get()
-    this.window = remote.getCurrentWindow()
     this.listeners = {}
+    this._unsubscribeFocus = null
 
     this.buildMenu = () => {
       ipcRenderer.send('build-menu', this.props)
@@ -18,14 +17,14 @@ export default class MainMenu extends Component {
   }
 
   componentDidMount() {
-    this.window.on('focus', this.buildMenu)
+    this._unsubscribeFocus = window.sabaki.window.on('focus', this.buildMenu)
 
     let handleMenuClicks = menu => {
       for (let item of menu) {
         if (item.click != null) {
           this.listeners[item.id] = () => {
             if (!this.props.showMenuBar) {
-              this.window.setMenuBarVisibility(false)
+              window.sabaki.window.setMenuBarVisibility(false)
             }
 
             dialog.closeInputBox()
@@ -45,10 +44,10 @@ export default class MainMenu extends Component {
   }
 
   componentWillUnmount() {
-    this.window.removeListener('focus', this.buildMenu)
+    if (this._unsubscribeFocus) this._unsubscribeFocus()
 
     for (let id in this.listeners) {
-      ipcRenderer.removeListener(`menu-click-${item.id}`, this.listeners[id])
+      ipcRenderer.removeListener(`menu-click-${id}`, this.listeners[id])
     }
   }
 

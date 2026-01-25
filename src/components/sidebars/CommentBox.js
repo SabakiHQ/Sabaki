@@ -1,5 +1,4 @@
 import {shell} from 'electron'
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import boardmatcher from '@sabaki/boardmatcher'
@@ -13,7 +12,7 @@ import {vertexEquals, typographer, noop} from '../../modules/helper.js'
 import MarkdownContentDisplay from '../MarkdownContentDisplay.js'
 
 const t = i18n.context('CommentBox')
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 
 let commentsCommitDelay = setting.get('comments.commit_delay')
 

@@ -1,21 +1,19 @@
 const nativeRequire = eval('require')
 
 const {ipcMain} = require('electron')
-var remote = null
-try {
-  remote = require('@electron/remote')
-} catch (e) {}
 const {readFileSync} = require('fs')
 const path = require('path')
 const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')
 const languages = require('@sabaki/i18n')
 
 const isElectron = process.versions.electron != null
-const isRenderer = isElectron && remote != null
+const isRenderer = typeof window !== 'undefined' && window.sabaki != null
 
-const mainI18n = isRenderer ? remote.require('./i18n') : null
+// In renderer, mainI18n is no longer available via remote
+// Instead, we handle i18n directly in the renderer
+const mainI18n = null
 const setting = isRenderer
-  ? remote.require('./setting')
+  ? {get: key => window.sabaki.setting.get(key)}
   : isElectron
   ? nativeRequire('./setting')
   : null
@@ -62,10 +60,6 @@ function loadStrings(strings) {
 }
 
 exports.loadFile = function(filename) {
-  if (isRenderer) {
-    mainI18n.loadFile(filename)
-  }
-
   try {
     loadStrings(
       Function(`

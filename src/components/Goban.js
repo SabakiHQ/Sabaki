@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import sgf from '@sabaki/sgf'
@@ -10,7 +9,7 @@ import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
 
 const t = i18n.context('Goban')
-const setting = remote.require('./setting')
+const setting = {get: key => window.sabaki.setting.get(key)}
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 export default class Goban extends Component {

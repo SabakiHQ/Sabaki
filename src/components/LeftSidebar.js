@@ -1,11 +1,13 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 
 import SplitContainer from './helpers/SplitContainer.js'
 import GtpConsole from './sidebars/GtpConsole.js'
 import {EnginePeerList} from './sidebars/PeerList.js'
 
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  set: (key, value) => window.sabaki.setting.set(key, value)
+}
 const peerListMinHeight = setting.get('view.peerlist_minheight')
 
 export default class LeftSidebar extends Component {

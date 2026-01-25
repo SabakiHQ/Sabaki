@@ -1,12 +1,10 @@
-import * as remote from '@electron/remote'
 import i18n from '../i18n.js'
 import sabaki from './sabaki.js'
 import {noop} from './helper.js'
 
 const t = i18n.context('dialog')
-const {app, dialog} = remote
 
-export function showMessageBox(
+export async function showMessageBox(
   message,
   type = 'info',
   buttons = [t('OK')],
@@ -14,40 +12,35 @@ export function showMessageBox(
 ) {
   sabaki.setBusy(true)
 
-  let result = dialog.showMessageBoxSync(remote.getCurrentWindow(), {
+  let result = await window.sabaki.dialog.showMessageBox({
     type,
     buttons,
-    title: app.name,
+    title: sabaki.appName,
     message,
     cancelId,
     noLink: true
   })
 
   sabaki.setBusy(false)
-  return result
+  return result.response
 }
 
-export function showFileDialog(type, options) {
+export async function showOpenDialog(options) {
   sabaki.setBusy(true)
 
-  let [t, ...ype] = [...type]
-  type = t.toUpperCase() + ype.join('').toLowerCase()
-
-  let result = dialog[`show${type}DialogSync`](
-    remote.getCurrentWindow(),
-    options
-  )
+  let result = await window.sabaki.dialog.showOpenDialog(options)
 
   sabaki.setBusy(false)
-  return result
+  return result.canceled ? null : result.filePaths
 }
 
-export function showOpenDialog(options) {
-  return showFileDialog('open', options)
-}
+export async function showSaveDialog(options) {
+  sabaki.setBusy(true)
 
-export function showSaveDialog(options) {
-  return showFileDialog('save', options)
+  let result = await window.sabaki.dialog.showSaveDialog(options)
+
+  sabaki.setBusy(false)
+  return result.canceled ? null : result.filePath
 }
 
 export async function showInputBox(message) {

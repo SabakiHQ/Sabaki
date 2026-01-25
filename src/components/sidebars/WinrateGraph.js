@@ -1,4 +1,3 @@
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import i18n from '../../i18n.js'
@@ -6,7 +5,10 @@ import sabaki from '../../modules/sabaki.js'
 import {noop} from '../../modules/helper.js'
 
 const t = i18n.context('WinrateGraph')
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  onDidChange: callback => window.sabaki.setting.onDidChange(callback)
+}
 const blunderThreshold = setting.get('view.winrategraph_blunderthreshold')
 
 class WinrateStrip extends Component {
@@ -59,7 +61,7 @@ export default class WinrateGraph extends Component {
       invert: setting.get('view.winrategraph_invert')
     }
 
-    setting.events.on(sabaki.window.id, 'change', ({key, value}) => {
+    setting.onDidChange(({key, value}) => {
       if (key === 'view.winrategraph_invert') {
         this.setState({invert: value})
       }

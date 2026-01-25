@@ -1,7 +1,7 @@
 import fs from 'fs'
 import EventEmitter from 'events'
 import {basename, extname} from 'path'
-import * as remote from '@electron/remote'
+import {ipcRenderer} from 'electron'
 import {h} from 'preact'
 import {v4 as uuid} from 'uuid'
 
@@ -22,8 +22,20 @@ import * as sound from './sound.js'
 
 deadstones.useFetch('./node_modules/@sabaki/deadstones/wasm/deadstones_bg.wasm')
 
-const {app} = remote
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  set: (key, value) => {
+    window.sabaki.setting.set(key, value)
+    return setting
+  },
+  events: {
+    on: (id, event, f) => {
+      if (event === 'change') {
+        window.sabaki.setting.onDidChange(f)
+      }
+    }
+  }
+}
 
 class Sabaki extends EventEmitter {
   constructor() {
@@ -111,9 +123,59 @@ class Sabaki extends EventEmitter {
     }
 
     this.events = new EventEmitter()
-    this.appName = app.name
-    this.version = app.getVersion()
-    this.window = remote.getCurrentWindow()
+    // App info will be set via IPC - use defaults initially
+    this.appName = 'Sabaki'
+    this.version = ''
+    this._initAppInfo()
+
+    // Window operations proxy
+    this.window = {
+      setFullScreen: f => window.sabaki.window.setFullScreen(f),
+      isFullScreen: () => this._windowState.isFullScreen,
+      isMaximized: () => this._windowState.isMaximized,
+      isMinimized: () => this._windowState.isMinimized,
+      setMenuBarVisibility: v => window.sabaki.window.setMenuBarVisibility(v),
+      setProgressBar: p => window.sabaki.window.setProgressBar(p),
+      getContentSize: () => this._windowState.contentSize,
+      setContentSize: (w, h) => window.sabaki.window.setContentSize(w, h),
+      close: () => window.sabaki.window.close(),
+      on: (event, callback) => {
+        this._windowListeners[event] = this._windowListeners[event] || []
+        this._windowListeners[event].push(callback)
+        return window.sabaki.window.on(event, callback)
+      },
+      removeListener: (event, callback) => {
+        if (this._windowListeners[event]) {
+          const idx = this._windowListeners[event].indexOf(callback)
+          if (idx >= 0) this._windowListeners[event].splice(idx, 1)
+        }
+      },
+      get autoHideMenuBar() {
+        return !setting.get('view.show_menubar')
+      },
+      set autoHideMenuBar(v) {
+        window.sabaki.window.setAutoHideMenuBar(v)
+      },
+      webContents: {
+        undo: () => window.sabaki.webContents.undo(),
+        redo: () => window.sabaki.webContents.redo(),
+        get zoomFactor() {
+          return setting.get('app.zoom_factor')
+        },
+        set zoomFactor(f) {
+          window.sabaki.webContents.setZoomFactor(f)
+        }
+      }
+    }
+
+    this._windowState = {
+      isFullScreen: false,
+      isMaximized: false,
+      isMinimized: false,
+      contentSize: [0, 0]
+    }
+    this._windowListeners = {}
+    this._setupWindowStateSync()
 
     this.treeHash = this.generateTreeHash()
     this.historyPointer = 0
@@ -121,12 +183,35 @@ class Sabaki extends EventEmitter {
     this.recordHistory()
 
     // Bind state to settings
-
-    setting.events.on(this.window.id, 'change', ({key, value}) => {
+    window.sabaki.setting.onDidChange(({key, value}) => {
       this.updateSettingState(key)
     })
 
     this.updateSettingState()
+  }
+
+  async _initAppInfo() {
+    this.appName = await window.sabaki.app.getName()
+    this.version = await window.sabaki.app.getVersion()
+  }
+
+  async _setupWindowStateSync() {
+    // Initial state
+    this._windowState.isFullScreen = await window.sabaki.window.isFullScreen()
+    this._windowState.isMaximized = await window.sabaki.window.isMaximized()
+    this._windowState.isMinimized = await window.sabaki.window.isMinimized()
+    this._windowState.contentSize = await window.sabaki.window.getContentSize()
+
+    // Listen for window events to keep state in sync
+    window.sabaki.window.on('maximize', () => {
+      this._windowState.isMaximized = true
+    })
+    window.sabaki.window.on('unmaximize', () => {
+      this._windowState.isMaximized = false
+    })
+    window.sabaki.window.on('resize', async () => {
+      this._windowState.contentSize = await window.sabaki.window.getContentSize()
+    })
   }
 
   setState(change, callback = null) {
@@ -434,7 +519,7 @@ class Sabaki extends EventEmitter {
     showInfo = false,
     suppressAskForSave = false
   } = {}) {
-    if (!suppressAskForSave && !this.askForSave()) return
+    if (!suppressAskForSave && !(await this.askForSave())) return
 
     let [blackName, whiteName] = [
       this.state.blackEngineSyncerId,
@@ -460,12 +545,12 @@ class Sabaki extends EventEmitter {
     filename = null,
     {suppressAskForSave = false, clearHistory = true} = {}
   ) {
-    if (!suppressAskForSave && !this.askForSave()) return
+    if (!suppressAskForSave && !(await this.askForSave())) return
 
     let t = i18n.context('sabaki.file')
 
     if (!filename) {
-      let result = dialog.showOpenDialog({
+      let result = await dialog.showOpenDialog({
         properties: ['openFile'],
         filters: [
           ...fileformats.meta,
@@ -498,7 +583,7 @@ class Sabaki extends EventEmitter {
 
       if (gameTrees.length == 0) throw true
     } catch (err) {
-      dialog.showMessageBox(t('This file is unreadable.'), 'warning')
+      await dialog.showMessageBox(t('This file is unreadable.'), 'warning')
       success = false
     }
 
@@ -538,7 +623,7 @@ class Sabaki extends EventEmitter {
 
       if (gameTrees.length == 0) throw true
     } catch (err) {
-      dialog.showMessageBox(t('This file is unreadable.'), 'warning')
+      await dialog.showMessageBox(t('This file is unreadable.'), 'warning')
       success = false
     }
 
@@ -553,7 +638,7 @@ class Sabaki extends EventEmitter {
     gameTrees,
     {suppressAskForSave = false, clearHistory = true} = {}
   ) {
-    if (!suppressAskForSave && !this.askForSave()) return
+    if (!suppressAskForSave && !(await this.askForSave())) return
 
     this.setBusy(true)
     if (this.state.openDrawer !== 'gamechooser') this.closeDrawer()
@@ -591,19 +676,19 @@ class Sabaki extends EventEmitter {
     }
   }
 
-  saveFile(filename = null, confirmExtension = true) {
+  async saveFile(filename = null, confirmExtension = true) {
     let t = i18n.context('sabaki.file')
 
     if (!filename || (confirmExtension && extname(filename) !== '.sgf')) {
       let cancel = false
-      let result = dialog.showSaveDialog({
+      let result = await dialog.showSaveDialog({
         filters: [
           fileformats.sgf.meta,
           {name: t('All Files'), extensions: ['*']}
         ]
       })
 
-      if (result) this.saveFile(result, false)
+      if (result) await this.saveFile(result, false)
       cancel = !result
 
       return !cancel
@@ -761,15 +846,15 @@ class Sabaki extends EventEmitter {
     return null
   }
 
-  askForSave() {
+  async askForSave() {
     let t = i18n.context('sabaki.file')
     let hash = this.generateTreeHash()
 
     if (hash !== this.treeHash) {
-      let answer = dialog.showMessageBox(
+      let answer = await dialog.showMessageBox(
         t('Your changes will be lost if you close this file without saving.'),
         'warning',
-        [t('Save'), t('Don’t Save'), t('Cancel')],
+        [t('Save'), t("Don't Save"), t('Cancel')],
         2
       )
 
@@ -780,12 +865,12 @@ class Sabaki extends EventEmitter {
     return true
   }
 
-  askForReload() {
+  async askForReload() {
     let t = i18n.context('sabaki.file')
     let hash = this.generateFileHash()
 
     if (hash != null && hash !== this.fileHash) {
-      let answer = dialog.showMessageBox(
+      let answer = await dialog.showMessageBox(
         t(
           p =>
             [
@@ -795,7 +880,7 @@ class Sabaki extends EventEmitter {
           {appName: this.appName}
         ),
         'warning',
-        [t('Reload'), t('Don’t Reload')],
+        [t('Reload'), t("Don't Reload")],
         1
       )
 
@@ -1040,7 +1125,7 @@ class Sabaki extends EventEmitter {
     this.events.emit('vertexClick')
   }
 
-  makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
+  async makeMove(vertex, {player = null, generateEngineMove = false} = {}) {
     if (!['play', 'autoplay', 'guess'].includes(this.state.mode)) {
       this.closeDrawer()
       this.setMode('play')
@@ -1072,9 +1157,8 @@ class Sabaki extends EventEmitter {
 
         ko = helper.equals(prevBoard.signMap, nextBoard.signMap)
 
-        if (
-          ko &&
-          dialog.showMessageBox(
+        if (ko) {
+          let answer = await dialog.showMessageBox(
             t(
               [
                 'You are about to play a move which repeats a previous board position.',
@@ -1082,28 +1166,26 @@ class Sabaki extends EventEmitter {
               ].join('\n')
             ),
             'info',
-            [t('Play Anyway'), t('Don’t Play')],
+            [t('Play Anyway'), t("Don't Play")],
             1
-          ) != 0
-        )
-          return
+          )
+          if (answer !== 0) return
+        }
       }
 
       if (suicide && setting.get('game.show_suicide_warning')) {
-        if (
-          dialog.showMessageBox(
-            t(
-              [
-                'You are about to play a suicide move.',
-                'This is invalid in some rulesets.'
-              ].join('\n')
-            ),
-            'info',
-            [t('Play Anyway'), t('Don’t Play')],
-            1
-          ) != 0
+        let answer = await dialog.showMessageBox(
+          t(
+            [
+              'You are about to play a suicide move.',
+              'This is invalid in some rulesets.'
+            ].join('\n')
+          ),
+          'info',
+          [t('Play Anyway'), t("Don't Play")],
+          1
         )
-          return
+        if (answer !== 0) return
       }
     }
 
@@ -1876,7 +1958,7 @@ class Sabaki extends EventEmitter {
         await syncer.sync(this.inferredState.gameTree, treePosition)
         return true
       } catch (err) {
-        dialog.showMessageBox(err.message, 'error')
+        await dialog.showMessageBox(err.message, 'error')
       }
     }
 
@@ -1928,7 +2010,7 @@ class Sabaki extends EventEmitter {
         })
       }
     } catch (err) {
-      dialog.showMessageBox(
+      await dialog.showMessageBox(
         t(p => `${p.engine} has failed to generate a move.`, {
           engine: syncer.engine.name
         }),
@@ -1940,7 +2022,7 @@ class Sabaki extends EventEmitter {
     coord = coord.toLowerCase().trim()
 
     if (coord === 'resign') {
-      dialog.showMessageBox(
+      await dialog.showMessageBox(
         t(p => `${p.engine} has resigned.`, {
           engine: syncer.engine.name
         }),
@@ -2009,7 +2091,7 @@ class Sabaki extends EventEmitter {
     if (engineGameOngoing != null) return
 
     if (engineCount === 0) {
-      dialog.showMessageBox(
+      await dialog.showMessageBox(
         t('Please attach one or more engines first.'),
         'info'
       )
@@ -2124,7 +2206,7 @@ class Sabaki extends EventEmitter {
         .get('engines.analyze_commands')
         .every(command => !syncer.commands.includes(command))
     ) {
-      dialog.showMessageBox(
+      await dialog.showMessageBox(
         t('The selected engine does not support analysis.'),
         'warning'
       )
@@ -2511,23 +2593,21 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, treePosition)
   }
 
-  removeNode(treePosition, {suppressConfirmation = false} = {}) {
+  async removeNode(treePosition, {suppressConfirmation = false} = {}) {
     let t = i18n.context('sabaki.node')
     let {gameTree: tree} = this.inferredState
     let node = tree.get(treePosition)
     let noParent = node.parentId == null
 
-    if (
-      suppressConfirmation !== true &&
-      setting.get('edit.show_removenode_warning') &&
-      dialog.showMessageBox(
+    if (suppressConfirmation !== true && setting.get('edit.show_removenode_warning')) {
+      let answer = await dialog.showMessageBox(
         t('Do you really want to remove this node?'),
         'warning',
         [t('Remove Node'), t('Cancel')],
         1
-      ) === 1
-    )
-      return
+      )
+      if (answer === 1) return
+    }
 
     this.closeDrawer()
     this.setMode('play')
@@ -2563,20 +2643,18 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, noParent ? node.id : node.parentId)
   }
 
-  removeOtherVariations(treePosition, {suppressConfirmation = false} = {}) {
+  async removeOtherVariations(treePosition, {suppressConfirmation = false} = {}) {
     let t = i18n.context('sabaki.node')
 
-    if (
-      suppressConfirmation !== true &&
-      setting.get('edit.show_removeothervariations_warning') &&
-      dialog.showMessageBox(
+    if (suppressConfirmation !== true && setting.get('edit.show_removeothervariations_warning')) {
+      let answer = await dialog.showMessageBox(
         t('Do you really want to remove all other variations?'),
         'warning',
         [t('Remove Variations'), t('Cancel')],
         1
-      ) == 1
-    )
-      return
+      )
+      if (answer === 1) return
+    }
 
     this.closeDrawer()
     this.setMode('play')
@@ -2774,11 +2852,11 @@ class Sabaki extends EventEmitter {
       [
         {
           label: t('&Add Variation'),
-          click: () => {
+          click: async () => {
             let isRootNode = tree.get(treePosition).parentId == null
 
             if (appendSibling && isRootNode) {
-              dialog.showMessageBox(
+              await dialog.showMessageBox(
                 t('The root node cannot have sibling nodes.'),
                 'warning'
               )

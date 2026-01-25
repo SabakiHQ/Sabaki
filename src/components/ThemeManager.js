@@ -1,10 +1,13 @@
 import {join} from 'path'
-import * as remote from '@electron/remote'
 import {h, Component} from 'preact'
 import sabaki from '../modules/sabaki.js'
 import ColorThief from '@mariotacke/color-thief'
 
-const setting = remote.require('./setting')
+const setting = {
+  get: key => window.sabaki.setting.get(key),
+  getThemes: () => window.sabaki.setting.getThemes(),
+  onDidChange: callback => window.sabaki.setting.onDidChange(callback)
+}
 const colorThief = new ColorThief()
 
 async function getColorFromPath(path) {
@@ -27,7 +30,7 @@ export default class ThemeManager extends Component {
 
     this.updateSettingState()
 
-    setting.events.on(sabaki.window.id, 'change', ({key}) =>
+    setting.onDidChange(({key}) =>
       this.updateSettingState(key)
     )
   }
