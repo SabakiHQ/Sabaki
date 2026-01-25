@@ -1,6 +1,6 @@
 import natsort from 'natsort'
 import {parseDates, stringifyDates} from '@sabaki/sgf'
-import {lexicalCompare} from './helper.js'
+import {lexicalCompare} from './utils.js'
 
 function extractProperty(tree, property) {
   return property in tree.root.data ? tree.root.data[property][0] : ''

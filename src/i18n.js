@@ -1,6 +1,5 @@
 const nativeRequire = eval('require')
 
-const {ipcMain} = require('electron')
 const {readFileSync} = require('fs')
 const path = require('path')
 const {load: dolmLoad, getKey: dolmGetKey} = require('dolm')
@@ -8,6 +7,16 @@ const languages = require('@sabaki/i18n')
 
 const isElectron = process.versions.electron != null
 const isRenderer = typeof window !== 'undefined' && window.sabaki != null
+
+// Only require electron in Electron environment
+let ipcMain = null
+if (isElectron && !isRenderer) {
+  try {
+    ipcMain = require('electron').ipcMain
+  } catch (e) {
+    // Not in Electron environment
+  }
+}
 
 // In renderer, mainI18n is no longer available via remote
 // Instead, we handle i18n directly in the renderer
@@ -54,7 +63,7 @@ exports.formatWeekdayShort = function(weekday) {
 function loadStrings(strings) {
   dolm.load(strings)
 
-  if (isElectron && !isRenderer) {
+  if (isElectron && !isRenderer && ipcMain) {
     ipcMain.emit('build-menu')
   }
 }

@@ -5,7 +5,7 @@ import {
   parseVertex,
   parseCompressedVertices
 } from '@sabaki/sgf'
-import * as helper from './helper.js'
+import {getId} from './utils.js'
 
 const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
@@ -24,7 +24,7 @@ function nodeMerger(node, data) {
 const _new = function(options = {}) {
   return new GameTree({
     ...options,
-    getId: helper.getId,
+    getId,
     merger: nodeMerger
   })
 }
