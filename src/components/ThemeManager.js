@@ -6,6 +6,9 @@ import ColorThief from '@mariotacke/color-thief'
 const setting = {
   get: key => window.sabaki.setting.get(key),
   getThemes: () => window.sabaki.setting.getThemes(),
+  get stylesPath() {
+    return window.sabaki.setting.stylesPath
+  },
   onDidChange: callback => window.sabaki.setting.onDidChange(callback)
 }
 const colorThief = new ColorThief()

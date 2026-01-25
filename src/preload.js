@@ -17,6 +17,20 @@ try {
   settingsCache = {}
 }
 
+// Paths and themes cache - initialized synchronously before app loads
+let pathsCache
+try {
+  pathsCache = ipcRenderer.sendSync('setting:getPathsSync')
+} catch (e) {
+  console.error('[preload] Error getting paths:', e)
+  pathsCache = {
+    themesDirectory: '',
+    stylesPath: '',
+    userDataDirectory: '',
+    themes: {}
+  }
+}
+
 // Single listener for setting changes, dispatches to multiple callbacks
 const settingChangeCallbacks = new Set()
 ipcRenderer.on('setting:change', (_, data) => {
@@ -37,10 +51,15 @@ window.sabaki = {
       await ipcRenderer.invoke('setting:set', key, value)
       return window.sabaki.setting
     },
-    getThemes: () => ipcRenderer.invoke('setting:getThemes'),
-    getUserDataDirectory: () =>
-      ipcRenderer.invoke('setting:getUserDataDirectory'),
-    getThemesDirectory: () => ipcRenderer.invoke('setting:getThemesDirectory'),
+    getThemes: () => pathsCache.themes,
+    loadThemes: async () => {
+      pathsCache.themes = await ipcRenderer.invoke('setting:loadThemes')
+      return pathsCache.themes
+    },
+    themesDirectory: pathsCache.themesDirectory,
+    stylesPath: pathsCache.stylesPath,
+    getUserDataDirectory: () => pathsCache.userDataDirectory,
+    getThemesDirectory: () => pathsCache.themesDirectory,
     onDidChange: callback => {
       settingChangeCallbacks.add(callback)
       return () => settingChangeCallbacks.delete(callback)

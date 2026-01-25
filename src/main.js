@@ -534,11 +534,33 @@ function setupIpcHandlers() {
     return result
   })
   ipcMain.handle('setting:getThemes', () => setting.getThemes())
+  ipcMain.handle('setting:loadThemes', () => {
+    setting.loadThemes()
+    return setting.getThemes()
+  })
   ipcMain.handle(
     'setting:getUserDataDirectory',
     () => setting.userDataDirectory
   )
   ipcMain.handle('setting:getThemesDirectory', () => setting.themesDirectory)
+  ipcMain.on('setting:getPathsSync', e => {
+    try {
+      e.returnValue = {
+        themesDirectory: setting.themesDirectory,
+        stylesPath: setting.stylesPath,
+        userDataDirectory: setting.userDataDirectory,
+        themes: setting.getThemes()
+      }
+    } catch (err) {
+      console.error('[main] Error in setting:getPathsSync:', err)
+      e.returnValue = {
+        themesDirectory: '',
+        stylesPath: '',
+        userDataDirectory: '',
+        themes: {}
+      }
+    }
+  })
 }
 
 async function main() {
