@@ -25,6 +25,10 @@ const setting = {
     return setting
   },
   getThemes: () => window.sabaki.setting.getThemes(),
+  loadThemes: () => window.sabaki.setting.loadThemes(),
+  get themesDirectory() {
+    return window.sabaki.setting.themesDirectory
+  },
   getUserDataDirectory: () => window.sabaki.setting.getUserDataDirectory(),
   getThemesDirectory: () => window.sabaki.setting.getThemesDirectory(),
   onDidChange: callback => window.sabaki.setting.onDidChange(callback)
@@ -442,10 +446,10 @@ class ThemesTab extends Component {
 
       let {path} = setting.getThemes()[this.state.currentTheme]
 
-      rimraf(path, err => {
+      rimraf(path, async err => {
         if (err) return showMessageBox(t('Uninstallation failed.'), 'error')
 
-        setting.loadThemes()
+        await setting.loadThemes()
         setting.set('theme.current', null)
       })
     }
@@ -464,7 +468,7 @@ class ThemesTab extends Component {
       try {
         copyFolderSync(result[0], join(setting.themesDirectory, id))
 
-        setting.loadThemes()
+        await setting.loadThemes()
         setting.set('theme.current', id)
       } catch (err) {
         return showMessageBox(t('Installation failed.'), 'error')
