@@ -38,7 +38,8 @@ window.sabaki = {
       return window.sabaki.setting
     },
     getThemes: () => ipcRenderer.invoke('setting:getThemes'),
-    getUserDataDirectory: () => ipcRenderer.invoke('setting:getUserDataDirectory'),
+    getUserDataDirectory: () =>
+      ipcRenderer.invoke('setting:getUserDataDirectory'),
     getThemesDirectory: () => ipcRenderer.invoke('setting:getThemesDirectory'),
     onDidChange: callback => {
       settingChangeCallbacks.add(callback)
@@ -52,7 +53,8 @@ window.sabaki = {
     isFullScreen: () => ipcRenderer.invoke('window:isFullScreen'),
     isMaximized: () => ipcRenderer.invoke('window:isMaximized'),
     isMinimized: () => ipcRenderer.invoke('window:isMinimized'),
-    setMenuBarVisibility: v => ipcRenderer.invoke('window:setMenuBarVisibility', v),
+    setMenuBarVisibility: v =>
+      ipcRenderer.invoke('window:setMenuBarVisibility', v),
     setAutoHideMenuBar: v => ipcRenderer.invoke('window:setAutoHideMenuBar', v),
     getContentSize: () => ipcRenderer.invoke('window:getContentSize'),
     setContentSize: (w, h) => ipcRenderer.invoke('window:setContentSize', w, h),

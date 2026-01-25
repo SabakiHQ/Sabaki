@@ -2599,7 +2599,10 @@ class Sabaki extends EventEmitter {
     let node = tree.get(treePosition)
     let noParent = node.parentId == null
 
-    if (suppressConfirmation !== true && setting.get('edit.show_removenode_warning')) {
+    if (
+      suppressConfirmation !== true &&
+      setting.get('edit.show_removenode_warning')
+    ) {
       let answer = await dialog.showMessageBox(
         t('Do you really want to remove this node?'),
         'warning',
@@ -2643,10 +2646,16 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, noParent ? node.id : node.parentId)
   }
 
-  async removeOtherVariations(treePosition, {suppressConfirmation = false} = {}) {
+  async removeOtherVariations(
+    treePosition,
+    {suppressConfirmation = false} = {}
+  ) {
     let t = i18n.context('sabaki.node')
 
-    if (suppressConfirmation !== true && setting.get('edit.show_removeothervariations_warning')) {
+    if (
+      suppressConfirmation !== true &&
+      setting.get('edit.show_removeothervariations_warning')
+    ) {
       let answer = await dialog.showMessageBox(
         t('Do you really want to remove all other variations?'),
         'warning',

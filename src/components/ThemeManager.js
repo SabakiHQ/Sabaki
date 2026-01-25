@@ -30,9 +30,7 @@ export default class ThemeManager extends Component {
 
     this.updateSettingState()
 
-    setting.onDidChange(({key}) =>
-      this.updateSettingState(key)
-    )
+    setting.onDidChange(({key}) => this.updateSettingState(key))
   }
 
   shouldComponentUpdate(_, state) {

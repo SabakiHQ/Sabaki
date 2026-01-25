@@ -2,7 +2,9 @@ const nativeRequire = eval('require')
 
 const {shell, clipboard} = require('electron')
 const isRenderer = typeof window !== 'undefined' && window.sabaki != null
-const {app} = isRenderer ? {app: {name: 'Sabaki', getVersion: () => ''}} : require('electron')
+const {app} = isRenderer
+  ? {app: {name: 'Sabaki', getVersion: () => ''}}
+  : require('electron')
 
 const i18n = require('./i18n')
 const sabaki = isRenderer ? require('./modules/sabaki').default : null
