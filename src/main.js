@@ -68,7 +68,6 @@ function newWindow(path) {
     if (path) window.webContents.send('load-file', path)
   })
 
-
   window.webContents.setWindowOpenHandler(({url, frameName}) => {
     return {action: 'deny'}
   })
@@ -241,7 +240,9 @@ function setupIpcHandlers() {
     e.sender.setZoomFactor(f)
   )
   ipcMain.handle('webContents:getZoomFactor', e => e.sender.getZoomFactor())
-  ipcMain.handle('webContents:setAudioMuted', (e, m) => e.sender.setAudioMuted(m))
+  ipcMain.handle('webContents:setAudioMuted', (e, m) =>
+    e.sender.setAudioMuted(m)
+  )
   ipcMain.handle('webContents:undo', e => e.sender.undo())
   ipcMain.handle('webContents:redo', e => e.sender.redo())
   ipcMain.handle('webContents:toggleDevTools', e => e.sender.toggleDevTools())
@@ -312,106 +313,106 @@ function setupIpcHandlers() {
   ipcMain.on('setting:getAllSync', e => {
     try {
       const keys = [
-      'app.lang',
-      'app.zoom_factor',
-      'view.show_leftsidebar',
-      'view.leftsidebar_width',
-      'view.show_winrategraph',
-      'view.show_graph',
-      'view.show_comments',
-      'view.sidebar_width',
-      'view.sidebar_minwidth',
-      'view.leftsidebar_minwidth',
-      'view.show_menubar',
-      'view.show_coordinates',
-      'view.show_move_colorization',
-      'view.show_move_numbers',
-      'view.show_next_moves',
-      'view.show_siblings',
-      'view.coordinates_type',
-      'view.fuzzy_stone_placement',
-      'view.animated_stone_placement',
-      'board.analysis_type',
-      'board.show_analysis',
-      'board.analysis_interval',
-      'board.variation_replay_mode',
-      'board.variation_replay_interval',
-      'graph.grid_size',
-      'graph.node_size',
-      'graph.delay',
-      'engines.list',
-      'engines.analyze_commands',
-      'engines.gemove_analyze_commands',
-      'scoring.method',
-      'score.estimator_iterations',
-      'sound.enable',
-      'sound.capture_delay_min',
-      'sound.capture_delay_max',
-      'game.default_board_size',
-      'game.default_komi',
-      'game.default_handicap',
-      'game.goto_end_after_loading',
-      'game.navigation_analysis_delay',
-      'game.navigation_sensitivity',
-      'game.show_ko_warning',
-      'game.show_suicide_warning',
-      'edit.click_currentvertex_to_remove',
-      'edit.copy_variation_strip_props',
-      'edit.flatten_inherit_root_props',
-      'edit.history_batch_interval',
-      'edit.max_history_count',
-      'edit.show_removenode_warning',
-      'edit.show_removeothervariations_warning',
-      'file.show_reload_warning',
-      'find.delay',
-      'sgf.comment_properties',
-      'sgf.format_code',
-      'app.loadgame_delay',
-      'app.hide_busy_delay',
-      'gamechooser.show_delay',
-      'gamechooser.thumbnail_size',
-      'gtp.console_log_enabled',
-      'gtp.console_log_path',
-      'gtp.engine_quit_timeout',
-      'gtp.move_delay',
-      'infooverlay.duration',
-      'autoscroll.max_interval',
-      'autoscroll.min_interval',
-      'autoscroll.diff',
-      'autoplay.sec_per_move',
-      'autoplay.max_sec_per_move',
-      'comments.show_move_interpretation',
-      'comments.commit_delay',
-      'console.max_history_count',
-      'cleanmarkup.annotations',
-      'cleanmarkup.arrow',
-      'cleanmarkup.circle',
-      'cleanmarkup.comments',
-      'cleanmarkup.cross',
-      'cleanmarkup.hotspots',
-      'cleanmarkup.label',
-      'cleanmarkup.line',
-      'cleanmarkup.square',
-      'cleanmarkup.triangle',
-      'cleanmarkup.winrate',
-      'view.properties_height',
-      'view.properties_minheight',
-      'view.peerlist_height',
-      'view.peerlist_minheight',
-      'view.winrategraph_height',
-      'view.winrategraph_minheight',
-      'view.winrategraph_maxheight',
-      'view.winrategraph_invert',
-      'view.winrategraph_blunderthreshold',
-      'theme.current',
-      'theme.custom_whitestones',
-      'theme.custom_blackstones',
-      'theme.custom_board',
-      'theme.custom_background',
-      'window.width',
-      'window.height',
-      'app.always_show_result'
-    ]
+        'app.lang',
+        'app.zoom_factor',
+        'view.show_leftsidebar',
+        'view.leftsidebar_width',
+        'view.show_winrategraph',
+        'view.show_graph',
+        'view.show_comments',
+        'view.sidebar_width',
+        'view.sidebar_minwidth',
+        'view.leftsidebar_minwidth',
+        'view.show_menubar',
+        'view.show_coordinates',
+        'view.show_move_colorization',
+        'view.show_move_numbers',
+        'view.show_next_moves',
+        'view.show_siblings',
+        'view.coordinates_type',
+        'view.fuzzy_stone_placement',
+        'view.animated_stone_placement',
+        'board.analysis_type',
+        'board.show_analysis',
+        'board.analysis_interval',
+        'board.variation_replay_mode',
+        'board.variation_replay_interval',
+        'graph.grid_size',
+        'graph.node_size',
+        'graph.delay',
+        'engines.list',
+        'engines.analyze_commands',
+        'engines.gemove_analyze_commands',
+        'scoring.method',
+        'score.estimator_iterations',
+        'sound.enable',
+        'sound.capture_delay_min',
+        'sound.capture_delay_max',
+        'game.default_board_size',
+        'game.default_komi',
+        'game.default_handicap',
+        'game.goto_end_after_loading',
+        'game.navigation_analysis_delay',
+        'game.navigation_sensitivity',
+        'game.show_ko_warning',
+        'game.show_suicide_warning',
+        'edit.click_currentvertex_to_remove',
+        'edit.copy_variation_strip_props',
+        'edit.flatten_inherit_root_props',
+        'edit.history_batch_interval',
+        'edit.max_history_count',
+        'edit.show_removenode_warning',
+        'edit.show_removeothervariations_warning',
+        'file.show_reload_warning',
+        'find.delay',
+        'sgf.comment_properties',
+        'sgf.format_code',
+        'app.loadgame_delay',
+        'app.hide_busy_delay',
+        'gamechooser.show_delay',
+        'gamechooser.thumbnail_size',
+        'gtp.console_log_enabled',
+        'gtp.console_log_path',
+        'gtp.engine_quit_timeout',
+        'gtp.move_delay',
+        'infooverlay.duration',
+        'autoscroll.max_interval',
+        'autoscroll.min_interval',
+        'autoscroll.diff',
+        'autoplay.sec_per_move',
+        'autoplay.max_sec_per_move',
+        'comments.show_move_interpretation',
+        'comments.commit_delay',
+        'console.max_history_count',
+        'cleanmarkup.annotations',
+        'cleanmarkup.arrow',
+        'cleanmarkup.circle',
+        'cleanmarkup.comments',
+        'cleanmarkup.cross',
+        'cleanmarkup.hotspots',
+        'cleanmarkup.label',
+        'cleanmarkup.line',
+        'cleanmarkup.square',
+        'cleanmarkup.triangle',
+        'cleanmarkup.winrate',
+        'view.properties_height',
+        'view.properties_minheight',
+        'view.peerlist_height',
+        'view.peerlist_minheight',
+        'view.winrategraph_height',
+        'view.winrategraph_minheight',
+        'view.winrategraph_maxheight',
+        'view.winrategraph_invert',
+        'view.winrategraph_blunderthreshold',
+        'theme.current',
+        'theme.custom_whitestones',
+        'theme.custom_blackstones',
+        'theme.custom_board',
+        'theme.custom_background',
+        'window.width',
+        'window.height',
+        'app.always_show_result'
+      ]
       const result = {}
       for (const key of keys) {
         result[key] = setting.get(key)
@@ -533,7 +534,10 @@ function setupIpcHandlers() {
     return result
   })
   ipcMain.handle('setting:getThemes', () => setting.getThemes())
-  ipcMain.handle('setting:getUserDataDirectory', () => setting.userDataDirectory)
+  ipcMain.handle(
+    'setting:getUserDataDirectory',
+    () => setting.userDataDirectory
+  )
   ipcMain.handle('setting:getThemesDirectory', () => setting.themesDirectory)
 }
 
@@ -594,7 +598,11 @@ async function main() {
   setupIpcHandlers()
 
   if (!openfile && process.argv.length >= 2) {
-    if (!['electron.exe', 'electron'].some(x => process.argv[0].endsWith(x))) {
+    if (
+      !['electron.exe', 'electron'].some(x =>
+        process.argv[0].toLowerCase().endsWith(x)
+      )
+    ) {
       openfile = process.argv[1]
     } else if (process.argv.length >= 3) {
       openfile = process.argv[2]
