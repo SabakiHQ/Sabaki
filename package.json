@@ -121,7 +121,7 @@
     "prettier": "3.8.1",
     "tmp": "^0.2.5",
     "webpack": "^5.104.1",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^6.0.1"
   },
   "scripts": {
     "test": "mocha --require tsx",
