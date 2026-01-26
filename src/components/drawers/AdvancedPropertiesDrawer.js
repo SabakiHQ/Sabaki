@@ -15,19 +15,19 @@ class PropertyItem extends Component {
   constructor(props) {
     super(props)
 
-    this.handleRemoveButtonClick = evt => {
+    this.handleRemoveButtonClick = (evt) => {
       evt.preventDefault()
 
       let {property, index, onRemove = noop} = this.props
       onRemove({property, index})
     }
 
-    this.handleChange = evt => {
+    this.handleChange = (evt) => {
       let {property, index, onChange = noop} = this.props
       onChange({property, index, value: evt.currentTarget.value})
     }
 
-    this.handleKeyDown = evt => {
+    this.handleKeyDown = (evt) => {
       if (evt.key === 'Enter') {
         if (!evt.shiftKey) {
           evt.preventDefault()
@@ -55,17 +55,17 @@ class PropertyItem extends Component {
       h(
         'th',
         {
-          onClick: () => this.inputElement.focus()
+          onClick: () => this.inputElement.focus(),
         },
 
-        index == null ? property : [property, h('em', {}, `[${index}]`)]
+        index == null ? property : [property, h('em', {}, `[${index}]`)],
       ),
 
       h(
         'td',
         {},
         h('textarea', {
-          ref: el => (this.inputElement = el),
+          ref: (el) => (this.inputElement = el),
           'data-property': property,
           'data-index': index,
 
@@ -75,8 +75,8 @@ class PropertyItem extends Component {
 
           onInput: this.handleChange,
           onKeyDown: this.handleKeyDown,
-          onBlur: () => (this.inputElement.scrollTop = 0)
-        })
+          onBlur: () => (this.inputElement.scrollTop = 0),
+        }),
       ),
 
       h(
@@ -89,12 +89,12 @@ class PropertyItem extends Component {
               class: 'remove',
               title: t('Remove'),
               href: '#',
-              onClick: this.handleRemoveButtonClick
+              onClick: this.handleRemoveButtonClick,
             },
 
-            h('img', {src: './node_modules/@primer/octicons/build/svg/x.svg'})
-          )
-      )
+            h('img', {src: './node_modules/@primer/octicons/build/svg/x.svg'}),
+          ),
+      ),
     )
   }
 }
@@ -103,12 +103,12 @@ export default class AdvancedPropertiesDrawer extends Component {
   constructor(props) {
     super(props)
 
-    this.handleCloseButtonClick = evt => {
+    this.handleCloseButtonClick = (evt) => {
       if (evt) evt.preventDefault()
       sabaki.closeDrawer()
     }
 
-    this.handleAddButtonClick = async evt => {
+    this.handleAddButtonClick = async (evt) => {
       evt.preventDefault()
 
       let value = await showInputBox(t('Enter property name'))
@@ -122,7 +122,7 @@ export default class AdvancedPropertiesDrawer extends Component {
       }
 
       let {gameTree, treePosition} = this.props
-      let newTree = gameTree.mutate(draft => {
+      let newTree = gameTree.mutate((draft) => {
         draft.addToProperty(treePosition, property, '')
       })
 
@@ -130,7 +130,7 @@ export default class AdvancedPropertiesDrawer extends Component {
       await sabaki.waitForRender()
 
       let textareas = this.propertiesElement.querySelectorAll(
-        `textarea[data-property="${property}"]`
+        `textarea[data-property="${property}"]`,
       )
       textareas.item(textareas.length - 1).focus()
     }
@@ -138,7 +138,7 @@ export default class AdvancedPropertiesDrawer extends Component {
     this.handlePropertyChange = ({property, index, value}) => {
       let {gameTree, treePosition} = this.props
 
-      let newTree = gameTree.mutate(draft => {
+      let newTree = gameTree.mutate((draft) => {
         let values = draft.get(treePosition).data[property]
 
         if (values == null || index == null) values = [value]
@@ -153,7 +153,7 @@ export default class AdvancedPropertiesDrawer extends Component {
 
     this.handlePropertyRemove = ({property, index}) => {
       let {gameTree, treePosition} = this.props
-      let newTree = gameTree.mutate(draft => {
+      let newTree = gameTree.mutate((draft) => {
         let values = draft.get(treePosition).data[property]
 
         if (values[index] == null) draft.removeProperty(treePosition, property)
@@ -178,14 +178,14 @@ export default class AdvancedPropertiesDrawer extends Component {
   render({gameTree, treePosition, show}) {
     let node = gameTree.get(treePosition)
     let properties = Object.keys(node.data)
-      .filter(x => x.toUpperCase() === x)
+      .filter((x) => x.toUpperCase() === x)
       .sort()
 
     return h(
       Drawer,
       {
         type: 'advancedproperties',
-        show
+        show,
       },
 
       h(
@@ -194,14 +194,14 @@ export default class AdvancedPropertiesDrawer extends Component {
         h(
           'div',
           {
-            ref: el => (this.propertiesElement = el),
-            class: 'properties-list'
+            ref: (el) => (this.propertiesElement = el),
+            class: 'properties-list',
           },
 
           h(
             'table',
             {},
-            properties.map(property =>
+            properties.map((property) =>
               node.data[property].map((value, i) =>
                 h(PropertyItem, {
                   key: `${property}-${i}`,
@@ -213,11 +213,11 @@ export default class AdvancedPropertiesDrawer extends Component {
 
                   onChange: this.handlePropertyChange,
                   onRemove: this.handlePropertyRemove,
-                  onSubmit: this.handleCloseButtonClick
-                })
-              )
-            )
-          )
+                  onSubmit: this.handleCloseButtonClick,
+                }),
+              ),
+            ),
+          ),
         ),
 
         h(
@@ -226,11 +226,11 @@ export default class AdvancedPropertiesDrawer extends Component {
           h(
             'button',
             {class: 'add', type: 'button', onClick: this.handleAddButtonClick},
-            t('Add')
+            t('Add'),
           ),
-          h('button', {onClick: this.handleCloseButtonClick}, t('Close'))
-        )
-      )
+          h('button', {onClick: this.handleCloseButtonClick}, t('Close')),
+        ),
+      ),
     )
   }
 }

@@ -10,7 +10,7 @@ export default class TripleSplitContainer extends Component {
 
       onChange({
         beginSideSize: sideSize,
-        endSideSize: this.props.endSideSize
+        endSideSize: this.props.endSideSize,
       })
     }
 
@@ -19,7 +19,7 @@ export default class TripleSplitContainer extends Component {
 
       onChange({
         beginSideSize: this.props.beginSideSize,
-        endSideSize: sideSize
+        endSideSize: sideSize,
       })
     }
   }
@@ -36,7 +36,7 @@ export default class TripleSplitContainer extends Component {
       beginSideSize,
       endSideSize,
       splitterSize,
-      onFinish
+      onFinish,
     } = this.props
 
     return h(SplitContainer, {
@@ -57,13 +57,13 @@ export default class TripleSplitContainer extends Component {
         sideContent: endSideContent,
 
         onChange: this.handleEndSideContentChange,
-        onFinish
+        onFinish,
       }),
 
       sideContent: beginSideContent,
 
       onChange: this.handleBeginSideContentChange,
-      onFinish
+      onFinish,
     })
   }
 }

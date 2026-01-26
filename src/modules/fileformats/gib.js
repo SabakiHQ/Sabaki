@@ -10,7 +10,7 @@ const t = i18n.context('fileformats')
 
 export const meta = {
   name: t('Tygem GIB'),
-  extensions: ['gib']
+  extensions: ['gib'],
 }
 
 function makeResult(grlt, zipsu) {
@@ -20,7 +20,7 @@ function makeResult(grlt, zipsu) {
   // The GRLT tag contains the type of result:
   // 0: B+n   1: W+n   3: B+R   4: W+R   7: B+T   8: W+T
 
-  let easycases = {'3': 'B+R', '4': 'W+R', '7': 'B+T', '8': 'W+T'}
+  let easycases = {3: 'B+R', 4: 'W+R', 7: 'B+T', 8: 'W+T'}
 
   if (easycases[grlt] !== undefined) {
     return easycases[grlt]
@@ -85,7 +85,7 @@ function parsePlayerName(raw) {
 
 export function parse(content) {
   return [
-    gametree.new().mutate(draft => {
+    gametree.new().mutate((draft) => {
       let lines = content.split('\n')
       let rootId = draft.root.id
       let lastNodeId = rootId
@@ -163,7 +163,7 @@ export function parse(content) {
             draft.updateProperty(rootId, 'HA', [handicap.toString()])
 
             let points = fromDimensions(19, 19).getHandicapPlacement(handicap, {
-              tygem: true
+              tygem: true,
             })
 
             for (let [x, y] of points) {
@@ -184,7 +184,7 @@ export function parse(content) {
           lastNodeId = draft.appendNode(lastNodeId, {[key]: [val]})
         }
       }
-    })
+    }),
   ]
 }
 

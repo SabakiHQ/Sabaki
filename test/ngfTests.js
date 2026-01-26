@@ -17,12 +17,14 @@ describe('ngf', () => {
         PB: ['CYY'],
         BR: ['9p'],
         DT: ['2017-03-16'],
-        RE: ['B+0.5']
+        RE: ['B+0.5'],
       })
 
       assert.deepEqual(
-        [...tree.getSequence(tree.root.id)].map(node => node.data).slice(1, 5),
-        [{B: ['qd']}, {W: ['dd']}, {B: ['pq']}, {W: ['dp']}]
+        [...tree.getSequence(tree.root.id)]
+          .map((node) => node.data)
+          .slice(1, 5),
+        [{B: ['qd']}, {W: ['dd']}, {B: ['pq']}, {W: ['dp']}],
       )
     })
   })

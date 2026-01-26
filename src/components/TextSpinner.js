@@ -25,10 +25,10 @@ export default class TextSpinner extends Component {
     super(props)
 
     this.state = {
-      frame: 0
+      frame: 0,
     }
 
-    this.handleTick = evt => {
+    this.handleTick = (evt) => {
       this.setState({frame: evt.frame})
     }
   }
@@ -47,7 +47,7 @@ export default class TextSpinner extends Component {
     return h(
       'span',
       {class: 'text-spinner'},
-      !enabled ? '' : frames[this.state.frame % frames.length]
+      !enabled ? '' : frames[this.state.frame % frames.length],
     )
   }
 }

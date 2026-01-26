@@ -7,11 +7,11 @@ const t = i18n.context('fileformats')
 
 export const meta = {
   name: t('Smart Game Format'),
-  extensions: ['sgf', 'rsgf']
+  extensions: ['sgf', 'rsgf'],
 }
 
-let toGameTrees = rootNodes =>
-  rootNodes.map(root => gametree.new({getId, root}))
+let toGameTrees = (rootNodes) =>
+  rootNodes.map((root) => gametree.new({getId, root}))
 
 export function parse(content, onProgress = () => {}) {
   let rootNodes = sgf.parse(content, {getId, onProgress})

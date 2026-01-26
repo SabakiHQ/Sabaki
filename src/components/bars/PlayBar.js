@@ -13,14 +13,14 @@ export default class PlayBar extends Component {
     super(props)
 
     this.state = {
-      playerBusy: [false, false]
+      playerBusy: [false, false],
     }
 
     this.syncState = () => {
       this.setState({
-        playerBusy: this.props.engineSyncers.map(syncer =>
-          syncer == null ? false : syncer.busy
-        )
+        playerBusy: this.props.engineSyncers.map((syncer) =>
+          syncer == null ? false : syncer.busy,
+        ),
       })
     }
 
@@ -33,37 +33,37 @@ export default class PlayBar extends Component {
         [
           {
             label: t('&Pass'),
-            click: () => sabaki.makeMove([-1, -1])
+            click: () => sabaki.makeMove([-1, -1]),
           },
           {
             label: t('&Resign'),
-            click: () => sabaki.makeResign()
+            click: () => sabaki.makeResign(),
           },
           {type: 'separator'},
           {
             label: t('Es&timate'),
-            click: () => sabaki.setMode('estimator')
+            click: () => sabaki.setMode('estimator'),
           },
           {
             label: t('&Score'),
-            click: () => sabaki.setMode('scoring')
+            click: () => sabaki.setMode('scoring'),
           },
           {
             label: t('&Edit'),
-            click: () => sabaki.setMode('edit')
+            click: () => sabaki.setMode('edit'),
           },
           {
             label: t('&Find'),
-            click: () => sabaki.setMode('find')
+            click: () => sabaki.setMode('find'),
           },
           {type: 'separator'},
           {
             label: t('&Info'),
-            click: () => sabaki.openDrawer('info')
-          }
+            click: () => sabaki.openDrawer('info'),
+          },
         ],
         left,
-        top
+        top,
       )
     }
 
@@ -84,7 +84,7 @@ export default class PlayBar extends Component {
         if (this.props.engineSyncers[i] != null) {
           this.props.engineSyncers[i].removeListener(
             'busy-changed',
-            this.syncState
+            this.syncState,
           )
         }
 
@@ -105,12 +105,12 @@ export default class PlayBar extends Component {
       currentPlayer,
       showHotspot,
 
-      onCurrentPlayerClick = helper.noop
+      onCurrentPlayerClick = helper.noop,
     },
-    {playerBusy}
+    {playerBusy},
   ) {
-    let captureStyle = index => ({
-      opacity: playerCaptures[index] === 0 ? 0 : 0.7
+    let captureStyle = (index) => ({
+      opacity: playerCaptures[index] === 0 ? 0 : 0.7,
     })
 
     return h(
@@ -118,8 +118,8 @@ export default class PlayBar extends Component {
       {
         class: classNames({
           hotspot: showHotspot,
-          current: mode === 'play'
-        })
+          current: mode === 'play',
+        }),
       },
 
       h('div', {class: 'hotspot', title: t('Hotspot')}),
@@ -130,7 +130,7 @@ export default class PlayBar extends Component {
         h(
           'span',
           {class: 'captures', style: captureStyle(0)},
-          playerCaptures[0]
+          playerCaptures[0],
         ),
         ' ',
 
@@ -146,13 +146,13 @@ export default class PlayBar extends Component {
           'span',
           {
             class: classNames('name', {engine: engineSyncers[0] != null}),
-            title: engineSyncers[0] != null ? t('Engine') : null
+            title: engineSyncers[0] != null ? t('Engine') : null,
           },
 
           engineSyncers[0] == null
             ? playerNames[0] || t('Black')
-            : engineSyncers[0].engine.name
-        )
+            : engineSyncers[0].engine.name,
+        ),
       ),
 
       h(
@@ -160,13 +160,13 @@ export default class PlayBar extends Component {
         {
           class: 'current-player',
           title: t('Change Player'),
-          onClick: onCurrentPlayerClick
+          onClick: onCurrentPlayerClick,
         },
         h('img', {
           src: `./img/ui/player_${currentPlayer}.svg`,
           height: 21,
-          alt: currentPlayer < 0 ? t('White to play') : t('Black to play')
-        })
+          alt: currentPlayer < 0 ? t('White to play') : t('Black to play'),
+        }),
       ),
 
       h(
@@ -176,11 +176,11 @@ export default class PlayBar extends Component {
           'span',
           {
             class: classNames('name', {engine: engineSyncers[1] != null}),
-            title: engineSyncers[1] != null ? t('Engine') : null
+            title: engineSyncers[1] != null ? t('Engine') : null,
           },
           engineSyncers[1] == null
             ? playerNames[1] || t('White')
-            : engineSyncers[1].engine.name
+            : engineSyncers[1].engine.name,
         ),
         ' ',
 
@@ -195,22 +195,22 @@ export default class PlayBar extends Component {
         h(
           'span',
           {class: 'captures', style: captureStyle(1)},
-          playerCaptures[1]
-        )
+          playerCaptures[1],
+        ),
       ),
 
       h(
         'a',
         {
-          ref: el => (this.menuButtonElement = el),
+          ref: (el) => (this.menuButtonElement = el),
           class: 'menu',
-          onClick: this.handleMenuClick
+          onClick: this.handleMenuClick,
         },
         h('img', {
           src: './node_modules/@primer/octicons/build/svg/three-bars.svg',
-          height: 22
-        })
-      )
+          height: 22,
+        }),
+      ),
     )
   }
 }

@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 export default class BusyScreen extends Component {
   componentWillReceiveProps({show}) {
@@ -20,7 +20,7 @@ export default class BusyScreen extends Component {
   render(_, {show}) {
     return h('section', {
       id: 'busy',
-      style: {display: show ? 'block' : 'none'}
+      style: {display: show ? 'block' : 'none'},
     })
   }
 }

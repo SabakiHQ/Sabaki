@@ -32,17 +32,17 @@ export default class ScoringBar extends Component {
           result == null
             ? ''
             : result > 0
-            ? `B+${result}`
-            : result < 0
-            ? `W+${-result}`
-            : t('Draw')
-        )
+              ? `B+${result}`
+              : result < 0
+                ? `W+${-result}`
+                : t('Draw'),
+        ),
       ),
       ' ',
 
       type === 'scoring'
         ? t('Please select dead stones.')
-        : t('Toggle group status.')
+        : t('Toggle group status.'),
     )
   }
 }

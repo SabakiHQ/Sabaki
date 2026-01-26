@@ -5,22 +5,23 @@ import i18n from '../i18n.js'
 import sabaki from '../modules/sabaki.js'
 
 const t = i18n.context('ContentDisplay')
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 function htmlify(input) {
   let urlRegex = /\b(ht|f)tps?:\/\/[^\s<]+[^<.,:;"\')\]\s](\/\B|\b)/i
   let emailRegex = /\b[^\s@<]+@[^\s@<]+\b/i
-  let variationRegex = /\b(black\s+?|white\s+?|[bw]\s*)(([a-hj-z]\d{1,2}[ ]+)+[a-hj-z]\d{1,2})\b/i
+  let variationRegex =
+    /\b(black\s+?|white\s+?|[bw]\s*)(([a-hj-z]\d{1,2}[ ]+)+[a-hj-z]\d{1,2})\b/i
   let coordRegex = /\b[a-hj-z]\d{1,2}\b/i
   let movenumberRegex = /(\B#|\bmove[ ]+)(\d+)\b/i
   let totalRegex = new RegExp(
     `(${[urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex]
-      .map(regex => regex.source)
+      .map((regex) => regex.source)
       .join('|')})`,
-    'gi'
+    'gi',
   )
 
-  input = input.replace(totalRegex, match => {
+  input = input.replace(totalRegex, (match) => {
     let tokens
 
     if (urlRegex.test(match))
@@ -51,7 +52,7 @@ export default class ContentDisplay extends Component {
   constructor(props) {
     super(props)
 
-    this.handleLinkClick = evt => {
+    this.handleLinkClick = (evt) => {
       let linkElement = evt.currentTarget
 
       if (linkElement.classList.contains('comment-external')) {
@@ -66,7 +67,7 @@ export default class ContentDisplay extends Component {
       }
     }
 
-    let getVariationInfo = target => {
+    let getVariationInfo = (target) => {
       let {board, currentPlayer} = sabaki.inferredState
       let currentVertex = board.currentVertex
       let currentVertexSign = currentVertex && board.get(currentVertex)
@@ -74,13 +75,13 @@ export default class ContentDisplay extends Component {
       let sign = color === '' ? currentPlayer : color === 'b' ? 1 : -1
       let moves = target.dataset.moves
         .split(/\s+/)
-        .map(x => board.parseVertex(x))
+        .map((x) => board.parseVertex(x))
       let sibling = currentVertexSign === sign
 
       return {sign, moves, sibling}
     }
 
-    this.handleVariationMouseEnter = evt => {
+    this.handleVariationMouseEnter = (evt) => {
       let {currentTarget} = evt
       let {sign, moves, sibling} = getVariationInfo(currentTarget)
       let counter = 1
@@ -105,14 +106,14 @@ export default class ContentDisplay extends Component {
       }
     }
 
-    this.handleVariationMouseLeave = evt => {
+    this.handleVariationMouseLeave = (evt) => {
       sabaki.setState({playVariation: null})
 
       clearInterval(this.variationIntervalId)
       evt.currentTarget.style.backgroundSize = ''
     }
 
-    this.handleVariationMouseUp = evt => {
+    this.handleVariationMouseUp = (evt) => {
       if (evt.button !== 2) return
 
       let {sign, moves, sibling} = getVariationInfo(evt.currentTarget)
@@ -120,18 +121,18 @@ export default class ContentDisplay extends Component {
       sabaki.openVariationMenu(sign, moves, {
         x: evt.clientX,
         y: evt.clientY,
-        appendSibling: sibling
+        appendSibling: sibling,
       })
     }
 
-    this.handleCoordMouseEnter = evt => {
+    this.handleCoordMouseEnter = (evt) => {
       let {board} = sabaki.inferredState
       let vertex = board.parseVertex(evt.currentTarget.innerText)
 
       sabaki.setState({highlightVertices: [vertex]})
     }
 
-    this.handleCoordMouseLeave = evt => {
+    this.handleCoordMouseLeave = (evt) => {
       sabaki.setState({highlightVertices: []})
     }
   }
@@ -166,29 +167,29 @@ export default class ContentDisplay extends Component {
   render({tag, content, children}) {
     return content != null
       ? h(tag, {
-          ref: el => (this.element = el),
+          ref: (el) => (this.element = el),
           dangerouslySetInnerHTML: {
             __html: htmlify(
               content
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-            )
+                .replace(/>/g, '&gt;'),
+            ),
           },
           ...this.props,
           tag: undefined,
           content: undefined,
-          children: undefined
+          children: undefined,
         })
       : h(
           tag,
           Object.assign(
             {
-              ref: el => (this.element = el)
+              ref: (el) => (this.element = el),
             },
-            this.props
+            this.props,
           ),
-          children
+          children,
         )
   }
 }

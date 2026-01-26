@@ -9,8 +9,8 @@ function extractProperty(tree, property) {
 // player : 'BR' | 'WR'
 function sortRank(trees, player) {
   return [...trees].sort((tr1, tr2) => {
-    let [weighted1, weighted2] = [tr1, tr2].map(tree =>
-      weightRank(extractProperty(tree, player))
+    let [weighted1, weighted2] = [tr1, tr2].map((tree) =>
+      weightRank(extractProperty(tree, player)),
     )
     return compareResult(weighted1, weighted2)
   })
@@ -31,7 +31,7 @@ function weightRank(rank) {
 // name : 'PB' | 'PW' | 'GN' | 'EV'
 function sortName(trees, name) {
   return [...trees].sort((tr1, tr2) => {
-    let [name1, name2] = [tr1, tr2].map(tree => extractProperty(tree, name))
+    let [name1, name2] = [tr1, tr2].map((tree) => extractProperty(tree, name))
     return natsort({insensitive: true})(name1, name2)
   })
 }
@@ -71,9 +71,9 @@ export function byEvent(trees) {
 export function byDate(trees) {
   return [...trees].sort((tr1, tr2) => {
     let [date1, date2] = [tr1, tr2]
-      .map(tree => extractProperty(tree, 'DT'))
-      .map(x => parseDates(x))
-      .map(x => (x ? stringifyDates(x.sort(lexicalCompare)) : ''))
+      .map((tree) => extractProperty(tree, 'DT'))
+      .map((x) => parseDates(x))
+      .map((x) => (x ? stringifyDates(x.sort(lexicalCompare)) : ''))
     return compareResult(date1, date2)
   })
 }

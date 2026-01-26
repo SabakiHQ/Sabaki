@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import * as gametree from '../../modules/gametree.js'
 import {vertexEquals, noop} from '../../modules/helper.js'
 
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 let delay = setting.get('graph.delay')
 let commentProperties = setting.get('sgf.comment_properties')
@@ -13,17 +13,17 @@ class GameGraphNode extends Component {
     super()
 
     this.state = {
-      hover: false
+      hover: false,
     }
 
-    this.handleMouseMove = evt => {
+    this.handleMouseMove = (evt) => {
       if (!this.element) return
 
       let {clientX: x, clientY: y} = evt
       let {
         position,
         mouseShift: [sx, sy],
-        gridSize
+        gridSize,
       } = this.props
       let mousePosition = [x + sx, y + sy]
       let hover = false
@@ -32,7 +32,7 @@ class GameGraphNode extends Component {
         mousePosition.every(
           (x, i) =>
             Math.ceil(position[i] - gridSize / 2) <= x &&
-            x <= Math.floor(position[i] + gridSize / 2) - 1
+            x <= Math.floor(position[i] + gridSize / 2) - 1,
         )
       ) {
         hover = true
@@ -65,7 +65,7 @@ class GameGraphNode extends Component {
 
   render({position: [left, top], type, current, fill, nodeSize}, {hover}) {
     return h('path', {
-      ref: el => (this.element = el),
+      ref: (el) => (this.element = el),
       d: (() => {
         let nodeSize2 = nodeSize * 2
 
@@ -80,8 +80,9 @@ class GameGraphNode extends Component {
           let diamondSide = Math.round(Math.sqrt(2) * nodeSize)
 
           return `M ${left} ${top - diamondSide}
-                        L ${left - diamondSide} ${top} L ${left} ${top +
-            diamondSide}
+                        L ${left - diamondSide} ${top} L ${left} ${
+                          top + diamondSide
+                        }
                         L ${left + diamondSide} ${top} Z`
         } else if (type === 'bookmark') {
           return `M ${left - nodeSize} ${top - nodeSize * 1.3}
@@ -93,7 +94,7 @@ class GameGraphNode extends Component {
       })(),
 
       class: classNames({hover, current}, 'node'),
-      fill
+      fill,
     })
   }
 }
@@ -104,7 +105,7 @@ class GameGraphEdge extends Component {
     positionBelow,
     current,
     length,
-    gridSize
+    gridSize,
   }) {
     return (
       length !== this.props.length ||
@@ -120,7 +121,7 @@ class GameGraphEdge extends Component {
     positionBelow: [left2, top2],
     length,
     gridSize,
-    current
+    current,
   }) {
     let points
 
@@ -135,7 +136,7 @@ class GameGraphEdge extends Component {
       points,
       fill: 'none',
       stroke: current ? '#ccc' : '#777',
-      'stroke-width': current ? 2 : 1
+      'stroke-width': current ? 2 : 1,
     })
   }
 }
@@ -148,7 +149,7 @@ class GameGraph extends Component {
       cameraPosition: [-props.gridSize, -props.gridSize],
       viewportSize: [0, 0],
       viewportPosition: [0, 0],
-      matrixDict: null
+      matrixDict: null,
     }
 
     this.mousePosition = [-100, -100]
@@ -160,13 +161,13 @@ class GameGraph extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('mousemove', evt => {
+    document.addEventListener('mousemove', (evt) => {
       if (!this.svgElement) return
 
       let {clientX: x, clientY: y, movementX, movementY} = evt
       let {
         cameraPosition: [cx, cy],
-        viewportPosition: [vx, vy]
+        viewportPosition: [vx, vy],
       } = this.state
 
       if (this.mouseDown === 0) {
@@ -212,7 +213,7 @@ class GameGraph extends Component {
       clearTimeout(this.updateCameraPositionId)
       this.updateCameraPositionId = setTimeout(
         () => this.updateCameraPosition(),
-        delay
+        delay,
       )
     }
   }
@@ -239,7 +240,7 @@ class GameGraph extends Component {
   updateCameraPosition() {
     let {gridSize, treePosition} = this.props
     let {
-      matrixDict: [matrix, dict]
+      matrixDict: [matrix, dict],
     } = this.state
 
     let [x, y] = dict[treePosition]
@@ -252,8 +253,8 @@ class GameGraph extends Component {
     this.setState({
       cameraPosition: [
         x * gridSize + relX * diff - this.state.viewportSize[0] / 2,
-        y * gridSize - this.state.viewportSize[1] / 2
-      ].map(z => Math.round(z))
+        y * gridSize - this.state.viewportSize[1] / 2,
+      ].map((z) => Math.round(z)),
     })
   }
 
@@ -263,7 +264,7 @@ class GameGraph extends Component {
     let {left, top, width, height} = this.element.getBoundingClientRect()
     this.setState({
       viewportSize: [width, height],
-      viewportPosition: [left, top]
+      viewportPosition: [left, top],
     })
   }
 
@@ -280,11 +281,11 @@ class GameGraph extends Component {
     let {onNodeClick = noop, gameTree, gridSize} = this.props
     let {
       matrixDict: [matrix],
-      cameraPosition: [cx, cy]
+      cameraPosition: [cx, cy],
     } = this.state
     let [mx, my] = this.mousePosition
-    let [nearestX, nearestY] = [mx + cx, my + cy].map(z =>
-      Math.round(z / gridSize)
+    let [nearestX, nearestY] = [mx + cx, my + cy].map((z) =>
+      Math.round(z / gridSize),
     )
 
     if (!matrix[nearestY] || !matrix[nearestY][nearestX]) return
@@ -292,8 +293,8 @@ class GameGraph extends Component {
     onNodeClick(
       Object.assign(evt, {
         gameTree,
-        treePosition: matrix[nearestY][nearestX]
-      })
+        treePosition: matrix[nearestY][nearestX],
+      }),
     )
   }
 
@@ -303,17 +304,17 @@ class GameGraph extends Component {
       matrixDict: [matrix, dict],
       cameraPosition: [cx, cy],
       viewportSize: [width, height],
-      viewportPosition: [vx, vy]
-    }
+      viewportPosition: [vx, vy],
+    },
   ) {
     let nodeColumns = []
     let edges = []
 
-    let [minX, minY] = [cx, cy].map(z =>
-      Math.max(Math.ceil(z / gridSize) - 2, 0)
+    let [minX, minY] = [cx, cy].map((z) =>
+      Math.max(Math.ceil(z / gridSize) - 2, 0),
     )
     let [maxX, maxY] = [cx, cy].map(
-      (z, i) => (z + [width, height][i]) / gridSize + 2
+      (z, i) => (z + [width, height][i]) / gridSize + 2,
     )
     minY -= 3
     maxY += 3
@@ -342,14 +343,14 @@ class GameGraph extends Component {
           node.data.BM != null
             ? [240, 35, 17]
             : node.data.DO != null
-            ? [146, 39, 143]
-            : node.data.IT != null
-            ? [72, 134, 213]
-            : node.data.TE != null
-            ? [89, 168, 15]
-            : commentProperties.some(x => node.data[x] != null)
-            ? [255, 174, 61]
-            : [238, 238, 238]
+              ? [146, 39, 143]
+              : node.data.IT != null
+                ? [72, 134, 213]
+                : node.data.TE != null
+                  ? [89, 168, 15]
+                  : commentProperties.some((x) => node.data[x] != null)
+                    ? [255, 174, 61]
+                    : [238, 238, 238]
 
         let left = x * gridSize
         let top = y * gridSize
@@ -363,16 +364,16 @@ class GameGraph extends Component {
               node.data.HO != null
                 ? 'bookmark' // Bookmark node
                 : (node.data.B != null && node.data.B[0] === '') ||
-                  (node.data.W != null && node.data.W[0] === '')
-                ? 'square' // Pass node
-                : node.data.B == null && node.data.W == null
-                ? 'diamond' // Non-move node
-                : 'circle', // Normal node
+                    (node.data.W != null && node.data.W[0] === '')
+                  ? 'square' // Pass node
+                  : node.data.B == null && node.data.W == null
+                    ? 'diamond' // Non-move node
+                    : 'circle', // Normal node
             current: isCurrentNode,
-            fill: `rgb(${fillRGB.map(x => x * opacity).join(',')})`,
+            fill: `rgb(${fillRGB.map((x) => x * opacity).join(',')})`,
             nodeSize: nodeSize + 1,
-            gridSize
-          })
+            gridSize,
+          }),
         )
 
         if (!doneTreeBones.includes(id)) {
@@ -404,11 +405,11 @@ class GameGraph extends Component {
                 positionBelow,
                 length: (sequence.length - 1) * gridSize,
                 current: onCurrentTrack,
-                gridSize
-              })
+                gridSize,
+              }),
             )
 
-            doneTreeBones.push(...sequence.map(node => node.id))
+            doneTreeBones.push(...sequence.map((node) => node.id))
           }
         }
 
@@ -427,11 +428,11 @@ class GameGraph extends Component {
                 positionBelow: [nx * gridSize, ny * gridSize],
                 length: (subsequence.length - 1) * gridSize,
                 current,
-                gridSize
-              })
+                gridSize,
+              }),
             )
 
-            doneTreeBones.push(...subsequence.map(node => node.id))
+            doneTreeBones.push(...subsequence.map((node) => node.id))
           }
         }
       }
@@ -444,13 +445,13 @@ class GameGraph extends Component {
 
   render(
     {showGameGraph},
-    {matrixDict, viewportSize, cameraPosition: [cx, cy]}
+    {matrixDict, viewportSize, cameraPosition: [cx, cy]},
   ) {
     return h(
       'section',
       {
-        ref: el => (this.element = el),
-        id: 'graph'
+        ref: (el) => (this.element = el),
+        id: 'graph',
       },
 
       h(
@@ -458,7 +459,7 @@ class GameGraph extends Component {
         {},
         `#graph svg > * {
                 transform: translate(${-cx}px, ${-cy}px);
-            }`
+            }`,
       ),
 
       showGameGraph &&
@@ -467,18 +468,18 @@ class GameGraph extends Component {
         h(
           'svg',
           {
-            ref: el => (this.svgElement = el),
+            ref: (el) => (this.svgElement = el),
             width: viewportSize[0],
             height: viewportSize[1],
 
             onClick: this.handleNodeClick,
             onContextMenu: this.handleNodeClick,
             onMouseDown: this.handleGraphMouseDown,
-            onMouseUp: this.handleGraphMouseUp
+            onMouseUp: this.handleGraphMouseUp,
           },
 
-          this.renderNodes(this.props, this.state)
-        )
+          this.renderNodes(this.props, this.state),
+        ),
     )
   }
 }

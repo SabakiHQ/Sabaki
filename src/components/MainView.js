@@ -20,14 +20,14 @@ export default class MainView extends Component {
       sabaki.setPlayer(treePosition, -currentPlayer)
     }
 
-    this.handleToolButtonClick = evt => {
+    this.handleToolButtonClick = (evt) => {
       sabaki.setState({selectedTool: evt.tool})
     }
 
-    this.handleFindButtonClick = evt =>
+    this.handleFindButtonClick = (evt) =>
       sabaki.findMove(evt.step, {
         vertex: this.props.findVertex,
-        text: this.props.findText
+        text: this.props.findText,
       })
 
     this.handleGobanVertexClick = this.handleGobanVertexClick.bind(this)
@@ -37,7 +37,7 @@ export default class MainView extends Component {
   componentDidMount() {
     // Pressing Ctrl/Cmd should show crosshair cursor on Goban in edit mode
 
-    document.addEventListener('keydown', evt => {
+    document.addEventListener('keydown', (evt) => {
       if (evt.key !== 'Control' || evt.key !== 'Meta') return
 
       if (this.props.mode === 'edit') {
@@ -45,7 +45,7 @@ export default class MainView extends Component {
       }
     })
 
-    document.addEventListener('keyup', evt => {
+    document.addEventListener('keyup', (evt) => {
       if (evt.key !== 'Control' || evt.key !== 'Meta') return
 
       if (this.props.mode === 'edit') {
@@ -103,9 +103,9 @@ export default class MainView extends Component {
 
       selectedTool,
       findText,
-      findVertex
+      findVertex,
     },
-    {gobanCrosshair}
+    {gobanCrosshair},
   ) {
     let node = gameTree.get(treePosition)
     let board = gametree.getBoard(gameTree, treePosition)
@@ -116,7 +116,7 @@ export default class MainView extends Component {
     if (['scoring', 'estimator'].includes(mode)) {
       paintMap = areaMap
     } else if (mode === 'guess') {
-      paintMap = [...Array(board.height)].map(_ => Array(board.width).fill(0))
+      paintMap = [...Array(board.height)].map((_) => Array(board.width).fill(0))
 
       for (let [x, y] of blockedGuesses) {
         paintMap[y][x] = 1
@@ -129,7 +129,7 @@ export default class MainView extends Component {
 
       h(
         'main',
-        {ref: el => (this.mainElement = el)},
+        {ref: (el) => (this.mainElement = el)},
 
         h(Goban, {
           gameTree,
@@ -166,8 +166,8 @@ export default class MainView extends Component {
           transformation: boardTransformation,
 
           onVertexClick: this.handleGobanVertexClick,
-          onLineDraw: this.handleGobanLineDraw
-        })
+          onLineDraw: this.handleGobanLineDraw,
+        }),
       ),
 
       h(
@@ -177,34 +177,34 @@ export default class MainView extends Component {
           mode,
           engineSyncers: [
             this.props.blackEngineSyncerId,
-            this.props.whiteEngineSyncerId
-          ].map(id =>
-            this.props.attachedEngineSyncers.find(syncer => syncer.id === id)
+            this.props.whiteEngineSyncerId,
+          ].map((id) =>
+            this.props.attachedEngineSyncers.find((syncer) => syncer.id === id),
           ),
           playerNames: gameInfo.playerNames,
           playerRanks: gameInfo.playerRanks,
-          playerCaptures: [1, -1].map(sign => board.getCaptures(sign)),
+          playerCaptures: [1, -1].map((sign) => board.getCaptures(sign)),
           currentPlayer,
           showHotspot: node.data.HO != null,
-          onCurrentPlayerClick: this.handleTogglePlayer
+          onCurrentPlayerClick: this.handleTogglePlayer,
         }),
 
         h(EditBar, {
           mode,
           selectedTool,
-          onToolButtonClick: this.handleToolButtonClick
+          onToolButtonClick: this.handleToolButtonClick,
         }),
 
         h(GuessBar, {
           mode,
-          treePosition
+          treePosition,
         }),
 
         h(AutoplayBar, {
           mode,
           gameTree,
           gameCurrents: gameCurrents[gameIndex],
-          treePosition
+          treePosition,
         }),
 
         h(ScoringBar, {
@@ -214,7 +214,7 @@ export default class MainView extends Component {
           scoreBoard,
           areaMap,
           komi,
-          handicap
+          handicap,
         }),
 
         h(ScoringBar, {
@@ -224,15 +224,15 @@ export default class MainView extends Component {
           scoreBoard,
           areaMap,
           komi,
-          handicap
+          handicap,
         }),
 
         h(FindBar, {
           mode,
           findText,
-          onButtonClick: this.handleFindButtonClick
-        })
-      )
+          onButtonClick: this.handleFindButtonClick,
+        }),
+      ),
     )
   }
 }

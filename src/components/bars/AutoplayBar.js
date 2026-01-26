@@ -8,7 +8,7 @@ import i18n from '../../i18n.js'
 import Bar from './Bar.js'
 
 const t = i18n.context('AutoplayBar')
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 let secondsPerMove = setting.get('autoplay.sec_per_move')
@@ -20,26 +20,26 @@ export default class AutoplayBar extends Component {
     this.state = {
       playing: false,
       secondsPerMove,
-      secondsPerMoveInput: secondsPerMove
+      secondsPerMoveInput: secondsPerMove,
     }
 
-    this.handleFormSubmit = evt => {
+    this.handleFormSubmit = (evt) => {
       evt.preventDefault()
     }
 
-    this.handleValueInput = evt => {
+    this.handleValueInput = (evt) => {
       this.setState({secondsPerMoveInput: evt.currentTarget.value})
     }
 
-    this.handleValueChange = evt => {
+    this.handleValueChange = (evt) => {
       let value = Math.round(
-        Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value))
+        Math.min(maxSecPerMove, Math.max(1, +evt.currentTarget.value)),
       )
 
       if (!isNaN(value)) {
         this.setState({
           secondsPerMove: value,
-          secondsPerMoveInput: value
+          secondsPerMoveInput: value,
         })
       }
 
@@ -76,7 +76,7 @@ export default class AutoplayBar extends Component {
         sabaki.setCurrentTreePosition(gameTree, treePosition)
       } else {
         let vertex = parseVertex(
-          node.data.B != null ? node.data.B[0] : node.data.W[0]
+          node.data.B != null ? node.data.B[0] : node.data.W[0],
         )
         sabaki.makeMove(vertex, {player: node.data.B ? 1 : -1})
       }
@@ -100,7 +100,7 @@ export default class AutoplayBar extends Component {
       Bar,
       Object.assign(
         {type: 'autoplay', class: classNames({playing})},
-        this.props
+        this.props,
       ),
       h(
         'form',
@@ -116,14 +116,14 @@ export default class AutoplayBar extends Component {
             step: 1,
 
             onInput: this.handleValueInput,
-            onChange: this.handleValueChange
+            onChange: this.handleValueChange,
           }),
           ' ',
-          t('sec per move')
-        )
+          t('sec per move'),
+        ),
       ),
 
-      h('a', {class: 'play', href: '#', onClick: this.handlePlayButtonClick})
+      h('a', {class: 'play', href: '#', onClick: this.handlePlayButtonClick}),
     )
   }
 }

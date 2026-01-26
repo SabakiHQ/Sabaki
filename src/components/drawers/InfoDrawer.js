@@ -8,14 +8,14 @@ import {
   popupMenu,
   shallowEquals,
   lexicalCompare,
-  noop
+  noop,
 } from '../../modules/helper.js'
 import i18n from '../../i18n.js'
 
 import Drawer from './Drawer.js'
 
 const t = i18n.context('InfoDrawer')
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 class InfoDrawerItem extends Component {
   render({title, children}) {
@@ -25,7 +25,7 @@ class InfoDrawerItem extends Component {
       'li',
       {},
       h('label', {}, h('span', {}, title + ':'), children[0]),
-      children.slice(1)
+      children.slice(1),
     )
   }
 }
@@ -48,10 +48,10 @@ export default class InfoDrawer extends Component {
       result: null,
       komi: null,
       handicap: 0,
-      size: [null, null]
+      size: [null, null],
     }
 
-    this.handleSubmitButtonClick = async evt => {
+    this.handleSubmitButtonClick = async (evt) => {
       evt.preventDefault()
 
       let emptyTree = this.props.gameTree.root.children.length === 0
@@ -65,13 +65,13 @@ export default class InfoDrawer extends Component {
         'gameComment',
         'date',
         'result',
-        'komi'
+        'komi',
       ]
 
       let data = keys.reduce((acc, key) => {
         acc[key] =
           Array.isArray(this.state[key]) &&
-          this.state[key].every(x => x == null)
+          this.state[key].every((x) => x == null)
             ? null
             : this.state[key]
         return acc
@@ -99,14 +99,13 @@ export default class InfoDrawer extends Component {
         }
 
         sabaki.setState({
-          [i === 0
-            ? 'blackEngineSyncerId'
-            : 'whiteEngineSyncerId']: playerSyncerId
+          [i === 0 ? 'blackEngineSyncerId' : 'whiteEngineSyncerId']:
+            playerSyncerId,
         })
       })
     }
 
-    this.handleCancelButtonClick = evt => {
+    this.handleCancelButtonClick = (evt) => {
       evt.preventDefault()
       sabaki.closeDrawer()
     }
@@ -115,17 +114,17 @@ export default class InfoDrawer extends Component {
       this.combinedSizeFields = this.state.size[0] === this.state.size[1]
     }
 
-    this.handleBoardWidthChange = evt => {
+    this.handleBoardWidthChange = (evt) => {
       let {value} = evt.currentTarget
       if (value === '' || isNaN(value)) value = null
       else value = +value
 
       this.setState(({size: [, height]}) => ({
-        size: [value, this.combinedSizeFields ? value : height]
+        size: [value, this.combinedSizeFields ? value : height],
       }))
     }
 
-    this.handleBoardHeightChange = evt => {
+    this.handleBoardHeightChange = (evt) => {
       let {value} = evt.currentTarget
       if (value === '' || isNaN(value)) value = null
       else value = +value
@@ -142,11 +141,11 @@ export default class InfoDrawer extends Component {
         blackName: whiteName,
         whiteName: blackName,
         blackRank: whiteRank,
-        whiteRank: blackRank
+        whiteRank: blackRank,
       }))
     }
 
-    this.handleDateInputChange = evt => {
+    this.handleDateInputChange = (evt) => {
       this.setState({date: evt.currentTarget.value})
       this.markDates()
     }
@@ -175,18 +174,18 @@ export default class InfoDrawer extends Component {
       'gameComment',
       'komi',
       'result',
-      'handicap'
+      'handicap',
     ].reduce((acc, key) => {
       acc[key] = ({currentTarget}) => {
         this.setState({
-          [key]: currentTarget.value === '' ? null : currentTarget.value
+          [key]: currentTarget.value === '' ? null : currentTarget.value,
         })
       }
 
       return acc
     }, {})
 
-    this.handleEngineMenuClick = [0, 1].map(index => evt => {
+    this.handleEngineMenuClick = [0, 1].map((index) => (evt) => {
       let engines = setting.get('engines.list')
       let {attachedEngineSyncers} = this.props
       let nameKey = ['blackName', 'whiteName'][index]
@@ -201,34 +200,34 @@ export default class InfoDrawer extends Component {
           type: 'checkbox',
           checked: this.state.syncerEngines[index] == null,
           click: () => {
-            this.setState(state => ({
+            this.setState((state) => ({
               syncerEngines: Object.assign(state.syncerEngines, {
-                [index]: null
+                [index]: null,
               }),
-              [nameKey]: autoName ? null : state[nameKey]
+              [nameKey]: autoName ? null : state[nameKey],
             }))
-          }
+          },
         },
         {type: 'separator'},
-        ...attachedEngineSyncers.map(syncer => ({
+        ...attachedEngineSyncers.map((syncer) => ({
           label: syncer.engine.name || t('(Unnamed Engine)'),
           type: 'checkbox',
           checked:
             this.state.syncerEngines[index] != null &&
             this.state.syncerEngines[index].syncer === syncer,
           click: () => {
-            this.setState(state => ({
+            this.setState((state) => ({
               syncerEngines: Object.assign(state.syncerEngines, {
-                [index]: {syncer, engine: syncer.engine}
+                [index]: {syncer, engine: syncer.engine},
               }),
-              [nameKey]: autoName ? syncer.engine.name : state[nameKey]
+              [nameKey]: autoName ? syncer.engine.name : state[nameKey],
             }))
-          }
+          },
         })),
         attachedEngineSyncers.length > 0 && {type: 'separator'},
         {
           label: t('Attach Engine'),
-          submenu: engines.map(engine => ({
+          submenu: engines.map((engine) => ({
             label: engine.name || t('(Unnamed Engine)'),
             type: 'checkbox',
             checked:
@@ -236,23 +235,23 @@ export default class InfoDrawer extends Component {
               this.state.syncerEngines[index].syncer == null &&
               this.state.syncerEngines[index].engine === engine,
             click: () => {
-              this.setState(state => ({
+              this.setState((state) => ({
                 syncerEngines: Object.assign(state.syncerEngines, {
-                  [index]: {engine}
+                  [index]: {engine},
                 }),
-                [nameKey]: autoName ? engine.name : state[nameKey]
+                [nameKey]: autoName ? engine.name : state[nameKey],
               }))
-            }
-          }))
+            },
+          })),
         },
         {
           label: t('Manage Engines…'),
           click: () => {
             sabaki.setState({preferencesTab: 'engines'})
             sabaki.openDrawer('preferences')
-          }
-        }
-      ].filter(x => !!x)
+          },
+        },
+      ].filter((x) => !!x)
 
       let {left, bottom} = evt.currentTarget.getBoundingClientRect()
       popupMenu(template, left, bottom)
@@ -264,19 +263,19 @@ export default class InfoDrawer extends Component {
     show,
     attachedEngineSyncers,
     blackEngineSyncerId,
-    whiteEngineSyncerId
+    whiteEngineSyncerId,
   }) {
     if (!this.props.show && show) {
       this.setState({
         ...gameInfo,
-        syncerEngines: [blackEngineSyncerId, whiteEngineSyncerId].map(id => {
-          let syncer = attachedEngineSyncers.find(syncer => syncer.id === id)
+        syncerEngines: [blackEngineSyncerId, whiteEngineSyncerId].map((id) => {
+          let syncer = attachedEngineSyncers.find((syncer) => syncer.id === id)
           return syncer == null ? null : {syncer, engine: syncer.engine}
         }),
         showResult:
           !gameInfo.result ||
           gameInfo.result.trim() === '' ||
-          setting.get('app.always_show_result') === true
+          setting.get('app.always_show_result') === true,
       })
     }
   }
@@ -297,7 +296,7 @@ export default class InfoDrawer extends Component {
 
   markDates() {
     let dates = (parseDates(this.state.date || '') || []).filter(
-      x => x.length === 3
+      (x) => x.length === 3,
     )
 
     for (let el of this.pikaday.el.querySelectorAll('.pika-button')) {
@@ -307,9 +306,9 @@ export default class InfoDrawer extends Component {
 
       el.parentElement.classList.toggle(
         'is-multi-selected',
-        dates.some(d => {
+        dates.some((d) => {
           return shallowEquals(d, [year, month + 1, day])
-        })
+        }),
       )
     }
   }
@@ -344,14 +343,14 @@ export default class InfoDrawer extends Component {
         nextMonth: t('Next Month'),
         months: [...Array(12)].map((_, i) => i18n.formatMonth(i)),
         weekdays: [...Array(7)].map((_, i) => i18n.formatWeekday(i)),
-        weekdaysShort: [...Array(7)].map((_, i) => i18n.formatWeekdayShort(i))
+        weekdaysShort: [...Array(7)].map((_, i) => i18n.formatWeekdayShort(i)),
       },
 
       onOpen: () => {
         if (!this.pikaday) return
 
         let dates = (parseDates(this.state.date || '') || []).filter(
-          x => x.length === 3
+          (x) => x.length === 3,
         )
 
         if (dates.length > 0) {
@@ -370,23 +369,23 @@ export default class InfoDrawer extends Component {
 
         this.dateInputElement.focus()
       },
-      onSelect: date => {
+      onSelect: (date) => {
         if (!this.pikaday) return
 
         let dates = parseDates(this.state.date || '') || []
         date = [date.getFullYear(), date.getMonth() + 1, date.getDate()]
 
-        if (!dates.some(x => shallowEquals(x, date))) {
+        if (!dates.some((x) => shallowEquals(x, date))) {
           dates.push(date)
         } else {
-          dates = dates.filter(x => !shallowEquals(x, date))
+          dates = dates.filter((x) => !shallowEquals(x, date))
         }
 
         this.setState({
-          date: stringifyDates(dates.sort(lexicalCompare))
+          date: stringifyDates(dates.sort(lexicalCompare)),
         })
         this.markDates()
-      }
+      },
     })
 
     // Hack for removing keyboard input support of Pikaday
@@ -395,7 +394,7 @@ export default class InfoDrawer extends Component {
     this.pikaday.hide()
 
     document.body.appendChild(this.pikaday.el)
-    document.body.addEventListener('click', evt => {
+    document.body.addEventListener('click', (evt) => {
       if (
         this.pikaday.isVisible() &&
         document.activeElement !== this.dateInputElement &&
@@ -424,8 +423,8 @@ export default class InfoDrawer extends Component {
       result,
       komi,
       handicap,
-      size
-    }
+      size,
+    },
   ) {
     let emptyTree = gameTree.root.children.length === 0
 
@@ -433,7 +432,7 @@ export default class InfoDrawer extends Component {
       Drawer,
       {
         type: 'info',
-        show
+        show,
       },
 
       h(
@@ -452,7 +451,7 @@ export default class InfoDrawer extends Component {
               width: 16,
               height: 16,
               class: classNames({menu: true, active: syncerEngines[0] != null}),
-              onClick: this.handleEngineMenuClick[0]
+              onClick: this.handleEngineMenuClick[0],
             }),
             ' ',
 
@@ -461,17 +460,17 @@ export default class InfoDrawer extends Component {
               name: 'rank_1',
               placeholder: t('Rank'),
               value: blackRank,
-              onInput: this.handleInputChange.blackRank
+              onInput: this.handleInputChange.blackRank,
             }),
 
             h('input', {
-              ref: el => (this.firstFocusElement = el),
+              ref: (el) => (this.firstFocusElement = el),
               type: 'text',
               name: 'name_1',
               placeholder: t('Black'),
               value: blackName,
-              onInput: this.handleInputChange.blackName
-            })
+              onInput: this.handleInputChange.blackName,
+            }),
           ),
 
           h('img', {
@@ -479,7 +478,7 @@ export default class InfoDrawer extends Component {
             src: `./img/ui/player_${currentPlayer}.svg`,
             height: 31,
             title: t('Swap'),
-            onClick: this.handleSwapPlayers
+            onClick: this.handleSwapPlayers,
           }),
 
           h(
@@ -490,7 +489,7 @@ export default class InfoDrawer extends Component {
               name: 'name_-1',
               placeholder: t('White'),
               value: whiteName,
-              onInput: this.handleInputChange.whiteName
+              onInput: this.handleInputChange.whiteName,
             }),
 
             h('input', {
@@ -498,8 +497,8 @@ export default class InfoDrawer extends Component {
               name: 'rank_-1',
               placeholder: t('Rank'),
               value: whiteRank,
-              onInput: this.handleInputChange.whiteRank
-            })
+              onInput: this.handleInputChange.whiteRank,
+            }),
           ),
           ' ',
 
@@ -509,8 +508,8 @@ export default class InfoDrawer extends Component {
             width: 16,
             height: 16,
             class: classNames({menu: true, active: syncerEngines[1] != null}),
-            onClick: this.handleEngineMenuClick[1]
-          })
+            onClick: this.handleEngineMenuClick[1],
+          }),
         ),
 
         h(
@@ -523,8 +522,8 @@ export default class InfoDrawer extends Component {
               type: 'text',
               placeholder: t('(Unnamed)'),
               value: gameName,
-              onInput: this.handleInputChange.gameName
-            })
+              onInput: this.handleInputChange.gameName,
+            }),
           ),
           h(
             InfoDrawerItem,
@@ -533,22 +532,22 @@ export default class InfoDrawer extends Component {
               type: 'text',
               placeholder: t('None'),
               value: eventName,
-              onInput: this.handleInputChange.eventName
-            })
+              onInput: this.handleInputChange.eventName,
+            }),
           ),
           h(
             InfoDrawerItem,
             {title: t('Date')},
             h('input', {
-              ref: el => (this.dateInputElement = el),
+              ref: (el) => (this.dateInputElement = el),
               type: 'text',
               placeholder: t('None'),
               value: date,
 
               onFocus: this.handleDateInputFocus,
               onBlur: this.handleDateInputBlur,
-              onInput: this.handleDateInputChange
-            })
+              onInput: this.handleDateInputChange,
+            }),
           ),
           h(
             InfoDrawerItem,
@@ -557,8 +556,8 @@ export default class InfoDrawer extends Component {
               type: 'text',
               placeholder: t('None'),
               value: gameComment,
-              onInput: this.handleInputChange.gameComment
-            })
+              onInput: this.handleInputChange.gameComment,
+            }),
           ),
           h(
             InfoDrawerItem,
@@ -568,16 +567,16 @@ export default class InfoDrawer extends Component {
                   type: 'text',
                   placeholder: t('None'),
                   value: result,
-                  onInput: this.handleInputChange.result
+                  onInput: this.handleInputChange.result,
                 })
               : h(
                   'button',
                   {
                     type: 'button',
-                    onClick: this.handleShowResultClick
+                    onClick: this.handleShowResultClick,
                   },
-                  t('Show')
-                )
+                  t('Show'),
+                ),
           ),
           h(
             InfoDrawerItem,
@@ -588,8 +587,8 @@ export default class InfoDrawer extends Component {
               step: 0.5,
               placeholder: 0,
               value: komi == null ? '' : komi,
-              onInput: this.handleInputChange.komi
-            })
+              onInput: this.handleInputChange.komi,
+            }),
           ),
           h(
             InfoDrawerItem,
@@ -599,7 +598,7 @@ export default class InfoDrawer extends Component {
               {
                 selectedIndex: Math.max(0, handicap - 1),
                 disabled: !emptyTree,
-                onChange: this.handleInputChange.handicap
+                onChange: this.handleInputChange.handicap,
               },
 
               h('option', {value: 0}, t('No stones')),
@@ -607,12 +606,12 @@ export default class InfoDrawer extends Component {
                 h(
                   'option',
                   {value: i + 2},
-                  t(p => `${p.stones} stones`, {
-                    stones: i + 2
-                  })
-                )
-              )
-            )
+                  t((p) => `${p.stones} stones`, {
+                    stones: i + 2,
+                  }),
+                ),
+              ),
+            ),
           ),
           h(
             InfoDrawerItem,
@@ -626,7 +625,7 @@ export default class InfoDrawer extends Component {
               value: size[0],
               disabled: !emptyTree,
               onFocus: this.handleBoardWidthFocus,
-              onInput: this.handleBoardWidthChange
+              onInput: this.handleBoardWidthChange,
             }),
             ' ',
 
@@ -635,9 +634,9 @@ export default class InfoDrawer extends Component {
               {
                 title: t('Swap'),
                 style: {cursor: emptyTree ? 'pointer' : 'default'},
-                onClick: !emptyTree ? noop : this.handleSizeSwapButtonClick
+                onClick: !emptyTree ? noop : this.handleSizeSwapButtonClick,
               },
-              '×'
+              '×',
             ),
             ' ',
 
@@ -649,9 +648,9 @@ export default class InfoDrawer extends Component {
               min: 3,
               value: size[1],
               disabled: !emptyTree,
-              onInput: this.handleBoardHeightChange
-            })
-          )
+              onInput: this.handleBoardHeightChange,
+            }),
+          ),
         ),
 
         h(
@@ -660,16 +659,16 @@ export default class InfoDrawer extends Component {
           h(
             'button',
             {type: 'submit', onClick: this.handleSubmitButtonClick},
-            t('OK')
+            t('OK'),
           ),
           ' ',
           h(
             'button',
             {type: 'reset', onClick: this.handleCancelButtonClick},
-            t('Cancel')
-          )
-        )
-      )
+            t('Cancel'),
+          ),
+        ),
+      ),
     )
   }
 }

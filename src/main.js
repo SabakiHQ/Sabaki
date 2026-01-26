@@ -6,7 +6,7 @@ const {
   ipcMain,
   nativeImage,
   BrowserWindow,
-  Menu
+  Menu,
 } = require('electron')
 const {resolve} = require('path')
 const i18n = require('./i18n')
@@ -115,7 +115,7 @@ const settingsKeys = [
   'theme.custom_background',
   'window.width',
   'window.height',
-  'app.always_show_result'
+  'app.always_show_result',
 ]
 
 function newWindow(path) {
@@ -135,8 +135,8 @@ function newWindow(path) {
       contextIsolation: false,
       sandbox: false,
       preload: resolve(__dirname, 'preload.js'),
-      zoomFactor: setting.get('app.zoom_factor')
-    }
+      zoomFactor: setting.get('app.zoom_factor'),
+    },
   })
 
   windows.push(window)
@@ -184,8 +184,8 @@ function buildMenu(props = {}) {
 
   // Process menu items
 
-  let processMenu = items => {
-    return items.map(item => {
+  let processMenu = (items) => {
+    return items.map((item) => {
       if ('click' in item) {
         item.click = () => {
           let window = BrowserWindow.getFocusedWindow()
@@ -201,8 +201,8 @@ function buildMenu(props = {}) {
         item.click = () =>
           ({
             newWindow,
-            checkForUpdates: () => checkForUpdates({showFailDialogs: true})
-          }[key]())
+            checkForUpdates: () => checkForUpdates({showFailDialogs: true}),
+          })[key]()
 
         delete item.clickMain
       }
@@ -222,8 +222,8 @@ function buildMenu(props = {}) {
   let dockMenu = Menu.buildFromTemplate([
     {
       label: i18n.t('menu.file', 'New &Window'),
-      click: () => newWindow()
-    }
+      click: () => newWindow(),
+    },
   ])
 
   if (process.platform === 'darwin') {
@@ -242,20 +242,20 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
           type: 'info',
           buttons: [t('Download Update'), t('View Changelog'), t('Not Now')],
           title: app.name,
-          message: t(p => `${p.appName} v${p.version} is available now.`, {
+          message: t((p) => `${p.appName} v${p.version} is available now.`, {
             appName: app.name,
-            version: info.latestVersion
+            version: info.latestVersion,
           }),
           noLink: true,
-          cancelId: 2
+          cancelId: 2,
         },
-        response => {
+        (response) => {
           if (response === 2) return
 
           shell.openExternal(
-            response === 0 ? info.downloadUrl || info.url : info.url
+            response === 0 ? info.downloadUrl || info.url : info.url,
           )
-        }
+        },
       )
     } else if (showFailDialogs) {
       dialog.showMessageBox(
@@ -263,12 +263,15 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
           type: 'info',
           buttons: [t('OK')],
           title: t('No updates available'),
-          message: t(p => `${p.appName} v${p.version} is the latest version.`, {
-            appName: app.name,
-            version: app.getVersion()
-          })
+          message: t(
+            (p) => `${p.appName} v${p.version} is the latest version.`,
+            {
+              appName: app.name,
+              version: app.getVersion(),
+            },
+          ),
         },
-        () => {}
+        () => {},
       )
     }
   } catch (err) {
@@ -277,7 +280,7 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
         type: 'warning',
         buttons: [t('OK')],
         title: app.name,
-        message: t('An error occurred while checking for updates.')
+        message: t('An error occurred while checking for updates.'),
       })
     }
   }
@@ -285,7 +288,7 @@ async function checkForUpdates({showFailDialogs = false} = {}) {
 
 function setupWindowEventForwarding(win) {
   const events = ['focus', 'blur', 'maximize', 'unmaximize', 'resize']
-  events.forEach(event => {
+  events.forEach((event) => {
     win.on(event, () => {
       win.webContents.send(`window:${event}`)
     })
@@ -302,13 +305,13 @@ function setupIpcHandlers() {
   ipcMain.handle('window:setFullScreen', (e, f) => {
     BrowserWindow.fromWebContents(e.sender)?.setFullScreen(f)
   })
-  ipcMain.handle('window:isFullScreen', e => {
+  ipcMain.handle('window:isFullScreen', (e) => {
     return BrowserWindow.fromWebContents(e.sender)?.isFullScreen() ?? false
   })
-  ipcMain.handle('window:isMaximized', e => {
+  ipcMain.handle('window:isMaximized', (e) => {
     return BrowserWindow.fromWebContents(e.sender)?.isMaximized() ?? false
   })
-  ipcMain.handle('window:isMinimized', e => {
+  ipcMain.handle('window:isMinimized', (e) => {
     return BrowserWindow.fromWebContents(e.sender)?.isMinimized() ?? false
   })
   ipcMain.handle('window:setMenuBarVisibility', (e, v) => {
@@ -318,37 +321,37 @@ function setupIpcHandlers() {
     const win = BrowserWindow.fromWebContents(e.sender)
     if (win) win.autoHideMenuBar = v
   })
-  ipcMain.handle('window:getContentSize', e => {
+  ipcMain.handle('window:getContentSize', (e) => {
     return BrowserWindow.fromWebContents(e.sender)?.getContentSize() ?? [0, 0]
   })
   ipcMain.handle('window:setContentSize', (e, w, h) => {
     BrowserWindow.fromWebContents(e.sender)?.setContentSize(
       Math.floor(w),
-      Math.floor(h)
+      Math.floor(h),
     )
   })
   ipcMain.handle('window:setProgressBar', (e, p) => {
     BrowserWindow.fromWebContents(e.sender)?.setProgressBar(p)
   })
-  ipcMain.handle('window:close', e => {
+  ipcMain.handle('window:close', (e) => {
     BrowserWindow.fromWebContents(e.sender)?.close()
   })
-  ipcMain.handle('window:getId', e => {
+  ipcMain.handle('window:getId', (e) => {
     return BrowserWindow.fromWebContents(e.sender)?.id ?? null
   })
 
   // WebContents operations
   ipcMain.handle('webContents:setZoomFactor', (e, f) =>
-    e.sender.setZoomFactor(f)
+    e.sender.setZoomFactor(f),
   )
-  ipcMain.handle('webContents:getZoomFactor', e => e.sender.getZoomFactor())
+  ipcMain.handle('webContents:getZoomFactor', (e) => e.sender.getZoomFactor())
   ipcMain.handle('webContents:setAudioMuted', (e, m) =>
-    e.sender.setAudioMuted(m)
+    e.sender.setAudioMuted(m),
   )
-  ipcMain.handle('webContents:undo', e => e.sender.undo())
-  ipcMain.handle('webContents:redo', e => e.sender.redo())
-  ipcMain.handle('webContents:toggleDevTools', e => e.sender.toggleDevTools())
-  ipcMain.handle('webContents:getOSProcessId', e => e.sender.getOSProcessId())
+  ipcMain.handle('webContents:undo', (e) => e.sender.undo())
+  ipcMain.handle('webContents:redo', (e) => e.sender.redo())
+  ipcMain.handle('webContents:toggleDevTools', (e) => e.sender.toggleDevTools())
+  ipcMain.handle('webContents:getOSProcessId', (e) => e.sender.getOSProcessId())
 
   // Dialogs
   ipcMain.handle('dialog:showMessageBox', async (e, opts) => {
@@ -368,8 +371,8 @@ function setupIpcHandlers() {
 
     // Build menu from template
     // Click handlers are stored in renderer with IDs - we just send the ID back
-    const buildMenuFromTemplate = items => {
-      return items.map(item => {
+    const buildMenuFromTemplate = (items) => {
+      return items.map((item) => {
         if (!item) return item
         const newItem = {...item}
         // Items with IDs have click handlers stored in the renderer
@@ -388,7 +391,7 @@ function setupIpcHandlers() {
     Menu.buildFromTemplate(buildMenuFromTemplate(template)).popup({
       window: win,
       x: x != null ? Math.round(x * zoomFactor) : undefined,
-      y: y != null ? Math.round(y * zoomFactor) : undefined
+      y: y != null ? Math.round(y * zoomFactor) : undefined,
     })
   })
 
@@ -404,14 +407,14 @@ function setupIpcHandlers() {
   ipcMain.handle('setting:set', (e, key, value) => {
     setting.set(key, value)
     // Notify all windows of the change
-    BrowserWindow.getAllWindows().forEach(win => {
+    BrowserWindow.getAllWindows().forEach((win) => {
       win.webContents.send('setting:change', {key, value})
     })
     return true
   })
 
   // Synchronous handler for initial settings load (used by preload)
-  ipcMain.on('setting:getAllSync', e => {
+  ipcMain.on('setting:getAllSync', (e) => {
     try {
       const result = {}
       for (const key of settingsKeys) {
@@ -428,13 +431,13 @@ function setupIpcHandlers() {
     setting.loadThemes()
     return setting.getThemes()
   })
-  ipcMain.on('setting:getPathsSync', e => {
+  ipcMain.on('setting:getPathsSync', (e) => {
     try {
       e.returnValue = {
         themesDirectory: setting.themesDirectory,
         stylesPath: setting.stylesPath,
         userDataDirectory: setting.userDataDirectory,
-        themes: setting.getThemes()
+        themes: setting.getThemes(),
       }
     } catch (err) {
       console.error('[main] Error in setting:getPathsSync:', err)
@@ -442,7 +445,7 @@ function setupIpcHandlers() {
         themesDirectory: '',
         stylesPath: '',
         userDataDirectory: '',
-        themes: {}
+        themes: {},
       }
     }
   })
@@ -475,26 +478,26 @@ async function main() {
     }
   })
 
-  process.on('uncaughtException', err => {
+  process.on('uncaughtException', (err) => {
     let t = i18n.context('exception')
 
     dialog.showErrorBox(
-      t(p => `${p.appName} v${p.version}`, {
+      t((p) => `${p.appName} v${p.version}`, {
         appName: app.name,
-        version: app.getVersion()
+        version: app.getVersion(),
       }),
       t(
-        p =>
+        (p) =>
           [
             `Something weird happened. ${p.appName} will shut itself down.`,
-            `If possible, please report this on ${p.appName}’s repository on GitHub.`
+            `If possible, please report this on ${p.appName}’s repository on GitHub.`,
           ].join(' '),
         {
-          appName: app.name
-        }
+          appName: app.name,
+        },
       ) +
         '\n\n' +
-        err.stack
+        err.stack,
     )
 
     process.exit(1)
@@ -506,8 +509,8 @@ async function main() {
 
   if (!openfile && process.argv.length >= 2) {
     if (
-      !['electron.exe', 'electron'].some(x =>
-        process.argv[0].toLowerCase().endsWith(x)
+      !['electron.exe', 'electron'].some((x) =>
+        process.argv[0].toLowerCase().endsWith(x),
       )
     ) {
       openfile = process.argv[1]
@@ -521,7 +524,7 @@ async function main() {
   if (setting.get('app.startup_check_updates')) {
     setTimeout(
       () => checkForUpdates(),
-      setting.get('app.startup_check_updates_delay')
+      setting.get('app.startup_check_updates_delay'),
     )
   }
 

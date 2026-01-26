@@ -66,8 +66,8 @@ export function lexicalCompare(a, b) {
   return a[0] < b[0]
     ? -1
     : a[0] > b[0]
-    ? 1
-    : lexicalCompare(a.slice(1), b.slice(1))
+      ? 1
+      : lexicalCompare(a.slice(1), b.slice(1))
 }
 
 export function typographer(input) {
@@ -85,14 +85,14 @@ export function normalizeEndings(input) {
 }
 
 export function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 export function getScore(board, areaMap, {komi = 0, handicap = 0} = {}) {
   let score = {
     area: [0, 0],
     territory: [0, 0],
-    captures: [1, -1].map(sign => board.getCaptures(sign))
+    captures: [1, -1].map((sign) => board.getCaptures(sign)),
   }
 
   for (let x = 0; x < board.width; x++) {

@@ -9,7 +9,7 @@ import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
 
 const t = i18n.context('Goban')
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 export default class Goban extends Component {
@@ -21,7 +21,7 @@ export default class Goban extends Component {
       'handleVertexMouseDown',
       'handleVertexMouseMove',
       'handleVertexMouseEnter',
-      'handleVertexMouseLeave'
+      'handleVertexMouseLeave',
     ]) {
       let oldHandler = this[handler].bind(this)
       this[handler] = (evt, vertex) => {
@@ -30,14 +30,14 @@ export default class Goban extends Component {
         let {width, height} = gobantransformer.transformSize(
           this.props.board.width,
           this.props.board.height,
-          transformation
+          transformation,
         )
 
         let originalVertex = gobantransformer.transformVertex(
           vertex,
           inverse,
           width,
-          height
+          height,
         )
 
         oldHandler(evt, originalVertex)
@@ -97,10 +97,8 @@ export default class Goban extends Component {
   }
 
   resize() {
-    let {
-      offsetWidth: maxWidth,
-      offsetHeight: maxHeight
-    } = this.element.parentElement
+    let {offsetWidth: maxWidth, offsetHeight: maxHeight} =
+      this.element.parentElement
 
     if (
       maxWidth !== this.state.maxWidth ||
@@ -145,8 +143,8 @@ export default class Goban extends Component {
       Object.assign(evt, {
         mouseDown: this.mouseDown,
         startVertex: this.startVertex,
-        vertex
-      })
+        vertex,
+      }),
     )
 
     if (!!drawLineMode && evt.mouseDown && evt.button === 0) {
@@ -162,7 +160,9 @@ export default class Goban extends Component {
     if (this.props.analysis == null) return
 
     let {sign, variations} = this.props.analysis
-    let variation = variations.find(x => helper.vertexEquals(x.vertex, vertex))
+    let variation = variations.find((x) =>
+      helper.vertexEquals(x.vertex, vertex),
+    )
     if (variation == null) return
 
     this.playVariation(sign, variation.moves)
@@ -181,7 +181,7 @@ export default class Goban extends Component {
         variationMoves: moves,
         variationSign: sign,
         variationSibling: sibling,
-        variationIndex: moves.length
+        variationIndex: moves.length,
       })
     } else if (replayMode === 'move_by_move') {
       clearInterval(this.variationIntervalId)
@@ -191,7 +191,7 @@ export default class Goban extends Component {
           variationMoves: moves,
           variationSign: sign,
           variationSibling: sibling,
-          variationIndex: variationIndex + 1
+          variationIndex: variationIndex + 1,
         }))
       }, setting.get('board.variation_replay_interval'))
     } else {
@@ -207,7 +207,7 @@ export default class Goban extends Component {
 
     this.setState({
       variationMoves: null,
-      variationIndex: -1
+      variationIndex: -1,
     })
   }
 
@@ -232,7 +232,7 @@ export default class Goban extends Component {
       animateStonePlacement = true,
 
       drawLineMode = null,
-      transformation = ''
+      transformation = '',
     },
     {
       top = 0,
@@ -245,32 +245,32 @@ export default class Goban extends Component {
       variationMoves = null,
       variationSign = 1,
       variationSibling = false,
-      variationIndex = -1
-    }
+      variationIndex = -1,
+    },
   ) {
     let signMap = board.signMap
     let markerMap = board.markers
 
-    let transformLine = line =>
+    let transformLine = (line) =>
       gobantransformer.transformLine(
         line,
         transformation,
         board.width,
-        board.height
+        board.height,
       )
-    let transformVertex = v =>
+    let transformVertex = (v) =>
       gobantransformer.transformVertex(
         v,
         transformation,
         board.width,
-        board.height
+        board.height,
       )
 
     // Calculate coordinates
 
-    let getCoordFunctions = coordinatesType => {
+    let getCoordFunctions = (coordinatesType) => {
       if (coordinatesType === '1-1') {
-        return [x => x + 1, y => y + 1]
+        return [(x) => x + 1, (y) => y + 1]
       } else if (coordinatesType === 'relative') {
         let relativeCoord = (x, size) => {
           let halfSize = Math.ceil(size / 2)
@@ -283,11 +283,11 @@ export default class Goban extends Component {
         }
 
         return [
-          x => relativeCoord(x + 1, board.width),
-          y => relativeCoord(board.height - y, board.height)
+          (x) => relativeCoord(x + 1, board.width),
+          (y) => relativeCoord(board.height - y, board.height),
         ]
       } else {
-        return [x => alpha[x], y => board.height - y] // Default
+        return [(x) => alpha[x], (y) => board.height - y] // Default
       }
     }
 
@@ -298,7 +298,7 @@ export default class Goban extends Component {
       coordFunctions[1],
       transformation,
       board.width,
-      board.height
+      board.height,
     )
 
     // Calculate lines
@@ -322,7 +322,7 @@ export default class Goban extends Component {
       lines.push({
         v1: temporaryLine.v1,
         v2: temporaryLine.v2,
-        type: drawLineMode
+        type: drawLineMode,
       })
 
     // Calculate ghost stones
@@ -330,11 +330,11 @@ export default class Goban extends Component {
     let ghostStoneMap = []
 
     if (showNextMoves || showSiblings) {
-      ghostStoneMap = board.signMap.map(row => row.map(_ => null))
+      ghostStoneMap = board.signMap.map((row) => row.map((_) => null))
 
       if (showSiblings) {
         for (let v in board.siblingsInfo) {
-          let [x, y] = v.split(',').map(x => +x)
+          let [x, y] = v.split(',').map((x) => +x)
           let {sign} = board.siblingsInfo[v]
 
           ghostStoneMap[y][x] = {sign, faint: showNextMoves}
@@ -343,7 +343,7 @@ export default class Goban extends Component {
 
       if (showNextMoves) {
         for (let v in board.childrenInfo) {
-          let [x, y] = v.split(',').map(x => +x)
+          let [x, y] = v.split(',').map((x) => +x)
           let {sign, type} = board.childrenInfo[v]
 
           ghostStoneMap[y][x] = {sign, type: showMoveColorization ? type : null}
@@ -354,10 +354,10 @@ export default class Goban extends Component {
     // Draw move numbers
 
     if (showMoveNumbers) {
-      markerMap = markerMap.map(row => row.map(_ => null))
+      markerMap = markerMap.map((row) => row.map((_) => null))
 
       let history = [
-        ...gameTree.listNodesVertically(treePosition, -1, {})
+        ...gameTree.listNodesVertically(treePosition, -1, {}),
       ].reverse()
 
       for (let i = 0; i < history.length; i++) {
@@ -380,7 +380,7 @@ export default class Goban extends Component {
     let drawHeatMap = true
 
     if (variationMoves != null) {
-      markerMap = board.markers.map(x => [...x])
+      markerMap = board.markers.map((x) => [...x])
 
       if (variationSibling) {
         let prevPosition = gameTree.navigate(treePosition, -1, {})
@@ -410,15 +410,15 @@ export default class Goban extends Component {
 
     if (drawHeatMap && analysis != null) {
       let maxVisitsWin = Math.max(
-        ...analysis.variations.map(x => x.visits * x.winrate)
+        ...analysis.variations.map((x) => x.visits * x.winrate),
       )
-      heatMap = board.signMap.map(row => row.map(_ => null))
+      heatMap = board.signMap.map((row) => row.map((_) => null))
 
       for (let {
         vertex: [x, y],
         visits,
         winrate,
-        scoreLead
+        scoreLead,
       } of analysis.variations) {
         let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
 
@@ -437,12 +437,13 @@ export default class Goban extends Component {
                     ? i18n.formatNumber(winrate) +
                       (Math.floor(winrate) === winrate ? '%' : '')
                     : analysisType === 'scoreLead' && scoreLead != null
-                    ? (scoreLead >= 0 ? '+' : '') + i18n.formatNumber(scoreLead)
-                    : '–',
+                      ? (scoreLead >= 0 ? '+' : '') +
+                        i18n.formatNumber(scoreLead)
+                      : '–',
                   visits < 1000
                     ? i18n.formatNumber(visits)
-                    : i18n.formatNumber(Math.round(visits / 100) / 10) + 'k'
-                ].join('\n')
+                    : i18n.formatNumber(Math.round(visits / 100) / 10) + 'k',
+                ].join('\n'),
         }
       }
     }
@@ -451,7 +452,7 @@ export default class Goban extends Component {
       id: 'goban',
       class: classNames({crosshair}),
       style: {top, left},
-      innerProps: {ref: el => (this.element = el)},
+      innerProps: {ref: (el) => (this.element = el)},
 
       maxWidth,
       maxHeight,
@@ -466,10 +467,10 @@ export default class Goban extends Component {
       markerMap: gobantransformer.transformMap(markerMap, transformation),
       ghostStoneMap: gobantransformer.transformMap(
         ghostStoneMap,
-        transformation
+        transformation,
       ),
       paintMap: gobantransformer.transformMap(paintMap, transformation, {
-        ignoreInvert: true
+        ignoreInvert: true,
       }),
       heatMap: gobantransformer.transformMap(heatMap, transformation),
       lines: lines.map(transformLine),
@@ -480,7 +481,7 @@ export default class Goban extends Component {
       onVertexMouseDown: this.handleVertexMouseDown,
       onVertexMouseMove: this.handleVertexMouseMove,
       onVertexMouseEnter: this.handleVertexMouseEnter,
-      onVertexMouseLeave: this.handleVertexMouseLeave
+      onVertexMouseLeave: this.handleVertexMouseLeave,
     })
   }
 }
