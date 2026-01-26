@@ -18,9 +18,6 @@ if (isElectron && !isRenderer) {
   }
 }
 
-// In renderer, mainI18n is no longer available via remote
-// Instead, we handle i18n directly in the renderer
-const mainI18n = null
 const setting = isRenderer
   ? {get: key => window.sabaki.setting.get(key)}
   : isElectron

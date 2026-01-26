@@ -159,11 +159,16 @@ class Sabaki extends EventEmitter {
       webContents: {
         undo: () => window.sabaki.webContents.undo(),
         redo: () => window.sabaki.webContents.redo(),
+        toggleDevTools: () => window.sabaki.webContents.toggleDevTools(),
+        getOSProcessId: () => window.sabaki.webContents.getOSProcessId(),
         get zoomFactor() {
           return setting.get('app.zoom_factor')
         },
         set zoomFactor(f) {
           window.sabaki.webContents.setZoomFactor(f)
+        },
+        set audioMuted(m) {
+          window.sabaki.webContents.setAudioMuted(m)
         }
       }
     }

@@ -29,8 +29,6 @@ const setting = {
   get themesDirectory() {
     return window.sabaki.setting.themesDirectory
   },
-  getUserDataDirectory: () => window.sabaki.setting.getUserDataDirectory(),
-  getThemesDirectory: () => window.sabaki.setting.getThemesDirectory(),
   onDidChange: callback => window.sabaki.setting.onDidChange(callback)
 }
 const t = i18n.context('PreferencesDrawer')
