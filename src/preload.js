@@ -58,8 +58,7 @@ window.sabaki = {
     },
     themesDirectory: pathsCache.themesDirectory,
     stylesPath: pathsCache.stylesPath,
-    getUserDataDirectory: () => pathsCache.userDataDirectory,
-    getThemesDirectory: () => pathsCache.themesDirectory,
+    userDataDirectory: pathsCache.userDataDirectory,
     onDidChange: callback => {
       settingChangeCallbacks.add(callback)
       return () => settingChangeCallbacks.delete(callback)
