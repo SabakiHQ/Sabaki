@@ -18,12 +18,14 @@ describe('ugf', () => {
         PB: ['kaziwami'],
         BR: ['7d'],
         DT: ['2019-03-08'],
-        RE: ['B+7.50']
+        RE: ['B+7.50'],
       })
 
       assert.deepEqual(
-        [...tree.getSequence(tree.root.id)].map(node => node.data).slice(1, 5),
-        [{B: ['qd']}, {W: ['dd']}, {B: ['pq']}, {W: ['dq']}]
+        [...tree.getSequence(tree.root.id)]
+          .map((node) => node.data)
+          .slice(1, 5),
+        [{B: ['qd']}, {W: ['dd']}, {B: ['pq']}, {W: ['dq']}],
       )
     })
 
@@ -34,7 +36,7 @@ describe('ugf', () => {
         tree.root.data.C,
         `apetresc 2k?: Let's begin and enjoy a great game.
 ken03110 2k : Hi!
-`
+`,
       )
     })
   })

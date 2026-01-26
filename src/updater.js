@@ -6,22 +6,22 @@ function lexicalCompare(a, b) {
   return a[0] < b[0]
     ? -1
     : a[0] > b[0]
-    ? 1
-    : lexicalCompare(a.slice(1), b.slice(1))
+      ? 1
+      : lexicalCompare(a.slice(1), b.slice(1))
 }
 
-exports.check = async function(repo) {
+exports.check = async function (repo) {
   let address = `https://api.github.com/repos/${repo}/releases/latest`
 
   let response = await new Promise((resolve, reject) => {
     let request = net.request(address)
 
     request
-      .on('response', response => {
+      .on('response', (response) => {
         let content = ''
 
         response
-          .on('data', chunk => {
+          .on('data', (chunk) => {
             content += chunk
           })
           .on('end', () => {
@@ -40,18 +40,18 @@ exports.check = async function(repo) {
   let latestVersion = data.tag_name
     .slice(1)
     .split('.')
-    .map(x => +x)
+    .map((x) => +x)
   let currentVersion = app
     .getVersion()
     .split('.')
-    .map(x => +x)
-  let downloadUrls = data.assets.map(x => x.browser_download_url)
+    .map((x) => +x)
+  let downloadUrls = data.assets.map((x) => x.browser_download_url)
 
   let arch = os.arch()
   let needles = {
     linux: ['linux'],
     win32: ['win', 'setup'],
-    darwin: ['mac']
+    darwin: ['mac'],
   }[os.platform()]
 
   return {
@@ -60,10 +60,10 @@ exports.check = async function(repo) {
       arch &&
       needles &&
       downloadUrls.find(
-        url =>
-          url.includes(arch) && needles.every(needle => url.includes(needle))
+        (url) =>
+          url.includes(arch) && needles.every((needle) => url.includes(needle)),
       ),
     latestVersion: latestVersion.join('.'),
-    hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0
+    hasUpdates: lexicalCompare(latestVersion, currentVersion) > 0,
   }
 }

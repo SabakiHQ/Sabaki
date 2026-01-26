@@ -6,12 +6,12 @@ export function normalize(transformation) {
   // 'r' denotes a clockwise rotation
   // 'f' denotes a horizontal flip
 
-  let inversions = [...transformation].filter(c => c === 'i').length
-  let rf = [...transformation].filter(c => 'rf'.includes(c))
+  let inversions = [...transformation].filter((c) => c === 'i').length
+  let rf = [...transformation].filter((c) => 'rf'.includes(c))
 
   while (true) {
     let firstFlipIndex = rf.findIndex(
-      (c, i, arr) => c === 'f' && arr[i + 1] === 'r'
+      (c, i, arr) => c === 'f' && arr[i + 1] === 'r',
     )
     if (firstFlipIndex < 0) break
 
@@ -45,7 +45,7 @@ export function invert(transformation) {
 }
 
 export function transformationSwapsSides(transformation) {
-  let rotations = [...transformation].filter(c => c === 'r').length
+  let rotations = [...transformation].filter((c) => c === 'r').length
   return rotations % 2 === 1
 }
 
@@ -61,14 +61,14 @@ export function transformCoords(coordX, coordY, transformation, width, height) {
   let sidesSwapped = transformationSwapsSides(transformation)
   if (sidesSwapped) [width, height] = [height, width]
 
-  let inner = v => {
+  let inner = (v) => {
     let [x, y] = transformVertex(v, inverse, width, height)
     return [coordX(x), coordY(y)]
   }
 
   return {
-    coordX: x => inner([x, 0])[!sidesSwapped ? 0 : 1],
-    coordY: y => inner([0, y])[!sidesSwapped ? 1 : 0]
+    coordX: (x) => inner([x, 0])[!sidesSwapped ? 0 : 1],
+    coordY: (y) => inner([0, y])[!sidesSwapped ? 1 : 0],
   }
 }
 
@@ -78,22 +78,22 @@ export function transformVertex([x, y], transformation, width, height) {
   let {width: newWidth, height: newHeight} = transformSize(
     width,
     height,
-    transformation
+    transformation,
   )
   let [nx, ny] = [...transformation].reduce(
     ([x, y], c) => (c === 'f' ? [-x - 1, y] : c === 'r' ? [-y - 1, x] : [x, y]),
-    [x, y]
+    [x, y],
   )
 
   return [(nx + newWidth) % newWidth, (ny + newHeight) % newHeight]
 }
 
 export function transformLine(line, transformation, width, height) {
-  let transform = v => transformVertex(v, transformation, width, height)
+  let transform = (v) => transformVertex(v, transformation, width, height)
 
   return Object.assign({}, line, {
     v1: transform(line.v1),
-    v2: transform(line.v2)
+    v2: transform(line.v2),
   })
 }
 
@@ -103,7 +103,7 @@ export function transformMap(map, transformation, {ignoreInvert = false} = {}) {
   let {width, height} = transformSize(
     map.length === 0 ? 0 : map[0].length,
     map.length,
-    inverse
+    inverse,
   )
 
   return [...Array(height)].map((_, y) =>
@@ -117,6 +117,6 @@ export function transformMap(map, transformation, {ignoreInvert = false} = {}) {
       }
 
       return entry
-    })
+    }),
   )
 }

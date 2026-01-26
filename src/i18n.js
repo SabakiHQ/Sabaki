@@ -19,10 +19,10 @@ if (isElectron && !isRenderer) {
 }
 
 const setting = isRenderer
-  ? {get: key => window.sabaki.setting.get(key)}
+  ? {get: (key) => window.sabaki.setting.get(key)}
   : isElectron
-  ? nativeRequire('./setting')
-  : null
+    ? nativeRequire('./setting')
+    : null
 
 function getKey(input, params = {}) {
   let key = dolmGetKey(input, params)
@@ -37,22 +37,22 @@ exports.getKey = getKey
 exports.t = dolm.t
 exports.context = dolm.context
 
-exports.formatNumber = function(num) {
+exports.formatNumber = function (num) {
   return new Intl.NumberFormat(appLang).format(num)
 }
 
-exports.formatMonth = function(month) {
+exports.formatMonth = function (month) {
   let date = new Date()
   date.setMonth(month)
   return date.toLocaleString(appLang, {month: 'long'})
 }
 
-exports.formatWeekday = function(weekday) {
+exports.formatWeekday = function (weekday) {
   let date = new Date(2020, 2, 1 + (weekday % 7))
   return date.toLocaleString(appLang, {weekday: 'long'})
 }
 
-exports.formatWeekdayShort = function(weekday) {
+exports.formatWeekdayShort = function (weekday) {
   let date = new Date(2020, 2, 1 + (weekday % 7))
   return date.toLocaleString(appLang, {weekday: 'short'})
 }
@@ -65,7 +65,7 @@ function loadStrings(strings) {
   }
 }
 
-exports.loadFile = function(filename) {
+exports.loadFile = function (filename) {
   try {
     loadStrings(
       Function(`
@@ -77,20 +77,20 @@ exports.loadFile = function(filename) {
         ;(() => (${readFileSync(filename, 'utf8')}))()
 
         return module.exports
-      `)()
+      `)(),
     )
   } catch (err) {
     loadStrings({})
   }
 }
 
-exports.loadLang = function(lang) {
+exports.loadLang = function (lang) {
   appLang = lang
 
   exports.loadFile(languages[lang].filename)
 }
 
-exports.getLanguages = function() {
+exports.getLanguages = function () {
   return languages
 }
 

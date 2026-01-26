@@ -10,25 +10,27 @@ function typographer(children) {
     return typographer([children])[0]
   }
 
-  return children.map(child => {
+  return children.map((child) => {
     if (typeof child !== 'string') return child
     return helper.typographer(child)
   })
 }
 
 function htmlify(children) {
-  return toChildArray(children).map(child => {
+  return toChildArray(children).map((child) => {
     if (typeof child !== 'string') return child
 
     return h(ContentDisplay, {
       tag: 'span',
-      content: typographer(child)
+      content: typographer(child),
     })
   })
 }
 
-const generateBasicComponent = tag => ({children}) =>
-  h(tag, {}, htmlify(children))
+const generateBasicComponent =
+  (tag) =>
+  ({children}) =>
+    h(tag, {}, htmlify(children))
 
 const Emphasis = generateBasicComponent('em')
 const Strong = generateBasicComponent('strong')
@@ -47,7 +49,7 @@ function Link({href, title, children}) {
   return h(
     ContentDisplay,
     {},
-    h('a', {class: 'comment-external', href, title}, typographer(children))
+    h('a', {class: 'comment-external', href, title}, typographer(children)),
   )
 }
 
@@ -84,8 +86,8 @@ class MarkdownContentDisplay extends Component {
         h5: Heading,
         h6: Heading,
         code: Paragraph,
-        html: Html
-      }
+        html: Html,
+      },
     })
   }
 }

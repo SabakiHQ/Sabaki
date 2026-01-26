@@ -1,7 +1,7 @@
 import {wait} from './helper.js'
 
 const setting = {
-  get: key => window.sabaki.setting.get(key)
+  get: (key) => window.sabaki.setting.get(key),
 }
 
 function prepareFunction(sounds) {
@@ -28,19 +28,19 @@ function prepareFunction(sounds) {
 }
 
 export const playPachi = prepareFunction(
-  [...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`))
+  [...Array(5)].map((_, i) => new Audio(`./data/${i}.mp3`)),
 )
 
 export const playCapture = (() => {
   let f = prepareFunction(
-    [...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`))
+    [...Array(5)].map((_, i) => new Audio(`./data/capture${i}.mp3`)),
   )
 
-  return async delay => {
+  return async (delay) => {
     if (delay == null) {
       delay = setting.get('sound.capture_delay_min')
       delay += Math.floor(
-        Math.random() * (setting.get('sound.capture_delay_max') - delay)
+        Math.random() * (setting.get('sound.capture_delay_max') - delay),
       )
     }
 

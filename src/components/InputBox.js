@@ -10,10 +10,10 @@ export default class InputBox extends Component {
 
     this.state = {value: ''}
 
-    this.handleInput = evt => this.setState({value: evt.currentTarget.value})
-    this.stopPropagation = evt => evt.stopPropagation()
+    this.handleInput = (evt) => this.setState({value: evt.currentTarget.value})
+    this.stopPropagation = (evt) => evt.stopPropagation()
 
-    this.handleKeyUp = evt => {
+    this.handleKeyUp = (evt) => {
       if (!this.props.show) return
 
       if (evt.key === 'Escape') {
@@ -72,14 +72,14 @@ export default class InputBox extends Component {
         id: 'input-box',
         class: classNames({show}),
 
-        onClick: this.cancel
+        onClick: this.cancel,
       },
 
       h(
         'div',
         {class: 'inner', onClick: this.stopPropagation},
         h('input', {
-          ref: el => (this.inputElement = el),
+          ref: (el) => (this.inputElement = el),
           type: 'text',
           name: 'input',
           value,
@@ -87,9 +87,9 @@ export default class InputBox extends Component {
 
           onInput: this.handleInput,
           onKeyUp: this.handleKeyUp,
-          onBlur: this.cancel
-        })
-      )
+          onBlur: this.cancel,
+        }),
+      ),
     )
   }
 }

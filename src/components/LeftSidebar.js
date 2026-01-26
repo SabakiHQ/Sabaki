@@ -5,8 +5,8 @@ import GtpConsole from './sidebars/GtpConsole.js'
 import {EnginePeerList} from './sidebars/PeerList.js'
 
 const setting = {
-  get: key => window.sabaki.setting.get(key),
-  set: (key, value) => window.sabaki.setting.set(key, value)
+  get: (key) => window.sabaki.setting.get(key),
+  set: (key, value) => window.sabaki.setting.set(key, value),
 }
 const peerListMinHeight = setting.get('view.peerlist_minheight')
 
@@ -16,7 +16,7 @@ export default class LeftSidebar extends Component {
 
     this.state = {
       peerListHeight: setting.get('view.peerlist_height'),
-      selectedEngineSyncerId: null
+      selectedEngineSyncerId: null,
     }
 
     this.handlePeerListHeightChange = ({sideSize}) => {
@@ -30,12 +30,12 @@ export default class LeftSidebar extends Component {
     this.handleCommandControlStep = ({step}) => {
       let {attachedEngineSyncers} = this.props
       let engineIndex = attachedEngineSyncers.findIndex(
-        syncer => syncer.id === this.state.selectedEngineSyncerId
+        (syncer) => syncer.id === this.state.selectedEngineSyncerId,
       )
 
       let stepEngineIndex = Math.min(
         Math.max(0, engineIndex + step),
-        attachedEngineSyncers.length - 1
+        attachedEngineSyncers.length - 1,
       )
       let stepEngine = this.props.attachedEngineSyncers[stepEngineIndex]
 
@@ -56,7 +56,7 @@ export default class LeftSidebar extends Component {
 
     this.handleCommandSubmit = ({command}) => {
       let syncer = this.props.attachedEngineSyncers.find(
-        syncer => syncer.id === this.state.selectedEngineSyncerId
+        (syncer) => syncer.id === this.state.selectedEngineSyncerId,
       )
 
       if (syncer != null) {
@@ -80,15 +80,15 @@ export default class LeftSidebar extends Component {
       whiteEngineSyncerId,
       engineGameOngoing,
       showLeftSidebar,
-      consoleLog
+      consoleLog,
     },
-    {peerListHeight, selectedEngineSyncerId}
+    {peerListHeight, selectedEngineSyncerId},
   ) {
     return h(
       'section',
       {
-        ref: el => (this.element = el),
-        id: 'leftsidebar'
+        ref: (el) => (this.element = el),
+        id: 'leftsidebar',
       },
 
       h(SplitContainer, {
@@ -104,32 +104,32 @@ export default class LeftSidebar extends Component {
           selectedEngineSyncerId,
           engineGameOngoing,
 
-          onEngineSelect: this.handleEngineSelect
+          onEngineSelect: this.handleEngineSelect,
         }),
 
         mainContent: h(GtpConsole, {
           show: showLeftSidebar,
           consoleLog,
           attachedEngine: attachedEngineSyncers
-            .map(syncer =>
+            .map((syncer) =>
               syncer.id !== selectedEngineSyncerId
                 ? null
                 : {
                     name: syncer.engine.name,
                     get commands() {
                       return syncer.commands
-                    }
-                  }
+                    },
+                  },
             )
-            .find(x => x != null),
+            .find((x) => x != null),
 
           onSubmit: this.handleCommandSubmit,
-          onControlStep: this.handleCommandControlStep
+          onControlStep: this.handleCommandControlStep,
         }),
 
         onChange: this.handlePeerListHeightChange,
-        onFinish: this.handlePeerListHeightFinish
-      })
+        onFinish: this.handlePeerListHeightFinish,
+      }),
     )
   }
 }
@@ -138,7 +138,7 @@ LeftSidebar.getDerivedStateFromProps = (props, state) => {
   if (
     props.attachedEngineSyncers.length > 0 &&
     props.attachedEngineSyncers.find(
-      syncer => syncer.id === state.selectedEngineSyncerId
+      (syncer) => syncer.id === state.selectedEngineSyncerId,
     ) == null
   ) {
     return {selectedEngineSyncerId: props.attachedEngineSyncers[0].id}

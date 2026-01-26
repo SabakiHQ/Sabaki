@@ -1,20 +1,20 @@
 import {h, Component} from 'preact'
 import * as helper from '../../modules/helper.js'
 
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 class Slider extends Component {
   constructor() {
     super()
 
-    this.handleSliderAreaMouseDown = evt => {
+    this.handleSliderAreaMouseDown = (evt) => {
       if (evt.button !== 0) return
 
       this.sliderAreaMouseDown = true
       document.dispatchEvent(new MouseEvent('mousemove', evt))
     }
 
-    this.handleButtonMouseDown = evt => {
+    this.handleButtonMouseDown = (evt) => {
       if (evt.button !== 0) return
 
       let type = evt.currentTarget.className
@@ -38,7 +38,7 @@ class Slider extends Component {
       }
     })
 
-    document.addEventListener('mousemove', evt => {
+    document.addEventListener('mousemove', (evt) => {
       if (!this.sliderAreaMouseDown) return
 
       let {onChange = helper.noop} = this.props
@@ -77,9 +77,9 @@ class Slider extends Component {
         {
           href: '#',
           class: 'prev',
-          onMouseDown: this.handleButtonMouseDown
+          onMouseDown: this.handleButtonMouseDown,
         },
-        '▲'
+        '▲',
       ),
 
       h(
@@ -87,21 +87,21 @@ class Slider extends Component {
         {
           href: '#',
           class: 'next',
-          onMouseDown: this.handleButtonMouseDown
+          onMouseDown: this.handleButtonMouseDown,
         },
-        '▼'
+        '▼',
       ),
 
       h(
         'div',
         {
-          ref: el => (this.slidingAreaElement = el),
+          ref: (el) => (this.slidingAreaElement = el),
           class: 'inner',
-          onMouseDown: this.handleSliderAreaMouseDown
+          onMouseDown: this.handleSliderAreaMouseDown,
         },
 
-        h('span', {style: {top: percent + '%'}}, text)
-      )
+        h('span', {style: {top: percent + '%'}}, text),
+      ),
     )
   }
 }

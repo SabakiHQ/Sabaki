@@ -9,7 +9,7 @@ class GuessBar extends Component {
     return h(
       Bar,
       Object.assign({type: 'guess'}, props),
-      t('Click on the board to guess the next move.')
+      t('Click on the board to guess the next move.'),
     )
   }
 }

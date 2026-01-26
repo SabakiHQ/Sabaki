@@ -36,9 +36,9 @@ class ConsoleCommandEntry extends Component {
 
         h(ContentDisplay, {
           tag: 'span',
-          content: (command.args || []).join(' ')
-        })
-      )
+          content: (command.args || []).join(' '),
+        }),
+      ),
     )
   }
 }
@@ -60,10 +60,10 @@ class ConsoleResponseEntry extends Component {
               h(
                 'span',
                 {
-                  class: response.error ? 'error' : 'success'
+                  class: response.error ? 'error' : 'success',
                 },
-                response.error ? '?' : '='
-              )
+                response.error ? '?' : '=',
+              ),
             ],
 
             response.id != null && [h('span', {class: 'id'}, response.id)],
@@ -76,14 +76,14 @@ class ConsoleResponseEntry extends Component {
                   class: response.internal ? 'internal' : '',
                   content: response.content.replace(
                     /(^info move.*\s*)+/gm,
-                    'info move (…)\n'
-                  )
+                    'info move (…)\n',
+                  ),
                 })
               : response.content,
 
-            waiting && h('div', {class: 'internal'}, h(TextSpinner))
+            waiting && h('div', {class: 'internal'}, h(TextSpinner)),
           )
-        : h('pre', {}, h('span', {class: 'internal'}, h(TextSpinner)))
+        : h('pre', {}, h('span', {class: 'internal'}, h(TextSpinner))),
     )
   }
 }
@@ -93,14 +93,14 @@ class ConsoleInput extends Component {
     super(props)
 
     this.state = {
-      commandInputText: ''
+      commandInputText: '',
     }
 
-    this.handleInputChange = evt => {
+    this.handleInputChange = (evt) => {
       this.setState({commandInputText: evt.currentTarget.value})
     }
 
-    this.handleKeyDown = evt => {
+    this.handleKeyDown = (evt) => {
       if (evt.key === 'Enter') {
         evt.preventDefault()
 
@@ -110,7 +110,7 @@ class ConsoleInput extends Component {
         if (commandInputText.trim() === '') return
 
         onSubmit({
-          command: Command.fromString(commandInputText)
+          command: Command.fromString(commandInputText),
         })
 
         this.inputPointer = null
@@ -129,7 +129,7 @@ class ConsoleInput extends Component {
           if (this.inputPointer < 0 || this.inputPointer >= consoleLog.length) {
             this.inputPointer = Math.max(
               -1,
-              Math.min(consoleLog.length, this.inputPointer)
+              Math.min(consoleLog.length, this.inputPointer),
             )
             this.setState({commandInputText: ''})
             break
@@ -170,7 +170,8 @@ class ConsoleInput extends Component {
             this.inputAutocompleteElement.scrollLeft !==
             this.inputElement.scrollLeft
           ) {
-            this.inputAutocompleteElement.scrollLeft = this.inputElement.scrollLeft
+            this.inputAutocompleteElement.scrollLeft =
+              this.inputElement.scrollLeft
           }
         }, 0)
       })
@@ -183,8 +184,9 @@ class ConsoleInput extends Component {
 
     if (attachedEngine && commandInputText.length > 0) {
       return (
-        attachedEngine.commands.find(x => x.indexOf(commandInputText) === 0) ||
-        ''
+        attachedEngine.commands.find(
+          (x) => x.indexOf(commandInputText) === 0,
+        ) || ''
       )
     }
 
@@ -198,7 +200,7 @@ class ConsoleInput extends Component {
       'form',
       {class: 'input'},
       h('input', {
-        ref: el => (this.inputElement = el),
+        ref: (el) => (this.inputElement = el),
         class: 'command',
         disabled,
         type: 'text',
@@ -206,16 +208,16 @@ class ConsoleInput extends Component {
         placeholder: attachedEngine != null ? `${attachedEngine.name}>` : '',
 
         onInput: this.handleInputChange,
-        onKeyDown: this.handleKeyDown
+        onKeyDown: this.handleKeyDown,
       }),
 
       h('input', {
-        ref: el => (this.inputAutocompleteElement = el),
+        ref: (el) => (this.inputAutocompleteElement = el),
         class: 'autocomplete',
         disabled,
         type: 'text',
-        value: this.autocompleteText
-      })
+        value: this.autocompleteText,
+      }),
     )
   }
 }
@@ -226,18 +228,18 @@ export default class GtpConsole extends Component {
 
     this.scrollToBottom = true
 
-    this.handleContextMenu = evt => {
+    this.handleContextMenu = (evt) => {
       let t = i18n.context('menu.engines')
 
       popupMenu(
         [
           {
             label: t('&Clear Console'),
-            click: () => sabaki.clearConsole()
-          }
+            click: () => sabaki.clearConsole(),
+          },
         ],
         evt.clientX,
-        evt.clientY
+        evt.clientY,
       )
     }
   }
@@ -280,9 +282,9 @@ export default class GtpConsole extends Component {
       h(
         'ol',
         {
-          ref: el => (this.scrollElement = el),
+          ref: (el) => (this.scrollElement = el),
           class: 'log',
-          onContextMenu: this.handleContextMenu
+          onContextMenu: this.handleContextMenu,
         },
 
         consoleLog.map(({name, command, response, waiting}, i) => {
@@ -298,14 +300,14 @@ export default class GtpConsole extends Component {
 
             h(ConsoleResponseEntry, {
               response,
-              waiting: response == null || waiting
-            })
+              waiting: response == null || waiting,
+            }),
           ]
-        })
+        }),
       ),
 
       h(ConsoleInput, {
-        ref: component =>
+        ref: (component) =>
           (this.inputElement =
             component == null ? null : component.inputElement),
 
@@ -313,8 +315,8 @@ export default class GtpConsole extends Component {
         attachedEngine,
 
         onSubmit: this.props.onSubmit,
-        onControlStep: this.props.onControlStep
-      })
+        onControlStep: this.props.onControlStep,
+      }),
     )
   }
 }

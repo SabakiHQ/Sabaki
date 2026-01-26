@@ -9,7 +9,7 @@ let getKeyPath = path.resolve(__dirname, './dolmGetKey.js')
 let defaultPath = path.resolve(__dirname, '../i18n/en.i18n.js')
 let templatePath = path.resolve(__dirname, '../i18n/template.i18n.js')
 
-let spawnDolmGen = args =>
+let spawnDolmGen = (args) =>
   spawnSync(
     process.platform === 'win32' ? 'npx.cmd' : 'npx',
     [
@@ -19,15 +19,15 @@ let spawnDolmGen = args =>
       'i18n',
       '--get-key',
       getKeyPath,
-      ...args
+      ...args,
     ],
     {
-      stdio: 'inherit'
-    }
+      stdio: 'inherit',
+    },
   )
 
 let boardmatcherStringsArr = [
-  ...boardmatcherLibrary.map(pattern => pattern.name),
+  ...boardmatcherLibrary.map((pattern) => pattern.name),
   'Pass',
   'Take',
   'Atari',
@@ -35,21 +35,21 @@ let boardmatcherStringsArr = [
   'Fill',
   'Connect',
   'Tengen',
-  'Hoshi'
+  'Hoshi',
 ]
 
 let boardmatcherStrings = {
   boardmatcher: Object.assign(
     {},
-    ...boardmatcherStringsArr.map(str => ({[str]: str}))
-  )
+    ...boardmatcherStringsArr.map((str) => ({[str]: str})),
+  ),
 }
 
 let boardmatcherStringsTemplate = {
   boardmatcher: Object.assign(
     {},
-    ...boardmatcherStringsArr.map(str => ({[str]: null}))
-  )
+    ...boardmatcherStringsArr.map((str) => ({[str]: null})),
+  ),
 }
 
 // Create default i18n file
@@ -58,12 +58,12 @@ spawnDolmGen(['-o', defaultPath, ...codeGlobs])
 
 let defaultStrings = dolmTools.mergeStrings([
   dolmTools.safeModuleEval(readFileSync(defaultPath, 'utf8')),
-  boardmatcherStrings
+  boardmatcherStrings,
 ])
 
 writeFileSync(
   defaultPath,
-  'module.exports = ' + dolmTools.serializeStrings(defaultStrings)
+  'module.exports = ' + dolmTools.serializeStrings(defaultStrings),
 )
 
 // Create template i18n file
@@ -72,10 +72,10 @@ spawnDolmGen(['-t', '-o', templatePath, ...codeGlobs])
 
 let templateStrings = dolmTools.mergeStrings([
   dolmTools.safeModuleEval(readFileSync(templatePath, 'utf8')),
-  boardmatcherStringsTemplate
+  boardmatcherStringsTemplate,
 ])
 
 writeFileSync(
   templatePath,
-  'module.exports = ' + dolmTools.serializeStrings(templateStrings)
+  'module.exports = ' + dolmTools.serializeStrings(templateStrings),
 )

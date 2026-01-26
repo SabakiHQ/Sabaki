@@ -12,7 +12,7 @@ class EditBar extends Component {
     super()
 
     this.state = {
-      stoneTool: 1
+      stoneTool: 1,
     }
 
     this.handleToolButtonClick = this.handleToolButtonClick.bind(this)
@@ -56,11 +56,11 @@ class EditBar extends Component {
           title,
           href: '#',
           'data-id': toolId,
-          onClick: this.handleToolButtonClick
+          onClick: this.handleToolButtonClick,
         },
 
-        h('img', {src: `./img/edit/${toolId}.svg`})
-      )
+        h('img', {src: `./img/edit/${toolId}.svg`}),
+      ),
     )
   }
 
@@ -83,9 +83,9 @@ class EditBar extends Component {
           [t('Line Tool'), 'line'],
           [t('Arrow Tool'), 'arrow'],
           [t('Label Tool'), 'label'],
-          [t('Number Tool'), 'number']
-        ].map(x => this.renderButton(...x, isSelected(x)))
-      )
+          [t('Number Tool'), 'number'],
+        ].map((x) => this.renderButton(...x, isSelected(x))),
+      ),
     )
   }
 }

@@ -6,7 +6,7 @@ export default class Drawer extends Component {
     super(props)
 
     this.state = {
-      hidecontent: props.show
+      hidecontent: props.show,
     }
   }
 
@@ -19,7 +19,7 @@ export default class Drawer extends Component {
       if (!this.state.hidecontent)
         this.hidecontentId = setTimeout(
           () => this.setState({hidecontent: true}),
-          500
+          500,
         )
     }
   }
@@ -32,10 +32,10 @@ export default class Drawer extends Component {
         class: classNames({
           drawer: true,
           hidecontent,
-          show
-        })
+          show,
+        }),
       },
-      children
+      children,
     )
   }
 }

@@ -3,7 +3,7 @@ import GameTree from '@sabaki/immutable-gametree'
 import {
   stringifyVertex,
   parseVertex,
-  parseCompressedVertices
+  parseCompressedVertices,
 } from '@sabaki/sgf'
 import {getId} from './utils.js'
 
@@ -21,11 +21,11 @@ function nodeMerger(node, data) {
   return {...data, ...node.data}
 }
 
-const _new = function(options = {}) {
+const _new = function (options = {}) {
   return new GameTree({
     ...options,
     getId,
-    merger: nodeMerger
+    merger: nodeMerger,
   })
 }
 export {_new as new}
@@ -55,10 +55,10 @@ export function getGameInfo(tree) {
   if (handicap === 1) handicap = 0
 
   let playerNames = ['B', 'W'].map(
-    x => getRootProperty(tree, `P${x}`) || getRootProperty(tree, `${x}T`)
+    (x) => getRootProperty(tree, `P${x}`) || getRootProperty(tree, `${x}T`),
   )
 
-  let playerRanks = ['BR', 'WR'].map(x => getRootProperty(tree, x))
+  let playerRanks = ['BR', 'WR'].map((x) => getRootProperty(tree, x))
 
   return {
     playerNames,
@@ -74,19 +74,19 @@ export function getGameInfo(tree) {
     result: getRootProperty(tree, 'RE'),
     komi,
     handicap,
-    size
+    size,
   }
 }
 
 export function setGameInfo(tree, data) {
-  let newTree = tree.mutate(draft => {
+  let newTree = tree.mutate((draft) => {
     if ('size' in data) {
       // Update board size
 
       if (data.size) {
         let value = data.size
-        value = value.map(x =>
-          isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x))
+        value = value.map((x) =>
+          isNaN(x) || !x ? 19 : Math.min(25, Math.max(2, x)),
         )
 
         if (value[0] === value[1]) value = value[0].toString()
@@ -99,7 +99,7 @@ export function setGameInfo(tree, data) {
     }
   })
 
-  return newTree.mutate(draft => {
+  return newTree.mutate((draft) => {
     let props = {
       blackName: 'PB',
       blackRank: 'BR',
@@ -111,7 +111,7 @@ export function setGameInfo(tree, data) {
       date: 'DT',
       result: 'RE',
       komi: 'KM',
-      handicap: 'HA'
+      handicap: 'HA',
     }
 
     for (let key in props) {
@@ -144,7 +144,7 @@ export function setGameInfo(tree, data) {
 }
 
 export function getMatrixDict(tree) {
-  let matrix = [...Array(tree.getHeight() + 1)].map(_ => [])
+  let matrix = [...Array(tree.getHeight() + 1)].map((_) => [])
   let dict = {}
 
   let inner = (node, matrix, dict, xshift, yshift) => {
@@ -185,17 +185,17 @@ export function getMatrixDict(tree) {
 export function getMatrixWidth(y, matrix) {
   let keys = [...Array(10)]
     .map((_, i) => i + y - 4)
-    .filter(i => i >= 0 && i < matrix.length)
+    .filter((i) => i >= 0 && i < matrix.length)
 
   let padding = Math.min(
-    ...keys.map(i => {
+    ...keys.map((i) => {
       for (let j = 0; j < matrix[i].length; j++)
         if (matrix[i][j] != null) return j
       return 0
-    })
+    }),
   )
 
-  let width = Math.max(...keys.map(i => matrix[i].length)) - padding
+  let width = Math.max(...keys.map((i) => matrix[i].length)) - padding
 
   return [width, padding]
 }
@@ -222,7 +222,7 @@ export function getBoard(tree, id) {
       if (value.includes(':')) size = value.split(':')
       else size = [value, value]
 
-      size = size.map(x => (isNaN(x) ? 19 : +x))
+      size = size.map((x) => (isNaN(x) ? 19 : +x))
     }
 
     board = fromDimensions(...size)
@@ -268,10 +268,10 @@ export function getBoard(tree, id) {
     }
 
     Object.assign(board, {
-      markers: board.signMap.map(row => row.map(_ => null)),
+      markers: board.signMap.map((row) => row.map((_) => null)),
       lines: [],
       childrenInfo: [],
-      siblingsInfo: []
+      siblingsInfo: [],
     })
 
     if (vertex != null && board.has(vertex)) {
@@ -322,7 +322,7 @@ export function getBoard(tree, id) {
       for (let composed of node.data[type]) {
         let sep = composed.indexOf(':')
         let [v1, v2] = [composed.slice(0, sep), composed.slice(sep + 1)].map(
-          parseVertex
+          parseVertex,
         )
 
         board.lines.push({v1, v2, type: type === 'AR' ? 'arrow' : 'line'})

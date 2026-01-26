@@ -5,7 +5,7 @@ export class ToolBarButton extends Component {
   constructor(props) {
     super(props)
 
-    this.handleClick = evt => {
+    this.handleClick = (evt) => {
       evt.preventDefault()
 
       let {onClick = () => {}} = this.props
@@ -19,7 +19,7 @@ export class ToolBarButton extends Component {
     return h(
       'li',
       {
-        class: classnames('tool-bar-button', {menu, checked})
+        class: classnames('tool-bar-button', {menu, checked}),
       },
 
       h(
@@ -30,7 +30,7 @@ export class ToolBarButton extends Component {
           class: 'icon',
           height: 16,
           src: icon,
-          alt: tooltip
+          alt: tooltip,
         }),
 
         menu &&
@@ -38,9 +38,9 @@ export class ToolBarButton extends Component {
             class: 'dropdown',
             height: 8,
             src: './node_modules/@primer/octicons/build/svg/triangle-down.svg',
-            alt: ''
-          })
-      )
+            alt: '',
+          }),
+      ),
     )
   }
 }

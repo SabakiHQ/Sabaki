@@ -6,8 +6,8 @@ import {noop} from '../../modules/helper.js'
 
 const t = i18n.context('WinrateGraph')
 const setting = {
-  get: key => window.sabaki.setting.get(key),
-  onDidChange: callback => window.sabaki.setting.onDidChange(callback)
+  get: (key) => window.sabaki.setting.get(key),
+  onDidChange: (callback) => window.sabaki.setting.onDidChange(callback),
 }
 const blunderThreshold = setting.get('view.winrategraph_blunderthreshold')
 
@@ -24,13 +24,13 @@ class WinrateStrip extends Component {
         src: `./img/ui/${player > 0 ? 'black' : 'white'}.svg`,
         height: 14,
         alt: player > 0 ? t('Black') : t('White'),
-        title: player > 0 ? t('Black') : t('White')
+        title: player > 0 ? t('Black') : t('White'),
       }),
 
       h(
         'span',
         {class: 'main'},
-        winrate == null ? '–' : `${i18n.formatNumber(winrate)}%`
+        winrate == null ? '–' : `${i18n.formatNumber(winrate)}%`,
       ),
 
       h(
@@ -38,17 +38,17 @@ class WinrateStrip extends Component {
         {
           class: classNames('change', {
             positive: change != null && change > blunderThreshold,
-            negative: change != null && change < -blunderThreshold
-          })
+            negative: change != null && change < -blunderThreshold,
+          }),
         },
 
         h('span', {}, change == null ? '' : change >= 0 ? '+' : '-'),
         h(
           'span',
           {},
-          change == null ? '–' : i18n.formatNumber(Math.abs(change))
-        )
-      )
+          change == null ? '–' : i18n.formatNumber(Math.abs(change)),
+        ),
+      ),
     )
   }
 }
@@ -58,7 +58,7 @@ export default class WinrateGraph extends Component {
     super()
 
     this.state = {
-      invert: setting.get('view.winrategraph_invert')
+      invert: setting.get('view.winrategraph_invert'),
     }
 
     setting.onDidChange(({key, value}) => {
@@ -67,7 +67,7 @@ export default class WinrateGraph extends Component {
       }
     })
 
-    this.handleMouseDown = evt => {
+    this.handleMouseDown = (evt) => {
       this.mouseDown = true
       document.dispatchEvent(new MouseEvent('mousemove', evt))
     }
@@ -84,7 +84,7 @@ export default class WinrateGraph extends Component {
   }
 
   componentDidMount() {
-    document.addEventListener('mousemove', evt => {
+    document.addEventListener('mousemove', (evt) => {
       if (!this.mouseDown) return
 
       let rect = this.element.getBoundingClientRect()
@@ -92,7 +92,7 @@ export default class WinrateGraph extends Component {
       let {width, data, onCurrentIndexChange = noop} = this.props
       let index = Math.max(
         Math.min(Math.round(width * percent), data.length - 1),
-        0
+        0,
       )
 
       if (index !== this.props.currentIndex) onCurrentIndexChange({index})
@@ -110,11 +110,11 @@ export default class WinrateGraph extends Component {
     let dataDiff = data.map((x, i) =>
       i === 0 || x == null || (data[i - 1] == null && data[i - 2] == null)
         ? null
-        : x - data[data[i - 1] != null ? i - 1 : i - 2]
+        : x - data[data[i - 1] != null ? i - 1 : i - 2],
     )
     let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
 
-    let round2 = x => Math.round(x * 100) / 100
+    let round2 = (x) => Math.round(x * 100) / 100
     let blackWinrate =
       data[currentIndex] == null ? null : round2(data[currentIndex])
     let blackWinrateDiff =
@@ -129,7 +129,7 @@ export default class WinrateGraph extends Component {
         ? ''
         : [
             [blackWinrate, blackWinrateDiff],
-            [whiteWinrate, whiteWinrateDiff]
+            [whiteWinrate, whiteWinrateDiff],
           ]
             .map(
               ([winrate, diff], i) =>
@@ -139,26 +139,26 @@ export default class WinrateGraph extends Component {
                   diff == null
                     ? ''
                     : ` (${diff >= 0 ? '+' : '-'}${i18n.formatNumber(
-                        Math.abs(diff)
+                        Math.abs(diff),
                       )})`
-                }`
+                }`,
             )
             .join('\n')
 
     return h(
       'section',
       {
-        ref: el => (this.element = el),
+        ref: (el) => (this.element = el),
         id: 'winrategraph',
         style: {
-          height: this.state.height + 'px'
-        }
+          height: this.state.height + 'px',
+        },
       },
 
       h(WinrateStrip, {
         player: lastPlayer,
         winrate: lastPlayer > 0 ? blackWinrate : whiteWinrate,
-        change: lastPlayer > 0 ? blackWinrateDiff : whiteWinrateDiff
+        change: lastPlayer > 0 ? blackWinrateDiff : whiteWinrateDiff,
       }),
 
       h(
@@ -166,7 +166,7 @@ export default class WinrateGraph extends Component {
         {
           class: 'graph',
           title: tooltip,
-          onMouseDown: this.handleMouseDown
+          onMouseDown: this.handleMouseDown,
         },
 
         h(
@@ -177,8 +177,8 @@ export default class WinrateGraph extends Component {
             style: {
               height: '100%',
               width: '100%',
-              transform: !invert ? 'none' : 'scaleY(-1)'
-            }
+              transform: !invert ? 'none' : 'scaleY(-1)',
+            },
           },
 
           // Draw background
@@ -193,18 +193,18 @@ export default class WinrateGraph extends Component {
                 x1: 0,
                 y1: 0,
                 x2: 0,
-                y2: 1
+                y2: 1,
               },
               h('stop', {
                 offset: '0%',
                 'stop-color': 'white',
-                'stop-opacity': 0.7
+                'stop-opacity': 0.7,
               }),
               h('stop', {
                 offset: '100%',
                 'stop-color': 'white',
-                'stop-opacity': 0.1
-              })
+                'stop-opacity': 0.1,
+              }),
             ),
 
             h(
@@ -219,18 +219,18 @@ export default class WinrateGraph extends Component {
                       if (x == null) return i === 0 ? [i, 50] : null
                       return [i, x]
                     })
-                    .filter(x => x != null)
+                    .filter((x) => x != null)
 
                   if (instructions.length === 0) return ''
 
                   return (
                     `M ${instructions[0][0]},100 ` +
-                    instructions.map(x => `L ${x.join(',')}`).join(' ') +
+                    instructions.map((x) => `L ${x.join(',')}`).join(' ') +
                     ` L ${instructions.slice(-1)[0][0]},100 Z`
                   )
-                })()
-              })
-            )
+                })(),
+              }),
+            ),
           ),
 
           h('rect', {
@@ -239,7 +239,7 @@ export default class WinrateGraph extends Component {
             width,
             height: 100,
             fill: 'url(#bgGradient)',
-            'clip-path': 'url(#clipGradient)'
+            'clip-path': 'url(#clipGradient)',
           }),
 
           // Draw guiding lines
@@ -252,7 +252,7 @@ export default class WinrateGraph extends Component {
             stroke: '#aaa',
             'stroke-width': 1,
             'stroke-dasharray': 2,
-            'vector-effect': 'non-scaling-stroke'
+            'vector-effect': 'non-scaling-stroke',
           }),
 
           [...Array(width)].map((_, i) => {
@@ -266,7 +266,7 @@ export default class WinrateGraph extends Component {
               stroke: '#aaa',
               'stroke-width': 1,
               'stroke-dasharray': 2,
-              'vector-effect': 'non-scaling-stroke'
+              'vector-effect': 'non-scaling-stroke',
             })
           }),
 
@@ -279,7 +279,7 @@ export default class WinrateGraph extends Component {
             y2: 100,
             stroke: '#0082F0',
             'stroke-width': 2,
-            'vector-effect': 'non-scaling-stroke'
+            'vector-effect': 'non-scaling-stroke',
           }),
 
           // Draw differential bar graph
@@ -295,7 +295,7 @@ export default class WinrateGraph extends Component {
 
                 return `M ${i},50 l 0,${(50 * x) / dataDiffMax}`
               })
-              .join(' ')
+              .join(' '),
           }),
 
           // Draw data lines
@@ -313,7 +313,7 @@ export default class WinrateGraph extends Component {
                 let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
                 return `${command} ${i},${x}`
               })
-              .join(' ')
+              .join(' '),
           }),
 
           h('path', {
@@ -334,8 +334,8 @@ export default class WinrateGraph extends Component {
 
                 return ''
               })
-              .join(' ')
-          })
+              .join(' '),
+          }),
         ),
 
         // Draw marker
@@ -345,10 +345,10 @@ export default class WinrateGraph extends Component {
             class: 'marker',
             style: {
               left: `${(currentIndex * 100) / width}%`,
-              top: `${!invert ? data[currentIndex] : 100 - data[currentIndex]}%`
-            }
-          })
-      )
+              top: `${!invert ? data[currentIndex] : 100 - data[currentIndex]}%`,
+            },
+          }),
+      ),
     )
   }
 }

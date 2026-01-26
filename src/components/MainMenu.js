@@ -19,7 +19,7 @@ export default class MainMenu extends Component {
   componentDidMount() {
     this._unsubscribeFocus = window.sabaki.window.on('focus', this.buildMenu)
 
-    let handleMenuClicks = menu => {
+    let handleMenuClicks = (menu) => {
       for (let item of menu) {
         if (item.click != null) {
           this.listeners[item.id] = () => {

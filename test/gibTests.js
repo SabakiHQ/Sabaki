@@ -18,12 +18,14 @@ describe('gib', () => {
         BR: ['15K'],
         DT: ['2016-03-26'],
         HA: ['3'],
-        AB: ['dp', 'pd', 'dd']
+        AB: ['dp', 'pd', 'dd'],
       })
 
       assert.deepEqual(
-        [...tree.getSequence(tree.root.id)].map(node => node.data).slice(1, 5),
-        [{W: ['pp']}, {B: ['nq']}, {W: ['qn']}, {B: ['no']}]
+        [...tree.getSequence(tree.root.id)]
+          .map((node) => node.data)
+          .slice(1, 5),
+        [{W: ['pp']}, {B: ['nq']}, {W: ['qn']}, {B: ['no']}],
       )
     })
 

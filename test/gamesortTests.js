@@ -22,7 +22,7 @@ describe('gamesort', () => {
         blank,
         beginner,
         shodan,
-        pro
+        pro,
       ])
     })
   })
@@ -35,7 +35,7 @@ describe('gamesort', () => {
         blank,
         beginner,
         shodan,
-        pro
+        pro,
       ])
     })
   })
@@ -48,7 +48,7 @@ describe('gamesort', () => {
         blank,
         beginner,
         pro,
-        shodan
+        shodan,
       ])
     })
   })
@@ -61,7 +61,7 @@ describe('gamesort', () => {
         blank,
         pro,
         beginner,
-        shodan
+        shodan,
       ])
     })
   })
@@ -74,7 +74,7 @@ describe('gamesort', () => {
         blank,
         pro,
         shodan,
-        beginner
+        beginner,
       ])
     })
   })
@@ -87,7 +87,7 @@ describe('gamesort', () => {
         blank,
         pro,
         beginner,
-        shodan
+        shodan,
       ])
     })
   })
@@ -100,7 +100,7 @@ describe('gamesort', () => {
         blank,
         pro,
         shodan,
-        beginner
+        beginner,
       ])
     })
   })
@@ -113,7 +113,7 @@ describe('gamesort', () => {
         blank,
         beginner,
         shodan,
-        pro
+        pro,
       ])
     })
   })
@@ -126,7 +126,7 @@ describe('gamesort', () => {
         shodan,
         beginner,
         pro,
-        blank
+        blank,
       ])
     })
   })

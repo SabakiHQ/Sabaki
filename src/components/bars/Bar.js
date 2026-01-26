@@ -7,7 +7,7 @@ export default class Bar extends Component {
     super(props)
 
     this.state = {
-      hidecontent: props.type !== props.mode
+      hidecontent: props.type !== props.mode,
     }
 
     this.onCloseButtonClick = () => sabaki.setMode('play')
@@ -22,7 +22,7 @@ export default class Bar extends Component {
       if (!this.state.hidecontent)
         this.hidecontentId = setTimeout(
           () => this.setState({hidecontent: true}),
-          500
+          500,
         )
     }
   }
@@ -41,12 +41,12 @@ export default class Bar extends Component {
         class: classNames(c, {
           bar: true,
           current: type === mode,
-          hidecontent
-        })
+          hidecontent,
+        }),
       },
 
       children,
-      h('a', {class: 'close', href: '#', onClick: this.onCloseButtonClick})
+      h('a', {class: 'close', href: '#', onClick: this.onCloseButtonClick}),
     )
   }
 }

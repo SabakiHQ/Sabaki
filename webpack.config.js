@@ -5,14 +5,14 @@ module.exports = (env, argv) => ({
 
   output: {
     filename: 'bundle.js',
-    path: __dirname
+    path: __dirname,
   },
 
   devtool: argv.mode === 'production' ? false : 'eval-cheap-module-source-map',
   target: 'electron-renderer',
 
   node: {
-    __dirname: false
+    __dirname: false,
   },
 
   resolve: {
@@ -20,14 +20,14 @@ module.exports = (env, argv) => ({
       react: 'preact/compat',
       'react-dom/test-utils': 'preact/test-utils',
       'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime'
-    }
+      'react/jsx-runtime': 'preact/jsx-runtime',
+    },
   },
 
   externals: {
     '@sabaki/i18n': 'require("@sabaki/i18n")',
     'cross-spawn': 'null',
     'iconv-lite': 'require("iconv-lite")',
-    moment: 'null'
-  }
+    moment: 'null',
+  },
 })

@@ -4,12 +4,12 @@ export default class SplitContainer extends Component {
   constructor(props) {
     super(props)
 
-    this.handleResizerMouseDown = evt => {
+    this.handleResizerMouseDown = (evt) => {
       if (evt.button !== 0) return
       this.resizerMouseDown = true
     }
 
-    this.handleMouseUp = evt => {
+    this.handleMouseUp = (evt) => {
       if (!this.resizerMouseDown) return
 
       let {onFinish = () => {}} = this.props
@@ -18,7 +18,7 @@ export default class SplitContainer extends Component {
       onFinish()
     }
 
-    this.handleMouseMove = evt => {
+    this.handleMouseMove = (evt) => {
       if (!this.resizerMouseDown) return
 
       let {vertical, invert, procentualSplit, onChange = () => {}} = this.props
@@ -29,7 +29,7 @@ export default class SplitContainer extends Component {
       let containerEnd = !vertical ? rect.right : rect.bottom
       let sideSize = Math.min(
         !invert ? containerEnd - mousePosition : mousePosition - containerBegin,
-        containerEnd - containerBegin
+        containerEnd - containerBegin,
       )
 
       if (procentualSplit) {
@@ -64,7 +64,7 @@ export default class SplitContainer extends Component {
       mainContent,
       sideContent,
       sideSize = 200,
-      splitterSize = 5
+      splitterSize = 5,
     } = this.props
 
     let gridTemplate = procentualSplit
@@ -86,23 +86,23 @@ export default class SplitContainer extends Component {
         right: vertical ? 0 : invert ? 0 : null,
         top: !vertical ? 0 : !invert ? 0 : null,
         bottom: !vertical ? 0 : invert ? 0 : null,
-        zIndex: 999
+        zIndex: 999,
       },
 
-      onMouseDown: this.handleResizerMouseDown
+      onMouseDown: this.handleResizerMouseDown,
     })
 
     return h(
       'div',
       {
-        ref: el => (this.element = el),
+        ref: (el) => (this.element = el),
         id,
         class: `split-container ${classNames}`,
         style: {
           ...style,
           display: 'grid',
-          gridTemplate: `${gridTemplateRows} / ${gridTemplateColumns}`
-        }
+          gridTemplate: `${gridTemplateRows} / ${gridTemplateColumns}`,
+        },
       },
 
       !invert && mainContent,
@@ -114,13 +114,13 @@ export default class SplitContainer extends Component {
           style: {
             position: 'relative',
             display: 'grid',
-            gridTemplate: '100% / 100%'
-          }
+            gridTemplate: '100% / 100%',
+          },
         },
-        [sideContent, resizer]
+        [sideContent, resizer],
       ),
 
-      invert && mainContent
+      invert && mainContent,
     )
   }
 }

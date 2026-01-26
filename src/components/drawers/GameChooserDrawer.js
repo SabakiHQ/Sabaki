@@ -13,13 +13,13 @@ import * as gamesort from '../../modules/gamesort.js'
 import * as helper from '../../modules/helper.js'
 
 const t = i18n.context('GameChooserDrawer')
-const setting = {get: key => window.sabaki.setting.get(key)}
+const setting = {get: (key) => window.sabaki.setting.get(key)}
 
 let thumbnailSize = setting.get('gamechooser.thumbnail_size')
 let itemMinWidth = thumbnailSize + 12 + 20
 let itemHeight = 253 + 10 + 20
 
-let getPreviewBoard = tree => {
+let getPreviewBoard = (tree) => {
   let node = tree.navigate(tree.root.id, 30, {})
   if (!node)
     node = tree.navigate(tree.root.id, tree.getCurrentHeight({}) - 1, {})
@@ -34,7 +34,7 @@ class GameListItem extends Component {
     let events = ['Click', 'ContextMenu', 'DragStart', 'DragOver']
 
     for (let name of events) {
-      this[`handle${name}`] = evt => {
+      this[`handle${name}`] = (evt) => {
         let callback = this.props[`on${name}`]
         evt.tree = this.props.tree
         if (callback) callback(evt)
@@ -55,28 +55,22 @@ class GameListItem extends Component {
     draggable,
     showThumbnail,
     insertBefore,
-    insertAfter
+    insertAfter,
   }) {
     let gameInfo = gametree.getGameInfo(tree)
-    let {
-      gameName,
-      eventName,
-      blackName,
-      blackRank,
-      whiteName,
-      whiteRank
-    } = gameInfo
+    let {gameName, eventName, blackName, blackRank, whiteName, whiteRank} =
+      gameInfo
     let name = gameName || eventName || ''
 
     return h(
       'li',
       {
-        ref: el => (this.element = el),
+        ref: (el) => (this.element = el),
         class: classNames({
           insertbefore: insertBefore,
-          insertafter: insertAfter
+          insertafter: insertAfter,
         }),
-        style: {left, top}
+        style: {left, top},
       },
 
       h(
@@ -86,7 +80,7 @@ class GameListItem extends Component {
           onClick: this.handleClick,
           onContextMenu: this.handleContextMenu,
           onDragStart: this.handleDragStart,
-          onDragOver: this.handleDragOver
+          onDragOver: this.handleDragOver,
         },
 
         h('span', {title: name}, name),
@@ -94,12 +88,12 @@ class GameListItem extends Component {
         h(MiniGoban, {
           board: getPreviewBoard(tree),
           maxSize: thumbnailSize,
-          visible: showThumbnail
+          visible: showThumbnail,
         }),
 
         h('span', {class: 'black', title: blackRank}, blackName || t('Black')),
-        h('span', {class: 'white', title: whiteRank}, whiteName || t('White'))
-      )
+        h('span', {class: 'white', title: whiteRank}, whiteName || t('White')),
+      ),
     )
   }
 }
@@ -114,21 +108,21 @@ export default class GameChooserDrawer extends Component {
       scrollTop: 0,
       insertBefore: -1,
       animation: false,
-      filterText: ''
+      filterText: '',
     }
 
-    this.handleFilterTextChange = evt =>
+    this.handleFilterTextChange = (evt) =>
       this.setState({
-        filterText: evt.currentTarget.value.trim()
+        filterText: evt.currentTarget.value.trim(),
       })
 
     this.handleCloseButtonClick = () => sabaki.closeDrawer()
 
-    this.handleListScroll = evt => {
+    this.handleListScroll = (evt) => {
       this.setState({scrollTop: evt.currentTarget.scrollTop})
     }
 
-    this.handleItemContextMenu = evt => {
+    this.handleItemContextMenu = (evt) => {
       helper.popupMenu(
         [
           {
@@ -139,7 +133,7 @@ export default class GameChooserDrawer extends Component {
                   t('Do you really want to remove this game permanently?'),
                   'warning',
                   [t('Remove Game'), t('Cancel')],
-                  1
+                  1,
                 )) === 1
               )
                 return
@@ -148,7 +142,7 @@ export default class GameChooserDrawer extends Component {
               let index = gameTrees.indexOf(evt.tree)
 
               onChange({gameTrees: gameTrees.filter((_, i) => i !== index)})
-            }
+            },
           },
           {
             label: t('Remove &Other Games'),
@@ -156,30 +150,30 @@ export default class GameChooserDrawer extends Component {
               if (
                 (await dialog.showMessageBox(
                   t(
-                    'Do you really want to remove all other games permanently?'
+                    'Do you really want to remove all other games permanently?',
                   ),
                   'warning',
                   [t('Remove Games'), t('Cancel')],
-                  1
+                  1,
                 )) === 1
               )
                 return
 
               let {onChange = helper.noop} = this.props
               onChange({gameTrees: [evt.tree]})
-            }
-          }
+            },
+          },
         ],
         evt.clientX,
-        evt.clientY
+        evt.clientY,
       )
     }
 
-    this.handleItemDragStart = evt => {
+    this.handleItemDragStart = (evt) => {
       this.dragData = this.props.gameTrees.indexOf(evt.tree)
     }
 
-    this.handleItemDragOver = evt => {
+    this.handleItemDragOver = (evt) => {
       if (this.dragData == null) return
 
       evt.preventDefault()
@@ -198,7 +192,7 @@ export default class GameChooserDrawer extends Component {
       }
     }
 
-    this.handleItemDrop = evt => {
+    this.handleItemDrop = (evt) => {
       let {gameTrees, onChange = helper.noop} = this.props
       let {insertBefore} = this.state
       let newGameTrees = gameTrees.slice()
@@ -220,14 +214,14 @@ export default class GameChooserDrawer extends Component {
       this.setState({insertBefore: -1})
     }
 
-    this.handleItemClick = evt => {
+    this.handleItemClick = (evt) => {
       let {onItemClick = helper.noop} = this.props
 
       evt.selectedTree = evt.tree
       onItemClick(evt)
     }
 
-    this.handleAddButtonClick = evt => {
+    this.handleAddButtonClick = (evt) => {
       let template = [
         {
           label: t('Add &New Game'),
@@ -236,7 +230,7 @@ export default class GameChooserDrawer extends Component {
             let {gameTrees, onChange = helper.noop} = this.props
 
             onChange({gameTrees: [...gameTrees, tree]})
-          }
+          },
         },
         {
           label: t('Add &Existing Files…'),
@@ -245,8 +239,8 @@ export default class GameChooserDrawer extends Component {
               properties: ['openFile', 'multiSelections'],
               filters: [
                 ...fileformats.meta,
-                {name: t('All Files'), extensions: ['*']}
-              ]
+                {name: t('All Files'), extensions: ['*']},
+              ],
             })
             let {gameTrees, onChange = helper.noop} = this.props
             let newTrees = []
@@ -262,15 +256,15 @@ export default class GameChooserDrawer extends Component {
               } catch (err) {
                 await dialog.showMessageBox(
                   t('Some files are unreadable.'),
-                  'warning'
+                  'warning',
                 )
               }
             }
 
             onChange({gameTrees: [...gameTrees, ...newTrees]})
             sabaki.setBusy(false)
-          }
-        }
+          },
+        },
       ]
 
       let element = evt.currentTarget
@@ -279,8 +273,8 @@ export default class GameChooserDrawer extends Component {
       helper.popupMenu(template, left, bottom)
     }
 
-    this.handleSortButtonClick = evt => {
-      let sortWith = sorter => () => {
+    this.handleSortButtonClick = (evt) => {
+      let sortWith = (sorter) => () => {
         sabaki.setBusy(true)
 
         let {gameTrees, onChange = helper.noop} = this.props
@@ -300,10 +294,10 @@ export default class GameChooserDrawer extends Component {
         {label: t('&Date'), click: sortWith(gamesort.byDate)},
         {
           label: t('Number of &Moves'),
-          click: sortWith(gamesort.byNumberOfMoves)
+          click: sortWith(gamesort.byNumberOfMoves),
         },
         {type: 'separator'},
-        {label: t('&Reverse'), click: sortWith(gamesort.reverse)}
+        {label: t('&Reverse'), click: sortWith(gamesort.reverse)},
       ]
 
       let element = evt.currentTarget
@@ -353,7 +347,7 @@ export default class GameChooserDrawer extends Component {
       await this.resize()
 
       let index = this.shownGameTrees.findIndex(
-        ([, i]) => i === this.props.gameIndex
+        ([, i]) => i === this.props.gameIndex,
       )
       let scrollTop = 0
       if (index >= 0) scrollTop = this.getRowFromIndex(index) * itemHeight
@@ -383,7 +377,7 @@ export default class GameChooserDrawer extends Component {
           left: left - drawerRect.left,
           top: top - drawerRect.top,
           width,
-          height
+          height,
         }
 
         let direction = this.props.show ? 'reverse' : 'normal'
@@ -399,7 +393,7 @@ export default class GameChooserDrawer extends Component {
     let height = this.gamesListElement.offsetHeight
     let rowCount = Math.floor(innerWidth / itemMinWidth)
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.setState({innerWidth, height, rowCount}, resolve)
     })
   }
@@ -417,8 +411,8 @@ export default class GameChooserDrawer extends Component {
       insertBefore,
       rowCount,
       innerWidth,
-      height
-    }
+      height,
+    },
   ) {
     let itemWidth = Math.floor(innerWidth / rowCount)
 
@@ -428,12 +422,9 @@ export default class GameChooserDrawer extends Component {
       })
       .filter(([tree]) => {
         let gameInfo = gametree.getGameInfo(tree)
-        let data = Object.keys(gameInfo).map(x => gameInfo[x])
+        let data = Object.keys(gameInfo).map((x) => gameInfo[x])
 
-        return data
-          .join(' ')
-          .toLowerCase()
-          .includes(filterText.toLowerCase())
+        return data.join(' ').toLowerCase().includes(filterText.toLowerCase())
       })
 
     return h(
@@ -443,9 +434,11 @@ export default class GameChooserDrawer extends Component {
         'style',
         {},
         `#gamechooser .games-list .placeholder {
-          height: ${(this.getRowFromIndex(this.shownGameTrees.length - 1) + 1) *
-            itemHeight +
-            20}px;
+          height: ${
+            (this.getRowFromIndex(this.shownGameTrees.length - 1) + 1) *
+              itemHeight +
+            20
+          }px;
         }
 
         #gamechooser .games-list li {
@@ -476,14 +469,14 @@ export default class GameChooserDrawer extends Component {
                 );
               opacity: 0;
             }
-          }`
+          }`,
       ),
 
       h(
         Drawer,
         {
           type: 'gamechooser',
-          show
+          show,
         },
 
         h('h2', {}, t('Manage Games')),
@@ -493,17 +486,17 @@ export default class GameChooserDrawer extends Component {
           name: 'filter',
           placeholder: t('Filter'),
           value: filterText,
-          onInput: this.handleFilterTextChange
+          onInput: this.handleFilterTextChange,
         }),
 
         h(
           'div',
           {
-            ref: el => (this.gamesListElement = el),
+            ref: (el) => (this.gamesListElement = el),
             class: 'games-list',
 
             onScroll: this.handleListScroll,
-            onDrop: this.handleItemDrop
+            onDrop: this.handleItemDrop,
           },
 
           h('div', {class: 'placeholder'}),
@@ -524,7 +517,7 @@ export default class GameChooserDrawer extends Component {
                 return
 
               return h(GameListItem, {
-                ref: item =>
+                ref: (item) =>
                   (this.itemElements[index] =
                     item == null ? null : item.element),
                 key: tree.id,
@@ -542,10 +535,10 @@ export default class GameChooserDrawer extends Component {
                 onClick: this.handleItemClick,
                 onContextMenu: this.handleItemContextMenu,
                 onDragStart: this.handleItemDragStart,
-                onDragOver: this.handleItemDragOver
+                onDragOver: this.handleItemDragOver,
               })
-            })
-          )
+            }),
+          ),
         ),
 
         h(
@@ -556,9 +549,9 @@ export default class GameChooserDrawer extends Component {
             {
               type: 'button',
               class: 'dropdown',
-              onClick: this.handleAddButtonClick
+              onClick: this.handleAddButtonClick,
             },
-            t('Add')
+            t('Add'),
           ),
 
           h(
@@ -566,20 +559,20 @@ export default class GameChooserDrawer extends Component {
             {
               type: 'button',
               class: 'dropdown',
-              onClick: this.handleSortButtonClick
+              onClick: this.handleSortButtonClick,
             },
-            t('Sort By')
+            t('Sort By'),
           ),
 
           h(
             'button',
             {
               type: 'button',
-              onClick: this.handleCloseButtonClick
+              onClick: this.handleCloseButtonClick,
             },
-            t('Close')
-          )
-        )
+            t('Close'),
+          ),
+        ),
       ),
 
       h(
@@ -589,16 +582,16 @@ export default class GameChooserDrawer extends Component {
           style: !animation
             ? {
                 opacity: 0,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
               }
-            : {}
+            : {},
         },
 
         h(MiniGoban, {
           board: getPreviewBoard(gameTrees[gameIndex]),
-          maxSize: thumbnailSize
-        })
-      )
+          maxSize: thumbnailSize,
+        }),
+      ),
     )
   }
 }

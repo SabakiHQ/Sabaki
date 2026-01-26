@@ -10,12 +10,12 @@ const t = i18n.context('fileformats')
 
 export const meta = {
   name: t('wBaduk NGF'),
-  extensions: ['ngf']
+  extensions: ['ngf'],
 }
 
 export function parse(content) {
   return [
-    gametree.new().mutate(draft => {
+    gametree.new().mutate((draft) => {
       let lines = content.split('\n')
       let rootId = draft.root.id
 
@@ -97,10 +97,10 @@ export function parse(content) {
       if (handicap >= 2) {
         draft.updateProperty(rootId, 'HA', [handicap.toString()])
 
-        let points = fromDimensions(
-          boardsize,
-          boardsize
-        ).getHandicapPlacement(handicap, {tygem: true})
+        let points = fromDimensions(boardsize, boardsize).getHandicapPlacement(
+          handicap,
+          {tygem: true},
+        )
 
         for (let [x, y] of points) {
           let s = stringifyVertex([x, y])
@@ -161,7 +161,7 @@ export function parse(content) {
           }
         }
       }
-    })
+    }),
   ]
 }
 

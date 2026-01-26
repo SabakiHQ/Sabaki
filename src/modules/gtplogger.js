@@ -7,7 +7,7 @@ import * as helper from './helper.js'
 
 const t = i18n.context('gtplogger')
 const setting = {
-  get: key => window.sabaki.setting.get(key)
+  get: (key) => window.sabaki.setting.get(key),
 }
 
 let filename = null
@@ -15,10 +15,10 @@ let filename = null
 let winstonLogger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp({format: 'YYYY-MM-DD HH:mm:ss.SSS'}),
-    winston.format.printf(info => `\[${info.timestamp}\] ${info.message}`)
+    winston.format.printf((info) => `\[${info.timestamp}\] ${info.message}`),
   ),
   handleExceptions: false,
-  exitOnError: false
+  exitOnError: false,
 })
 
 export function write(stream) {
@@ -30,18 +30,18 @@ export function write(stream) {
       stderr: '  (err)',
       stdin: '   (in)',
       stdout: '  (out)',
-      meta: ' (meta)'
+      meta: ' (meta)',
     }[stream.type] || ''
 
   try {
     winstonLogger.log(
       'info',
-      `<${stream.engine}> ${typeText} : ${stream.message}`
+      `<${stream.engine}> ${typeText} : ${stream.message}`,
     )
   } catch (err) {}
 }
 
-let timestamp = function() {
+let timestamp = function () {
   let now = new Date()
   let t = {
     month: 1 + now.getMonth(),
@@ -49,7 +49,7 @@ let timestamp = function() {
     hour: now.getHours(),
     minute: now.getMinutes(),
     second: now.getSeconds(),
-    year: now.getFullYear()
+    year: now.getFullYear(),
   }
 
   for (let key in t) {
@@ -59,16 +59,16 @@ let timestamp = function() {
   return `${t.year}-${t.month}-${t.day}-${t.hour}-${t.minute}-${t.second}`
 }
 
-let validate = function() {
+let validate = function () {
   if (!helper.isWritableDirectory(setting.get('gtp.console_log_path'))) {
     showMessageBox(
       t(
         [
           'You have an invalid log folder for GTP console logging in your settings.',
-          'Please make sure the log directory is valid and writable, or disable GTP console logging.'
-        ].join('\n\n')
+          'Please make sure the log directory is valid and writable, or disable GTP console logging.',
+        ].join('\n\n'),
       ),
-      'warning'
+      'warning',
     )
 
     return false
@@ -101,8 +101,9 @@ export function updatePath() {
   try {
     let newPath = join(newDir, filename)
     let matching = winstonLogger.transports.find(
-      transport =>
-        transport.filename === filename && resolve(transport.dirname) === newDir
+      (transport) =>
+        transport.filename === filename &&
+        resolve(transport.dirname) === newDir,
     )
 
     if (matching != null) {
@@ -111,8 +112,9 @@ export function updatePath() {
     }
 
     let notMatching = winstonLogger.transports.find(
-      transport =>
-        transport.filename !== filename || resolve(transport.dirname) !== newDir
+      (transport) =>
+        transport.filename !== filename ||
+        resolve(transport.dirname) !== newDir,
     )
 
     winstonLogger.add(new winston.transports.File({filename: newPath}))

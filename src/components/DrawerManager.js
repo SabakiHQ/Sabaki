@@ -15,7 +15,7 @@ export default class DrawerManager extends Component {
 
     this.handleScoreSubmit = ({resultString}) => {
       let gameTree = this.props.gameTrees[this.props.gameIndex]
-      let newTree = gameTree.mutate(draft => {
+      let newTree = gameTree.mutate((draft) => {
         draft.updateProperty(draft.root.id, 'RE', [resultString])
       })
 
@@ -30,11 +30,11 @@ export default class DrawerManager extends Component {
       sabaki.setCurrentTreePosition(selectedTree, selectedTree.root.id)
     }
 
-    this.handleGameTreesChange = evt => {
+    this.handleGameTreesChange = (evt) => {
       let newGameTrees = evt.gameTrees
       let {gameTrees, gameCurrents, gameIndex} = this.props
       let tree = gameTrees[gameIndex]
-      let newIndex = newGameTrees.findIndex(t => t.root.id === tree.root.id)
+      let newIndex = newGameTrees.findIndex((t) => t.root.id === tree.root.id)
 
       if (newIndex < 0) {
         if (newGameTrees.length === 0)
@@ -47,11 +47,11 @@ export default class DrawerManager extends Component {
       sabaki.setState({
         gameTrees: newGameTrees,
         gameCurrents: newGameTrees.map((tree, i) => {
-          let oldIndex = gameTrees.findIndex(t => t.root.id === tree.root.id)
+          let oldIndex = gameTrees.findIndex((t) => t.root.id === tree.root.id)
           if (oldIndex < 0) return {}
 
           return gameCurrents[oldIndex]
-        })
+        }),
       })
 
       sabaki.setCurrentTreePosition(tree, tree.root.id)
@@ -78,7 +78,7 @@ export default class DrawerManager extends Component {
 
     engines,
     graphGridSize,
-    preferencesTab
+    preferencesTab,
   }) {
     return h(
       'section',
@@ -90,14 +90,14 @@ export default class DrawerManager extends Component {
         currentPlayer,
         attachedEngineSyncers,
         blackEngineSyncerId,
-        whiteEngineSyncerId
+        whiteEngineSyncerId,
       }),
 
       h(PreferencesDrawer, {
         show: openDrawer === 'preferences',
         tab: preferencesTab,
         engines,
-        graphGridSize
+        graphGridSize,
       }),
 
       h(GameChooserDrawer, {
@@ -106,19 +106,19 @@ export default class DrawerManager extends Component {
         gameIndex,
 
         onItemClick: this.handleGameSelect,
-        onChange: this.handleGameTreesChange
+        onChange: this.handleGameTreesChange,
       }),
 
       h(CleanMarkupDrawer, {
         show: openDrawer === 'cleanmarkup',
         gameTree,
-        treePosition
+        treePosition,
       }),
 
       h(AdvancedPropertiesDrawer, {
         show: openDrawer === 'advancedproperties',
         gameTree,
-        treePosition
+        treePosition,
       }),
 
       h(ScoreDrawer, {
@@ -130,8 +130,8 @@ export default class DrawerManager extends Component {
         komi: +getRootProperty(gameTree, 'KM', 0),
         handicap: +getRootProperty(gameTree, 'HA', 0),
 
-        onSubmitButtonClick: this.handleScoreSubmit
-      })
+        onSubmitButtonClick: this.handleScoreSubmit,
+      }),
     )
   }
 }

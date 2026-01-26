@@ -1,6 +1,6 @@
 import {h, Component} from 'preact'
 
-const range = n => [...Array(n)].map((_, i) => i)
+const range = (n) => [...Array(n)].map((_, i) => i)
 
 export default class MiniGoban extends Component {
   shouldComponentUpdate({board, maxSize, visible}) {
@@ -22,7 +22,7 @@ export default class MiniGoban extends Component {
       {
         width: fieldSize * board.width + 1,
         height: fieldSize * board.height + 1,
-        style: {visibility: visible ? 'visible' : 'hidden'}
+        style: {visibility: visible ? 'visible' : 'hidden'},
       },
 
       // Draw hoshi points
@@ -32,39 +32,39 @@ export default class MiniGoban extends Component {
           cx: x * fieldSize + radius + 1,
           cy: y * fieldSize + radius + 1,
           r: 2,
-          fill: '#5E2E0C'
-        })
+          fill: '#5E2E0C',
+        }),
       ),
 
       // Draw shadows
 
-      rangeX.map(x =>
+      rangeX.map((x) =>
         rangeY.map(
-          y =>
+          (y) =>
             board.get([x, y]) !== 0 &&
             h('circle', {
               cx: x * fieldSize + radius + 1,
               cy: y * fieldSize + radius + 2,
               r: radius,
-              fill: 'rgba(0, 0, 0, .5)'
-            })
-        )
+              fill: 'rgba(0, 0, 0, .5)',
+            }),
+        ),
       ),
 
       // Draw stones
 
-      rangeX.map(x =>
+      rangeX.map((x) =>
         rangeY.map(
-          y =>
+          (y) =>
             board.get([x, y]) !== 0 &&
             h('circle', {
               cx: x * fieldSize + radius + 1,
               cy: y * fieldSize + radius + 1,
               r: radius,
-              fill: board.get([x, y]) < 0 ? 'white' : 'black'
-            })
-        )
-      )
+              fill: board.get([x, y]) < 0 ? 'white' : 'black',
+            }),
+        ),
+      ),
     )
   }
 }

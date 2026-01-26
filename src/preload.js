@@ -27,7 +27,7 @@ try {
     themesDirectory: '',
     stylesPath: '',
     userDataDirectory: '',
-    themes: {}
+    themes: {},
   }
 }
 
@@ -43,7 +43,7 @@ ipcRenderer.on('setting:change', (_, data) => {
 window.sabaki = {
   // Settings - sync get with cache, async set
   setting: {
-    get: key => {
+    get: (key) => {
       return settingsCache[key]
     },
     set: async (key, value) => {
@@ -59,24 +59,25 @@ window.sabaki = {
     themesDirectory: pathsCache.themesDirectory,
     stylesPath: pathsCache.stylesPath,
     userDataDirectory: pathsCache.userDataDirectory,
-    onDidChange: callback => {
+    onDidChange: (callback) => {
       settingChangeCallbacks.add(callback)
       return () => settingChangeCallbacks.delete(callback)
-    }
+    },
   },
 
   // Window operations
   window: {
-    setFullScreen: f => ipcRenderer.invoke('window:setFullScreen', f),
+    setFullScreen: (f) => ipcRenderer.invoke('window:setFullScreen', f),
     isFullScreen: () => ipcRenderer.invoke('window:isFullScreen'),
     isMaximized: () => ipcRenderer.invoke('window:isMaximized'),
     isMinimized: () => ipcRenderer.invoke('window:isMinimized'),
-    setMenuBarVisibility: v =>
+    setMenuBarVisibility: (v) =>
       ipcRenderer.invoke('window:setMenuBarVisibility', v),
-    setAutoHideMenuBar: v => ipcRenderer.invoke('window:setAutoHideMenuBar', v),
+    setAutoHideMenuBar: (v) =>
+      ipcRenderer.invoke('window:setAutoHideMenuBar', v),
     getContentSize: () => ipcRenderer.invoke('window:getContentSize'),
     setContentSize: (w, h) => ipcRenderer.invoke('window:setContentSize', w, h),
-    setProgressBar: p => ipcRenderer.invoke('window:setProgressBar', p),
+    setProgressBar: (p) => ipcRenderer.invoke('window:setProgressBar', p),
     close: () => ipcRenderer.invoke('window:close'),
     getId: () => ipcRenderer.invoke('window:getId'),
     on: (event, callback) => {
@@ -87,56 +88,56 @@ window.sabaki = {
     removeListener: (event, callback) => {
       // This is a no-op since we return unsubscribe function from on()
       // But we provide it for API compatibility
-    }
+    },
   },
 
   // WebContents operations
   webContents: {
-    setZoomFactor: f => ipcRenderer.invoke('webContents:setZoomFactor', f),
+    setZoomFactor: (f) => ipcRenderer.invoke('webContents:setZoomFactor', f),
     getZoomFactor: () => ipcRenderer.invoke('webContents:getZoomFactor'),
-    setAudioMuted: m => ipcRenderer.invoke('webContents:setAudioMuted', m),
+    setAudioMuted: (m) => ipcRenderer.invoke('webContents:setAudioMuted', m),
     undo: () => ipcRenderer.invoke('webContents:undo'),
     redo: () => ipcRenderer.invoke('webContents:redo'),
     toggleDevTools: () => ipcRenderer.invoke('webContents:toggleDevTools'),
-    getOSProcessId: () => ipcRenderer.invoke('webContents:getOSProcessId')
+    getOSProcessId: () => ipcRenderer.invoke('webContents:getOSProcessId'),
   },
 
   // Dialogs (ASYNC - callers must await)
   dialog: {
-    showMessageBox: opts => ipcRenderer.invoke('dialog:showMessageBox', opts),
-    showOpenDialog: opts => ipcRenderer.invoke('dialog:showOpenDialog', opts),
-    showSaveDialog: opts => ipcRenderer.invoke('dialog:showSaveDialog', opts)
+    showMessageBox: (opts) => ipcRenderer.invoke('dialog:showMessageBox', opts),
+    showOpenDialog: (opts) => ipcRenderer.invoke('dialog:showOpenDialog', opts),
+    showSaveDialog: (opts) => ipcRenderer.invoke('dialog:showSaveDialog', opts),
   },
 
   // Menu
   menu: {
-    popup: (template, x, y) => ipcRenderer.invoke('menu:popup', template, x, y)
+    popup: (template, x, y) => ipcRenderer.invoke('menu:popup', template, x, y),
   },
 
   // App info
   app: {
     getName: () => ipcRenderer.invoke('app:getName'),
     getVersion: () => ipcRenderer.invoke('app:getVersion'),
-    quit: () => ipcRenderer.invoke('app:quit')
+    quit: () => ipcRenderer.invoke('app:quit'),
   },
 
   // Shell
   shell: {
-    openExternal: url => ipcRenderer.invoke('shell:openExternal', url),
-    showItemInFolder: p => ipcRenderer.invoke('shell:showItemInFolder', p)
+    openExternal: (url) => ipcRenderer.invoke('shell:openExternal', url),
+    showItemInFolder: (p) => ipcRenderer.invoke('shell:showItemInFolder', p),
   },
 
   // Clipboard
   clipboard: {
     readText: () => ipcRenderer.invoke('clipboard:readText'),
-    writeText: t => ipcRenderer.invoke('clipboard:writeText', t)
+    writeText: (t) => ipcRenderer.invoke('clipboard:writeText', t),
   },
 
   // File path helper for Electron 32+ (File.path was removed)
-  getPathForFile: file => {
+  getPathForFile: (file) => {
     if (webUtils && webUtils.getPathForFile) {
       return webUtils.getPathForFile(file)
     }
     return file.path // Fallback for older Electron
-  }
+  },
 }

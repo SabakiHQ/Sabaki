@@ -14,7 +14,7 @@ export {
   typographer,
   normalizeEndings,
   wait,
-  getScore
+  getScore,
 } from './utils.js'
 
 export const linebreak = process.platform === 'win32' ? '\r\n' : '\n'
@@ -30,7 +30,7 @@ export function isTextLikeElement(element) {
         'checkbox',
         'radio',
         'color',
-        'file'
+        'file',
       ].includes(element.type))
   )
 }
@@ -52,8 +52,8 @@ export function popupMenu(template, x, y) {
   menuClickHandlers.clear()
 
   // Process template to extract click handlers and assign IDs
-  const processTemplate = items => {
-    return items.map(item => {
+  const processTemplate = (items) => {
+    return items.map((item) => {
       if (!item) return item
 
       const newItem = {...item}
@@ -104,7 +104,7 @@ export function isWritableDirectory(path) {
 
 export function copyFolderSync(from, to) {
   fs.mkdirSync(to)
-  fs.readdirSync(from).forEach(element => {
+  fs.readdirSync(from).forEach((element) => {
     if (fs.lstatSync(join(from, element)).isFile()) {
       fs.copyFileSync(join(from, element), join(to, element))
     } else {

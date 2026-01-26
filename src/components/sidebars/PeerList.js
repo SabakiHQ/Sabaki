@@ -14,22 +14,22 @@ class EnginePeerListItem extends Component {
 
     this.state = {
       busy: props.syncer.busy,
-      suspended: props.syncer.suspended
+      suspended: props.syncer.suspended,
     }
 
     this.syncState = () => {
       this.setState({
         busy: this.props.syncer.busy,
-        suspended: this.props.syncer.suspended
+        suspended: this.props.syncer.suspended,
       })
     }
 
-    this.handleClick = evt => {
+    this.handleClick = (evt) => {
       let {syncer, onClick = () => {}} = this.props
       onClick({syncer})
     }
 
-    this.handleContextMenu = evt => {
+    this.handleContextMenu = (evt) => {
       let {syncer, onContextMenu = () => {}} = this.props
       onContextMenu(evt, {syncer})
     }
@@ -55,11 +55,11 @@ class EnginePeerListItem extends Component {
           analyzing,
           selected,
           busy: this.state.busy,
-          suspended: this.state.suspended
+          suspended: this.state.suspended,
         }),
 
         onClick: this.handleClick,
-        onContextMenu: this.handleContextMenu
+        onContextMenu: this.handleContextMenu,
       },
 
       !this.state.busy
@@ -67,14 +67,14 @@ class EnginePeerListItem extends Component {
             'div',
             {
               class: 'icon',
-              title: !this.state.suspended ? t('Running') : t('Stopped')
+              title: !this.state.suspended ? t('Running') : t('Stopped'),
             },
             h('img', {
               src: `./node_modules/@primer/octicons/build/svg/${
                 !this.state.suspended ? 'triangle-right' : 'primitive-square'
               }.svg`,
-              alt: !this.state.suspended ? t('Running') : t('Stopped')
-            })
+              alt: !this.state.suspended ? t('Running') : t('Stopped'),
+            }),
           )
         : h(TextSpinner),
 
@@ -86,12 +86,12 @@ class EnginePeerListItem extends Component {
           {
             key: 'analyzing',
             class: 'icon analyzing',
-            title: t('Analyzer')
+            title: t('Analyzer'),
           },
           h('img', {
             src: './node_modules/@primer/octicons/build/svg/pulse.svg',
-            alt: t('Analyzer')
-          })
+            alt: t('Analyzer'),
+          }),
         ),
 
       blackPlayer &&
@@ -100,13 +100,13 @@ class EnginePeerListItem extends Component {
           {
             key: 'player_1',
             class: 'icon player',
-            title: t('Plays as Black')
+            title: t('Plays as Black'),
           },
           h('img', {
             height: 14,
             src: './img/ui/black.svg',
-            alt: t('Plays as Black')
-          })
+            alt: t('Plays as Black'),
+          }),
         ),
 
       whitePlayer &&
@@ -115,14 +115,14 @@ class EnginePeerListItem extends Component {
           {
             key: 'player_-1',
             class: 'icon player',
-            title: t('Plays as White')
+            title: t('Plays as White'),
           },
           h('img', {
             height: 14,
             src: './img/ui/white.svg',
-            alt: t('Plays as White')
-          })
-        )
+            alt: t('Plays as White'),
+          }),
+        ),
     )
   }
 }
@@ -131,7 +131,7 @@ export class EnginePeerList extends Component {
   constructor(props) {
     super(props)
 
-    this.handleEngineClick = evt => {
+    this.handleEngineClick = (evt) => {
       let {onEngineSelect = () => {}} = this.props
       onEngineSelect(evt)
     }
@@ -142,17 +142,17 @@ export class EnginePeerList extends Component {
 
       sabaki.openEngineActionMenu(syncer.id, {
         x: evt.clientX,
-        y: evt.clientY
+        y: evt.clientY,
       })
     }
 
-    this.handleAttachEngineButtonClick = evt => {
+    this.handleAttachEngineButtonClick = (evt) => {
       let {left, bottom} = evt.currentTarget.getBoundingClientRect()
 
       sabaki.openEnginesMenu({x: left, y: bottom})
     }
 
-    this.handleStartStopGameButtonClick = evt => {
+    this.handleStartStopGameButtonClick = (evt) => {
       sabaki.startStopEngineGame(sabaki.state.treePosition)
     }
   }
@@ -163,12 +163,12 @@ export class EnginePeerList extends Component {
     blackEngineSyncerId,
     whiteEngineSyncerId,
     analyzingEngineSyncerId,
-    engineGameOngoing
+    engineGameOngoing,
   }) {
     return h(
       'div',
       {
-        class: 'engine-peer-list'
+        class: 'engine-peer-list',
       },
 
       h(
@@ -179,7 +179,7 @@ export class EnginePeerList extends Component {
           icon: './node_modules/@primer/octicons/build/svg/play.svg',
           tooltip: t('Attach Engine…'),
           menu: true,
-          onClick: this.handleAttachEngineButtonClick
+          onClick: this.handleAttachEngineButtonClick,
         }),
 
         h(ToolBarButton, {
@@ -188,14 +188,14 @@ export class EnginePeerList extends Component {
             ? t('Start Engine vs. Engine Game')
             : t('Stop Engine vs. Engine Game'),
           checked: !!engineGameOngoing,
-          onClick: this.handleStartStopGameButtonClick
-        })
+          onClick: this.handleStartStopGameButtonClick,
+        }),
       ),
 
       h(
         'ul',
         {},
-        attachedEngineSyncers.map(syncer =>
+        attachedEngineSyncers.map((syncer) =>
           h(EnginePeerListItem, {
             key: syncer.id,
 
@@ -206,10 +206,10 @@ export class EnginePeerList extends Component {
             whitePlayer: syncer.id === whiteEngineSyncerId,
 
             onClick: this.handleEngineClick,
-            onContextMenu: this.handleEngineContextMenu
-          })
-        )
-      )
+            onContextMenu: this.handleEngineContextMenu,
+          }),
+        ),
+      ),
     )
   }
 }

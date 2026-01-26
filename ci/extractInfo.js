@@ -15,6 +15,6 @@ printSetOutputs({
   distcommand: {
     win32: 'dist:win',
     linux: 'dist:linux',
-    darwin: 'dist:macos'
-  }[os.platform()]
+    darwin: 'dist:macos',
+  }[os.platform()],
 })

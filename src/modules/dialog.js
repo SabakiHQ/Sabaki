@@ -8,7 +8,7 @@ export async function showMessageBox(
   message,
   type = 'info',
   buttons = [t('OK')],
-  cancelId = 0
+  cancelId = 0,
 ) {
   sabaki.setBusy(true)
 
@@ -18,7 +18,7 @@ export async function showMessageBox(
     title: sabaki.appName,
     message,
     cancelId,
-    noLink: true
+    noLink: true,
   })
 
   sabaki.setBusy(false)
@@ -44,12 +44,12 @@ export async function showSaveDialog(options) {
 }
 
 export async function showInputBox(message) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     sabaki.setState({
       inputBoxText: message,
       showInputBox: true,
-      onInputBoxSubmit: evt => resolve(evt.value),
-      onInputBoxCancel: () => resolve(null)
+      onInputBoxSubmit: (evt) => resolve(evt.value),
+      onInputBoxCancel: () => resolve(null),
     })
   })
 }

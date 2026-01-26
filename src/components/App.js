@@ -23,11 +23,11 @@ import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
 
 const setting = {
-  get: key => window.sabaki.setting.get(key),
+  get: (key) => window.sabaki.setting.get(key),
   set: (key, value) => {
     window.sabaki.setting.set(key, value)
     return setting
-  }
+  },
 }
 const t = i18n.context('App')
 
@@ -48,7 +48,7 @@ class App extends Component {
       this.setState(change, callback)
     })
 
-    let bind = f => f.bind(this)
+    let bind = (f) => f.bind(this)
     this.handleMainLayoutSplitChange = bind(this.handleMainLayoutSplitChange)
     this.handleMainLayoutSplitFinish = bind(this.handleMainLayoutSplitFinish)
   }
@@ -56,7 +56,7 @@ class App extends Component {
   componentDidMount() {
     gtplogger.updatePath()
 
-    window.addEventListener('contextmenu', evt => {
+    window.addEventListener('contextmenu', (evt) => {
       evt.preventDefault()
     })
 
@@ -67,7 +67,7 @@ class App extends Component {
     ipcRenderer.on('load-file', (evt, ...args) => {
       setTimeout(
         () => sabaki.loadFile(...args),
-        setting.get('app.loadgame_delay')
+        setting.get('app.loadgame_delay'),
       )
     })
 
@@ -95,9 +95,9 @@ class App extends Component {
     // Handle mouse wheel
 
     for (let el of document.querySelectorAll(
-      '#main main, #graph, #winrategraph'
+      '#main main, #graph, #winrategraph',
     )) {
-      el.addEventListener('wheel', evt => {
+      el.addEventListener('wheel', (evt) => {
         evt.preventDefault()
 
         if (this.residueDeltaY == null) this.residueDeltaY = 0
@@ -115,8 +115,8 @@ class App extends Component {
 
     // Handle file drag & drop
 
-    document.body.addEventListener('dragover', evt => evt.preventDefault())
-    document.body.addEventListener('drop', evt => {
+    document.body.addEventListener('dragover', (evt) => evt.preventDefault())
+    document.body.addEventListener('drop', (evt) => {
       evt.preventDefault()
 
       if (evt.dataTransfer.files.length === 0) return
@@ -126,7 +126,7 @@ class App extends Component {
 
     // Handle keys
 
-    document.addEventListener('keydown', evt => {
+    document.addEventListener('keydown', (evt) => {
       if (evt.key === 'Escape') {
         if (sabaki.state.openDrawer != null) {
           sabaki.closeDrawer()
@@ -175,7 +175,7 @@ class App extends Component {
       }
     })
 
-    document.addEventListener('keyup', evt => {
+    document.addEventListener('keyup', (evt) => {
       if (['ArrowUp', 'ArrowDown'].includes(evt.key)) {
         sabaki.stopAutoscrolling()
       }
@@ -183,7 +183,7 @@ class App extends Component {
 
     // Handle window closing
 
-    window.addEventListener('beforeunload', evt => {
+    window.addEventListener('beforeunload', (evt) => {
       if (this.closeWindow) return
 
       evt.returnValue = ' '
@@ -191,7 +191,7 @@ class App extends Component {
       setTimeout(async () => {
         if (await sabaki.askForSave()) {
           sabaki.detachEngines(
-            this.state.attachedEngineSyncers.map(syncer => syncer.id)
+            this.state.attachedEngineSyncers.map((syncer) => syncer.id),
           )
 
           gtplogger.close()
@@ -287,9 +287,9 @@ class App extends Component {
           : leftSidebarWidth,
         sidebarWidth: sabaki.inferredState.showSidebar
           ? Math.max(endSideSize, sidebarMinWidth)
-          : sidebarWidth
+          : sidebarWidth,
       }),
-      () => window.dispatchEvent(new Event('resize'))
+      () => window.dispatchEvent(new Event('resize')),
     )
   }
 
@@ -317,7 +317,7 @@ class App extends Component {
         let sign = scoreBoard.get(vertex)
         if (sign === 0) continue
 
-        scoreBoard.setCaptures(-sign, x => x + 1)
+        scoreBoard.setCaptures(-sign, (x) => x + 1)
         scoreBoard.set(vertex, 0)
       }
 
@@ -335,8 +335,8 @@ class App extends Component {
         class: classNames({
           showleftsidebar: state.showLeftSidebar,
           showsidebar: state.showSidebar,
-          [state.mode]: true
-        })
+          [state.mode]: true,
+        }),
       },
 
       h(ThemeManager),
@@ -355,7 +355,7 @@ class App extends Component {
         showGameGraph: state.showGameGraph,
         showCommentBox: state.showCommentBox,
         showLeftSidebar: state.showLeftSidebar,
-        engineGameOngoing: state.engineGameOngoing
+        engineGameOngoing: state.engineGameOngoing,
       }),
 
       h(TripleSplitContainer, {
@@ -369,7 +369,7 @@ class App extends Component {
         endSideContent: h(Sidebar, state),
 
         onChange: this.handleMainLayoutSplitChange,
-        onFinish: this.handleMainLayoutSplitFinish
+        onFinish: this.handleMainLayoutSplitFinish,
       }),
 
       h(DrawerManager, state),
@@ -378,11 +378,14 @@ class App extends Component {
         text: state.inputBoxText,
         show: state.showInputBox,
         onSubmit: state.onInputBoxSubmit,
-        onCancel: state.onInputBoxCancel
+        onCancel: state.onInputBoxCancel,
       }),
 
       h(BusyScreen, {show: state.busy > 0}),
-      h(InfoOverlay, {text: state.infoOverlayText, show: state.showInfoOverlay})
+      h(InfoOverlay, {
+        text: state.infoOverlayText,
+        show: state.showInfoOverlay,
+      }),
     )
   }
 }

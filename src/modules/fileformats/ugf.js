@@ -8,7 +8,7 @@ const t = i18n.context('fileformats')
 
 export const meta = {
   name: t('PandaNET UGF'),
-  extensions: ['ugf']
+  extensions: ['ugf'],
 }
 
 function convertVertex(ugfVertex, boardSize) {
@@ -20,11 +20,11 @@ function convertVertex(ugfVertex, boardSize) {
 
 export function parse(content) {
   return [
-    gametree.new().mutate(draft => {
+    gametree.new().mutate((draft) => {
       let lines = content.split('\n')
       let rootId = draft.root.id
       let lastNodeId = rootId
-      let nodeMap = {'0': rootId}
+      let nodeMap = {0: rootId}
 
       draft.updateProperty(rootId, 'CA', ['UTF-8'])
       draft.updateProperty(rootId, 'FF', ['4'])
@@ -68,7 +68,7 @@ export function parse(content) {
                 break
               case 'Date':
                 draft.updateProperty(rootId, 'DT', [
-                  value.split(',')[0].replace(/\//g, '-')
+                  value.split(',')[0].replace(/\//g, '-'),
                 ])
                 break
               case 'Copyright':
@@ -76,7 +76,7 @@ export function parse(content) {
                 break
               case 'Winner':
                 draft.updateProperty(rootId, 'RE', [
-                  value.split(',')[0] + '+' + value.split(',')[1]
+                  value.split(',')[0] + '+' + value.split(',')[1],
                 ])
                 break
             }
@@ -86,8 +86,8 @@ export function parse(content) {
             if (nodeNum > 0) {
               lastNodeId = draft.appendNode(lastNodeId, {
                 [color[0]]: [
-                  convertVertex(coords, parseInt(draft.root.data.SZ))
-                ]
+                  convertVertex(coords, parseInt(draft.root.data.SZ)),
+                ],
               })
               nodeMap[nodeNum] = lastNodeId
             } else {
@@ -95,7 +95,7 @@ export function parse(content) {
               draft.addToProperty(
                 rootId,
                 'AB',
-                convertVertex(coords, parseInt(draft.root.data.SZ))
+                convertVertex(coords, parseInt(draft.root.data.SZ)),
               )
             }
             break
@@ -113,7 +113,7 @@ export function parse(content) {
                   draft.updateProperty(nodeMap[commentNodeId], 'C', [
                     (draft.get(nodeMap[commentNodeId]).data.C || '') +
                       lines[n].trim() +
-                      '\n'
+                      '\n',
                   ])
                 }
               }
@@ -123,7 +123,7 @@ export function parse(content) {
             break
         }
       }
-    })
+    }),
   ]
 }
 

@@ -11,9 +11,9 @@ export default class InfoOverlay extends Component {
       'section',
       {
         id: 'info-overlay',
-        class: classNames({show})
+        class: classNames({show}),
       },
-      text
+      text,
     )
   }
 }
