@@ -80,7 +80,9 @@
     "semi": false,
     "singleQuote": true,
     "bracketSpacing": false,
-    "proseWrap": "always"
+    "proseWrap": "always",
+    "trailingComma": "all",
+    "arrowParens": "always"
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
