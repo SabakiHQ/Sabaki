@@ -115,7 +115,7 @@
     "concurrently": "^7.3.0",
     "electron": "^37.10.3",
     "electron-builder": "^26.4.0",
-    "mocha": "^10.0.0",
+    "mocha": "^11.7.5",
     "tsx": "^4.0.0",
     "onchange": "^6.1.0",
     "prettier": "3.8.1",
