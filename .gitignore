@@ -9,3 +9,6 @@ bundle.js.map
 
 *.pdn
 *.vbs
+
+playwright-report/
+test-results/
