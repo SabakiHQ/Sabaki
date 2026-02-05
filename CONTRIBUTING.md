@@ -23,7 +23,8 @@ First of all, thank you for taking the time to contribute to Sabaki!
 - Run prettier to make sure your code adheres to the coding style standards. You
   can use the command `npm run format` to format all the files.
 - Avoid platform-dependent code.
-- Create mocha tests if possible and applicable.
+- Create mocha unit tests if possible and applicable. For UI or integration
+  behavior, add Playwright E2E tests in the `e2e/` directory.
 - Document new code in the documentation if applicable.
 - Note the issue number in your pull request.
 

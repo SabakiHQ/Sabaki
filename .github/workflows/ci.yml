@@ -1,6 +1,6 @@
 name: CI
 
-on: 
+on:
   push:
     branches: [master]
   pull_request:
@@ -10,15 +10,60 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20.x
-    - name: npm install, build, and test
-      run: |
-        npm install
-        npm run format-check
-        npm run build
-        npm test
-      env:
-        CI: true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
+      - name: Check formatting
+        run: npm run format-check
+      - name: Build and test
+        run: |
+          npm run build
+          npm test
+        env:
+          CI: true
+      - name: Build webpack dev bundle
+        run: npx webpack --mode development
+      - name: Upload dev bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: webpack-dev-bundle
+          path: bundle.js
+          retention-days: 1
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies
+        run: npm install
+      - name: Download dev bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: webpack-dev-bundle
+      - name: Install Electron system dependencies
+        run: npx playwright install-deps chromium
+      - name: Run E2E tests
+        run: |
+          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- \
+            npx playwright test
+        env:
+          CI: true
+          SABAKI_E2E: '1'
