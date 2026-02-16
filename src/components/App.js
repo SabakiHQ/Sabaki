@@ -22,6 +22,8 @@ import * as gametree from '../modules/gametree.js'
 import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
 
+if (process.env.SABAKI_E2E) window.__sabaki = sabaki
+
 const setting = {
   get: (key) => window.sabaki.setting.get(key),
   set: (key, value) => {

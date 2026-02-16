@@ -112,14 +112,15 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.0",
     "concurrently": "^7.3.0",
     "electron": "^37.10.3",
     "electron-builder": "^26.4.0",
     "mocha": "^10.0.0",
-    "tsx": "^4.0.0",
     "onchange": "^7.1.0",
     "prettier": "3.8.1",
     "tmp": "^0.2.5",
+    "tsx": "^4.0.0",
     "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1"
   },
@@ -141,6 +142,9 @@
     "dist:win32-portable": "npm run bundle && electron-builder -w portable --ia32 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-ia32-portable.exe",
     "dist:win64-portable": "npm run bundle && electron-builder -w portable --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-portable.exe",
     "dist:win": "npm run dist:win32 && npm run dist:win64 && npm run dist:win32-portable && npm run dist:win64-portable",
-    "i18n": "node ./ci/createI18n.js"
+    "i18n": "node ./ci/createI18n.js",
+    "test:e2e": "webpack --mode development && (command -v xvfb-run >/dev/null 2>&1 && xvfb-run npx playwright test || npx playwright test)",
+    "test:e2e:smoke": "webpack --mode development && (command -v xvfb-run >/dev/null 2>&1 && xvfb-run npx playwright test --project=smoke || npx playwright test --project=smoke)",
+    "test:e2e:headed": "webpack --mode development && npx playwright test"
   }
 }
