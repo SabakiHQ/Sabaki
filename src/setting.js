@@ -327,17 +327,21 @@ exports.save = function () {
   return exports
 }
 
-exports.get = function (key) {
+let get = (exports.get = function (key) {
   if (key in settings) return settings[key]
   if (key in defaults) return defaults[key]
   return null
-}
+})
 
-exports.set = function (key, value) {
+let set = (exports.set = function (key, value) {
   settings[key] = value
   exports.save()
   exports.events.emit('change', {key, value})
   return exports
+})
+
+exports.toggle = function (key) {
+  set(key, !get(key))
 }
 
 exports.getThemes = function () {
