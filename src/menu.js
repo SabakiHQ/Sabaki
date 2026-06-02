@@ -130,6 +130,7 @@ exports.get = function (props = {}) {
       submenu: [
         {
           label: i18n.t('menu.play', '&Toggle Player'),
+          accelerator: 'CmdOrCtrl+Shift+1',
           click: () =>
             sabaki.setPlayer(
               sabaki.state.treePosition,
@@ -258,27 +259,33 @@ exports.get = function (props = {}) {
         {type: 'separator'},
         {
           label: i18n.t('menu.edit', '&Copy Variation'),
+          accelerator: 'CmdOrCtrl+Alt+Shift+C',
           click: () => sabaki.copyVariation(sabaki.state.treePosition),
         },
         {
           label: i18n.t('menu.edit', 'Cu&t Variation'),
+          accelerator: 'CmdOrCtrl+Alt+Shift+X',
           click: () => sabaki.cutVariation(sabaki.state.treePosition),
         },
         {
           label: i18n.t('menu.edit', '&Paste Variation'),
+          accelerator: 'CmdOrCtrl+Alt+Shift+V',
           click: () => sabaki.pasteVariation(sabaki.state.treePosition),
         },
         {type: 'separator'},
         {
           label: i18n.t('menu.edit', 'Make Main &Variation'),
+          accelerator: 'CmdOrCtrl+Alt+Shift+Left',
           click: () => sabaki.makeMainVariation(sabaki.state.treePosition),
         },
         {
           label: i18n.t('menu.edit', 'Shift &Left'),
+          accelerator: 'CmdOrCtrl+Shift+Left',
           click: () => sabaki.shiftVariation(sabaki.state.treePosition, -1),
         },
         {
           label: i18n.t('menu.edit', 'Shift Ri&ght'),
+          accelerator: 'CmdOrCtrl+Shift+Right',
           click: () => sabaki.shiftVariation(sabaki.state.treePosition, 1),
         },
         {type: 'separator'},
@@ -296,8 +303,32 @@ exports.get = function (props = {}) {
         },
         {
           label: i18n.t('menu.edit', 'Remove &Other Variations'),
+          accelerator: 'CmdOrCtrl+Shift+Backspace',
           click: () => sabaki.removeOtherVariations(sabaki.state.treePosition),
         },
+        {type: 'separator'},
+        {
+          label: i18n.t('menu.edit', 'Toggle Good Move'),
+          accelerator: 'CmdOrCtrl+Shift+]',
+          click: () =>
+            // Adapted from the 'Toggle Hotspot' handler
+            sabaki.setComment(sabaki.state.treePosition, {
+              moveAnnotation:
+                sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
+                  .data.TE == null ? 'TE' : null
+            })
+        },
+        {
+          label: i18n.t('menu.edit', 'Toggle Bad Move'),
+          accelerator: 'CmdOrCtrl+Shift+[',
+          click: () =>
+            // Adapted from the 'Toggle Hotspot' handler
+            sabaki.setComment(sabaki.state.treePosition, {
+              moveAnnotation:
+                sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
+                  .data.BM == null ? 'BM' : null
+            })
+        }
       ],
     },
     {
