@@ -20,8 +20,11 @@
 //                   Capturing several variants documents every output dialect.
 //   config          (katago, optional) path to a gtp config; auto-discovered via
 //                   `brew --prefix katago` when omitted.
-//   overrides       (katago, optional) extra `-override-config` k=v pairs to keep
-//                   search shallow and fast.
+//   overrides       (katago, optional) extra `-override-config` k=v pairs.
+//                   numSearchThreads=1 keeps the single-threaded search as
+//                   reproducible as it can be. NOTE: kata-analyze/lz-analyze
+//                   search CONTINUOUSLY and ignore maxVisits, so capture length
+//                   is bounded by `capture.settleMs`, not a visit cap.
 //   args            (optional) extra binary args (e.g. leela-zero playout caps).
 
 export const engines = [
@@ -37,7 +40,7 @@ export const engines = [
     // kata-analyze -> KataGo dialect (float winrate + scoreLead).
     // lz-analyze  -> Leela-Zero dialect (integer winrate, no scoreLead).
     analyzeCommands: ['kata-analyze', 'lz-analyze'],
-    overrides: 'maxVisits=10,numSearchThreads=1',
+    overrides: 'numSearchThreads=1',
   },
 
   // To add a real Leela Zero build (different binary, confirms KataGo's
@@ -59,7 +62,15 @@ export const engines = [
 // Kept small (few moves, mixed board sizes) so capture is fast.
 export const sgfs = ['empty-19.sgf', 'opening-19.sgf', 'corner-9.sgf']
 
-// Capture tuning. interval is GTP analysis report interval in centiseconds.
+// Capture tuning. `interval` is the GTP analysis report interval in
+// centiseconds; `settleMs` is how long analysis is allowed to run (after the
+// first `info` line) before it is stopped; `maxMs` is the hard per-cell timeout.
+//
+// Because kata-analyze/lz-analyze search CONTINUOUSLY until interrupted, the
+// exact visit counts and winrates captured are a wall-clock snapshot — they vary
+// between runs and machines. Regenerating therefore produces fresh, valid
+// transcripts, NOT byte-identical ones; treat them as representative real engine
+// output, not a deterministic artifact.
 export const capture = {
   interval: 20,
   settleMs: 1500,

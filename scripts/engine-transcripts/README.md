@@ -44,10 +44,16 @@ npm run gen:engine-transcripts
 ```
 
 Requires the engine binaries listed in `engines.config.mjs` on `PATH`. Small
-neural nets are downloaded into `.engine-cache/` (gitignored) on first run. We
-use tiny nets and shallow search because we are testing protocol integration,
-not playing strength. Re-run after changing the matrix and commit the refreshed
-`test/resources/engine-transcripts` tree.
+neural nets are downloaded into `.engine-cache/nets/` (under the gitignored
+`.engine-cache/`) on first run. We use a small net and a short, time-boxed
+capture because we are testing protocol/parsing integration, not playing
+strength.
+
+Note: `kata-analyze`/`lz-analyze` search continuously until interrupted, so
+capture is bounded by wall-clock time (`capture.settleMs`), not a fixed visit
+count. Regenerating therefore produces fresh, valid transcripts with different
+visit counts/winrates, not byte-identical ones. Re-run after changing the matrix
+and commit the refreshed `test/resources/engine-transcripts` tree.
 
 ## Extending coverage
 
