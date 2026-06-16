@@ -390,7 +390,10 @@ export default class WinrateGraph extends Component {
 
         // Draw marker
 
-        data[currentIndex] &&
+        // Guard with `!= null`, not truthiness: the series is numeric, so a
+        // value of exactly 0 (an even score lead, or 0% win rate) is falsy and
+        // would otherwise drop the marker.
+        data[currentIndex] != null &&
           h('div', {
             class: 'marker',
             style: {

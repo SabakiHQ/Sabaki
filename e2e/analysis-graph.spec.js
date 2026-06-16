@@ -110,4 +110,14 @@ test.describe('Analysis Graph', () => {
     expect(scoreLeadPath).not.toBe(winratePath)
     expect(winratePath).toBeTruthy()
   })
+
+  test('keeps the position marker visible when the score lead is exactly 0', async ({
+    page,
+  }) => {
+    await setMetric(page, 'scoreLead')
+    await goToStep(page, 3) // dp, score lead == 0 (an even position)
+
+    // A score lead of 0 is a real, common value; the marker must still render.
+    expect(await markerCount(page)).toBe(1)
+  })
 })
