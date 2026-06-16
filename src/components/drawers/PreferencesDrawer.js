@@ -3,7 +3,7 @@ import {shell} from 'electron'
 import {h, Component} from 'preact'
 import classNames from 'classnames'
 import {join} from 'path'
-import rimraf from 'rimraf'
+import {rimraf} from 'rimraf'
 import {v4 as uuid} from 'uuid'
 import natsort from 'natsort'
 
@@ -447,12 +447,14 @@ class ThemesTab extends Component {
 
       let {path} = setting.getThemes()[this.state.currentTheme]
 
-      rimraf(path, async (err) => {
-        if (err) return showMessageBox(t('Uninstallation failed.'), 'error')
+      try {
+        await rimraf(path)
+      } catch {
+        return showMessageBox(t('Uninstallation failed.'), 'error')
+      }
 
-        await setting.loadThemes()
-        setting.set('theme.current', null)
-      })
+      await setting.loadThemes()
+      setting.set('theme.current', null)
     }
 
     this.handleInstallButton = async (evt) => {
