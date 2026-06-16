@@ -43,7 +43,13 @@ if (!existsSync(manifestPath)) {
     for (const cell of manifest.cells) {
       describe(`${cell.engineId} · ${cell.sgf} · ${cell.command}`, () => {
         const board = newBoard(cell.boardSize, cell.boardSize)
-        const variations = parseAnalysis(lastInfoLine(cell.file), board)
+        const winrateFormat =
+          cell.command === 'kata-analyze' ? 'float' : 'integer'
+        const variations = parseAnalysis(
+          lastInfoLine(cell.file),
+          board,
+          winrateFormat,
+        )
 
         it('parses at least one variation', () => {
           assert(Array.isArray(variations) && variations.length > 0)
@@ -160,5 +166,45 @@ describe('parseAnalysis (parser logic)', () => {
   it('keeps a move reported with visits 0 (policy-prior only, no playouts)', () => {
     let [v] = parseAnalysis('info move Q16 visits 0 winrate 0.5 pv Q16', board)
     assert.strictEqual(v.visits, 0)
+  })
+
+  it('uses the known float dialect to normalize an integer-valued winrate', () => {
+    // KataGo can print a float winrate without a decimal point (e.g. a forced
+    // win as `winrate 1`). The decimal-point heuristic misreads it as 0.01%;
+    // passing the known dialect normalizes it correctly to 100%.
+    let line = 'info move Q16 visits 10 winrate 1 pv Q16'
+    let [heuristic] = parseAnalysis(line, board)
+    assert(
+      Math.abs(heuristic.winrate - 0.01) < 1e-9,
+      `got ${heuristic.winrate}`,
+    )
+    let [float] = parseAnalysis(line, board, 'float')
+    assert(Math.abs(float.winrate - 100) < 1e-9, `got ${float.winrate}`)
+  })
+
+  it('uses the known integer dialect to normalize ten-thousandths', () => {
+    let [v] = parseAnalysis(
+      'info move Q16 visits 10 winrate 9998 pv Q16',
+      board,
+      'integer',
+    )
+    assert(Math.abs(v.winrate - 99.98) < 1e-9, `got ${v.winrate}`)
+  })
+
+  it('skips an info segment missing its move field instead of throwing', () => {
+    let vs = parseAnalysis(
+      'info move Q16 visits 10 winrate 0.5 pv Q16 ' +
+        'info visits 5 winrate 0.4 pv D4',
+      board,
+    )
+    assert.strictEqual(vs.length, 1)
+    assert.deepStrictEqual(vs[0].vertex, board.parseVertex('Q16'))
+  })
+
+  it('skips an info segment missing its winrate field instead of throwing', () => {
+    assert.deepStrictEqual(
+      parseAnalysis('info move Q16 visits 10 pv Q16', board),
+      [],
+    )
   })
 })

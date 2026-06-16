@@ -95,12 +95,20 @@ export default class EngineSyncer extends EventEmitter {
           let sign = command.args[0].toUpperCase() === 'W' ? -1 : 1
           let boardsize = this.stateTracker.state.boardsize || [19, 19]
           let board = newBoard(...boardsize)
+          // kata-analyze reports a float winrate; lz-analyze/analyze report an
+          // integer in ten-thousandths.
+          let winrateFormat = command.name.startsWith('kata')
+            ? 'float'
+            : 'integer'
 
           subscribe(({line}) => {
             // Parse analysis info
 
             if (line.startsWith('info ')) {
-              let variations = parseAnalysis(line, board)
+              let variations = parseAnalysis(line, board, winrateFormat)
+              // Ignore an update with no parseable variations rather than let
+              // Math.max(...[]) === -Infinity become a non-finite SBKV.
+              if (variations.length === 0) return
 
               this.analysis = {
                 sign,
