@@ -52,7 +52,7 @@ if (!existsSync(manifestPath)) {
         it('extracts winrate as a percentage in [0, 100] (the SBKV domain)', () => {
           for (const v of variations) {
             assert(
-              typeof v.winrate === 'number' && isFinite(v.winrate),
+              typeof v.winrate === 'number' && Number.isFinite(v.winrate),
               `non-finite winrate: ${v.winrate}`,
             )
             assert(
@@ -89,7 +89,7 @@ if (!existsSync(manifestPath)) {
           it('extracts scoreLead as a finite number (KataGo dialect → SBKS)', () => {
             for (const v of variations) {
               assert(
-                typeof v.scoreLead === 'number' && isFinite(v.scoreLead),
+                typeof v.scoreLead === 'number' && Number.isFinite(v.scoreLead),
                 `expected numeric scoreLead, got: ${v.scoreLead}`,
               )
             }
@@ -155,5 +155,10 @@ describe('parseAnalysis (parser logic)', () => {
       board,
     )
     assert.strictEqual(v.moves.length, 1)
+  })
+
+  it('keeps a move reported with visits 0 (policy-prior only, no playouts)', () => {
+    let [v] = parseAnalysis('info move Q16 visits 0 winrate 0.5 pv Q16', board)
+    assert.strictEqual(v.visits, 0)
   })
 })

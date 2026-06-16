@@ -49,7 +49,7 @@ test.describe('Engine Analysis Integration', () => {
       {
         name: 'ReplayEngine',
         path: process.execPath,
-        args: `${REPLAY_ENGINE} --transcript ${TRANSCRIPT} --analyze-command kata-analyze`,
+        args: `"${REPLAY_ENGINE}" --transcript "${TRANSCRIPT}" --analyze-command kata-analyze`,
       },
     ])
 
