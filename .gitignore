@@ -12,3 +12,9 @@ bundle.js.map
 
 playwright-report/
 test-results/
+
+# Engine integration test cache (downloaded nets, gtp configs)
+.engine-cache/
+
+# GTP communication logs written at runtime when engines are attached
+gtp_logs/

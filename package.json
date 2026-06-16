@@ -143,6 +143,7 @@
     "dist:win64-portable": "npm run bundle && electron-builder -w portable --x64 && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-portable.exe",
     "dist:win": "npm run dist:win32 && npm run dist:win64 && npm run dist:win32-portable && npm run dist:win64-portable",
     "i18n": "node ./ci/createI18n.js",
+    "gen:engine-transcripts": "node ./scripts/engine-transcripts/capture.mjs",
     "test:e2e": "webpack --mode development && (command -v xvfb-run >/dev/null 2>&1 && xvfb-run npx playwright test || npx playwright test)",
     "test:e2e:smoke": "webpack --mode development && (command -v xvfb-run >/dev/null 2>&1 && xvfb-run npx playwright test --project=smoke || npx playwright test --project=smoke)",
     "test:e2e:headed": "webpack --mode development && npx playwright test"
