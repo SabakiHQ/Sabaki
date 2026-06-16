@@ -1,6 +1,7 @@
+/engines/
+
 dist/
 i18n/
-engines/
 node_modules/
 
 bundle.js
