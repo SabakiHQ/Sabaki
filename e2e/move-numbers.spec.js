@@ -115,22 +115,17 @@ test.describe('Move Numbering', () => {
       // Hotspot is on move 2 (W[pp]); moves 3 and 4 are numbered 1,2.
       expect(await moveNumberLabels(page)).toEqual([1, 2])
     })
-  })
 
-  test.describe('known bug (currently failing)', () => {
-    test('"from variation start" should number a variation that branches at the root', async ({
+    test('"from variation start" numbers a variation that branches at the root', async ({
       page,
     }) => {
       await loadSgfStringAndWait(page, ROOT_BRANCH)
-      // Second first-move variation: root → pd(child1) → dp. This is off the
-      // main line, so its two moves should be numbered 1,2.
+      // Second first-move variation: root → pd(child1) → dp. The root itself is
+      // the branch point, and this line is off the main line, so its two moves
+      // are numbered 1,2.
       await gotoChildPath(page, [1, 0])
       await setMoveNumbers(page, 'variation')
 
-      // BUG: the history walk breaks on `parentId == null` before detecting
-      // that the root has >1 children, so the variation is never recognized and
-      // no numbers show. This assertion fails today and should pass once a
-      // variation that branches at the root is handled.
       expect(await moveNumberLabels(page)).toEqual([1, 2])
     })
   })

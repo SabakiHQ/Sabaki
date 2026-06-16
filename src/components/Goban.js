@@ -362,7 +362,14 @@ export default class Goban extends Component {
       let history = [gameTree.get(treePosition)]
       for (const node of gameTree.listNodesVertically(treePosition, -1, {})) {
         if (node.id === treePosition) continue // already added
-        if (node.parentId == null) break // omit root node
+        if (node.parentId == null) {
+          // The root node is never numbered, but it can still be the branch
+          // point of a variation when it has more than one child.
+          if (moveNumbersType === 'variation' && node.children.length > 1) {
+            variation = true
+          }
+          break
+        }
         if (moveNumbersType === 'variation' && node.children.length > 1) {
           variation = true
           break
