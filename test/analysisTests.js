@@ -45,11 +45,16 @@ if (!existsSync(manifestPath)) {
         const board = newBoard(cell.boardSize, cell.boardSize)
         const winrateFormat =
           cell.command === 'kata-analyze' ? 'float' : 'integer'
-        const variations = parseAnalysis(
-          lastInfoLine(cell.file),
-          board,
-          winrateFormat,
-        )
+        // Parse inside before() (not at collection time) so a parser throw on a
+        // bad fixture fails this block's tests, not the whole suite's collection.
+        let variations
+        before(() => {
+          variations = parseAnalysis(
+            lastInfoLine(cell.file),
+            board,
+            winrateFormat,
+          )
+        })
 
         it('parses at least one variation', () => {
           assert(Array.isArray(variations) && variations.length > 0)

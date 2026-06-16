@@ -60,7 +60,14 @@ export const engines = [
 
 // SGF positions to analyse, relative to test/resources/engine-transcripts/sgf.
 // Kept small (few moves, mixed board sizes) so capture is fast.
-export const sgfs = ['empty-19.sgf', 'opening-19.sgf', 'corner-9.sgf']
+export const sgfs = [
+  'empty-19.sgf',
+  'opening-19.sgf',
+  'corner-9.sgf',
+  // A decisive late 9x9 endgame (Black clearly winning) — gives a firm,
+  // directional winrate the e2e can assert against, unlike the ~50% openings.
+  'endgame-9.sgf',
+]
 
 // Capture tuning. `interval` is the GTP analysis report interval in
 // centiseconds; `settleMs` is how long analysis is allowed to run (after the

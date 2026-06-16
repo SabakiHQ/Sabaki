@@ -79,6 +79,32 @@
       "interval": 20,
       "infoLineCount": 8,
       "file": "katago-1.16.4/corner-9.lz-analyze.txt"
+    },
+    {
+      "engineId": "katago-1.16.4",
+      "kind": "katago",
+      "version": "1.16.4",
+      "net": "g170-b6c96.bin.gz",
+      "command": "kata-analyze",
+      "sgf": "endgame-9.sgf",
+      "boardSize": 9,
+      "color": "B",
+      "interval": 20,
+      "infoLineCount": 8,
+      "file": "katago-1.16.4/endgame-9.kata-analyze.txt"
+    },
+    {
+      "engineId": "katago-1.16.4",
+      "kind": "katago",
+      "version": "1.16.4",
+      "net": "g170-b6c96.bin.gz",
+      "command": "lz-analyze",
+      "sgf": "endgame-9.sgf",
+      "boardSize": 9,
+      "color": "B",
+      "interval": 20,
+      "infoLineCount": 8,
+      "file": "katago-1.16.4/endgame-9.lz-analyze.txt"
     }
   ]
 }
