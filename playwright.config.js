@@ -15,6 +15,11 @@ module.exports = defineConfig({
     },
     {name: 'engine', testMatch: /engine\.spec\.js/, dependencies: ['smoke']},
     {
+      name: 'engine-analysis',
+      testMatch: /engine-analysis\.spec\.js/,
+      dependencies: ['smoke'],
+    },
+    {
       name: 'move-numbers',
       testMatch: /move-numbers\.spec\.js/,
       dependencies: ['smoke'],
