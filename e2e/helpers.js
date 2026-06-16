@@ -28,6 +28,49 @@ async function loadSgfAndWait(page, sgfPath) {
 }
 
 /**
+ * Load SGF content from a string (rather than a file path) via the sabaki
+ * singleton and wait for it to parse. Handy for small inline trees.
+ */
+async function loadSgfStringAndWait(page, content) {
+  await page.evaluate((sgf) => {
+    window.__sabaki.loadContent(sgf, 'sgf')
+  }, content)
+
+  await waitForGameLoad(page)
+}
+
+/**
+ * Flush a renderer render cycle, resolving once it has completed. Useful after
+ * a state or setting change before asserting against the DOM.
+ */
+async function waitForRender(page) {
+  await page.evaluate(() => window.__sabaki.waitForRender())
+}
+
+/**
+ * Navigate to a node addressed by a list of child indices from the root,
+ * e.g. [0, 0, 1, 0] means root → child0 → child0 → child1 → child0. Unlike
+ * goStep(), this can reach nodes that are not on the main (all-first-children)
+ * line. Resolves once the new position is applied and rendered.
+ */
+async function gotoChildPath(page, childPath) {
+  const targetId = await page.evaluate((path) => {
+    const tree =
+      window.__sabaki.state.gameTrees[window.__sabaki.state.gameIndex]
+    let node = tree.root
+    for (const i of path) node = node.children[i]
+    window.__sabaki.setCurrentTreePosition(tree, node.id)
+    return node.id
+  }, childPath)
+
+  await page.waitForFunction(
+    (id) => window.__sabaki.state.treePosition === id,
+    targetId,
+  )
+  await waitForRender(page)
+}
+
+/**
  * Returns the depth (move number) of the current tree position.
  */
 function getTreeDepth(page) {
@@ -106,6 +149,9 @@ const enginePath = path.resolve(
 module.exports = {
   waitForGameLoad,
   loadSgfAndWait,
+  loadSgfStringAndWait,
+  waitForRender,
+  gotoChildPath,
   getTreeDepth,
   attachAndWaitForEngines,
   detachAndWait,
