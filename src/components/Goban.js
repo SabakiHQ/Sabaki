@@ -226,6 +226,7 @@ export default class Goban extends Component {
       showCoordinates = false,
       showMoveColorization = true,
       showMoveNumbers = false,
+      moveNumbersType,
       showNextMoves = true,
       showSiblings = true,
       fuzzyStonePlacement = true,
@@ -356,9 +357,38 @@ export default class Goban extends Component {
     if (showMoveNumbers) {
       markerMap = markerMap.map((row) => row.map((_) => null))
 
-      let history = [
-        ...gameTree.listNodesVertically(treePosition, -1, {}),
-      ].reverse()
+      let variation = false
+      let hotspot = false
+      let history = [gameTree.get(treePosition)]
+      for (const node of gameTree.listNodesVertically(treePosition, -1, {})) {
+        if (node.id === treePosition) continue // already added
+        if (node.parentId == null) {
+          // The root node is never numbered, but it can still be the branch
+          // point of a variation when it has more than one child.
+          if (moveNumbersType === 'variation' && node.children.length > 1) {
+            variation = true
+          }
+          break
+        }
+        if (moveNumbersType === 'variation' && node.children.length > 1) {
+          variation = true
+          break
+        }
+        if (moveNumbersType === 'hotspot' && node.data.HO != null) {
+          hotspot = true
+          break
+        }
+        history.push(node)
+      }
+      if (
+        (moveNumbersType === 'variation' &&
+          gameTree.onMainLine(treePosition)) ||
+        (moveNumbersType === 'variation' && !variation) ||
+        (moveNumbersType === 'hotspot' && !hotspot)
+      ) {
+        history = []
+      }
+      history.reverse()
 
       for (let i = 0; i < history.length; i++) {
         let node = history[i]
@@ -370,7 +400,7 @@ export default class Goban extends Component {
         let [x, y] = vertex
 
         if (markerMap[y] != null && x < markerMap[y].length) {
-          markerMap[y][x] = {type: 'label', label: i.toString()}
+          markerMap[y][x] = {type: 'label', label: (i + 1).toString()}
         }
       }
     }
