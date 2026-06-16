@@ -88,12 +88,19 @@ export default class WinrateGraph extends Component {
     }
   }
 
-  shouldComponentUpdate({lastPlayer, width, currentIndex, data}, {invert}) {
+  shouldComponentUpdate(
+    {lastPlayer, width, currentIndex, data, analysisType},
+    {invert},
+  ) {
     return (
       lastPlayer !== this.props.lastPlayer ||
       width !== this.props.width ||
       currentIndex !== this.props.currentIndex ||
       data[currentIndex] !== this.props.data[currentIndex] ||
+      // Without this, toggling the metric while data[currentIndex] is equal
+      // across metrics (e.g. null at an unanalysed node) skips the re-render and
+      // the whole curve never switches.
+      analysisType !== this.props.analysisType ||
       invert !== this.state.invert
     )
   }

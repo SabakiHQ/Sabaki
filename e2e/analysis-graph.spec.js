@@ -120,4 +120,19 @@ test.describe('Analysis Graph', () => {
     // A score lead of 0 is a real, common value; the marker must still render.
     expect(await markerCount(page)).toBe(1)
   })
+
+  test('updates the data line when the metric is toggled at an unanalysed node', async ({
+    page,
+  }) => {
+    await goToStep(page, 0) // root: no SBKV/SBKS → data[currentIndex] == null
+    const winratePath = await dataLinePath(page)
+    expect(winratePath).toBeTruthy()
+
+    await setMetric(page, 'scoreLead')
+    const scoreLeadPath = await dataLinePath(page)
+
+    // data[currentIndex] is null for both metrics here, so the re-render must
+    // be driven by the analysisType change, not the current value.
+    expect(scoreLeadPath).not.toBe(winratePath)
+  })
 })
