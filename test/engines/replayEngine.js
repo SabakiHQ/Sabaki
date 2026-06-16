@@ -11,7 +11,10 @@
 // deadlock. Response framing matches what KataGo emits:
 //   - normal command:  "= <content>\n\n"
 //   - analyze command: "=\n" then streamed "info ...\n" lines, with the blank
-//     line terminator withheld until `stop` arrives.
+//     line terminator withheld until the NEXT command arrives — mirroring how a
+//     real engine stops analysis on any new input. (Sabaki aborts analysis with
+//     `protocol_version` via EngineSyncer.sendAbort, NOT a GTP `stop`, so closing
+//     only on `stop` would leave the response open and desync the controller.)
 //
 // Usage (args, parsed loosely):
 //   node replayEngine.js --transcript <path> [--analyze-command kata-analyze]
@@ -28,11 +31,32 @@ const opt = (name, fallback) => {
 const transcriptPath = opt('--transcript')
 const analyzeCommand = opt('--analyze-command', 'kata-analyze')
 
-const infoLines = transcriptPath
-  ? readFileSync(transcriptPath, 'utf8')
-      .split('\n')
-      .filter((l) => l.startsWith('info '))
-  : []
+// Fail fast and loud on a missing/unreadable/empty transcript. Otherwise the
+// engine would just stream nothing, surfacing only as an opaque e2e timeout
+// (SBKV never written) with no hint at the real cause.
+if (transcriptPath == null) {
+  process.stderr.write('replayEngine: missing required --transcript <path>\n')
+  process.exit(2)
+}
+
+let infoLines
+try {
+  infoLines = readFileSync(transcriptPath, 'utf8')
+    .split('\n')
+    .filter((l) => l.startsWith('info '))
+} catch (e) {
+  process.stderr.write(
+    `replayEngine: cannot read transcript ${transcriptPath}: ${e.message}\n`,
+  )
+  process.exit(2)
+}
+
+if (infoLines.length === 0) {
+  process.stderr.write(
+    `replayEngine: transcript ${transcriptPath} contains no \`info \` lines\n`,
+  )
+  process.exit(2)
+}
 
 const baseCommands = [
   'protocol_version',
@@ -57,16 +81,16 @@ const err = (msg) => out(`? ${msg}\n\n`)
 
 let streamTimer = null
 let streamIndex = 0
+let streaming = false // whether an analyze response is currently open
 
 function startStreaming() {
-  if (infoLines.length === 0) {
-    // No recorded lines: still open a valid (empty) analyze response.
-    out('=\n')
-    return
-  }
-  // Open the analyze response, then emit one recorded update per tick, cycling,
-  // until `stop` closes it.
+  // Open the analyze response. A real engine keeps it open, emitting `info`
+  // updates, until any new input arrives (see stopStreaming). infoLines is
+  // guaranteed non-empty (validated at startup).
+  streaming = true
   out('=\n')
+
+  // Emit one recorded update per tick, cycling, until the response is closed.
   let tick = () => {
     out(infoLines[streamIndex % infoLines.length] + '\n')
     streamIndex++
@@ -76,6 +100,8 @@ function startStreaming() {
 }
 
 function stopStreaming() {
+  if (!streaming) return
+  streaming = false
   if (streamTimer != null) {
     clearInterval(streamTimer)
     streamTimer = null
@@ -93,13 +119,19 @@ createInterface({input: process.stdin}).on('line', (raw) => {
   if (/^\d+$/.test(parts[0])) parts.shift()
   let [name, ...rest] = parts
 
+  // A real engine stops an in-progress analysis the moment ANY new input
+  // arrives, terminating the open analyze response before handling the command.
+  // Doing this here keeps the GTP response framing in sync no matter how the
+  // controller chooses to abort (Sabaki uses `protocol_version`, not `stop`).
+  stopStreaming()
+
   if (name === analyzeCommand) {
     startStreaming()
     return
   }
 
   if (name === 'stop') {
-    if (streamTimer != null || infoLines.length > 0) stopStreaming()
+    // Analysis (if any) was already closed above; just acknowledge.
     ok()
     return
   }
