@@ -67,7 +67,7 @@ export default class CleanMarkupDrawer extends Component {
           comments: ['C', 'N'],
           annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
           hotspots: ['HO'],
-          winrate: ['SBKV'],
+          winrate: ['SBKV', 'SBKS'],
         }
 
         let properties = Object.keys(data)
@@ -188,7 +188,7 @@ export default class CleanMarkupDrawer extends Component {
           }),
           h(CleanMarkupItem, {
             id: 'cleanmarkup.winrate',
-            text: t('Winrate data'),
+            text: t('Analysis data'),
           }),
         ),
 
