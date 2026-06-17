@@ -397,10 +397,12 @@ export default class WinrateGraph extends Component {
 
         // Draw marker
 
-        // Guard with `!= null`, not truthiness: the series is numeric, so a
-        // value of exactly 0 (an even score lead, or 0% win rate) is falsy and
-        // would otherwise drop the marker.
-        data[currentIndex] != null &&
+        // Guard with Number.isFinite, not truthiness or `!= null`: the series
+        // is numeric, so 0 (an even score lead / 0% win rate) must still show
+        // the marker, while a non-numeric value — a malformed SGF property
+        // coerces via +x to NaN — must not (`!= null` would let NaN reach
+        // `top: NaN%`).
+        Number.isFinite(data[currentIndex]) &&
           h('div', {
             class: 'marker',
             style: {

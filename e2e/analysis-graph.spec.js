@@ -12,17 +12,19 @@ const {loadSgfStringAndWait, waitForRender} = require('./helpers')
 //   - the value strip:       #winrategraph .main
 //   - the data line path:    #winrategraph svg path[stroke="#eee"]
 
-// SGF whose four main-line moves all carry SBKV + SBKS. Note dp (move 3) has a
-// score lead of exactly 0 — the realistic "even game" case.
-//   index:        0(root) 1(dd) 2(pp)  3(dp) 4(pd)
-//   winrate:        –       55    48     60    52
-//   scoreLead:      –      1.5   -0.5     0     2
+// SGF whose main-line moves carry SBKV + SBKS. Note dp (move 3) has a score
+// lead of exactly 0 (the "even game" case), and jj (move 5) has a malformed,
+// non-numeric SBKS that coerces to NaN.
+//   index:        0(root) 1(dd) 2(pp)  3(dp) 4(pd) 5(jj)
+//   winrate:        –       55    48     60    52    50
+//   scoreLead:      –      1.5   -0.5     0     2    NaN (malformed "x")
 const SGF =
   '(;GM[1]FF[4]CA[UTF-8]SZ[19]' +
   ';B[dd]SBKV[55]SBKS[1.5]' +
   ';W[pp]SBKV[48]SBKS[-0.5]' +
   ';B[dp]SBKV[60]SBKS[0]' +
-  ';W[pd]SBKV[52]SBKS[2])'
+  ';W[pd]SBKV[52]SBKS[2]' +
+  ';B[jj]SBKV[50]SBKS[x])'
 
 // --- helpers ---------------------------------------------------------------
 
@@ -119,6 +121,17 @@ test.describe('Analysis Graph', () => {
 
     // A score lead of 0 is a real, common value; the marker must still render.
     expect(await markerCount(page)).toBe(1)
+  })
+
+  test('hides the position marker when the value is non-numeric (NaN)', async ({
+    page,
+  }) => {
+    await setMetric(page, 'scoreLead')
+    await goToStep(page, 5) // jj, malformed SBKS → NaN
+
+    // A NaN value must not render a marker (it would be positioned at top: NaN%);
+    // the finite-number guard hides it, unlike a plain `!= null` check.
+    expect(await markerCount(page)).toBe(0)
   })
 
   test('updates the data line when the metric is toggled at an unanalysed node', async ({
