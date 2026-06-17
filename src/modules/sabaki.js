@@ -988,7 +988,7 @@ class Sabaki extends EventEmitter {
               [annotationProp]: [annotationValues[annotationProp]],
               SBKV: [winrate.toString()],
             }
-            if (variation.scoreLead != null) {
+            if (Number.isFinite(variation.scoreLead)) {
               let scoreLead = Math.round(sign * variation.scoreLead * 100) / 100
               startNodeProperties.SBKS = [scoreLead.toString()]
             }
