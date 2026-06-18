@@ -8,8 +8,8 @@ const {
 } = require('./helpers')
 
 // End-to-end coverage of the analysis pipeline: attach an engine, start
-// analysis, and confirm the engine's reported win rate is written onto the
-// current node as the SBKV property.
+// analysis, and confirm the engine's reported win rate and score lead are
+// written onto the current node as the SBKV and SBKS properties.
 //
 // The engine here is test/engines/replayEngine.js, which replays a GOLDEN
 // TRANSCRIPT — real `info ...` lines recorded from KataGo by
@@ -38,7 +38,7 @@ const SGF = path.join(RES, 'sgf', 'endgame-9.sgf')
 const TRANSCRIPT = path.join(RES, 'katago-1.16.4', 'endgame-9.kata-analyze.txt')
 
 test.describe('Engine Analysis Integration', () => {
-  test('replayed KataGo analysis writes a decisive SBKV onto the current node', async ({
+  test('replayed KataGo analysis writes decisive SBKV and SBKS onto the current node', async ({
     page,
   }) => {
     await loadSgfAndWait(page, SGF)
@@ -91,6 +91,21 @@ test.describe('Engine Analysis Integration', () => {
       expect(Number.isFinite(winrate)).toBe(true)
       expect(winrate).toBeGreaterThan(85)
       expect(winrate).toBeLessThanOrEqual(100)
+
+      // SBKS is the score lead, written in the same update as SBKV and likewise
+      // normalized to Black's perspective. Black is decisively ahead here, so it
+      // must be a finite, clearly positive lead — this pins the score-lead
+      // extraction and its sign (a wrong flip would go negative).
+      const sbks = await page.evaluate(() => {
+        const s = window.__sabaki
+        const tree = s.state.gameTrees[s.state.gameIndex]
+        return tree.get(s.state.treePosition).data.SBKS[0]
+      })
+
+      const scoreLead = parseFloat(sbks)
+      expect(Number.isFinite(scoreLead)).toBe(true)
+      expect(scoreLead).toBeGreaterThan(1)
+      expect(scoreLead).toBeLessThan(50)
     } finally {
       await page.evaluate(() => window.__sabaki.stopAnalysis())
       await detachAndWait(page, [syncerId])

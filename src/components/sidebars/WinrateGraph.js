@@ -9,11 +9,26 @@ const setting = {
   get: (key) => window.sabaki.setting.get(key),
   onDidChange: (callback) => window.sabaki.setting.onDidChange(callback),
 }
-const blunderThreshold = setting.get('view.winrategraph_blunderthreshold')
+const blunderThresholdWinrate = setting.get(
+  'view.winrategraph_blunderthreshold',
+)
+const blunderThresholdScoreLead = setting.get(
+  'view.winrategraph_blunderthreshold_scorelead',
+)
+
+const formatAnalysisValue = (value, analysisType) => {
+  if (analysisType === 'winrate') return `${i18n.formatNumber(value)}%`
+  return `${value >= 0 ? '+' : ''}${i18n.formatNumber(value)}`
+}
+
+const transformAnalysisValue = (value, analysisType, dataMax) => {
+  if (analysisType === 'winrate') return value
+  return (value / Math.max(20, dataMax)) * 50 + 50
+}
 
 class WinrateStrip extends Component {
   render() {
-    let {player, winrate, change} = this.props
+    let {player, winrate, change, analysisType, blunderThreshold} = this.props
 
     return h(
       'section',
@@ -30,7 +45,7 @@ class WinrateStrip extends Component {
       h(
         'span',
         {class: 'main'},
-        winrate == null ? '–' : `${i18n.formatNumber(winrate)}%`,
+        winrate == null ? '–' : formatAnalysisValue(winrate, analysisType),
       ),
 
       h(
@@ -73,12 +88,19 @@ export default class WinrateGraph extends Component {
     }
   }
 
-  shouldComponentUpdate({lastPlayer, width, currentIndex, data}, {invert}) {
+  shouldComponentUpdate(
+    {lastPlayer, width, currentIndex, data, analysisType},
+    {invert},
+  ) {
     return (
       lastPlayer !== this.props.lastPlayer ||
       width !== this.props.width ||
       currentIndex !== this.props.currentIndex ||
       data[currentIndex] !== this.props.data[currentIndex] ||
+      // Without this, toggling the metric while data[currentIndex] is equal
+      // across metrics (e.g. null at an unanalysed node) skips the re-render and
+      // the whole curve never switches.
+      analysisType !== this.props.analysisType ||
       invert !== this.state.invert
     )
   }
@@ -104,15 +126,24 @@ export default class WinrateGraph extends Component {
   }
 
   render() {
-    let {lastPlayer, width, currentIndex, data} = this.props
+    let {lastPlayer, width, currentIndex, data, analysisType} = this.props
     let {invert} = this.state
+    let blunderThreshold =
+      analysisType === 'winrate'
+        ? blunderThresholdWinrate
+        : blunderThresholdScoreLead
+    let metricString = analysisType === 'winrate' ? 'Winrate' : 'Score Lead'
 
+    let dataMax = Math.max(...data.map((x) => (isFinite(x) ? Math.abs(x) : 0)))
     let dataDiff = data.map((x, i) =>
       i === 0 || x == null || (data[i - 1] == null && data[i - 2] == null)
         ? null
         : x - data[data[i - 1] != null ? i - 1 : i - 2],
     )
-    let dataDiffMax = Math.max(...dataDiff.map(Math.abs), 25)
+    let dataDiffMax = Math.max(
+      ...dataDiff.map(Math.abs),
+      analysisType === 'winrate' ? 25 : 10,
+    )
 
     let round2 = (x) => Math.round(x * 100) / 100
     let blackWinrate =
@@ -120,7 +151,13 @@ export default class WinrateGraph extends Component {
     let blackWinrateDiff =
       dataDiff[currentIndex] == null ? null : round2(dataDiff[currentIndex])
     let whiteWinrate =
-      data[currentIndex] == null ? null : round2(100 - data[currentIndex])
+      data[currentIndex] == null
+        ? null
+        : round2(
+            analysisType === 'winrate'
+              ? 100 - data[currentIndex]
+              : -data[currentIndex],
+          )
     let whiteWinrateDiff =
       dataDiff[currentIndex] == null ? null : -round2(dataDiff[currentIndex])
 
@@ -134,8 +171,10 @@ export default class WinrateGraph extends Component {
             .map(
               ([winrate, diff], i) =>
                 `${
-                  i === 0 ? t('Black Winrate:') : t('White Winrate:')
-                } ${i18n.formatNumber(winrate)}%${
+                  i === 0
+                    ? t(`Black ${metricString}:`)
+                    : t(`White ${metricString}:`)
+                } ${formatAnalysisValue(winrate, analysisType)}${
                   diff == null
                     ? ''
                     : ` (${diff >= 0 ? '+' : '-'}${i18n.formatNumber(
@@ -159,6 +198,8 @@ export default class WinrateGraph extends Component {
         player: lastPlayer,
         winrate: lastPlayer > 0 ? blackWinrate : whiteWinrate,
         change: lastPlayer > 0 ? blackWinrateDiff : whiteWinrateDiff,
+        analysisType,
+        blunderThreshold,
       }),
 
       h(
@@ -217,7 +258,10 @@ export default class WinrateGraph extends Component {
                   let instructions = data
                     .map((x, i) => {
                       if (x == null) return i === 0 ? [i, 50] : null
-                      return [i, x]
+                      return [
+                        i,
+                        transformAnalysisValue(x, analysisType, dataMax),
+                      ]
                     })
                     .filter((x) => x != null)
 
@@ -311,7 +355,11 @@ export default class WinrateGraph extends Component {
                 if (x == null) return ''
 
                 let command = i === 0 || data[i - 1] == null ? 'M' : 'L'
-                return `${command} ${i},${x}`
+                return `${command} ${i},${transformAnalysisValue(
+                  x,
+                  analysisType,
+                  dataMax,
+                )}`
               })
               .join(' '),
           }),
@@ -328,9 +376,18 @@ export default class WinrateGraph extends Component {
                 if (i === 0) return 'M 0,50'
 
                 if (x == null && data[i - 1] != null)
-                  return `M ${i - 1},${data[i - 1]}`
+                  return `M ${i - 1},${transformAnalysisValue(
+                    data[i - 1],
+                    analysisType,
+                    dataMax,
+                  )}`
 
-                if (x != null && data[i - 1] == null) return `L ${i},${x}`
+                if (x != null && data[i - 1] == null)
+                  return `L ${i},${transformAnalysisValue(
+                    x,
+                    analysisType,
+                    dataMax,
+                  )}`
 
                 return ''
               })
@@ -340,12 +397,30 @@ export default class WinrateGraph extends Component {
 
         // Draw marker
 
-        data[currentIndex] &&
+        // Guard with Number.isFinite, not truthiness or `!= null`: the series
+        // is numeric, so 0 (an even score lead / 0% win rate) must still show
+        // the marker, while a non-numeric value — a malformed SGF property
+        // coerces via +x to NaN — must not (`!= null` would let NaN reach
+        // `top: NaN%`).
+        Number.isFinite(data[currentIndex]) &&
           h('div', {
             class: 'marker',
             style: {
               left: `${(currentIndex * 100) / width}%`,
-              top: `${!invert ? data[currentIndex] : 100 - data[currentIndex]}%`,
+              top: `${
+                !invert
+                  ? transformAnalysisValue(
+                      data[currentIndex],
+                      analysisType,
+                      dataMax,
+                    )
+                  : 100 -
+                    transformAnalysisValue(
+                      data[currentIndex],
+                      analysisType,
+                      dataMax,
+                    )
+              }%`,
             },
           }),
       ),
