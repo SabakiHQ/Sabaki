@@ -724,6 +724,7 @@ exports.get = function (props = {}) {
           type: 'checkbox',
           checked: !!showWinrateGraph,
           enabled: !!showGameGraph || !!showCommentBox,
+          accelerator: 'CmdOrCtrl+Shift+G',
           click: () => {
             toggleSetting('view.show_winrategraph')
             sabaki.setState(({showWinrateGraph}) => ({
