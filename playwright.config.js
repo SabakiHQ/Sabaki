@@ -54,5 +54,10 @@ module.exports = defineConfig({
       testMatch: /annotation-toggle\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'analysis-value-display',
+      testMatch: /analysis-value-display\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
