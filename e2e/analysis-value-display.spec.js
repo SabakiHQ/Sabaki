@@ -59,6 +59,15 @@ function heatLabelText(page, [x, y]) {
 }
 
 test.describe('Analysis Value Display', () => {
+  test('defaults to "absolute" on a fresh startup, before any setting.set call', async ({
+    page,
+  }) => {
+    const analysisValueType = await page.evaluate(
+      () => window.__sabaki.state.analysisValueType,
+    )
+    expect(analysisValueType).toBe('absolute')
+  })
+
   test('"change" mode shows the best move as 0 and other moves as a delta from it', async ({
     page,
   }) => {
