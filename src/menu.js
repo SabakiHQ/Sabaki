@@ -642,6 +642,7 @@ exports.get = function (props = {}) {
               label: i18n.t('menu.view', '&Absolute'),
               type: 'checkbox',
               checked: analysisValueType === 'absolute',
+              accelerator: 'CmdOrCtrl+Shift+V',
               click: () => {
                 setting.set(
                   'board.analysis_value_type',
@@ -655,6 +656,7 @@ exports.get = function (props = {}) {
               label: i18n.t('menu.view', '&Change'),
               type: 'checkbox',
               checked: analysisValueType === 'change',
+              accelerator: 'CmdOrCtrl+Shift+V',
               click: () => {
                 setting.set(
                   'board.analysis_value_type',
