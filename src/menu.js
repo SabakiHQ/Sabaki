@@ -120,7 +120,7 @@ exports.get = function (props = {}) {
         {
           label: i18n.t('menu.file', '&Quit'),
           accelerator: 'CmdOrCtrl+Q',
-          click: () => app.quit(),
+          clickMain: 'quit',
         },
       ],
     },
