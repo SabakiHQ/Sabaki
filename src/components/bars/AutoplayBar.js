@@ -8,7 +8,10 @@ import i18n from '../../i18n.js'
 import Bar from './Bar.js'
 
 const t = i18n.context('AutoplayBar')
-const setting = {get: (key) => window.sabaki.setting.get(key)}
+const setting = {
+  get: (key) => window.sabaki.setting.get(key),
+  set: (key, value) => window.sabaki.setting.set(key, value),
+}
 
 let maxSecPerMove = setting.get('autoplay.max_sec_per_move')
 let secondsPerMove = setting.get('autoplay.sec_per_move')
@@ -41,9 +44,9 @@ export default class AutoplayBar extends Component {
           secondsPerMove: value,
           secondsPerMoveInput: value,
         })
-      }
 
-      setting.set('autoplay.sec_per_move', this.state.secondsPerMove)
+        setting.set('autoplay.sec_per_move', value)
+      }
     }
 
     this.handlePlayButtonClick = () => {
