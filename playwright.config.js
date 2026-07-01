@@ -44,5 +44,10 @@ module.exports = defineConfig({
       testMatch: /settings-cache\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'analysis-value-display',
+      testMatch: /analysis-value-display\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })

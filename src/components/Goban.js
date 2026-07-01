@@ -4,6 +4,7 @@ import sgf from '@sabaki/sgf'
 import {BoundedGoban} from '@sabaki/shudan'
 
 import i18n from '../i18n.js'
+import {getAnalysisHeatMapCell} from '../modules/analysis.js'
 import * as gametree from '../modules/gametree.js'
 import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
@@ -219,6 +220,7 @@ export default class Goban extends Component {
       paintMap = [],
       analysis,
       analysisType,
+      analysisValueType,
       highlightVertices = [],
       dimmedStones = [],
 
@@ -444,37 +446,16 @@ export default class Goban extends Component {
       )
       heatMap = board.signMap.map((row) => row.map((_) => null))
 
-      for (let {
-        vertex: [x, y],
-        visits,
-        winrate,
-        scoreLead,
-      } of analysis.variations) {
-        let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
+      for (let variation of analysis.variations) {
+        let [x, y] = variation.vertex
 
-        winrate =
-          strength <= 3 ? Math.floor(winrate) : Math.floor(winrate * 10) / 10
-        scoreLead = scoreLead == null ? null : Math.round(scoreLead * 10) / 10
-        if (scoreLead === 0) scoreLead = 0 // Avoid -0
-
-        heatMap[y][x] = {
-          strength,
-          text:
-            visits < 10
-              ? ''
-              : [
-                  analysisType === 'winrate'
-                    ? i18n.formatNumber(winrate) +
-                      (Math.floor(winrate) === winrate ? '%' : '')
-                    : analysisType === 'scoreLead' && scoreLead != null
-                      ? (scoreLead >= 0 ? '+' : '') +
-                        i18n.formatNumber(scoreLead)
-                      : '–',
-                  visits < 1000
-                    ? i18n.formatNumber(visits)
-                    : i18n.formatNumber(Math.round(visits / 100) / 10) + 'k',
-                ].join('\n'),
-        }
+        heatMap[y][x] = getAnalysisHeatMapCell(
+          variation,
+          analysis,
+          maxVisitsWin,
+          {analysisType, analysisValueType},
+          i18n.formatNumber,
+        )
       }
     }
 

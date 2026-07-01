@@ -74,3 +74,51 @@ function normalizeWinrate(winrate, format) {
   let isFloat = format == null ? winrate.includes('.') : format === 'float'
   return isFloat ? +winrate * 100 : +winrate / 100
 }
+
+// Builds one heatmap cell (board overlay strength + label) for a variation.
+//
+// `analysis` is the position-level summary (the best move's winrate/scoreLead,
+// per enginesyncer.js), used as the reference point when `analysisValueType`
+// is 'relative' — so the best move's cell reads as 0 and every other variation
+// reads as its cost relative to the best move, rather than an absolute value.
+export function getAnalysisHeatMapCell(
+  {visits, winrate, scoreLead},
+  analysis,
+  maxVisitsWin,
+  {analysisType, analysisValueType},
+  formatNumber,
+) {
+  // Strength (the overlay color intensity) always reflects the move's
+  // absolute quality, regardless of how its label is displayed.
+  let strength = Math.round((visits * winrate * 8) / maxVisitsWin) + 1
+
+  if (winrate !== null && analysisValueType === 'relative') {
+    winrate -= analysis.winrate
+  }
+  winrate = strength <= 3 ? Math.floor(winrate) : Math.floor(winrate * 10) / 10
+  if (winrate === 0) winrate = 0 // Avoid -0
+
+  if (scoreLead !== null && analysisValueType === 'relative') {
+    scoreLead -= analysis.scoreLead
+  }
+  scoreLead = scoreLead == null ? null : Math.round(scoreLead * 10) / 10
+  if (scoreLead === 0) scoreLead = 0 // Avoid -0
+
+  return {
+    strength,
+    text:
+      visits < 10
+        ? ''
+        : [
+            analysisType === 'winrate'
+              ? formatNumber(winrate) +
+                (Math.floor(winrate) === winrate ? '%' : '')
+              : analysisType === 'scoreLead' && scoreLead != null
+                ? (scoreLead >= 0 ? '+' : '') + formatNumber(scoreLead)
+                : '–',
+            visits < 1000
+              ? formatNumber(visits)
+              : formatNumber(Math.round(visits / 100) / 10) + 'k',
+          ].join('\n'),
+  }
+}

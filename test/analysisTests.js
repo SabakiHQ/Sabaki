@@ -3,7 +3,7 @@ import {readFileSync, existsSync} from 'fs'
 import {join} from 'path'
 import {fromDimensions as newBoard} from '@sabaki/go-board'
 
-import {parseAnalysis} from '../src/modules/analysis.js'
+import {parseAnalysis, getAnalysisHeatMapCell} from '../src/modules/analysis.js'
 
 // These tests verify the GTP analysis parser (the SBKV / scoreLead extraction
 // path) against GOLDEN TRANSCRIPTS  (real `info ...` lines recorded from real
@@ -211,5 +211,151 @@ describe('parseAnalysis (parser logic)', () => {
       parseAnalysis('info move Q16 visits 10 pv Q16', board),
       [],
     )
+  })
+})
+
+// Focused unit cases for the heatmap cell builder used by the board overlay
+// (Goban.js). `formatNumber` is stubbed to plain `String` since locale
+// formatting isn't this function's concern.
+describe('getAnalysisHeatMapCell', () => {
+  const formatNumber = (n) => String(n)
+  // A large maxVisitsWin keeps `strength` in the <=3 branch (Math.floor, no
+  // decimal) unless a test deliberately shrinks it to exercise the >3 branch.
+  const maxVisitsWin = 100000
+
+  it('shows the absolute winrate with a % suffix on whole numbers', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 60, scoreLead: 2},
+      {winrate: 60, scoreLead: 2},
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '60%\n10')
+  })
+
+  it('shows the absolute scoreLead with a leading + when non-negative', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 60, scoreLead: 2.34},
+      {winrate: 60, scoreLead: 2.34},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '+2.3\n10')
+  })
+
+  it('shows a negative absolute scoreLead without a + prefix', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 40, scoreLead: -1.27},
+      {winrate: 60, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '-1.3\n10')
+  })
+
+  it('shows – when scoreLead is null (Leela-Zero dialect)', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 60, scoreLead: null},
+      {winrate: 60, scoreLead: null},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '–\n10')
+  })
+
+  it('shows an empty label when visits are below the display threshold', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 5, winrate: 60, scoreLead: 1},
+      {winrate: 60, scoreLead: 1},
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '')
+  })
+
+  it('shows 0 for the best move’s winrate in relative mode', () => {
+    // The reference `analysis.winrate` is the max across variations (the
+    // best move), so the best move's own delta is always 0.
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 65, scoreLead: 5},
+      {winrate: 65, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'relative'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '0%\n10')
+  })
+
+  it('shows a negative winrate delta for an inferior move in relative mode', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 50, scoreLead: 2},
+      {winrate: 65, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'relative'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '-15%\n10')
+  })
+
+  it('shows +0 for the best move’s scoreLead in relative mode', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 65, scoreLead: 5},
+      {winrate: 65, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '+0\n10')
+  })
+
+  it('shows a negative scoreLead delta for an inferior move in relative mode', () => {
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 50, scoreLead: 2},
+      {winrate: 65, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '-3\n10')
+  })
+
+  it('normalizes a -0 scoreLead delta to 0 instead of printing "-0"', () => {
+    // Math.round(-0.4) === -0 in JS, so a small negative delta that rounds to
+    // zero can surface as -0 without the explicit guard in the implementation.
+    let cell = getAnalysisHeatMapCell(
+      {visits: 10, winrate: 60, scoreLead: 4.996},
+      {winrate: 60, scoreLead: 5},
+      maxVisitsWin,
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
+      formatNumber,
+    )
+    assert.strictEqual(cell.text, '+0\n10')
+  })
+
+  it('computes strength from the absolute winrate regardless of analysisValueType', () => {
+    let variation = {visits: 50, winrate: 80, scoreLead: 3}
+    let analysis = {winrate: 90, scoreLead: 10}
+
+    let absoluteCell = getAnalysisHeatMapCell(
+      variation,
+      analysis,
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'absolute'},
+      formatNumber,
+    )
+    let relativeCell = getAnalysisHeatMapCell(
+      variation,
+      analysis,
+      maxVisitsWin,
+      {analysisType: 'winrate', analysisValueType: 'relative'},
+      formatNumber,
+    )
+
+    assert.strictEqual(absoluteCell.strength, relativeCell.strength)
   })
 })
