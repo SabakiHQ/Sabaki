@@ -207,7 +207,7 @@ export default class PlayBar extends Component {
           onClick: this.handleMenuClick,
         },
         h('img', {
-          src: './node_modules/@primer/octicons/build/svg/three-bars.svg',
+          src: './node_modules/@primer/octicons/build/svg/three-bars-16.svg',
           height: 22,
         }),
       ),

@@ -71,7 +71,7 @@ class EnginePeerListItem extends Component {
             },
             h('img', {
               src: `./node_modules/@primer/octicons/build/svg/${
-                !this.state.suspended ? 'triangle-right' : 'primitive-square'
+                !this.state.suspended ? 'triangle-right-16' : 'square-fill-16'
               }.svg`,
               alt: !this.state.suspended ? t('Running') : t('Stopped'),
             }),
@@ -89,7 +89,7 @@ class EnginePeerListItem extends Component {
             title: t('Analyzer'),
           },
           h('img', {
-            src: './node_modules/@primer/octicons/build/svg/pulse.svg',
+            src: './node_modules/@primer/octicons/build/svg/pulse-16.svg',
             alt: t('Analyzer'),
           }),
         ),
@@ -176,14 +176,14 @@ export class EnginePeerList extends Component {
         {},
 
         h(ToolBarButton, {
-          icon: './node_modules/@primer/octicons/build/svg/play.svg',
+          icon: './node_modules/@primer/octicons/build/svg/play-16.svg',
           tooltip: t('Attach Engine…'),
           menu: true,
           onClick: this.handleAttachEngineButtonClick,
         }),
 
         h(ToolBarButton, {
-          icon: './node_modules/@primer/octicons/build/svg/zap.svg',
+          icon: './node_modules/@primer/octicons/build/svg/zap-16.svg',
           tooltip: !engineGameOngoing
             ? t('Start Engine vs. Engine Game')
             : t('Stop Engine vs. Engine Game'),
