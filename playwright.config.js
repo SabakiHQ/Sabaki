@@ -29,5 +29,10 @@ module.exports = defineConfig({
       testMatch: /analysis-graph\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'node-menu',
+      testMatch: /node-menu\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
