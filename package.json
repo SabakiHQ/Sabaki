@@ -114,7 +114,7 @@
   "devDependencies": {
     "@playwright/test": "^1.58.0",
     "concurrently": "^7.3.0",
-    "electron": "^37.10.3",
+    "electron": "^43.0.0",
     "electron-builder": "^26.4.0",
     "mocha": "^11.7.6",
     "onchange": "^7.1.0",
