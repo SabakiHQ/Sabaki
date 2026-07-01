@@ -34,5 +34,10 @@ module.exports = defineConfig({
       testMatch: /node-menu\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'settings',
+      testMatch: /setting-controls\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })

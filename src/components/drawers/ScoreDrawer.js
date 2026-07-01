@@ -8,7 +8,10 @@ import {noop, getScore} from '../../modules/helper.js'
 import Drawer from './Drawer.js'
 
 const t = i18n.context('ScoreDrawer')
-const setting = {get: (key) => window.sabaki.setting.get(key)}
+const setting = {
+  get: (key) => window.sabaki.setting.get(key),
+  set: (key, value) => window.sabaki.setting.set(key, value),
+}
 
 class ScoreRow extends Component {
   render({method, score, komi, handicap, sign}) {
