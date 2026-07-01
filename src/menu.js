@@ -612,11 +612,7 @@ exports.get = function (props = {}) {
                 )
               },
             },
-          ],
-        },
-        {
-          label: i18n.t('menu.view', 'Analysis Value Display'),
-          submenu: [
+            {type: 'separator'},
             {
               label: i18n.t('menu.view', '&Absolute'),
               type: 'checkbox',
@@ -626,22 +622,22 @@ exports.get = function (props = {}) {
                 setting.set(
                   'board.analysis_value_type',
                   setting.get('board.analysis_value_type') === 'absolute'
-                    ? 'change'
+                    ? 'relative'
                     : 'absolute',
                 )
               },
             },
             {
-              label: i18n.t('menu.view', '&Change'),
+              label: i18n.t('menu.view', '&Relative'),
               type: 'checkbox',
-              checked: analysisValueType === 'change',
+              checked: analysisValueType === 'relative',
               accelerator: 'CmdOrCtrl+Shift+V',
               click: () => {
                 setting.set(
                   'board.analysis_value_type',
-                  setting.get('board.analysis_value_type') === 'change'
+                  setting.get('board.analysis_value_type') === 'relative'
                     ? 'absolute'
-                    : 'change',
+                    : 'relative',
                 )
               },
             },
