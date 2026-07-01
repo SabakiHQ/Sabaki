@@ -278,47 +278,47 @@ describe('getAnalysisHeatMapCell', () => {
     assert.strictEqual(cell.text, '')
   })
 
-  it('shows 0 for the best move’s winrate in change mode', () => {
+  it('shows 0 for the best move’s winrate in relative mode', () => {
     // The reference `analysis.winrate` is the max across variations (the
     // best move), so the best move's own delta is always 0.
     let cell = getAnalysisHeatMapCell(
       {visits: 10, winrate: 65, scoreLead: 5},
       {winrate: 65, scoreLead: 5},
       maxVisitsWin,
-      {analysisType: 'winrate', analysisValueType: 'change'},
+      {analysisType: 'winrate', analysisValueType: 'relative'},
       formatNumber,
     )
     assert.strictEqual(cell.text, '0%\n10')
   })
 
-  it('shows a negative winrate delta for an inferior move in change mode', () => {
+  it('shows a negative winrate delta for an inferior move in relative mode', () => {
     let cell = getAnalysisHeatMapCell(
       {visits: 10, winrate: 50, scoreLead: 2},
       {winrate: 65, scoreLead: 5},
       maxVisitsWin,
-      {analysisType: 'winrate', analysisValueType: 'change'},
+      {analysisType: 'winrate', analysisValueType: 'relative'},
       formatNumber,
     )
     assert.strictEqual(cell.text, '-15%\n10')
   })
 
-  it('shows +0 for the best move’s scoreLead in change mode', () => {
+  it('shows +0 for the best move’s scoreLead in relative mode', () => {
     let cell = getAnalysisHeatMapCell(
       {visits: 10, winrate: 65, scoreLead: 5},
       {winrate: 65, scoreLead: 5},
       maxVisitsWin,
-      {analysisType: 'scoreLead', analysisValueType: 'change'},
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
       formatNumber,
     )
     assert.strictEqual(cell.text, '+0\n10')
   })
 
-  it('shows a negative scoreLead delta for an inferior move in change mode', () => {
+  it('shows a negative scoreLead delta for an inferior move in relative mode', () => {
     let cell = getAnalysisHeatMapCell(
       {visits: 10, winrate: 50, scoreLead: 2},
       {winrate: 65, scoreLead: 5},
       maxVisitsWin,
-      {analysisType: 'scoreLead', analysisValueType: 'change'},
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
       formatNumber,
     )
     assert.strictEqual(cell.text, '-3\n10')
@@ -331,7 +331,7 @@ describe('getAnalysisHeatMapCell', () => {
       {visits: 10, winrate: 60, scoreLead: 4.996},
       {winrate: 60, scoreLead: 5},
       maxVisitsWin,
-      {analysisType: 'scoreLead', analysisValueType: 'change'},
+      {analysisType: 'scoreLead', analysisValueType: 'relative'},
       formatNumber,
     )
     assert.strictEqual(cell.text, '+0\n10')
@@ -348,14 +348,14 @@ describe('getAnalysisHeatMapCell', () => {
       {analysisType: 'winrate', analysisValueType: 'absolute'},
       formatNumber,
     )
-    let changeCell = getAnalysisHeatMapCell(
+    let relativeCell = getAnalysisHeatMapCell(
       variation,
       analysis,
       maxVisitsWin,
-      {analysisType: 'winrate', analysisValueType: 'change'},
+      {analysisType: 'winrate', analysisValueType: 'relative'},
       formatNumber,
     )
 
-    assert.strictEqual(absoluteCell.strength, changeCell.strength)
+    assert.strictEqual(absoluteCell.strength, relativeCell.strength)
   })
 })

@@ -10,7 +10,7 @@ const {
 
 // End-to-end coverage of the "Analysis Value Display" setting
 // (board.analysis_value_type, menu.js / Goban.js): 'absolute' shows each
-// candidate move's raw winrate, while 'change' shows its difference from the
+// candidate move's raw winrate, while 'relative' shows its difference from the
 // best move, so the best move always reads as 0 and every other move reads
 // as its cost relative to it.
 //
@@ -68,7 +68,7 @@ test.describe('Analysis Value Display', () => {
     expect(analysisValueType).toBe('absolute')
   })
 
-  test('"change" mode shows the best move as 0 and other moves as a delta from it', async ({
+  test('"relative" mode shows the best move as 0 and other moves as a delta from it', async ({
     page,
   }) => {
     await loadSgfAndWait(page, SGF)
@@ -127,14 +127,14 @@ test.describe('Analysis Value Display', () => {
       expect(bestAbsolute).not.toMatch(/^0%/)
       expect(inferiorAbsolute).not.toMatch(/^-/)
 
-      await setValueType(page, 'change')
-      const bestChange = await heatLabelText(page, best)
-      const inferiorChange = await heatLabelText(page, inferior)
+      await setValueType(page, 'relative')
+      const bestRelative = await heatLabelText(page, best)
+      const inferiorRelative = await heatLabelText(page, inferior)
 
       // The best move's delta from itself is always 0; the inferior move's
       // delta is its cost relative to the best move, so it's negative.
-      expect(bestChange).toMatch(/^0%/)
-      expect(inferiorChange).toMatch(/^-/)
+      expect(bestRelative).toMatch(/^0%/)
+      expect(inferiorRelative).toMatch(/^-/)
     } finally {
       await page.evaluate(() => window.__sabaki.stopAnalysis())
       await detachAndWait(page, [syncerId])
