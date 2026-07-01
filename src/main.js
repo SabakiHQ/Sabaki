@@ -202,6 +202,7 @@ function buildMenu(props = {}) {
           ({
             newWindow,
             checkForUpdates: () => checkForUpdates({showFailDialogs: true}),
+            quit: () => app.quit(),
           })[key]()
 
         delete item.clickMain
