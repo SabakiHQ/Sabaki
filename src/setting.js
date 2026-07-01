@@ -342,6 +342,10 @@ exports.set = function (key, value) {
   return exports
 }
 
+exports.getAll = function () {
+  return Object.assign({}, defaults, settings)
+}
+
 exports.getThemes = function () {
   if (themesDict == null) exports.loadThemes()
   return themesDict

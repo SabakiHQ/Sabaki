@@ -129,4 +129,23 @@ test.describe('Move Numbering', () => {
       expect(await moveNumberLabels(page)).toEqual([1, 2])
     })
   })
+
+  test.describe('menu state at startup', () => {
+    // Regression: view.move_numbers_type was missing from main's settingsKeys
+    // allowlist, so the renderer settings cache never received it at startup.
+    // The View → Show Move Numbers radio reads state.moveNumbersType (seeded
+    // from that cache), so it showed no checkmark until the setting was changed
+    // live, and reverted after a restart.
+    test('move_numbers_type reaches the renderer at startup', async ({
+      page,
+    }) => {
+      const {cached, state} = await page.evaluate(() => ({
+        cached: window.sabaki.setting.get('view.move_numbers_type'),
+        state: window.__sabaki.state.moveNumbersType,
+      }))
+
+      expect(cached).toBe('start')
+      expect(state).toBe('start')
+    })
+  })
 })

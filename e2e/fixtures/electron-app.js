@@ -23,10 +23,10 @@ const test = base.extend({
       'infooverlay.duration': 0,
     }
 
-    // app.getPath('userData') returns <userDataDir>/Sabaki when
-    // --user-data-dir is set, so write settings into that subdirectory.
-    const appDataDir = path.join(tmpDir, 'Sabaki')
-    fs.mkdirSync(appDataDir, {recursive: true})
+    // --user-data-dir sets app.getPath('userData') to exactly this dir (no
+    // app-name subdirectory), so settings.json goes at its root — matching
+    // setting.js's `path.join(app.getPath('userData'), 'settings.json')`.
+    const appDataDir = tmpDir
     fs.mkdirSync(path.join(appDataDir, 'themes'), {recursive: true})
 
     fs.writeFileSync(
