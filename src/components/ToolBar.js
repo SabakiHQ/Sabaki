@@ -37,7 +37,7 @@ export class ToolBarButton extends Component {
           h('img', {
             class: 'dropdown',
             height: 8,
-            src: './node_modules/@primer/octicons/build/svg/triangle-down.svg',
+            src: './node_modules/@primer/octicons/build/svg/triangle-down-16.svg',
             alt: '',
           }),
       ),

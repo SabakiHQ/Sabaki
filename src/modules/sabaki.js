@@ -1799,7 +1799,7 @@ class Sabaki extends EventEmitter {
           internal: true,
           content: h('img', {
             class: 'icon',
-            src: './node_modules/@primer/octicons/build/svg/alert.svg',
+            src: './node_modules/@primer/octicons/build/svg/alert-16.svg',
             alt: t('Connection Failed'),
             title: t('Connection Failed'),
           }),
