@@ -39,5 +39,10 @@ module.exports = defineConfig({
       testMatch: /setting-controls\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'settings-cache',
+      testMatch: /settings-cache\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
