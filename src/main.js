@@ -15,6 +15,7 @@ const updater = require('./updater')
 
 let windows = []
 let openfile = null
+let isQuitting = false
 
 function newWindow(path) {
   let window = new BrowserWindow({
@@ -199,6 +200,12 @@ function setupIpcHandlers() {
   ipcMain.handle('app:getName', () => app.name)
   ipcMain.handle('app:getVersion', () => app.getVersion())
   ipcMain.handle('app:quit', () => app.quit())
+  // A renderer aborts an in-progress quit (e.g. the user cancelled the
+  // unsaved-changes prompt) so a later ordinary window close doesn't quit the
+  // app on macOS.
+  ipcMain.handle('app:cancelQuit', () => {
+    isQuitting = false
+  })
 
   // Window operations
   ipcMain.handle('window:setFullScreen', (e, f) => {
@@ -351,8 +358,17 @@ async function main() {
     app.disableHardwareAcceleration()
   }
 
+  // Track an explicit quit request (Cmd+Q / Quit menu) so that on macOS the app
+  // actually terminates once its windows close. The renderer's async
+  // beforeunload cancels the first close to run the save prompt, which aborts
+  // app.quit(); without this flag, window-all-closed then keeps the app alive,
+  // so the window vanishes but the process lingers (issue #157).
+  app.on('before-quit', () => {
+    isQuitting = true
+  })
+
   app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
+    if (process.platform !== 'darwin' || isQuitting) {
       app.quit()
     } else {
       buildMenu({disableAll: true})
