@@ -44,5 +44,10 @@ module.exports = defineConfig({
       testMatch: /settings-cache\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'scoring-overrides',
+      testMatch: /scoring-overrides\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })

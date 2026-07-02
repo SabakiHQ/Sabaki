@@ -1088,14 +1088,18 @@ class Sabaki extends EventEmitter {
       if (button !== 0) return
 
       if (board.get(vertex) === 0) {
-        let {estimateOverrides} = this.state
+        // Clicking an empty point overrides its estimated territory, cycling it
+        // one step (neutral -> black -> white) per click. The stored value is
+        // the step offset in [1, 2]; a third click completes the cycle and
+        // drops the override entirely, so the map only ever holds real overrides.
+        let [x, y] = vertex
+        let key = x + ',' + y
+        let {[key]: current = 0, ...rest} = this.state.estimateOverrides
+        let next = (current + 1) % 3
 
-        let clickCount = estimateOverrides[vertex[1] + 'x' + vertex[0]]
-        clickCount = !clickCount ? 1 : clickCount + 1
-
-        estimateOverrides[vertex[1] + 'x' + vertex[0]] = clickCount
-
-        this.setState({estimateOverrides})
+        this.setState({
+          estimateOverrides: next === 0 ? rest : {...rest, [key]: next},
+        })
         return
       }
 
@@ -1114,7 +1118,10 @@ class Sabaki extends EventEmitter {
         )
       }
 
-      this.setState({deadStones})
+      // Toggling life/death recomputes the area map, so any manual overrides no
+      // longer line up with it -- clear them rather than let them drift onto
+      // points the user never clicked.
+      this.setState({deadStones, estimateOverrides: {}})
     } else if (this.state.mode === 'find') {
       if (button !== 0) return
 
