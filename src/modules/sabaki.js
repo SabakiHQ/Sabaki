@@ -65,6 +65,7 @@ class Sabaki extends EventEmitter {
       findVertex: null,
       deadStones: [],
       blockedGuesses: [],
+      estimateOverrides: {},
 
       // Goban
 
@@ -345,6 +346,8 @@ class Sabaki extends EventEmitter {
 
   setMode(mode) {
     if (this.state.mode === mode) return
+
+    this.setState({estimateOverrides: {}})
 
     let stateChange = {mode}
 
@@ -1082,7 +1085,23 @@ class Sabaki extends EventEmitter {
         this.editVertexData = null
       }
     } else if (['scoring', 'estimator'].includes(this.state.mode)) {
-      if (button !== 0 || board.get(vertex) === 0) return
+      if (button !== 0) return
+
+      if (board.get(vertex) === 0) {
+        // Clicking an empty point overrides its estimated territory, cycling it
+        // one step (neutral -> black -> white) per click. The stored value is
+        // the step offset in [1, 2]; a third click completes the cycle and
+        // drops the override entirely, so the map only ever holds real overrides.
+        let [x, y] = vertex
+        let key = x + ',' + y
+        let {[key]: current = 0, ...rest} = this.state.estimateOverrides
+        let next = (current + 1) % 3
+
+        this.setState({
+          estimateOverrides: next === 0 ? rest : {...rest, [key]: next},
+        })
+        return
+      }
 
       let {mode, deadStones} = this.state
       let dead = deadStones.some((v) => helper.vertexEquals(v, vertex))
@@ -1099,7 +1118,10 @@ class Sabaki extends EventEmitter {
         )
       }
 
-      this.setState({deadStones})
+      // Toggling life/death recomputes the area map, so any manual overrides no
+      // longer line up with it -- clear them rather than let them drift onto
+      // points the user never clicked.
+      this.setState({deadStones, estimateOverrides: {}})
     } else if (this.state.mode === 'find') {
       if (button !== 0) return
 

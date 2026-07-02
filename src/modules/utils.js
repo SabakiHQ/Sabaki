@@ -119,3 +119,11 @@ export function getScore(board, areaMap, {komi = 0, handicap = 0} = {}) {
 
   return score
 }
+
+// Advance an area-map value -- -1 (white) / 0 (neutral) / 1 (black) -- by
+// `steps` positions through the neutral -> black -> white cycle. Backs the
+// manual territory overrides in scoring/estimator mode, where each overridden
+// point stores how many steps it's been nudged from the estimate (1 or 2).
+export function cycleAreaValue(value, steps) {
+  return ((value + 1 + steps) % 3) - 1
+}

@@ -21,6 +21,7 @@ import sabaki from '../modules/sabaki.js'
 import * as gametree from '../modules/gametree.js'
 import * as gtplogger from '../modules/gtplogger.js'
 import * as helper from '../modules/helper.js'
+import * as utils from '../modules/utils.js'
 
 if (process.env.SABAKI_E2E) window.__sabaki = sabaki
 
@@ -331,6 +332,14 @@ class App extends Component {
         state.mode === 'estimator'
           ? influence.map(scoreBoard.signMap, {discrete: true})
           : influence.areaMap(scoreBoard.signMap)
+
+      for (let key in state.estimateOverrides) {
+        let [x, y] = key.split(',').map(Number)
+        areaMap[y][x] = utils.cycleAreaValue(
+          areaMap[y][x],
+          state.estimateOverrides[key],
+        )
+      }
     }
 
     state = {...state, ...inferredState, scoreBoard, areaMap}
