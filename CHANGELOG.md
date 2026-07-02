@@ -2,6 +2,107 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.60.0][v0.60.0] (2026-07-03)
+
+The first release in a while, and a big one. Alongside a handful of new features
+it modernizes the entire runtime — Sabaki now rides the current Electron and
+Node, so it's faster, more secure, and native on Apple Silicon — and picks up a
+proper automated test suite along the way. Huge thanks to everyone who
+contributed while things were quiet.
+
+### Platform & runtime
+
+- Upgraded Electron from 13 all the way to **43**, in steady one-major steps, so
+  Sabaki now ships on a current Chromium and Node runtime with the accompanying
+  performance, stability, and security improvements.
+- Removed the deprecated `@electron/remote` dependency and moved main/renderer
+  communication onto a proper IPC bridge (context menus, dialogs, theme
+  management, and settings all go through IPC now).
+- Modernized the Node toolchain (Node 24, mocha 11) and pinned the dev/CI Node
+  version via `.nvmrc` to match the shipped Electron runtime.
+
+### Added
+
+- **Score-lead analysis graph** — the analysis graph can now plot score lead in
+  addition to win rate (thanks to @kevinsung,
+  [#828](https://github.com/SabakiHQ/Sabaki/pull/828)).
+- **Absolute vs. relative analysis display** — the analysis heat map can show
+  each candidate move's win rate / score lead as its cost relative to the best
+  move (which then reads as 0), instead of the absolute value, from View →
+  Analysis Metric or with Ctrl+Shift+V (thanks to @kevinsung,
+  [#1022](https://github.com/SabakiHQ/Sabaki/pull/1022),
+  [#843](https://github.com/SabakiHQ/Sabaki/issues/843)).
+- **Move-numbering options** — number moves from the start of the game, the
+  current variation, or the most recent hotspot (thanks to @kevinsung,
+  [#826](https://github.com/SabakiHQ/Sabaki/pull/826)).
+- **Editable territory in scoring/estimate mode** — click empty points to
+  manually override the estimated territory; overrides reset when you toggle a
+  stone's life/death (thanks to @RobertChrist,
+  [#941](https://github.com/SabakiHQ/Sabaki/pull/941)).
+- **Node-specific "Add/View Comment"** in the game-tree node menu, replacing the
+  out-of-place global toggle that used to live there (thanks to @RobertChrist,
+  [#942](https://github.com/SabakiHQ/Sabaki/pull/942),
+  [#940](https://github.com/SabakiHQ/Sabaki/issues/940)).
+- **More keyboard shortcuts** — for variation editing
+  (copy/cut/paste/shift/make-main), toggling good/bad move annotations, toggling
+  the player to move, and showing the analysis graph (thanks to @MarcelGruenauer
+  and @kevinsung, [#1018](https://github.com/SabakiHQ/Sabaki/pull/1018),
+  [#1021](https://github.com/SabakiHQ/Sabaki/pull/1021)).
+- **Downstream-variation navigation** — step through downstream variations with
+  Shift+Left / Shift+Right (thanks to @petermao,
+  [#773](https://github.com/SabakiHQ/Sabaki/issues/773)).
+- Clearer help text in the "add engine" dialog, with concrete path and argument
+  examples for non-technical users (thanks to @Chewt,
+  [#967](https://github.com/SabakiHQ/Sabaki/pull/967),
+  [#756](https://github.com/SabakiHQ/Sabaki/issues/756)).
+- Clean Markup now strips score lead (`SBKS`) alongside win rate.
+- Added an "Always show game result" preference, surfacing the existing setting
+  in the Preferences drawer (thanks to @MarcelGruenauer,
+  [#1036](https://github.com/SabakiHQ/Sabaki/pull/1036)).
+- Added the Sabaki Subtle theme to the theme directory (thanks to
+  @RobertChrist).
+
+### Fixed
+
+- **Sabaki now quits on the first ⌘Q on macOS** instead of leaving the process
+  running in the background
+  ([#1035](https://github.com/SabakiHQ/Sabaki/pull/1035),
+  [#157](https://github.com/SabakiHQ/Sabaki/issues/157)), and Ctrl+Q now quits
+  on Linux (thanks to @kevinsung,
+  [#1024](https://github.com/SabakiHQ/Sabaki/pull/1024)).
+- **Settings reliability** — every setting is now sent to the renderer at
+  startup, fixing controls that could silently read as undefined; the Score and
+  Autoplay preference controls work again (thanks to @kvwu,
+  [#1026](https://github.com/SabakiHQ/Sabaki/issues/1026)); and a renderer
+  setting shim was fixed (thanks to @TransientError,
+  [#1028](https://github.com/SabakiHQ/Sabaki/pull/1028)).
+- Score-lead graph hardening — stays visible at a score lead of 0, refreshes
+  when you toggle the metric on an unanalysed node, and no longer chokes on
+  non-numeric values.
+- Hardened GTP analysis parsing — dialect-aware win-rate normalization and
+  graceful skipping of malformed info segments.
+- Fixed root-node branch numbering.
+- Fixed theme uninstall (broken by a `rimraf` v6 bump).
+- Fixed a false "file unreadable" error in development mode.
+- Fixed a `MaxListenersExceededWarning` from settings-change listeners.
+- Left/Right once again map to Previous/Next Variation (thanks to @petermao).
+
+### Developer & internal
+
+- Added a **Playwright end-to-end test suite** for the Electron app (smoke,
+  renderer, engine, and analysis flows), plus engine-integration tests driven by
+  golden GTP transcripts, and wired E2E into CI
+  ([#998](https://github.com/SabakiHQ/Sabaki/pull/998)).
+- Reformatted the codebase with Prettier 3 (with a `.git-blame-ignore-revs` so
+  history stays readable) and upgraded `@primer/octicons` 9 → 19.
+- Updated CI to Node 20 / actions v4.
+
+### Dependencies
+
+- Numerous dependency updates via Dependabot, including security fixes (e.g.
+  `tar` extraction-traversal CVEs), and bumps to `electron-builder`,
+  `iconv-lite`, `js-yaml`, `rimraf`, `concurrently`, and others.
+
 ## [Sabaki v0.52.1][v0.52.1]
 
 **Fixed**
@@ -1026,6 +1127,7 @@ All notable changes to this project will be documented in this file.
 First release
 
 [unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.51.0...master
+[v0.60.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.52.2...v0.60.0
 [v0.51.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...v0.51.0
 [v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v0.50.1
 [v0.50.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.43.3...v0.50.0
