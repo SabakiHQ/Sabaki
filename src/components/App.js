@@ -199,6 +199,10 @@ class App extends Component {
           gtplogger.close()
           this.closeWindow = true
           sabaki.window.close()
+        } else {
+          // User backed out of the close; clear any pending quit intent so a
+          // later ordinary window close still leaves the app running (macOS).
+          window.sabaki.app.cancelQuit()
         }
       })
     })

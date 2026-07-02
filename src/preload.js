@@ -119,6 +119,7 @@ window.sabaki = {
     getName: () => ipcRenderer.invoke('app:getName'),
     getVersion: () => ipcRenderer.invoke('app:getVersion'),
     quit: () => ipcRenderer.invoke('app:quit'),
+    cancelQuit: () => ipcRenderer.invoke('app:cancelQuit'),
   },
 
   // Shell
