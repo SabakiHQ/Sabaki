@@ -49,5 +49,10 @@ module.exports = defineConfig({
       testMatch: /scoring-overrides\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'annotation-toggle',
+      testMatch: /annotation-toggle\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })

@@ -2516,6 +2516,16 @@ class Sabaki extends EventEmitter {
     this.setCurrentTreePosition(newTree, treePosition)
   }
 
+  toggleMoveAnnotation(treePosition, annotation) {
+    // Move annotations (TE/IT/DO/BM) are mutually exclusive — setComment clears
+    // the others when one is set — so toggling one that's already present just
+    // clears it back to no annotation.
+    let node = this.inferredState.gameTree.get(treePosition)
+    this.setComment(treePosition, {
+      moveAnnotation: node.data[annotation] != null ? null : annotation,
+    })
+  }
+
   copyVariation(treePosition) {
     let node = this.inferredState.gameTree.get(treePosition)
     let copy = {

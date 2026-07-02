@@ -311,27 +311,13 @@ exports.get = function (props = {}) {
           label: i18n.t('menu.edit', 'Toggle Good Move'),
           accelerator: 'CmdOrCtrl+Shift+]',
           click: () =>
-            // Adapted from the 'Toggle Hotspot' handler
-            sabaki.setComment(sabaki.state.treePosition, {
-              moveAnnotation:
-                sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
-                  .data.TE == null
-                  ? 'TE'
-                  : null,
-            }),
+            sabaki.toggleMoveAnnotation(sabaki.state.treePosition, 'TE'),
         },
         {
           label: i18n.t('menu.edit', 'Toggle Bad Move'),
           accelerator: 'CmdOrCtrl+Shift+[',
           click: () =>
-            // Adapted from the 'Toggle Hotspot' handler
-            sabaki.setComment(sabaki.state.treePosition, {
-              moveAnnotation:
-                sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
-                  .data.BM == null
-                  ? 'BM'
-                  : null,
-            }),
+            sabaki.toggleMoveAnnotation(sabaki.state.treePosition, 'BM'),
         },
       ],
     },
