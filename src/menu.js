@@ -130,7 +130,7 @@ exports.get = function (props = {}) {
       submenu: [
         {
           label: i18n.t('menu.play', '&Toggle Player'),
-          accelerator: 'CmdOrCtrl+Shift+1',
+          accelerator: 'CmdOrCtrl+Shift+P',
           click: () =>
             sabaki.setPlayer(
               sabaki.state.treePosition,
@@ -315,8 +315,10 @@ exports.get = function (props = {}) {
             sabaki.setComment(sabaki.state.treePosition, {
               moveAnnotation:
                 sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
-                  .data.TE == null ? 'TE' : null
-            })
+                  .data.TE == null
+                  ? 'TE'
+                  : null,
+            }),
         },
         {
           label: i18n.t('menu.edit', 'Toggle Bad Move'),
@@ -326,9 +328,11 @@ exports.get = function (props = {}) {
             sabaki.setComment(sabaki.state.treePosition, {
               moveAnnotation:
                 sabaki.inferredState.gameTree.get(sabaki.state.treePosition)
-                  .data.BM == null ? 'BM' : null
-            })
-        }
+                  .data.BM == null
+                  ? 'BM'
+                  : null,
+            }),
+        },
       ],
     },
     {
