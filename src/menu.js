@@ -30,6 +30,7 @@ exports.get = function (props = {}) {
     disableAll,
     disableGameLoading,
     analysisType,
+    analysisValueType,
     showAnalysis,
     showCoordinates,
     coordinatesType,
@@ -632,8 +633,38 @@ exports.get = function (props = {}) {
                 )
               },
             },
+            {type: 'separator'},
+            {
+              label: i18n.t('menu.view', '&Absolute'),
+              type: 'checkbox',
+              checked: analysisValueType === 'absolute',
+              accelerator: 'CmdOrCtrl+Shift+V',
+              click: () => {
+                setting.set(
+                  'board.analysis_value_type',
+                  setting.get('board.analysis_value_type') === 'absolute'
+                    ? 'relative'
+                    : 'absolute',
+                )
+              },
+            },
+            {
+              label: i18n.t('menu.view', '&Relative'),
+              type: 'checkbox',
+              checked: analysisValueType === 'relative',
+              accelerator: 'CmdOrCtrl+Shift+V',
+              click: () => {
+                setting.set(
+                  'board.analysis_value_type',
+                  setting.get('board.analysis_value_type') === 'relative'
+                    ? 'absolute'
+                    : 'relative',
+                )
+              },
+            },
           ],
         },
+
         {type: 'separator'},
         {
           label: i18n.t('menu.view', 'Show &Coordinates'),
