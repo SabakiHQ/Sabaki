@@ -51,9 +51,10 @@ jobs:
       - name: Build distributables
         if: runner.os != 'macOS'
         run: npm run ${{ matrix.dist }}
-      # No auto-update client ships yet.
+      # No auto-update client ships yet. --glob: Windows runners use
+      # PowerShell, which does not expand wildcards.
       - name: Remove auto-update metadata
-        run: npx rimraf ./dist/*.yml ./dist/*.yaml ./dist/*.blockmap
+        run: npx rimraf --glob "./dist/*.yml" "./dist/*.yaml" "./dist/*.blockmap"
       - uses: actions/upload-artifact@v4
         with:
           name: dist-${{ runner.os }}
