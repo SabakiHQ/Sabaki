@@ -5,35 +5,89 @@ on:
     tags:
       - v*
 
+permissions:
+  contents: read
+
 jobs:
-  create-release:
+  build:
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          # Pinned macOS version for reproducible release builds; both mac
+          # arches cross-package on the arm64 runner.
+          - os: macos-15
+            dist: dist:macos
+          - os: windows-latest
+            dist: dist:win
+          - os: ubuntu-latest
+            dist: dist:linux
 
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version-file: .nvmrc
-    - uses: actions/setup-go@v5
-      with:
-        go-version: 1.17.x
-    - name: Extract info
-      id: info
-      run: |
-        node ./ci/extractInfo.js
-      env:
-        GITHUB_REF: ${{ github.ref }}
-    - name: Create & upload artifact
-      run: |
-        npm install
-        npm run ${{ steps.info.outputs.distcommand }}
-        npx rimraf ./dist/*.yml ./dist/*.yaml ./dist/*.blockmap
-        go get -u github.com/tcnksm/ghr
-        ./ci/bin/ghr -n "Sabaki v${{ steps.info.outputs.version }}" -prerelease ${{ steps.info.outputs.tag }} ./dist
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GOPATH: ${{ steps.info.outputs.ci }}
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        if: runner.os == 'Linux'
+        run: npm test
+        env:
+          CI: true
+      # electron-builder signs/notarizes only when these secrets are set.
+      # Scoped to macOS: CSC_LINK would otherwise also engage Windows signing.
+      - name: Build distributables (macOS)
+        if: runner.os == 'macOS'
+        run: npm run ${{ matrix.dist }}
+        env:
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      - name: Build distributables
+        if: runner.os != 'macOS'
+        run: npm run ${{ matrix.dist }}
+      # No auto-update client ships yet.
+      - name: Remove auto-update metadata
+        run: npx rimraf ./dist/*.yml ./dist/*.yaml ./dist/*.blockmap
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-${{ runner.os }}
+          path: dist/sabaki-*
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Generate checksums
+        run: cd dist && sha256sum sabaki-* > SHA256SUMS
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: dist/sabaki-*
+      - name: Extract release notes
+        run: node ./ci/releaseNotes.js > release-notes.md
+      # Prerelease on purpose: the in-app updater polls /releases/latest,
+      # which ignores prereleases. Promoting the release is the go-live switch.
+      - name: Create prerelease
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag --prerelease \
+            --title "Sabaki $GITHUB_REF_NAME" \
+            --notes-file release-notes.md \
+            dist/*
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

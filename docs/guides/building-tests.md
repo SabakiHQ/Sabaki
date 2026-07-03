@@ -40,12 +40,10 @@ This will bundle everything and create a folder with the executables in
 `Sabaki/dist`. To create installers/archives you can use one of the following
 instructions depending on the target OS:
 
-- `$ npm run dist:win32` for Windows 32-bit
 - `$ npm run dist:win64` for Windows 64-bit
-- `$ npm run dist:win32-portable` for Windows 32-bit portable
 - `$ npm run dist:win64-portable` for Windows 64-bit portable
-- `$ npm run dist:linux` for Linux 32-bit and 64-bit
-- `$ npm run dist:macos` for macOS 64-bit
+- `$ npm run dist:linux` for Linux x64 and arm64
+- `$ npm run dist:macos` for macOS x64 and arm64
 
 Before sending in a pull request, please run prettier to make sure your code
 adheres to the coding style standards:
