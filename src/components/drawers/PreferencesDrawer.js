@@ -155,6 +155,10 @@ class GeneralTab extends Component {
           id: 'view.animated_stone_placement',
           text: t('Animate fuzzy placement'),
         }),
+        h(PreferencesItem, {
+          id: 'app.always_show_result',
+          text: t('Always show game result'),
+        }),
 
         h(
           'li',
