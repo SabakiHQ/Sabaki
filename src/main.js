@@ -419,14 +419,16 @@ async function main() {
   setupIpcHandlers()
 
   if (!openfile && process.argv.length >= 2) {
-    if (
-      !['electron.exe', 'electron'].some((x) =>
-        process.argv[0].toLowerCase().endsWith(x),
-      )
-    ) {
-      openfile = process.argv[1]
-    } else if (process.argv.length >= 3) {
-      openfile = process.argv[2]
+    // Ignore Chromium flags and Electron entry
+    let args = process.argv.slice(1).filter(arg =>
+      !arg.startsWith('--') &&
+      arg !== '.' &&
+      !arg.endsWith('.asar') &&
+      !arg.endsWith('.asar/')
+    )
+
+    if (args.length > 0) {
+      openfile = args[0]
     }
   }
 
