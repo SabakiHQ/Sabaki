@@ -132,7 +132,7 @@
     "prettier": "3.8.1",
     "tmp": "^0.2.7",
     "tsx": "^4.23.0",
-    "webpack": "^5.104.1",
+    "webpack": "^5.108.4",
     "webpack-cli": "^6.0.1"
   },
   "scripts": {
