@@ -12,6 +12,7 @@ const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
+const {getOpenFileFromArgv} = require('./modules/utils')
 
 let windows = []
 let openfile = null
@@ -418,16 +419,8 @@ async function main() {
 
   setupIpcHandlers()
 
-  if (!openfile && process.argv.length >= 2) {
-    if (
-      !['electron.exe', 'electron'].some((x) =>
-        process.argv[0].toLowerCase().endsWith(x),
-      )
-    ) {
-      openfile = process.argv[1]
-    } else if (process.argv.length >= 3) {
-      openfile = process.argv[2]
-    }
+  if (!openfile) {
+    openfile = getOpenFileFromArgv(process.argv)
   }
 
   newWindow(openfile)

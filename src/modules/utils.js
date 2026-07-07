@@ -127,3 +127,24 @@ export function getScore(board, areaMap, {komi = 0, handicap = 0} = {}) {
 export function cycleAreaValue(value, steps) {
   return ((value + 1 + steps) % 3) - 1
 }
+
+// The file to open that was passed on the command line at launch, or null.
+// `argv[0]` is the binary; everything that isn't a file to open is filtered out:
+// flags (any leading '-', so Chromium's '--no-sandbox' and macOS's '-psn_...'
+// both go), the dev-mode entry '.', and the packaged-app entry ('*.asar'). Some
+// Linux launchers (snap, AppImage '.desktop' files) inject flags and ship a
+// renamed binary, so a binary-name or argv-position heuristic isn't reliable --
+// filter by content instead. Returns the first surviving argument. See #954.
+export function getOpenFileFromArgv(argv) {
+  let files = argv
+    .slice(1)
+    .filter(
+      (arg) =>
+        !arg.startsWith('-') &&
+        arg !== '.' &&
+        !arg.endsWith('.asar') &&
+        !arg.endsWith('.asar/'),
+    )
+
+  return files.length > 0 ? files[0] : null
+}
