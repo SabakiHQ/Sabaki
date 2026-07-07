@@ -99,7 +99,7 @@
     "@mariotacke/color-thief": "^3.0.1",
     "@primer/octicons": "^19.29.1",
     "@sabaki/boardmatcher": "^1.2.0",
-    "@sabaki/deadstones": "^2.1.2",
+    "@sabaki/deadstones": "^2.2.0",
     "@sabaki/go-board": "^1.4.1",
     "@sabaki/gtp": "^3.1.0",
     "@sabaki/i18n": "0.51.1-1",
