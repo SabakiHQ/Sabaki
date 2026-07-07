@@ -12,6 +12,7 @@ const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
+const {getOpenFileFromArgv} = require('./modules/utils')
 
 let windows = []
 let openfile = null
@@ -418,18 +419,8 @@ async function main() {
 
   setupIpcHandlers()
 
-  if (!openfile && process.argv.length >= 2) {
-    // Ignore Chromium flags and Electron entry
-    let args = process.argv.slice(1).filter(arg =>
-      !arg.startsWith('--') &&
-      arg !== '.' &&
-      !arg.endsWith('.asar') &&
-      !arg.endsWith('.asar/')
-    )
-
-    if (args.length > 0) {
-      openfile = args[0]
-    }
+  if (!openfile) {
+    openfile = getOpenFileFromArgv(process.argv)
   }
 
   newWindow(openfile)
