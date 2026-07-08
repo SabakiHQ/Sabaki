@@ -92,6 +92,41 @@ test.describe('GTP Engine Integration Tests', () => {
     await detachAndWait(page, syncerIds)
   })
 
+  test('engine responds to a human pass (#857)', async ({page}) => {
+    const syncerIds = await attachAndWaitForEngines(page, [
+      {name: 'WhiteEngine', path: process.execPath, args: enginePath},
+    ])
+
+    // Assign the engine to white, so a black pass should draw a white response.
+    await page.evaluate((id) => {
+      window.__sabaki.setState({whiteEngineSyncerId: id})
+    }, syncerIds[0])
+
+    // Black passes through the same code path the Pass button and menu use.
+    await page.evaluate(() => window.__sabaki.makePass())
+
+    // The engine must generate a move in response: the pass is depth 1 and the
+    // engine's reply is depth 2. Before the fix, passing never triggered it.
+    await page.waitForFunction(
+      () => {
+        const s = window.__sabaki
+        const tree = s.state.gameTrees[s.state.gameIndex]
+        let pos = s.state.treePosition
+        let depth = 0
+        while (pos !== tree.root.id) {
+          pos = tree.get(pos).parentId
+          depth++
+        }
+        return depth >= 2
+      },
+      {timeout: 10000},
+    )
+
+    expect(await getTreeDepth(page)).toBeGreaterThanOrEqual(2)
+
+    await detachAndWait(page, syncerIds)
+  })
+
   test('bot-vs-bot game completes', async ({page}) => {
     const syncerIds = await attachAndWaitForEngines(page, [
       {name: 'BlackEngine', path: process.execPath, args: enginePath},

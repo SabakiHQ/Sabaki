@@ -154,7 +154,7 @@ exports.get = function (props = {}) {
         {
           label: i18n.t('menu.play', '&Pass'),
           accelerator: 'CmdOrCtrl+P',
-          click: () => sabaki.makeMove([-1, -1]),
+          click: () => sabaki.makePass(),
         },
         {
           label: i18n.t('menu.play', 'Resig&n'),
