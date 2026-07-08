@@ -206,7 +206,15 @@ export default class EngineSyncer extends EventEmitter {
 
   async sendAbort() {
     if (this.controller.busy) {
-      await this.controller.sendCommand({name: 'protocol_version'})
+      try {
+        await this.controller.sendCommand({name: 'protocol_version'})
+      } catch (err) {
+        // Best-effort interrupt: if the engine has already stopped (e.g. it's
+        // being killed during shutdown) the command rejects with "GTP engine
+        // output has stopped". queueCommand()/sync() fire this without awaiting,
+        // so swallow it here rather than surface an unhandled rejection. See
+        // #720.
+      }
     }
   }
 
