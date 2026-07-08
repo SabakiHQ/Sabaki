@@ -1430,3 +1430,14 @@ header {
 .shudan-vertex .shudan-heat {
   transition: none;
 }
+
+/* The last-move indicator is an SVG dot since Shudan 1.7. Older themes (e.g.
+   upsided's Happy Stones / BadukTV) still set `background` on it -- a leftover
+   from when it was a <div> -- which now paints a solid square over the whole
+   vertex instead of coloring the dot. Neutralize it so the indicator renders
+   correctly regardless of theme; themes should color the dot with `fill`. The
+   theme stylesheet loads after this one, so !important is needed to win. See
+   #904. */
+.shudan-vertex.shudan-marker_point .shudan-marker {
+  background: transparent !important;
+}

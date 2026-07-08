@@ -74,5 +74,10 @@ module.exports = defineConfig({
       testMatch: /resign\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'last-move-indicator',
+      testMatch: /last-move-indicator\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
