@@ -64,5 +64,10 @@ module.exports = defineConfig({
       testMatch: /edit-compressed-points\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'comment-coordinate',
+      testMatch: /comment-coordinate\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
