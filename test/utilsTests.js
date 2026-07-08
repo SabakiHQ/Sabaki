@@ -1,6 +1,10 @@
 import assert from 'assert'
 
-import {cycleAreaValue, getOpenFileFromArgv} from '../src/modules/utils.js'
+import {
+  cycleAreaValue,
+  getOpenFileFromArgv,
+  markupCleanupProperties,
+} from '../src/modules/utils.js'
 
 // cycleAreaValue backs the manual territory overrides in scoring/estimator mode.
 // Area values are -1 (white) / 0 (neutral) / 1 (black), and `steps` advances a
@@ -82,5 +86,27 @@ describe('getOpenFileFromArgv', () => {
   it('skips the packaged .asar entry', () => {
     assert.strictEqual(getOpenFileFromArgv([dev, '/app/app.asar', file]), file)
     assert.strictEqual(getOpenFileFromArgv([dev, '/app/app.asar/']), null)
+  })
+})
+
+// Backs Tools -> Clean markup. The label category must strip old-style L[]
+// labels (FF[3]) as well as modern LB[], since Sabaki reads and renders both;
+// see #881.
+describe('markupCleanupProperties', () => {
+  it('cleans both old-style L[] and modern LB[] labels', () => {
+    assert.deepStrictEqual(markupCleanupProperties.label, ['LB', 'L'])
+  })
+
+  it('maps every category to a non-empty list of property idents', () => {
+    for (let [category, props] of Object.entries(markupCleanupProperties)) {
+      assert.ok(
+        Array.isArray(props) && props.length > 0,
+        `${category} should map to a non-empty array`,
+      )
+      assert.ok(
+        props.every((p) => typeof p === 'string' && /^[A-Z]+$/.test(p)),
+        `${category} props should be SGF idents`,
+      )
+    }
   })
 })
