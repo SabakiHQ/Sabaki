@@ -59,5 +59,10 @@ module.exports = defineConfig({
       testMatch: /analysis-value-display\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'edit-compressed-points',
+      testMatch: /edit-compressed-points\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
