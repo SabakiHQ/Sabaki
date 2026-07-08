@@ -48,7 +48,24 @@ export default class EngineSyncer extends EventEmitter {
 
     let absolutePath = resolve(path)
     let executePath = existsSync(absolutePath) ? absolutePath : path
-    this.controller = new Controller(executePath, [...argvsplit(args)], {
+    let executeArgs = [...argvsplit(args)]
+
+    // Inside a Flatpak sandbox (FLATPAK_ID set), user-provided engine binaries
+    // live on the host and can't be executed directly. Route them through
+    // `flatpak-spawn --host`, which needs the org.freedesktop.Flatpak talk-name
+    // permission granted in the Flatpak build. --directory keeps the engine's
+    // working directory (e.g. for weight files referenced relatively). See #803.
+    if (process.env.FLATPAK_ID != null) {
+      executeArgs = [
+        '--host',
+        `--directory=${dirname(absolutePath)}`,
+        executePath,
+        ...executeArgs,
+      ]
+      executePath = 'flatpak-spawn'
+    }
+
+    this.controller = new Controller(executePath, executeArgs, {
       cwd: dirname(absolutePath),
     })
 

@@ -51,6 +51,22 @@ jobs:
       - name: Build distributables
         if: runner.os != 'macOS'
         run: npm run ${{ matrix.dist }}
+      # Beta Flatpak (Linux only). Best-effort and non-fatal: this is an
+      # unverified beta (see #803), so a failure here must never block the
+      # AppImage / macOS / Windows artifacts. It runs after the AppImage build so
+      # the -beta.flatpak lands alongside it in dist/ for the upload below.
+      - name: Build Flatpak (beta)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub \
+            org.freedesktop.Platform//23.08 \
+            org.freedesktop.Sdk//23.08 \
+            org.electronjs.Electron2.BaseApp//23.08
+          npm run dist:flatpak
       # No auto-update client ships yet. --glob: Windows runners use
       # PowerShell, which does not expand wildcards.
       - name: Remove auto-update metadata
