@@ -12,9 +12,9 @@ const {
 // These drive the real Goban rendering and read the move-number labels that
 // @sabaki/shudan paints onto each vertex. Shudan sets the vertex element's
 // `title` attribute to the marker label, so a vertex numbered "3" produces a
-// `.shudan-vertex` with title="3". When move numbers are enabled the Goban
-// resets all other markers to null, so the only labelled vertices are the
-// numbered moves.
+// `.shudan-vertex` with title="3". Move numbers overwrite only the numbered
+// move vertices; other SGF markup (triangles, labels, ...) is preserved -- see
+// the #965 test below.
 
 // --- move-number helpers ---------------------------------------------------
 
@@ -127,6 +127,38 @@ test.describe('Move Numbering', () => {
       await setMoveNumbers(page, 'variation')
 
       expect(await moveNumberLabels(page)).toEqual([1, 2])
+    })
+
+    // #965: enabling move numbers used to wipe every marker on the board, so
+    // SGF triangles/squares/labels vanished. They must survive on the vertices
+    // that don't carry a number.
+    test('keeps SGF markup visible when move numbers are on (#965)', async ({
+      page,
+    }) => {
+      // One move at pd, plus markup on three other vertices.
+      await loadSgfStringAndWait(
+        page,
+        '(;GM[1]FF[4]CA[UTF-8]SZ[19];B[pd]TR[dd]SQ[dp]LB[qq:A])',
+      )
+      await page.evaluate(() => window.__sabaki.goToEnd())
+      await setMoveNumbers(page, 'start')
+
+      const shown = await page.evaluate(() => {
+        let titles = [...document.querySelectorAll('.shudan-vertex')].map((v) =>
+          v.getAttribute('title'),
+        )
+        return {
+          triangle: document.querySelectorAll('.shudan-marker_triangle').length,
+          square: document.querySelectorAll('.shudan-marker_square').length,
+          label: titles.includes('A'),
+          moveNumber: titles.includes('1'),
+        }
+      })
+
+      expect(shown.triangle).toBe(1)
+      expect(shown.square).toBe(1)
+      expect(shown.label).toBe(true)
+      expect(shown.moveNumber).toBe(true)
     })
   })
 
