@@ -69,5 +69,10 @@ module.exports = defineConfig({
       testMatch: /comment-coordinate\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'resign',
+      testMatch: /resign\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })

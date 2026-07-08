@@ -1323,6 +1323,12 @@ class Sabaki extends EventEmitter {
       draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
     })
 
+    // Commit the result before the pass move, otherwise this RE update was
+    // built on a stale tree and dropped, so Resign only recorded a pass with no
+    // result. makeMainVariation/makeMove read this.state synchronously, so they
+    // now build on the tree that carries RE. See #915.
+    this.setCurrentTreePosition(newTree, treePosition)
+
     this.makeMainVariation(treePosition)
     this.makeMove([-1, -1], {player})
 
