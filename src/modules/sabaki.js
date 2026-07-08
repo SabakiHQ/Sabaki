@@ -1373,7 +1373,7 @@ class Sabaki extends EventEmitter {
                 .map((value) =>
                   sgf.parseCompressedVertices(value).map(sgf.stringifyVertex),
                 )
-                .reduce((list, x) => [...list, x]),
+                .flat(),
             )
           }
 

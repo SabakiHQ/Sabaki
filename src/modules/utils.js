@@ -148,3 +148,20 @@ export function getOpenFileFromArgv(argv) {
 
   return files.length > 0 ? files[0] : null
 }
+
+// Maps each Clean Markup category to the SGF properties it strips. `label`
+// covers both modern LB[] labels and old-style L[] labels (FF[3]), which Sabaki
+// still reads and renders (see gametree.js), so cleaning labels must remove both.
+export const markupCleanupProperties = {
+  cross: ['MA'],
+  triangle: ['TR'],
+  square: ['SQ'],
+  circle: ['CR'],
+  line: ['LN'],
+  arrow: ['AR'],
+  label: ['LB', 'L'],
+  comments: ['C', 'N'],
+  annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
+  hotspots: ['HO'],
+  winrate: ['SBKV', 'SBKS'],
+}

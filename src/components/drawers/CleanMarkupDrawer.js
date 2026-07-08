@@ -3,6 +3,7 @@ import {h, Component} from 'preact'
 import i18n from '../../i18n.js'
 import sabaki from '../../modules/sabaki.js'
 import {wait, popupMenu} from '../../modules/helper.js'
+import {markupCleanupProperties} from '../../modules/utils.js'
 
 import Drawer from './Drawer.js'
 
@@ -56,19 +57,7 @@ export default class CleanMarkupDrawer extends Component {
       let doRemove = async (work) => {
         sabaki.setBusy(true)
 
-        let data = {
-          cross: ['MA'],
-          triangle: ['TR'],
-          square: ['SQ'],
-          circle: ['CR'],
-          line: ['LN'],
-          arrow: ['AR'],
-          label: ['LB'],
-          comments: ['C', 'N'],
-          annotations: ['DM', 'GB', 'GW', 'UC', 'BM', 'DO', 'IT', 'TE'],
-          hotspots: ['HO'],
-          winrate: ['SBKV', 'SBKS'],
-        }
+        let data = markupCleanupProperties
 
         let properties = Object.keys(data)
           .filter((id) => setting.get(`cleanmarkup.${id}`))
