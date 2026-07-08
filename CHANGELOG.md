@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Sabaki v0.60.1][v0.60.1] (2026-07-08)
+
+A bugfix and stability release on top of v0.60.0, plus an experimental Linux
+Flatpak build.
+
+### Fixed
+
+- Nihon Ki-in and other legacy-encoded SGF files (Shift-JIS, EUC-KR, GB18030,
+  Big5, windows-1251) now open even without a `CA[]` charset property, instead
+  of failing as unreadable
+  ([#1029](https://github.com/SabakiHQ/Sabaki/issues/1029)).
+- Engines wrapped in a `.bat`/`.cmd` script launch again on Windows
+  ([#1037](https://github.com/SabakiHQ/Sabaki/issues/1037)).
+- Launching on Linux no longer shows a false "This file is unreadable" when the
+  launcher injects flags (e.g. `--no-sandbox`) or renames the binary
+  ([#954](https://github.com/SabakiHQ/Sabaki/issues/954)).
+- Resign now records the game result instead of just adding a pass
+  ([#915](https://github.com/SabakiHQ/Sabaki/issues/915)).
+- An attached engine responds to a human pass instead of waiting for a manual
+  "generate move" ([#857](https://github.com/SabakiHQ/Sabaki/issues/857)).
+- Turning on move numbers no longer hides SGF markup: triangles, squares, and
+  labels stay on the board
+  ([#965](https://github.com/SabakiHQ/Sabaki/issues/965)).
+- Editing a node with compressed `AB`/`AW`/`AE` point lists no longer corrupts
+  them into comma-joined junk
+  ([#856](https://github.com/SabakiHQ/Sabaki/issues/856)).
+- Ctrl+click adds the coordinate to the comment box in edit mode and keeps it on
+  the next edit ([#844](https://github.com/SabakiHQ/Sabaki/issues/844)).
+- "Clean markup > Label" removes old-style `L[]` labels, not just `LB[]`
+  ([#881](https://github.com/SabakiHQ/Sabaki/issues/881)).
+- The last-move indicator renders correctly again under custom themes that
+  colour it via `background`
+  ([#904](https://github.com/SabakiHQ/Sabaki/issues/904)).
+- Heatmap win-rate labels display on Linux without requiring a non-free Windows
+  font package ([#804](https://github.com/SabakiHQ/Sabaki/issues/804)).
+- Stopping an engine mid-match no longer logs an uncaught "GTP engine output has
+  stopped" error ([#720](https://github.com/SabakiHQ/Sabaki/issues/720)).
+- Dead-stone detection handles single-eye groups correctly (`@sabaki/deadstones`
+  2.2.0).
+
+### Added
+
+- **Experimental Linux Flatpak (beta).** Published alongside the AppImage as a
+  `-beta` artifact and looking for testers, since it hasn't been verified
+  end-to-end yet. Engine spawning is routed through `flatpak-spawn --host` and
+  file access is scoped to the home directory
+  ([#803](https://github.com/SabakiHQ/Sabaki/issues/803)).
+
+### Dependencies
+
+- `@sabaki/gtp` 3.1.0, `@sabaki/sgf` 3.5.0, `@sabaki/deadstones` 2.2.0.
+- webpack 5.108.4, tsx 4.23.0, remark-breaks 4.0.0, concurrently 10.0.3.
+
 ## [Sabaki v0.60.0][v0.60.0] (2026-07-03)
 
 The first release in a while, and a big one. Alongside a handful of new features
@@ -1127,6 +1180,7 @@ contributed while things were quiet.
 First release
 
 [unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.51.0...master
+[v0.60.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.60.0...v0.60.1
 [v0.60.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.52.2...v0.60.0
 [v0.51.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...v0.51.0
 [v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v0.50.1
