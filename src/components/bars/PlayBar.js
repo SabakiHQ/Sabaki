@@ -33,7 +33,7 @@ export default class PlayBar extends Component {
         [
           {
             label: t('&Pass'),
-            click: () => sabaki.makeMove([-1, -1]),
+            click: () => sabaki.makePass(),
           },
           {
             label: t('&Resign'),

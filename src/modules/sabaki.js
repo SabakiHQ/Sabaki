@@ -1303,6 +1303,15 @@ class Sabaki extends EventEmitter {
     }
   }
 
+  makePass() {
+    // A pass is a play action, so mirror board-click behavior and let an
+    // attached engine respond to it -- unless an engine-vs-engine game is
+    // already driving the moves. See #857.
+    this.makeMove([-1, -1], {
+      generateEngineMove: this.state.engineGameOngoing == null,
+    })
+  }
+
   makeResign({player = null} = {}) {
     let {gameTrees, gameIndex, treePosition} = this.state
     let {currentPlayer} = this.inferredState
