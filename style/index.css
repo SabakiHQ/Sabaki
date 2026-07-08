@@ -1423,6 +1423,18 @@ header {
 
 /* Override Shudan styles */
 
+/* The heatmap win-rate labels inherit the app font stack, which leads with
+   'Segoe UI'. On Linux that's the first font actually tried, and some font
+   packages (e.g. ttf-vista-fonts) alias it to a face that renders these tiny
+   labels blank -- so the numbers vanished until users installed a Windows font
+   package. Pin the labels to broadly-available fonts (Noto/DejaVu/Liberation
+   ship on virtually every Linux desktop) with a generic fallback, so they never
+   depend on a non-free font. See #804. */
+.shudan-vertex .shudan-heatlabel {
+  font-family: 'Noto Sans', 'DejaVu Sans', 'Liberation Sans', Roboto, Arial,
+    sans-serif;
+}
+
 .shudan-vertex .shudan-heatlabel::first-line {
   font-weight: bold;
 }

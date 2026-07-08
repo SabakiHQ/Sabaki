@@ -79,5 +79,10 @@ module.exports = defineConfig({
       testMatch: /last-move-indicator\.spec\.js/,
       dependencies: ['smoke'],
     },
+    {
+      name: 'heatmap-label-font',
+      testMatch: /heatmap-label-font\.spec\.js/,
+      dependencies: ['smoke'],
+    },
   ],
 })
