@@ -2,10 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Sabaki v0.60.1][v0.60.1] (2026-07-08)
+## [Sabaki v0.60.2][v0.60.2] (2026-07-09)
 
 A bugfix and stability release on top of v0.60.0, plus an experimental Linux
-Flatpak build.
+Flatpak build. (v0.60.1 was withdrawn before promotion: a packaging bug crashed
+the app on launch. v0.60.2 is the same set of fixes with that resolved.)
 
 ### Fixed
 
@@ -1180,7 +1181,7 @@ contributed while things were quiet.
 First release
 
 [unreleased]: https://github.com/SabakiHQ/Sabaki/compare/v0.51.0...master
-[v0.60.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.60.0...v0.60.1
+[v0.60.2]: https://github.com/SabakiHQ/Sabaki/compare/v0.60.0...v0.60.2
 [v0.60.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.52.2...v0.60.0
 [v0.51.0]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.1...v0.51.0
 [v0.50.1]: https://github.com/SabakiHQ/Sabaki/compare/v0.50.0...v0.50.1
