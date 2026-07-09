@@ -357,10 +357,8 @@ export default class Goban extends Component {
     // Draw move numbers
 
     if (showMoveNumbers) {
-      // Copy each row (markerMap aliases board.markers) so the number labels
-      // below can overwrite only their own vertices. Nulling the whole map here
-      // erased all SGF markup (triangles, squares, labels, ...) board-wide
-      // whenever move numbers were on. See #965.
+      // Copy each row (markerMap aliases board.markers) so numbers overwrite
+      // only their own vertices without dropping other markup.
       markerMap = markerMap.map((row) => [...row])
 
       let variation = false

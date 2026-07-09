@@ -132,26 +132,8 @@ export function cycleAreaValue(value, steps) {
 // `argv[0]` is the binary; everything that isn't a file to open is filtered out:
 // flags (any leading '-', so Chromium's '--no-sandbox' and macOS's '-psn_...'
 // both go), the dev-mode entry '.', and the packaged-app entry ('*.asar'). Some
-// Linux launchers (snap, AppImage '.desktop' files) inject flags and ship a
-// renamed binary, so a binary-name or argv-position heuristic isn't reliable --
-// filter by content instead. Returns the first surviving argument. See #954.
-export function getOpenFileFromArgv(argv) {
-  let files = argv
-    .slice(1)
-    .filter(
-      (arg) =>
-        !arg.startsWith('-') &&
-        arg !== '.' &&
-        !arg.endsWith('.asar') &&
-        !arg.endsWith('.asar/'),
-    )
-
-  return files.length > 0 ? files[0] : null
-}
-
-// Maps each Clean Markup category to the SGF properties it strips. `label`
-// covers both modern LB[] labels and old-style L[] labels (FF[3]), which Sabaki
-// still reads and renders (see gametree.js), so cleaning labels must remove both.
+// Clean Markup category -> SGF properties. `label` covers both LB[] and
+// old-style L[], both of which Sabaki renders.
 export const markupCleanupProperties = {
   cross: ['MA'],
   triangle: ['TR'],

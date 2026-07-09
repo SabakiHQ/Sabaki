@@ -12,7 +12,7 @@ const {resolve} = require('path')
 const i18n = require('./i18n')
 const setting = require('./setting')
 const updater = require('./updater')
-const {getOpenFileFromArgv} = require('./modules/utils')
+const {getOpenFileFromArgv} = require('./argv')
 
 let windows = []
 let openfile = null

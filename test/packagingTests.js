@@ -3,31 +3,32 @@ import {readFileSync} from 'fs'
 import {fileURLToPath} from 'url'
 import {dirname, join} from 'path'
 
-// main.js runs unbundled from the packaged asar, so any src/modules file it
-// requires must be included by build.files -- which otherwise excludes
-// src/modules entirely because the renderer is webpack-bundled. #1044 added a
-// `require('./modules/utils')` without re-including the file, so the packaged
-// v0.60.1 crashed on launch with "Cannot find module './modules/utils'"
-// (#1058). This guards against that recurring; it's exactly the kind of bug the
-// source-based e2e can't see.
+// main.js runs unbundled from the packaged asar, so it must not require from
+// src/modules or src/components -- those are renderer code, compiled into
+// bundle.js and dropped from the package by the build.files filter. #1044 broke
+// this by requiring src/modules/utils from main.js, so the packaged v0.60.1
+// crashed on launch with "Cannot find module './modules/utils'" (#1058). The
+// source-based e2e can't catch it (it runs from source, not the asar). Pure
+// main-process logic belongs at the src root (e.g. src/argv.js) instead. See the
+// "Process boundaries" note in CLAUDE.md.
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'))
 const mainSource = readFileSync(join(root, 'src', 'main.js'), 'utf8')
 
-describe('main-process packaging', () => {
-  it('build.files packages every src/modules file main.js requires', () => {
-    const files = pkg.build.files
-    const required = [
-      ...mainSource.matchAll(/require\(\s*['"]\.\/modules\/([\w-]+)['"]\s*\)/g),
-    ].map((m) => m[1])
+describe('main-process module boundary', () => {
+  it('main.js does not require renderer modules (src/modules, src/components)', () => {
+    const crossings = [
+      ...mainSource.matchAll(
+        /require\(\s*['"]\.\/(modules|components)\/([\w-]+)['"]\s*\)/g,
+      ),
+    ].map((m) => `./${m[1]}/${m[2]}`)
 
-    for (const mod of required) {
-      const packagedPath = `src/modules/${mod}.js`
-      assert.ok(
-        files.includes(packagedPath),
-        `main.js requires ./modules/${mod}, so build.files must list "${packagedPath}" to re-include it past the src/modules exclusion; otherwise the packaged app crashes with "Cannot find module".`,
-      )
-    }
+    assert.deepStrictEqual(
+      crossings,
+      [],
+      `main.js runs unbundled from the asar but requires renderer module(s): ${crossings.join(
+        ', ',
+      )}. build.files excludes src/modules and src/components, so the packaged app would crash with "Cannot find module". Move that logic to a src-root main-process module (see src/argv.js).`,
+    )
   })
 })
