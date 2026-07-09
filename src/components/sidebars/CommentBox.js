@@ -289,12 +289,8 @@ export default class CommentBox extends Component {
         this.textareaElement.scrollTop = 0
         this.setState({title, comment})
       } else if (comment !== this.state.comment) {
-        // The comment changed in place on the current node (e.g. ctrl+click
-        // adding a coordinate). Refresh the textarea; otherwise it keeps the
-        // stale value and the next blur commits it back, dropping the change.
-        // Typing can't trigger this: keystrokes reset the commit debounce, so a
-        // commit only lands once the text settles and already matches state.
-        // See #844.
+        // An in-place comment change (e.g. ctrl+click adds a coordinate) must
+        // refresh the textarea, or the next blur commits the stale value back.
         this.setState({comment})
       }
 

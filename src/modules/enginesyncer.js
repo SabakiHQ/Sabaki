@@ -50,11 +50,8 @@ export default class EngineSyncer extends EventEmitter {
     let executePath = existsSync(absolutePath) ? absolutePath : path
     let executeArgs = [...argvsplit(args)]
 
-    // Inside a Flatpak sandbox (FLATPAK_ID set), user-provided engine binaries
-    // live on the host and can't be executed directly. Route them through
-    // `flatpak-spawn --host`, which needs the org.freedesktop.Flatpak talk-name
-    // permission granted in the Flatpak build. --directory keeps the engine's
-    // working directory (e.g. for weight files referenced relatively). See #803.
+    // In a Flatpak sandbox, host engine binaries can't be run directly; route
+    // them through flatpak-spawn --host, preserving the working directory.
     if (process.env.FLATPAK_ID != null) {
       executeArgs = [
         '--host',
@@ -226,11 +223,8 @@ export default class EngineSyncer extends EventEmitter {
       try {
         await this.controller.sendCommand({name: 'protocol_version'})
       } catch (err) {
-        // Best-effort interrupt: if the engine has already stopped (e.g. it's
-        // being killed during shutdown) the command rejects with "GTP engine
-        // output has stopped". queueCommand()/sync() fire this without awaiting,
-        // so swallow it here rather than surface an unhandled rejection. See
-        // #720.
+        // Best-effort interrupt: callers don't await this, so swallow the
+        // rejection when the engine has already stopped.
       }
     }
   }

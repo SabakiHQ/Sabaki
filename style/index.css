@@ -1423,13 +1423,9 @@ header {
 
 /* Override Shudan styles */
 
-/* The heatmap win-rate labels inherit the app font stack, which leads with
-   'Segoe UI'. On Linux that's the first font actually tried, and some font
-   packages (e.g. ttf-vista-fonts) alias it to a face that renders these tiny
-   labels blank -- so the numbers vanished until users installed a Windows font
-   package. Pin the labels to broadly-available fonts (Noto/DejaVu/Liberation
-   ship on virtually every Linux desktop) with a generic fallback, so they never
-   depend on a non-free font. See #804. */
+/* Don't inherit the app font stack (leads with 'Segoe UI', which is missing or
+   broken on some Linux setups and left these tiny labels blank); pin to widely
+   available fonts. */
 .shudan-vertex .shudan-heatlabel {
   font-family: 'Noto Sans', 'DejaVu Sans', 'Liberation Sans', Roboto, Arial,
     sans-serif;
@@ -1443,13 +1439,9 @@ header {
   transition: none;
 }
 
-/* The last-move indicator is an SVG dot since Shudan 1.7. Older themes (e.g.
-   upsided's Happy Stones / BadukTV) still set `background` on it -- a leftover
-   from when it was a <div> -- which now paints a solid square over the whole
-   vertex instead of coloring the dot. Neutralize it so the indicator renders
-   correctly regardless of theme; themes should color the dot with `fill`. The
-   theme stylesheet loads after this one, so !important is needed to win. See
-   #904. */
+/* Some themes set `background` on the last-move dot (a leftover from when it was
+   a <div>); on the current SVG marker that paints a square over the vertex.
+   Neutralize it -- theme stylesheets load after this one, so !important wins. */
 .shudan-vertex.shudan-marker_point .shudan-marker {
   background: transparent !important;
 }

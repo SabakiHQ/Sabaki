@@ -1304,9 +1304,8 @@ class Sabaki extends EventEmitter {
   }
 
   makePass() {
-    // A pass is a play action, so mirror board-click behavior and let an
-    // attached engine respond to it -- unless an engine-vs-engine game is
-    // already driving the moves. See #857.
+    // Let an attached engine respond to the pass, as it does for a board click,
+    // unless an engine-vs-engine game is already driving moves.
     this.makeMove([-1, -1], {
       generateEngineMove: this.state.engineGameOngoing == null,
     })
@@ -1323,10 +1322,8 @@ class Sabaki extends EventEmitter {
       draft.updateProperty(draft.root.id, 'RE', [`${color}+Resign`])
     })
 
-    // Commit the result before the pass move, otherwise this RE update was
-    // built on a stale tree and dropped, so Resign only recorded a pass with no
-    // result. makeMainVariation/makeMove read this.state synchronously, so they
-    // now build on the tree that carries RE. See #915.
+    // Commit the result first so the pass below builds on the tree carrying RE
+    // (setState is synchronous).
     this.setCurrentTreePosition(newTree, treePosition)
 
     this.makeMainVariation(treePosition)
