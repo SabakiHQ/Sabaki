@@ -24,6 +24,8 @@ will only use the following fields:
 - `author` _(optional)_
 - `homepage` _(optional)_
 - `main` - The CSS file to include in Sabaki, usually `styles.css`
+- `stoneVariations` _(optional)_ - Positive integer variation counts for black
+  and white stones; each color defaults to five
 
 For example:
 
@@ -31,9 +33,17 @@ For example:
 {
   "name": "my-theme",
   "version": "0.1.0",
-  "main": "styles.css"
+  "main": "styles.css",
+  "stoneVariations": {
+    "black": 12,
+    "white": 7
+  }
 }
 ```
+
+The counts may differ. Sabaki assigns `.shudan-random_0` through
+`.shudan-random_{count - 1}` to the corresponding `.shudan-sign_1` (black) or
+`.shudan-sign_-1` (white) stones. Missing or invalid counts default to five.
 
 ## Packing
 
