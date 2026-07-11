@@ -485,6 +485,7 @@ exports.get = function (props = {}) {
           label: i18n.t('menu.engines', 'Show &Engines Sidebar'),
           type: 'checkbox',
           checked: !!showLeftSidebar,
+          accelerator: 'CmdOrCtrl+Shift+B',
           click: () => {
             toggleSetting('view.show_leftsidebar')
             sabaki.setState(({showLeftSidebar}) => ({
