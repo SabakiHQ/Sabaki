@@ -144,7 +144,7 @@
     "electron-builder": "^26.8.1",
     "mocha": "^11.7.6",
     "onchange": "^7.1.0",
-    "prettier": "3.8.1",
+    "prettier": "3.9.5",
     "tmp": "^0.2.7",
     "tsx": "^4.23.0",
     "webpack": "^5.108.4",
