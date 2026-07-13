@@ -112,7 +112,7 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
-    "@primer/octicons": "^19.29.1",
+    "@primer/octicons": "^19.29.2",
     "@sabaki/boardmatcher": "^1.2.0",
     "@sabaki/deadstones": "^2.2.0",
     "@sabaki/go-board": "^1.4.1",
