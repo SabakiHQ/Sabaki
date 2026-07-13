@@ -148,7 +148,7 @@
     "tmp": "^0.2.7",
     "tsx": "^4.23.0",
     "webpack": "^5.108.4",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^7.2.1"
   },
   "scripts": {
     "test": "mocha --require tsx",
