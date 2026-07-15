@@ -1,6 +1,6 @@
 import fs from 'fs'
 import EventEmitter from 'events'
-import {basename, extname} from 'path'
+import {basename, dirname, extname} from 'path'
 import {ipcRenderer} from 'electron'
 import {h} from 'preact'
 import {v4 as uuid} from 'uuid'
@@ -588,8 +588,13 @@ class Sabaki extends EventEmitter {
     let t = i18n.context('sabaki.file')
 
     if (!filename) {
+      let {representedFilename} = this.state
+
       let result = await dialog.showOpenDialog({
         properties: ['openFile'],
+        defaultPath: representedFilename
+          ? dirname(representedFilename)
+          : undefined,
         filters: [
           ...fileformats.meta,
           {name: t('All Files'), extensions: ['*']},
