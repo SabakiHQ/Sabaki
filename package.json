@@ -162,7 +162,7 @@
     "watch": "concurrently \"webpack --mode development --watch\" \"npm run watch-format\"",
     "dist:macos": "npm run bundle && electron-builder -m --x64 --arm64 --publish never",
     "dist:linux": "npm run bundle && electron-builder -l --x64 --arm64 --publish never && node ./ci/normalizeArtifactNames.js",
-    "dist:flatpak": "npm run bundle && electron-builder -l flatpak --x64 --publish never",
+    "dist:flatpak": "npm run bundle && electron-builder -l flatpak --publish never",
     "dist:win64": "npm run bundle && electron-builder -w --x64 --publish never && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-setup.exe",
     "dist:win64-portable": "npm run bundle && electron-builder -w portable --x64 --publish never && node ./ci/mv.js ./dist/sabaki-vx.x.x-win.exe ./dist/sabaki-vx.x.x-win-x64-portable.exe",
     "dist:win": "npm run dist:win64 && npm run dist:win64-portable",

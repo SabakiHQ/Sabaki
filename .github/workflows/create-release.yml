@@ -4,12 +4,15 @@ on:
   push:
     tags:
       - v*
+  # Manual runs build only the Flatpak job (build/publish are tag-gated).
+  workflow_dispatch: {}
 
 permissions:
   contents: read
 
 jobs:
   build:
+    if: startsWith(github.ref, 'refs/tags/v')
     strategy:
       fail-fast: false
       matrix:
@@ -51,22 +54,6 @@ jobs:
       - name: Build distributables
         if: runner.os != 'macOS'
         run: npm run ${{ matrix.dist }}
-      # Beta Flatpak (Linux only). Best-effort and non-fatal: this is an
-      # unverified beta (see #803), so a failure here must never block the
-      # AppImage / macOS / Windows artifacts. It runs after the AppImage build so
-      # the -beta.flatpak lands alongside it in dist/ for the upload below.
-      - name: Build Flatpak (beta)
-        if: runner.os == 'Linux'
-        continue-on-error: true
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder
-          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user -y flathub \
-            org.freedesktop.Platform//23.08 \
-            org.freedesktop.Sdk//23.08 \
-            org.electronjs.Electron2.BaseApp//23.08
-          npm run dist:flatpak
       # No auto-update client ships yet. --glob: Windows runners use
       # PowerShell, which does not expand wildcards.
       - name: Remove auto-update metadata
@@ -77,8 +64,44 @@ jobs:
           path: dist/sabaki-*
           if-no-files-found: error
 
+  # Flatpak, built natively per-arch (x86_64 + aarch64, e.g. Raspberry Pi).
+  flatpak:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            arch: x86_64
+          - os: ubuntu-24.04-arm
+            arch: aarch64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install dependencies
+        run: npm ci
+      - name: Build Flatpak (${{ matrix.arch }})
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flatpak flatpak-builder
+          flatpak remote-add --if-not-exists --user flathub https://flathub.org/repo/flathub.flatpakrepo
+          flatpak install --user -y flathub \
+            org.freedesktop.Platform//23.08 \
+            org.freedesktop.Sdk//23.08 \
+            org.electronjs.Electron2.BaseApp//23.08
+          # No arch flag: build for the host arch (set by the runner).
+          npm run dist:flatpak
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flatpak-${{ matrix.arch }}
+          path: dist/*.flatpak
+          if-no-files-found: error
+
   publish:
-    needs: build
+    needs: [build, flatpak]
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     permissions:
       contents: write
