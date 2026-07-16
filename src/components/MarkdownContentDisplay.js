@@ -57,12 +57,8 @@ function Image({src, alt}) {
   return h(Link, {href: src}, typographer(alt))
 }
 
-function Heading({level, children}) {
-  return h(`h${level}`, {}, typographer(children))
-}
-
-function Html({isBlock, value}) {
-  return h(isBlock ? Paragraph : 'span', {}, value)
+function Heading({node, children}) {
+  return h(node.tagName, {}, typographer(children))
 }
 
 class MarkdownContentDisplay extends Component {
@@ -86,7 +82,6 @@ class MarkdownContentDisplay extends Component {
         h5: Heading,
         h6: Heading,
         code: Paragraph,
-        html: Html,
       },
     })
   }

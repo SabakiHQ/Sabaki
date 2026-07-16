@@ -70,6 +70,11 @@ module.exports = defineConfig({
       dependencies: ['smoke'],
     },
     {
+      name: 'comment-markdown-link',
+      testMatch: /comment-markdown-link\.spec\.js/,
+      dependencies: ['smoke'],
+    },
+    {
       name: 'resign',
       testMatch: /resign\.spec\.js/,
       dependencies: ['smoke'],
