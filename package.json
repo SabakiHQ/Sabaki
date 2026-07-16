@@ -121,7 +121,7 @@
     "@sabaki/immutable-gametree": "^1.9.4",
     "@sabaki/influence": "^1.2.2",
     "@sabaki/sgf": "^3.5.0",
-    "@sabaki/shudan": "^1.7.1",
+    "@sabaki/shudan": "^1.8.0",
     "argv-split": "^3.2.1",
     "classnames": "^2.2.6",
     "dolm": "^0.7.3-beta",
