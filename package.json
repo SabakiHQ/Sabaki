@@ -112,11 +112,11 @@
   },
   "dependencies": {
     "@mariotacke/color-thief": "^3.0.1",
-    "@primer/octicons": "^19.29.1",
+    "@primer/octicons": "^19.29.2",
     "@sabaki/boardmatcher": "^1.2.0",
     "@sabaki/deadstones": "^2.2.0",
     "@sabaki/go-board": "^1.4.1",
-    "@sabaki/gtp": "^3.1.0",
+    "@sabaki/gtp": "^3.1.1",
     "@sabaki/i18n": "0.51.1-1",
     "@sabaki/immutable-gametree": "^1.9.4",
     "@sabaki/influence": "^1.2.2",
@@ -130,7 +130,7 @@
     "jschardet": "^3.0.0",
     "natsort": "^2.0.2",
     "pikaday": "^1.8.0",
-    "preact": "^10.4.0",
+    "preact": "^10.29.7",
     "react-markdown": "^10.1.0",
     "remark-breaks": "^4.0.0",
     "rimraf": "^6.1.2",
@@ -144,11 +144,11 @@
     "electron-builder": "^26.8.1",
     "mocha": "^11.7.6",
     "onchange": "^7.1.0",
-    "prettier": "3.8.1",
+    "prettier": "3.9.5",
     "tmp": "^0.2.7",
     "tsx": "^4.23.0",
     "webpack": "^5.108.4",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^7.2.1"
   },
   "scripts": {
     "test": "mocha --require tsx",
