@@ -174,7 +174,9 @@ export default class ThemeManager extends Component {
                 }`,
 
         backgroundPath != null &&
-          `main {
+          // Match theme selectors such as `#main main` so the user-selected
+          // background wins by source order instead of losing on specificity.
+          `#main main {
                     background-image: url('${backgroundPath.replace(
                       /\\/g,
                       '/',
