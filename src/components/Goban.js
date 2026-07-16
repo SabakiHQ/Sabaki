@@ -10,7 +10,10 @@ import * as gobantransformer from '../modules/gobantransformer.js'
 import * as helper from '../modules/helper.js'
 
 const t = i18n.context('Goban')
-const setting = {get: (key) => window.sabaki.setting.get(key)}
+const setting = {
+  get: (key) => window.sabaki.setting.get(key),
+  getThemes: () => window.sabaki.setting.getThemes(),
+}
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 
 export default class Goban extends Component {
@@ -236,6 +239,7 @@ export default class Goban extends Component {
 
       drawLineMode = null,
       transformation = '',
+      currentThemeId,
     },
     {
       top = 0,
@@ -251,6 +255,13 @@ export default class Goban extends Component {
       variationIndex = -1,
     },
   ) {
+    let currentTheme = setting.getThemes()[currentThemeId]
+    let stoneVariations = currentTheme?.stoneVariations
+    let stoneVariationCounts = {
+      1: stoneVariations?.black,
+      [-1]: stoneVariations?.white,
+    }
+
     let signMap = board.signMap
     let markerMap = board.markers
 
@@ -475,6 +486,7 @@ export default class Goban extends Component {
       coordY,
       fuzzyStonePlacement,
       animateStonePlacement: clicked && animateStonePlacement,
+      stoneVariationCounts,
 
       signMap: gobantransformer.transformMap(signMap, transformation),
       markerMap: gobantransformer.transformMap(markerMap, transformation),

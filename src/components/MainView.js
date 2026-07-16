@@ -102,6 +102,7 @@ export default class MainView extends Component {
       fuzzyStonePlacement,
       animateStonePlacement,
       boardTransformation,
+      currentThemeId,
 
       selectedTool,
       findText,
@@ -161,6 +162,7 @@ export default class MainView extends Component {
           showSiblings: mode !== 'guess' && showSiblings,
           fuzzyStonePlacement,
           animateStonePlacement,
+          currentThemeId,
 
           playVariation,
           drawLineMode:
