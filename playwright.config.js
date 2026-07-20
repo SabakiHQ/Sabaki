@@ -70,6 +70,11 @@ module.exports = defineConfig({
       dependencies: ['smoke'],
     },
     {
+      name: 'open-dialog-default-path',
+      testMatch: /open-dialog-default-path\.spec\.js/,
+      dependencies: ['smoke'],
+    },
+    {
       name: 'resign',
       testMatch: /resign\.spec\.js/,
       dependencies: ['smoke'],
