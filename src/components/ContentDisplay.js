@@ -164,7 +164,7 @@ export default class ContentDisplay extends Component {
     }
   }
 
-  render({tag, content, children}) {
+  render({tag = 'span', content, children}) {
     return content != null
       ? h(tag, {
           ref: (el) => (this.element = el),
@@ -183,12 +183,13 @@ export default class ContentDisplay extends Component {
         })
       : h(
           tag,
-          Object.assign(
-            {
-              ref: (el) => (this.element = el),
-            },
-            this.props,
-          ),
+          {
+            ref: (el) => (this.element = el),
+            ...this.props,
+            tag: undefined,
+            content: undefined,
+            children: undefined,
+          },
           children,
         )
   }
