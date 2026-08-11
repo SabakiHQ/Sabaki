@@ -1882,7 +1882,18 @@ class Sabaki extends EventEmitter {
     for (let engine of engines) {
       engine = {...engine, name: getEngineName(engine.name)}
 
-      let syncer = new EngineSyncer(engine)
+      let syncer
+      try {
+        syncer = new EngineSyncer(engine)
+      } catch (err) {
+        dialog.showMessageBox(
+          t((p) => `Could not attach ${p.name}.`, {name: engine.name}) +
+            `\n\n${err.message}`,
+          'warning',
+        )
+
+        continue
+      }
 
       syncer.on('analysis-update', () => {
         if (this.state.analyzingEngineSyncerId === syncer.id) {
@@ -1981,6 +1992,29 @@ class Sabaki extends EventEmitter {
           message: 'Engine Stopped',
           engine: engine.name,
         })
+      })
+
+      syncer.on('error-changed', () => {
+        if (syncer.error == null) return
+
+        this.setState(({consoleLog}) => ({
+          consoleLog: [
+            ...consoleLog,
+            {
+              name: engine.name,
+              command: null,
+              response: {content: syncer.error, internal: true},
+            },
+          ],
+        }))
+
+        gtplogger.write({
+          type: 'meta',
+          message: `Engine Error: ${syncer.error}`,
+          engine: engine.name,
+        })
+
+        dialog.showMessageBox(`${engine.name}\n\n${syncer.error}`, 'warning')
       })
 
       syncer.controller.start()

@@ -1206,7 +1206,7 @@ header {
     font-size: 1em;
     font-weight: normal;
   }
-  .engines-list li h3 + p input {
+  .engines-list li h3 + p input:placeholder-shown {
     opacity: .5;
   }
   .engines-list li > * { margin: 0; }
@@ -1241,6 +1241,8 @@ header {
   .engines-list li a.remove:active {
     background: #C60001;
   }
+  .engines-list li a.browse:hover,
+  .engines-list li a.browse:focus,
   .engines-list li a.browse:active {
     opacity: 1;
 }
@@ -1359,6 +1361,9 @@ header {
     width: 1.5em;
     filter: invert(100%);
     opacity: .6;
+  }
+  .engine-peer-list .item.failed .icon {
+    opacity: 1;
   }
   .engine-peer-list .item .icon.player {
     filter: none;

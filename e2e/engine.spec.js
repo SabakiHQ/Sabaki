@@ -195,4 +195,118 @@ test.describe('GTP Engine Integration Tests', () => {
     // Clean up
     await detachAndWait(page, syncerIds)
   })
+
+  // Regression coverage for #1083. A launch that fails used to surface only as
+  // an uncaught exception in the renderer: no dialog, no console entry, and an
+  // engine row that just sat there marked "Stopped".
+  test('reports an engine that cannot be spawned', async ({page}) => {
+    const pageErrors = []
+    page.on('pageerror', (err) => pageErrors.push(err.message))
+
+    const missingPath = path.join(__dirname, 'fixtures', 'no-such-engine')
+
+    const syncerId = await page.evaluate((enginePath) => {
+      const [syncer] = window.__sabaki.attachEngines([
+        {name: 'MissingEngine', path: enginePath, args: ''},
+      ])
+      return syncer.id
+    }, missingPath)
+
+    await page.waitForFunction(
+      (id) => {
+        const syncer = window.__sabaki.state.attachedEngineSyncers.find(
+          (s) => s.id === id,
+        )
+        return syncer != null && syncer.error != null
+      },
+      syncerId,
+      {timeout: 10000},
+    )
+
+    const {error, suspended} = await page.evaluate((id) => {
+      const syncer = window.__sabaki.state.attachedEngineSyncers.find(
+        (s) => s.id === id,
+      )
+      return {error: syncer.error, suspended: syncer.suspended}
+    }, syncerId)
+
+    expect(error).toContain('Could not find the engine executable.')
+    expect(suspended).toBe(true)
+
+    // The reason has to reach the GTP console, not just DevTools.
+    const loggedError = await page.evaluate(() =>
+      window.__sabaki.state.consoleLog.some(
+        (entry) =>
+          entry.response != null &&
+          typeof entry.response.content === 'string' &&
+          entry.response.content.includes(
+            'Could not find the engine executable.',
+          ),
+      ),
+    )
+    expect(loggedError).toBe(true)
+
+    expect(pageErrors).toEqual([])
+
+    await detachAndWait(page, [syncerId])
+  })
+
+  test('reports an engine that exits immediately', async ({page}) => {
+    const pageErrors = []
+    page.on('pageerror', (err) => pageErrors.push(err.message))
+
+    const failingEnginePath = path.resolve(
+      __dirname,
+      '..',
+      'test',
+      'engines',
+      'failingEngine.js',
+    )
+
+    const syncerId = await page.evaluate((enginePath) => {
+      const [syncer] = window.__sabaki.attachEngines([
+        {name: 'QuittingEngine', path: process.execPath, args: enginePath},
+      ])
+      return syncer.id
+    }, failingEnginePath)
+
+    await page.waitForFunction(
+      (id) => {
+        const syncer = window.__sabaki.state.attachedEngineSyncers.find(
+          (s) => s.id === id,
+        )
+        return syncer != null && syncer.error != null
+      },
+      syncerId,
+      {timeout: 10000},
+    )
+
+    const error = await page.evaluate(
+      (id) =>
+        window.__sabaki.state.attachedEngineSyncers.find((s) => s.id === id)
+          .error,
+      syncerId,
+    )
+
+    expect(error).toContain('exit code 3')
+
+    // The engine's own stderr is what actually explains a failure like this, so
+    // it has to make it into the console too. It can arrive either side of the
+    // exit, hence the separate wait.
+    await page.waitForFunction(
+      () =>
+        window.__sabaki.state.consoleLog.some(
+          (entry) =>
+            entry.response != null &&
+            typeof entry.response.content === 'string' &&
+            entry.response.content.includes('simulated startup failure'),
+        ),
+      undefined,
+      {timeout: 10000},
+    )
+
+    expect(pageErrors).toEqual([])
+
+    await detachAndWait(page, [syncerId])
+  })
 })
