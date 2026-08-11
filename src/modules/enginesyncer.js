@@ -10,7 +10,7 @@ import {parseCompressedVertices} from '@sabaki/sgf'
 
 import i18n from '../i18n.js'
 import {getBoard, getRootProperty} from './gametree.js'
-import {equals} from './helper.js'
+import {noop, equals} from './helper.js'
 import {parseAnalysis} from './analysis.js'
 
 const t = i18n.context('EngineSyncer')
@@ -108,12 +108,12 @@ export default class EngineSyncer extends EventEmitter {
       })
     })
 
-    this.controller.on('stopped', ({code, error}) => {
+    this.controller.on('stopped', ({code, signal, error}) => {
       this.treePosition = null
       this.analysis = null
 
       if (!this._stopRequested) {
-        this.error = this._describeFailure({code, error})
+        this.error = this._describeFailure({code, signal, error})
       }
 
       this._stopRequested = false
@@ -243,14 +243,17 @@ export default class EngineSyncer extends EventEmitter {
     }
   }
 
-  _describeFailure({code, error}) {
+  _describeFailure({code, signal, error}) {
     let reason =
       error == null
-        ? code == null
-          ? t('The engine stopped unexpectedly.')
-          : t((p) => `The engine stopped unexpectedly (exit code ${p.code}).`, {
-              code,
-            })
+        ? signal != null
+          ? t((p) => `The engine was terminated by ${p.signal}.`, {signal})
+          : code == null
+            ? t('The engine stopped unexpectedly.')
+            : t(
+                (p) => `The engine stopped unexpectedly (exit code ${p.code}).`,
+                {code},
+              )
         : error.code === 'ENOENT'
           ? t('Could not find the engine executable.')
           : error.code === 'EACCES' || error.code === 'EISDIR'
@@ -266,6 +269,12 @@ export default class EngineSyncer extends EventEmitter {
 
   start() {
     this.controller.start()
+
+    // Writing to an engine that has just died surfaces as an asynchronous EPIPE
+    // on the pipe rather than at the call site, and an unhandled stream error
+    // would take the renderer down. The death itself is reported via 'stopped'.
+    let {stdin} = this.controller.process || {}
+    if (stdin != null) stdin.on('error', noop)
   }
 
   async stop() {

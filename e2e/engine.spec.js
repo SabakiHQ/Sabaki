@@ -255,17 +255,20 @@ test.describe('GTP Engine Integration Tests', () => {
     const pageErrors = []
     page.on('pageerror', (err) => pageErrors.push(err.message))
 
+    // Spawned directly rather than through process.execPath: that runs the
+    // Electron binary, whose sandbox startup races an immediate exit on Linux
+    // and kills the process by signal before it can return its own code.
     const failingEnginePath = path.resolve(
       __dirname,
       '..',
       'test',
       'engines',
-      'failingEngine.js',
+      'failingEngine.sh',
     )
 
     const syncerId = await page.evaluate((enginePath) => {
       const [syncer] = window.__sabaki.attachEngines([
-        {name: 'QuittingEngine', path: process.execPath, args: enginePath},
+        {name: 'QuittingEngine', path: enginePath, args: ''},
       ])
       return syncer.id
     }, failingEnginePath)
@@ -305,6 +308,50 @@ test.describe('GTP Engine Integration Tests', () => {
       {timeout: 10000},
     )
 
+    expect(pageErrors).toEqual([])
+
+    await detachAndWait(page, [syncerId])
+  })
+
+  test('reports an engine killed by a signal', async ({page}) => {
+    const pageErrors = []
+    page.on('pageerror', (err) => pageErrors.push(err.message))
+
+    const crashingEnginePath = path.resolve(
+      __dirname,
+      '..',
+      'test',
+      'engines',
+      'crashingEngine.sh',
+    )
+
+    const syncerId = await page.evaluate((enginePath) => {
+      const [syncer] = window.__sabaki.attachEngines([
+        {name: 'CrashingEngine', path: enginePath, args: ''},
+      ])
+      return syncer.id
+    }, crashingEnginePath)
+
+    await page.waitForFunction(
+      (id) => {
+        const syncer = window.__sabaki.state.attachedEngineSyncers.find(
+          (s) => s.id === id,
+        )
+        return syncer != null && syncer.error != null
+      },
+      syncerId,
+      {timeout: 10000},
+    )
+
+    const error = await page.evaluate(
+      (id) =>
+        window.__sabaki.state.attachedEngineSyncers.find((s) => s.id === id)
+          .error,
+      syncerId,
+    )
+
+    // A crash has no exit code, so the signal is the only thing identifying it.
+    expect(error).toContain('SIGSEGV')
     expect(pageErrors).toEqual([])
 
     await detachAndWait(page, [syncerId])

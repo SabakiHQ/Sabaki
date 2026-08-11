@@ -2017,7 +2017,7 @@ class Sabaki extends EventEmitter {
         dialog.showMessageBox(`${engine.name}\n\n${syncer.error}`, 'warning')
       })
 
-      syncer.controller.start()
+      syncer.start()
 
       attaching.push(syncer)
     }
