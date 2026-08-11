@@ -20,6 +20,7 @@ const setting = {
 
 const alpha = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
 const quitTimeout = setting.get('gtp.engine_quit_timeout')
+const stderrBufferSize = 10
 
 function parseVertex(coord, size) {
   if (coord == null || coord === 'resign') return null
@@ -40,6 +41,9 @@ export default class EngineSyncer extends EventEmitter {
     this._busy = false
     this._suspended = true
     this._analysis = null
+    this._error = null
+    this._stopRequested = false
+    this._stderr = []
 
     this.id = uuid()
     this.engine = engine
@@ -68,9 +72,15 @@ export default class EngineSyncer extends EventEmitter {
 
     this.stateTracker = new ControllerStateTracker(this.controller)
 
+    this.controller.on('stderr', ({content}) => {
+      this._stderr = [...this._stderr, content].slice(-stderrBufferSize)
+    })
+
     this.controller.on('started', () => {
       this.treePosition = null
       this.analysis = null
+      this.error = null
+      this._stderr = []
 
       Promise.all([
         this.controller.sendCommand({name: 'name'}),
@@ -89,12 +99,24 @@ export default class EngineSyncer extends EventEmitter {
                 this.controller.sendCommand(Command.fromString(command)),
               )
           : []),
-      ]).catch(noop)
+      ]).catch(() => {
+        // A dead process is reported by the 'stopped' handler below; a live one
+        // that fails the handshake isn't speaking GTP.
+        if (this.controller.process != null && !this._stopRequested) {
+          this.error = t('The engine did not respond to the GTP handshake.')
+        }
+      })
     })
 
-    this.controller.on('stopped', () => {
+    this.controller.on('stopped', ({code, signal, error}) => {
       this.treePosition = null
       this.analysis = null
+
+      if (!this._stopRequested) {
+        this.error = this._describeFailure({code, signal, error})
+      }
+
+      this._stopRequested = false
     })
 
     this.controller.on(
@@ -210,11 +232,53 @@ export default class EngineSyncer extends EventEmitter {
     }
   }
 
+  get error() {
+    return this._error
+  }
+
+  set error(value) {
+    if (value !== this._error) {
+      this._error = value
+      this.emit('error-changed')
+    }
+  }
+
+  _describeFailure({code, signal, error}) {
+    let reason =
+      error == null
+        ? signal != null
+          ? t((p) => `The engine was terminated by ${p.signal}.`, {signal})
+          : code == null
+            ? t('The engine stopped unexpectedly.')
+            : t(
+                (p) => `The engine stopped unexpectedly (exit code ${p.code}).`,
+                {code},
+              )
+        : error.code === 'ENOENT'
+          ? t('Could not find the engine executable.')
+          : error.code === 'EACCES' || error.code === 'EISDIR'
+            ? t('The engine executable cannot be run.')
+            : error.message
+
+    // Engines often sign off with a usage block or a blank line, so quote back
+    // the last line that actually says something.
+    let lastLine = this._stderr.filter((line) => line.trim() !== '').pop()
+
+    return lastLine == null ? reason : `${reason}\n\n${lastLine}`
+  }
+
   start() {
     this.controller.start()
+
+    // Writing to an engine that has just died surfaces as an asynchronous EPIPE
+    // on the pipe rather than at the call site, and an unhandled stream error
+    // would take the renderer down. The death itself is reported via 'stopped'.
+    let {stdin} = this.controller.process || {}
+    if (stdin != null) stdin.on('error', noop)
   }
 
   async stop() {
+    this._stopRequested = true
     await this.controller.stop(quitTimeout)
   }
 

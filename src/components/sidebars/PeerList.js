@@ -15,12 +15,14 @@ class EnginePeerListItem extends Component {
     this.state = {
       busy: props.syncer.busy,
       suspended: props.syncer.suspended,
+      error: props.syncer.error,
     }
 
     this.syncState = () => {
       this.setState({
         busy: this.props.syncer.busy,
         suspended: this.props.syncer.suspended,
+        error: this.props.syncer.error,
       })
     }
 
@@ -39,21 +41,36 @@ class EnginePeerListItem extends Component {
     this.props.syncer
       .on('busy-changed', this.syncState)
       .on('suspended-changed', this.syncState)
+      .on('error-changed', this.syncState)
   }
 
   componentWillUnmount() {
     this.props.syncer
       .removeListener('busy-changed', this.syncState)
       .removeListener('suspended-changed', this.syncState)
+      .removeListener('error-changed', this.syncState)
   }
 
   render({syncer, analyzing, selected, blackPlayer, whitePlayer}) {
+    let failed = this.state.error != null
+    let status = failed
+      ? t('Error')
+      : !this.state.suspended
+        ? t('Running')
+        : t('Stopped')
+    let statusIcon = failed
+      ? 'alert-16'
+      : !this.state.suspended
+        ? 'triangle-right-16'
+        : 'square-fill-16'
+
     return h(
       'li',
       {
         class: classnames('item', {
           analyzing,
           selected,
+          failed,
           busy: this.state.busy,
           suspended: this.state.suspended,
         }),
@@ -67,13 +84,11 @@ class EnginePeerListItem extends Component {
             'div',
             {
               class: 'icon',
-              title: !this.state.suspended ? t('Running') : t('Stopped'),
+              title: failed ? this.state.error : status,
             },
             h('img', {
-              src: `./node_modules/@primer/octicons/build/svg/${
-                !this.state.suspended ? 'triangle-right-16' : 'square-fill-16'
-              }.svg`,
-              alt: !this.state.suspended ? t('Running') : t('Stopped'),
+              src: `./node_modules/@primer/octicons/build/svg/${statusIcon}.svg`,
+              alt: status,
             }),
           )
         : h(TextSpinner),
