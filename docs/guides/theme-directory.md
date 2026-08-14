@@ -30,6 +30,11 @@ under Sabaki v0.30.x may not work in Sabaki v0.40.0 or newer.
 | [Subtle - Paper](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                             | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_paper/Screenshot.png)        |
 | [Subtle - Kaya](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                              | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_kaya/Screenshot.png)         |
 | [Subtle - Dark](https://github.com/RobertChrist/Sabaki-Subtle-Theme/)                              | ![Screenshot](https://github.com/RobertChrist/Sabaki-Subtle-Theme/blob/main/img/subtle_dark/Screenshot.png)         |
+| [Sand and Pebbles](https://github.com/lykahb/goban-decals/blob/master/themes/sand-and-pebbles/README.md) | ![Screenshot](https://github.com/lykahb/goban-decals/raw/master/themes/sand-and-pebbles/preview.webp)                              |
+| [Flowering Meadow - Daylight Dandelions](https://github.com/lykahb/goban-decals/blob/master/themes/flowering-meadow/README.md#daylight-dandelions) | ![Screenshot](https://github.com/lykahb/goban-decals/raw/master/themes/flowering-meadow/variants/daylight-dandelions/preview.webp) |
+| [Flowering Meadow - Sunset Dandelions](https://github.com/lykahb/goban-decals/blob/master/themes/flowering-meadow/README.md#sunset-dandelions) | ![Screenshot](https://github.com/lykahb/goban-decals/raw/master/themes/flowering-meadow/variants/sunset-dandelions/preview.webp)   |
+| [Starfield - Red–Yellow](https://github.com/lykahb/goban-decals/blob/master/themes/starfield/README.md#redyellow) | ![Screenshot](https://github.com/lykahb/goban-decals/raw/master/themes/starfield/variants/red-yellow/preview.webp)                 |
+| [Starfield - Blue–Yellow](https://github.com/lykahb/goban-decals/blob/master/themes/starfield/README.md#blueyellow) | ![Screenshot](https://github.com/lykahb/goban-decals/raw/master/themes/starfield/variants/blue-yellow/preview.webp)                |
 
 You can also customize Sabaki using a [userstyle](userstyle-tutorial.md). Learn
 [how to package a userstyle into a theme](create-themes.md) and feel free to
