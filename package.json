@@ -130,7 +130,7 @@
     "jschardet": "^3.0.0",
     "natsort": "^2.0.2",
     "pikaday": "^1.8.0",
-    "preact": "^10.29.7",
+    "preact": "^10.29.8",
     "react-markdown": "^10.1.0",
     "remark-breaks": "^4.0.0",
     "uuid": "^14.0.1",
