@@ -393,7 +393,9 @@ export default class Goban extends Component {
           hotspot = true
           break
         }
-        history.push(node)
+        if (node.data.B != null || node.data.W != null) {
+          history.push(node)
+        }
       }
       if (
         (moveNumbersType === 'variation' &&
@@ -405,17 +407,19 @@ export default class Goban extends Component {
       }
       history.reverse()
 
-      for (let i = 0; i < history.length; i++) {
-        let node = history[i]
+      let moveNumber = 0
+
+      for (let node of history) {
         let vertex = [-1, -1]
 
         if (node.data.B != null) vertex = sgf.parseVertex(node.data.B[0])
         else if (node.data.W != null) vertex = sgf.parseVertex(node.data.W[0])
 
         let [x, y] = vertex
+        moveNumber = node.data.MN != null ? +node.data.MN[0] : moveNumber + 1
 
         if (markerMap[y] != null && x < markerMap[y].length) {
-          markerMap[y][x] = {type: 'label', label: (i + 1).toString()}
+          markerMap[y][x] = {type: 'label', label: moveNumber.toString()}
         }
       }
     }
