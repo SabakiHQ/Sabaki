@@ -7,6 +7,7 @@ module.exports = defineConfig({
   workers: 1, // Electron tests must run serially
   reporter: process.env.CI ? 'github' : 'list',
   projects: [
+    {name: 'player-timing', testMatch: /player-timing\.spec\.js/},
     {name: 'smoke', testMatch: /smoke\.spec\.js/},
     {
       name: 'renderer',

@@ -101,6 +101,8 @@ export default class PlayBar extends Component {
       engineSyncers,
       playerNames,
       playerRanks,
+      playerTimes = [null, null],
+      overtime,
       playerCaptures,
       currentPlayer,
       showHotspot,
@@ -112,6 +114,9 @@ export default class PlayBar extends Component {
     let captureStyle = (index) => ({
       opacity: playerCaptures[index] === 0 ? 0 : 0.7,
     })
+    let renderTime = (index) =>
+      playerTimes[index] != null &&
+      h('span', {class: 'time', title: overtime}, playerTimes[index])
 
     return h(
       'header',
@@ -140,6 +145,9 @@ export default class PlayBar extends Component {
         ' ',
 
         engineSyncers[0] != null && playerBusy[0] && h(TextSpinner),
+        ' ',
+
+        renderTime(0),
         ' ',
 
         h(
@@ -182,6 +190,9 @@ export default class PlayBar extends Component {
             ? playerNames[1] || t('White')
             : engineSyncers[1].engine.name,
         ),
+        ' ',
+
+        renderTime(1),
         ' ',
 
         engineSyncers[1] != null && playerBusy[1] && h(TextSpinner),
