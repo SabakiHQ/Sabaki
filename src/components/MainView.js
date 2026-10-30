@@ -10,6 +10,7 @@ import FindBar from './bars/FindBar.js'
 
 import sabaki from '../modules/sabaki.js'
 import * as gametree from '../modules/gametree.js'
+import {getPlayerTimes} from '../modules/gametiming.js'
 
 export default class MainView extends Component {
   constructor(props) {
@@ -189,6 +190,8 @@ export default class MainView extends Component {
           ),
           playerNames: gameInfo.playerNames,
           playerRanks: gameInfo.playerRanks,
+          playerTimes: getPlayerTimes(gameTree, treePosition),
+          overtime: gametree.getRootProperty(gameTree, 'OT'),
           playerCaptures: [1, -1].map((sign) => board.getCaptures(sign)),
           currentPlayer,
           showHotspot: node.data.HO != null,

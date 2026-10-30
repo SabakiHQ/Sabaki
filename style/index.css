@@ -95,6 +95,12 @@ header {
     flex: 0 1 auto;
     opacity: .4;
   }
+  header .time {
+    flex: none;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    opacity: .7;
+  }
   header .captures {
     flex: none;
     display: inline-block;
