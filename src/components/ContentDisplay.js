@@ -3,50 +3,10 @@ import {h, Component} from 'preact'
 
 import i18n from '../i18n.js'
 import sabaki from '../modules/sabaki.js'
+import {escapeHtml, htmlify} from '../modules/htmlify.js'
 
 const t = i18n.context('ContentDisplay')
 const setting = {get: (key) => window.sabaki.setting.get(key)}
-
-function htmlify(input) {
-  let urlRegex = /\b(ht|f)tps?:\/\/[^\s<]+[^<.,:;"\')\]\s](\/\B|\b)/i
-  let emailRegex = /\b[^\s@<]+@[^\s@<]+\b/i
-  let variationRegex =
-    /\b(black\s+?|white\s+?|[bw]\s*)(([a-hj-z]\d{1,2}[ ]+)+[a-hj-z]\d{1,2})\b/i
-  let coordRegex = /\b[a-hj-z]\d{1,2}\b/i
-  let movenumberRegex = /(\B#|\bmove[ ]+)(\d+)\b/i
-  let totalRegex = new RegExp(
-    `(${[urlRegex, emailRegex, variationRegex, coordRegex, movenumberRegex]
-      .map((regex) => regex.source)
-      .join('|')})`,
-    'gi',
-  )
-
-  input = input.replace(totalRegex, (match) => {
-    let tokens
-
-    if (urlRegex.test(match))
-      return `<a href="${match}" class="comment-external">${match}</a>`
-    if (emailRegex.test(match))
-      return `<a href="mailto:${match}" class="comment-external">${match}</a>`
-    if ((tokens = variationRegex.exec(match)))
-      return `<span
-        class="comment-variation"
-        data-color="${tokens[1] ? tokens[1][0].toLowerCase() : ''}"
-        data-moves="${tokens[2]}"
-      >${match}</span>`
-    if (coordRegex.test(match))
-      return `<span class="comment-coord">${match}</span>`
-    if ((tokens = movenumberRegex.exec(match)))
-      return `<a
-        href="#"
-        class="comment-movenumber"
-        title="${t('Jump to Move Number')}"
-        data-movenumber="${tokens[2]}"
-      >${match}</a>`
-  })
-
-  return input
-}
 
 export default class ContentDisplay extends Component {
   constructor(props) {
@@ -169,12 +129,9 @@ export default class ContentDisplay extends Component {
       ? h(tag, {
           ref: (el) => (this.element = el),
           dangerouslySetInnerHTML: {
-            __html: htmlify(
-              content
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;'),
-            ),
+            __html: htmlify(escapeHtml(content), {
+              moveNumberTitle: t('Jump to Move Number'),
+            }),
           },
           ...this.props,
           tag: undefined,
