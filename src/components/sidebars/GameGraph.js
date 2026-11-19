@@ -156,6 +156,10 @@ class GameGraph extends Component {
     this.matrixDictHash = null
     this.matrixDictCache = {}
 
+    if (props.showGameGraph) {
+      this.state.matrixDict = this.getMatrixDict(props.gameTree)
+    }
+
     this.handleNodeClick = this.handleNodeClick.bind(this)
     this.handleGraphMouseDown = this.handleGraphMouseDown.bind(this)
   }
@@ -201,10 +205,13 @@ class GameGraph extends Component {
     return height !== this.props.height || showGameGraph
   }
 
-  componentWillReceiveProps({treePosition, gameTree} = {}) {
+  componentWillReceiveProps({treePosition, gameTree, showGameGraph} = {}) {
     if (treePosition == null) return
 
-    if (gameTree !== this.props.gameTree) {
+    if (
+      gameTree !== this.props.gameTree ||
+      (showGameGraph && this.state.matrixDict == null)
+    ) {
       let [matrix, dict] = this.getMatrixDict(gameTree)
       this.setState({matrixDict: [matrix, dict]})
     }
