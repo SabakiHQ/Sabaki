@@ -52,19 +52,50 @@ class GameGraphNode extends Component {
     document.removeEventListener('mousemove', this.handleMouseMove)
   }
 
-  shouldComponentUpdate({type, current, fill, nodeSize, gridSize}, {hover}) {
+  shouldComponentUpdate(
+    {type, current, fill, color, annotated, dimmed, nodeSize, gridSize},
+    {hover},
+  ) {
     return (
       type !== this.props.type ||
       current !== this.props.current ||
       fill !== this.props.fill ||
+      color !== this.props.color ||
+      annotated !== this.props.annotated ||
+      dimmed !== this.props.dimmed ||
       nodeSize !== this.props.nodeSize ||
       gridSize !== this.props.gridSize ||
       hover !== this.state.hover
     )
   }
 
-  render({position: [left, top], type, current, fill, nodeSize}, {hover}) {
-    return h('path', {
+  render(
+    {
+      position: [left, top],
+      type,
+      current,
+      fill,
+      color,
+      annotated,
+      dimmed,
+      nodeSize,
+    },
+    {hover},
+  ) {
+    // The node outline encodes the stone color, so current and hover states
+    // are shown as a separate halo ring around the node instead.
+
+    let halo =
+      (current || hover) &&
+      h('circle', {
+        class: classNames({hover, current}, 'halo'),
+        cx: left,
+        cy: top,
+        r: nodeSize * 1.5 + 2,
+        fill: 'none',
+      })
+
+    let shape = h('path', {
       ref: (el) => (this.element = el),
       d: (() => {
         let nodeSize2 = nodeSize * 2
@@ -93,9 +124,19 @@ class GameGraphNode extends Component {
         return ''
       })(),
 
-      class: classNames({hover, current}, 'node'),
+      class: classNames(
+        {
+          black: color === 'B',
+          white: color === 'W',
+          annotated,
+          dimmed,
+        },
+        'node',
+      ),
       fill,
     })
+
+    return h('g', {}, shape, halo)
   }
 }
 
@@ -339,7 +380,8 @@ class GameGraph extends Component {
 
         let isCurrentNode = this.props.treePosition === id
         let opacity = onCurrentTrack ? 1 : 0.5
-        let fillRGB =
+        let color = node.data.B != null ? 'B' : node.data.W != null ? 'W' : null
+        let annotationRGB =
           node.data.BM != null
             ? [240, 35, 17]
             : node.data.DO != null
@@ -350,7 +392,17 @@ class GameGraph extends Component {
                   ? [89, 168, 15]
                   : commentProperties.some((x) => node.data[x] != null)
                     ? [255, 174, 61]
-                    : [238, 238, 238]
+                    : null
+
+        // Annotated nodes keep their annotation color and show the stone
+        // color as an outline; plain nodes are filled with the stone color.
+
+        let annotated = annotationRGB != null
+        let fillRGB = annotated
+          ? annotationRGB
+          : color === 'B'
+            ? [85, 85, 85]
+            : [238, 238, 238]
 
         let left = x * gridSize
         let top = y * gridSize
@@ -371,6 +423,9 @@ class GameGraph extends Component {
                     : 'circle', // Normal node
             current: isCurrentNode,
             fill: `rgb(${fillRGB.map((x) => x * opacity).join(',')})`,
+            color,
+            annotated,
+            dimmed: !onCurrentTrack,
             nodeSize: nodeSize + 1,
             gridSize,
           }),

@@ -544,11 +544,25 @@ header {
     stroke: #111;
     stroke-width: 1px;
   }
-  #graph svg .node.hover {
-    stroke: #777;
+  #graph svg .node.annotated.white {
+    stroke: #eee;
     stroke-width: 2px;
   }
-  #graph svg .node.current {
+  #graph svg .node.annotated.black {
+    stroke: #555;
+    stroke-width: 2px;
+  }
+  #graph svg .node.dimmed {
+    stroke-opacity: .5;
+  }
+  #graph svg .halo {
+    pointer-events: none;
+  }
+  #graph svg .halo.hover {
+    stroke: #777;
+    stroke-width: 1.5px;
+  }
+  #graph svg .halo.current {
     stroke: #eee;
     stroke-width: 2px;
 }
