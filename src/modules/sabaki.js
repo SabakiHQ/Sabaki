@@ -909,6 +909,8 @@ class Sabaki extends EventEmitter {
     let hash = this.generateFileHash()
 
     if (hash != null && hash !== this.fileHash) {
+      this.fileHash = hash
+
       let answer = await dialog.showMessageBox(
         t(
           (p) =>
@@ -931,8 +933,6 @@ class Sabaki extends EventEmitter {
       } else {
         this.treeHash = null
       }
-
-      this.fileHash = hash
     }
   }
 
