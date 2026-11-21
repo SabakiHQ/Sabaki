@@ -44,6 +44,7 @@ export default class EngineSyncer extends EventEmitter {
     this.id = uuid()
     this.engine = engine
     this.commands = []
+    this.ready = new Promise((resolve) => (this._resolveReady = resolve))
     this.treePosition = null
 
     let absolutePath = resolve(path)
@@ -80,7 +81,9 @@ export default class EngineSyncer extends EventEmitter {
           .sendCommand({name: 'list_commands'})
           .then((response) => {
             this.commands = response.content.split('\n')
-          }),
+          })
+          .catch(noop)
+          .then(() => this._resolveReady()),
         ...(commands != null && commands.trim() !== ''
           ? commands
               .split(';')
