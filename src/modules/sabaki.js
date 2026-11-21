@@ -2283,11 +2283,20 @@ class Sabaki extends EventEmitter {
 
     if (syncer == null) return
 
+    this.setState({analyzingEngineSyncerId: syncerId})
+
+    if (syncer.commands.length === 0 && !syncer.suspended) {
+      await syncer.ready
+    }
+
+    if (this.state.analyzingEngineSyncerId !== syncerId) return
+
     if (
       setting
         .get('engines.analyze_commands')
         .every((command) => !syncer.commands.includes(command))
     ) {
+      this.setState({analyzingEngineSyncerId: null})
       await dialog.showMessageBox(
         t('The selected engine does not support analysis.'),
         'warning',
@@ -2296,7 +2305,6 @@ class Sabaki extends EventEmitter {
     }
 
     this.lastAnalyzingEngineSyncerId = syncerId
-    this.setState({analyzingEngineSyncerId: syncerId})
 
     if (
       !this.state.engineGameOngoing ||
